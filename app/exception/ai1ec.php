@@ -6,10 +6,9 @@
  * This class is the base class for all ai1ec exceptions
  */
 
-require_once 'error_exception.php';
+require_once 'error-exception.php';
 
-abstract class ai1ec_exception extends Exception {
-	const DB_DEACTIVATE_PLUGIN  = 'ai1ec_deactivate_plugin';
+abstract class Ai1ec_Exception extends Exception {
 	const DB_DEACTIVATE_MESSAGE = 'ai1ec_deactivate_message';
 	const DB_REACTIVATE_PLUGIN  = 'ai1ec_reactivate_plugin';
 
@@ -36,15 +35,15 @@ abstract class ai1ec_exception extends Exception {
 	 */
 	public static function handle_exception( Exception $exception ) {
 		// if it's one of our exception, deactivate and redirect
-		if( is_subclass_of( $exception, 'ai1ec_exception' ) ) {
+		if( is_subclass_of( $exception, 'Ai1ec_Exception' ) ) {
 			self::soft_deactivate_plugin( $exception->get_html_message() );
 		}
 		// if it's a PHP error in our plugin files, deactivate and redirect
-		else if ( 'ai1ec_error_exception' === get_class( $exception ) ) {
+		else if ( $exception instanceof Ai1ec_Error_Exception ) {
 			self::soft_deactivate_plugin( $exception->getMessage() );
 		}
 		// if another handler was set, let it handle the exception
-		else if ( isset( self::$prev_handler ) ) {
+		if ( isset( self::$prev_handler ) ) {
 			self::$prev_handler( $exception );
 		}
 	}
@@ -80,7 +79,6 @@ abstract class ai1ec_exception extends Exception {
 	 * @param string $message
 	 */
 	protected static function soft_deactivate_plugin( $message ) {
-		add_option( self::DB_DEACTIVATE_PLUGIN, true );
 		add_option( self::DB_DEACTIVATE_MESSAGE, $message );
 	}
 	
@@ -89,9 +87,9 @@ abstract class ai1ec_exception extends Exception {
 	 */
 	protected static function redirect() {
 		if ( is_admin() ) {
-			header( 'Location:' . get_admin_url(), 302 );
+			Ai1ec_Http_Response::redirect( get_admin_url() );
 		} else {
-			header( 'Location:' . get_site_url(), 302 );
+			Ai1ec_Http_Response::redirect( get_site_url() );
 		}
 	}
 }

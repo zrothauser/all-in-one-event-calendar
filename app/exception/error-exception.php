@@ -5,6 +5,6 @@
  *
  * Just extend ErrorException
  */
-class ai1ec_error_exception extends ErrorException {
+class Ai1ec_Error_Exception extends ErrorException {
 
 }

@@ -2,7 +2,7 @@
 /**
  * Handles exception and errors.
  *
- * @author     Timely Network Inc
+ * @author     Time.ly Network Inc
  * @since      2.0
  *
  * @package    AI1EC

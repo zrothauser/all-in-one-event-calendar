@@ -2,7 +2,7 @@
 /**
  * Exception that is raised when a PHP error happens in our plugin.
  *
- * @author     Timely Network Inc
+ * @author     Time.ly Network Inc
  * @since      2.0
  *
  * @package    AI1EC

@@ -2,7 +2,7 @@
 /**
  * Abstract base class for all our excpetion.
  *
- * @author     Timely Network Inc
+ * @author     Time.ly Network Inc
  * @since      2.0
  *
  * @package    AI1EC

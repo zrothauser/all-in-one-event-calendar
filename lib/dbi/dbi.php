@@ -218,5 +218,31 @@ class Ai1ec_Dbi
 		return $this->_dbi->{$table};
 	}
 
+	/**
+	 * Escapes content by reference for insertion into the database, for security
+	 *
+	 * @param string $string to escape
+	 * @return void
+	 */
+	function escape_by_ref( &$string ) {
+		if ( ! is_float( $string ) ) {
+			$string = $this->_real_escape( $string );
+		}
+	}
+
+	/**
+	 * Real escape, using mysql_real_escape_string()
+	 *
+	 * @param  string $string to escape
+	 * @return string escaped
+	 */
+	function _real_escape( $string ) {
+		if ( $this->dbh ) {
+			return mysql_real_escape_string( $string, $this->dbh );
+		}
+			
+		return addslashes( $string );
+	}
+
 }
 

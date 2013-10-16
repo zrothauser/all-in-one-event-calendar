@@ -6,8 +6,6 @@
  * This class is the base class for all ai1ec exceptions
  */
 
-require_once 'error-exception.php';
-
 abstract class Ai1ec_Exception extends Exception {
 	const DB_DEACTIVATE_MESSAGE = 'ai1ec_deactivate_message';
 	const DB_REACTIVATE_PLUGIN  = 'ai1ec_reactivate_plugin';
@@ -70,7 +68,7 @@ abstract class Ai1ec_Exception extends Exception {
 		if( false === strpos( $errfile, 'all-in-one-event-calendar' ) ) {
 			return false;
 		}
-		throw new ai1ec_error_exception( $errstr, $errno, 0, $errfile, $errline );
+		throw new Ai1ec_Error_Exception( $errstr, $errno, 0, $errfile, $errline );
 	}
 
 	/**

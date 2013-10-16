@@ -1,18 +1,13 @@
 <?php
-//
-//  class-ai1ec-invalid-argument.php
-//  all-in-one-event-calendar
-//
-//  Created by The Seed Studio on 2011-07-13.
-//
-
 /**
- * Ai1ec_Invalid_Argument class
+ * Exception that is raised when an invalid argument is passed.
  *
- * @package Exceptions
- * @author time.ly
+ * @author     Timely Network Inc
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Exception
  **/
 class Ai1ec_Invalid_Argument extends Ai1ec_Exception {
 
 }
-// END class

@@ -1,10 +1,13 @@
 <?php
 /**
- * @author Timely Network Inc
+ * Handle Http response functions.
  *
+ * @author     Timely Network Inc
+ * @since      2.0
  *
- */
-
+ * @package    AI1EC
+ * @subpackage AI1EC.Http
+ **/
 class Ai1ec_Http_Response {
 
 	/**

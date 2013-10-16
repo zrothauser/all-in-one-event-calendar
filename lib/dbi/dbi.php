@@ -1,5 +1,16 @@
 <?php
-
+/**
+* Wrapper for WPDB (WordPress DB Class)
+*
+* Thic class wrap the access to Wordpress DB class ($wpdb) and
+* allows us to abstract from the wordpress code and to expand it
+* with convenience method specific for ai1ec
+*
+* @author     Time.ly Network, Inc.
+* @since      2.0
+* @package    Ai1EC
+* @subpackage Ai1EC.Dbi
+*/
 class Ai1ec_Dbi{
 
 	/**
@@ -9,6 +20,13 @@ class Ai1ec_Dbi{
 
 	static protected $_instance = NULL;
 
+	/**
+	 * Return an instance of the class to be used
+	 *
+	 * More about the singleton pattern: http://www.oodesign.com/singleton-pattern.html
+	 *
+	 * @return Ai1ec_Dbi an instance of the class
+	 */
 	static public function instance() {
 		if ( ! self::$_instance instanceof self ) {
 			global $wpdb;
@@ -205,26 +223,45 @@ class Ai1ec_Dbi{
 	}
 
 	// Getters
+
+	/**
+	* @return string WordPress table prefix
+	*/
 	public function getPrefix() {
 		return $this->_dbi->prefix;
 	}
 
+	/**
+	* @return string WordPress Terms table
+	*/
 	public function getTerms() {
 		return $this->_dbi->terms;
 	}
 
+	/**
+	* @return string WordPress Posts table
+	*/
 	public function getPosts() {
 		return $this->_dbi->posts;
 	}
 
+	/**
+	* @return string WordPress Term Relationships table
+	*/
 	public function getTermRelationships(){
 		return $this->_dbi->term_relationships;
 	}
 
+	/**
+	* @return string WordPress Term Taxonomy table
+	*/
 	public function getTermTaxonomy(){
 		return $this->_dbi->term_taxonomy;
 	}
 
+	/**
+	* @return string WordPress Options table
+	*/
 	public function getOptions(){
 		return $this->_dbi->options;
 	}

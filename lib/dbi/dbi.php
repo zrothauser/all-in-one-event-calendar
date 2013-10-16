@@ -207,48 +207,16 @@ class Ai1ec_Dbi
 		return $this->_dbi->db_version();
 	}
 
-	// Getters
-
 	/**
-	* @return string WordPress table prefix
+	* @param string $table table name
+	* @return string the full table name for the requested table
 	*/
-	public function getPrefix() {
-		return $this->_dbi->prefix;
+	public function get_table_name( $table ) {
+		if ( ! isset( $this->_dbi->{$table} ) ){
+			return $this->getPrefix() . $table;
+		}
+		return $this->_dbi->{$table};
 	}
 
-	/**
-	* @return string WordPress Terms table
-	*/
-	public function getTerms() {
-		return $this->_dbi->terms;
-	}
-
-	/**
-	* @return string WordPress Posts table
-	*/
-	public function getPosts() {
-		return $this->_dbi->posts;
-	}
-
-	/**
-	* @return string WordPress Term Relationships table
-	*/
-	public function getTermRelationships(){
-		return $this->_dbi->term_relationships;
-	}
-
-	/**
-	* @return string WordPress Term Taxonomy table
-	*/
-	public function getTermTaxonomy(){
-		return $this->_dbi->term_taxonomy;
-	}
-
-	/**
-	* @return string WordPress Options table
-	*/
-	public function getOptions(){
-		return $this->_dbi->options;
-	}
 }
 

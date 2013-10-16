@@ -11,13 +11,17 @@
 * @package    Ai1EC
 * @subpackage Ai1EC.Dbi
 */
-class Ai1ec_Dbi{
+class Ai1ec_Dbi
+{
 
 	/**
-	 * @var Instance of database interface object
+	 * @var wpdb Instance of database interface object
 	 */
 	protected $_dbi = NULL;
 
+	/**
+	 * @var Ai1ec_Dbi Singleton instance of self
+	 */
 	static protected $_instance = NULL;
 
 	/**
@@ -35,14 +39,19 @@ class Ai1ec_Dbi{
 		return self::$_instance;
 	}
 
-	protected function __construct( $dbi ) {
+	/**
+	 * Constructor assigns injected database access object to class variable
+	 *
+	 * @param wpdb $dbi Injected database access object
+	 *
+	 * @return void Constructor does not return
+	 */
+	public function __construct( $dbi ) {
 		$this->_dbi = $dbi;
 	}
 
 	/**
 	 * Perform a MySQL database query, using current database connection.
-	 *
-	 * More information can be found on the codex page.
 	 *
 	 * @param string $query Database query
 	 * @return int|false Number of rows affected/selected or false on error
@@ -57,9 +66,7 @@ class Ai1ec_Dbi{
 	 * Executes a SQL query and returns the column from the SQL result.
 	 * If the SQL result contains more than one column, this function returns the column specified.
 	 * If $query is null, this function returns the specified column from the previous SQL result.
-	 *
-	 * @since 0.71
-	 *
+	 *	 *
 	 * @param string|null $query Optional. SQL query. Defaults to previous query.
 	 * @param int $x Optional. Column to return. Indexed from 0.
 	 * @return array Database query result. Array indexed from 0 by SQL result row number.
@@ -88,13 +95,6 @@ class Ai1ec_Dbi{
 	 *
 	 * Both %d and %s should be left unquoted in the query string.
 	 *
-	 * <code>
-	 * wpdb::prepare( "SELECT * FROM `table` WHERE `column` = %s AND `field` = %d", 'foo', 1337 )
-	 * wpdb::prepare( "SELECT DATE_FORMAT(`field`, '%%c') FROM `table` WHERE `column` = %s", 'foo' );
-	 * </code>
-	 *
-	 * @link http://php.net/sprintf Description of syntax.
-	 *
 	 * @param string $query Query statement with sprintf()-like placeholders
 	 * @param array|mixed $args The array of variables to substitute into the query's placeholders if being called like
 	 * 	{@link http://php.net/vsprintf vsprintf()}, or the first variable to substitute into the query's placeholders if
@@ -105,14 +105,17 @@ class Ai1ec_Dbi{
 	 * 	if there was something to prepare
 	 */
 	public function prepare( $sql_query, $args ){
-		if ( is_null( $query ) )
-			return;
+
+		if ( NULL === $query ) {
+			return NULL;
+		}
 
 		$args = func_get_args();
 		array_shift( $args );
 		// If args were passed as an array (as in vsprintf), move them up
-		if ( isset( $args[0] ) && is_array($args[0]) )
+		if ( isset( $args[0] ) && is_array( $args[0] ) ) {
 			$args = $args[0];
+		}
 		$query = str_replace( "'%s'", '%s', $query ); // in case someone mistakenly already singlequoted it
 		$query = str_replace( '"%s"', '%s', $query ); // doublequote unquoting
 		$query = preg_replace( '|(?<!%)%f|' , '%F', $query ); // Force floats to be locale unaware
@@ -170,15 +173,6 @@ class Ai1ec_Dbi{
 	/**
 	 * Insert a row into a table.
 	 *
-	 * <code>
-	 * wpdb::insert( 'table', array( 'column' => 'foo', 'field' => 'bar' ) )
-	 * wpdb::insert( 'table', array( 'column' => 'foo', 'field' => 1337 ), array( '%s', '%d' ) )
-	 * </code>
-	 *
-	 * @see wpdb::prepare()
-	 * @see wpdb::$field_types
-	 * @see wp_set_wpdb_vars()
-	 *
 	 * @param string $table table name
 	 * @param array $data Data to insert (in column => value pairs). Both $data columns and $data values should be "raw" (neither should be SQL escaped).
 	 * @param array|string $format Optional. An array of formats to be mapped to each of the value in $data. If string, that format will be used for all of the values in $data.
@@ -191,15 +185,6 @@ class Ai1ec_Dbi{
 	
 	/**
 	 * Update a row in the table
-	 *
-	 * <code>
-	 * wpdb::update( 'table', array( 'column' => 'foo', 'field' => 'bar' ), array( 'ID' => 1 ) )
-	 * wpdb::update( 'table', array( 'column' => 'foo', 'field' => 1337 ), array( 'ID' => 1 ), array( '%s', '%d' ), array( '%d' ) )
-	 * </code>
-	 *
-	 * @see wpdb::prepare()
-	 * @see wpdb::$field_types
-	 * @see wp_set_wpdb_vars()
 	 *
 	 * @param string $table table name
 	 * @param array $data Data to update (in column => value pairs). Both $data columns and $data values should be "raw" (neither should be SQL escaped).
@@ -265,6 +250,5 @@ class Ai1ec_Dbi{
 	public function getOptions(){
 		return $this->_dbi->options;
 	}
-
 }
 

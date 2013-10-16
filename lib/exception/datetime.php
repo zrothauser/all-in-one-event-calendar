@@ -1,6 +1,6 @@
 <?php
 /**
- * Exception that is raised when a PHP error happens in our plugin.
+ * Datetime related exception.
  *
  * @author     Timely Network Inc
  * @since      2.0
@@ -8,6 +8,5 @@
  * @package    AI1EC
  * @subpackage AI1EC.Exception
  **/
-class Ai1ec_Error_Exception extends ErrorException {
-
+class Ai1ec_Datetime_Exception extends Ai1ec_Exception {
 }

@@ -1,11 +1,13 @@
 <?php
-
 /**
- * @author Timely Network Inc
+ * Abstract base class for all our excpetion.
  *
- * This class is the base class for all ai1ec exceptions
- */
-
+ * @author     Timely Network Inc
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Exception
+ **/
 abstract class Ai1ec_Exception extends Exception {
 	const DB_DEACTIVATE_MESSAGE = 'ai1ec_deactivate_message';
 	const DB_REACTIVATE_PLUGIN  = 'ai1ec_reactivate_plugin';

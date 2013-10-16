@@ -7,17 +7,26 @@
  * Author URI: http://time.ly/
  * Version: 2.0
  */
+require_once 'lib/exception/handler.php';
+require_once 'lib/http/response.php';
+$ai1ec_exception_handler = new Ai1ec_Exception_Handler( 
+	'Ai1ec_Exception', 
+	'Ai1ec_Error_Exception'
+);
 
-set_error_handler( array( 'Ai1ec_Exception', 'handle_error' ) );
-$prev_handler = set_exception_handler( array( 'Ai1ec_Exception', 'handle_exception' ) );
-if( is_callable( $prev_handler ) ) {
-	Ai1ec_Exception::set_prev_handler( $prev_handler );
-}
 // if the user clicked the link to reactivate the plugin
-if( isset( $_GET[Ai1ec_Exception::DB_REACTIVATE_PLUGIN] ) ) {
-	delete_option( Ai1ec_Exception::DB_DEACTIVATE_MESSAGE );
+if( isset( $_GET[Ai1ec_Exception_Handler::DB_REACTIVATE_PLUGIN] ) ) {
+	$ai1ec_exception_handler->reactivate_plugin();
 }
-$soft_disable = get_option( Ai1ec_Exception::DB_DEACTIVATE_MESSAGE, false );
+$soft_disable = $ai1ec_exception_handler->get_disabled_message();
 if ( false !== $soft_disable ) {
 	// put here code to show just the notice in the admin page
+	$ai1ec_exception_handler->show_notices( $soft_disable );
+} else {
+	$prev_er_handler = set_error_handler( array( $ai1ec_exception_handler, 'handle_error' ) );
+	$prev_ex_handler = set_exception_handler( array( $ai1ec_exception_handler, 'handle_exception' ) );
+	$ai1ec_exception_handler->set_prev_er_handler( $prev_er_handler );
+	$ai1ec_exception_handler->set_prev_ex_handler( $prev_ex_handler );
+	// start the plugin normally
+	// trigger_error( 'msg', E_CORE_ERROR );
 }

@@ -29,4 +29,16 @@ class Ai1ec_Http_Response {
 	public static function stop( $code = 0 ) {
 		exit( $code );
 	}
+
+	/**
+	 * Returns the delimiter character to use if a new query string parameter is
+	 * going to be appended to the URL.
+	 *
+	 * @param string $url URL to parse
+	 *
+	 * @return string
+	 */
+	public static function get_param_delimiter_char( $url ) {
+		return strpos( $url, '?' ) === false ? '?' : '&';
+	}
 }

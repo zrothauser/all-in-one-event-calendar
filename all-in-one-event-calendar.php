@@ -18,15 +18,13 @@ $ai1ec_exception_handler = new Ai1ec_Exception_Handler(
 if( isset( $_GET[Ai1ec_Exception_Handler::DB_REACTIVATE_PLUGIN] ) ) {
 	$ai1ec_exception_handler->reactivate_plugin();
 }
-$soft_disable = $ai1ec_exception_handler->get_disabled_message();
-if ( false !== $soft_disable ) {
-	// put here code to show just the notice in the admin page
-	$ai1ec_exception_handler->show_notices( $soft_disable );
+$soft_disable_message = $ai1ec_exception_handler->get_disabled_message();
+if ( false !== $soft_disable_message ) {
+	$ai1ec_exception_handler->show_notices( $soft_disable_message );
 } else {
 	$prev_er_handler = set_error_handler( array( $ai1ec_exception_handler, 'handle_error' ) );
 	$prev_ex_handler = set_exception_handler( array( $ai1ec_exception_handler, 'handle_exception' ) );
 	$ai1ec_exception_handler->set_prev_er_handler( $prev_er_handler );
 	$ai1ec_exception_handler->set_prev_ex_handler( $prev_ex_handler );
 	// start the plugin normally
-	// trigger_error( 'msg', E_CORE_ERROR );
 }

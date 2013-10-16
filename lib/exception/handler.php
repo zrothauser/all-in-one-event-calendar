@@ -74,7 +74,7 @@ class Ai1ec_Exception_Handler {
 	 */
 	public function handle_exception( Exception $exception ) {
 		// if it's something we handle, handle it
-		if( is_subclass_of( $exception, $this->_exception_class ) ) {
+		if ( is_subclass_of( $exception, $this->_exception_class ) ) {
 			// check if it has a methof for deatiled html
 			$message = method_exists( $exception, 'get_html_message' ) ?
 					$exception->get_html_message() :
@@ -112,10 +112,31 @@ class Ai1ec_Exception_Handler {
 		array $errcontext
 	) {
 		// if the error is not in our plugin, let PHP handle things.
-		if( false === strpos( $errfile, AI1EC_PLUGIN_NAME ) ) {
-			return false;
+		if ( false === strpos( $errfile, AI1EC_PLUGIN_NAME ) ) {
+			// if the prev err handler is a string, it's just a function
+			if ( is_string( $this->_prev_er_handler ) ) {
+				$this->_prev_er_handler(
+					$errno,
+					$errstr,
+					$errfile,
+					$errline,
+					$errcontext
+				);
+			}
+			// if the previous error handler it's an array, it's a method
+			else if ( is_array( $this->_prev_er_handler ) ) {
+				call_user_func_array( 
+					$this->_prev_er_handler,
+					func_get_args() 
+				);
+			}
+			// otherwise let php handle the error
+			else {
+				return false;
+			}
+		} else {
+			throw new Ai1ec_Error_Exception( $errstr, $errno, 0, $errfile, $errline );
 		}
-		throw new Ai1ec_Error_Exception( $errstr, $errno, 0, $errfile, $errline );
 	}
 
 	/**

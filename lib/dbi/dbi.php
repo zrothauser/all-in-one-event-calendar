@@ -67,7 +67,7 @@ class Ai1ec_Dbi
 	 * Executes a SQL query and returns the column from the SQL result.
 	 * If the SQL result contains more than one column, this function returns the column specified.
 	 * If $query is null, this function returns the specified column from the previous SQL result.
-	 *	 *
+	 *
 	 * @param string|null $query Optional. SQL query. Defaults to previous query.
 	 * @param int $x Optional. Column to return. Indexed from 0.
 	 *

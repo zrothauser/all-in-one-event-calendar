@@ -17,12 +17,12 @@ class Ai1ec_Dbi
 	/**
 	 * @var wpdb Instance of database interface object
 	 */
-	protected $_dbi = NULL;
+	protected $_dbi = null;
 
 	/**
 	 * @var Ai1ec_Dbi Singleton instance of self
 	 */
-	static protected $_instance = NULL;
+	static protected $_instance = null;
 
 	/**
 	 * Return an instance of the class to be used
@@ -107,10 +107,10 @@ class Ai1ec_Dbi
 	 * @return null|false|string Sanitized query string, null if there is no query, false if there is an error and string
 	 * 	if there was something to prepare
 	 */
-	public function prepare( $sql_query, $args ){
+	public function prepare( $sql_query, $args ) {
 
-		if ( NULL === $query ) {
-			return NULL;
+		if ( null === $query ) {
+			return null;
 		}
 
 		$args = func_get_args();
@@ -139,7 +139,7 @@ class Ai1ec_Dbi
 	 *
 	 * @return mixed Database query results
 	 */
-	public function get_results( $query, $output  )
+	public function get_results( $query, $output )
 		return $this->_dbi->get_results( $query, $output );
 	}
 	

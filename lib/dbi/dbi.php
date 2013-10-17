@@ -234,25 +234,10 @@ class Ai1ec_Dbi
 	 *
 	 * @return void
 	 */
-	function escape_by_ref( &$string ) {
+	public function escape_by_ref( &$string ) {
 		if ( ! is_float( $string ) ) {
-			$string = $this->_real_escape( $string );
+			$string = $this->_dbi->_real_escape( $string );
 		}
-	}
-
-	/**
-	 * Real escape, using mysql_real_escape_string()
-	 *
-	 * @param  string $string to escape
-	 *
-	 * @return string escaped
-	 */
-	function _real_escape( $string ) {
-		if ( $this->dbh ) {
-			return mysql_real_escape_string( $string, $this->dbh );
-		}
-			
-		return addslashes( $string );
 	}
 
 }

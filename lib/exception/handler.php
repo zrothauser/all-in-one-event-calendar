@@ -1,8 +1,9 @@
 <?php
+
 /**
- * Handles exception and errors.
+ * Handles exception and errors
  *
- * @author     Time.ly Network Inc
+ * @author     Time.ly Network Inc.
  * @since      2.0
  *
  * @package    AI1EC
@@ -24,13 +25,12 @@ class Ai1ec_Exception_Handler {
 	const DB_REACTIVATE_PLUGIN  = 'ai1ec_reactivate_plugin';
 
 	/**
-	 * @var callable The previous exception handler
+	 * @var callable|null Previously set exception handler if any
 	 */
 	protected $_prev_ex_handler;
 
 	/**
-	 * @var string|array The previous error handler
-	 * It's a string if it's a function, an array if it's a method
+	 * @var callable|null Previously set error handler if any
 	 */
 	protected $_prev_er_handler;
 
@@ -50,32 +50,46 @@ class Ai1ec_Exception_Handler {
 	protected $_message;
 
 	/**
+	 * Store exception handler that was previously set
+	 *
 	 * @param callable|null $_prev_ex_handler
+	 *
+	 * @return void Method does not return
 	 */
-	public function set_prev_ex_handler( $_prev_ex_handler ) {
-		$this->_prev_ex_handler = $_prev_ex_handler;
+	public function set_prev_ex_handler( $prev_ex_handler ) {
+		$this->_prev_ex_handler = $prev_ex_handler;
 	}
 
 	/**
+	 * Store error handler that was previously set
+	 *
 	 * @param callable|null $_prev_er_handler
+	 *
+	 * @return void Method does not return
 	 */
-	public function set_prev_er_handler( $_prev_er_handler ) {
-		$this->_prev_er_handler = $_prev_er_handler;
+	public function set_prev_er_handler( $prev_er_handler ) {
+		$this->_prev_er_handler = $prev_er_handler;
 	}
 
 	/**
-	 * @param string $exception_class
-	 * @param string $error_exception_class
+	 * Constructor accepts names of classes to be handled
+	 *
+	 * @param string $exception_class Name of exceptions base class to handle
+	 * @param string $error_class     Name of errors base class to handle
+	 *
+	 * @return void Constructor newer returns
 	 */
-	public function __construct( $exception_class, $error_exception_class ) {
+	public function __construct( $exception_class, $error_class ) {
 		$this->_exception_class       = $exception_class;
-		$this->_error_exception_class = $error_exception_class;
+		$this->_error_exception_class = $error_class;
 	}
 
 	/**
-	 * Handles all exceptions
-	 * 
-	 * @param Exception $exception
+	 * Global exceptions handling method
+	 *
+	 * @param Exception $exception Previously thrown exception to handle
+	 *
+	 * @return void Exception handler is not expected to return
 	 */
 	public function handle_exception( Exception $exception ) {
 		// if it's something we handle, handle it
@@ -92,25 +106,31 @@ class Ai1ec_Exception_Handler {
 		}
 		// if another handler was set, let it handle the exception
 		if ( is_callable( $this->_prev_ex_handler ) ) {
-			$this->_prev_ex_handler( $exception );
+			call_user_func( $this->_prev_ex_handler, $exception );
 		}
 	}
 
 	/**
-	 * Throws an ai1ec_error_exception if the error comes from our plugin
+	 * Throws an Ai1ec_Error_Exception if the error comes from our plugin
 	 *
-	 * @param int    $errno
-	 * @param string $errstr 
-	 * @param string $errfile
-	 * @param string $errline
-	 * @param array  $errcontext
+	 * @param int    $errno      Error level as integer
+	 * @param string $errstr     Error message raised
+	 * @param string $errfile    File in which error was raised
+	 * @param string $errline    Line in which error was raised
+	 * @param array  $errcontext Error context symbols table copy
 	 *
-	 * @throws Ai1ec_Error_Exception
+	 * @throws Ai1ec_Error_Exception If error originates from within Ai1EC
 	 *
-	 * @return boolean|void
+	 * @return boolean|void Nothing when error is ours, false when no
+	 *                      other handler exists
 	 */
-	public function handle_error( $errno, $errstr, $errfile, $errline, 
-		array $errcontext ) {
+	public function handle_error(
+		$errno,
+		$errstr,
+		$errfile,
+		$errline, 
+		array $errcontext
+	) {
 		// if the error is not in our plugin, let PHP handle things.
 		if ( false === strpos( $errfile, AI1EC_PLUGIN_NAME ) ) {
 			if ( is_callable( $this->_prev_er_handler ) ) {
@@ -120,16 +140,22 @@ class Ai1ec_Exception_Handler {
 				);
 			}
 			return false;
-		} else {
-			throw new Ai1ec_Error_Exception( $errstr, $errno, 0, $errfile, 
-				$errline );
 		}
+		throw new Ai1ec_Error_Exception(
+			$errstr,
+			$errno,
+			0,
+			$errfile,
+			$errline
+		);
 	}
 
 	/**
 	 * Perform what's needed to deactivate the plugin softly
 	 *
-	 * @param string $message
+	 * @param string $message Error message to be displayed to admin
+	 *
+	 * @return void Method does not return
 	 */
 	protected function soft_deactivate_plugin( $message ) {
 		add_option( self::DB_DEACTIVATE_MESSAGE, $message );
@@ -137,27 +163,29 @@ class Ai1ec_Exception_Handler {
 	}
 
 	/**
-	 * Perform what's needed to reactivate the plugin.
-	 * 
-	 * @return boolean
+	 * Perform what's needed to reactivate the plugin
+	 *
+	 * @return boolean Success
 	 */
 	public function reactivate_plugin() {
 		return delete_option( self::DB_DEACTIVATE_MESSAGE );
 	}
 
 	/**
-	 * Returns the disabled message or false.
-	 * 
-	 * @return string|boolean
+	 * Get message to be displayed to admin if any
+	 *
+	 * @return string|boolean Error message or false if plugin is not disabled
 	 */
 	public function get_disabled_message() {
 		return get_option( self::DB_DEACTIVATE_MESSAGE, false );
 	}
 
 	/**
-	 * Add an admin notice.
-	 * 
-	 * @param string $message
+	 * Add an admin notice
+	 *
+	 * @param string $message Message to be displayed to admin
+	 *
+	 * @return void Method does not return
 	 */
 	public function show_notices( $message ) {
 		// save the message to use it later
@@ -166,13 +194,16 @@ class Ai1ec_Exception_Handler {
 	}
 
 	/**
-	 * Renders the html for the Admin Notice.
-	 * 
+	 * Render HTML snipped to be displayd as a notice to admin
+	 *
+	 * @hook admin_notices When plugin is soft-disabled
+	 *
+	 * @return void Method does not return
 	 */
 	public function render_admin_notice() {
 		$redirect_url = add_query_arg(
 			self::DB_REACTIVATE_PLUGIN,
-			true,
+			'true',
 			get_admin_url( $_SERVER['REQUEST_URI'] )
 		);
 		$label = __( 
@@ -195,7 +226,9 @@ class Ai1ec_Exception_Handler {
 	}
 
 	/**
-	 * Redirect the user either to the front page or the dasbord page
+	 * Redirect the user either to the front page or the dashbord page
+	 *
+	 * @return void Method does not return
 	 */
 	protected function redirect() {
 		if ( is_admin() ) {
@@ -204,4 +237,5 @@ class Ai1ec_Exception_Handler {
 			Ai1ec_Http_Response::redirect( get_site_url() );
 		}
 	}
+
 }

@@ -1,13 +1,14 @@
 <?php
+
 /**
- * Handle Http response functions.
+ * Class to group HTTP response related functionality
  *
- * @author     Time.ly Network Inc
+ * @author     Time.ly Network Inc.
  * @since      2.0
  *
  * @package    AI1EC
  * @subpackage AI1EC.Http
- **/
+ */
 class Ai1ec_Http_Response {
 
 	/**
@@ -25,8 +26,8 @@ class Ai1ec_Http_Response {
 	 */
 	public static function redirect( $location, $code = 302 ) {
 		if ( Ai1ec_Settings::read( 'debug' ) > 2 ) {
-			echo '<br/><br /><p>STOPPED EXECUTION WITH REDIRECT: <a href="' . 
-					$location . '">' . $location . '</a></p>';
+			echo '<br/><br /><p>STOPPED EXECUTION WITH REDIRECT: <a href="',
+			     $location, '">', $location, '</a></p>';
 		} else {
 			header( 'Location: ' . $location, true, $code );
 		}
@@ -34,9 +35,14 @@ class Ai1ec_Http_Response {
 	}
 
 	/**
-	 * @param number $code
+	 * Mockable method to halt script execution
+	 *
+	 * @param int $code Code to be used in `exit` statement
+	 *
+	 * @return void Method does not return
 	 */
 	public static function stop( $code = 0 ) {
 		exit( $code );
 	}
+
 }

@@ -1,16 +1,17 @@
 <?php
 /**
- * Plugin Name: All-in-One Event Calendar by Timely
+ * Plugin Name: All-in-One Event Calendar by Time.ly
  * Plugin URI: http://time.ly/
  * Description: A calendar system with posterboard, stream, month, week, day, agenda views, upcoming events widget, color-coded categories, recurrence, and import/export of .ics feeds.
- * Author: Timely Network Inc
+ * Author: Time.ly Network Inc.
  * Author URI: http://time.ly/
  * Version: 2.0
  */
+
 require_once 'lib/exception/handler.php';
 require_once 'lib/http/response.php';
-$ai1ec_exception_handler = new Ai1ec_Exception_Handler( 
-	'Ai1ec_Exception', 
+$ai1ec_exception_handler = new Ai1ec_Exception_Handler(
+	'Ai1ec_Exception',
 	'Ai1ec_Error_Exception'
 );
 
@@ -30,5 +31,5 @@ $prev_ex_handler = set_exception_handler(
 );
 $ai1ec_exception_handler->set_prev_er_handler( $prev_er_handler );
 $ai1ec_exception_handler->set_prev_ex_handler( $prev_ex_handler );
-	// start the plugin normally
 
+// Regular startup sequence starts here

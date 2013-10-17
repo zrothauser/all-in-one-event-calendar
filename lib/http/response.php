@@ -11,12 +11,22 @@
 class Ai1ec_Http_Response {
 
 	/**
-	 * @param string $location
-	 * @param number $code
+	 * Perform redirect to desired location and stop script execution after that
+	 *
+	 * When debug mode is activated redirect doesn't happen but instead link
+	 * is outputted to screen, to allow developer to tamper with the flow, debug
+	 * it and make changes as desired.
+	 *
+	 * @param string $location Location to redirect user to
+	 * @param int    $code     HTTP response code to use in redirects
+	 *
+	 * @return int|NULL Method does call {@see self::stop()} to halt further
+	 *                  script execution unless mocked
 	 */
 	public static function redirect( $location, $code = 302 ) {
 		if ( Ai1ec_Settings::read( 'debug' ) > 2 ) {
-			echo '<br/><br /><p>STOPPED EXECUTION WITH REDIRECT: <a href="', $location, '">', $location, '</a></p>';
+			echo '<br/><br /><p>STOPPED EXECUTION WITH REDIRECT: <a href="' . 
+					$location . '">' . $location . '</a></p>';
 		} else {
 			header( 'Location: ' . $location, true, $code );
 		}
@@ -28,17 +38,5 @@ class Ai1ec_Http_Response {
 	 */
 	public static function stop( $code = 0 ) {
 		exit( $code );
-	}
-
-	/**
-	 * Returns the delimiter character to use if a new query string parameter is
-	 * going to be appended to the URL.
-	 *
-	 * @param string $url URL to parse
-	 *
-	 * @return string
-	 */
-	public static function get_param_delimiter_char( $url ) {
-		return strpos( $url, '?' ) === false ? '?' : '&';
 	}
 }

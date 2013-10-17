@@ -10,9 +10,6 @@
  **/
 abstract class Ai1ec_Exception extends Exception {
 
-
-	protected static $prev_handler;
-	
 	/**
 	 * returns a standard message to be printed to the view.
 	 * Specific Exceptions should override this.

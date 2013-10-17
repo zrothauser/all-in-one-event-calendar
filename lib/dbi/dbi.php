@@ -221,7 +221,7 @@ class Ai1ec_Dbi
 	* @return string the full table name for the requested table
 	*/
 	public function get_table_name( $table ) {
-		if ( ! isset( $this->_dbi->{$table} ) ){
+		if ( ! isset( $this->_dbi->{$table} ) ) {
 			return $this->getPrefix() . $table;
 		}
 		return $this->_dbi->{$table};

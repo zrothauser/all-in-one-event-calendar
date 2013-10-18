@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Abstract class for meta entries management
+ * Abstract class for meta entries management.
  *
  * Via use of cache allows object-based access to meta entries.
  *
@@ -10,23 +10,22 @@
  * @package    Ai1EC
  * @subpackage Ai1EC.Model
  */
-abstract class Ai1ec_Meta extends Ai1ec_App
-{
+abstract class Ai1ec_Meta extends Ai1ec_App {
 
 	/**
-	 * @var string Name of base object for storage
+	 * @var string Name of base object for storage.
 	 */
 	protected $_object = '';
 
 	/**
-	 * @var Ai1ec_Cache_Memory In-memory cache operator
+	 * @var Ai1ec_Cache_Memory In-memory cache operator.
 	 */
-	protected $_cache = NULL;
+	protected $_cache = null;
 
 	/**
-	 * Guess object name from child class name and initiate cache object
+	 * Guess object name from child class name and initiate cache object.
 	 *
-	 * @return void Method does not return
+	 * @return void Method does not return.
 	 */
 	protected function _initialize() {
 		$class = get_class( $this );
@@ -37,13 +36,13 @@ abstract class Ai1ec_Meta extends Ai1ec_App
 	}
 
 	/**
-	 * Create new entry if it does not exist and cache provided value
+	 * Create new entry if it does not exist and cache provided value.
 	 *
-	 * @param string $object_id ID of object to store
-	 * @param string $key       Key particle for ID to store
-	 * @param mixed  $value     Serializable value to store
+	 * @param string $object_id ID of object to store.
+	 * @param string $key       Key particle for ID to store.
+	 * @param mixed  $value     Serializable value to store.
 	 *
-	 * @return bool Success
+	 * @return bool Success.
 	 */
 	final public function add( $object_id, $key, $value ) {
 		if ( ! $this->_add( $object_id, $key, $value ) ) {
@@ -54,13 +53,13 @@ abstract class Ai1ec_Meta extends Ai1ec_App
 	}
 
 	/**
-	 * Update existing entry and cache it's value
+	 * Update existing entry and cache it's value.
 	 *
-	 * @param string $object_id ID of object to store
-	 * @param string $key       Key particle for ID to store
-	 * @param mixed  $value     Serializable value to store
+	 * @param string $object_id ID of object to store.
+	 * @param string $key       Key particle for ID to store.
+	 * @param mixed  $value     Serializable value to store.
 	 *
-	 * @return bool Success
+	 * @return bool Success.
 	 */
 	final public function update( $object_id, $key, $value ) {
 		if ( ! $this->_update( $object_id, $key, $value ) ) {
@@ -71,15 +70,15 @@ abstract class Ai1ec_Meta extends Ai1ec_App
 	}
 
 	/**
-	 * Get object value - from cache or actual store
+	 * Get object value - from cache or actual store.
 	 *
-	 * @param string $object_id ID of object to get
-	 * @param string $key       Key particle for ID to get
-	 * @param mixed  $default   Value to return if nothing found
+	 * @param string $object_id ID of object to get.
+	 * @param string $key       Key particle for ID to get.
+	 * @param mixed  $default   Value to return if nothing found.
 	 *
-	 * @return mixed Value stored or $default
+	 * @return mixed Value stored or {$default}.
 	 */
-	final public function get( $object_id, $key, $default = NULL ) {
+	final public function get( $object_id, $key, $default = null ) {
 		$cache_key = $this->_cache_key( $object_id, $key );
 		$value     = $this->_cache->get( $cache_key, $default );
 		if ( $default === $value ) {
@@ -90,13 +89,13 @@ abstract class Ai1ec_Meta extends Ai1ec_App
 	}
 
 	/**
-	 * Create or update an entry cache new value
+	 * Create or update an entry cache new value.
 	 *
-	 * @param string $object_id ID of object to store
-	 * @param string $key       Key particle for ID to store
-	 * @param mixed  $value     Serializable value to store
+	 * @param string $object_id ID of object to store.
+	 * @param string $key       Key particle for ID to store.
+	 * @param mixed  $value     Serializable value to store.
 	 *
-	 * @return bool Success
+	 * @return bool Success.
 	 */
 	final public function set( $object_id, $key, $value ) {
 		if ( ! $this->get( $object_id, $key ) ) {
@@ -113,12 +112,12 @@ abstract class Ai1ec_Meta extends Ai1ec_App
 	}
 
 	/**
-	 * Remove object entry based on ID and key
+	 * Remove object entry based on ID and key.
 	 *
-	 * @param string $object_id ID of object to remove
-	 * @param string $key       Key particle for ID to remove
+	 * @param string $object_id ID of object to remove.
+	 * @param string $key       Key particle for ID to remove.
 	 *
-	 * @return bool Success
+	 * @return bool Success.
 	 */
 	final public function delete( $object_id, $key ) {
 		$this->_cache->delete( $this->_cache_key( $object_id, $key ) );
@@ -126,12 +125,12 @@ abstract class Ai1ec_Meta extends Ai1ec_App
 	}
 
 	/**
-	 * Get object value from actual store
+	 * Get object value from actual store.
 	 *
-	 * @param string $object_id ID of object to get
-	 * @param string $key       Key particle for ID to get
+	 * @param string $object_id ID of object to get.
+	 * @param string $key       Key particle for ID to get.
 	 *
-	 * @return mixed Value as found
+	 * @return mixed Value as found.
 	 */
 	protected function _get( $object_id, $key ) {
 		$function = 'get_' . $this->_object . '_meta';
@@ -139,13 +138,13 @@ abstract class Ai1ec_Meta extends Ai1ec_App
 	}
 
 	/**
-	 * Create new entry if it does not exist
+	 * Create new entry if it does not exist.
 	 *
-	 * @param string $object_id ID of object to store
-	 * @param string $key       Key particle for ID to store
-	 * @param mixed  $value     Serializable value to store
+	 * @param string $object_id ID of object to store.
+	 * @param string $key       Key particle for ID to store.
+	 * @param mixed  $value     Serializable value to store.
 	 *
-	 * @return bool Success
+	 * @return bool Success.
 	 */
 	protected function _add( $object_id, $key, $value ) {
 		$function = 'add_' . $this->_object . '_meta';
@@ -153,13 +152,13 @@ abstract class Ai1ec_Meta extends Ai1ec_App
 	}
 
 	/**
-	 * Update existing entry
+	 * Update existing entry.
 	 *
-	 * @param string $object_id ID of object to store
-	 * @param string $key       Key particle for ID to store
-	 * @param mixed  $value     Serializable value to store
+	 * @param string $object_id ID of object to store.
+	 * @param string $key       Key particle for ID to store.
+	 * @param mixed  $value     Serializable value to store.
 	 *
-	 * @return bool Success
+	 * @return bool Success.
 	 */
 	protected function _update( $object_id, $key, $value ) {
 		$function = 'update_' . $this->_object . '_meta';
@@ -167,12 +166,12 @@ abstract class Ai1ec_Meta extends Ai1ec_App
 	}
 
 	/**
-	 * Remove object entry based on ID and key
+	 * Remove object entry based on ID and key.
 	 *
-	 * @param string $object_id ID of object to remove
-	 * @param string $key       Key particle for ID to remove
+	 * @param string $object_id ID of object to remove.
+	 * @param string $key       Key particle for ID to remove.
 	 *
-	 * @return bool Success
+	 * @return bool Success.
 	 */
 	protected function _delete( $object_id, $key ) {
 		$function = 'delete_' . $this->_object . '_meta';
@@ -180,12 +179,12 @@ abstract class Ai1ec_Meta extends Ai1ec_App
 	}
 
 	/**
-	 * Generate key for use with cache engine
+	 * Generate key for use with cache engine.
 	 *
-	 * @param string $object_id ID of object
-	 * @param string $key       Key particle for ID
+	 * @param string $object_id ID of object.
+	 * @param string $key       Key particle for ID.
 	 *
-	 * @return string Single identifier for given keys
+	 * @return string Single identifier for given keys.
 	 */
 	protected function _cache_key( $object_id, $key ) {
 		static $separator = "\0";

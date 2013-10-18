@@ -1,34 +1,31 @@
 <?php
 
 /**
- * Base application model
+ * Base application model.
  *
  * @author     Time.ly Network, Inc.
  * @since      2.0
  * @package    Ai1EC
  * @subpackage Ai1EC.Model
  */
-class Ai1ec_App
-{
+class Ai1ec_App {
 
 	/**
-	 * @var Ai1ec_System Instance of system layer
+	 * @var Ai1ec_System Instance of system layer.
 	 */
-	protected $_sys = NULL;
+	protected $_sys = null;
 
 	/**
-	 * @var Ai1ec_Dbi Instance of database abstraction layer
+	 * @var Ai1ec_Dbi Instance of database abstraction layer.
 	 */
-	protected $_db  = NULL;
+	protected $_db  = null;
 
 	/**
-	 * Constructor
+	 * Initiate base objects.
 	 *
-	 * Initiate base objects
+	 * @param Ai1ec_System $system Injectable system object.
 	 *
-	 * @param Ai1ec_System $system Injectable system object
-	 *
-	 * @return void Constructor does not return
+	 * @return void Constructor does not return.
 	 */
 	public function __construct( Ai1ec_System $system ) {
 		$this->_sys = $system;
@@ -37,11 +34,11 @@ class Ai1ec_App
 	}
 
 	/**
-	 * Post construction routine
+	 * Post construction routine.
 	 *
-	 * Override this method to perform post-construction tasks
+	 * Override this method to perform post-construction tasks.
 	 *
-	 * @return void Return from this method is ignored
+	 * @return void Return from this method is ignored.
 	 */
 	protected function _initialize() {}
 

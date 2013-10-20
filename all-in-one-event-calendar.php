@@ -33,3 +33,4 @@ $ai1ec_exception_handler->set_prev_er_handler( $prev_er_handler );
 $ai1ec_exception_handler->set_prev_ex_handler( $prev_ex_handler );
 
 // Regular startup sequence starts here
+

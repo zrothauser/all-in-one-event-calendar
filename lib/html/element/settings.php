@@ -34,6 +34,21 @@ abstract class Ai1ec_Html_Element_Settings
 	}
 
 	/**
+	 * Set value within current object scope
+	 *
+	 * Value name is formed as {$attribute} with underscore ('_') prefixed.
+	 *
+	 * @param string $attribute Name of attribute to set.
+	 * @param mixed  $value     Value to set for attribute.
+	 *
+	 * @return Ai1ec_Html_Element_Settings Instance of self.
+	 */
+	public function set( $attribute, $value ) {
+		$this->{'_' . $attribute} = $value;
+		return $this;
+	}
+
+	/**
 	 * Override to include any initialization logics.
 	 *
 	 * @return void Method output is ignored.

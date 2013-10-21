@@ -39,8 +39,8 @@ class Ai1ec_Html_Element_Calendar_Page_Selector
 	 * @return Ai1ec_Html_Element_Calendar_Page_Selector Instance of self.
 	 */
 	public function set( $attribute, $value ) {
-		$this->{'_' . $attribute} = $value;
-		return $this;
+		// any validation may be provided here
+		return parent::set( $attribute, $value );
 	}
 
 	/**

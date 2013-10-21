@@ -139,14 +139,23 @@ class Ai1ec_Settings extends Ai1ec_App {
 	}
 
 	/**
+	 * Write object representation to persistence layer.
+	 *
+	 * @return bool Success.
+	 */
+	public function persist() {
+		return $this->_sys->get( 'option' )
+			->set( self::WP_OPTION_KEY, $this->_options );
+	}
+
+	/**
 	 * Check object state and update it's database representation as needed.
 	 *
 	 * @return void Destructor does not return.
 	 */
 	public function __destruct() {
 		if ( $this->_updated ) {
-			$this->_sys->get( 'option' )
-				->set( self::WP_OPTION_KEY, $this->_options );
+			$this->persist();
 		}
 	}
 

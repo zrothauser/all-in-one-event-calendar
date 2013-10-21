@@ -11,8 +11,7 @@
 * @package    Ai1EC
 * @subpackage Ai1EC.Dbi
 */
-class Ai1ec_Dbi
-{
+class Ai1ec_Dbi {
 
 	/**
 	 * @var wpdb Instance of database interface object

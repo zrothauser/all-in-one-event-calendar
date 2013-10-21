@@ -141,11 +141,18 @@ class Ai1ec_Settings extends Ai1ec_App {
 	/**
 	 * Write object representation to persistence layer.
 	 *
+	 * Upon successful write to persistence layer the objects internal
+	 * state {@see self::$_updated} is updated respectively.
+	 *
 	 * @return bool Success.
 	 */
 	public function persist() {
-		return $this->_sys->get( 'option' )
+		$success = $this->_sys->get( 'option' )
 			->set( self::WP_OPTION_KEY, $this->_options );
+		if ( $success ) {
+			$this->_updated = false;
+		}
+		return $success;
 	}
 
 	/**

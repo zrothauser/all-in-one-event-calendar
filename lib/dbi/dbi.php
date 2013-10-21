@@ -222,7 +222,7 @@ class Ai1ec_Dbi
 	*/
 	public function get_table_name( $table ) {
 		if ( ! isset( $this->_dbi->{$table} ) ) {
-			return $this->getPrefix() . $table;
+			return $this->_dbi->getPrefix() . $table;
 		}
 		return $this->_dbi->{$table};
 	}

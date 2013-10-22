@@ -35,7 +35,7 @@ final class Ai1ec_Cache_Memory implements Ai1ec_Cache_Interface {
 	 *
 	 * @param string $name Name for memory location.
 	 *
-	 * @return Ai1ec_Memory_Utility Instance of self for given name.
+	 * @return Ai1ec_Cache_Memory Instance of self for given name.
 	 */
 	static public function instance( $name ) {
 		if ( ! isset( self::$_instances[$name] ) ) {

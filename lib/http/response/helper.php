@@ -9,7 +9,7 @@
  * @package    AI1EC
  * @subpackage AI1EC.Http
  */
-class Ai1ec_Http_Response {
+class Ai1ec_Http_Response_Helper {
 
 	/**
 	 * Perform redirect to desired location and stop script execution after that

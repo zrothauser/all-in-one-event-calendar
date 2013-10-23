@@ -379,7 +379,7 @@ class Ai1ec_Loader {
 	 * @return void Constructor does not return
 	 */
 	protected function __construct() {
-		$class_map          = $this->_cache();
+		$class_map = $this->_cache();
 		if (
 			! is_array( $class_map ) ||
 			defined( 'AI1EC_DEBUG' ) && AI1EC_DEBUG
@@ -393,6 +393,6 @@ class Ai1ec_Loader {
 			}
 			$class_map = $this->collect_classes();
 		}
-		$this->_paths       = $class_map;
+		$this->_paths = $class_map;
 		$this->_reverse_map = $this->_optimise_includes( $class_map );
 	}

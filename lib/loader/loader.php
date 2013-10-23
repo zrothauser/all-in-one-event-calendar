@@ -15,11 +15,6 @@
 class Ai1ec_Loader {
 
 	/**
-	 * @staticvar Ai1ec_Loader Instance of self
-	 */
-	static protected $_instance = NULL;
-
-	/**
 	 * @var array Map of files to be included
 	 */
 	protected $_paths           = NULL;
@@ -33,33 +28,6 @@ class Ai1ec_Loader {
 	 * @var array Map of files already included
 	 */
 	protected $_included_files  = array();
-
-	/**
-	 * instance method
-	 *
-	 * Get singleton instance of `Ai1ec_Loader`.
-	 *
-	 * @return Ai1ec_Loader Cached self instance
-	 */
-	static public function instance() {
-		if ( ! ( self::$_instance instanceof Ai1ec_Loader ) ) {
-			self::$_instance = new Ai1ec_Loader();
-		}
-		return self::$_instance;
-	}
-
-	/**
-	 * autoload method
-	 *
-	 * Static method to inject into PHP autoloaders stack.
-	 *
-	 * @param string $class Name of class, which will be loaded
-	 *
-	 * @return void Method does not return
-	 */
-	static public function autoload( $class ) {
-		self::instance()->load( $class );
-	}
 
 	/**
 	 * load method

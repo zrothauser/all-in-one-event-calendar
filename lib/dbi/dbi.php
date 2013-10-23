@@ -19,33 +19,19 @@ class Ai1ec_Dbi {
 	protected $_dbi = null;
 
 	/**
-	 * @var Ai1ec_Dbi Singleton instance of self
-	 */
-	static protected $_instance = null;
-
-	/**
-	 * Return an instance of the class to be used
-	 *
-	 * More about the singleton pattern: http://www.oodesign.com/singleton-pattern.html
-	 *
-	 * @return Ai1ec_Dbi an instance of the class
-	 */
-	static public function instance() {
-		if ( ! self::$_instance instanceof self ) {
-			global $wpdb;
-			self::$_instance = new self( $wpdb );
-		}
-		return self::$_instance;
-	}
-
-	/**
 	 * Constructor assigns injected database access object to class variable
 	 *
 	 * @param wpdb $dbi Injected database access object
 	 *
 	 * @return void Constructor does not return
 	 */
-	public function __construct( $dbi ) {
+	public function __construct( $dbi = null ) {
+
+		if ( $dbi === null ) {
+			global $wpdb;
+			$dbi = $wpdb;
+		}	
+
 		$this->_dbi = $dbi;
 	}
 

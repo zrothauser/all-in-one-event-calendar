@@ -27,7 +27,7 @@ class Ai1ec_Dbi {
 	 */
 	public function __construct( $dbi = null ) {
 
-		if ( $dbi === null ) {
+		if ( null === $dbi ) {
 			global $wpdb;
 			$dbi = $wpdb;
 		}	

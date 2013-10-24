@@ -14,34 +14,34 @@ class Ai1ec_Front_Controller {
 	/**
 	 * @var string
 	 */
-	static private $_constant_folder;
+	private $_constant_folder;
 
 	/**
 	 * @var Ai1ec_Object_Registry 
 	 */
-	static private $_registry;
+	private $_registry;
 
 	/**
 	 * @var bool
 	 */
-	static private $_load_domain = false;
+	private $_load_domain = false;
 
 	/**
 	 * @var string The pagebase used by Ai1ec_Href_Helper.
 	 */
-	static private $_pagebase_for_href;
+	private $_pagebase_for_href;
 
 	/**
 	 * @var Ai1ec_Request_Parser
 	 */
-	static private $_request;
+	private $_request;
+
 
 	/**
-	 * Private contructor.
-	 * 
+	 * @param string $constant_folder
 	 */
-	private function __construct() {
-		
+	public function __construct( $constant_folder ) {
+		$this->_constant_folder = $constant_folder;
 	}
 
 	/**
@@ -51,11 +51,10 @@ class Ai1ec_Front_Controller {
 	 * 
 	 * @return void Method is not intended to return anything.
 	 */
-	static public function run( $constant_folder ) {
-		self::$_constant_folder = $constant_folder;
-		$instance = new Ai1ec_Front_Controller();
-		$instance->_init();
-		$instance->_initialize_router();
+	public function run( $constant_folder ) {
+		$this->_init();
+		$this->_initialize_router();
+		$this->_initialize_dispatcher();
 	}
 
 	/**
@@ -66,9 +65,9 @@ class Ai1ec_Front_Controller {
 	 * @return void Method is not intended to return anything.
 	 */
 	public function activation_hook() {
-		self::$_registry->get( 'app' )->register_post_type();
+		$this->_registry->get( 'app' )->register_post_type();
 		// Flush rewrite rules.
-		self::$_registry->get( 'rewrite' )->flush_rewrite_rules();
+		$this->_registry->get( 'rewrite' )->check_rewrites();
 	}
 
 	/**
@@ -81,11 +80,15 @@ class Ai1ec_Front_Controller {
 	public function route_request() {
 		$this->_process_request();
 		// get the resolver
-		$resolver = self::$_registry->get( 'command.resolver', self::$_registry, self::$_request );
+		$resolver = $this->_registry->get( 
+			'command.resolver', 
+			$this->_registry, 
+			$this->_request
+		);
 		// get the command
 		$command = $resolver->get_command();
 		// if we have a command 
-		if( false !== $command ) {
+		if ( null !== $command ) {
 			$command->execute();
 		}
 	}
@@ -106,9 +109,7 @@ class Ai1ec_Front_Controller {
 	private function _init() {
 		try {
 			// Load the constants
-			$this->_load_constants();
-			// Initialize the autoloader
-			$this->_set_autoloader();
+			$this->_configuration();
 			// Initialize the registry object
 			$this->_initialize_registry();
 			// Initialize the crons
@@ -117,8 +118,6 @@ class Ai1ec_Front_Controller {
 			$this->_initialize_schema();
 			// Load the textdomain
 			$this->_load_textdomain();
-			// Prepare the db.
-			$this->_prepare_db();
 		} catch ( Ai1ec_Constants_Not_Set_Exception $e ) {
 			// This is blocking, throw it and disable the plugin
 			throw $e;
@@ -134,21 +133,19 @@ class Ai1ec_Front_Controller {
 	}
 
 	/**
-	 * Performs initialization on the db.
+	 * Initialize the dispatcher.
+	 * 
+	 * Complete this when writing the dispatcher.
 	 * 
 	 * @return void Method is not intended to return anything.
 	 */
-	private function _prepare_db() {
-		$db = self::$_registry->get( 'dbi' );
-		$db->query( "SET time_zone = '+0:00'" );
-	}
-
 	private function _initialize_dispatcher() {
 		// provide initialization for the dispatcher class. 
 		// maybe inject into the dispatcher the basic add_action/add_filters.
 	}
+
 	/**
-	 * process_request function
+	 * Process_request function.
 	 *
 	 * Initialize/validate custom request array, based on contents of $_REQUEST,
 	 * to keep track of this component's request variables.
@@ -156,9 +153,9 @@ class Ai1ec_Front_Controller {
 	 * @return void
 	 **/
 	private function _process_request() {
-		$settings      = self::$_registry->get( 'settings' );
-		$this->request = self::$_registry->get( 'request_parser' );
-		$aco           = self::$_registry->get( 'acl.aco' );
+		$settings      = $this->_registry->get( 'settings' );
+		$this->request = $this->_registry->get( 'request_parser' );
+		$aco           = $this->_registry->get( 'acl.aco' );
 		$page_id       = $settings->get( 'calendar_page_id' );
 		if (
 			! $aco->is_admin() &&
@@ -168,12 +165,15 @@ class Ai1ec_Front_Controller {
 			foreach ( array( 'cat', 'tag' ) as $name ) {
 				$implosion = $this->_add_defaults( $name );
 				if ( $implosion ) {
-					$this->request['ai1ec_' . $name . '_ids'] = $implosion;
-					$_REQUEST['ai1ec_' . $name . '_ids']	  = $implosion;
+					$this->request->set( 
+						'ai1ec_' . $name . '_ids'
+					) = $implosion;
+					$_REQUEST['ai1ec_' . $name . '_ids'] = $implosion;
 				}
 			}
 		}
 	}
+
 	/**
 	 * Initialize cron functions.
 	 * 
@@ -182,8 +182,8 @@ class Ai1ec_Front_Controller {
 	 * @return void Method is not intended to return anything.
 	 */
 	private function _install_crons() {
-		$scheduling = self::$_registry->get( 'schedule' );
-		$allow      = self::$_registry->get( 'settings' )
+		$scheduling = $this->_registry->get( 'schedule' );
+		$allow      = $this->_registry->get( 'settings' )
 				->get( 'allow_statistics' );
 		$correct   = false;
 		// install the cron for stats
@@ -231,7 +231,7 @@ class Ai1ec_Front_Controller {
 	 * @return void Method is not intended to return anything.
 	 */
 	private function _initialize_registry() {
-		self::$_registry = new Ai1ec_Object_Registry();
+		$this->_registry = new Ai1ec_Object_Registry();
 	}
 
 	/**
@@ -240,9 +240,11 @@ class Ai1ec_Front_Controller {
 	 * @return void Method is not intended to return anything.
 	 */
 	private function _load_textdomain() {
-		if( self::$_load_domain === FALSE ) {
-			load_plugin_textdomain( AI1EC_PLUGIN_NAME, false, AI1EC_LANGUAGE_PATH );
-			self::$_load_domain = TRUE;
+		if ( false === $this->_load_domain ) {
+			load_plugin_textdomain( 
+				AI1EC_PLUGIN_NAME, false, AI1EC_LANGUAGE_PATH
+			);
+			$this->_load_domain = true;
 		}
 	}
 
@@ -255,7 +257,7 @@ class Ai1ec_Front_Controller {
 	 * @return void Method is not intended to return anything.
 	 */
 	private function _initialize_schema() {
-		$option = self::$_registry->get( 'option' );
+		$option = $this->_registry->get( 'option' );
 		
 		// If existing DB version is not consistent with current plugin's version,
 		// or does not exist, then create/update table structure using dbDelta().
@@ -263,20 +265,20 @@ class Ai1ec_Front_Controller {
 			$option->get( 'ai1ec_db_version' ) != AI1EC_DB_VERSION
 		) {
 		
-			$applicator = self::$_registry->get( 'dbi_applicator' );
+			$applicator = $this->_registry->get( 'dbi_applicator' );
 			
 			
 			$applicator->remove_instance_duplicates();
 		
 			$structures = array();
-			$schema     = self::$_registry->get( 'dbi_schema' );
+			$schema     = $this->_registry->get( 'dbi_schema' );
 			if ( ! $schema->upgrade( AI1EC_DB_VERSION ) ) {
 				throw new Ai1ec_Database_Schema_Exception(
 					'Failed to perform schema upgrade'
 				);
 			}
 			unset( $schema );
-			$db = self::$_registry->get( 'dbi' );
+			$db = $this->_registry->get( 'dbi' );
 			$prefix = $db->get_prefix();
 			// =======================
 			// = Create table events =
@@ -344,7 +346,7 @@ class Ai1ec_Front_Controller {
 				PRIMARY KEY  (term_id)
 				) CHARACTER SET utf8;";
 
-			if ( self::$_registry->get( 'dbi_helper' )->apply_delta( $sql ) ) {
+			if ( $this->_registry->get( 'dbi_helper' )->apply_delta( $sql ) ) {
 				$option->update( 'ai1ec_db_version', AI1EC_DB_VERSION );
 			} else {
 				throw new Ai1ec_Database_Update_Exception();
@@ -358,10 +360,10 @@ class Ai1ec_Front_Controller {
 	 * @return void Method is not intended to return anything.
 	 */
 	private function _initialize_router() {
-		$settings            = self::$_load_domain->get( 'settings' );
-		$router              = self::$_load_domain->get( 'router' );
-		$localization_helper = self::$_load_domain->get( 'localization_helper' );
-		$uri_helper          = self::$_load_domain->get( 'uri_helper' );
+		$settings            = $this->_registry->get( 'settings' );
+		$router              = $this->_registry->get( 'router' );
+		$localization_helper = $this->_registry->get( 'localization_helper' );
+		$uri_helper          = $this->_registry->get( 'uri_helper' );
 		if (
 			! isset( $settings->calendar_page_id ) ||
 			$settings->calendar_page_id < 1
@@ -382,7 +384,7 @@ class Ai1ec_Front_Controller {
 				$settings->calendar_page_id = $trans[$clang];
 			}
 		}
-		$template_link_helper = self::$_registry->get( 'template_link' );
+		$template_link_helper = $this->_registry->get( 'template_link' );
 		$page_base = $template_link_helper->get_page_link( 
 			$settings->calendar_page_id
 		);
@@ -394,7 +396,7 @@ class Ai1ec_Front_Controller {
 				$clang
 		);
 		// save the pagebase to set up the factory later
-		self::$_pagebase_for_href = $pagebase_for_href;
+		$this->_pagebase_for_href = $pagebase_for_href;
 
 	
 		// If we are requesting the calendar page and we have a saved cookie,
@@ -406,7 +408,7 @@ class Ai1ec_Front_Controller {
 			$href = Ai1ec_View_Factory::create_href_helper_instance( $cookie );
 			// wp_redirect sanitizes the url which strips out the |
 			header( 'Location: ' . $href->generate_href(), true, '302' );
-			exit( 0 );
+			exit ( 0 );
 		}
 		// We need to reset the cookie, it's to early for the is_page() call
 		$router->set_cookie_set_dto();
@@ -422,13 +424,13 @@ class Ai1ec_Front_Controller {
 	 * 
 	 * @return void Method is not intended to return anything.
 	 */
-	private function _load_constants() {
+	private function _configuration() {
 		/**
 		 * Include configuration files and define constants
 		 */
 		foreach ( array( 'constants-local.php', 'constants.php' ) as $file ) {
-			if ( file_exists( self::$_constant_folder . $file ) ) {
-				require_once self::$_constant_folder . $file;
+			if ( file_exists( $this->_constant_folder . $file ) ) {
+				require_once $this->_constant_folder . $file;
 			}
 		}
 		if ( ! function_exists( 'ai1ec_initiate_constants' ) ) {
@@ -436,17 +438,5 @@ class Ai1ec_Front_Controller {
 		}
 		ai1ec_initiate_constants();
 		
-	}
-
-	/**
-	 * Set the autoloader.
-	 * 
-	 * @return void Method is not intended to return anything
-	 */
-	private function set_autoloader() {
-		require_once AI1EC_LIB_PATH . DIRECTORY_SEPARATOR . 'lib' . 
-					DIRECTORY_SEPARATOR . 'class-ai1ec-loader.php' ;
-		@ini_set( 'unserialize_callback_func', 'spl_autoload_call' );
-		spl_autoload_register( 'Ai1ec_Loader::autoload' );
 	}
 }

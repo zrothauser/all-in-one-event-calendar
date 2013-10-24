@@ -61,5 +61,3 @@ class Ai1ec_Acl_Aco {
 		return get_post_type( $post ) === AI1EC_POST_TYPE;
 	}
 }
-
-?>

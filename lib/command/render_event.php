@@ -25,5 +25,3 @@ class Ai1ec_Command_Render_Event extends Ai1ec_Command {
 		// get the event html
 	}
 }
-
-?>

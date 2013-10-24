@@ -17,6 +17,4 @@ class Ai1ec_Render_Strategy_Json extends Ai1ec_Render_Strategy_Jsonp {
 		$params['callback'] = '';
 		return parent::render( $params );
 	}
-
-
 }

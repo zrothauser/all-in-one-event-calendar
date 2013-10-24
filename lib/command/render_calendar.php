@@ -43,5 +43,3 @@ class Ai1ec_Command_Render_Calendar extends Ai1ec_Command {
 		// get the calendar html
 	}
 }
-
-?>

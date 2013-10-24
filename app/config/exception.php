@@ -1,6 +1,6 @@
 <?php
 /**
- * The front controller of the plugin.
+ * This exception is thrown when no constant function is found.
  *
  * @author     Time.ly Network Inc.
  * @since      2.0

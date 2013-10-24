@@ -72,5 +72,3 @@ class Ai1ec_Command_Resolver {
 		return null;
 	}
 }
-
-?>

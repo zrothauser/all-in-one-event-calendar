@@ -74,5 +74,3 @@ abstract class Ai1ec_Command {
 	 */
 	abstract public function is_this_to_execute();
 }
-
-?>

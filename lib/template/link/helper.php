@@ -26,5 +26,3 @@ class Ai1ec_Template_Link_Helper {
 		return get_page_link( $post, $leavename, $sample );
 	}
 }
-
-?>

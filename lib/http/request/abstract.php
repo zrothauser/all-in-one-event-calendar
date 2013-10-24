@@ -1,16 +1,13 @@
 <?php
-//
-//  class-ai1ec-abstract-query.php
-//  all-in-one-event-calendar
-//
-//  Created by Timely Network Inc
-//
-
 /**
- * Ai1ec_Abstract_Query class
+ * Abstract request parsing class.
  *
- * @author  Timely Network Inc
- **/
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Http.Request
+ */
 abstract class Ai1ec_Abstract_Query implements arrayaccess {
 	/**
 	 * @var array Request array to parse

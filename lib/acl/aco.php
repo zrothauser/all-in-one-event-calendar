@@ -1,11 +1,15 @@
 <?php
 
 /**
+ * The Acces Control Object class.
  *
- * @author nicola
- *        
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.acl
  */
-class Ai1ec_Access_Control_Object {
+class Ai1ec_Acl_Aco {
 	
 
 	/**
@@ -45,8 +49,16 @@ class Ai1ec_Access_Control_Object {
 		return post_password_required( $post );
 	}
 	
-	public function is_our_post_type() {
-		return get_post_type() === AI1EC_POST_TYPE;
+	/**
+	 * Check if it's our own custom post type.
+	 * 
+	 * @param int|object $post Optional. Post ID or post object.
+	 * Default is the current post from the loop.
+	 * 
+	 * @return boolean
+	 */
+	public function is_our_post_type( $post = null ) {
+		return get_post_type( $post ) === AI1EC_POST_TYPE;
 	}
 }
 

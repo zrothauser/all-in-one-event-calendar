@@ -3,11 +3,11 @@
 /**
  * Class to aid WP URI management
  *
- * @author     Justas Butkus <justas@butkus.lt>
- * @since      2012.12.11
+ * @author     Time.ly Network Inc.
+ * @since      2.0
  *
- * @package    AllInOneCalendar
- * @subpackage AllInOneCalendar.Lib.Routing
+ * @package    AI1EC
+ * @subpackage AI1EC.Routing
  */
 class Ai1ec_Wp_Uri_Helper {
 

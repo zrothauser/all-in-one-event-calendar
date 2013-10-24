@@ -1,6 +1,18 @@
 <?php
+/**
+ * The concrete command that renders the calendar.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Command
+ */
 class Ai1ec_Command_Render_Calendar extends Ai1ec_Command {
 
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Command::is_this_to_execute()
+	 */
 	public function is_this_to_execute() {
 		$settings = $this->_registry->get( 'settings' );
 		$localization = $this->_registry->get( 'localization.helper' );
@@ -24,7 +36,11 @@ class Ai1ec_Command_Render_Calendar extends Ai1ec_Command {
 		return false;
 	}
 
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Command::do_execute()
+	 */
 	public function do_execute() {
+		// get the calendar html
 	}
 }
 

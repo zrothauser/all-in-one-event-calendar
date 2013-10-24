@@ -3,11 +3,11 @@
 /**
  * Events scheduling utility
  *
- * @author     Timely Network Inc
+ * @author     Time.ly Network Inc.
  * @since      2.0
  *
- * @package    AllInOneCalendar
- * @subpackage AllInOneCalendar.Lib.Utility
+ * @package    AI1EC
+ * @subpackage AI1EC.Scheduling
  */
 class Ai1ec_Scheduling_Utility
 {

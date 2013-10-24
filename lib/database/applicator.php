@@ -2,13 +2,13 @@
 
 /**
  * A model to manage database changes
-*
-* @author     Justas Butkus <justas@butkus.lt>
-* @since      2013.01.23
-*
-* @package    AllInOneCalendar
-* @subpackage AllInOneCalendar.Model.Meta
-*/
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Database
+ */
 class Ai1ec_Database_Applicator {
 
 	/**

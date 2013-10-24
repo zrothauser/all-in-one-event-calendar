@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * Abstract strategy class to render the Request.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Http.Response.Render
+ */
 abstract class Ai1ec_Http_Response_Render_Strategy {
 
 	/**
@@ -15,5 +23,10 @@ abstract class Ai1ec_Http_Response_Render_Strategy {
 		return $result;
 	}
 
+	/**
+	 * Render the output.
+	 * 
+	 * @param array $params
+	 */
 	abstract public function render( array $params );
 }

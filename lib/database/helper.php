@@ -5,9 +5,12 @@
  *
  * Class responsible for generic database operations
  *
- * @package Models
- * @author  Timely Network Inc
- **/
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Database
+ */
 class Ai1ec_Database_Helper {
 
 	/**

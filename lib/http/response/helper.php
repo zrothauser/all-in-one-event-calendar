@@ -7,7 +7,7 @@
  * @since      2.0
  *
  * @package    AI1EC
- * @subpackage AI1EC.Http
+ * @subpackage AI1EC.Http.Response
  */
 class Ai1ec_Http_Response_Helper {
 

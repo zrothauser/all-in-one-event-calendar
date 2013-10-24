@@ -3,11 +3,11 @@
 /**
  * Manage database schema updates
  *
- * @author     Time.ly Network, Inc.
- * @since      1.11
+ * @author     Time.ly Network Inc.
+ * @since      2.0
  *
- * @package    AllInOneCalendar
- * @subpackage AllInOneCalendar.Model.Schema
+ * @package    AI1EC
+ * @subpackage AI1EC.Database
  */
 class Ai1ec_Database_Schema {
 

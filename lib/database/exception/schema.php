@@ -3,11 +3,11 @@
 /**
  * In case of database schema modification failure this exception is thrown
  *
- * @author     Time.ly Network, Inc.
- * @since      1.11
+ * @author     Time.ly Network Inc.
+ * @since      2.0
  *
- * @package    AllInOneCalendar
- * @subpackage AllInOneCalendar.Exceptions
+ * @package    AI1EC
+ * @subpackage AI1EC.Database.Exception
  */
 class Ai1ec_Database_Schema_Exception extends Ai1ec_Exception
 {

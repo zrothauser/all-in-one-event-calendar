@@ -20,11 +20,6 @@ class Ai1ec_Loader {
 	protected $_paths           = NULL;
 
 	/**
-	 * @var array Reverse classes map
-	 */
-	protected $_reverse_map     = NULL;
-
-	/**
 	 * @var array Map of files already included
 	 */
 	protected $_included_files  = array();
@@ -66,41 +61,6 @@ class Ai1ec_Loader {
 			require $file;
 		}
 		return $this->_included_files[$file];
-	}
-
-	/**
-	 * match_file method
-	 *
-	 * Attempt to match file from given files list.
-	 * Entry from {@see self::$_paths} array contains either scalar file name
-	 * to use with any PHP version, or array of arrays, where internal arrays
-	 * contain required PHP version number as 0-indexed element, and the name
-	 * of file to include, if version matches, as 1st element.
-	 *
-	 * @param string|array File or list of files to match
-	 *
-	 * @return string Name of file to include
-	 *
-	 * @throws Ai1ec_File_Not_Found Exception when fails to match a file
-	 */
-	public function match_file( $file_list ) {
-		if ( is_scalar( $file_list ) ) {
-			return $file_list;
-		}
-		$use_file = NULL;
-		foreach ( $file_list as $file ) {
-			if ( version_compare( PHP_VERSION, $file[0] ) >= 0 ) {
-				$use_file = $file[1];
-				break;
-			}
-		}
-		if ( NULL === $use_file ) {
-			throw new Ai1ec_File_Not_Found(
-				'Failed to match any file: ' . var_export( $file_list, true ),
-				E_USER_WARNING
-			);
-		}
-		return $use_file;
 	}
 
 	/**
@@ -283,60 +243,6 @@ class Ai1ec_Loader {
 			$content
 		);
 		return $content;
-	}
-
-	/**
-	 * _optimise_includes method
-	 *
-	 * Prepare reverse includes map, to speed up matches retrieval.
-	 * Reverse includes map is made of classes map, with file names
-	 * on top level, consisting of class names with regular include
-	 * structures inside.
-	 * Some paths are manually excluded, to avoid over-inclusion.
-	 *
-	 * @param array $paths Classes map to remap
-	 *
-	 * @return array Optimised reverse lookups map
-	 */
-	protected function _optimise_includes( array $paths ) {
-		$exclude_app = array(
-			AI1EC_APP_PATH . DIRECTORY_SEPARATOR .'controller' => true,
-			AI1EC_APP_PATH . DIRECTORY_SEPARATOR .'exception'  => true,
-			AI1EC_APP_PATH . DIRECTORY_SEPARATOR .'helper'     => true,
-			AI1EC_APP_PATH . DIRECTORY_SEPARATOR .'model'      => true,
-			AI1EC_LIB_PATH                                     => true,
-		);
-	    $reverse_map = array();
-		$offset      = strlen( AI1EC_PATH );
-	    foreach ( $paths as $class => $file_list ) {
-			if ( ! is_array( $file_list ) ) {
-				$file_list = array( array( 0, $file_list ) );
-			}
-			foreach ( $file_list as $file_entry ) {
-				$directory = dirname( $file_entry[1] );
-				$depth     = substr_count(
-					$file_entry[1],
-					DIRECTORY_SEPARATOR,
-					$offset
-				);
-				if ( $depth > 3 ) {
-					$directory = dirname( $directory );
-				}
-				if ( isset( $exclude_app[$directory] ) ) {
-					continue;
-				}
-				if ( ! isset( $reverse_map[$directory] ) ) {
-					$reverse_map[$directory] = array();
-				}
-				$reverse_map[$directory][$class] = $file_list;
-			}
-	    }
-		foreach ( $reverse_map as $directory => $entries ) {
-			if ( count( $entries ) < 2 ) {
-				unset( $reverse_map[$directory] );
-			}
-		}
-	    return $reverse_map;
 	}
 
 	/**

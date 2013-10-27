@@ -54,8 +54,7 @@ class Ai1ec_Loader {
 	 *
 	 * @return Ai1ec_Loader Instance of self for chaining
 	 */
-	public function include_file( $file) {
-		$file = $this->match_file( $file );
+	public function include_file( $file ) {
 		if ( ! isset( $this->_included_files[$file] ) ) {
 			$this->_included_files[$file] = true;
 			require $file;
@@ -135,43 +134,27 @@ class Ai1ec_Loader {
 	protected function _extract_classes( $file ) {
 		$ignore_class = '#^Logger[A-Z]#';
 		$class_list   = array();
-		$regexp       = '#
-			(
-				(?:^|\s)
-				(?:class|interface)[\s+]
-				(
-					(?:
-						lessc|
-						iCal|
-						calendarComponent|
-						valarm|
-						vcalendar|
-						vevent|
-						vfreebusy|
-						vjournal|
-						vtimezone|
-						vtodo|
-						[A-Z]
-					)
-					[a-zA-Z0-9_]*
-				)
-				[\s{]
-			)
-		#x';
+
 		if ( '.php' === strrchr( $file, '.' ) ) {
-			preg_match_all(
-				$regexp,
-				file_get_contents( $file ),
-				$matches
-			);
-			if ( $matches ) {
-				foreach ( $matches[2] as $class ) {
-					if ( preg_match( $ignore_class, $class ) ) {
-						continue;
-					}
-					$class_list[$class] = $file;
-				}
-			}
+
+            $php_code = file_get_contents( $file );
+            $tokens = token_get_all( $php_code );
+            $count = count( $tokens );
+            for ( $i = 2; $i < $count; $i++ ) {
+                if (   $tokens[$i - 2][0] == T_CLASS
+                    && $tokens[$i - 1][0] == T_WHITESPACE
+                    && $tokens[$i][0] == T_STRING) {
+
+                    $class_name = $tokens[$i][1];
+
+                    if ( preg_match( $ignore_class, $class_name ) ) {
+                        continue;
+                    }
+
+                    $class_list[$class_name] = $file;
+                }
+            }
+
 		}
 		return $class_list;
 	}

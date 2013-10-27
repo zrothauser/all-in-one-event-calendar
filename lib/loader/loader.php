@@ -2,8 +2,8 @@
 
 /**
 * Autoloader Class
-* 
-* This class is responsible for loading all the requested class of the 
+*
+* This class is responsible for loading all the requested class of the
 * system
 *
 * @author     Time.ly Network, Inc.
@@ -74,7 +74,7 @@ class Ai1ec_Loader {
 	 * @throws Exception Cloning is prohibited
 	 */
 	public function __clone() {
-		throw new Ai1ec_Exception( 'Cloning is not supported' );
+		throw new Ai1ec_Error_Exception( 'Cloning is not supported' );
 	}
 
 	/**
@@ -260,10 +260,10 @@ class Ai1ec_Loader {
 		) {
 			if ( ! defined( 'AI1EC_DEBUG' ) || ! AI1EC_DEBUG ) {
 
-				throw new Ai1ec_Exception( 
+				throw new Ai1ec_Error_Exception(
 					'Generated class map is invalid: ' .
 					var_export( $class_map, true ) );
-				
+
 			}
 			$class_map = $this->collect_classes();
 		}

@@ -151,7 +151,12 @@ class Ai1ec_Loader {
                         continue;
                     }
 
-                    $class_list[$class_name] = $file;
+                    $names = $this->_generate_alternative_names( $class_name );
+
+                    for( $j = 0; $j < count($names); $j++ ){
+                        $name = $names[$j];
+                        $class_list[$name] = $file;
+                    }
                 }
             }
 
@@ -227,6 +232,49 @@ class Ai1ec_Loader {
 		);
 		return $content;
 	}
+
+    /**
+    * Generate all the alternatives name that the loaded recognize
+    * For example:
+    * The class Ai1ec_Html_Helper can be loaded as
+    * - html.helper
+    * - Html_Helper
+    * - Ai1ec_Html_Helper
+    *
+    * @params string class_name the original name of the class
+    *
+    * @return array an array of strings with the availables names
+    */
+    protected function _generate_alternative_names( $class_name ){
+
+        $names = array();
+        // The first one is the class full name
+        $names[] = $class_name;
+
+        $tokens = explode( "_", $class_name );
+        if( strcmp( $tokens[0], "Ai1ec" ) == 0){
+            $compact_name = "";
+            $camel_case_name = "";
+
+            for( $i = 1; $i < count( $tokens ); $i++ ){
+
+                if ( $i > 1 ){
+                    $compact_name .= ".";
+                    $camel_case_name .= "_";
+                }
+
+                $compact_name .=  strtolower( $tokens[$i] );
+                $camel_case_name .=   $tokens[$i] ;
+
+            }
+            $names[] = $compact_name;
+            $names[] = $camel_case_name;
+
+        }
+
+        return $names;
+
+    }
 
 	/**
 	 * Constructor

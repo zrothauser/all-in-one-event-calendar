@@ -54,7 +54,7 @@ class Ai1ec_Loader {
 	 *
 	 * @return Ai1ec_Loader Instance of self for chaining
 	 */
-	public function include_file( $file, $nest = true ) {
+	public function include_file( $file) {
 		$file = $this->match_file( $file );
 		if ( ! isset( $this->_included_files[$file] ) ) {
 			$this->_included_files[$file] = true;
@@ -74,7 +74,7 @@ class Ai1ec_Loader {
 	 * @throws Exception Cloning is prohibited
 	 */
 	public function __clone() {
-		throw new Ai1ec_Error_Exception( 'Cloning is not supported' );
+		throw new Exception( 'Cloning is not supported' );
 	}
 
 	/**
@@ -247,12 +247,15 @@ class Ai1ec_Loader {
 
 	/**
 	 * Constructor
+     *
+     * Initialize the loader creating the map of available classes, if the
+     * AI1EC_DEBUG constants is true the list is regenerated
 	 *
-	 * Constructor is protected to guard classes singleton nature.
-	 *
+     * @throws Exception if the map is invalid
+     *
 	 * @return void Constructor does not return
 	 */
-	protected function __construct() {
+	public function __construct() {
 		$class_map = $this->_cache();
 		if (
 			! is_array( $class_map ) ||
@@ -260,7 +263,7 @@ class Ai1ec_Loader {
 		) {
 			if ( ! defined( 'AI1EC_DEBUG' ) || ! AI1EC_DEBUG ) {
 
-				throw new Ai1ec_Error_Exception(
+				throw new Exception(
 					'Generated class map is invalid: ' .
 					var_export( $class_map, true ) );
 
@@ -268,7 +271,6 @@ class Ai1ec_Loader {
 			$class_map = $this->collect_classes();
 		}
 		$this->_paths = $class_map;
-		$this->_reverse_map = $this->_optimise_includes( $class_map );
 	}
 
 }

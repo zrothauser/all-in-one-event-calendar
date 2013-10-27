@@ -270,3 +270,5 @@ class Ai1ec_Loader {
 		$this->_paths = $class_map;
 		$this->_reverse_map = $this->_optimise_includes( $class_map );
 	}
+
+}

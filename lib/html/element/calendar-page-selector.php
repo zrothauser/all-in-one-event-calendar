@@ -92,7 +92,7 @@ class Ai1ec_Html_Element_Calendar_Page_Selector
 			if ( $this->_selected === $key ) {
 				$html .= ' selected="selected"';
 			}
-			$html .= '>' . $this->_html->escape( $value ) . '</option>';
+			$html .= '>' . $this->_html->esc_html( $value ) . '</option>';
 		}
 		$html .= '</select>';
 		return $html;

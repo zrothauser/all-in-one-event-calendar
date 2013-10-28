@@ -17,7 +17,7 @@ class Ai1ec_Html_Helper {
 	 *
 	 * @return string Escaped HTML value.
 	 */
-	public function escape( $input ) {
+	public function esc_html( $input ) {
 		return esc_html( $input );
 	}
 

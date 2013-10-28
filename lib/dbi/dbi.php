@@ -26,19 +26,17 @@ class Ai1ec_Dbi {
 	 * @return void Constructor does not return
 	 */
 	public function __construct( $dbi = null ) {
-
 		if ( null === $dbi ) {
 			global $wpdb;
 			$dbi = $wpdb;
-		}	
-
+		}
 		$this->_dbi = $dbi;
 	}
 
 	/**
 	 * Perform a MySQL database query, using current database connection.
 	 *
-	 * @param string $query Database query
+	 * @param string $sql_query Database query
 	 *
 	 * @return int|false Number of rows affected/selected or false on error
 	 */
@@ -92,7 +90,7 @@ class Ai1ec_Dbi {
 	 * @return null|false|string Sanitized query string, null if there is no query, false if there is an error and string
 	 * 	if there was something to prepare
 	 */
-	public function prepare( $sql_query, $args ) {
+	public function prepare( $query, $args ) {
 
 		if ( null === $query ) {
 			return null;
@@ -108,7 +106,7 @@ class Ai1ec_Dbi {
 		$query = str_replace( '"%s"', '%s', $query ); // doublequote unquoting
 		$query = preg_replace( '|(?<!%)%f|' , '%F', $query ); // Force floats to be locale unaware
 		$query = preg_replace( '|(?<!%)%s|', "'%s'", $query ); // quote the strings, avoiding escaped strings like %%s
-		array_walk( $args, array( $this, 'escape_by_ref' ) );
+		array_walk( $args, array( $this->_dbi, 'escape_by_ref' ) );
 		return @vsprintf( $query, $args );
 	}
 
@@ -124,10 +122,10 @@ class Ai1ec_Dbi {
 	 *
 	 * @return mixed Database query results
 	 */
-	public function get_results( $query, $output )
+	public function get_results( $query, $output = OBJECT ){
 		return $this->_dbi->get_results( $query, $output );
 	}
-	
+
 	/**
 	 * Retrieve one variable from the database.
 	 *
@@ -174,7 +172,7 @@ class Ai1ec_Dbi {
 	public function insert( $table, $data, $format = null ) {
 		return $this->_dbi->insert( $table, $data, $format );
 	}
-	
+
 	/**
 	 * Update a row in the table
 	 *
@@ -196,7 +194,7 @@ class Ai1ec_Dbi {
 	 *
 	 * @return false|string false on failure, version number on success
 	 */
-	public function db_version( ) {
+	public function db_version() {
 		return $this->_dbi->db_version();
 	}
 
@@ -212,18 +210,6 @@ class Ai1ec_Dbi {
 		return $this->_dbi->{$table};
 	}
 
-	/**
-	 * Escapes content by reference for insertion into the database, for security
-	 *
-	 * @param string $string to escape
-	 *
-	 * @return void
-	 */
-	public function escape_by_ref( &$string ) {
-		if ( ! is_float( $string ) ) {
-			$string = $this->_dbi->_real_escape( $string );
-		}
-	}
 
 }
 

@@ -16,11 +16,6 @@ class Ai1ec_App {
 	protected $_sys = null;
 
 	/**
-	 * @var Ai1ec_Dbi Instance of database abstraction layer.
-	 */
-	protected $_db  = null;
-
-	/**
 	 * Initiate base objects.
 	 *
 	 * @param Ai1ec_System $system Injectable system object.
@@ -29,7 +24,6 @@ class Ai1ec_App {
 	 */
 	public function __construct( Ai1ec_System $system ) {
 		$this->_sys = $system;
-		$this->_db  = $this->_sys->get( 'dbi' );
 		$this->_initialize();
 	}
 

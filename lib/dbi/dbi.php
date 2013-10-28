@@ -1,4 +1,5 @@
 <?php
+
 /**
 * Wrapper for WPDB (WordPress DB Class)
 *

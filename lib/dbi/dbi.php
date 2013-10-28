@@ -3,8 +3,8 @@
 /**
 * Wrapper for WPDB (WordPress DB Class)
 *
-* Thic class wrap the access to Wordpress DB class ($wpdb) and
-* allows us to abstract from the wordpress code and to expand it
+* Thic class wrap the access to WordPress DB class ($wpdb) and
+* allows us to abstract from the WordPress code and to expand it
 * with convenience method specific for ai1ec
 *
 * @author     Time.ly Network, Inc.

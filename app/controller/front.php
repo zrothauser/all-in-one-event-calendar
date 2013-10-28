@@ -45,13 +45,11 @@ class Ai1ec_Front_Controller {
 	}
 
 	/**
-	 * Static method to initialize the controller.
-	 * 
-	 * @param string $constant_folder
+	 * Initiailize the controller.
 	 * 
 	 * @return void Method is not intended to return anything.
 	 */
-	public function run( $constant_folder ) {
+	public function run() {
 		$this->_init();
 		$this->_initialize_router();
 		$this->_initialize_dispatcher();

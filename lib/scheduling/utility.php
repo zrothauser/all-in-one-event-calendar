@@ -9,15 +9,14 @@
  * @package    AI1EC
  * @subpackage AI1EC.Scheduling
  */
-class Ai1ec_Scheduling_Utility
-{
+class Ai1ec_Scheduling_Utility {
 
 	/**
 	 * @constant string Name of option
 	 */
 	const OPTION_NAME           = 'ai1ec_scheduler_hooks';
 
-	const CURRENT_VERSION       = '1.11.1';
+	const CURRENT_VERSION       = AI1EC_VERSION;
 
 	/**
 	 * @var array Map of hooks currently registered
@@ -25,20 +24,32 @@ class Ai1ec_Scheduling_Utility
 	protected $_configuration   = NULL;
 
 	/**
-	 * @var Ai1ec_Scheduling_Utility Singletonian instance of self
-	 */
-	static protected $_instance = NULL;
-
-	/**
-	 * Get singletonian instance of this object
+	 * Constructor
 	 *
-	 * @return Ai1ec_Scheduling_Utility Singletonian instance
+	 * Read configured hooks and frequencies from database
+	 *
+	 * @return void Constructor does not return
 	 */
-	static public function instance() {
-		if ( ! ( self::$_instance instanceof self ) ) {
-			self::$_instance = new self();
-		}
-		return self::$_instance;
+	public function __construct() {
+		$defaults = array(
+			'hooks'   => array(),
+			'freqs'   => array(),
+			'version' => '1.11',
+		);
+		$this->_updated       = false;
+		$this->_configuration = Ai1ec_Meta::get_option(
+				self::OPTION_NAME,
+				$defaults
+		);
+		$this->_configuration = array_merge( $defaults, $this->_configuration );
+		$this->install_default_schedules();
+		Ai1ec_Shutdown_Utility::instance()->register(
+		array( $this, 'shutdown' )
+		);
+		add_filter(
+		'ai1ec_settings_initiated',
+		array( $this, 'settings_initiated_hook' )
+		);
 	}
 
 	/**
@@ -452,35 +463,6 @@ class Ai1ec_Scheduling_Utility
 			);
 		}
 		return $this;
-	}
-
-	/**
-	 * Constructor
-	 *
-	 * Read configured hooks and frequencies from database
-	 *
-	 * @return void Constructor does not return
-	 */
-	protected function __construct() {
-		$defaults = array(
-			'hooks'   => array(),
-			'freqs'   => array(),
-			'version' => '1.11',
-		);
-		$this->_updated       = false;
-		$this->_configuration = Ai1ec_Meta::get_option(
-			self::OPTION_NAME,
-			$defaults
-		);
-		$this->_configuration = array_merge( $defaults, $this->_configuration );
-		$this->install_default_schedules();
-		Ai1ec_Shutdown_Utility::instance()->register(
-			array( $this, 'shutdown' )
-		);
-		add_filter(
-			'ai1ec_settings_initiated',
-			array( $this, 'settings_initiated_hook' )
-		);
 	}
 
 }

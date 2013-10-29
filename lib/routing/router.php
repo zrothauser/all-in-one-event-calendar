@@ -13,11 +13,6 @@
 class Ai1ec_Router {
 
 	/**
-	 * @var Ai1ec_Router Instance of self
-	 */
-	static private $_instance = null;
-
-	/**
 	 * @var boolean
 	 */
 	private static $at_least_one_filter_set_in_request;
@@ -41,21 +36,6 @@ class Ai1ec_Router {
 	 * @var Ai1ec_Cookie_Present_Dto
 	 */
 	protected $cookie_set_dto;
-
-	/**
-	 * Singleton access method
-	 *
-	 * @return Ai1ec_Router Instance of self
-	 */
-	static public function instance() {
-		if (
-			! isset( self::$_instance ) ||
-			! ( self::$_instance instanceof Ai1ec_Router )
-		) {
-			self::$_instance = new Ai1ec_Router();
-		}
-		return self::$_instance;
-	}
 
 	/**
 	 * Check if at least one filter is set in the request
@@ -184,8 +164,8 @@ class Ai1ec_Router {
 	/**
 	 * Initiate internal variables
 	 */
-	protected function __construct() {
-		$this->_query_manager = Ai1ec_Adapter::query_manager();
+	public function __construct( Ai1ec_Object_Registry $registry ) {
+		$this->_query_manager = $registry->get( 'query.helper' );
 	}
 
 }

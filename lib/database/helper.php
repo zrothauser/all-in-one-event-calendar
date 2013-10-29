@@ -14,11 +14,6 @@
 class Ai1ec_Database_Helper {
 
 	/**
-	 * @staticvar Ai1ec_Database Singletonian instance of self
-	 */
-	static protected $_instance = NULL;
-
-	/**
 	 * @var array Map of tables and their parsed definitions
 	 */
 	protected $_schema_delta = array();
@@ -38,28 +33,20 @@ class Ai1ec_Database_Helper {
 	 */
 	protected $_dry_run  = false;
 
-	protected function __construct( wpdb $db = NULL ) {
-		$this->_db       = $db;
+	/**
+	 * Constructor
+	 * 
+	 * @param Ai1ec_Object_Registry $registry
+	 * 
+	 * @return void
+	 */
+	public function __construct( Ai1ec_Object_Registry $registry ) {
+		$this->_db       = $registry->get( 'dbi' );
 		$this->_prefixes = array(
-			$db->prefix . 'ai1ec_',
-			$db->prefix,
+			$this->_db->prefix . 'ai1ec_',
+			$this->_db->prefix,
 			'',
 		);
-	}
-
-	/**
-	 * instance method
-	 *
-	 * Get singleton instance of self (Ai1ec_Database).
-	 *
-	 * @return Ai1ec_Database Initialized instance of self
-	 */
-	static public function instance() {
-		if ( ! ( self::$_instance instanceof Ai1ec_Database ) ) {
-			global $wpdb;
-			self::$_instance = new Ai1ec_Database( $wpdb );
-		}
-		return self::$_instance;
 	}
 
 	/**

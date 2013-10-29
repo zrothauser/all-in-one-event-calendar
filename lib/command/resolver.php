@@ -11,17 +11,17 @@
 class Ai1ec_Command_Resolver {
 
 	/**
-	 * @var array
+	 * @var array The available commands.
 	 */
 	private $_commands = array();
 
 	/**
-	 * @var Ai1ec_Object_Registry
+	 * @var Ai1ec_Object_Registry The Object registry.
 	 */
 	private $_registry;
 
 	/**
-	 * @var Ai1ec_Request_Parser
+	 * @var Ai1ec_Request_Parser The Request parser.
 	 */
 	private $_request;
 
@@ -30,6 +30,8 @@ class Ai1ec_Command_Resolver {
 	 * 
 	 * @param Ai1ec_Object_Registry $registry
 	 * @param Ai1ec_Request_Parser $request
+	 * 
+	 * @return void
 	 */
 	public function __construct( 
 		Ai1ec_Object_Registry $registry, 
@@ -53,9 +55,12 @@ class Ai1ec_Command_Resolver {
 	 * Add a command.
 	 * 
 	 * @param Ai1ec_Command $command
+	 * 
+	 * @return Ai1ec_Comment_Resolver Self for calls chaining
 	 */
 	public function add_command( Ai1ec_Command $command ) {
 		$this->_commands[] = $command;
+		return $this;
 	}
 	
 	/**
@@ -65,7 +70,7 @@ class Ai1ec_Command_Resolver {
 	 */
 	public function get_command() {
 		foreach ( $this->_commands as $command ) {
-			if( true === $command->is_this_to_execute() ) {
+			if ( $command->is_this_to_execute() ) {
 				return $command;
 			}
 		}

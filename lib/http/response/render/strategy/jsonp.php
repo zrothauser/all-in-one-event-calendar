@@ -18,13 +18,11 @@ class Ai1ec_Render_Strategy_Jsonp extends Ai1ec_Http_Response_Render_Strategy {
 		header( 'HTTP/1.1 200 OK' );
 		header( 'Content-Type: application/json; charset=UTF-8' );
 		$data = ai1ec_utf8( $params['data'] );
-		$callback = $params['callback'];
+		$output = json_encode( $data );
 		if ( ! empty( $params['callback'] ) ) {
-			// Output JSONP-encoded result and quit
-			echo $params['callback'] . '(' . json_encode( $data ) . ')';
-		} else {
-			echo json_encode( $data );
+			$output = $params['callback'] . '(' . $output . ')';
 		}
+		echo $output;
 		return ai1ec_stop( 0 );
 	}
 }

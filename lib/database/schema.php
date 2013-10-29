@@ -26,10 +26,9 @@ class Ai1ec_Database_Schema {
 	 *
 	 * @return void Constructor does not return
 	 */
-	public function __construct() {
-		global $wpdb;
-		$this->_db       = $wpdb;
-		$this->_ai1ec_db = Ai1ec_Database::instance();
+	public function __construct( Ai1ec_Object_Registry $registry ) {
+		$this->_db       = $registry->get( 'dbi' );
+		$this->_database = $registry->get( 'database.helper' );
 	}
 
 	/**

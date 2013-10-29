@@ -16,6 +16,10 @@ abstract class Ai1ec_Http_Response_Render_Strategy {
 	 * @return bool True unless an error occurs
 	 */
 	protected function _dump_buffers() {
+		// ob_end_clean() fails if any level of compression is set.
+		if ( ini_get( 'zlib.output_compression' ) ) {
+			return false;
+		}
 		$result = true;
 		while ( ob_get_level() ) {
 			$result &= ob_end_clean();

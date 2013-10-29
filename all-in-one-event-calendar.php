@@ -45,5 +45,5 @@ require_once 'app/controller/front.php';
 $ai1ec_config_path = $ai1ec_dir . DIRECTORY_SEPARATOR . 'app' .
 	DIRECTORY_SEPARATOR . 'config';
 $ai1ec_front_controller = new Ai1ec_Front_Controller( $ai1ec_config_path );
-$ai1ec_front_controller->run();
+$ai1ec_front_controller->initialize();
 

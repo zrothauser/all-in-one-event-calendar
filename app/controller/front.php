@@ -12,17 +12,17 @@
 class Ai1ec_Front_Controller {
 
 	/**
-	 * @var string
+	 * @var string Absolute path to folder for configuration files.
 	 */
-	private $_constant_folder;
+	private $_config_dir;
 
 	/**
-	 * @var Ai1ec_Object_Registry 
+	 * @var Ai1ec_Object_Registry The Object registry.
 	 */
 	private $_registry;
 
 	/**
-	 * @var bool
+	 * @var bool Whether the domain has alredy been loaded or not.
 	 */
 	private $_load_domain = false;
 
@@ -32,24 +32,28 @@ class Ai1ec_Front_Controller {
 	private $_pagebase_for_href;
 
 	/**
-	 * @var Ai1ec_Request_Parser
+	 * @var Ai1ec_Request_Parser Instance of the request pa
 	 */
 	private $_request;
 
 
 	/**
-	 * @param string $constant_folder
+	 * Constructor
+	 *
+	 * @param string $config_dir Sanitized, absolute, path to configurations directory
+	 *
+	 * @return void
 	 */
-	public function __construct( $constant_folder ) {
-		$this->_constant_folder = $constant_folder;
+	public function __construct( $config_dir ) {
+		$this->_config_dir = $config_dir;
 	}
 
 	/**
-	 * Initiailize the controller.
+	 * Initialize the controller.
 	 * 
-	 * @return void Method is not intended to return anything.
+	 * @return void 
 	 */
-	public function run() {
+	public function initialize() {
 		$this->_init();
 		$this->_initialize_router();
 		$this->_initialize_dispatcher();
@@ -58,9 +62,9 @@ class Ai1ec_Front_Controller {
 	/**
 	 * Perform actions needed when our plugin is activated.
 	 * 
-	 * @wp-hook activate_all-in-one-event-calendar/all-in-one-event-calendar.php
+	 * @wp_hook activate_all-in-one-event-calendar/all-in-one-event-calendar.php
 	 * 
-	 * @return void Method is not intended to return anything.
+	 * @return void 
 	 */
 	public function activation_hook() {
 		$this->_registry->get( 'app' )->register_post_type();
@@ -71,9 +75,9 @@ class Ai1ec_Front_Controller {
 	/**
 	 * Execute commands if our plugin must handle the request
 	 * 
-	 * @wp-hook init
+	 * @wp_hook init
 	 * 
-	 * @return void Method is not intended to return anything.
+	 * @return void 
 	 */
 	public function route_request() {
 		$this->_process_request();
@@ -102,9 +106,10 @@ class Ai1ec_Front_Controller {
 	 * @throws Ai1ec_Database_Update_Exception
 	 * @throws Ai1ec_Database_Schema_Exception
 	 * 
-	 * @return void Method is not intended to return anything.
+	 * @return void 
 	 */
 	private function _init() {
+		$exception = null;
 		try {
 			// Load the constants
 			$this->_configuration();
@@ -118,15 +123,18 @@ class Ai1ec_Front_Controller {
 			$this->_load_textdomain();
 		} catch ( Ai1ec_Constants_Not_Set_Exception $e ) {
 			// This is blocking, throw it and disable the plugin
-			throw $e;
+			$exception = $e;
 		} catch ( Ai1ec_Scheduling_Exception $e ) {
 			// This is minor, maybe display a notice
 		} catch ( Ai1ec_Database_Update_Exception $e ) {
 			// Blocking throw it so that the plugin is disabled
-			throw $e;
+			$exception = $e;
 		} catch ( Ai1ec_Database_Schema_Exception $e ) {
 			// Blocking throw it so that the plugin is disabled
-			throw $e;
+			$exception = $e;
+		}
+		if ( null !== $exception ) {
+			throw $exception;
 		}
 	}
 
@@ -135,7 +143,7 @@ class Ai1ec_Front_Controller {
 	 * 
 	 * Complete this when writing the dispatcher.
 	 * 
-	 * @return void Method is not intended to return anything.
+	 * @return void 
 	 */
 	private function _initialize_dispatcher() {
 		// provide initialization for the dispatcher class. 
@@ -163,10 +171,8 @@ class Ai1ec_Front_Controller {
 			foreach ( array( 'cat', 'tag' ) as $name ) {
 				$implosion = $this->_add_defaults( $name );
 				if ( $implosion ) {
-					$this->request->set( 
-						'ai1ec_' . $name . '_ids'
-					) = $implosion;
-					$_REQUEST['ai1ec_' . $name . '_ids'] = $implosion;
+					$this->request['ai1ec_' . $name . '_ids'] = $implosion;
+					$_REQUEST['ai1ec_' . $name . '_ids']      = $implosion;
 				}
 			}
 		}
@@ -177,7 +183,7 @@ class Ai1ec_Front_Controller {
 	 * 
 	 * @throws Ai1ec_Scheduling_Exception
 	 * 
-	 * @return void Method is not intended to return anything.
+	 * @return void 
 	 */
 	private function _install_crons() {
 		$scheduling = $this->_registry->get( 'schedule' );
@@ -213,7 +219,7 @@ class Ai1ec_Front_Controller {
 	/**
 	 * Register the activation hook for the plugin.
 	 * 
-	 * @return void Method is not intended to return anything.
+	 * @return void 
 	 */
 	private function _register_activation_hook() {
 		// register_activation_hook
@@ -226,7 +232,7 @@ class Ai1ec_Front_Controller {
 	/**
 	 * Initialize the registry object.
 	 * 
-	 * @return void Method is not intended to return anything.
+	 * @return void 
 	 */
 	private function _initialize_registry() {
 		$this->_registry = new Ai1ec_Object_Registry();
@@ -235,7 +241,7 @@ class Ai1ec_Front_Controller {
 	/**
 	 * Load the texdomain for the plugin.
 	 * 
-	 * @return void Method is not intended to return anything.
+	 * @return void 
 	 */
 	private function _load_textdomain() {
 		if ( false === $this->_load_domain ) {
@@ -252,7 +258,7 @@ class Ai1ec_Front_Controller {
 	 * @throws Ai1ec_Database_Schema_Exception
 	 * @throws Ai1ec_Database_Update_Exception
 	 * 
-	 * @return void Method is not intended to return anything.
+	 * @return void 
 	 */
 	private function _initialize_schema() {
 		$option = $this->_registry->get( 'option' );
@@ -355,7 +361,7 @@ class Ai1ec_Front_Controller {
 	/**
 	 * Initializes the URL router used by our plugin.
 	 *
-	 * @return void Method is not intended to return anything.
+	 * @return void 
 	 */
 	private function _initialize_router() {
 		$settings            = $this->_registry->get( 'settings' );
@@ -420,15 +426,15 @@ class Ai1ec_Front_Controller {
 	 * 
 	 * @throws Ai1ec_Constants_Not_Set_Exception
 	 * 
-	 * @return void Method is not intended to return anything.
+	 * @return void 
 	 */
 	private function _configuration() {
 		/**
 		 * Include configuration files and define constants
 		 */
 		foreach ( array( 'constants-local.php', 'constants.php' ) as $file ) {
-			if ( file_exists( $this->_constant_folder . $file ) ) {
-				require_once $this->_constant_folder . $file;
+			if ( file_exists( $this->_config_dir . $file ) ) {
+				require_once $this->_config_dir . $file;
 			}
 		}
 		if ( ! function_exists( 'ai1ec_initiate_constants' ) ) {

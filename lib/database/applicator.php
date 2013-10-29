@@ -12,12 +12,7 @@
 class Ai1ec_Database_Applicator {
 
 	/**
-	 * @staticvar Ai1ec_Database_Applicator Singletonian instance of self
-	 */
-	static protected $_instance = NULL;
-
-	/**
-	 * @var wpdb Instance of wpdb object
+	 * @var Ai1ec_Dbi Instance of wpdb object
 	 */
 	protected $_db = NULL;
 
@@ -27,17 +22,15 @@ class Ai1ec_Database_Applicator {
 	protected $_database = NULL;
 
 	/**
-	 * get_instance method
+	 * Constructor
 	 *
-	 * Get singleton instance of self (Ai1ec_Database_Applicator).
+	 * Initialize object, by storing instance of `wpdb` in local variable
 	 *
-	 * @return Ai1ec_Database_Applicator Initialized instance of self
+	 * @return void Constructor does not return
 	 */
-	static public function get_instance() {
-		if ( ! ( self::$_instance instanceof self ) ) {
-			self::$_instance = new self();
-		}
-		return self::$_instance;
+	public function __construct( Ai1ec_Object_Registry $registry ) {
+		$this->_db       = $registry->get( 'dbi' );
+		$this->_database = $registry->get( 'database.helper' );
 	}
 
 	/**
@@ -154,19 +147,6 @@ class Ai1ec_Database_Applicator {
 	 */
 	protected function _escape_column( $name ) {
 		return '`' . $name . '`';
-	}
-
-	/**
-	 * Constructor
-	 *
-	 * Initialize object, by storing instance of `wpdb` in local variable
-	 *
-	 * @return void Constructor does not return
-	 */
-	protected function __construct() {
-		global $wpdb;
-		$this->_db = $wpdb;
-		$this->_database = Ai1ec_Database::instance();
 	}
 
 }

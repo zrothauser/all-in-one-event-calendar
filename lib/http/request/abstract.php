@@ -30,18 +30,6 @@ abstract class Ai1ec_Abstract_Query implements arrayaccess {
 	protected $_ready	= false;
 
 	/**
-	 * Wrapper to constructor for easier handling
-	 *
-	 * @param array $argv Arguments to be parsed [optional=null]
-	 *
-	 * @return Ai1ec_Abstract_Query Instance of initialized object
-	 */
-	static public function init( array $argv = null ) {
-		$object = new self( $argv );
-		return $object;
-	}
-
-	/**
 	 * Return prefix that shall be used to access values
 	 */
 	abstract protected function _get_prefix( );

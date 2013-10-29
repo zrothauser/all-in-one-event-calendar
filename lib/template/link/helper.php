@@ -15,10 +15,11 @@ class Ai1ec_Template_Link_Helper {
 	 *
 	 * Respects page_on_front. Use this one.
 	 *
-	 * @param int|object $post Optional. Post ID or object.
-	 * @param bool $leavename Optional, defaults to false.
-	 *                        Whether to keep page name.
-	 * @param bool $sample Optional, defaults to false. Is it a sample permalink.
+	 * @param int|object $post      Optional. Post ID or object.
+	 * @param bool       $leavename Optional, defaults to false.
+	 *                              Whether to keep page name.
+	 * @param bool       $sample    Optional, defaults to false. 
+	 *                              Is it a sample permalink.
 	 * 
 	 * @return string
 	 */

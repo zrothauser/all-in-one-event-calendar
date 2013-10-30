@@ -4,8 +4,12 @@
  * Object Registry: retrieve an instance of a class from the internal cache or
  * instanciate a new instance if necessary
  *
+ * @author     Time.ly Network, Inc.
+ * @since      2.0
+ * @package    Ai1EC
+ * @subpackage Ai1EC.Registry
  * */
-class Ai1ec_Registry {
+class Ai1ec_Object_Registry {
 
     /**
     * @var array The internal cache storage
@@ -17,9 +21,16 @@ class Ai1ec_Registry {
      */
     private $_loader = null;
 
+    /**
+     * Return an instance for the requested key, this method has an internal
+     * cache
+     *
+     * @param $key string the key that describe the class to instanciate
+     * @return mixed object the instance of the requested class
+     */
     public function get( $key ){
         $class_name = Ai1ec_Loader::resolve_class_name( $key );
-        if( !isset( $this->_objects[$class_name] ) ){
+        if ( ! isset( $this->_objects[$class_name] ) ) {
 
             // Ask the loader to load the required files
             $this->_loader->load( $class_name );
@@ -27,7 +38,7 @@ class Ai1ec_Registry {
             // Retrieve parameters for the class constructor
             $argv = array_slice( func_get_args(), 1 );
 
-            $this->_objects[$class_name] = $this->initiate( $class_name, $argv);
+            $this->_objects[$class_name] = $this->initiate( $class_name, $argv );
 
         }
 
@@ -37,7 +48,7 @@ class Ai1ec_Registry {
     /**
      * Instanciate the class given the class names and arguments
      *
-     * @param $class_name string The name of the class to instanciate
+     * @param string $class_name The name of the class to instanciate
      * @param array $argv optional an array of aguments that have to be passed
      * to the class constructor
      *

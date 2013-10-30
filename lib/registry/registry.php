@@ -1,7 +1,8 @@
 <?php
 
 /**
- * Object Registry: retrieve an instance of a class from the internal cache or instanciate a new instance if necessary
+ * Object Registry: retrieve an instance of a class from the internal cache or
+ * instanciate a new instance if necessary
  *
  * */
 class Ai1ec_Registry {
@@ -14,11 +15,11 @@ class Ai1ec_Registry {
     /**
      * @var Ai1ec_Loader The Ai1ec_Loader instance used by the registry
      */
-    private $_loader = array();
+    private $_loader = null;
 
     public function get( $key ){
-        $class_name = $this->_get_class_name( $key );
-        if( !isset( $_objects[$class_name] ) ){
+        $class_name = Ai1ec_Loader::resolve_class_name( $key );
+        if( !isset( $this->_objects[$class_name] ) ){
 
             // Ask the loader to load the required files
             $this->_loader->load( $class_name );
@@ -26,44 +27,54 @@ class Ai1ec_Registry {
             // Retrieve parameters for the class constructor
             $argv = array_slice( func_get_args(), 1 );
 
-            // Instanciate the class
-            if ( empty( $argv ) ) {
-                $_objects[$class_name] = new $class_name();
-            } else {
-                $class = new ReflectionClass( $class_name );
-                $_objects[$class_name] = $class->newInstanceArgs( $argv );
-            }
+            $this->_objects[$class_name] = $this->initiate( $class_name, $argv);
 
         }
 
-        return $_objects[$class_name];
+        return $this->_objects[$class_name];
     }
 
     /**
-     * Translate the key to the actual class name
+     * Instanciate the class given the class names and arguments
      *
-     * @param $key string Key requested to the Registry
+     * @param $class_name string The name of the class to instanciate
+     * @param array $argv optional an array of aguments that have to be passed
+     * to the class constructor
      *
-     * @return string the name of the class
+     * @return object A new instance of the requested class
      */
-    protected function _get_class_name( $key ){
+    public function initiate( $class_name, array $argv = array() ){
 
-        if ( stripos( '.', $key ) > 0 ){
-            // Case: html.helper
-            $parts = explode( '.', $key );
-            $class_name = 'Ai1ec_';
-            for ( $i = 0 ; $i < count( $parts ); $i++ ){
-                if ( $i > 0 ){
-                    $class_name .= '_';
-                }
-                $class_name .= ucfirst( $parts[0] );
-            }
+        switch ( count( $argv ) ) {
+            case 0:
+                return new $class_name();
+                break;
 
+            case 1:
+                return new $class_name( $argv[0] );
+                break;
+
+            case 2:
+                return new $class_name( $argv[0], $argv[1] );
+                break;
+
+            case 3:
+                return new $class_name( $argv[0], $argv[1], $argv[2] );
+                break;
+
+            case 4:
+                return new $class_name( $argv[0], $argv[1], $argv[2], $argv[3] );
+                break;
+
+            case 5:
+                return new $class_name( $argv[0], $argv[1], $argv[2], $argv[3], $argv[4] );
+                break;
+
+            default:
+                $reflected = new ReflectionClass( $class_name );
+                return $reflected->newInstanceArgs( $argv );
         }
 
-        //TODO: handle other cases
-
-        return $class_name;
     }
 
     /**

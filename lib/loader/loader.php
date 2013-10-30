@@ -17,7 +17,12 @@ class Ai1ec_Loader {
 	/**
 	 * @var array Map of files to be included
 	 */
-	protected $_paths           = NULL;
+	protected $_paths = NULL;
+
+    /**
+     * @var array Cache for the names of the classes associated to keys
+     */
+    protected static $_names = array();
 
 	/**
 	 * @var array Map of files already included
@@ -275,6 +280,53 @@ class Ai1ec_Loader {
         return $names;
 
     }
+
+    /**
+     * Translate the key to the actual class name
+     *
+     * @param $key string Key requested to the Registry
+     *
+     * @return string the name of the class
+     */
+    public static function resolve_class_name( $key ){
+
+        if( ! isset( Ai1ec_Loader::$_names[$key] ) ){
+
+            if ( stripos( '.', $key ) > 0 ){
+                // Case: html.helper
+                $parts = explode( '.', $key );
+                $class_name = 'Ai1ec_';
+                for ( $i = 0 ; $i < count( $parts ); $i++ ){
+                    if ( $i > 0 ){
+                        $class_name .= '_';
+                    }
+                    $class_name .= ucfirst( $parts[0] );
+                }
+
+                Ai1ec_Loader::$_names[$key] = $class_name;
+
+            }elseif ( stripos( '_', $key ) > 0) {
+
+                $parts = explode( '_', $key );
+
+                if( strcmp( $parts[0], 'Ai1ec' ) == 0){
+                    // Case: Ai1ec_Html_Helper
+                    Ai1ec_Loader::$_names[$key] = $key;
+                }else{
+                    // Case: Ai1ec_Html_Helper
+                    $class_name = 'Ai1ec' . $key;
+                    Ai1ec_Loader::$_names[$key] = $class_name;
+                }
+
+            }else{
+                // Default: return the key
+                Ai1ec_Loader::$_names[$key] = $key;
+            }
+        }
+
+        return Ai1ec_Loader::$_names[$key];
+    }
+
 
 	/**
 	 * Constructor

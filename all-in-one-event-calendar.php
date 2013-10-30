@@ -33,3 +33,17 @@ $ai1ec_exception_handler->set_prev_er_handler( $prev_er_handler );
 $ai1ec_exception_handler->set_prev_ex_handler( $prev_ex_handler );
 
 // Regular startup sequence starts here
+
+$ai1ec_dir = dirname( __FILE__ );
+
+require_once $ai1ec_dir . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR .
+		'loader' . DIRECTORY_SEPARATOR . 'loader.php' ;
+
+@ini_set( 'unserialize_callback_func', 'spl_autoload_call' );
+spl_autoload_register( 'Ai1ec_Loader::autoload' );
+require_once 'app/controller/front.php';
+$ai1ec_config_path = $ai1ec_dir . DIRECTORY_SEPARATOR . 'app' .
+	DIRECTORY_SEPARATOR . 'config';
+$ai1ec_front_controller = new Ai1ec_Front_Controller( $ai1ec_config_path );
+$ai1ec_front_controller->initialize();
+

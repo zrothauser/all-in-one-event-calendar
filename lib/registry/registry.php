@@ -1,108 +1,94 @@
 <?php
 
 /**
- * Object Registry: retrieve an instance of a class from the internal cache or
- * instanciate a new instance if necessary
+ * Object Registry: get instance of requested and optionally registered object.
+ *
+ * Object (instance of a class) is generater, or returned from internal cache
+ * if it was requested and instantiated before.
  *
  * @author     Time.ly Network, Inc.
  * @since      2.0
  * @package    Ai1EC
  * @subpackage Ai1EC.Registry
- * */
+ */
 class Ai1ec_Object_Registry {
 
-    /**
-    * @var array The internal cache storage
-    */
-    private $_objects = array();
+	/**
+	* @var array The internal objects cache
+	*/
+	private $_objects = array();
 
-    /**
-     * @var Ai1ec_Loader The Ai1ec_Loader instance used by the registry
-     */
-    private $_loader = null;
+	/**
+	 * @var Ai1ec_Loader The Ai1ec_Loader instance used by the registry
+	 */
+	private $_loader  = null;
 
-    /**
-     * get method
-     *
-     * Return an instance for the requested key, this method has an internal
-     * cache
-     *
-     * @param $key string the key that describe the class to instanciate
-     * @return mixed object the instance of the requested class
-     */
-    public function get( $key ) {
-        $class_name = $this->_loader->resolve_class_name( $key );
-        if ( ! isset( $this->_objects[$class_name] ) ) {
+	/**
+	 * Get class instance.
+	 *
+	 * Return an instance for the requested key, this method has an internal
+	 * cache.
+	 *
+	 * @param string $key Name of previously registered object or parseable
+	 *                    class name
+	 *
+	 * @return object Instance of the requested class
+	 */
+	public function get( $key ) {
+		$class_name = $this->_loader->resolve_class_name( $key );
+		if ( ! isset( $this->_objects[$class_name] ) ) {
+			// Ask the loader to load the required files to avoid autoloader
+			$this->_loader->load( $class_name );
+			$this->_objects[$class_name] = $this->initiate(
+				$class_name,
+				array_slice( func_get_args(), 1 )
+			);
+		}
+		return $this->_objects[$class_name];
+	}
 
-            // Ask the loader to load the required files
-            $this->_loader->load( $class_name );
+	/**
+	 * Instanciate the class given the class names and arguments.
+	 *
+	 * @param string $class_name The name of the class to instanciate.
+	 * @param array  $argv       An array of aguments for construction.
+	 *
+	 * @return object A new instance of the requested class
+	 */
+	public function initiate( $class_name, array $argv = array() ) {
+		switch ( count( $argv ) ) {
+			case 0:
+				return new $class_name();
 
-            // Retrieve parameters for the class constructor
-            $argv = array_slice( func_get_args(), 1 );
+			case 1:
+				return new $class_name( $argv[0] );
 
-            $this->_objects[$class_name] = $this->initiate( $class_name, $argv );
+			case 2:
+				return new $class_name( $argv[0], $argv[1] );
 
-        }
+			case 3:
+				return new $class_name( $argv[0], $argv[1], $argv[2] );
 
-        return $this->_objects[$class_name];
-    }
+			case 4:
+				return new $class_name( $argv[0], $argv[1], $argv[2], $argv[3] );
 
-    /**
-     * initiate method
-     *
-     * Instanciate the class given the class names and arguments
-     *
-     * @param string $class_name The name of the class to instanciate
-     * @param array $argv optional an array of aguments that have to be passed
-     * to the class constructor
-     *
-     * @return object A new instance of the requested class
-     */
-    public function initiate( $class_name, array $argv = array() ) {
+			case 5:
+				return new $class_name( $argv[0], $argv[1], $argv[2], $argv[3], $argv[4] );
+		}
 
-        switch ( count( $argv ) ) {
-            case 0:
-                return new $class_name();
-                break;
+		$reflected = new ReflectionClass( $class_name );
+		return $reflected->newInstanceArgs( $argv );
+	}
 
-            case 1:
-                return new $class_name( $argv[0] );
-                break;
-
-            case 2:
-                return new $class_name( $argv[0], $argv[1] );
-                break;
-
-            case 3:
-                return new $class_name( $argv[0], $argv[1], $argv[2] );
-                break;
-
-            case 4:
-                return new $class_name( $argv[0], $argv[1], $argv[2], $argv[3] );
-                break;
-
-            case 5:
-                return new $class_name( $argv[0], $argv[1], $argv[2], $argv[3], $argv[4] );
-                break;
-
-        }
-
-        $reflected = new ReflectionClass( $class_name );
-        return $reflected->newInstanceArgs( $argv );
-    }
-
-    /**
-     * Constructor
-     *
-     * Initialize the Registry
-     *
-     * @return void Constructor does not return
-     */
-    public function __construct() {
-
-        $this->_loader = new Ai1ec_Loader();
-
-    }
+	/**
+	 * Constructor
+	 *
+	 * Initialize the Registry
+	 *
+	 * @return void Constructor does not return
+	 */
+	public function __construct() {
+		$this->_loader = new Ai1ec_Loader();
+	}
 
 }
-

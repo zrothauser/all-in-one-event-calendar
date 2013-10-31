@@ -26,4 +26,34 @@ class Ai1ec_Template_Link_Helper {
 	public function get_page_link( $post = false, $leavename = false, $sample = false ) {
 		return get_page_link( $post, $leavename, $sample );
 	}
+
+	/**
+	 * Get the home url respecting FORCE_SSL_ADMIN
+	 * 
+	 * @return string
+	 */
+	public function get_site_url() {
+		if (
+			is_admin() &&
+			defined( 'FORCE_SSL_ADMIN' ) &&
+			true === FORCE_SSL_ADMIN
+		) {
+			return get_home_url( null, '', 'https' );
+		}
+		return get_home_url();
+	}
+
+	/**
+	 * Retrieve full permalink for current post or post ID.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $id Optional. Post ID.
+	 * @param bool $leavename Optional, defaults to false. Whether to keep post name or page name.
+	 * @return string
+	 */
+	public function get_permalink( $id = 0, $leavename = false ) {
+		return get_permalink( $id, $leavename );
+	}
+
 }

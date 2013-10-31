@@ -8,10 +8,7 @@
  *
  * @package    AI1EC
  * @subpackage AI1EC.Exception
- **/
-require_once 'ai1ec.php';
-require_once 'error.php';
-
+ */
 class Ai1ec_Exception_Handler {
 
 	/**
@@ -232,9 +229,9 @@ class Ai1ec_Exception_Handler {
 	 */
 	protected function redirect() {
 		if ( is_admin() ) {
-			Ai1ec_Http_Response::redirect( get_admin_url() );
+			Ai1ec_Http_Response_Helper::redirect( get_admin_url() );
 		} else {
-			Ai1ec_Http_Response::redirect( get_site_url() );
+			Ai1ec_Http_Response_Helper::redirect( get_site_url() );
 		}
 	}
 

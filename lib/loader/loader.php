@@ -22,14 +22,19 @@ class Ai1ec_Loader {
     /**
      * @var array Cache for the names of the classes associated to keys
      */
-    protected static $_names = array();
+    protected $_names = array();
 
 	/**
 	 * @var array Map of files already included
 	 */
 	protected $_included_files  = array();
 
-	/**
+    /**
+     * @var string The prefix used for the classes
+     */
+    protected $_prefix = NULL;
+
+    /**
 	 * load method
 	 *
 	 * Load given class, via `require`, into memory
@@ -137,30 +142,26 @@ class Ai1ec_Loader {
 	 * @return array List of classes in file
 	 */
 	protected function _extract_classes( $file ) {
-		$ignore_class = '#^Logger[A-Z]#';
+
 		$class_list   = array();
 
 		if ( '.php' === strrchr( $file, '.' ) ) {
 
-            $php_code = file_get_contents( $file );
-            $tokens = token_get_all( $php_code );
-            $count = count( $tokens );
-            for ( $i = 2; $i < $count; $i++ ) {
-                if ( T_CLASS === $tokens[$i - 2][0] ||
-                    T_INTERFACE === $tokens[$i - 2][0] &&
+            $tokens = token_get_all( file_get_contents( $file ) );
+
+            for ( $i = 2, $count = count( $tokens ); $i < $count; $i++ ) {
+                if (
+                    T_CLASS      === $tokens[$i - 2][0] ||
+                    T_INTERFACE  === $tokens[$i - 2][0] &&
                     T_WHITESPACE === $tokens[$i - 1][0] &&
-                    T_STRING === $tokens[$i][0] ) {
+                    T_STRING     === $tokens[$i][0]
+                ) {
 
                     $class_name = $tokens[$i][1];
 
-                    if ( preg_match( $ignore_class, $class_name ) ) {
-                        continue;
-                    }
-
                     $names = $this->_generate_alternative_names( $class_name );
 
-                    for( $j = 0; $j < count($names); $j++ ){
-                        $name = $names[$j];
+                    foreach( $names as $name ) {
                         $class_list[$name] = $file;
                     }
                 }
@@ -240,41 +241,31 @@ class Ai1ec_Loader {
 	}
 
     /**
-    * Generate all the alternatives name that the loaded recognize
-    * For example:
-    * The class Ai1ec_Html_Helper can be loaded as
-    * - html.helper
-    * - Html_Helper
-    * - Ai1ec_Html_Helper
-    *
-    * @params string class_name the original name of the class
-    *
-    * @return array an array of strings with the availables names
-    */
-    protected function _generate_alternative_names( $class_name ){
+     * _generate_alternative_names method
+     *
+     * Generate all the alternatives name that the loaded recognize
+     * For example:
+     * The class Ai1ec_Html_Helper can be loaded as
+     * - html.helper
+     * - Html_Helper
+     * - Ai1ec_Html_Helper
+     *
+     * @params string class_name the original name of the class
+     *
+     * @return array an array of strings with the availables names
+     */
+    protected function _generate_alternative_names( $class_name ) {
 
         $names = array();
         // The first one is the class full name
         $names[] = $class_name;
 
-        $tokens = explode( "_", $class_name );
-        if( strcmp( $tokens[0], "Ai1ec" ) == 0){
-            $compact_name = "";
-            $camel_case_name = "";
+        $tokens = explode( '_', $class_name );
+        if ( 0 === strcmp( $this->_prefix, $tokens[0] ) ) {
 
-            for( $i = 1; $i < count( $tokens ); $i++ ){
-
-                if ( $i > 1 ){
-                    $compact_name .= ".";
-                    $camel_case_name .= "_";
-                }
-
-                $compact_name .=  strtolower( $tokens[$i] );
-                $camel_case_name .=   $tokens[$i] ;
-
-            }
-            $names[] = $compact_name;
-            $names[] = $camel_case_name;
+            array_shift( $tokens );
+            $names[] = strtolower( implode( '.', $tokens ) );
+            $names[] = implode( '_', $tokens );
 
         }
 
@@ -283,49 +274,51 @@ class Ai1ec_Loader {
     }
 
     /**
+     * resolve_class_name method
+     *
      * Translate the key to the actual class name
      *
      * @param $key string Key requested to the Registry
      *
      * @return string the name of the class
      */
-    public static function resolve_class_name( $key ){
+    public function resolve_class_name( $key ) {
 
-        if( ! isset( Ai1ec_Loader::$_names[$key] ) ){
+        if( ! isset( $this->_names[$key] ) ) {
 
-            if ( stripos( '.', $key ) > 0 ){
+            if ( stripos( '.', $key ) > 0 ) {
                 // Case: html.helper
                 $parts = explode( '.', $key );
                 $class_name = 'Ai1ec_';
-                for ( $i = 0 ; $i < count( $parts ); $i++ ){
-                    if ( $i > 0 ){
+                for ( $i = 0 ; $i < count( $parts ); $i++ ) {
+                    if ( $i > 0 ) {
                         $class_name .= '_';
                     }
                     $class_name .= ucfirst( $parts[0] );
                 }
 
-                Ai1ec_Loader::$_names[$key] = $class_name;
+                $this->_names[$key] = $class_name;
 
             }elseif ( stripos( '_', $key ) > 0) {
 
                 $parts = explode( '_', $key );
 
-                if( strcmp( $parts[0], 'Ai1ec' ) == 0){
+                if( strcmp( $parts[0], $this->_prefix ) == 0) {
                     // Case: Ai1ec_Html_Helper
-                    Ai1ec_Loader::$_names[$key] = $key;
+                    $this->_names[$key] = $key;
                 }else{
                     // Case: Ai1ec_Html_Helper
-                    $class_name = 'Ai1ec' . $key;
-                    Ai1ec_Loader::$_names[$key] = $class_name;
+                    $class_name = $this->_prefix . $key;
+                    $this->_names[$key] = $class_name;
                 }
 
             }else{
                 // Default: return the key
-                Ai1ec_Loader::$_names[$key] = $key;
+                $this->_names[$key] = $key;
             }
         }
 
-        return Ai1ec_Loader::$_names[$key];
+        return $this->_names[$key];
     }
 
 
@@ -340,6 +333,11 @@ class Ai1ec_Loader {
 	 * @return void Constructor does not return
 	 */
 	public function __construct() {
+
+        $this->_prefix = explode( '_', __CLASS__ );
+        $this->_prefix = $this->_prefix[0];
+
+
 		$class_map = $this->_cache();
 		if (
 			! is_array( $class_map ) ||
@@ -347,7 +345,7 @@ class Ai1ec_Loader {
 		) {
 			if ( ! defined( 'AI1EC_DEBUG' ) || ! AI1EC_DEBUG ) {
 
-				throw new Exception(
+				throw new Ai1ec_Bootstrap_Exception(
 					'Generated class map is invalid: ' .
 					var_export( $class_map, true ) );
 

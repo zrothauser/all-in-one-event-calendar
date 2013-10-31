@@ -22,14 +22,16 @@ class Ai1ec_Object_Registry {
     private $_loader = null;
 
     /**
+     * get method
+     *
      * Return an instance for the requested key, this method has an internal
      * cache
      *
      * @param $key string the key that describe the class to instanciate
      * @return mixed object the instance of the requested class
      */
-    public function get( $key ){
-        $class_name = Ai1ec_Loader::resolve_class_name( $key );
+    public function get( $key ) {
+        $class_name = $this->_loader->resolve_class_name( $key );
         if ( ! isset( $this->_objects[$class_name] ) ) {
 
             // Ask the loader to load the required files
@@ -46,6 +48,8 @@ class Ai1ec_Object_Registry {
     }
 
     /**
+     * initiate method
+     *
      * Instanciate the class given the class names and arguments
      *
      * @param string $class_name The name of the class to instanciate
@@ -54,7 +58,7 @@ class Ai1ec_Object_Registry {
      *
      * @return object A new instance of the requested class
      */
-    public function initiate( $class_name, array $argv = array() ){
+    public function initiate( $class_name, array $argv = array() ) {
 
         switch ( count( $argv ) ) {
             case 0:
@@ -81,11 +85,10 @@ class Ai1ec_Object_Registry {
                 return new $class_name( $argv[0], $argv[1], $argv[2], $argv[3], $argv[4] );
                 break;
 
-            default:
-                $reflected = new ReflectionClass( $class_name );
-                return $reflected->newInstanceArgs( $argv );
         }
 
+        $reflected = new ReflectionClass( $class_name );
+        return $reflected->newInstanceArgs( $argv );
     }
 
     /**
@@ -95,7 +98,7 @@ class Ai1ec_Object_Registry {
      *
      * @return void Constructor does not return
      */
-    public function __construct(){
+    public function __construct() {
 
         $this->_loader = new Ai1ec_Loader();
 

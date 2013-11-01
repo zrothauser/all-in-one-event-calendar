@@ -65,6 +65,13 @@ function ai1ec_initiate_constants() {
 		define( 'AI1EC_UPDATES_URL',        'http://api.time.ly/plugin/pro/latest' );
 	}
 
+	// ===============
+	// = PLUGIN PATH =
+	// ===============
+	if ( ! defined( 'AI1EC_PATH' ) ) {
+		define( 'AI1EC_PATH',               dirname( __FILE__ ) );
+	}
+
 	// =============
 	// = POST TYPE =
 	// =============

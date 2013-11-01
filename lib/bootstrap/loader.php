@@ -29,6 +29,11 @@ class Ai1ec_Loader {
 	protected $_prefix         = null;
 
 	/**
+	 * @var string Base path to plugins core directory
+	 */
+	protected $_base_path      = null;
+
+	/**
 	 * load method
 	 *
 	 * Load given class, via `require`, into memory
@@ -76,7 +81,7 @@ class Ai1ec_Loader {
 	 * @return array Map of classes and corresponding file entites
 	 */
 	public function collect_classes() {
-		$names = $this->_locate_all_files( AI1EC_PATH );
+		$names = $this->_locate_all_files( $this->_base_path );
 		$this->_cache( $names );
 		return $names;
 	}
@@ -198,10 +203,10 @@ class Ai1ec_Loader {
 	 * @return string Modified content, with paths replaced
 	 */
 	protected function _sanitize_paths( $content ) {
-		$local_ds		= '/';
-		$ai1ec_path = AI1EC_PATH;
+		$local_ds   = '/';
+		$ai1ec_path = $this->_base_path;
 		if ( '\\' === DIRECTORY_SEPARATOR ) {
-			$local_ds		= '\\\\';
+			$local_ds   = '\\\\';
 			$ai1ec_path = str_replace( '\\', '\\\\', $ai1ec_path );
 		}
 		$content = str_replace(
@@ -265,7 +270,8 @@ class Ai1ec_Loader {
 	 *
 	 * @return void Constructor does not return
 	 */
-	public function __construct() {
+	public function __construct( $base_path ) {
+		$this->_base_path = $base_path;
 		$this->_prefix = explode( '_', __CLASS__ );
 		$this->_prefix = $this->_prefix[0];
 		$class_map = $this->_cache();
@@ -274,7 +280,9 @@ class Ai1ec_Loader {
 			defined( 'AI1EC_DEBUG' ) && AI1EC_DEBUG
 		) {
 			if ( ! defined( 'AI1EC_DEBUG' ) || ! AI1EC_DEBUG ) {
-				throw new Ai1ec_Bootstrap_Exception(
+				// using generic `Ai1ec_Exception` as others are, potentially,
+				// not resolved at this time.
+				throw new Ai1ec_Exception(
 					'Generated class map is invalid: ' .
 					var_export( $class_map, true )
 				);

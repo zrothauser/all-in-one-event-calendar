@@ -8,8 +8,18 @@
  * Version: 2.0
  */
 
-require_once 'lib/exception/handler.php';
-require_once 'lib/http/response.php';
+
+$ai1ec_base_dir = dirname( __FILE__ );
+
+require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'lib' .
+	DIRECTORY_SEPARATOR . 'exception' . DIRECTORY_SEPARATOR . 'ai1ec.php';
+require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'lib' .
+	DIRECTORY_SEPARATOR . 'exception' . DIRECTORY_SEPARATOR . 'error.php';
+require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'lib' .
+	DIRECTORY_SEPARATOR . 'exception' . DIRECTORY_SEPARATOR . 'handler.php';
+require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'lib' .
+	DIRECTORY_SEPARATOR . 'http' . DIRECTORY_SEPARATOR . 'response' .
+	DIRECTORY_SEPARATOR . 'helper.php';
 $ai1ec_exception_handler = new Ai1ec_Exception_Handler(
 	'Ai1ec_Exception',
 	'Ai1ec_Error_Exception'
@@ -34,16 +44,20 @@ $ai1ec_exception_handler->set_prev_ex_handler( $prev_ex_handler );
 
 // Regular startup sequence starts here
 
-$ai1ec_dir = dirname( __FILE__ );
+define( 'AI1EC_PATH', $ai1ec_base_dir );
 
-require_once $ai1ec_dir . DIRECTORY_SEPARATOR . 'lib' .DIRECTORY_SEPARATOR .
-		'loader' . DIRECTORY_SEPARATOR . 'loader.php' ;
+define( 'AI1EC_DEBUG', true );
 
+require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'lib' .
+	DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'loader.php';
+
+$ai1ec_loader = new Ai1ec_Loader( $ai1ec_base_dir );
 @ini_set( 'unserialize_callback_func', 'spl_autoload_call' );
-spl_autoload_register( 'Ai1ec_Loader::autoload' );
-require_once 'app/controller/front.php';
+spl_autoload_register( array( $ai1ec_loader, 'load' ) );
+
 $ai1ec_config_path = $ai1ec_dir . DIRECTORY_SEPARATOR . 'app' .
 	DIRECTORY_SEPARATOR . 'config';
+
 $ai1ec_front_controller = new Ai1ec_Front_Controller( $ai1ec_config_path );
 $ai1ec_front_controller->initialize();
 

@@ -39,11 +39,7 @@ class Ai1ec_Template_Helper {
 		$this->_twig = new Twig_Environment( $loader );
 
 		// Add translation filter.
-		$filterFn = create_function(
-			'$term',
-			'return Ai1ec_I18n::__( $term );'
-		);
-		$filter = new Twig_SimpleFilter( '__', $filterFn );
+		$filter = new Twig_SimpleFilter( '__', 'Ai1ec_I18n::__' );
 		$this->_twig->addFilter( $filter );
 	}
 

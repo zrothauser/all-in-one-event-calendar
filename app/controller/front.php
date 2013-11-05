@@ -432,11 +432,6 @@ class Ai1ec_Front_Controller {
 		/**
 		 * Include configuration files and define constants
 		 */
-		foreach ( array( 'constants-local.php', 'constants.php' ) as $file ) {
-			if ( file_exists( $this->_config_dir . $file ) ) {
-				require_once $this->_config_dir . $file;
-			}
-		}
 		if ( ! function_exists( 'ai1ec_initiate_constants' ) ) {
 			throw new Ai1ec_Constants_Not_Set_Exception( 'No constant file was found.' );
 		}

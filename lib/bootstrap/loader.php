@@ -19,6 +19,18 @@ class Ai1ec_Loader {
 	protected $_paths          = null;
 
 	/**
+	 * @var array Map of paths to ignore
+	 */
+	protected $_ignore_paths   = array(
+		'/vendor' => true,
+	);
+
+	/**
+	 * @var bool Set to true when internal state is changed
+	 */
+	protected $_modified       = false;
+
+	/**
 	 * @var array Map of files already included
 	 */
 	protected $_included_files = array();
@@ -104,6 +116,10 @@ class Ai1ec_Loader {
 					continue; // ignore hidden files
 			}
 			$local_path = $path . DIRECTORY_SEPARATOR . $entry;
+			$base_path  = substr( $local_path, strlen( $this->_base_path ) );
+			if ( isset( $this->_ignore_paths[$base_path] ) ) {
+				continue;
+			}
 			if ( is_dir( $local_path ) ) {
 				$class_list += $this->_locate_all_files( $local_path );
 			} else {
@@ -175,9 +191,14 @@ class Ai1ec_Loader {
 				return false;
 			}
 			ksort( $entries, SORT_STRING );
-			$content = var_export( $entries, true );
+			$content = array(
+				'0registered' => $this->_registered,
+				'1class_map'  => $entries,
+			);
+			$content = var_export( $content, true );
 			$content = $this->_sanitize_paths( $content );
 			$content = '<?php return ' . $content . ';';
+			$this->_modified = false;
 			if (
 				false === file_put_contents( $cache_file, $content, LOCK_EX )
 			) { // LOCK_EX is not supported on all hosts (streams)
@@ -188,7 +209,9 @@ class Ai1ec_Loader {
 		if ( ! is_file( $cache_file ) ) {
 			return false;
 		}
-		return ( require $cache_file );
+		$cached = ( require $cache_file );
+		$this->_registered = $cached['0registered'];
+		return $cached['1class_map'];
 	}
 
 	/**
@@ -258,6 +281,48 @@ class Ai1ec_Loader {
 			return null;
 		}
 		return $this->_paths[$key]['c'];
+	}
+
+	/**
+	 * Update cache if object was modified
+	 *
+	 * @return void Destructor does not return
+	 */
+	public function __destruct() {
+		if ( $this->_modified ) {
+			$this->_cache( $this->_paths );
+		}
+	}
+
+	/**
+	 * Register external class map to use in loading sequence
+	 *
+	 * @param string $file Path to class map
+	 *
+	 * @return bool Success loading it
+	 */
+	public function register_map( $file ) {
+		if (
+			isset( $this->_registered[$file] ) && (
+				! defined( 'AI1EC_DEBUG' ) ||
+				! AI1EC_DEBUG
+			)
+		) {
+			return true;
+		}
+		if ( ! is_file( $file ) ) {
+			return false;
+		}
+		$entries = ( require $file );
+		foreach ( $entries as $class_name => $file_path ) {
+			$this->_paths[$class_name] = array(
+				'c' => $class_name,
+				'f' => $file_path,
+			);
+		}
+		$this->_registered[$file] = true;
+		$this->_modified          = true;
+		return true;
 	}
 
 	/**

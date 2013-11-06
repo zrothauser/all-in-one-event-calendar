@@ -9,7 +9,7 @@
  * @package    AI1EC
  * @subpackage AI1EC.Exception
  */
-abstract class Ai1ec_Exception extends Exception {
+class Ai1ec_Exception extends Exception {
 
 	/**
 	 * A message to be displayed for admin

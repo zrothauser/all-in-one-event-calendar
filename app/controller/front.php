@@ -33,11 +33,13 @@ class Ai1ec_Front_Controller {
 
 	/**
 	 * Initialize the controller.
-	 * 
+	 *
+	 * @param Ai1ec_Loader $ai1ec_loader Instance of Ai1EC classes loader
+	 *
 	 * @return void 
 	 */
-	public function initialize() {
-		$this->_init();
+	public function initialize( $ai1ec_loader ) {
+		$this->_init( $ai1ec_loader );
 		$this->_initialize_router();
 		$this->_initialize_dispatcher();
 	}
@@ -80,22 +82,24 @@ class Ai1ec_Front_Controller {
 
 	/**
 	 * Initialize the system.
-	 * 
+	 *
 	 * Perform all the inizialization needed for the system.
 	 * Throws some uncatched exception for critical failures.
 	 * Plugin will be disabled by the exception handler on those failures.
-	 * 
+	 *
+	 * @param Ai1ec_Loader $ai1ec_loader Instance of Ai1EC classes loader
+	 *
 	 * @throws Ai1ec_Constants_Not_Set_Exception
 	 * @throws Ai1ec_Database_Update_Exception
 	 * @throws Ai1ec_Database_Schema_Exception
-	 * 
-	 * @return void 
+	 *
+	 * @return void Method does not return
 	 */
-	private function _init() {
+	private function _init( $ai1ec_loader ) {
 		$exception = null;
 		try {
 			// Initialize the registry object
-			$this->_initialize_registry();
+			$this->_initialize_registry( $ai1ec_loader );
 			// Initialize the crons
 			$this->_install_crons();
 			// Register the activation hook
@@ -212,11 +216,13 @@ class Ai1ec_Front_Controller {
 
 	/**
 	 * Initialize the registry object.
-	 * 
-	 * @return void 
+	 *
+	 * @param Ai1ec_Loader $ai1ec_loader Instance of Ai1EC classes loader
+	 *
+	 * @return void Method does not return
 	 */
-	private function _initialize_registry() {
-		$this->_registry = new Ai1ec_Object_Registry();
+	private function _initialize_registry( $ai1ec_loader ) {
+		$this->_registry = new Ai1ec_Object_Registry( $ai1ec_loader );
 	}
 
 	/**

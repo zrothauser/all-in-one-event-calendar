@@ -88,9 +88,21 @@ function ai1ec_initiate_constants( $ai1ec_base_dir ) {
 	}
 
 	// ==============
+	// = SCRIPT URL =
+	// ==============
+	if ( ! defined( 'AI1EC_SCRIPT_URL' ) ) {
+		define( 'AI1EC_SCRIPT_URL',         get_option( 'home' ) . '/?plugin=' . AI1EC_PLUGIN_NAME );
+	}
+
+	// ==============
 	// = EXPORT URL =
 	// ==============
 	if ( ! defined( 'AI1EC_EXPORT_URL' ) ) {
+		// ====================================================
+		// = Convert http:// to webcal:// in AI1EC_SCRIPT_URL =
+		// =  (webcal:// protocol does not support https://)  =
+		// ====================================================
+		$webcal_url = str_replace( 'http://', 'webcal://', AI1EC_SCRIPT_URL );
 		define( 'AI1EC_EXPORT_URL',         $webcal_url . '&controller=ai1ec_exporter_controller&action=export_events&cb=' . rand() );
 	}
 

@@ -45,7 +45,7 @@ $ai1ec_exception_handler->set_prev_ex_handler( $prev_ex_handler );
 // Regular startup sequence starts here
 
 $ai1ec_config_path = $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'app' .
-	DIRECTORY_SEPARATOR . 'config';
+	DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR;
 
 // Include configuration files and initiate global constants.
 foreach ( array( 'constants-local.php', 'constants.php' ) as $file ) {
@@ -55,7 +55,7 @@ foreach ( array( 'constants-local.php', 'constants.php' ) as $file ) {
 }
 
 if ( ! function_exists( 'ai1ec_initiate_constants' ) ) {
-	throw new Ai1ec_Constants_Not_Set_Exception(
+	throw new Ai1ec_Exception(
 		'No constant file was found.'
 	);
 }
@@ -69,6 +69,4 @@ $ai1ec_loader = new Ai1ec_Loader( $ai1ec_base_dir );
 spl_autoload_register( array( $ai1ec_loader, 'load' ) );
 
 $ai1ec_front_controller = new Ai1ec_Front_Controller();
-$ai1ec_front_controller->initialize();
-
-
+$ai1ec_front_controller->initialize( $ai1ec_loader );

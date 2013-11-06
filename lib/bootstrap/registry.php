@@ -36,6 +36,11 @@ class Ai1ec_Object_Registry {
 	 */
 	public function get( $key ) {
 		$class_name = $this->_loader->resolve_class_name( $key );
+		if ( ! $class_name ) {
+			throw new Ai1ec_Bootstrap_Exception(
+				'Unable to resolve class for "' . $key . '"'
+			);
+		}
 		if ( ! isset( $this->_objects[$class_name] ) ) {
 			// Ask the loader to load the required files to avoid autoloader
 			$this->_loader->load( $class_name );
@@ -85,10 +90,12 @@ class Ai1ec_Object_Registry {
 	 *
 	 * Initialize the Registry
 	 *
+	 * @param Ai1ec_Loader $ai1ec_loader Instance of Ai1EC classes loader
+	 *
 	 * @return void Constructor does not return
 	 */
-	public function __construct() {
-		$this->_loader = new Ai1ec_Loader();
+	public function __construct( $ai1ec_loader ) {
+		$this->_loader = $ai1ec_loader;
 	}
 
 }

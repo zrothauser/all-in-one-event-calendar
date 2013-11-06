@@ -85,6 +85,35 @@ function ai1ec_initiate_constants( $ai1ec_base_dir ) {
 		define( 'AI1EC_PATH',               dirname( __FILE__ ) );
 	}
 
+	// ===============
+	// = ADMIN PATH  =
+	// ===============
+	if ( ! defined( 'AI1EC_ADMIN_PATH' ) ) {
+		define( 
+			'AI1EC_ADMIN_PATH',
+			AI1EC_PATH . DIRECTORY_SEPARATOR . 'public' . 
+				DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR
+		);
+	}
+
+	// ================
+	// = THEME FOLDER =
+	// ================
+	if ( ! defined( 'AI1EC_THEME_FOLDER' ) ) {
+		define( 'AI1EC_THEME_FOLDER',        'themes-ai1ec' );
+	}
+
+	// =======================
+	// = DEFAULT THEME PATH  =
+	// =======================
+	if ( ! defined( 'AI1EC_DEFAULT_THEME_PATH' ) ) {
+		define(
+			'AI1EC_DEFAULT_THEME_PATH',
+			AI1EC_PATH . DIRECTORY_SEPARATOR . 'public' .
+				DIRECTORY_SEPARATOR . AI1EC_THEME_FOLDER . DIRECTORY_SEPARATOR
+		);
+	}
+	
 	// =============
 	// = POST TYPE =
 	// =============

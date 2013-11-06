@@ -47,12 +47,19 @@ $ai1ec_exception_handler->set_prev_ex_handler( $prev_ex_handler );
 $ai1ec_config_path = $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'app' .
 	DIRECTORY_SEPARATOR . 'config';
 
-// Include constants
+// Include configuration files and initiate global constants.
 foreach ( array( 'constants-local.php', 'constants.php' ) as $file ) {
-    if ( file_exists( $ai1ec_config_path . $file ) ) {
+    if ( is_file( $ai1ec_config_path . $file ) ) {
         require_once $ai1ec_config_path . $file;
     }
 }
+
+if ( ! function_exists( 'ai1ec_initiate_constants' ) ) {
+	throw new Ai1ec_Constants_Not_Set_Exception(
+		'No constant file was found.'
+	);
+}
+ai1ec_initiate_constants( $ai1ec_base_dir );
 
 require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'lib' .
 	DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'loader.php';
@@ -61,8 +68,7 @@ $ai1ec_loader = new Ai1ec_Loader( $ai1ec_base_dir );
 @ini_set( 'unserialize_callback_func', 'spl_autoload_call' );
 spl_autoload_register( array( $ai1ec_loader, 'load' ) );
 
-
-$ai1ec_front_controller = new Ai1ec_Front_Controller( $ai1ec_base_dir );
+$ai1ec_front_controller = new Ai1ec_Front_Controller();
 $ai1ec_front_controller->initialize();
 
 

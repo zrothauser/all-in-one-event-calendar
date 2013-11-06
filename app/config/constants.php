@@ -3,13 +3,22 @@
 /**
  * Define required constants, if these have not been defined already.
  *
- * @uses plugin_basename       To determine plug-in folder+file name
- * @uses plugins_url           To determine absolute URI to plug-ins' folder
- * @uses get_option            To fetch 'home' URI value
+ * @param string $ai1ec_base_dir Sanitized, absolute, path to Ai1EC base dir
+ *
+ * @uses plugin_basename To determine plug-in folder+file name
+ * @uses plugins_url     To determine absolute URI to plug-ins' folder
+ * @uses get_option      To fetch 'home' URI value
  *
  * @return void Method does not return
  */
-function ai1ec_initiate_constants() {
+function ai1ec_initiate_constants( $ai1ec_base_dir ) {
+
+	// ===============
+	// = Plugin Path =
+	// ===============
+	if ( ! defined( 'AI1EC_PATH' ) ) {
+		define( 'AI1EC_PATH', 				$ai1ec_base_dir );
+	}
 
 	// ===============
 	// = Plugin Name =
@@ -22,8 +31,7 @@ function ai1ec_initiate_constants() {
 	// = Plugin Basename =
 	// ===================
 	if ( ! defined( 'AI1EC_PLUGIN_BASENAME' ) ) {
-		$plugin = dirname( __FILE__ ) . DIRECTORY_SEPARATOR .
-			AI1EC_PLUGIN_NAME . '.php';
+		$plugin = AI1EC_PATH . DIRECTORY_SEPARATOR . AI1EC_PLUGIN_NAME . '.php';
 		define( 'AI1EC_PLUGIN_BASENAME',    plugin_basename( $plugin ) );
 		unset( $plugin );
 	}
@@ -80,9 +88,21 @@ function ai1ec_initiate_constants() {
 	}
 
 	// ==============
+	// = SCRIPT URL =
+	// ==============
+	if ( ! defined( 'AI1EC_SCRIPT_URL' ) ) {
+		define( 'AI1EC_SCRIPT_URL',         get_option( 'home' ) . '/?plugin=' . AI1EC_PLUGIN_NAME );
+	}
+
+	// ==============
 	// = EXPORT URL =
 	// ==============
 	if ( ! defined( 'AI1EC_EXPORT_URL' ) ) {
+		// ====================================================
+		// = Convert http:// to webcal:// in AI1EC_SCRIPT_URL =
+		// =  (webcal:// protocol does not support https://)  =
+		// ====================================================
+		$webcal_url = str_replace( 'http://', 'webcal://', AI1EC_SCRIPT_URL );
 		define( 'AI1EC_EXPORT_URL',         $webcal_url . '&controller=ai1ec_exporter_controller&action=export_events&cb=' . rand() );
 	}
 

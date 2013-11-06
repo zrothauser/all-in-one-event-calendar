@@ -12,11 +12,6 @@
 class Ai1ec_Front_Controller {
 
 	/**
-	 * @var string Absolute path to folder for configuration files.
-	 */
-	private $_config_dir;
-
-	/**
 	 * @var Ai1ec_Object_Registry The Object registry.
 	 */
 	private $_registry;
@@ -36,25 +31,15 @@ class Ai1ec_Front_Controller {
 	 */
 	private $_request;
 
-
-	/**
-	 * Constructor
-	 *
-	 * @param string $config_dir Sanitized, absolute, path to configurations directory
-	 *
-	 * @return void
-	 */
-	public function __construct( $config_dir ) {
-		$this->_config_dir = $config_dir;
-	}
-
 	/**
 	 * Initialize the controller.
-	 * 
+	 *
+	 * @param Ai1ec_Loader $ai1ec_loader Instance of Ai1EC classes loader
+	 *
 	 * @return void 
 	 */
-	public function initialize() {
-		$this->_init();
+	public function initialize( $ai1ec_loader ) {
+		$this->_init( $ai1ec_loader );
 		$this->_initialize_router();
 		$this->_initialize_dispatcher();
 	}
@@ -97,24 +82,24 @@ class Ai1ec_Front_Controller {
 
 	/**
 	 * Initialize the system.
-	 * 
+	 *
 	 * Perform all the inizialization needed for the system.
 	 * Throws some uncatched exception for critical failures.
 	 * Plugin will be disabled by the exception handler on those failures.
-	 * 
+	 *
+	 * @param Ai1ec_Loader $ai1ec_loader Instance of Ai1EC classes loader
+	 *
 	 * @throws Ai1ec_Constants_Not_Set_Exception
 	 * @throws Ai1ec_Database_Update_Exception
 	 * @throws Ai1ec_Database_Schema_Exception
-	 * 
-	 * @return void 
+	 *
+	 * @return void Method does not return
 	 */
-	private function _init() {
+	private function _init( $ai1ec_loader ) {
 		$exception = null;
 		try {
-			// Load the constants
-			$this->_configuration();
 			// Initialize the registry object
-			$this->_initialize_registry();
+			$this->_initialize_registry( $ai1ec_loader );
 			// Initialize the crons
 			$this->_install_crons();
 			// Register the activation hook
@@ -231,11 +216,13 @@ class Ai1ec_Front_Controller {
 
 	/**
 	 * Initialize the registry object.
-	 * 
-	 * @return void 
+	 *
+	 * @param Ai1ec_Loader $ai1ec_loader Instance of Ai1EC classes loader
+	 *
+	 * @return void Method does not return
 	 */
-	private function _initialize_registry() {
-		$this->_registry = new Ai1ec_Object_Registry();
+	private function _initialize_registry( $ai1ec_loader ) {
+		$this->_registry = new Ai1ec_Object_Registry( $ai1ec_loader );
 	}
 
 	/**
@@ -421,26 +408,4 @@ class Ai1ec_Front_Controller {
 			->register_rewrite( $page_link );
 	}
 
-	/**
-	 * Load our constant file.
-	 * 
-	 * @throws Ai1ec_Constants_Not_Set_Exception
-	 * 
-	 * @return void 
-	 */
-	private function _configuration() {
-		/**
-		 * Include configuration files and define constants
-		 */
-		foreach ( array( 'constants-local.php', 'constants.php' ) as $file ) {
-			if ( file_exists( $this->_config_dir . $file ) ) {
-				require_once $this->_config_dir . $file;
-			}
-		}
-		if ( ! function_exists( 'ai1ec_initiate_constants' ) ) {
-			throw new Ai1ec_Constants_Not_Set_Exception( 'No constant file was found.' );
-		}
-		ai1ec_initiate_constants();
-		
-	}
 }

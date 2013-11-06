@@ -12,11 +12,6 @@
 class Ai1ec_Front_Controller {
 
 	/**
-	 * @var string Absolute path to folder for configuration files.
-	 */
-	private $_config_dir;
-
-	/**
 	 * @var Ai1ec_Object_Registry The Object registry.
 	 */
 	private $_registry;
@@ -44,8 +39,7 @@ class Ai1ec_Front_Controller {
 	 *
 	 * @return void
 	 */
-	public function __construct( $config_dir ) {
-		$this->_config_dir = $config_dir;
+	public function __construct() {
 	}
 
 	/**

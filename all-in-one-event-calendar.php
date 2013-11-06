@@ -63,6 +63,6 @@ $ai1ec_loader = new Ai1ec_Loader( $ai1ec_base_dir );
 @ini_set( 'unserialize_callback_func', 'spl_autoload_call' );
 spl_autoload_register( array( $ai1ec_loader, 'load' ) );
 
-$ai1ec_front_controller = new Ai1ec_Front_Controller( $ai1ec_config_path );
+$ai1ec_front_controller = new Ai1ec_Front_Controller();
 $ai1ec_front_controller->initialize();
 

@@ -40,6 +40,13 @@ class Ai1ec_Front_Controller {
 	 * @return void
 	 */
 	public function __construct() {
+		/**
+		 * Include configuration files and define constants
+		 */
+		if ( ! function_exists( 'ai1ec_initiate_constants' ) ) {
+			throw new Ai1ec_Constants_Not_Set_Exception( 'No constant file was found.' );
+		}
+		ai1ec_initiate_constants();
 	}
 
 	/**
@@ -105,8 +112,6 @@ class Ai1ec_Front_Controller {
 	private function _init() {
 		$exception = null;
 		try {
-			// Load the constants
-			$this->_configuration();
 			// Initialize the registry object
 			$this->_initialize_registry();
 			// Initialize the crons
@@ -415,21 +420,4 @@ class Ai1ec_Front_Controller {
 			->register_rewrite( $page_link );
 	}
 
-	/**
-	 * Load our constant file.
-	 * 
-	 * @throws Ai1ec_Constants_Not_Set_Exception
-	 * 
-	 * @return void 
-	 */
-	private function _configuration() {
-		/**
-		 * Include configuration files and define constants
-		 */
-		if ( ! function_exists( 'ai1ec_initiate_constants' ) ) {
-			throw new Ai1ec_Constants_Not_Set_Exception( 'No constant file was found.' );
-		}
-		ai1ec_initiate_constants();
-		
-	}
 }

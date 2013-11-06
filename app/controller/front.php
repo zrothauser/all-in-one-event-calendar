@@ -39,14 +39,14 @@ class Ai1ec_Front_Controller {
 	 *
 	 * @return void
 	 */
-	public function __construct() {
+	public function __construct( $ai1ec_base_dir ) {
 		/**
 		 * Include configuration files and define constants
 		 */
 		if ( ! function_exists( 'ai1ec_initiate_constants' ) ) {
 			throw new Ai1ec_Constants_Not_Set_Exception( 'No constant file was found.' );
 		}
-		ai1ec_initiate_constants();
+		ai1ec_initiate_constants( $ai1ec_base_dir );
 	}
 
 	/**

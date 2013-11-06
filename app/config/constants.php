@@ -9,7 +9,14 @@
  *
  * @return void Method does not return
  */
-function ai1ec_initiate_constants() {
+function ai1ec_initiate_constants( $ai1ec_base_dir ) {
+
+	// ===============
+	// = Plugin Path =
+	// ===============
+	if ( ! defined( 'AI1EC_PATH' ) ) {
+		define( 'AI1EC_PATH', 				$ai1ec_base_dir );
+	}
 
 	// ===============
 	// = Plugin Name =

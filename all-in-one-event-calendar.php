@@ -44,8 +44,6 @@ $ai1ec_exception_handler->set_prev_ex_handler( $prev_ex_handler );
 
 // Regular startup sequence starts here
 
-define( 'AI1EC_PATH', $ai1ec_base_dir );
-
 $ai1ec_config_path = $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'app' .
 	DIRECTORY_SEPARATOR . 'config';
 
@@ -63,6 +61,8 @@ $ai1ec_loader = new Ai1ec_Loader( $ai1ec_base_dir );
 @ini_set( 'unserialize_callback_func', 'spl_autoload_call' );
 spl_autoload_register( array( $ai1ec_loader, 'load' ) );
 
-$ai1ec_front_controller = new Ai1ec_Front_Controller();
+
+$ai1ec_front_controller = new Ai1ec_Front_Controller( $ai1ec_base_dir );
 $ai1ec_front_controller->initialize();
+
 

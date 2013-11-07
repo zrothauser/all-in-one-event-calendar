@@ -8,7 +8,7 @@
  * @package    AI1EC
  * @subpackage AI1EC.Theme.File
  */
-class Ai1ec_Less_File extends Ai1ec_File_Abstract {
+class Ai1ec_File_Less extends Ai1ec_File_Abstract {
 
 	/**
 	 * @var string The default CSS folder.

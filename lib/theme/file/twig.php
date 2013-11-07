@@ -8,7 +8,7 @@
  * @package    AI1EC
  * @subpackage AI1EC.Theme.File
  */
-class Ai1ec_Twig_File extends Ai1ec_File_Abstract {
+class Ai1ec_File_Twig extends Ai1ec_File_Abstract {
 
 	/**
 	 * @var Twig_Environment Twig environment for this helper.

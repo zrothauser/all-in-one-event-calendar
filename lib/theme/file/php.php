@@ -8,7 +8,7 @@
  * @package    AI1EC
  * @subpackage AI1EC.Theme.File
  */
-class Ai1ec_Php_File extends Ai1ec_File_Abstract {
+class Ai1ec_File_Php extends Ai1ec_File_Abstract {
 
 	/**
 	 * @var array the arguments used by the PHP template.

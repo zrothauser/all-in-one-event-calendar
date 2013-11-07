@@ -8,6 +8,6 @@
  * @package    AI1EC
  * @subpackage AI1EC.Theme.File
  */
-class Ai1ec_File_Not_Found extends Ai1ec_Exception {
+class Ai1ec_File_Exception extends Ai1ec_Exception {
 
 }

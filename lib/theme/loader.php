@@ -83,6 +83,7 @@ class Ai1ec_Theme_Loader {
 					$args,
 					$this->get_twig_instance( $paths )
 				);
+				break;
 			default:
 				throw new Ai1ec_File_Not_Found( 
 					'We couldn\t find a suitable class for extension ' . $ext 
@@ -90,7 +91,7 @@ class Ai1ec_Theme_Loader {
 				break;
 		}
 		// here file is a concrete class otherwise the exception is thrown
-		if( ! $file->locate_file ) {
+		if ( ! $file->locate_file ) {
 			throw new Ai1ec_File_Not_Found( 
 				'The specified file "' . $file . '" doesn\'t exist.'
 			);

@@ -54,7 +54,7 @@ class Ai1ec_Twig_File extends Ai1ec_File_Abstract {
 	/* (non-PHPdoc)
 	 * @see Ai1ec_File::locate_file()
 	 */
-	public function locate_file() {
+	public function process_file() {
 		$loader = $this->_twig->getLoader();
 		if ( $loader->exists( $this->_name ) ) {
 			$this->_content = $this->_twig->render( $this->_name, $this->_args );

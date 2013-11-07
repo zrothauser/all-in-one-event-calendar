@@ -34,7 +34,7 @@ class Ai1ec_Php_File extends Ai1ec_File_Abstract {
 	/* (non-PHPdoc)
 	 * @see Ai1ec_File_Abstract::locate_file()
 	 */
-	public function locate_file() {
+	public function process_file() {
 		$files_to_check = array();
 		foreach ( array_values( $this->_paths ) as $path ) {
 			$files_to_check[] = $path . DIRECTORY_SEPARATOR . $this->_name;

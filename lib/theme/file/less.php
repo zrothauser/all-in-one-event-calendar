@@ -23,7 +23,7 @@ class Ai1ec_Less_File extends Ai1ec_File_Abstract {
 	/* (non-PHPdoc)
 	 * @see Ai1ec_File_Abstract::locate_file()
 	 */
-	public function locate_file() {
+	public function process_file() {
 		/**
 		 * First it looks if there is a css file in the directory of the current theme.
 		 * Then it looks for a less version in the directory of the current theme
@@ -35,10 +35,6 @@ class Ai1ec_Less_File extends Ai1ec_File_Abstract {
 		$name = $this->_name;
 		$css_file  = $name . '.css';
 		$less_file = $name . '.less';
-		if( $this->name === self::USER_VARIABLES_FILE ) {
-			$less_file = "{$name}.php";
-			$css_file = $less_file;
-		}
 
 		// Look up file. Start with CSS & LESS files in selected theme, then resort
 		// to default theme's LESS file.
@@ -48,8 +44,8 @@ class Ai1ec_Less_File extends Ai1ec_File_Abstract {
 			$active_less_folder . DIRECTORY_SEPARATOR . $less_file,
 		);
 
-		foreach( $files_to_check as $file_to_check ) {
-			if( file_exists( $file_to_check ) ) {
+		foreach ( $files_to_check as $file_to_check ) {
+			if ( file_exists( $file_to_check ) ) {
 				$this->_content = file_get_contents($file_to_check );
 				return true;
 			}

@@ -32,7 +32,7 @@ abstract class Ai1ec_File_Abstract {
 	 * 
 	 * @return boolean Returns true if the file is found, false otheriwse.
 	 */
-	abstract public function locate_file() {}
+	abstract public function process_file() {}
 
 	/**
 	 * Standard constructor for basic files.
@@ -67,6 +67,6 @@ abstract class Ai1ec_File_Abstract {
 	 * Just in case you want to echo the object.
 	 */
 	public function __toString() {
-		$this->render();
+		$this->get_content();
 	}
 }

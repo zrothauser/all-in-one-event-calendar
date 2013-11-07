@@ -19,7 +19,7 @@ class Ai1ec_Exception extends Exception {
 	 * @return string Message to be displayed for admin
 	 */
 	public function get_html_message() {
-		// standard html help message here;
+		return $this->getMessage();
 	}
 
 }

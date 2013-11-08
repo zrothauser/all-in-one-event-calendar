@@ -40,7 +40,6 @@ class Ai1ec_Front_Controller {
 	 */
 	public function initialize( $ai1ec_loader ) {
 		$this->_init( $ai1ec_loader );
-		$this->_initialize_router();
 		$this->_initialize_dispatcher();
 	}
 
@@ -346,7 +345,9 @@ class Ai1ec_Front_Controller {
 
 	/**
 	 * Initializes the URL router used by our plugin.
-	 *
+	 * 
+	 * @wp_hook init
+	 * 
 	 * @return void 
 	 */
 	private function _initialize_router() {
@@ -356,8 +357,8 @@ class Ai1ec_Front_Controller {
 		$uri_helper          = $this->_registry->get( 'routing.uri-helper' );
 		$cal_page            = $settings->get( 'calendar_page_id' );
 		if (
-			! isset( $settings->calendar_page_id ) ||
-			$settings->calendar_page_id < 1
+			! $cal_page ||
+			$cal_page < 1
 		) { // Routing may not be affected in any way if no calendar page exists.
 			return NULL;
 		}		
@@ -367,23 +368,25 @@ class Ai1ec_Front_Controller {
 		if ( $localization_helper->is_wpml_active() ) {
 			$trans = $localization_helper
 				->get_wpml_translations_of_page(
-					$settings->calendar_page_id,
+					$cal_page,
 					true
 			);
 			$clang = $localization_helper->get_language();
 			if ( isset( $trans[$clang] ) ) {
-				$settings->calendar_page_id = $trans[$clang];
+				$cal_page = $trans[$clang];
 			}
 		}
-		$template_link_helper = $this->_registry->get( 'template_link' );
+		$template_link_helper = $this->_registry->get( 'template.link.helper' );
+
 		$page_base = $template_link_helper->get_page_link( 
-			$settings->calendar_page_id
+			$cal_page
 		);
+
 		$page_base = $uri_helper::get_pagebase( $page_base );
 		$page_link = 'index.php?page_id=' .
-				$settings->calendar_page_id;
+				$cal_page;
 		$pagebase_for_href = $uri_helper::get_pagebase_for_links(
-				get_page_link( $settings->calendar_page_id ),
+				get_page_link( $cal_page ),
 				$clang
 		);
 		// save the pagebase to set up the factory later

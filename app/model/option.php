@@ -15,15 +15,19 @@ class Ai1ec_Option extends Ai1ec_App {
 	 */
 	protected $_cache = null;
 
+	/**
+	 * @var Ai1ec_Object_Registry instance of the registry object.
+	 */
 	protected $_registry;
+
 	/**
 	 * Add cache instance to object scope.
 	 *
 	 * @return void
 	 */
-	public function __construct( $registry ) {
+	public function __construct( Ai1ec_Object_Registry $registry ) {
 		$this->_registry = $registry;
-		$this->_cache = $registry->get( 'cache.memory' );
+		$this->_cache    = $registry->get( 'cache.memory' );
 	}
 
 	/**

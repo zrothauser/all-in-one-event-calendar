@@ -9,8 +9,7 @@
  * @package    AI1EC
  * @subpackage AI1EC.Controller
  */
-class Ai1ec_Shutdown_Controller
-{
+class Ai1ec_Shutdown_Controller {
 
 	/**
 	 * @var array Map of object names and class names they represent to preserve

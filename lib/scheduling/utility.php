@@ -23,6 +23,9 @@ class Ai1ec_Scheduling_Utility {
 	 */
 	protected $_configuration   = NULL;
 
+	/**
+	 * @var Ai1ec_Object_Registry The registry object.
+	 */
 	private $_registry;
 
 	/**
@@ -32,8 +35,8 @@ class Ai1ec_Scheduling_Utility {
 	 *
 	 * @return void Constructor does not return
 	 */
-	public function __construct( $registry ) {
-		$this->_registry = $registry;
+	public function __construct( Ai1ec_Object_Registry $registry ) {
+		$this->_registry      = $registry;
 		$defaults = array(
 			'hooks'   => array(),
 			'freqs'   => array(),

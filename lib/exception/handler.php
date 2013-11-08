@@ -89,8 +89,6 @@ class Ai1ec_Exception_Handler {
 	 * @return void Exception handler is not expected to return
 	 */
 	public function handle_exception( Exception $exception ) {
-		fb($exception);
-		die();
 		// if it's something we handle, handle it
 		if ( $exception instanceof $this->_exception_class ) {
 			// check if it has a methof for deatiled html

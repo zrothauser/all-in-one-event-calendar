@@ -13,8 +13,16 @@
  */
 class Ai1ec_Loader {
 
+	/**
+	 * @var string Used to specify new instances every time.
+	 */
 	CONST NEWINST    = 'n';
+
+	/**
+	 * @var string Used to specify to treat as singleton.
+	 */
 	CONST GLOBALINST = 'g';
+
 	/**
 	 * @var array Map of files to be included
 	 */
@@ -136,6 +144,13 @@ class Ai1ec_Loader {
 		return $names;
 	}
 
+	/**
+	 * Converts the long form to the short form where applicable.
+	 * 
+	 * @param string $instantiator
+	 * 
+	 * @return string
+	 */
 	protected function _convert_instantiator_for_map( $instantiator ) {
 		if ( empty( $instantiator ) || 'global' === $instantiator ) {
 			return self::GLOBALINST;

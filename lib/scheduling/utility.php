@@ -44,7 +44,7 @@ class Ai1ec_Scheduling_Utility {
 		);
 		$this->_updated       = false;
 
-		$this->_configuration = $this->_registry->get( 'model.option', $registry )->get(
+		$this->_configuration = $this->_registry->get( 'model.option' )->get(
 				self::OPTION_NAME,
 				$defaults
 		);

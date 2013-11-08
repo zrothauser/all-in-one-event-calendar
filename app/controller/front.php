@@ -67,8 +67,7 @@ class Ai1ec_Front_Controller {
 		$this->_process_request();
 		// get the resolver
 		$resolver = $this->_registry->get( 
-			'command.resolver', 
-			$this->_registry, 
+			'command.resolver',
 			$this->_request
 		);
 		// get the command
@@ -254,13 +253,13 @@ class Ai1ec_Front_Controller {
 			$settings->get( 'ai1ec_db_version' ) != AI1EC_DB_VERSION
 		) {
 		
-			$applicator = $this->_registry->get( 'database.applicator', $this->_registry );
+			$applicator = $this->_registry->get( 'database.applicator' );
 			
 			
 			$applicator->remove_instance_duplicates();
 		
 			$structures = array();
-			$schema     = $this->_registry->get( 'database.schema', $this->_registry );
+			$schema     = $this->_registry->get( 'database.schema' );
 			if ( ! $schema->upgrade( AI1EC_DB_VERSION ) ) {
 				throw new Ai1ec_Database_Schema_Exception(
 					'Failed to perform schema upgrade'
@@ -352,7 +351,7 @@ class Ai1ec_Front_Controller {
 	 */
 	private function _initialize_router() {
 		$settings            = $this->_registry->get( 'model.settings' );
-		$router              = $this->_registry->get( 'routing.router', $this->_registry );
+		$router              = $this->_registry->get( 'routing.router' );
 		$localization_helper = $this->_registry->get( 'p28n.wpml' );
 		$uri_helper          = $this->_registry->get( 'routing.uri-helper' );
 		$cal_page            = $settings->get( 'calendar_page_id' );

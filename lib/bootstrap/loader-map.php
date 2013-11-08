@@ -22,6 +22,7 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'app.php',
       'c' => 'Ai1ec_App',
       'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_Bootstrap_Exception' => 
     array (
@@ -46,48 +47,55 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'command' . DIRECTORY_SEPARATOR . 'abstract.php',
       'c' => 'Ai1ec_Command',
       'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_Command_Render_Calendar' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'command' . DIRECTORY_SEPARATOR . 'render_calendar.php',
       'c' => 'Ai1ec_Command_Render_Calendar',
       'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_Command_Render_Event' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'command' . DIRECTORY_SEPARATOR . 'render_event.php',
       'c' => 'Ai1ec_Command_Render_Event',
       'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_Command_Resolver' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'command' . DIRECTORY_SEPARATOR . 'resolver.php',
       'c' => 'Ai1ec_Command_Resolver',
       'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_Constants_Not_Set_Exception' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'exception.php',
       'c' => 'Ai1ec_Constants_Not_Set_Exception',
-      'i' => 'Ai1ec_View_Factory.Category_Exception',
+      'i' => 'g',
     ),
     'Ai1ec_Database_Applicator' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'applicator.php',
       'c' => 'Ai1ec_Database_Applicator',
       'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_Database_Helper' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'helper.php',
       'c' => 'Ai1ec_Database_Helper',
       'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_Database_Schema' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'schema.php',
       'c' => 'Ai1ec_Database_Schema',
       'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_Database_Schema_Exception' => 
     array (
@@ -142,6 +150,7 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'calendar-page-selector.php',
       'c' => 'Ai1ec_Html_Element_Calendar_Page_Selector',
       'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_Html_Element_Interface' => 
     array (
@@ -154,6 +163,7 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'settings.php',
       'c' => 'Ai1ec_Html_Element_Settings',
       'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_Html_Exception' => 
     array (
@@ -190,6 +200,7 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'javascript.php',
       'c' => 'Ai1ec_Javascript_Controller',
       'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_Loader' => 
     array (
@@ -208,18 +219,21 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'meta.php',
       'c' => 'Ai1ec_Meta',
       'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_Meta_Post' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'meta-post.php',
       'c' => 'Ai1ec_Meta_Post',
       'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_Meta_User' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'meta-user.php',
       'c' => 'Ai1ec_Meta_User',
       'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_Object_Registry' => 
     array (
@@ -232,6 +246,7 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'option.php',
       'c' => 'Ai1ec_Option',
       'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_Post_Helper' => 
     array (
@@ -280,12 +295,14 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'routing' . DIRECTORY_SEPARATOR . 'router.php',
       'c' => 'Ai1ec_Router',
       'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_Scheduling_Utility' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'scheduling' . DIRECTORY_SEPARATOR . 'utility.php',
       'c' => 'Ai1ec_Scheduling_Utility',
       'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_Script_Helper' => 
     array (
@@ -298,6 +315,7 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'settings.php',
       'c' => 'Ai1ec_Settings',
       'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_Settings_Exception' => 
     array (
@@ -376,30 +394,34 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'command' . DIRECTORY_SEPARATOR . 'abstract.php',
       'c' => 'Ai1ec_Command',
       'i' => 'g',
+      'r' => 'y',
     ),
     'command.render_calendar' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'command' . DIRECTORY_SEPARATOR . 'render_calendar.php',
       'c' => 'Ai1ec_Command_Render_Calendar',
       'i' => 'g',
+      'r' => 'y',
     ),
     'command.render_event' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'command' . DIRECTORY_SEPARATOR . 'render_event.php',
       'c' => 'Ai1ec_Command_Render_Event',
       'i' => 'g',
+      'r' => 'y',
     ),
     'command.resolver' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'command' . DIRECTORY_SEPARATOR . 'resolver.php',
       'c' => 'Ai1ec_Command_Resolver',
       'i' => 'g',
+      'r' => 'y',
     ),
     'config.exception' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'exception.php',
       'c' => 'Ai1ec_Constants_Not_Set_Exception',
-      'i' => 'Ai1ec_View_Factory.Category_Exception',
+      'i' => 'g',
     ),
     'controller.front' => 
     array (
@@ -412,6 +434,7 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'javascript.php',
       'c' => 'Ai1ec_Javascript_Controller',
       'i' => 'g',
+      'r' => 'y',
     ),
     'controller.shutdown' => 
     array (
@@ -424,6 +447,7 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'applicator.php',
       'c' => 'Ai1ec_Database_Applicator',
       'i' => 'g',
+      'r' => 'y',
     ),
     'database.exception.schema' => 
     array (
@@ -442,12 +466,14 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'helper.php',
       'c' => 'Ai1ec_Database_Helper',
       'i' => 'g',
+      'r' => 'y',
     ),
     'database.schema' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'schema.php',
       'c' => 'Ai1ec_Database_Schema',
       'i' => 'g',
+      'r' => 'y',
     ),
     'dbi.dbi' => 
     array (
@@ -478,6 +504,7 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'calendar-page-selector.php',
       'c' => 'Ai1ec_Html_Element_Calendar_Page_Selector',
       'i' => 'g',
+      'r' => 'y',
     ),
     'html.element.interface' => 
     array (
@@ -490,6 +517,7 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'settings.php',
       'c' => 'Ai1ec_Html_Element_Settings',
       'i' => 'g',
+      'r' => 'y',
     ),
     'html.exception' => 
     array (
@@ -550,36 +578,42 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'app.php',
       'c' => 'Ai1ec_App',
       'i' => 'g',
+      'r' => 'y',
     ),
     'model.meta' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'meta.php',
       'c' => 'Ai1ec_Meta',
       'i' => 'g',
+      'r' => 'y',
     ),
     'model.meta-post' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'meta-post.php',
       'c' => 'Ai1ec_Meta_Post',
       'i' => 'g',
+      'r' => 'y',
     ),
     'model.meta-user' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'meta-user.php',
       'c' => 'Ai1ec_Meta_User',
       'i' => 'g',
+      'r' => 'y',
     ),
     'model.option' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'option.php',
       'c' => 'Ai1ec_Option',
       'i' => 'g',
+      'r' => 'y',
     ),
     'model.settings' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'settings.php',
       'c' => 'Ai1ec_Settings',
       'i' => 'g',
+      'r' => 'y',
     ),
     'model.settings.exception' => 
     array (
@@ -628,6 +662,7 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'routing' . DIRECTORY_SEPARATOR . 'router.php',
       'c' => 'Ai1ec_Router',
       'i' => 'g',
+      'r' => 'y',
     ),
     'routing.uri' => 
     array (
@@ -646,6 +681,7 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'scheduling' . DIRECTORY_SEPARATOR . 'utility.php',
       'c' => 'Ai1ec_Scheduling_Utility',
       'i' => 'g',
+      'r' => 'y',
     ),
     'script.helper' => 
     array (

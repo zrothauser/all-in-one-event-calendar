@@ -28,7 +28,7 @@ class Ai1ec_Database_Schema {
 	 */
 	public function __construct( Ai1ec_Object_Registry $registry ) {
 		$this->_db       = $registry->get( 'dbi.dbi' );
-		$this->_database = $registry->get( 'database.helper', $registry );
+		$this->_database = $registry->get( 'database.helper' );
 	}
 
 	/**

@@ -104,7 +104,7 @@ class Ai1ec_Loader {
 	 */
 	public function collect_classes() {
 		$names = $this->_locate_all_files( $this->_base_path );
-		$names = $this->_retrieve_instantiators( $names );
+		$names = $this->_process_reflections( $names );
 		$this->_cache( $names );
 		return $names;
 	}
@@ -119,27 +119,64 @@ class Ai1ec_Loader {
 	 *  - classname.method: a factory is used, specify it in that order
 	 * The default if nothing is specified is global.
 	 * 
+	 * @param ReflectionClass $class
+	 * 
+	 * @return string
+	 */
+	protected function _get_instantiator( ReflectionClass $class ) {
+		$doc = $class->getDocComment();
+		preg_match_all(
+			'#^\s\*\s@instantiator\s+(.*)$#im',
+			$doc,
+			$annotations
+		);
+		$instantiator = '';
+		if ( isset( $annotations[1][0] ) ) {
+			$instantiator = rtrim( $annotations[1][0] );
+		}
+		return $this->_convert_instantiator_for_map( $instantiator );
+	}
+
+	/**
+	 * Check if the registry must be injected in the constructor.
+	 * By convention the registry will always be the first parameter.
+	 * 
+	 * @param ReflectionClass $class The class to check
+	 * 
+	 * @return boolean true if the registry must be injected, false if not.
+	 */
+	protected function _inject_registry( ReflectionClass $class ) {
+		$contructor = $class->getConstructor();
+		if ( null !== $contructor ) {
+			foreach ( $contructor->getParameters() as $param ) {
+				$param_class = $param->getClass();
+				if ( $param_class instanceof ReflectionClass ) {
+					$name = $param_class->getName();
+					if ( 'Ai1ec_Object_Registry' === $name ) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Update the classmap with Reflection informations.
+	 * 
 	 * @param array $names The class map.
 	 * 
 	 * @return array The classmap with instantiator.
 	 */
-	protected function _retrieve_instantiators( array $names ) {
+	protected function _process_reflections( array $names ) {
 		$this->_paths = $names;
 		spl_autoload_register( array( $this, 'load' ) );
 		foreach ( $names as $classname => &$data ) {
-			// $this->include_file( $data['f'] );
-			$r = new ReflectionClass( $data['c'] );
-			$doc = $r->getDocComment();
-			preg_match_all(
-				'#^\s\*\s@instantiator\s+(.*)$#im',
-				$doc,
-				$annotations
-			);
-			$instantiator = '';
-			if ( isset( $annotations[1][0] ) ) {
-				$instantiator = rtrim( $annotations[1][0] );
+			$class = new ReflectionClass( $data['c'] );
+			$data['i'] = $this->_get_instantiator( $class );
+			if ( $this->_inject_registry( $class ) ) {
+				$data['r'] = 'y';
 			}
-			$data['i'] = $this->_convert_instantiator_for_map( $instantiator );
 		}
 		return $names;
 	}

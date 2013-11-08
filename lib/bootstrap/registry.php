@@ -43,10 +43,14 @@ class Ai1ec_Object_Registry {
 		}
 		$class_name   = $class_data['c'];
 		$instantiator = $class_data['i'];
+		$args         = array_slice( func_get_args(), 1 );
+		if ( isset ( $class_data['r'] ) ) {
+			array_unshift( $args, $this );
+		}
 		if ( Ai1ec_Loader::NEWINST === $instantiator ) {
 			return $this->initiate(
 				$class_name,
-				array_slice( func_get_args(), 1 )
+				$args
 			);
 		}
 		if ( Ai1ec_Loader::GLOBALINST === $instantiator ) {
@@ -55,7 +59,7 @@ class Ai1ec_Object_Registry {
 				$this->_loader->load( $class_name );
 				$this->_objects[$class_name] = $this->initiate(
 					$class_name,
-					array_slice( func_get_args(), 1 )
+					$args
 				);
 			}
 			return $this->_objects[$class_name];
@@ -65,7 +69,7 @@ class Ai1ec_Object_Registry {
 		return $this->dispatch( 
 			$factory[0], 
 			$factory[1], 
-			array_slice( func_get_args(), 1 )
+			$args
 		);
 	}
 

@@ -5,6 +5,7 @@
  * @author     Time.ly Network Inc.
  * @since      2.0
  *
+ * @instantiator Ai1ec_View_Factory.Category_Exception  
  * @package    AI1EC
  * @subpackage AI1EC.Config
  */

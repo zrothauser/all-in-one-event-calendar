@@ -44,11 +44,11 @@ class Ai1ec_Scheduling_Utility {
 		$this->_configuration = array_merge( $defaults, $this->_configuration );
 		$this->install_default_schedules();
 		Ai1ec_Shutdown_Utility::instance()->register(
-		array( $this, 'shutdown' )
+			array( $this, 'shutdown' )
 		);
 		add_filter(
-		'ai1ec_settings_initiated',
-		array( $this, 'settings_initiated_hook' )
+			'ai1ec_settings_initiated',
+			array( $this, 'settings_initiated_hook' )
 		);
 	}
 

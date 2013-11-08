@@ -77,7 +77,7 @@ class Ai1ec_Loader {
 	public function include_file( $file ) {
 		if ( ! isset( $this->_included_files[$file] ) ) {
 			$this->_included_files[$file] = true;
-			require $file;
+			require_once $file;
 		}
 		return $this->_included_files[$file];
 	}
@@ -94,10 +94,42 @@ class Ai1ec_Loader {
 	 */
 	public function collect_classes() {
 		$names = $this->_locate_all_files( $this->_base_path );
+
+		$names = $this->_retrieve_instantiators( $names );
 		$this->_cache( $names );
 		return $names;
 	}
 
+	protected function _retrieve_instantiators( array $names ) {
+		$this->_paths = $names;
+		spl_autoload_register( array( $this, 'load' ) );
+		foreach ( $names as $classname => &$data ) {
+			// $this->include_file( $data['f'] );
+			$r = new ReflectionClass( $data['c'] );
+			$doc = $r->getDocComment();
+			preg_match_all(
+				'#^\s\*\s@instantiator\s+(.*)$#im',
+				$doc,
+				$annotations
+			);
+			$instantiator = '';
+			if ( isset( $annotations[1][0] ) ) {
+				$instantiator = rtrim( $annotations[1][0] );
+			}
+			$data['i'] = $this->_convert_instantiator_for_map( $instantiator );
+		}
+		return $names;
+	}
+
+	protected function _convert_instantiator_for_map( $instantiator ) {
+		if ( empty( $instantiator ) || 'global' === $instantiator ) {
+			return 'g';
+		}
+		if ( 'new' === $instantiator ) {
+			return 'n';
+		}
+		return $instantiator;
+	}
 	/**
 	 * _locate_all_files method
 	 *
@@ -142,21 +174,21 @@ class Ai1ec_Loader {
 	 * @return array List of classes in file
 	 */
 	protected function _extract_classes( $file ) {
-			$class_list		= array();
+			$class_list = array();
 			if ( '.php' === strrchr( $file, '.' ) ) {
 				$tokens = token_get_all( file_get_contents( $file ) );
 				for ( $i = 2, $count = count( $tokens ); $i < $count; $i++ ) {
-
 					if (
 						T_CLASS      === $tokens[$i - 2][0] ||
 						T_INTERFACE  === $tokens[$i - 2][0] &&
 						T_WHITESPACE === $tokens[$i - 1][0] &&
 						T_STRING     === $tokens[$i][0]
 					) {
-						$names = $this->_generate_alternative_names(
-							$tokens[$i][1]
+						$names = $this->_generate_loader_names(
+							$tokens[$i][1],
+							$file
 						);
-						foreach( $names as $name ) {
+						foreach ( $names as $name ) {
 							$class_list[$name] = array(
 								'f' => $file,
 								'c' => $tokens[$i][1],
@@ -258,14 +290,17 @@ class Ai1ec_Loader {
 	 *
 	 * @return array An array of strings with the availables names.
 	 */
-	protected function _generate_alternative_names( $class_name ) {
-		$names  = array( $class_name ); // full class name
-		$tokens = explode( '_', $class_name );
-		if ( 0 === strcmp( $this->_prefix, $tokens[0] ) ) {
-			array_shift( $tokens );
-			$names[] = strtolower( implode( '.', $tokens ) );
-			$names[] = implode( '_', $tokens );
-		}
+	protected function _generate_loader_names( $class, $file ) {
+		$names = array( $class );
+		// Remove the extension.
+		$file = substr( $file, 0, strrpos( $file , '.') );
+		// Get just the meaningful data.
+		$file = substr( $file, strrpos( 
+				$file, 
+				DIRECTORY_SEPARATOR . AI1EC_PLUGIN_NAME . DIRECTORY_SEPARATOR
+			) + 31
+		);
+		$names[] = str_replace( DIRECTORY_SEPARATOR, '.', $file );
 		return $names;
 	}
 

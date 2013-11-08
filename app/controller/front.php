@@ -171,10 +171,11 @@ class Ai1ec_Front_Controller {
 	 * @return void 
 	 */
 	private function _install_crons() {
-		$scheduling = $this->_registry->get( 'schedule' );
-		$allow      = $this->_registry->get( 'settings' )
+		$scheduling = $this->_registry->get( 'scheduling.utility' );
+		$allow      = $this->_registry->get( 'model.settings' )
 				->get( 'allow_statistics' );
 		$correct   = false;
+		fb($allow);
 		// install the cron for stats
 		$hook_name = 'ai1ec_n_cron';
 		// if stats are disabled, cancel the cron

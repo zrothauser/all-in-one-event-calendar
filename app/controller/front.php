@@ -171,15 +171,14 @@ class Ai1ec_Front_Controller {
 	 * @return void 
 	 */
 	private function _install_crons() {
-		$scheduling = $this->_registry->get( 'scheduling.utility' );
-		$allow      = $this->_registry->get( 'model.settings' )
+		$scheduling = $this->_registry->get( 'scheduling.utility', $this->_registry );
+		$allow      = $this->_registry->get( 'model.settings', $this->_registry )
 				->get( 'allow_statistics' );
 		$correct   = false;
-		fb($allow);
 		// install the cron for stats
 		$hook_name = 'ai1ec_n_cron';
 		// if stats are disabled, cancel the cron
-		if ( false === $ai1ec_settings->allow_statistics ) {
+		if ( false === $allow ) {
 			$scheduling->delete( $hook_name );
 		}
 		$correct = $scheduling->reschedule(
@@ -249,28 +248,27 @@ class Ai1ec_Front_Controller {
 	 * @return void 
 	 */
 	private function _initialize_schema() {
-		$option = $this->_registry->get( 'option' );
-		
+		$settings = $this->_registry->get( 'model.settings' );
 		// If existing DB version is not consistent with current plugin's version,
 		// or does not exist, then create/update table structure using dbDelta().
 		if (
-			$option->get( 'ai1ec_db_version' ) != AI1EC_DB_VERSION
+			$settings->get( 'ai1ec_db_version' ) != AI1EC_DB_VERSION
 		) {
 		
-			$applicator = $this->_registry->get( 'dbi_applicator' );
+			$applicator = $this->_registry->get( 'database.applicator', $this->_registry );
 			
 			
 			$applicator->remove_instance_duplicates();
 		
 			$structures = array();
-			$schema     = $this->_registry->get( 'dbi_schema' );
+			$schema     = $this->_registry->get( 'database.schema', $this->_registry );
 			if ( ! $schema->upgrade( AI1EC_DB_VERSION ) ) {
 				throw new Ai1ec_Database_Schema_Exception(
 					'Failed to perform schema upgrade'
 				);
 			}
 			unset( $schema );
-			$db = $this->_registry->get( 'dbi' );
+			$db = $this->_registry->get( 'dbi.dbi' );
 			$prefix = $db->get_prefix();
 			// =======================
 			// = Create table events =
@@ -338,8 +336,8 @@ class Ai1ec_Front_Controller {
 				PRIMARY KEY  (term_id)
 				) CHARACTER SET utf8;";
 
-			if ( $this->_registry->get( 'dbi_helper' )->apply_delta( $sql ) ) {
-				$option->update( 'ai1ec_db_version', AI1EC_DB_VERSION );
+			if ( $this->_registry->get( 'database.helper' )->apply_delta( $sql ) ) {
+				$settings->set( 'ai1ec_db_version', AI1EC_DB_VERSION );
 			} else {
 				throw new Ai1ec_Database_Update_Exception();
 			}
@@ -352,10 +350,11 @@ class Ai1ec_Front_Controller {
 	 * @return void 
 	 */
 	private function _initialize_router() {
-		$settings            = $this->_registry->get( 'settings' );
-		$router              = $this->_registry->get( 'router' );
-		$localization_helper = $this->_registry->get( 'localization_helper' );
-		$uri_helper          = $this->_registry->get( 'uri_helper' );
+		$settings            = $this->_registry->get( 'model.settings' );
+		$router              = $this->_registry->get( 'routing.router', $this->_registry );
+		$localization_helper = $this->_registry->get( 'p28n.wpml' );
+		$uri_helper          = $this->_registry->get( 'routing.uri-helper' );
+		$cal_page            = $settings->get( 'calendar_page_id' );
 		if (
 			! isset( $settings->calendar_page_id ) ||
 			$settings->calendar_page_id < 1

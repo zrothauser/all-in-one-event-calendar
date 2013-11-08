@@ -13,6 +13,8 @@
  */
 class Ai1ec_Loader {
 
+	CONST NEWINST    = 'n';
+	CONST GLOBALINST = 'g';
 	/**
 	 * @var array Map of files to be included
 	 */
@@ -77,7 +79,7 @@ class Ai1ec_Loader {
 	public function include_file( $file ) {
 		if ( ! isset( $this->_included_files[$file] ) ) {
 			$this->_included_files[$file] = true;
-			require_once $file;
+			require $file;
 		}
 		return $this->_included_files[$file];
 	}
@@ -94,12 +96,25 @@ class Ai1ec_Loader {
 	 */
 	public function collect_classes() {
 		$names = $this->_locate_all_files( $this->_base_path );
-
 		$names = $this->_retrieve_instantiators( $names );
 		$this->_cache( $names );
 		return $names;
 	}
 
+	/**
+	 * Gets the way classes must be instanciated.
+	 * 
+	 * Retrieves from annotations the way classes must be retrieved.
+	 * Possible values are
+	 *  - new: a new instance is instantiated every time
+	 *  - global: treat as singleton
+	 *  - classname.method: a factory is used, specify it in that order
+	 * The default if nothing is specified is global.
+	 * 
+	 * @param array $names The class map.
+	 * 
+	 * @return array The classmap with instantiator.
+	 */
 	protected function _retrieve_instantiators( array $names ) {
 		$this->_paths = $names;
 		spl_autoload_register( array( $this, 'load' ) );
@@ -123,10 +138,10 @@ class Ai1ec_Loader {
 
 	protected function _convert_instantiator_for_map( $instantiator ) {
 		if ( empty( $instantiator ) || 'global' === $instantiator ) {
-			return 'g';
+			return self::GLOBALINST;
 		}
 		if ( 'new' === $instantiator ) {
-			return 'n';
+			return self::NEWINST;
 		}
 		return $instantiator;
 	}
@@ -282,9 +297,8 @@ class Ai1ec_Loader {
 	 *
 	 * For example:
 	 * The class Ai1ec_Html_Helper can be loaded as
-	 * - html.helper
-	 * - Html_Helper
-	 * - Ai1ec_Html_Helper
+	 * - html.helper ( the path to the file )
+	 * - Ai1ec_Html_Helper ( needed by Autoload )
 	 *
 	 * @params string $class_name the original name of the class.
 	 *
@@ -309,13 +323,13 @@ class Ai1ec_Loader {
 	 *
 	 * @param $key string Key requested to initialize
 	 *
-	 * @return string|null Name of the class, or null if none is found
+	 * @return array|null Array of the class, or null if none is found
 	 */
 	public function resolve_class_name( $key ) {
 		if ( ! isset( $this->_paths[$key] ) ) {
 			return null;
 		}
-		return $this->_paths[$key]['c'];
+		return $this->_paths[$key];
 	}
 
 	/**

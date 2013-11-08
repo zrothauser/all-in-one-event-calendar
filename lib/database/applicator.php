@@ -29,8 +29,8 @@ class Ai1ec_Database_Applicator {
 	 * @return void Constructor does not return
 	 */
 	public function __construct( Ai1ec_Object_Registry $registry ) {
-		$this->_db       = $registry->get( 'dbi' );
-		$this->_database = $registry->get( 'database.helper' );
+		$this->_db       = $registry->get( 'dbi.dbi' );
+		$this->_database = $registry->get( 'database.helper', $registry );
 	}
 
 	/**
@@ -129,7 +129,7 @@ class Ai1ec_Database_Applicator {
 	 * @return string Qualified table name
 	 */
 	protected function _table( $table ) {
-		$prefix = $this->_db->prefix . 'ai1ec_';
+		$prefix = $this->_db->get_prefix() . 'ai1ec_';
 		if ( substr( $table, 0, strlen( $prefix ) ) !== $prefix ) {
 			$table = $prefix . $table;
 		}

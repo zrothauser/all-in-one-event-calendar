@@ -15,13 +15,15 @@ class Ai1ec_Option extends Ai1ec_App {
 	 */
 	protected $_cache = null;
 
+	protected $_registry;
 	/**
 	 * Add cache instance to object scope.
 	 *
 	 * @return void
 	 */
-	public function __construct() {
-		$this->_cache = $this->_sys->get( 'cache.memory', __CLASS__ );
+	public function __construct( $registry ) {
+		$this->_registry = $registry;
+		$this->_cache = $registry->get( 'cache.memory' );
 	}
 
 	/**

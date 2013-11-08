@@ -5,17 +5,13 @@
  *
  * Store values in memory, for use in a single session scope.
  *
- * @author     Time.ly Network, Inc.
- * @since      2.0
- * @package    Ai1EC
- * @subpackage Ai1EC.Cache
+ * @instantiator new
+ * @author       Time.ly Network, Inc.
+ * @since        2.0
+ * @package      Ai1EC
+ * @subpackage   Ai1EC.Cache
  */
 final class Ai1ec_Cache_Memory implements Ai1ec_Cache_Interface {
-
-	/**
-	 * @var array Map of self instances for each named memory location.
-	 */
-	static private $_instances = array();
 
 	/**
 	 * @var array Map of memory entries.
@@ -26,23 +22,6 @@ final class Ai1ec_Cache_Memory implements Ai1ec_Cache_Interface {
 	 * @var int Number of entries to hold in map.
 	 */
 	protected $_limit            = 0;
-
-	/**
-	 * Get named instance of this class.
-	 *
-	 * Singleton instance to aid in development. Usefull where reference is
-	 * more conveniently passed by name, instead of by reference.
-	 *
-	 * @param string $name Name for memory location.
-	 *
-	 * @return Ai1ec_Cache_Memory Instance of self for given name.
-	 */
-	static public function instance( $name ) {
-		if ( ! isset( self::$_instances[$name] ) ) {
-			self::$_instances[$name] = new self();
-		}
-		return self::$_instances[$name];
-	}
 
 	/**
 	 * Constructor initiates stack (memory) length.

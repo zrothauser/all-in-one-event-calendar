@@ -147,7 +147,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 * @return bool Success.
 	 */
 	public function persist() {
-		$success = $this->_sys->get( 'option' )
+		$success = $this->_sys->get( 'model.option' )
 			->set( self::WP_OPTION_KEY, $this->_options );
 		if ( $success ) {
 			$this->_updated = false;
@@ -171,8 +171,8 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 *
 	 * @return void Return from this method is ignored.
 	 */
-	protected function __initialize() {
-		$values         = $this->_sys->get( 'option' )
+	protected function _initialize() {
+		$values         = $this->_sys->get( 'model.option' )
 			->get( self::WP_OPTION_KEY, array() );
 		$values = $this->parse_legacy( $values );
 		$this->_options = $values;
@@ -187,9 +187,9 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 */
 	protected function _register_defaults() {
 		$this->register(
-			'calendar_page_id',
+			'ai1ec_db_version',
 			'int',
-			'Ai1ec_Html_Element_Calendar_Page_Selector'
+			'none'
 		);
 	}
 

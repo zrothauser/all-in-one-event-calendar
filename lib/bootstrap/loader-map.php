@@ -39,7 +39,7 @@
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'memory.php',
       'c' => 'Ai1ec_Cache_Memory',
-      'i' => 'g',
+      'i' => 'n',
     ),
     'Ai1ec_Command' => 
     array (
@@ -125,6 +125,12 @@
       'c' => 'Ai1ec_Exception_Handler',
       'i' => 'g',
     ),
+    'Ai1ec_Frequency_Utility' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'parser' . DIRECTORY_SEPARATOR . 'frequency.php',
+      'c' => 'Ai1ec_Frequency_Utility',
+      'i' => 'g',
+    ),
     'Ai1ec_Front_Controller' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'front.php',
@@ -191,6 +197,12 @@
       'c' => 'Ai1ec_Loader',
       'i' => 'g',
     ),
+    'Ai1ec_Localization_Helper' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'p28n' . DIRECTORY_SEPARATOR . 'wpml.php',
+      'c' => 'Ai1ec_Localization_Helper',
+      'i' => 'g',
+    ),
     'Ai1ec_Meta' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'meta.php',
@@ -213,6 +225,12 @@
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'registry.php',
       'c' => 'Ai1ec_Object_Registry',
+      'i' => 'g',
+    ),
+    'Ai1ec_Option' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'option.php',
+      'c' => 'Ai1ec_Option',
       'i' => 'g',
     ),
     'Ai1ec_Post_Helper' => 
@@ -287,6 +305,12 @@
       'c' => 'Ai1ec_Settings_Exception',
       'i' => 'g',
     ),
+    'Ai1ec_Shutdown_Controller' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'shutdown.php',
+      'c' => 'Ai1ec_Shutdown_Controller',
+      'i' => 'g',
+    ),
     'Ai1ec_Template_Helper' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . 'helper.php',
@@ -345,7 +369,7 @@
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'memory.php',
       'c' => 'Ai1ec_Cache_Memory',
-      'i' => 'g',
+      'i' => 'n',
     ),
     'command.abstract' => 
     array (
@@ -387,6 +411,12 @@
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'javascript.php',
       'c' => 'Ai1ec_Javascript_Controller',
+      'i' => 'g',
+    ),
+    'controller.shutdown' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'shutdown.php',
+      'c' => 'Ai1ec_Shutdown_Controller',
       'i' => 'g',
     ),
     'database.applicator' => 
@@ -539,6 +569,12 @@
       'c' => 'Ai1ec_Meta_User',
       'i' => 'g',
     ),
+    'model.option' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'option.php',
+      'c' => 'Ai1ec_Option',
+      'i' => 'g',
+    ),
     'model.settings' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'settings.php',
@@ -555,6 +591,18 @@
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'p28n' . DIRECTORY_SEPARATOR . 'i18n.php',
       'c' => 'Ai1ec_I18n',
+      'i' => 'g',
+    ),
+    'p28n.wpml' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'p28n' . DIRECTORY_SEPARATOR . 'wpml.php',
+      'c' => 'Ai1ec_Localization_Helper',
+      'i' => 'g',
+    ),
+    'parser.frequency' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'parser' . DIRECTORY_SEPARATOR . 'frequency.php',
+      'c' => 'Ai1ec_Frequency_Utility',
       'i' => 'g',
     ),
     'post.helper' => 

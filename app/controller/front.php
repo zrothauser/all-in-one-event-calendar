@@ -40,7 +40,6 @@ class Ai1ec_Front_Controller {
 	 */
 	public function initialize( $ai1ec_loader ) {
 		$this->_init( $ai1ec_loader );
-		$this->_initialize_router();
 		$this->_initialize_dispatcher();
 	}
 
@@ -58,18 +57,17 @@ class Ai1ec_Front_Controller {
 	}
 
 	/**
-	 * Execute commands if our plugin must handle the request
-	 * 
+	 * Execute commands if our plugin must handle the request.
+	 *
 	 * @wp_hook init
-	 * 
-	 * @return void 
+	 *
+	 * @return void
 	 */
 	public function route_request() {
 		$this->_process_request();
 		// get the resolver
-		$resolver = $this->_registry->get( 
-			'command.resolver', 
-			$this->_registry, 
+		$resolver = $this->_registry->get(
+			'command.resolver',
 			$this->_request
 		);
 		// get the command
@@ -171,14 +169,14 @@ class Ai1ec_Front_Controller {
 	 * @return void 
 	 */
 	private function _install_crons() {
-		$scheduling = $this->_registry->get( 'schedule' );
-		$allow      = $this->_registry->get( 'settings' )
+		$scheduling = $this->_registry->get( 'scheduling.utility', $this->_registry );
+		$allow      = $this->_registry->get( 'model.settings', $this->_registry )
 				->get( 'allow_statistics' );
 		$correct   = false;
 		// install the cron for stats
 		$hook_name = 'ai1ec_n_cron';
 		// if stats are disabled, cancel the cron
-		if ( false === $ai1ec_settings->allow_statistics ) {
+		if ( false === $allow ) {
 			$scheduling->delete( $hook_name );
 		}
 		$correct = $scheduling->reschedule(
@@ -248,28 +246,27 @@ class Ai1ec_Front_Controller {
 	 * @return void 
 	 */
 	private function _initialize_schema() {
-		$option = $this->_registry->get( 'option' );
-		
+		$settings = $this->_registry->get( 'model.settings' );
 		// If existing DB version is not consistent with current plugin's version,
 		// or does not exist, then create/update table structure using dbDelta().
 		if (
-			$option->get( 'ai1ec_db_version' ) != AI1EC_DB_VERSION
+			$settings->get( 'ai1ec_db_version' ) != AI1EC_DB_VERSION
 		) {
 		
-			$applicator = $this->_registry->get( 'dbi_applicator' );
+			$applicator = $this->_registry->get( 'database.applicator' );
 			
 			
 			$applicator->remove_instance_duplicates();
 		
 			$structures = array();
-			$schema     = $this->_registry->get( 'dbi_schema' );
+			$schema     = $this->_registry->get( 'database.schema' );
 			if ( ! $schema->upgrade( AI1EC_DB_VERSION ) ) {
 				throw new Ai1ec_Database_Schema_Exception(
 					'Failed to perform schema upgrade'
 				);
 			}
 			unset( $schema );
-			$db = $this->_registry->get( 'dbi' );
+			$db = $this->_registry->get( 'dbi.dbi' );
 			$prefix = $db->get_prefix();
 			// =======================
 			// = Create table events =
@@ -337,8 +334,8 @@ class Ai1ec_Front_Controller {
 				PRIMARY KEY  (term_id)
 				) CHARACTER SET utf8;";
 
-			if ( $this->_registry->get( 'dbi_helper' )->apply_delta( $sql ) ) {
-				$option->update( 'ai1ec_db_version', AI1EC_DB_VERSION );
+			if ( $this->_registry->get( 'database.helper' )->apply_delta( $sql ) ) {
+				$settings->set( 'ai1ec_db_version', AI1EC_DB_VERSION );
 			} else {
 				throw new Ai1ec_Database_Update_Exception();
 			}
@@ -347,17 +344,20 @@ class Ai1ec_Front_Controller {
 
 	/**
 	 * Initializes the URL router used by our plugin.
-	 *
+	 * 
+	 * @wp_hook init
+	 * 
 	 * @return void 
 	 */
 	private function _initialize_router() {
-		$settings            = $this->_registry->get( 'settings' );
-		$router              = $this->_registry->get( 'router' );
-		$localization_helper = $this->_registry->get( 'localization_helper' );
-		$uri_helper          = $this->_registry->get( 'uri_helper' );
+		$settings            = $this->_registry->get( 'model.settings' );
+		$router              = $this->_registry->get( 'routing.router' );
+		$localization_helper = $this->_registry->get( 'p28n.wpml' );
+		$uri_helper          = $this->_registry->get( 'routing.uri-helper' );
+		$cal_page            = $settings->get( 'calendar_page_id' );
 		if (
-			! isset( $settings->calendar_page_id ) ||
-			$settings->calendar_page_id < 1
+			! $cal_page ||
+			$cal_page < 1
 		) { // Routing may not be affected in any way if no calendar page exists.
 			return NULL;
 		}		
@@ -367,23 +367,25 @@ class Ai1ec_Front_Controller {
 		if ( $localization_helper->is_wpml_active() ) {
 			$trans = $localization_helper
 				->get_wpml_translations_of_page(
-					$settings->calendar_page_id,
+					$cal_page,
 					true
 			);
 			$clang = $localization_helper->get_language();
 			if ( isset( $trans[$clang] ) ) {
-				$settings->calendar_page_id = $trans[$clang];
+				$cal_page = $trans[$clang];
 			}
 		}
-		$template_link_helper = $this->_registry->get( 'template_link' );
+		$template_link_helper = $this->_registry->get( 'template.link.helper' );
+
 		$page_base = $template_link_helper->get_page_link( 
-			$settings->calendar_page_id
+			$cal_page
 		);
+
 		$page_base = $uri_helper::get_pagebase( $page_base );
 		$page_link = 'index.php?page_id=' .
-				$settings->calendar_page_id;
+				$cal_page;
 		$pagebase_for_href = $uri_helper::get_pagebase_for_links(
-				get_page_link( $settings->calendar_page_id ),
+				get_page_link( $cal_page ),
 				$clang
 		);
 		// save the pagebase to set up the factory later

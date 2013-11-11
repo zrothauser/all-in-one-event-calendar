@@ -10,9 +10,6 @@
  */
 class Ai1ec_Template_Helper {
 
-	const ADMIN_VIEW_PATH = AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' .
-		DIRECTORY_SEPARATOR . 'view';
-
 	/**
 	 * @var object Twig environment for this helper.
 	 */

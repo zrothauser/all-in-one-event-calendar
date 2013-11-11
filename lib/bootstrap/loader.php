@@ -14,6 +14,16 @@
 class Ai1ec_Loader {
 
 	/**
+	 * @var string Used to specify new instances every time.
+	 */
+	CONST NEWINST    = 'n';
+
+	/**
+	 * @var string Used to specify to treat as singleton.
+	 */
+	CONST GLOBALINST = 'g';
+
+	/**
 	 * @var array Map of files to be included
 	 */
 	protected $_paths          = null;
@@ -94,10 +104,99 @@ class Ai1ec_Loader {
 	 */
 	public function collect_classes() {
 		$names = $this->_locate_all_files( $this->_base_path );
+		$names = $this->_process_reflections( $names );
 		$this->_cache( $names );
 		return $names;
 	}
 
+	/**
+	 * Gets the way classes must be instanciated.
+	 * 
+	 * Retrieves from annotations the way classes must be retrieved.
+	 * Possible values are
+	 *  - new: a new instance is instantiated every time
+	 *  - global: treat as singleton
+	 *  - classname.method: a factory is used, specify it in that order
+	 * The default if nothing is specified is global.
+	 * 
+	 * @param ReflectionClass $class
+	 * 
+	 * @return string
+	 */
+	protected function _get_instantiator( ReflectionClass $class ) {
+		$doc = $class->getDocComment();
+		preg_match_all(
+			'#^\s\*\s@instantiator\s+(.*)$#im',
+			$doc,
+			$annotations
+		);
+		$instantiator = '';
+		if ( isset( $annotations[1][0] ) ) {
+			$instantiator = rtrim( $annotations[1][0] );
+		}
+		return $this->_convert_instantiator_for_map( $instantiator );
+	}
+
+	/**
+	 * Check if the registry must be injected in the constructor.
+	 * By convention the registry will always be the first parameter.
+	 * 
+	 * @param ReflectionClass $class The class to check
+	 * 
+	 * @return boolean true if the registry must be injected, false if not.
+	 */
+	protected function _inject_registry( ReflectionClass $class ) {
+		$contructor = $class->getConstructor();
+		if ( null !== $contructor ) {
+			foreach ( $contructor->getParameters() as $param ) {
+				$param_class = $param->getClass();
+				if ( $param_class instanceof ReflectionClass ) {
+					$name = $param_class->getName();
+					if ( 'Ai1ec_Object_Registry' === $name ) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Update the classmap with Reflection informations.
+	 * 
+	 * @param array $names The class map.
+	 * 
+	 * @return array The classmap with instantiator.
+	 */
+	protected function _process_reflections( array $names ) {
+		$this->_paths = $names;
+		spl_autoload_register( array( $this, 'load' ) );
+		foreach ( $names as $classname => &$data ) {
+			$class = new ReflectionClass( $data['c'] );
+			$data['i'] = $this->_get_instantiator( $class );
+			if ( $this->_inject_registry( $class ) ) {
+				$data['r'] = 'y';
+			}
+		}
+		return $names;
+	}
+
+	/**
+	 * Converts the long form to the short form where applicable.
+	 * 
+	 * @param string $instantiator
+	 * 
+	 * @return string
+	 */
+	protected function _convert_instantiator_for_map( $instantiator ) {
+		if ( empty( $instantiator ) || 'global' === $instantiator ) {
+			return self::GLOBALINST;
+		}
+		if ( 'new' === $instantiator ) {
+			return self::NEWINST;
+		}
+		return $instantiator;
+	}
 	/**
 	 * _locate_all_files method
 	 *
@@ -142,21 +241,21 @@ class Ai1ec_Loader {
 	 * @return array List of classes in file
 	 */
 	protected function _extract_classes( $file ) {
-			$class_list		= array();
+			$class_list = array();
 			if ( '.php' === strrchr( $file, '.' ) ) {
 				$tokens = token_get_all( file_get_contents( $file ) );
 				for ( $i = 2, $count = count( $tokens ); $i < $count; $i++ ) {
-
 					if (
 						T_CLASS      === $tokens[$i - 2][0] ||
 						T_INTERFACE  === $tokens[$i - 2][0] &&
 						T_WHITESPACE === $tokens[$i - 1][0] &&
 						T_STRING     === $tokens[$i][0]
 					) {
-						$names = $this->_generate_alternative_names(
-							$tokens[$i][1]
+						$names = $this->_generate_loader_names(
+							$tokens[$i][1],
+							$file
 						);
-						foreach( $names as $name ) {
+						foreach ( $names as $name ) {
 							$class_list[$name] = array(
 								'f' => $file,
 								'c' => $tokens[$i][1],
@@ -250,22 +349,24 @@ class Ai1ec_Loader {
 	 *
 	 * For example:
 	 * The class Ai1ec_Html_Helper can be loaded as
-	 * - html.helper
-	 * - Html_Helper
-	 * - Ai1ec_Html_Helper
+	 * - html.helper ( the path to the file )
+	 * - Ai1ec_Html_Helper ( needed by Autoload )
 	 *
 	 * @params string $class_name the original name of the class.
 	 *
 	 * @return array An array of strings with the availables names.
 	 */
-	protected function _generate_alternative_names( $class_name ) {
-		$names  = array( $class_name ); // full class name
-		$tokens = explode( '_', $class_name );
-		if ( 0 === strcmp( $this->_prefix, $tokens[0] ) ) {
-			array_shift( $tokens );
-			$names[] = strtolower( implode( '.', $tokens ) );
-			$names[] = implode( '_', $tokens );
-		}
+	protected function _generate_loader_names( $class, $file ) {
+		$names = array( $class );
+		// Remove the extension.
+		$file = substr( $file, 0, strrpos( $file , '.') );
+		// Get just the meaningful data.
+		$file = substr( $file, strrpos( 
+				$file, 
+				DIRECTORY_SEPARATOR . AI1EC_PLUGIN_NAME . DIRECTORY_SEPARATOR
+			) + 31
+		);
+		$names[] = str_replace( DIRECTORY_SEPARATOR, '.', $file );
 		return $names;
 	}
 
@@ -274,13 +375,13 @@ class Ai1ec_Loader {
 	 *
 	 * @param $key string Key requested to initialize
 	 *
-	 * @return string|null Name of the class, or null if none is found
+	 * @return array|null Array of the class, or null if none is found
 	 */
 	public function resolve_class_name( $key ) {
 		if ( ! isset( $this->_paths[$key] ) ) {
 			return null;
 		}
-		return $this->_paths[$key]['c'];
+		return $this->_paths[$key];
 	}
 
 	/**

@@ -11,4 +11,5 @@
  * @subpackage Ai1EC.Model
  */
 class Ai1ec_Meta_User extends Ai1ec_Meta {
+
 }

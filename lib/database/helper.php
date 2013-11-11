@@ -41,10 +41,10 @@ class Ai1ec_Database_Helper {
 	 * @return void
 	 */
 	public function __construct( Ai1ec_Object_Registry $registry ) {
-		$this->_db       = $registry->get( 'dbi' );
+		$this->_db       = $registry->get( 'dbi.dbi' );
 		$this->_prefixes = array(
-			$this->_db->prefix . 'ai1ec_',
-			$this->_db->prefix,
+			$this->_db->get_prefix() . 'ai1ec_',
+			$this->_db->get_prefix(),
 			'',
 		);
 	}
@@ -242,7 +242,7 @@ class Ai1ec_Database_Helper {
 	 * @return array Map of tables present
 	 */
 	public function get_all_tables() {
-		$sql_query = 'SHOW TABLES LIKE \'' . $this->_db->prefix . '%\'';
+		$sql_query = 'SHOW TABLES LIKE \'' . $this->_db->get_prefix() . '%\'';
 		$result    = $this->_db->get_col( $sql_query );
 		$tables    = array();
 		foreach ( $result as $table ) {

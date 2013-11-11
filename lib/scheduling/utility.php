@@ -24,31 +24,39 @@ class Ai1ec_Scheduling_Utility {
 	protected $_configuration   = NULL;
 
 	/**
+	 * @var Ai1ec_Object_Registry The registry object.
+	 */
+	private $_registry;
+
+	/**
 	 * Constructor
 	 *
 	 * Read configured hooks and frequencies from database
 	 *
 	 * @return void Constructor does not return
 	 */
-	public function __construct() {
+	public function __construct( Ai1ec_Object_Registry $registry ) {
+		$this->_registry      = $registry;
 		$defaults = array(
 			'hooks'   => array(),
 			'freqs'   => array(),
 			'version' => '1.11',
 		);
 		$this->_updated       = false;
-		$this->_configuration = Ai1ec_Meta::get_option(
+
+		$this->_configuration = $this->_registry->get( 'model.option' )->get(
 				self::OPTION_NAME,
 				$defaults
 		);
+
 		$this->_configuration = array_merge( $defaults, $this->_configuration );
 		$this->install_default_schedules();
-		Ai1ec_Shutdown_Utility::instance()->register(
-		array( $this, 'shutdown' )
+		$this->_registry->get( 'controller.shutdown' )->register(
+			array( $this, 'shutdown' )
 		);
 		add_filter(
-		'ai1ec_settings_initiated',
-		array( $this, 'settings_initiated_hook' )
+			'ai1ec_settings_initiated',
+			array( $this, 'settings_initiated_hook' )
 		);
 	}
 
@@ -65,7 +73,7 @@ class Ai1ec_Scheduling_Utility {
 	public function schedule( $hook, $freq, $first = 0, $version = '0' ) {
 		$first  = (int)$first;
 		if ( 0 === $first ) {
-			$first = Ai1ec_Time_Utility::current_time();
+			$first = time();
 		}
 		return $this->_install( $hook, $first, $freq, $version );
 	}
@@ -108,7 +116,7 @@ class Ai1ec_Scheduling_Utility {
 	 * @return void Method does not return
 	 */
 	public function background( $hook ) {
-		return $this->_install( $hook, Ai1ec_Time_Utility::current_time() );
+		return $this->_install( $hook, time() );
 	}
 
 	/**
@@ -389,7 +397,7 @@ class Ai1ec_Scheduling_Utility {
 	 * @return Ai1ec_Frequency_Utility Parsed frequency object
 	 */
 	protected function _parse_freq( $freq ) {
-		$parsed = new Ai1ec_Frequency_Utility();
+		$parsed = $this->_registry->get( 'parser.frequency' );
 		if ( false === $parsed->parse( $freq ) ) {
 			$parsed->parse( '0' );
 		}

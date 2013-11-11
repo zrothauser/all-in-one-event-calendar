@@ -50,7 +50,12 @@ function ai1ec_initiate_constants( $ai1ec_base_dir ) {
 		define( 'AI1EC_DB_VERSION',         AI1EC_VERSION );
 	}
 
-
+	// =================
+	// = Language Path =
+	// =================
+	if ( ! defined( 'AI1EC_LANGUAGE_PATH' ) ) {
+		define( 'AI1EC_LANGUAGE_PATH',      AI1EC_PLUGIN_NAME . DIRECTORY_SEPARATOR . 'language' );
+	}
 	// ================
 	// = Cron Version =
 	// ================

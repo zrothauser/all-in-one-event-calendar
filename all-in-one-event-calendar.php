@@ -8,8 +8,25 @@
  * Version: 2.0
  */
 
-
 $ai1ec_base_dir = dirname( __FILE__ );
+
+$ai1ec_config_path = $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'app' .
+		DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR;
+
+// Include configuration files and initiate global constants as they are used
+// By the error/exception handler too.
+foreach ( array( 'constants-local.php', 'constants.php' ) as $file ) {
+	if ( is_file( $ai1ec_config_path . $file ) ) {
+		require_once $ai1ec_config_path . $file;
+	}
+}
+
+if ( ! function_exists( 'ai1ec_initiate_constants' ) ) {
+	throw new Ai1ec_Exception(
+			'No constant file was found.'
+	);
+}
+ai1ec_initiate_constants( $ai1ec_base_dir );
 
 require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'lib' .
 	DIRECTORY_SEPARATOR . 'exception' . DIRECTORY_SEPARATOR . 'ai1ec.php';
@@ -43,23 +60,6 @@ $ai1ec_exception_handler->set_prev_er_handler( $prev_er_handler );
 $ai1ec_exception_handler->set_prev_ex_handler( $prev_ex_handler );
 
 // Regular startup sequence starts here
-
-$ai1ec_config_path = $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'app' .
-	DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR;
-
-// Include configuration files and initiate global constants.
-foreach ( array( 'constants-local.php', 'constants.php' ) as $file ) {
-    if ( is_file( $ai1ec_config_path . $file ) ) {
-        require_once $ai1ec_config_path . $file;
-    }
-}
-
-if ( ! function_exists( 'ai1ec_initiate_constants' ) ) {
-	throw new Ai1ec_Exception(
-		'No constant file was found.'
-	);
-}
-ai1ec_initiate_constants( $ai1ec_base_dir );
 
 require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'lib' .
 	DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'loader.php';

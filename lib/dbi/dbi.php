@@ -200,6 +200,15 @@ class Ai1ec_Dbi {
 	}
 
 	/**
+	 * Returns the db prefix.
+	 * 
+	 * @return string
+	 */
+	public function get_prefix() {
+		return $this->_dbi->prefix;
+	}
+
+	/**
 	* @param string $table table name
 	*
 	* @return string the full table name for the requested table

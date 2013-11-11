@@ -127,7 +127,10 @@ class Ai1ec_Object_Registry {
 				case 3:
 					return $method( $params[0], $params[1], $params[2] );
 				default:
-					return call_user_func_array( array( $class, $method ), $params );
+					return call_user_func_array(
+						array( $class, $method ),
+						$params
+					);
 			}
 		} else {
 			// get an instance of the class
@@ -142,7 +145,10 @@ class Ai1ec_Object_Registry {
 				case 3:
 					return $class->{$method}( $params[0], $params[1], $params[2] );
 				default:
-					return call_user_func_array( array( $class, $method ), $params );
+					return call_user_func_array(
+						array( $class, $method ),
+						$params
+					);
 			}
 		}
 	}

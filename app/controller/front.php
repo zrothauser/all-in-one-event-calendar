@@ -57,16 +57,16 @@ class Ai1ec_Front_Controller {
 	}
 
 	/**
-	 * Execute commands if our plugin must handle the request
-	 * 
+	 * Execute commands if our plugin must handle the request.
+	 *
 	 * @wp_hook init
-	 * 
-	 * @return void 
+	 *
+	 * @return void
 	 */
 	public function route_request() {
 		$this->_process_request();
 		// get the resolver
-		$resolver = $this->_registry->get( 
+		$resolver = $this->_registry->get(
 			'command.resolver',
 			$this->_request
 		);

@@ -32,7 +32,7 @@ abstract class Ai1ec_File_Abstract {
 	 * 
 	 * @return boolean Returns true if the file is found, false otheriwse.
 	 */
-	abstract public function process_file() {}
+	abstract public function process_file();
 
 	/**
 	 * Standard constructor for basic files.

@@ -17,9 +17,72 @@ class Ai1ec_Ics_Import_Export_Engine implements Ai1ec_Import_Export_Engine {
 	}
 
 	public function export( array $arguments ) {
-		;
+				global $ai1ec_events_helper,
+		       $ai1ec_exporter_helper,
+		       $ai1ec_localization_helper;
+
+		$ai1ec_cat_ids  = ! isset( $arguments['cat_ids'] )  ? $arguments['cat_ids']  : false;
+		$ai1ec_tag_ids  = ! isset( $arguments['tag_ids'] )  ? $arguments['tag_ids']  : false;
+		$ai1ec_post_ids = ! isset( $arguments['post_ids'] )  ? $arguments['tag_ids']  : false;
+		if ( ! empty( $_REQUEST['lang'] ) ) {
+			$ai1ec_localization_helper->set_language( $_REQUEST['lang'] );
+		}
+
+		$filter = array();
+		if ( $ai1ec_cat_ids ) {
+			$filter['cat_ids']  = Ai1ec_Number_Utility::convert_to_int_list(
+				',',
+				$ai1ec_cat_ids
+			);
+		}
+		if ( $ai1ec_tag_ids ) {
+			$filter['tag_ids']  = Ai1ec_Number_Utility::convert_to_int_list(
+				',',
+				$ai1ec_tag_ids
+			);
+		}
+		if ( $ai1ec_post_ids ) {
+			$filter['post_ids'] = Ai1ec_Number_Utility::convert_to_int_list(
+				',',
+				$ai1ec_post_ids
+			);
+		}
+
+		// when exporting events by post_id, do not look up the event's start/end date/time
+		$start  = ( $ai1ec_post_ids !== false )
+			? false
+			: Ai1ec_Time_Utility::current_time( true ) - 24 * 60 * 60; // Include any events ending today
+		$end    = false;
+		$c = new vcalendar();
+		$c->setProperty( 'calscale', 'GREGORIAN' );
+		$c->setProperty( 'method', 'PUBLISH' );
+		// if no post id are specified do not export those properties
+		// as they would create a new calendar in outlook.
+		// a user reported this in AIOEC-982 and said this would fix it
+		if( false === $ai1ec_post_ids ) {
+			$c->setProperty( 'X-WR-CALNAME', get_bloginfo( 'name' ) );
+			$c->setProperty( 'X-WR-CALDESC', get_bloginfo( 'description' ) );
+		}
+		$c->setProperty( 'X-FROM-URL', home_url() );
+		// Timezone setup
+		$tz = Ai1ec_Meta::get_option( 'timezone_string' );
+		if ( $tz ) {
+			$c->setProperty( 'X-WR-TIMEZONE', $tz );
+			$tz_xprops = array( 'X-LIC-LOCATION' => $tz );
+			iCalUtilityFunctions::createTimezone( $c, $tz, $tz_xprops );
+		}
+
+		$events = $ai1ec_events_helper->get_matching_events( $start, $end, $filter );
+		foreach ( $events as $event ) {
+			$ai1ec_exporter_helper->insert_event_in_calendar( $event, $c, $export = true );
+		}
+		$str = ltrim( $c->createCalendar() );
+
+		header( 'Content-type: text/calendar; charset=utf-8' );
+		echo $str;
+		exit;;
 	}
-	
+
 	/**
 	 * _is_timeless method
 	 *
@@ -121,7 +184,7 @@ class Ai1ec_Ics_Import_Export_Engine implements Ai1ec_Import_Export_Engine {
 			$imported_cat = array();
 			// If the user chose to preserve taxonomies during import, add categories.
 			if( $categories && $feed->keep_tags_categories ) {
-				$imported_cat = $this->add_categories_and_tags(
+				$imported_cat = $this->_add_categories_and_tags(
 						$categories['value'],
 						$imported_cat,
 						false,
@@ -130,7 +193,7 @@ class Ai1ec_Ics_Import_Export_Engine implements Ai1ec_Import_Export_Engine {
 			}
 			$feed_categories = $feed->feed_category;
 			if( ! empty( $feed_categories ) ) {
-				$imported_cat = $this->add_categories_and_tags(
+				$imported_cat = $this->_add_categories_and_tags(
 						$feed_categories,
 						$imported_cat,
 						false,
@@ -143,7 +206,7 @@ class Ai1ec_Ics_Import_Export_Engine implements Ai1ec_Import_Export_Engine {
 			$imported_tags = array();
 			// If the user chose to preserve taxonomies during import, add tags.
 			if( $tags && $feed->keep_tags_categories ) {
-				$imported_tags = $this->add_categories_and_tags(
+				$imported_tags = $this->_add_categories_and_tags(
 						$tags[1]['value'],
 						$imported_tags,
 						true,
@@ -152,7 +215,7 @@ class Ai1ec_Ics_Import_Export_Engine implements Ai1ec_Import_Export_Engine {
 			}
 			$feed_tags = $feed->feed_tags;
 			if( ! empty( $feed_tags ) ) {
-				$imported_tags = $this->add_categories_and_tags(
+				$imported_tags = $this->_add_categories_and_tags(
 						$feed_tags,
 						$imported_tags,
 						true,
@@ -284,9 +347,9 @@ class Ai1ec_Ics_Import_Export_Engine implements Ai1ec_Import_Export_Engine {
 			// = Set show map status based on presence of location =
 			// =====================================================
 			if (
-			1 === $do_show_map &&
-			NULL === $latitude &&
-			empty( $address )
+				1 === $do_show_map &&
+				NULL === $latitude &&
+				empty( $address )
 			) {
 				$do_show_map = 0;
 			}
@@ -304,8 +367,8 @@ class Ai1ec_Ics_Import_Export_Engine implements Ai1ec_Import_Export_Engine {
 			// ===============================
 			$organizer = $e->getProperty( 'organizer' );
 			if (
-			'MAILTO:' === substr( $organizer, 0, 7 ) &&
-			false === strpos( $organizer, '@' )
+				'MAILTO:' === substr( $organizer, 0, 7 ) &&
+				false === strpos( $organizer, '@' )
 			) {
 				$organizer = substr( $organizer, 7 );
 			}
@@ -419,7 +482,386 @@ class Ai1ec_Ics_Import_Export_Engine implements Ai1ec_Import_Export_Engine {
 	}
 	return $count;
 	}
+	/**
+	 * get_uid_format method
+	 *
+	 * Get format of UID, to be used for current site.
+	 * The generated format is cached in static variable within this function
+	 *
+	 * @return string Format to use when printing UIDs
+	 *
+	 * @staticvar string $format Cached format, to be returned
+	 */
+	public function get_uid_format() {
+		static $format = NULL;
+		if ( NULL === $format ) {
+			$site_url = parse_url( get_site_url() );
+			$format   = 'ai1ec-%d@' . $site_url['host'];
+			if ( isset( $site_url['path'] ) ) {
+				$format .= $site_url['path'];
+			}
+		}
+		return $format;
+	}
 	
+	/**
+	 * Convert an event from a feed into a new Ai1ec_Event object and add it to
+	 * the calendar.
+	 *
+	 * @param Ai1ec_Event $event    Event object
+	 * @param vcalendar   $calendar Calendar object
+	 * @param bool        $export   States whether events are created for export
+	 *
+	 * @return void
+	 */
+	function insert_event_in_calendar(
+			Ai1ec_Event $event,
+			vcalendar &$calendar,
+			$export = false
+	) {
+		global $ai1ec_events_helper;
+	
+		$tz  = Ai1ec_Meta::get_option( 'timezone_string' );
+	
+		$e   = & $calendar->newComponent( 'vevent' );
+		$uid = '';
+		if ( $event->ical_uid ) {
+			$uid = addcslashes( $event->ical_uid, "\\;,\n" );
+		} else {
+			$uid = sprintf( $this->get_uid_format(), $event->post->ID );
+		}
+		$e->setProperty( 'uid', $this->_sanitize_value( $uid ) );
+		$e->setProperty(
+				'url',
+				get_permalink( $event->post_id )
+		);
+	
+		// =========================
+		// = Summary & description =
+		// =========================
+		$e->setProperty(
+				'summary',
+				$this->_sanitize_value(
+						html_entity_decode(
+								apply_filters( 'the_title', $event->post->post_title ),
+								ENT_QUOTES,
+								'UTF-8'
+						)
+				)
+		);
+		$content = apply_filters( 'the_content', $event->post->post_content );
+		$content = str_replace(']]>', ']]&gt;', $content);
+		$content = html_entity_decode( $content, ENT_QUOTES, 'UTF-8' );
+		// Prepend featured image if available.
+		$size = null;
+		if ( $img_url = $event->get_post_thumbnail_url( $size ) ) {
+			$content = '<div class="ai1ec-event-avatar alignleft timely"><img src="' .
+					esc_attr( $img_url ) . '" width="' . $size[0] . '" height="' .
+					$size[1] . '" /></div>' . $content;
+		}
+		$e->setProperty( 'description', $this->_sanitize_value( $content ) );
+	
+		// =====================
+		// = Start & end times =
+		// =====================
+		$dtstartstring = '';
+		$dtstart = $dtend = array();
+		if ( $event->allday ) {
+			$dtstart["VALUE"] = $dtend["VALUE"] = 'DATE';
+			// For exporting all day events, don't set a timezone
+			if ( $tz && !$export ) {
+				$dtstart["TZID"] = $dtend["TZID"] = $tz;
+			}
+	
+			// For exportin' all day events, only set the date not the time
+			if ( $export ) {
+				$e->setProperty(
+						'dtstart',
+						$this->_sanitize_value( gmdate(
+								"Ymd",
+								$ai1ec_events_helper->gmt_to_local( $event->start )
+						) ),
+						$dtstart
+				);
+				$e->setProperty(
+						'dtend',
+						$this->_sanitize_value( gmdate(
+								"Ymd",
+								$ai1ec_events_helper->gmt_to_local( $event->end )
+						) ),
+						$dtend
+				);
+			} else {
+				$e->setProperty(
+						'dtstart',
+						$this->_sanitize_value(
+								gmdate(
+										"Ymd\T",
+										$ai1ec_events_helper->gmt_to_local( $event->start )
+								)
+						),
+						$dtstart
+				);
+				$e->setProperty(
+						'dtend',
+						$this->_sanitize_value( gmdate(
+								"Ymd\T",
+								$ai1ec_events_helper->gmt_to_local( $event->end )
+						) ),
+						$dtend
+				);
+			}
+		} else {
+			if ( $tz ) {
+				$dtstart["TZID"] = $dtend["TZID"] = $tz;
+			}
+			// This is used later.
+			$dtstartstring = gmdate( "Ymd\THis",
+					$ai1ec_events_helper->gmt_to_local( $event->start )
+			);
+			$e->setProperty(
+					'dtstart',
+					$this->_sanitize_value( $dtstartstring ),
+					$dtstart
+			);
+	
+			$e->setProperty(
+					'dtend',
+					$this->_sanitize_value( gmdate(
+							"Ymd\THis",
+							$ai1ec_events_helper->gmt_to_local( $event->end )
+					) ),
+					$dtend
+			);
+		}
+	
+		// ========================
+		// = Latitude & longitude =
+		// ========================
+		if ( floatval( $event->latitude ) || floatval( $event->longitude ) ) {
+			$e->setProperty( 'geo', $event->latitude, $event->longitude );
+		}
+	
+		// ===================
+		// = Venue & address =
+		// ===================
+		if ( $event->venue || $event->address ) {
+			$location = array( $event->venue, $event->address );
+			$location = array_filter( $location );
+			$location = implode( ' @ ', $location );
+			$e->setProperty( 'location', $this->_sanitize_value( $location ) );
+		}
+	
+		$categories = array();
+		$language = get_bloginfo( 'language' );
+		foreach( wp_get_post_terms( $event->post_id, 'events_categories' ) as $cat ) {
+			$categories[] = $cat->name;
+		}
+		$e->setProperty(
+				'categories',
+				implode( ',', $categories ),
+				array( "LANGUAGE" => $language )
+		);
+		$tags = array();
+		foreach( wp_get_post_terms( $event->post_id, 'events_tags' ) as $tag ) {
+			$tags[] = $tag->name;
+		}
+		if( ! empty( $tags) ) {
+			$e->setProperty(
+					'X-TAGS',
+					implode( ',', $tags ),
+					array( "LANGUAGE" => $language )
+			);
+		}
+		// ==================
+		// = Cost & tickets =
+		// ==================
+		if ( $event->cost ) {
+			$e->setProperty( 'X-COST', $this->_sanitize_value( $event->cost ) );
+		}
+		if ( $event->ticket_url ) {
+			$e->setProperty(
+					'X-TICKETS-URL',
+					$this->_sanitize_value( $event->ticket_url )
+			);
+		}
+	
+		// ====================================
+		// = Contact name, phone, e-mail, URL =
+		// ====================================
+		$contact = array(
+			$event->contact_name,
+			$event->contact_phone,
+			$event->contact_email,
+			$event->contact_url,
+		);
+		$contact = array_filter( $contact );
+		$contact = implode( '; ', $contact );
+		$e->setProperty( 'contact', $this->_sanitize_value( $contact ) );
+	
+		// ====================
+		// = Recurrence rules =
+		// ====================
+		$rrule = array();
+		if ( ! empty( $event->recurrence_rules ) ) {
+			$rules = array();
+			foreach ( explode( ';', $event->recurrence_rules ) as $v) {
+				if ( strpos( $v, '=' ) === false ) {
+					continue;
+				}
+	
+				list( $k, $v ) = explode( '=', $v );
+				$k = strtoupper( $k );
+				// If $v is a comma-separated list, turn it into array for iCalcreator
+				switch ( $k ) {
+					case 'BYSECOND':
+					case 'BYMINUTE':
+					case 'BYHOUR':
+					case 'BYDAY':
+					case 'BYMONTHDAY':
+					case 'BYYEARDAY':
+					case 'BYWEEKNO':
+					case 'BYMONTH':
+					case 'BYSETPOS':
+						$exploded = explode( ',', $v );
+						break;
+					default:
+						$exploded = $v;
+						break;
+				}
+				// iCalcreator requires a more complex array structure for BYDAY...
+				if ( $k == 'BYDAY' ) {
+					$v = array();
+					foreach ( $exploded as $day ) {
+						$v[] = array( 'DAY' => $day );
+					}
+				} else {
+					$v = $exploded;
+				}
+				$rrule[ $k ] = $v;
+			}
+		}
+	
+		// ===================
+		// = Exception rules =
+		// ===================
+		$exrule = array();
+		if ( ! empty( $event->exception_rules ) ) {
+			$rules = array();
+			foreach ( explode( ';', $event->exception_rules ) as $v) {
+				if ( strpos( $v, '=' ) === false ) {
+					continue;
+				}
+	
+				list($k, $v) = explode( '=', $v );
+				$k = strtoupper( $k );
+				// If $v is a comma-separated list, turn it into array for iCalcreator
+				switch ( $k ) {
+					case 'BYSECOND':
+					case 'BYMINUTE':
+					case 'BYHOUR':
+					case 'BYDAY':
+					case 'BYMONTHDAY':
+					case 'BYYEARDAY':
+					case 'BYWEEKNO':
+					case 'BYMONTH':
+					case 'BYSETPOS':
+						$exploded = explode( ',', $v );
+						break;
+					default:
+						$exploded = $v;
+						break;
+				}
+				// iCalcreator requires a more complex array structure for BYDAY...
+				if ( $k == 'BYDAY' ) {
+					$v = array();
+					foreach ( $exploded as $day ) {
+						$v[] = array( 'DAY' => $day );
+					}
+				} else {
+					$v = $exploded;
+				}
+				$exrule[ $k ] = $v;
+			}
+		}
+	
+		// add rrule to exported calendar
+		if ( ! empty( $rrule ) ) {
+			$e->setProperty( 'rrule', $this->_sanitize_value( $rrule ) );
+		}
+		// add exrule to exported calendar
+		if ( ! empty( $exrule ) ) {
+			$e->setProperty( 'exrule', $this->_sanitize_value( $exrule ) );
+		}
+	
+		// ===================
+		// = Exception dates =
+		// ===================
+		// For all day events that use a date as DTSTART, date must be supplied
+		// For other other events which use DATETIME, we must use that as well
+		// We must also match the exact starting time
+		if ( ! empty( $event->exception_dates ) ) {
+			foreach( explode( ',', $event->exception_dates ) as $exdate ) {
+				if( $event->allday ) {
+					// the local date will be always something like 20121122T000000Z
+					// we just need the date
+					$exdate = substr(
+							$ai1ec_events_helper->exception_dates_to_local( $exdate ),
+							0,
+							8
+					);
+					$e->setProperty( 'exdate', array( $exdate ), array( 'VALUE' => 'DATE' ) );
+				} else {
+					$params = array();
+					if( $tz ) {
+						$params["TZID"] = $tz;
+					}
+					$exdate = $ai1ec_events_helper->exception_dates_to_local( $exdate );
+					// get only the date + T
+					$exdate = substr(
+							$exdate,
+							0,
+							9
+					);
+					// Take the time from
+					$exdate .= substr( $dtstartstring, 9 );
+					$e->setProperty(
+							'exdate',
+							array( $exdate ),
+							$params
+					);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * _sanitize_value method
+	 *
+	 * Convert value, so it be safe to use on ICS feed. Used before passing to
+	 * iCalcreator methods, for rendering.
+	 *
+	 * @param string $value Text to be sanitized
+	 *
+	 * @return string Safe value, for use in HTML
+	 */
+	protected function _sanitize_value( $value ) {
+		if ( ! is_scalar( $value ) ) {
+			return $value;
+		}
+		$safe_eol = "\n";
+		$value    = strtr(
+				trim( $value ),
+				array(
+					"\r\n" => $safe_eol,
+					"\r"   => $safe_eol,
+					"\n"   => $safe_eol,
+				)
+		);
+		$value = addcslashes( $value, '\\' );
+		return $value;
+	}
+
 	/**
 	 * Takes a comma-separated list of tags or categories.
 	 * If they exist, reuses
@@ -434,7 +876,7 @@ class Ai1ec_Ics_Import_Export_Engine implements Ai1ec_Import_Export_Engine {
 	 * @param boolean $use_name        	
 	 * @return array
 	 */
-	private function add_categories_and_tags( $terms, array $imported_terms, 
+	private function _add_categories_and_tags( $terms, array $imported_terms, 
 			$is_tag, $use_name ) {
 		$taxonomy = $is_tag ? 'events_tags' : 'events_categories';
 		$categories = explode( ',', $terms );
@@ -459,5 +901,3 @@ class Ai1ec_Ics_Import_Export_Engine implements Ai1ec_Import_Export_Engine {
 		return $imported_terms;
 	}
 }
-
-?>

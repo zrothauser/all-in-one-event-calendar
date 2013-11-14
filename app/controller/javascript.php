@@ -285,7 +285,7 @@ class Ai1ec_Javascript_Controller {
 			$http_encoder->encode();
 			$http_encoder->sendAll();
 		}
-		Ai1ec_Http_Response::stop( 0 );
+		Ai1ec_Http_Response_Helper::stop( 0 );
 	}
 
 	/**

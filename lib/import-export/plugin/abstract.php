@@ -102,9 +102,9 @@ abstract class Ai1ec_Connector_Plugin {
 	}
 	/**
 	 * Check that at least one of the settings has ha value.
-	 * 
+	 *
 	 * @param array $settings
-	 * 
+	 *
 	 * @return boolean
 	 */
 	protected function at_least_one_config_field_is_set( array $settings ) {

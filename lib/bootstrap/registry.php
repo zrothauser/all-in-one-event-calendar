@@ -24,6 +24,11 @@ class Ai1ec_Object_Registry {
 	private $_loader  = null;
 
 	/**
+	 * @var Ai1ec_Cache_Memory
+	 */
+	protected $_environment;
+
+	/**
 	 * Get class instance.
 	 *
 	 * Return an instance for the requested key, this method has an internal
@@ -153,6 +158,13 @@ class Ai1ec_Object_Registry {
 		}
 	}
 
+	public function get_environment( $key ) {
+		$this->_environment->get( $key );
+	}
+
+	public function set_environment( $key, $value ) {
+		$this->_environment->set( $key, $value );
+	}
 	/**
 	 * Constructor
 	 *
@@ -164,6 +176,7 @@ class Ai1ec_Object_Registry {
 	 */
 	public function __construct( $ai1ec_loader ) {
 		$this->_loader = $ai1ec_loader;
+		$this->_environment = $this->get( 'cache.memory', PHP_INT_MAX -1 );
 	}
 
 }

@@ -86,6 +86,16 @@ function ai1ec_initiate_constants( $ai1ec_base_dir ) {
 	}
 
 	// ===============
+	// = VENDOR PATH =
+	// ===============
+	if ( ! defined( 'AI1EC_VENDOR_PATH' ) ) {
+		define( 
+		'AI1EC_PATH',
+		AI1EC_PATH . DIRECTORY_SEPARATOR . 'vendor' .
+				DIRECTORY_SEPARATOR 
+		);
+	}
+	// ===============
 	// = ADMIN PATH  =
 	// ===============
 	if ( ! defined( 'AI1EC_ADMIN_PATH' ) ) {

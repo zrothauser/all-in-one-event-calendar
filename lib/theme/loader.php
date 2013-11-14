@@ -109,13 +109,6 @@ class Ai1ec_Theme_Loader {
 	 */
 	private function get_twig_instance( array $paths ) {
 		if ( isset( $this->_twig ) ) {
-			// TODO: Maybe class registration should be done statically (once)? Where?
-			require_once AI1EC_PATH . DIRECTORY_SEPARATOR . 'vendor' .
-					DIRECTORY_SEPARATOR . 'twig' . DIRECTORY_SEPARATOR . 'twig' .
-					DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Twig' .
-					DIRECTORY_SEPARATOR . 'Autoloader.php';
-
-			Twig_Autoloader::register();
 
 			// Set up Twig environment.
 			$loader = new Twig_Loader_Filesystem( $paths );

@@ -388,8 +388,9 @@ class Ai1ec_Front_Controller {
 				get_page_link( $cal_page ),
 				$clang
 		);
+		
 		// save the pagebase to set up the factory later
-		$this->_pagebase_for_href = $pagebase_for_href;
+		$this->_registry->set_environment( 'calendar_base_page', $pagebase_for_href );
 
 
 		// If we are requesting the calendar page and we have a saved cookie,

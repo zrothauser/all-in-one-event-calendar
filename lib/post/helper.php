@@ -9,7 +9,7 @@
  * @subpackage AI1EC.Script
  */
 class Ai1ec_Post_Helper {
-	
+
 	/**
 	 * Retrieves post data given a post ID or post object.
 	 *

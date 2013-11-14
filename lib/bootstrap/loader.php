@@ -111,16 +111,16 @@ class Ai1ec_Loader {
 
 	/**
 	 * Gets the way classes must be instanciated.
-	 * 
+	 *
 	 * Retrieves from annotations the way classes must be retrieved.
 	 * Possible values are
 	 *  - new: a new instance is instantiated every time
 	 *  - global: treat as singleton
 	 *  - classname.method: a factory is used, specify it in that order
 	 * The default if nothing is specified is global.
-	 * 
+	 *
 	 * @param ReflectionClass $class
-	 * 
+	 *
 	 * @return string
 	 */
 	protected function _get_instantiator( ReflectionClass $class ) {
@@ -140,9 +140,9 @@ class Ai1ec_Loader {
 	/**
 	 * Check if the registry must be injected in the constructor.
 	 * By convention the registry will always be the first parameter.
-	 * 
+	 *
 	 * @param ReflectionClass $class The class to check
-	 * 
+	 *
 	 * @return boolean true if the registry must be injected, false if not.
 	 */
 	protected function _inject_registry( ReflectionClass $class ) {
@@ -163,9 +163,9 @@ class Ai1ec_Loader {
 
 	/**
 	 * Update the classmap with Reflection informations.
-	 * 
+	 *
 	 * @param array $names The class map.
-	 * 
+	 *
 	 * @return array The classmap with instantiator.
 	 */
 	protected function _process_reflections( array $names ) {
@@ -183,9 +183,9 @@ class Ai1ec_Loader {
 
 	/**
 	 * Converts the long form to the short form where applicable.
-	 * 
+	 *
 	 * @param string $instantiator
-	 * 
+	 *
 	 * @return string
 	 */
 	protected function _convert_instantiator_for_map( $instantiator ) {
@@ -361,8 +361,8 @@ class Ai1ec_Loader {
 		// Remove the extension.
 		$file = substr( $file, 0, strrpos( $file , '.') );
 		// Get just the meaningful data.
-		$file = substr( $file, strrpos( 
-				$file, 
+		$file = substr( $file, strrpos(
+				$file,
 				DIRECTORY_SEPARATOR . AI1EC_PLUGIN_NAME . DIRECTORY_SEPARATOR
 			) + 31
 		);

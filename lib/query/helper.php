@@ -72,8 +72,8 @@ class Ai1ec_Query_Helper {
 
 	/**
 	 * Initiate (populate) query variables list. Two different url structures are supported.
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	public function init_vars( $query = null ) {
 		foreach ( $_REQUEST as $key => $value ) {

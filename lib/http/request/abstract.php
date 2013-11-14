@@ -140,7 +140,7 @@ abstract class Ai1ec_Abstract_Query implements arrayaccess {
 
 	/**
 	 * Check if the request is empry ( that means we are accessing the calendare page without parameters )
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public function is_empty_request() {

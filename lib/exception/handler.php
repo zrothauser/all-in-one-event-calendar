@@ -125,14 +125,14 @@ class Ai1ec_Exception_Handler {
 		$errno,
 		$errstr,
 		$errfile,
-		$errline, 
+		$errline,
 		array $errcontext
 	) {
 		// if the error is not in our plugin, let PHP handle things.
 		if ( false === strpos( $errfile, AI1EC_PLUGIN_NAME ) ) {
 			if ( is_callable( $this->_prev_er_handler ) ) {
-				return call_user_func_array( 
-					$this->_prev_er_handler, 
+				return call_user_func_array(
+					$this->_prev_er_handler,
 					func_get_args()
 				);
 			}
@@ -203,17 +203,17 @@ class Ai1ec_Exception_Handler {
 			'true',
 			get_admin_url( $_SERVER['REQUEST_URI'] )
 		);
-		$label = __( 
+		$label = __(
 			'All In One Event Calendar has been disabled due to an error. Here is the description',
 			AI1EC_PLUGIN_NAME
 		);
 		$redirect_url .= self::DB_REACTIVATE_PLUGIN . '=true';
-		$message = '<div class="message error">'. 
+		$message = '<div class="message error">'.
 						'<h3>' . $label . '</h3>' .
 						'<p>' . $this->_message . '</p>';
 		$message .= sprintf(
-			__( 
-				'<p>If you corrected the error and want to reactivate the plugin, <a href="%s">click here</a></p>', 
+			__(
+				'<p>If you corrected the error and want to reactivate the plugin, <a href="%s">click here</a></p>',
 				AI1EC_PLUGIN_NAME
 			),
 			$redirect_url

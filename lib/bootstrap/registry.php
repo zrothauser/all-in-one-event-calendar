@@ -66,9 +66,9 @@ class Ai1ec_Object_Registry {
 		}
 		// Ok it's a factory.
 		$factory = explode( '.', $instantiator );
-		return $this->dispatch( 
-			$factory[0], 
-			$factory[1], 
+		return $this->dispatch(
+			$factory[0],
+			$factory[1],
 			$args
 		);
 	}

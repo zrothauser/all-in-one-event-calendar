@@ -21,7 +21,7 @@ abstract class Ai1ec_File_Abstract {
 	protected $_name;
 
 	/**
-	 * @var mixed The content of the file. 
+	 * @var mixed The content of the file.
 	 * Usually it's a string but for some edge cases it might be a PHP type like an array
 	 * The only case now is user_variables.php for Less
 	 */
@@ -29,14 +29,14 @@ abstract class Ai1ec_File_Abstract {
 
 	/**
 	 * Locate the files and parses it's content. Populates $this->_content.
-	 * 
+	 *
 	 * @return boolean Returns true if the file is found, false otheriwse.
 	 */
 	abstract public function process_file();
 
 	/**
 	 * Standard constructor for basic files.
-	 * 
+	 *
 	 * @param string $name
 	 * @param array $paths
 	 */
@@ -55,7 +55,7 @@ abstract class Ai1ec_File_Abstract {
 		echo $this->_content;
 	}
 
-	
+
 	/**
 	 * @return mixed the parsed content of the file.
 	 */

@@ -201,7 +201,7 @@ class Ai1ec_Dbi {
 
 	/**
 	 * Returns the db prefix.
-	 * 
+	 *
 	 * @return string
 	 */
 	public function get_prefix() {

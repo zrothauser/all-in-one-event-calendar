@@ -36,7 +36,7 @@ class Ai1ec_Front_Controller {
 	 *
 	 * @param Ai1ec_Loader $ai1ec_loader Instance of Ai1EC classes loader
 	 *
-	 * @return void 
+	 * @return void
 	 */
 	public function initialize( $ai1ec_loader ) {
 		$this->_init( $ai1ec_loader );
@@ -45,10 +45,10 @@ class Ai1ec_Front_Controller {
 
 	/**
 	 * Perform actions needed when our plugin is activated.
-	 * 
+	 *
 	 * @wp_hook activate_all-in-one-event-calendar/all-in-one-event-calendar.php
-	 * 
-	 * @return void 
+	 *
+	 * @return void
 	 */
 	public function activation_hook() {
 		$this->_registry->get( 'app' )->register_post_type();
@@ -72,7 +72,7 @@ class Ai1ec_Front_Controller {
 		);
 		// get the command
 		$command = $resolver->get_command();
-		// if we have a command 
+		// if we have a command
 		if ( null !== $command ) {
 			$command->execute();
 		}
@@ -123,13 +123,13 @@ class Ai1ec_Front_Controller {
 
 	/**
 	 * Initialize the dispatcher.
-	 * 
+	 *
 	 * Complete this when writing the dispatcher.
-	 * 
-	 * @return void 
+	 *
+	 * @return void
 	 */
 	private function _initialize_dispatcher() {
-		// provide initialization for the dispatcher class. 
+		// provide initialization for the dispatcher class.
 		// maybe inject into the dispatcher the basic add_action/add_filters.
 	}
 
@@ -163,10 +163,10 @@ class Ai1ec_Front_Controller {
 
 	/**
 	 * Initialize cron functions.
-	 * 
+	 *
 	 * @throws Ai1ec_Scheduling_Exception
-	 * 
-	 * @return void 
+	 *
+	 * @return void
 	 */
 	private function _install_crons() {
 		$scheduling = $this->_registry->get( 'scheduling.utility', $this->_registry );
@@ -193,7 +193,7 @@ class Ai1ec_Front_Controller {
 			AI1EC_U_CRON_VERSION
 		);
 		if ( false === $correct ) {
-			throw new Ai1ec_Scheduling_Exception( 
+			throw new Ai1ec_Scheduling_Exception(
 				'Some CRON function might not have been installed'
 			);
 		}
@@ -201,8 +201,8 @@ class Ai1ec_Front_Controller {
 
 	/**
 	 * Register the activation hook for the plugin.
-	 * 
-	 * @return void 
+	 *
+	 * @return void
 	 */
 	private function _register_activation_hook() {
 		// register_activation_hook
@@ -225,12 +225,12 @@ class Ai1ec_Front_Controller {
 
 	/**
 	 * Load the texdomain for the plugin.
-	 * 
-	 * @return void 
+	 *
+	 * @return void
 	 */
 	private function _load_textdomain() {
 		if ( false === $this->_load_domain ) {
-			load_plugin_textdomain( 
+			load_plugin_textdomain(
 				AI1EC_PLUGIN_NAME, false, AI1EC_LANGUAGE_PATH
 			);
 			$this->_load_domain = true;
@@ -239,11 +239,11 @@ class Ai1ec_Front_Controller {
 
 	/**
 	 * Check if the schema is up to date.
-	 * 
+	 *
 	 * @throws Ai1ec_Database_Schema_Exception
 	 * @throws Ai1ec_Database_Update_Exception
-	 * 
-	 * @return void 
+	 *
+	 * @return void
 	 */
 	private function _initialize_schema() {
 		$settings = $this->_registry->get( 'model.settings' );
@@ -252,12 +252,12 @@ class Ai1ec_Front_Controller {
 		if (
 			$settings->get( 'ai1ec_db_version' ) != AI1EC_DB_VERSION
 		) {
-		
+
 			$applicator = $this->_registry->get( 'database.applicator' );
-			
-			
+
+
 			$applicator->remove_instance_duplicates();
-		
+
 			$structures = array();
 			$schema     = $this->_registry->get( 'database.schema' );
 			if ( ! $schema->upgrade( AI1EC_DB_VERSION ) ) {
@@ -310,7 +310,7 @@ class Ai1ec_Front_Controller {
 					PRIMARY KEY  (post_id),
 					KEY feed_source (ical_feed_url)
 					) CHARACTER SET utf8;";
-		
+
 			// ==========================
 			// = Create table instances =
 			// ==========================
@@ -323,7 +323,7 @@ class Ai1ec_Front_Controller {
 					PRIMARY KEY  (id),
 					UNIQUE KEY evt_instance (post_id,start)
 					) CHARACTER SET utf8;";
-		
+
 			// ================================
 			// = Create table category colors =
 			// ================================
@@ -344,10 +344,10 @@ class Ai1ec_Front_Controller {
 
 	/**
 	 * Initializes the URL router used by our plugin.
-	 * 
+	 *
 	 * @wp_hook init
-	 * 
-	 * @return void 
+	 *
+	 * @return void
 	 */
 	private function _initialize_router() {
 		$settings            = $this->_registry->get( 'model.settings' );
@@ -360,10 +360,10 @@ class Ai1ec_Front_Controller {
 			$cal_page < 1
 		) { // Routing may not be affected in any way if no calendar page exists.
 			return NULL;
-		}		
+		}
 		$page_base          = '';
 		$clang              = '';
-	
+
 		if ( $localization_helper->is_wpml_active() ) {
 			$trans = $localization_helper
 				->get_wpml_translations_of_page(
@@ -377,7 +377,7 @@ class Ai1ec_Front_Controller {
 		}
 		$template_link_helper = $this->_registry->get( 'template.link.helper' );
 
-		$page_base = $template_link_helper->get_page_link( 
+		$page_base = $template_link_helper->get_page_link(
 			$cal_page
 		);
 
@@ -391,7 +391,7 @@ class Ai1ec_Front_Controller {
 		// save the pagebase to set up the factory later
 		$this->_pagebase_for_href = $pagebase_for_href;
 
-	
+
 		// If we are requesting the calendar page and we have a saved cookie,
 		// redirect the user. Do not redirect if the user saved the home page,
 		// otherwise we enter a loop.

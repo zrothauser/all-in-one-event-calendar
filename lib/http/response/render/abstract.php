@@ -29,7 +29,7 @@ abstract class Ai1ec_Http_Response_Render_Strategy {
 
 	/**
 	 * Render the output.
-	 * 
+	 *
 	 * @param array $params
 	 */
 	abstract public function render( array $params );

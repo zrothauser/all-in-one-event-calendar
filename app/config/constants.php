@@ -89,9 +89,9 @@ function ai1ec_initiate_constants( $ai1ec_base_dir ) {
 	// = ADMIN PATH  =
 	// ===============
 	if ( ! defined( 'AI1EC_ADMIN_PATH' ) ) {
-		define( 
+		define(
 			'AI1EC_ADMIN_PATH',
-			AI1EC_PATH . DIRECTORY_SEPARATOR . 'public' . 
+			AI1EC_PATH . DIRECTORY_SEPARATOR . 'public' .
 				DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR
 		);
 	}
@@ -113,7 +113,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir ) {
 				DIRECTORY_SEPARATOR . AI1EC_THEME_FOLDER . DIRECTORY_SEPARATOR
 		);
 	}
-	
+
 	// =============
 	// = POST TYPE =
 	// =============

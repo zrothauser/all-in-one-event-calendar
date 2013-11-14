@@ -12,34 +12,34 @@ class Ai1ec_Javascript_Controller {
 
 	// The js handle used when enqueueing
 	const JS_HANDLE = 'ai1ec_requirejs';
-	
+
 	// The namespace for require.js functions
 	const REQUIRE_NAMESPACE = 'timely';
-	
+
 	// the name of the configuration module for the frontend
 	const FRONTEND_CONFIG_MODULE = 'ai1ec_calendar';
-	
+
 	//the name of the get parameter we use for loading js
 	const LOAD_JS_PARAMETER = 'ai1ec_render_js';
-	
+
 	// just load backend scripts
 	const LOAD_ONLY_BACKEND_SCRIPTS = 'common_backend';
-	
+
 	// just load backend scripts
 	const LOAD_ONLY_FRONTEND_SCRIPTS = 'common_frontend';
-	
+
 	// Are we in the backend
 	const IS_BACKEND_PARAMETER = 'is_backend';
-	
+
 	// Are we on the calendar page
 	const IS_CALENDAR_PAGE = 'is_calendar_page';
-	
+
 	// this is the value of IS_BACKEND_PARAMETER which triggers loading of backend script
 	const TRUE_PARAM = 'true';
-	
+
 	// the javascript file for event page
 	const EVENT_PAGE_JS = 'event.js';
-	
+
 	// the javascript file for calendar page
 	const CALENDAR_PAGE_JS = 'calendar.js';
 
@@ -51,19 +51,19 @@ class Ai1ec_Javascript_Controller {
 	 * @var Ai1ec_Settings
 	 */
 	private $_settings;
-	
+
 	/**
 	 * The event helper class
 	 *
 	 * @var Ai1ec_Events_Helper
 	 */
 	private $_time_controller;
-	
+
 	/**
 	 * @var Ai1ec_Locale
 	 */
 	private $_locale;
-	
+
 	/**
 	 * @var Ai1ec_Scripts
 	 */
@@ -86,9 +86,9 @@ class Ai1ec_Javascript_Controller {
 
 	/**
 	 * Public constructor.
-	 * 
+	 *
 	 * @param Ai1ec_Object_Registry $registry
-	 * 
+	 *
 	 * @return void
 	 */
 	public function __construct( Ai1ec_Object_Registry $registry ) {
@@ -110,12 +110,12 @@ class Ai1ec_Javascript_Controller {
 	 *
 	 * @param $is_calendar_page boolean Whether we are displaying the main
 	 *                                  calendar page or not
-	 * 
+	 *
 	 * @return void
 	 */
 	public function load_frontend_js( $is_calendar_page, $is_shortcode = false ) {
 		$page = null;
-	
+
 		// ======
 		// = JS =
 		// ======
@@ -138,10 +138,10 @@ class Ai1ec_Javascript_Controller {
 		$js_path = AI1EC_ADMIN_THEME_JS_PATH . DIRECTORY_SEPARATOR;
 		$common_js = '';
 		$page_to_load = $_GET[self::LOAD_JS_PARAMETER];
-	
+
 		if ( $_GET[self::IS_BACKEND_PARAMETER] === self::TRUE_PARAM ) {
 			$common_js = file_get_contents( $js_path . 'pages/common_backend.js' );
-		} else if ( 
+		} else if (
 			$page_to_load === self::EVENT_PAGE_JS ||
 			$page_to_load === self::CALENDAR_PAGE_JS ||
 			$page_to_load === self::LOAD_ONLY_FRONTEND_SCRIPTS
@@ -160,27 +160,27 @@ class Ai1ec_Javascript_Controller {
 		$require_config = $this->_create_require_js_config_object();
 		// load require
 		$require = file_get_contents( $js_path . 'require.js' );
-	
+
 		// get jquery
 		$jquery = $this->_get_jquery_version_based_on_browser(
 				$_SERVER['HTTP_USER_AGENT']
 		);
 		// load the script for the page
-	
+
 		$page_js = '';
 		if ( $page_to_load !== self::LOAD_ONLY_BACKEND_SCRIPTS &&
 			$page_to_load !== self::LOAD_ONLY_FRONTEND_SCRIPTS
 		) {
 			$page_js = file_get_contents( $js_path . 'pages/' . $page_to_load );
 		}
-	
-	
+
+
 		$translation = $this->_get_frontend_translation_data();
 		$permalink = $this->_template_link_helper
 			->get_permalink( $this->_settings->calendar_page_id );
-	
+
 		$translation['calendar_url'] = $permalink;
-	
+
 		$tranlsation_module = $this->_create_require_js_module(
 				self::FRONTEND_CONFIG_MODULE,
 				$translation
@@ -196,18 +196,18 @@ class Ai1ec_Javascript_Controller {
 		foreach ( $extension_files as $file ) {
 			$ext_js .= file_get_contents( $file );
 		}
-		
+
 		$javascript = $require . $require_config . $tranlsation_module .
 		$config . $jquery . $page_js . $common_js . $ext_js;
 		$this->_echo_javascript( $javascript );
-	
+
 	}
 
 	/**
 	 * Check what file needs to be loaded and add the correct link.
 	 *
 	 * @wp-hook init
-	 * 
+	 *
 	 * @return void
 	 */
 	public function load_admin_js() {
@@ -230,7 +230,7 @@ class Ai1ec_Javascript_Controller {
 			if( $this->_are_we_accessing_the_calendar_settings_page() === TRUE ) {
 				$script_to_load = 'admin_settings.js';
 			}
-	
+
 			if( false === $script_to_load ) {
 				$script_to_load = self::LOAD_ONLY_BACKEND_SCRIPTS;
 			}
@@ -242,7 +242,7 @@ class Ai1ec_Javascript_Controller {
 	 * Loads version 1.9 or 2.0 of jQuery based on user agent.
 	 *
 	 * @param string $user_agent
-	 * 
+	 *
 	 * @return string
 	 */
 	private function _get_jquery_version_based_on_browser( $user_agent ) {
@@ -262,12 +262,12 @@ class Ai1ec_Javascript_Controller {
 
 	/**
 	 * Echoes the Javascript if not cached.
-	 * 
+	 *
 	 * Echoes the javascript with the correct content.
 	 * Since the content is dinamic, i use the hash function.
-	 * 
+	 *
 	 * @param string $javascript
-	 * 
+	 *
 	 * @return void
 	 */
 	private function _echo_javascript( $javascript ) {
@@ -293,7 +293,7 @@ class Ai1ec_Javascript_Controller {
 	 *
 	 * @param string $object_name
 	 * @param array $data
-	 * 
+	 *
 	 * @return string
 	 */
 	private function _create_require_js_module( $object_name, array $data ) {
@@ -305,7 +305,7 @@ class Ai1ec_Javascript_Controller {
 		$json_data = json_encode( $data );
 		$prefix = self::REQUIRE_NAMESPACE;
 		$script = "$prefix.define( '$object_name', $json_data );";
-	
+
 		return $script;
 	}
 
@@ -322,7 +322,7 @@ class Ai1ec_Javascript_Controller {
 		// Replace desired CSS selector with calendar, if selector has been set
 		$calendar_selector = $this->_settings->get( 'calendar_css_selector' );
 		if( $calendar_selector ) {
-			$page             = $this->_post_helper->get_post( 
+			$page             = $this->_post_helper->get_post(
 				$this->_settings->get( 'calendar_post_id ' )
 			);
 			$data['selector'] = $calendar_selector;
@@ -365,7 +365,7 @@ JSC;
 	 *
 	 * @param string $page
 	 * @param boolean $backend
-	 * 
+	 *
 	 * @return void
 	 */
 	private function _add_link_to_render_js( $page, $backend ) {
@@ -374,7 +374,7 @@ JSC;
 			$load_backend_script = self::TRUE_PARAM;
 		}
 		$is_calendar_page = false;
-		if( true === $this->_aco->is_page( 
+		if( true === $this->_aco->is_page(
 				$this->_settings->get( 'calendar_page_id' )
 			)
 		) {
@@ -416,7 +416,7 @@ JSC;
 		if( $post_id === FALSE || $action === FALSE ) {
 			return FALSE;
 		}
-	
+
 		$editing = $path_details['basename']   === 'post.php' &&
 		$action                                === 'edit' &&
 		$this->_aco->get_post_type( $post_id ) === AI1EC_POST_TYPE;
@@ -431,7 +431,7 @@ JSC;
 	private function _are_we_creating_a_new_event() {
 		$path_details = pathinfo( $_SERVER["SCRIPT_NAME"] );
 		$post_type = isset( $_GET['post_type'] ) ? $_GET['post_type'] : '';
-		return $path_details['basename'] === 'post-new.php' && 
+		return $path_details['basename'] === 'post-new.php' &&
 				$post_type === AI1EC_POST_TYPE;
 	}
 
@@ -443,11 +443,11 @@ JSC;
 	private function _are_we_accessing_the_calendar_settings_page() {
 		$path_details = pathinfo( $_SERVER["SCRIPT_NAME"] );
 		$page = isset( $_GET['page'] ) ? $_GET['page'] : '';
-		return $path_details['basename'] === 'edit.php' && 
+		return $path_details['basename'] === 'edit.php' &&
 				$page === AI1EC_PLUGIN_NAME . '-settings';
 	}
 
-	
+
 	/**
 	 * Check if we are accessing the events category page
 	 *
@@ -467,5 +467,5 @@ JSC;
 	private function _are_we_accessing_the_single_event_page() {
 		return $this->_aco->is_our_post_type();
 	}
-	
+
 }

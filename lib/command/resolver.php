@@ -27,18 +27,18 @@ class Ai1ec_Command_Resolver {
 
 	/**
 	 * Public constructor
-	 * 
+	 *
 	 * @param Ai1ec_Object_Registry $registry
 	 * @param Ai1ec_Request_Parser $request
-	 * 
+	 *
 	 * @return void
 	 */
-	public function __construct( 
-		Ai1ec_Object_Registry $registry, 
+	public function __construct(
+		Ai1ec_Object_Registry $registry,
 		Ai1ec_Request_Parser $request
 	) {
-		$this->add_command( 
-			$registry->get( 
+		$this->add_command(
+			$registry->get(
 				'command.event', $registry, $request
 			)
 		);
@@ -50,22 +50,22 @@ class Ai1ec_Command_Resolver {
 		$this->_registry = $registry;
 		$this->_request  = $request;
 	}
-	
+
 	/**
 	 * Add a command.
-	 * 
+	 *
 	 * @param Ai1ec_Command $command
-	 * 
+	 *
 	 * @return Ai1ec_Comment_Resolver Self for calls chaining
 	 */
 	public function add_command( Ai1ec_Command $command ) {
 		$this->_commands[] = $command;
 		return $this;
 	}
-	
+
 	/**
 	 * Return the command to execute or false.
-	 * 
+	 *
 	 * @return Ai1ec_Command|null
 	 */
 	public function get_command() {

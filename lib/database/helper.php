@@ -35,9 +35,9 @@ class Ai1ec_Database_Helper {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param Ai1ec_Object_Registry $registry
-	 * 
+	 *
 	 * @return void
 	 */
 	public function __construct( Ai1ec_Object_Registry $registry ) {

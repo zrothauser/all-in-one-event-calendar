@@ -17,7 +17,7 @@ class Ai1ec_File_Php extends Ai1ec_File_Abstract {
 
 	/**
 	 * Initialize class specific variables.
-	 * 
+	 *
 	 * @param string $name
 	 * @param array $paths
 	 * @param array $args

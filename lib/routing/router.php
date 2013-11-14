@@ -31,7 +31,7 @@ class Ai1ec_Router {
 	 * @var Ai1ec_Adapter_Query_Interface Query manager object
 	 */
 	protected $_query_manager = null;
-	
+
 	/**
 	 * @var Ai1ec_Cookie_Present_Dto
 	 */

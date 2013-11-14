@@ -1,0 +1,88 @@
+<?php
+
+/**
+ * Time entity.
+ *
+ * @instantiator new
+ * @author       Time.ly Network, Inc.
+ * @since        2.0
+ * @package      Ai1EC
+ * @subpackage   Ai1EC.Date
+ */
+class Ai1ec_Date_Time {
+
+	/**
+	 * @var Ai1ec_Object_Registry Instance of objects registry.
+	 */
+	protected $_registry  = null;
+
+	/**
+	 * @var DateTime Instance of date time object used to perform manipulations.
+	 */
+	protected $_date_time = null;
+
+	/**
+	 * Initialize local date entity.
+	 *
+	 * @param Ai1ec_Object_Registry $registry Objects registry instance.
+	 * @param string                $time     For details {@see self::format}.
+	 * @param string                $timezone For details {@see self::format}.
+	 *
+	 * @return void
+	 */
+	public function __construct(
+		Ai1ec_Object_Registry $registry,
+		$time     = 'now',
+		$timezone = 'UTC'
+	) {
+		$this->_registry = $registry;
+		$this->set_time( $time, $timezone );
+	}
+
+	/**
+	 * Return formatted date in desired timezone.
+	 *
+	 * @param string $format   Desired format as accepted by {@see date}.
+	 * @param string $timezone Valid timezone identifier.
+	 *
+	 * @return string Formatted date time.
+	 *
+	 * @throws Ai1ec_Date_Timezone_Exception If timezone is not recognized.
+	 */
+	public function format( $format = 'U', $timezone = 'UTC' ) {
+		$this->change_timezone( $timezone );
+		return $this->_date_time->format( $format );
+	}
+
+	/**
+	 * Change timezone of stored entity.
+	 *
+	 * @param string $timezone Valid timezone identifier.
+	 *
+	 * @return Ai1ec_Date Instance of self for chaining.
+	 *
+	 * @throws Ai1ec_Date_Timezone_Exception If timezone is not recognized.
+	 */
+	public function change_timezone( $timezone = 'UTC' ) {
+		$date_time_tz = $this->_registry->get( 'date.timezone' )
+			->get( $timezone );
+		$this->_date_time->setTimezone( $date_time_tz );
+		return $this;
+	}
+
+	/**
+	 * Change/initiate stored date time entity.
+	 *
+	 * @param string $time     Valid (PHP-parseable) date/time identifier.
+	 * @param string $timezone Valid timezone identifier.
+	 *
+	 * @return Ai1ec_Date Instance of self for chaining.
+	 */
+	public function set_time( $time = 'now', $timezone = 'UTC' ) {
+		$date_time_tz = $this->_registry->get( 'date.timezone' )
+			->get( $timezone );
+		$this->_date_time = new DateTime( $time, $date_time_tz );
+		return $this;
+	}
+
+}

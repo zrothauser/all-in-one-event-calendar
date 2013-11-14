@@ -1,6 +1,6 @@
 <?php
 
-class Ai1ec_Core_Callback {    
+class Ai1ec_Event_Callback {    
     protected $_registry      = null;
     protected $_registry_name = null;    
     protected $_method        = null;

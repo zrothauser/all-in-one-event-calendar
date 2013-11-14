@@ -73,14 +73,23 @@ class Ai1ec_Date_Time {
 	/**
 	 * Change/initiate stored date time entity.
 	 *
+	 * NOTICE: time specifiers falling in range 0..2048 will be treated
+	 * as a UNIX timestamp, to full format specification, thus ignoring
+	 * any value passed for timezone.
+	 *
 	 * @param string $time     Valid (PHP-parseable) date/time identifier.
 	 * @param string $timezone Valid timezone identifier.
 	 *
 	 * @return Ai1ec_Date Instance of self for chaining.
 	 */
 	public function set_time( $time = 'now', $timezone = 'UTC' ) {
-		$date_time_tz = $this->_registry->get( 'date.timezone' )
-			->get( $timezone );
+		$date_time_tz = null;
+		if ( $time > 0 && ( $time >> 10 ) < 2 ) {
+			$time = '@' . $time; // treat as UNIX timestamp
+		} else {
+			$date_time_tz = $this->_registry->get( 'date.timezone' )
+				->get( $timezone );
+		}
 		$this->_date_time = new DateTime( $time, $date_time_tz );
 		return $this;
 	}

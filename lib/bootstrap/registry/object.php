@@ -11,7 +11,7 @@
  * @package    Ai1EC
  * @subpackage Ai1EC.Registry
  */
-class Ai1ec_Object_Registry {
+class Ai1ec_Object_Registry implements Ai1ec_Registry {
 
 	/**
 	* @var array The internal objects cache
@@ -22,11 +22,6 @@ class Ai1ec_Object_Registry {
 	 * @var Ai1ec_Loader The Ai1ec_Loader instance used by the registry
 	 */
 	private $_loader  = null;
-
-	/**
-	 * @var Ai1ec_Cache_Memory
-	 */
-	protected $_environment;
 
 	/**
 	 * Get class instance.
@@ -76,6 +71,13 @@ class Ai1ec_Object_Registry {
 			$factory[1],
 			$args
 		);
+	}
+
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Registry::set()
+	 */
+	public function set( $key, $value ) {
+		// The set method allows to inject classes from extensions into the registry.
 	}
 
 	/**
@@ -158,13 +160,6 @@ class Ai1ec_Object_Registry {
 		}
 	}
 
-	public function get_environment( $key ) {
-		$this->_environment->get( $key );
-	}
-
-	public function set_environment( $key, $value ) {
-		$this->_environment->set( $key, $value );
-	}
 	/**
 	 * Constructor
 	 *
@@ -176,7 +171,6 @@ class Ai1ec_Object_Registry {
 	 */
 	public function __construct( $ai1ec_loader ) {
 		$this->_loader = $ai1ec_loader;
-		$this->_environment = $this->get( 'cache.memory', PHP_INT_MAX -1 );
 	}
 
 }

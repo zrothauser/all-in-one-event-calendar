@@ -16,7 +16,7 @@ class Ai1ec_Import_Export_Controller {
 	 */
 	protected $_engines = array();
 
-	
+
 	/**
 	 * @var Ai1ec_Registry_Object
 	 */
@@ -46,7 +46,7 @@ class Ai1ec_Import_Export_Controller {
 
 	/**
 	 * Register an import-export engine.
-	 * 
+	 *
 	 * @param string $engine
 	 */
 	public function register( $engine ) {
@@ -55,13 +55,13 @@ class Ai1ec_Import_Export_Controller {
 
 	/**
 	 * Import events into the calendar.
-	 * 
+	 *
 	 * @param string $engine
 	 * @param array $args
-	 * 
+	 *
 	 * @throws Ai1ec_Engine_Not_Set_Exception If the engine is not set.
 	 * @throws Ai1ec_Parse_Exception          If an error happens during parse.
-	 * 
+	 *
 	 * @return int The number of imported events
 	 */
 	public function import_events( $engine, array $args ) {

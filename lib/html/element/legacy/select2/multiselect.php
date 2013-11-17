@@ -10,5 +10,5 @@
  */
 
 class Ai1ec_Select2_Multiselect extends Ai1ec_Html_Element_Select {
-	
+
 }

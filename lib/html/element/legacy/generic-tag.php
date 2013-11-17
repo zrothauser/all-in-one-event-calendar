@@ -16,7 +16,7 @@ class Ai1ec_Generic_Html_Tag extends Ai1ec_Html_Element_Can_Have_Children {
 	 * @var string
 	 */
 	private $text;
-	
+
 	/**
 	 * @var boolean
 	 */

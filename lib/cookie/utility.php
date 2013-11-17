@@ -19,7 +19,7 @@ class Ai1ec_Cookie_Utility extends Ai1ec_Base {
 
 	/**
 	 *  Check if a cookie is set for the current page
-	 * 
+	 *
 	 * @return Ai1ec_Cookie_Present_Dto
 	 */
 	public function is_cookie_set_for_current_page() {
@@ -42,10 +42,10 @@ class Ai1ec_Cookie_Utility extends Ai1ec_Base {
 				$cookie_dto->set_shortcode_cookie( $cookie[$requested_page_url] );
 				$cookie_dto->set_is_cookie_set_for_shortcode( true );
 				$cookie_dto->set_is_a_cookie_set_for_this_page( true );
-			} else if ( 
+			} else if (
 				// we must make the is_page( $ai1ec_settings->calendar_page_id ) for a really edge case
 				// when for example the calendar page is http://localhost/wordpress_pro/?page_id=1
-				// and the requested page is http://localhost/wordpress_pro/?page_id=1234 
+				// and the requested page is http://localhost/wordpress_pro/?page_id=1234
 				strpos( $requested_page_url, $calendar_url ) === 0 &&
 				isset( $cookie['calendar_page'] ) &&
 				is_page( $settings->get( 'calendar_page_id' ) )

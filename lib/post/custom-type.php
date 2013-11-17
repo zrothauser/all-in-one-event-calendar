@@ -13,11 +13,11 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 
 	/**
 	 * Registers the custom post type.
-	 * 
+	 *
 	 */
 	public function register() {
 		$settings = $this->_registry->get( 'model.settings' );
-		
+
 		// Create event contributor role with the same capabilities
 		// as subscriber role, plus event managing capabilities
 		// if we have not created it yet.
@@ -34,7 +34,7 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 			$role->add_cap( 'read' );
 			unset( $caps, $role );
 		}
-		
+
 		// Add event managing capabilities to administrator, editor, author.
 		// The last created capability is "manage_ai1ec_feeds", so check for
 		// that one.
@@ -68,7 +68,7 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 				$role->add_cap( 'manage_events_categories' );
 				// Manage calendar feeds.
 				$role->add_cap( 'manage_ai1ec_feeds' );
-		
+
 				if ( 'administrator' === $role_name ) {
 					// Change calendar themes & manage calendar options.
 					$role->add_cap( 'switch_ai1ec_themes' );
@@ -76,7 +76,7 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 				}
 			}
 		}
-		
+
 		// ===============================
 		// = labels for custom post type =
 		// ===============================
@@ -95,13 +95,13 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 			'menu_name'          => __( 'Events', AI1EC_PLUGIN_NAME ),
 			'all_items'          => $this->get_all_items_name(),
 		);
-		
-		
+
+
 		// ================================
 		// = support for custom post type =
 		// ================================
 		$supports = array( 'title', 'editor', 'comments', 'custom-fields', 'thumbnail' );
-		
+
 		// =============================
 		// = args for custom post type =
 		// =============================
@@ -109,7 +109,7 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 		if ( $settings->get( 'calendar_page_id' ) ) {
 			$page_base = get_page_uri( $settings->get( 'calendar_page_id' ) );
 		}
-		
+
 		$rewrite     = array( 'slug' => __( 'ai1ec_event', AI1EC_PLUGIN_NAME ) );
 		$has_archive = true;
 		if (
@@ -148,7 +148,7 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 			'supports'            => $supports,
 			'exclude_from_search' => $settings->get( 'exclude_from_search' ),
 		);
-		
+
 		// ========================================
 		// = labels for event categories taxonomy =
 		// ========================================
@@ -156,7 +156,7 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 			'name'          => _x( 'Event Categories', 'Event categories taxonomy', AI1EC_PLUGIN_NAME ),
 			'singular_name' => _x( 'Event Category', 'Event categories taxonomy (singular)', AI1EC_PLUGIN_NAME )
 		);
-		
+
 		// ==================================
 		// = labels for event tags taxonomy =
 		// ==================================
@@ -164,7 +164,7 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 			'name'          => _x( 'Event Tags', 'Event tags taxonomy', AI1EC_PLUGIN_NAME ),
 			'singular_name' => _x( 'Event Tag', 'Event tags taxonomy (singular)', AI1EC_PLUGIN_NAME )
 		);
-		
+
 		// ==================================
 		// = labels for event feeds taxonomy =
 		// ==================================
@@ -172,7 +172,7 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 			'name'          => _x( 'Event Feeds', 'Event feeds taxonomy', AI1EC_PLUGIN_NAME ),
 			'singular_name' => _x( 'Event Feed', 'Event feed taxonomy (singular)', AI1EC_PLUGIN_NAME )
 		);
-		
+
 		// ======================================
 		// = args for event categories taxonomy =
 		// ======================================
@@ -187,7 +187,7 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 				'assign_terms' => 'edit_ai1ec_events'
 			)
 		);
-		
+
 		// ================================
 		// = args for event tags taxonomy =
 		// ================================
@@ -202,7 +202,7 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 				'assign_terms' => 'edit_ai1ec_events'
 			)
 		);
-		
+
 		// ================================
 		// = args for event feeds taxonomy =
 		// ================================
@@ -218,34 +218,34 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 			),
 			'public'        => false // don't show taxonomy in admin UI
 		);
-		
+
 		// ======================================
 		// = register event categories taxonomy =
 		// ======================================
-		register_taxonomy( 
-			'events_categories', 
-			array( AI1EC_POST_TYPE ), 
-			$events_categories_args 
+		register_taxonomy(
+			'events_categories',
+			array( AI1EC_POST_TYPE ),
+			$events_categories_args
 		);
-		
+
 		// ================================
 		// = register event tags taxonomy =
 		// ================================
-		register_taxonomy( 
-			'events_tags', 
-			array( AI1EC_POST_TYPE ), 
-			$events_tags_args 
+		register_taxonomy(
+			'events_tags',
+			array( AI1EC_POST_TYPE ),
+			$events_tags_args
 		);
-		
+
 		// ================================
 		// = register event tags taxonomy =
 		// ================================
-		register_taxonomy( 
-			'events_feeds', 
-			array( AI1EC_POST_TYPE ), 
+		register_taxonomy(
+			'events_feeds',
+			array( AI1EC_POST_TYPE ),
 			$events_feeds_args
 		);
-		
+
 		// ========================================
 		// = register custom post type for events =
 		// ========================================
@@ -261,12 +261,12 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 	 * @return string
 	 **/
 	function get_all_items_name() {
-	
+
 		// if current user can publish events
 		if( current_user_can( 'publish_ai1ec_events' ) ) {
 			// get all pending events
 			$query = new WP_Query(  array ( 'post_type' => 'ai1ec_event', 'post_status' => 'pending', 'posts_per_page' => -1,  ) );
-	
+
 			// at least 1 pending event?
 			if( $query->post_count > 0 ) {
 				// append the pending events number to the menu
@@ -275,7 +275,7 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 					$query->post_count, $query->post_count, $query->post_count );
 			}
 		}
-	
+
 		// no pending events, or the user doesn't have sufficient capabilities
 		return __( 'All Events', AI1EC_PLUGIN_NAME );
 	}

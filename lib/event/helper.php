@@ -5,7 +5,7 @@ class Ai1ec_Event_Helper {
 	 * @var Ai1ec_Object_Registry
 	 */
 	protected $_registry;
-	
+
 	/**
 	 * The contructor method.
 	 *
@@ -34,7 +34,7 @@ class Ai1ec_Event_Helper {
 		$term_id = (int)$term_id;
 		if ( NULL === ( $color = $colors->get( $term_id ) ) ) {
 			$wpdb = $this->_registry->get( 'dbi.dbi' );
-	
+
 			$color = (string)$wpdb->get_var(
 				'SELECT term_color FROM ' . $wpdb->prefix .
 				'ai1ec_event_category_colors' . ' WHERE term_id = ' .

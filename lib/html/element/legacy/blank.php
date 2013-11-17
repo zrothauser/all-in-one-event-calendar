@@ -7,13 +7,13 @@
  */
 
 class Ai1ec_Html_Element_Blank extends Ai1ec_Html_Element {
-	
+
 	/**
 	 *
 	 * @see Ai1ec_Renderable::render()
 	 *
 	 */
 	public function render() {
-	
+
 	}
 }

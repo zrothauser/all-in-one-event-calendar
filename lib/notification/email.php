@@ -15,7 +15,7 @@ class Ai1ec_Email_Notification extends Ai1ec_Notification {
 	 * @var string
 	 */
 	private $subject;
-	
+
 	/**
 	 * @var array
 	 */

@@ -16,13 +16,13 @@ class Ai1ec_Factory_Html {
 	 * @var Ai1ec_Object_Registry
 	 */
 	protected $_registry;
-	
+
 	/**
 	 * The contructor method.
 	 *
 	 * @param Ai1ec_Registry_Object $registry
 	 */
-	public function __construct( 
+	public function __construct(
 		Ai1ec_Registry_Object $registry
 	 ) {
 		$this->_registry                 = $registry;
@@ -51,21 +51,21 @@ class Ai1ec_Factory_Html {
 			default:
 				break;
 		}
-	
+
 		return $href;
 	}
 
-	public function create_select2_multiselect( 
-		array $args, 
-		array $options, 
-		array $view_args = null 
+	public function create_select2_multiselect(
+		array $args,
+		array $options,
+		array $view_args = null
 	) {
 		// if no data is present and we are in the frontend, return a blank element.
 		if( empty( $options ) && null !== $view_args ) {
 			return $this->_registry->get( 'html.element.legacy.blank' );
 		}
 		static $cached_flips = array();
-		$select2 = $this->_registry->get( 
+		$select2 = $this->_registry->get(
 			'html.element.legacy.select2-multiselect',
 			$args['id'],
 			$args['name']
@@ -142,7 +142,7 @@ class Ai1ec_Factory_Html {
 				'hide_empty' => 0,
 			)
 		);
-	
+
 		// Build tags array to pass as JSON.
 		$tags_json = array();
 		foreach ( $tags as $term ) {

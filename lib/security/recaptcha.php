@@ -23,14 +23,14 @@ class Ai1ec_Recaptcha {
 	public function check_captcha() {
 		$settings = $this->_registry->get( 'model.settings' );
 		$response = array( 'success' => true );
-		if ( 
+		if (
 			empty( $_POST['recaptcha_challenge_field'] ) ||
-			empty( $_POST['recaptcha_response_field'] ) 
+			empty( $_POST['recaptcha_response_field'] )
 		) {
 			$response['message'] = __( 'There was an error reading the word verification data. Please try again.', AI1EC_PLUGIN_NAME );
 			$response['success'] = false;
 		}
-	
+
 		require_once( AI1EC_VENDOR_PATH . '/recaptcha/recaptchalib.php' );
 		$resp = recaptcha_check_answer(
 			$settings->get( 'recaptcha_private_key' ),
@@ -38,7 +38,7 @@ class Ai1ec_Recaptcha {
 			$_POST["recaptcha_challenge_field"],
 			$_POST["recaptcha_response_field"]
 		);
-	
+
 		if ( ! $resp->is_valid ) {
 			$response['message'] = __( 'Please try answering the word verification again.', AI1EC_PLUGIN_NAME );
 			$response['success'] = false;

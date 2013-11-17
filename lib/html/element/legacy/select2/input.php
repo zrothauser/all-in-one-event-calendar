@@ -10,5 +10,5 @@
  * @subpackage    AI1EC.Routing
  */
 class Ai1ec_Select2_Input extends Ai1ec_Input {
-	
+
 }

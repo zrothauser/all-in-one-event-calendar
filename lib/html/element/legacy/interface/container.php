@@ -1,12 +1,12 @@
 <?php
 /**
- * 
+ *
  * @author nicola
  *
  * This interface is implemented by those classes which are containers
  */
 interface Ai1ec_Container {
-	
+
 	/**
 	 * Adds a renderable child to the element
 	 *

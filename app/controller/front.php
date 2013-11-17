@@ -103,7 +103,7 @@ class Ai1ec_Front_Controller {
 			'settings_page'     => $settings->get( 'feeds_page' ),
 			'calendar_settings' => false,
 		);
-		
+
 
 		$file = $loader->get_file( 'settings.php', $args, true );
 		$file->render();
@@ -120,7 +120,7 @@ class Ai1ec_Front_Controller {
 		$file = $loader->get_file( 'box_feeds.php', array(), true );
 		$file->render();
 	}
-	
+
 	/**
 	 * Execute commands if our plugin must handle the request.
 	 *
@@ -166,7 +166,7 @@ class Ai1ec_Front_Controller {
 		$uri_helper          = $this->_registry->get( 'routing.uri-helper' );
 		$page_base          = '';
 		$clang              = '';
-	
+
 		if ( $localization_helper->is_wpml_active() ) {
 			$trans = $localization_helper
 				->get_wpml_translations_of_page(
@@ -179,11 +179,11 @@ class Ai1ec_Front_Controller {
 			}
 		}
 		$template_link_helper = $this->_registry->get( 'template.link.helper' );
-	
+
 		$page_base = $template_link_helper->get_page_link(
 			$cal_page
 		);
-	
+
 		$page_base = $uri_helper::get_pagebase( $page_base );
 		$page_link = 'index.php?page_id=' .
 			$cal_page;
@@ -191,12 +191,12 @@ class Ai1ec_Front_Controller {
 			get_page_link( $cal_page ),
 			$clang
 		);
-	
+
 		// save the pagebase to set up the factory later
 		$application = $this->_registry->get( 'bootstrap.registry.application' );
 		$application->set( 'calendar_base_page', $pagebase_for_href );
 		$option = $this->_registry->get( 'model.option' );
-	
+
 		// If the calendar is set as the front page, disable permalinks.
 		// They would not be legal under a Windows server. See:
 		// https://issues.apache.org/bugzilla/show_bug.cgi?id=41441
@@ -207,7 +207,7 @@ class Ai1ec_Front_Controller {
 		) {
 			$application->set( 'permalinks_enabled', true );
 		}
-	
+
 		// If we are requesting the calendar page and we have a saved cookie,
 		// redirect the user. Do not redirect if the user saved the home page,
 		// otherwise we enter a loop.
@@ -221,7 +221,7 @@ class Ai1ec_Front_Controller {
 		}
 		// We need to reset the cookie, it's to early for the is_page() call
 		$router->set_cookie_set_dto();
-	
+
 		$router->asset_base( $page_base )
 			->register_rewrite( $page_link );
 	}

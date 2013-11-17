@@ -49,8 +49,8 @@ class Ai1ec_Html_Element_Select extends Ai1ec_Html_Element {
 	 * @param string $value
 	 */
 	public function add_option( $text, $value = null, $attrs = array() ) {
-		$option = $this->_registry->get( 
-			'html.element.legacy.generic-tag', 
+		$option = $this->_registry->get(
+			'html.element.legacy.generic-tag',
 			'option'
 		);
 		if ( null === $value ) {
@@ -70,8 +70,8 @@ class Ai1ec_Html_Element_Select extends Ai1ec_Html_Element {
 	 *
 	 */
 	public function render() {
-		$select = $this->_registry->get( 
-			'html.element.legacy.generic-tag', 
+		$select = $this->_registry->get(
+			'html.element.legacy.generic-tag',
 			'select'
 		);
 		$select->set_id( $this->id );

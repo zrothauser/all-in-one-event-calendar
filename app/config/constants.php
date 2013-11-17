@@ -90,10 +90,10 @@ function ai1ec_initiate_constants( $ai1ec_base_dir ) {
 	// = VENDOR PATH =
 	// ===============
 	if ( ! defined( 'AI1EC_VENDOR_PATH' ) ) {
-		define( 
+		define(
 		'AI1EC_VENDOR_PATH',
 		AI1EC_PATH . DIRECTORY_SEPARATOR . 'vendor' .
-				DIRECTORY_SEPARATOR 
+				DIRECTORY_SEPARATOR
 		);
 	}
 	// ===============

@@ -10,17 +10,17 @@
  * @subpackage AI1EC.Notification
  */
 abstract class Ai1ec_Notification {
-	
+
 	/**
 	 * An array of recipients
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $recipients = array();
 
 	/**
 	 * The message to send
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $message;
@@ -32,7 +32,7 @@ abstract class Ai1ec_Notification {
 
 	/**
 	 * This function performs the actual sending of the message
-	 * 
+	 *
 	 */
 	abstract public function send();
 }

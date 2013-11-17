@@ -10,22 +10,22 @@
  * @subpackage AI1EC.Cookie
  */
 class Ai1ec_Cookie_Present_Dto {
-	
+
 	/**
 	 * @var boolean
 	 */
 	private $is_cookie_set_for_calendar_page = false;
-	
+
 	/**
 	 * @var boolean
 	 */
 	private $is_cookie_set_for_shortcode = false;
-	
+
 	/**
 	 * @var array
 	 */
 	private $shortcode_cookie;
-	
+
 	/**
 	 * @var string
 	 */
@@ -46,7 +46,7 @@ class Ai1ec_Cookie_Present_Dto {
 	/**
 	 * @param boolean $is_a_cookie_set_for_this_page
 	 */
-	public function set_is_a_cookie_set_for_this_page( 
+	public function set_is_a_cookie_set_for_this_page(
 		$is_a_cookie_set_for_this_page
 	) {
 		$this->is_a_cookie_set_for_this_page = $is_a_cookie_set_for_this_page;

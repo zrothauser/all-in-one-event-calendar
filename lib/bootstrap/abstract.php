@@ -14,7 +14,7 @@ class Ai1ec_Base {
 	 * @var Ai1ec_Object_Registry
 	 */
 	protected $_registry;
-	
+
 	/**
 	 * The contructor method.
 	 *

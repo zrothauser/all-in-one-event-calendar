@@ -197,7 +197,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 			'int',
 			'none'
 		);
-		
+
 	}
 
 }

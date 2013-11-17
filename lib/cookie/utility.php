@@ -1,11 +1,14 @@
 <?php
 
-/** 
- * @author Timely Network Inc
- * 
- * 
+/**
+ * An utility class for cookies.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Cookie
  */
-
 class Ai1ec_Cookie_Utility extends Ai1ec_Base {
 
 	static public $types = array(

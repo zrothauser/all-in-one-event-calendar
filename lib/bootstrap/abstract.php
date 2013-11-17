@@ -1,4 +1,13 @@
 <?php
+
+/**
+ * The base class which simply sets the registry object.
+ *
+ * @author     Time.ly Network, Inc.
+ * @since      2.0
+ * @package    Ai1EC
+ * @subpackage Ai1EC.Bootstrap
+ */
 class Ai1ec_Base {
 
 	/**

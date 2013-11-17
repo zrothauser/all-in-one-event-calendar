@@ -1,9 +1,14 @@
 <?php
 
 /**
- * @author Timely Network Inc
+ * The cookie Data Transfer Object.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Cookie
  */
-
 class Ai1ec_Cookie_Present_Dto {
 	
 	/**

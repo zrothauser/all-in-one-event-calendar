@@ -11,7 +11,7 @@
 class Ai1ec_Registry_Application_ implements Ai1ec_Registry {
 
 	/**
-	 * @var Ai1ec_Object_Registry
+	 * @var Ai1ec_Registry_Object
 	 */
 	protected $_registry;
 

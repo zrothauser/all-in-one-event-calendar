@@ -11,7 +11,7 @@
 abstract class Ai1ec_Command {
 
 	/**
-	 * @var Ai1ec_Object_Registry
+	 * @var Ai1ec_Registry_Object
 	 */
 	protected $_registry;
 

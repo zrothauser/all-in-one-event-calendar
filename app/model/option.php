@@ -16,7 +16,7 @@ class Ai1ec_Option extends Ai1ec_App {
 	protected $_cache = null;
 
 	/**
-	 * @var Ai1ec_Object_Registry instance of the registry object.
+	 * @var Ai1ec_Registry_Object instance of the registry object.
 	 */
 	protected $_registry;
 

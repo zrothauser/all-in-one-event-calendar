@@ -24,7 +24,7 @@ class Ai1ec_Scheduling_Utility {
 	protected $_configuration   = NULL;
 
 	/**
-	 * @var Ai1ec_Object_Registry The registry object.
+	 * @var Ai1ec_Registry_Object The registry object.
 	 */
 	private $_registry;
 

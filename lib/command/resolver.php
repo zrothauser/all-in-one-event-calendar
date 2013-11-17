@@ -16,7 +16,7 @@ class Ai1ec_Command_Resolver {
 	private $_commands = array();
 
 	/**
-	 * @var Ai1ec_Object_Registry The Object registry.
+	 * @var Ai1ec_Registry_Object The Object registry.
 	 */
 	private $_registry;
 

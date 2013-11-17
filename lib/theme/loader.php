@@ -21,7 +21,7 @@ class Ai1ec_Theme_Loader {
 	);
 
 	/**
-	 * @var Ai1ec_Object_Registry The registry Object.
+	 * @var Ai1ec_Registry_Object The registry Object.
 	 */
 	protected $_registry;
 

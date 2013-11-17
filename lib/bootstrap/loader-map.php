@@ -1,9 +1,5 @@
-
 <?php return array (
-  '0registered' => 
-  array (
-    AI1EC_PATH . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'composer' . DIRECTORY_SEPARATOR . 'autoload_classmap.php' => true,
-  ),
+  '0registered' => NULL,
   '1class_map' => 
   array (
     'Ai1ecIcsConnectorPlugin' => 
@@ -166,6 +162,39 @@
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'exception' . DIRECTORY_SEPARATOR . 'update.php',
       'c' => 'Ai1ec_Database_Update_Exception',
+      'i' => 'g',
+    ),
+    'Ai1ec_Date_Converter' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'date' . DIRECTORY_SEPARATOR . 'converter.php',
+      'c' => 'Ai1ec_Date_Converter',
+      'i' => 'g',
+      'r' => 'y',
+    ),
+    'Ai1ec_Date_Exception' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'date' . DIRECTORY_SEPARATOR . 'exception' . DIRECTORY_SEPARATOR . 'date.php',
+      'c' => 'Ai1ec_Date_Exception',
+      'i' => 'g',
+    ),
+    'Ai1ec_Date_Time' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'date' . DIRECTORY_SEPARATOR . 'time.php',
+      'c' => 'Ai1ec_Date_Time',
+      'i' => 'n',
+      'r' => 'y',
+    ),
+    'Ai1ec_Date_Timezone' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'date' . DIRECTORY_SEPARATOR . 'timezone.php',
+      'c' => 'Ai1ec_Date_Timezone',
+      'i' => 'g',
+      'r' => 'y',
+    ),
+    'Ai1ec_Date_Timezone_Exception' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'date' . DIRECTORY_SEPARATOR . 'exception' . DIRECTORY_SEPARATOR . 'timezone.php',
+      'c' => 'Ai1ec_Date_Timezone_Exception',
       'i' => 'g',
     ),
     'Ai1ec_Dbi' => 
@@ -772,6 +801,39 @@
       'i' => 'g',
       'r' => 'y',
     ),
+    'date.converter' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'date' . DIRECTORY_SEPARATOR . 'converter.php',
+      'c' => 'Ai1ec_Date_Converter',
+      'i' => 'g',
+      'r' => 'y',
+    ),
+    'date.exception.date' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'date' . DIRECTORY_SEPARATOR . 'exception' . DIRECTORY_SEPARATOR . 'date.php',
+      'c' => 'Ai1ec_Date_Exception',
+      'i' => 'g',
+    ),
+    'date.exception.timezone' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'date' . DIRECTORY_SEPARATOR . 'exception' . DIRECTORY_SEPARATOR . 'timezone.php',
+      'c' => 'Ai1ec_Date_Timezone_Exception',
+      'i' => 'g',
+    ),
+    'date.time' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'date' . DIRECTORY_SEPARATOR . 'time.php',
+      'c' => 'Ai1ec_Date_Time',
+      'i' => 'n',
+      'r' => 'y',
+    ),
+    'date.timezone' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'date' . DIRECTORY_SEPARATOR . 'timezone.php',
+      'c' => 'Ai1ec_Date_Timezone',
+      'i' => 'g',
+      'r' => 'y',
+    ),
     'dbi.dbi' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'dbi' . DIRECTORY_SEPARATOR . 'dbi.php',
@@ -1204,4 +1266,3 @@
     ),
   ),
 );
->>>>>>> AIEOC-1273 backporting changes

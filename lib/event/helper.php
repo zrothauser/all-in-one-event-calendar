@@ -1,19 +1,14 @@
 <?php
-class Ai1ec_Event_Helper {
 
-	/**
-	 * @var Ai1ec_Object_Registry
-	 */
-	protected $_registry;
-
-	/**
-	 * The contructor method.
-	 *
-	 * @param Ai1ec_Registry_Object $registry
-	 */
-	public function __construct( Ai1ec_Registry_Object $registry ) {
-		$this->_registry = $registry;
-	}
+/**
+ * An helper class for events.
+ *
+ * @author     Time.ly Network, Inc.
+ * @since      2.0
+ * @package    Ai1EC
+ * @subpackage Ai1EC.Events
+ */
+class Ai1ec_Event_Helper extends Ai1ec_Base {
 
 	/**
 	 * get_category_color function

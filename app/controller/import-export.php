@@ -78,4 +78,21 @@ class Ai1ec_Import_Export_Controller {
 		}
 		throw $ex;
 	}
+	
+	/**
+	 * Export the events using the specified engine.
+	 * 
+	 * @param string $engine
+	 * @param array $args
+	 * 
+	 * @throws Ai1ec_Engine_Not_Set_Exception
+	 */
+	public function export_events( $engine, array $args ) {
+		if ( ! isset( $this->_engines[$engine] ) ) {
+			throw new Ai1ec_Engine_Not_Set_Exception( 'The engine ' . $engine . 'is not registered.' );
+		}
+		// external engines must register themselves into the registry.
+		$engine = $this->_registry->get( 'import-export.' . $engine );
+		$engine->export( $args );
+	}
 }

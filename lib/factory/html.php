@@ -1,6 +1,14 @@
 <?php
-class Ai1ec_Factory_Html {
 
+/**
+ * A factory class for html elements
+ * 
+ * @author     Time.ly Network, Inc.
+ * @since      2.0
+ * @package    Ai1EC
+ * @subpackage Ai1EC.Factory
+ */
+class Ai1ec_Factory_Html extends Ai1ec_Base {
 
 	/**
 	 * @var boolean
@@ -13,11 +21,6 @@ class Ai1ec_Factory_Html {
 	protected $page;
 
 	/**
-	 * @var Ai1ec_Object_Registry
-	 */
-	protected $_registry;
-
-	/**
 	 * The contructor method.
 	 *
 	 * @param Ai1ec_Registry_Object $registry
@@ -25,9 +28,11 @@ class Ai1ec_Factory_Html {
 	public function __construct(
 		Ai1ec_Registry_Object $registry
 	 ) {
-		$this->_registry                 = $registry;
+		parent::__construct( $registry );
+		$app = $registry->get( 'bootstrap.ragistry.application' );
 
-		$this->page = $registry->get_environment( 'calendar_base_page' );
+		$this->page = $app->get( 'calendar_base_page' );
+		$this->pretty_permalinks_enabled = $app->get( 'pretty_permalinks' );
 	}
 
 	/**

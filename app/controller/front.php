@@ -226,6 +226,9 @@ class Ai1ec_Front_Controller {
 			->register_rewrite( $page_link );
 	}
 
+	/**
+	 * Initialize some actions to show things are working.
+	 */
 	private function _initialize_actions() {
 		$custom_type = $this->_registry->get( 'post.custom-type' );
 		// Initialize router

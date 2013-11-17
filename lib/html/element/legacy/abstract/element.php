@@ -75,7 +75,7 @@ abstract class Ai1ec_Html_Element implements Ai1ec_Renderable {
 		$this->set_attribute( $name, $value );
 	}
 
-	public function __construct( Ai1ec_Object_Registry $registry ) {
+	public function __construct( Ai1ec_Registry_Object $registry ) {
 		$this->_registry        = $registry;
 		$this->template_adapter = $registry->get( 'html.helper' );
 	}

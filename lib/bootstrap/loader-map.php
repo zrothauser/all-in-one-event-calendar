@@ -38,10 +38,29 @@
       'i' => 'g',
       'r' => 'y',
     ),
+    'Ai1ec_Base' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'abstract.php',
+      'c' => 'Ai1ec_Base',
+      'i' => 'g',
+      'r' => 'y',
+    ),
+    'Ai1ec_Base_Container' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'abstract' . DIRECTORY_SEPARATOR . 'base-container.php',
+      'c' => 'Ai1ec_Base_Container',
+      'i' => 'g',
+    ),
     'Ai1ec_Bootstrap_Exception' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'exception.php',
       'c' => 'Ai1ec_Bootstrap_Exception',
+      'i' => 'g',
+    ),
+    'Ai1ec_Bootstrap_Modal' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'modal.php',
+      'c' => 'Ai1ec_Bootstrap_Modal',
       'i' => 'g',
     ),
     'Ai1ec_Cache_Interface' => 
@@ -89,12 +108,32 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'import-export' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'abstract.php',
       'c' => 'Ai1ec_Connector_Plugin',
       'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_Constants_Not_Set_Exception' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'exception.php',
       'c' => 'Ai1ec_Constants_Not_Set_Exception',
       'i' => 'g',
+    ),
+    'Ai1ec_Container' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'interface' . DIRECTORY_SEPARATOR . 'container.php',
+      'c' => 'Ai1ec_Container',
+      'i' => 'g',
+    ),
+    'Ai1ec_Cookie_Present_Dto' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'cookie' . DIRECTORY_SEPARATOR . 'dto.php',
+      'c' => 'Ai1ec_Cookie_Present_Dto',
+      'i' => 'g',
+    ),
+    'Ai1ec_Cookie_Utility' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'cookie' . DIRECTORY_SEPARATOR . 'utility.php',
+      'c' => 'Ai1ec_Cookie_Utility',
+      'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_Database_Applicator' => 
     array (
@@ -135,6 +174,12 @@
       'c' => 'Ai1ec_Dbi',
       'i' => 'g',
     ),
+    'Ai1ec_Email_Notification' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'notification' . DIRECTORY_SEPARATOR . 'email.php',
+      'c' => 'Ai1ec_Email_Notification',
+      'i' => 'g',
+    ),
     'Ai1ec_Engine_Not_Set_Exception' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'exception' . DIRECTORY_SEPARATOR . 'engine-not-set.php',
@@ -153,6 +198,13 @@
       'c' => 'Ai1ec_Event',
       'i' => 'g',
     ),
+    'Ai1ec_Event_Helper' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'event' . DIRECTORY_SEPARATOR . 'helper.php',
+      'c' => 'Ai1ec_Event_Helper',
+      'i' => 'g',
+      'r' => 'y',
+    ),
     'Ai1ec_Exception' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'exception' . DIRECTORY_SEPARATOR . 'ai1ec.php',
@@ -164,6 +216,13 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'exception' . DIRECTORY_SEPARATOR . 'handler.php',
       'c' => 'Ai1ec_Exception_Handler',
       'i' => 'g',
+    ),
+    'Ai1ec_Factory_Html' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'factory' . DIRECTORY_SEPARATOR . 'html.php',
+      'c' => 'Ai1ec_Factory_Html',
+      'i' => 'g',
+      'r' => 'y',
     ),
     'Ai1ec_File_Abstract' => 
     array (
@@ -181,19 +240,19 @@
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR . 'file' . DIRECTORY_SEPARATOR . 'less.php',
       'c' => 'Ai1ec_File_Less',
-      'i' => 'g',
+      'i' => 'n',
     ),
     'Ai1ec_File_Php' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR . 'file' . DIRECTORY_SEPARATOR . 'php.php',
       'c' => 'Ai1ec_File_Php',
-      'i' => 'g',
+      'i' => 'n',
     ),
     'Ai1ec_File_Twig' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR . 'file' . DIRECTORY_SEPARATOR . 'twig.php',
       'c' => 'Ai1ec_File_Twig',
-      'i' => 'g',
+      'i' => 'n',
     ),
     'Ai1ec_Frequency_Utility' => 
     array (
@@ -207,6 +266,32 @@
       'c' => 'Ai1ec_Front_Controller',
       'i' => 'g',
     ),
+    'Ai1ec_Generic_Html_Tag' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'generic-tag.php',
+      'c' => 'Ai1ec_Generic_Html_Tag',
+      'i' => 'g',
+    ),
+    'Ai1ec_Href_Helper' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'href.php',
+      'c' => 'Ai1ec_Href_Helper',
+      'i' => 'Ai1ec_Factory_Html.create_href_helper_instance',
+    ),
+    'Ai1ec_Html_Element' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'abstract' . DIRECTORY_SEPARATOR . 'element.php',
+      'c' => 'Ai1ec_Html_Element',
+      'i' => 'g',
+      'r' => 'y',
+    ),
+    'Ai1ec_Html_Element_Blank' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'blank.php',
+      'c' => 'Ai1ec_Html_Element_Blank',
+      'i' => 'g',
+      'r' => 'y',
+    ),
     'Ai1ec_Html_Element_Calendar_Page_Selector' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'calendar-page-selector.php',
@@ -214,10 +299,22 @@
       'i' => 'g',
       'r' => 'y',
     ),
+    'Ai1ec_Html_Element_Can_Have_Children' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'abstract' . DIRECTORY_SEPARATOR . 'element-can-have-children.php',
+      'c' => 'Ai1ec_Html_Element_Can_Have_Children',
+      'i' => 'g',
+    ),
     'Ai1ec_Html_Element_Interface' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'interface.php',
       'c' => 'Ai1ec_Html_Element_Interface',
+      'i' => 'g',
+    ),
+    'Ai1ec_Html_Element_Select' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'select.php',
+      'c' => 'Ai1ec_Html_Element_Select',
       'i' => 'g',
     ),
     'Ai1ec_Html_Element_Settings' => 
@@ -283,6 +380,13 @@
       'c' => 'Ai1ec_Import_Export_Service_Engine',
       'i' => 'g',
     ),
+    'Ai1ec_Input' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'input.php',
+      'c' => 'Ai1ec_Input',
+      'i' => 'g',
+      'r' => 'y',
+    ),
     'Ai1ec_Javascript_Controller' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'javascript.php',
@@ -323,10 +427,10 @@
       'i' => 'g',
       'r' => 'y',
     ),
-    'Ai1ec_Object_Registry' => 
+    'Ai1ec_Notification' => 
     array (
-      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'registry.php',
-      'c' => 'Ai1ec_Object_Registry',
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'notification' . DIRECTORY_SEPARATOR . 'abstract.php',
+      'c' => 'Ai1ec_Notification',
       'i' => 'g',
     ),
     'Ai1ec_Option' => 
@@ -342,6 +446,13 @@
       'c' => 'Ai1ec_Parse_Exception',
       'i' => 'g',
     ),
+    'Ai1ec_Post_Custom_Type' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'post' . DIRECTORY_SEPARATOR . 'custom-type.php',
+      'c' => 'Ai1ec_Post_Custom_Type',
+      'i' => 'g',
+      'r' => 'y',
+    ),
     'Ai1ec_Post_Helper' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'post' . DIRECTORY_SEPARATOR . 'helper.php',
@@ -352,6 +463,32 @@
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'query' . DIRECTORY_SEPARATOR . 'helper.php',
       'c' => 'Ai1ec_Query_Helper',
+      'i' => 'g',
+    ),
+    'Ai1ec_Recaptcha' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'security' . DIRECTORY_SEPARATOR . 'recaptcha.php',
+      'c' => 'Ai1ec_Recaptcha',
+      'i' => 'g',
+      'r' => 'y',
+    ),
+    'Ai1ec_Registry' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'registry' . DIRECTORY_SEPARATOR . 'interface.php',
+      'c' => 'Ai1ec_Registry',
+      'i' => 'g',
+    ),
+    'Ai1ec_Registry_Application_' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'registry' . DIRECTORY_SEPARATOR . 'application.php',
+      'c' => 'Ai1ec_Registry_Application_',
+      'i' => 'g',
+      'r' => 'y',
+    ),
+    'Ai1ec_Registry_Object' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'registry' . DIRECTORY_SEPARATOR . 'object.php',
+      'c' => 'Ai1ec_Registry_Object',
       'i' => 'g',
     ),
     'Ai1ec_Render_Strategy_Html' => 
@@ -370,6 +507,12 @@
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'http' . DIRECTORY_SEPARATOR . 'response' . DIRECTORY_SEPARATOR . 'render' . DIRECTORY_SEPARATOR . 'strategy' . DIRECTORY_SEPARATOR . 'jsonp.php',
       'c' => 'Ai1ec_Render_Strategy_Jsonp',
+      'i' => 'g',
+    ),
+    'Ai1ec_Renderable' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'interface' . DIRECTORY_SEPARATOR . 'renderable.php',
+      'c' => 'Ai1ec_Renderable',
       'i' => 'g',
     ),
     'Ai1ec_Request_Parser' => 
@@ -403,6 +546,19 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'script' . DIRECTORY_SEPARATOR . 'helper.php',
       'c' => 'Ai1ec_Script_Helper',
       'i' => 'g',
+    ),
+    'Ai1ec_Select2_Input' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'select2' . DIRECTORY_SEPARATOR . 'input.php',
+      'c' => 'Ai1ec_Select2_Input',
+      'i' => 'Ai1ec_Factory_Html.create_select2_input',
+      'r' => 'y',
+    ),
+    'Ai1ec_Select2_Multiselect' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'select2' . DIRECTORY_SEPARATOR . 'multiselect.php',
+      'c' => 'Ai1ec_Select2_Multiselect',
+      'i' => 'Ai1ec_Factory_Html.create_select2_multiselect',
     ),
     'Ai1ec_Settings' => 
     array (
@@ -454,6 +610,13 @@
       'c' => 'Ai1ec_Acl_Aco',
       'i' => 'g',
     ),
+    'bootstrap.abstract' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'abstract.php',
+      'c' => 'Ai1ec_Base',
+      'i' => 'g',
+      'r' => 'y',
+    ),
     'bootstrap.exception' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'exception.php',
@@ -466,10 +629,23 @@
       'c' => 'Ai1ec_Loader',
       'i' => 'g',
     ),
-    'bootstrap.registry' => 
+    'bootstrap.registry.application' => 
     array (
-      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'registry.php',
-      'c' => 'Ai1ec_Object_Registry',
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'registry' . DIRECTORY_SEPARATOR . 'application.php',
+      'c' => 'Ai1ec_Registry_Application_',
+      'i' => 'g',
+      'r' => 'y',
+    ),
+    'bootstrap.registry.interface' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'registry' . DIRECTORY_SEPARATOR . 'interface.php',
+      'c' => 'Ai1ec_Registry',
+      'i' => 'g',
+    ),
+    'bootstrap.registry.object' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'registry' . DIRECTORY_SEPARATOR . 'object.php',
+      'c' => 'Ai1ec_Registry_Object',
       'i' => 'g',
     ),
     'cache.interface' => 
@@ -550,6 +726,19 @@
       'c' => 'Ai1ec_Shutdown_Controller',
       'i' => 'g',
     ),
+    'cookie.dto' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'cookie' . DIRECTORY_SEPARATOR . 'dto.php',
+      'c' => 'Ai1ec_Cookie_Present_Dto',
+      'i' => 'g',
+    ),
+    'cookie.utility' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'cookie' . DIRECTORY_SEPARATOR . 'utility.php',
+      'c' => 'Ai1ec_Cookie_Utility',
+      'i' => 'g',
+      'r' => 'y',
+    ),
     'database.applicator' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'applicator.php',
@@ -589,6 +778,13 @@
       'c' => 'Ai1ec_Dbi',
       'i' => 'g',
     ),
+    'event.helper' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'event' . DIRECTORY_SEPARATOR . 'helper.php',
+      'c' => 'Ai1ec_Event_Helper',
+      'i' => 'g',
+      'r' => 'y',
+    ),
     'exception.ai1ec' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'exception' . DIRECTORY_SEPARATOR . 'ai1ec.php',
@@ -607,6 +803,13 @@
       'c' => 'Ai1ec_Exception_Handler',
       'i' => 'g',
     ),
+    'factory.html' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'factory' . DIRECTORY_SEPARATOR . 'html.php',
+      'c' => 'Ai1ec_Factory_Html',
+      'i' => 'g',
+      'r' => 'y',
+    ),
     'html.element.calendar-page-selector' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'calendar-page-selector.php',
@@ -619,6 +822,88 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'interface.php',
       'c' => 'Ai1ec_Html_Element_Interface',
       'i' => 'g',
+    ),
+    'html.element.legacy.abstract.base-container' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'abstract' . DIRECTORY_SEPARATOR . 'base-container.php',
+      'c' => 'Ai1ec_Base_Container',
+      'i' => 'g',
+    ),
+    'html.element.legacy.abstract.element' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'abstract' . DIRECTORY_SEPARATOR . 'element.php',
+      'c' => 'Ai1ec_Html_Element',
+      'i' => 'g',
+      'r' => 'y',
+    ),
+    'html.element.legacy.abstract.element-can-have-children' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'abstract' . DIRECTORY_SEPARATOR . 'element-can-have-children.php',
+      'c' => 'Ai1ec_Html_Element_Can_Have_Children',
+      'i' => 'g',
+    ),
+    'html.element.legacy.blank' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'blank.php',
+      'c' => 'Ai1ec_Html_Element_Blank',
+      'i' => 'g',
+      'r' => 'y',
+    ),
+    'html.element.legacy.bootstrap.modal' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'modal.php',
+      'c' => 'Ai1ec_Bootstrap_Modal',
+      'i' => 'g',
+    ),
+    'html.element.legacy.generic-tag' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'generic-tag.php',
+      'c' => 'Ai1ec_Generic_Html_Tag',
+      'i' => 'g',
+    ),
+    'html.element.legacy.href' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'href.php',
+      'c' => 'Ai1ec_Href_Helper',
+      'i' => 'Ai1ec_Factory_Html.create_href_helper_instance',
+    ),
+    'html.element.legacy.input' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'input.php',
+      'c' => 'Ai1ec_Input',
+      'i' => 'g',
+      'r' => 'y',
+    ),
+    'html.element.legacy.interface.container' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'interface' . DIRECTORY_SEPARATOR . 'container.php',
+      'c' => 'Ai1ec_Container',
+      'i' => 'g',
+    ),
+    'html.element.legacy.interface.renderable' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'interface' . DIRECTORY_SEPARATOR . 'renderable.php',
+      'c' => 'Ai1ec_Renderable',
+      'i' => 'g',
+    ),
+    'html.element.legacy.select' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'select.php',
+      'c' => 'Ai1ec_Html_Element_Select',
+      'i' => 'g',
+    ),
+    'html.element.legacy.select2.input' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'select2' . DIRECTORY_SEPARATOR . 'input.php',
+      'c' => 'Ai1ec_Select2_Input',
+      'i' => 'Ai1ec_Factory_Html.create_select2_input',
+      'r' => 'y',
+    ),
+    'html.element.legacy.select2.multiselect' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'element' . DIRECTORY_SEPARATOR . 'legacy' . DIRECTORY_SEPARATOR . 'select2' . DIRECTORY_SEPARATOR . 'multiselect.php',
+      'c' => 'Ai1ec_Select2_Multiselect',
+      'i' => 'Ai1ec_Factory_Html.create_select2_multiselect',
     ),
     'html.element.settings' => 
     array (
@@ -717,6 +1002,7 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'import-export' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'abstract.php',
       'c' => 'Ai1ec_Connector_Plugin',
       'i' => 'g',
+      'r' => 'y',
     ),
     'import-export.plugin.ics' => 
     array (
@@ -779,6 +1065,18 @@
       'c' => 'Ai1ec_Settings_Exception',
       'i' => 'g',
     ),
+    'notification.abstract' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'notification' . DIRECTORY_SEPARATOR . 'abstract.php',
+      'c' => 'Ai1ec_Notification',
+      'i' => 'g',
+    ),
+    'notification.email' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'notification' . DIRECTORY_SEPARATOR . 'email.php',
+      'c' => 'Ai1ec_Email_Notification',
+      'i' => 'g',
+    ),
     'p28n.i18n' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'p28n' . DIRECTORY_SEPARATOR . 'i18n.php',
@@ -796,6 +1094,13 @@
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'parser' . DIRECTORY_SEPARATOR . 'frequency.php',
       'c' => 'Ai1ec_Frequency_Utility',
       'i' => 'g',
+    ),
+    'post.custom-type' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'post' . DIRECTORY_SEPARATOR . 'custom-type.php',
+      'c' => 'Ai1ec_Post_Custom_Type',
+      'i' => 'g',
+      'r' => 'y',
     ),
     'post.helper' => 
     array (
@@ -847,6 +1152,13 @@
       'c' => 'Ai1ec_Script_Helper',
       'i' => 'g',
     ),
+    'security.recaptcha' => 
+    array (
+      'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'security' . DIRECTORY_SEPARATOR . 'recaptcha.php',
+      'c' => 'Ai1ec_Recaptcha',
+      'i' => 'g',
+      'r' => 'y',
+    ),
     'template.link.helper' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . 'link' . DIRECTORY_SEPARATOR . 'helper.php',
@@ -869,19 +1181,19 @@
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR . 'file' . DIRECTORY_SEPARATOR . 'less.php',
       'c' => 'Ai1ec_File_Less',
-      'i' => 'g',
+      'i' => 'n',
     ),
     'theme.file.php' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR . 'file' . DIRECTORY_SEPARATOR . 'php.php',
       'c' => 'Ai1ec_File_Php',
-      'i' => 'g',
+      'i' => 'n',
     ),
     'theme.file.twig' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR . 'file' . DIRECTORY_SEPARATOR . 'twig.php',
       'c' => 'Ai1ec_File_Twig',
-      'i' => 'g',
+      'i' => 'n',
     ),
     'theme.loader' => 
     array (

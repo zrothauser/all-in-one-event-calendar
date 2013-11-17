@@ -1,6 +1,25 @@
 <?php
+
+/**
+ * The controller which handles import/export.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Controller
+ */
 class Ai1ec_Import_Export_Controller {
+
+	/**
+	 * @var array The registered engines.
+	 */
 	protected $_engines = array();
+
+	
+	/**
+	 * @var Ai1ec_Registry_Object
+	 */
 	protected $_registry;
 
 	/**
@@ -8,11 +27,11 @@ class Ai1ec_Import_Export_Controller {
 	 * When it is instanciated it allows other engines to be injected through a filter.
 	 * If we do not plan to ship core engines, let's skip the $core_engines param.
 	 *
-	 * @param Ai1ec_Object_Registry $registry
+	 * @param Ai1ec_Registry_Object $registry
 	 * @param array $core_engines
 	 */
 	public function __construct(
-			Ai1ec_Object_Registry $registry,
+			Ai1ec_Registry_Object $registry,
 			array $core_engines = array( 'ics' )
 	) {
 		$this->_registry = $registry;
@@ -25,11 +44,27 @@ class Ai1ec_Import_Export_Controller {
 		}
 	}
 
+	/**
+	 * Register an import-export engine.
+	 * 
+	 * @param string $engine
+	 */
 	public function register( $engine ) {
 		$this->_engines[$engine] = true;
 	}
 
-	public function import_events( $engine, $args ) {
+	/**
+	 * Import events into the calendar.
+	 * 
+	 * @param string $engine
+	 * @param array $args
+	 * 
+	 * @throws Ai1ec_Engine_Not_Set_Exception If the engine is not set.
+	 * @throws Ai1ec_Parse_Exception          If an error happens during parse.
+	 * 
+	 * @return int The number of imported events
+	 */
+	public function import_events( $engine, array $args ) {
 		if ( ! isset( $this->_engines[$engine] ) ) {
 			throw new Ai1ec_Engine_Not_Set_Exception( 'The engine ' . $engine . 'is not registered.' );
 		}
@@ -44,5 +79,3 @@ class Ai1ec_Import_Export_Controller {
 		throw $ex;
 	}
 }
-
-?>

@@ -9,9 +9,9 @@ class Ai1ec_Recaptcha {
 	/**
 	 * The contructor method.
 	 *
-	 * @param Ai1ec_Object_Registry $registry
+	 * @param Ai1ec_Registry_Object $registry
 	 */
-	function __construct( Ai1ec_Object_Registry $registry ) {
+	function __construct( Ai1ec_Registry_Object $registry ) {
 		$this->_registry = $registry;
 	}
 

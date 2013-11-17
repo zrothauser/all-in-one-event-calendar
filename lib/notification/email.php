@@ -1,15 +1,14 @@
 <?php
 
 /**
- * Comcrete implementation for email notifications.
+ * Concrete implementation for email notifications.
  *
- * @author     Timely Network Inc
- * @since      2013.04.22
+ * @author     Time.ly Network Inc.
+ * @since      2.0
  *
- * @package    AllInOneEventCalendar
- * @subpackage AllInOneEventCalendar.Lib.Notification
+ * @package    AI1EC
+ * @subpackage AI1EC.Notification
  */
-
 class Ai1ec_Email_Notification extends Ai1ec_Notification {
 
 	/**

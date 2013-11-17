@@ -20,16 +20,41 @@ class Ai1ec_Factory_Html {
 	/**
 	 * The contructor method.
 	 *
-	 * @param Ai1ec_Object_Registry $registry
+	 * @param Ai1ec_Registry_Object $registry
 	 */
 	public function __construct( 
-		Ai1ec_Object_Registry $registry
+		Ai1ec_Registry_Object $registry
 	 ) {
 		$this->_registry                 = $registry;
 
 		$this->page = $registry->get_environment( 'calendar_base_page' );
 	}
+
+	/**
+	 * @param array $args
+	 * @param string $type
+	 * @return Ai1ec_Href_Helper
+	 */
+	public function create_href_helper_instance( array $args, $type = 'normal' ) {
+		$href = new Ai1ec_Href_Helper( $args, $this->$page );
+		$href->set_pretty_permalinks_enabled( $this->pretty_permalinks_enabled );
+		switch ( $type ) {
+			case 'category':
+				$href->set_is_category( true );
+				break;
+			case 'tag':
+				$href->set_is_tag( true );
+				break;
+			case 'author':
+				$href->set_is_author( true );
+				break;
+			default:
+				break;
+		}
 	
+		return $href;
+	}
+
 	public function create_select2_multiselect( 
 		array $args, 
 		array $options, 
@@ -41,7 +66,7 @@ class Ai1ec_Factory_Html {
 		}
 		static $cached_flips = array();
 		$select2 = $this->_registry->get( 
-			'html.element.legacy.blank',
+			'html.element.legacy.select2-multiselect',
 			$args['id'],
 			$args['name']
 		);
@@ -49,7 +74,7 @@ class Ai1ec_Factory_Html {
 		foreach ( $options as $term ) {
 			$option_arguments = array();
 			$color = false;
-			$event_helper = $this->_registry->get( 'event_helper' );
+			$event_helper = $this->_registry->get( 'event.helper' );
 			if( $args['type'] === 'category' ) {
 				$color = $event_helper->get_category_color( $term->term_id );
 			}
@@ -58,7 +83,7 @@ class Ai1ec_Factory_Html {
 			}
 			if( null !== $view_args ) {
 				// create the href for ajax loading
-				$href = self::create_href_helper_instance( $view_args, $args['type'] );
+				$href = $this->create_href_helper_instance( $view_args, $args['type'] );
 				$href->set_term_id( $term->term_id );
 				$option_arguments["data-href"] = $href->generate_href();
 				// check if the option is selected
@@ -84,6 +109,55 @@ class Ai1ec_Factory_Html {
 					$option_arguments["selected"] = 'selected';
 				}
 			}
+			if ( true === $use_id ) {
+				$select2->add_option( $term->name, $term->term_id, $option_arguments );
+			} else {
+				$select2->add_option( $term->name, $term->name, $option_arguments );
+			}
 		}
+		$select2->set_attribute( "multiple", "multiple" );
+		$select2->set_attribute( "data-placeholder", $args['placeholder'] );
+		$select2->add_class( 'ai1ec-select2-multiselect-selector span12' );
+		$container = Ai1ec_Helper_Factory::create_generic_html_tag( 'div' );
+		if( isset( $args['type'] ) ) {
+			$container->add_class( 'ai1ec-' . $args['type'] . '-filter' );
+		}
+		$container->add_renderable_children( $select2 );
+		return $container;
+	}
+	/**
+	 * Creates a tag selector using the Select2 widget.
+	 *
+	 * @return Ai1ec_Input
+	 */
+	public function create_select2_input( array $args ) {
+		if( ! isset ( $args['name'] ) ) {
+			$args['name'] = $args['id'];
+		}
+		// Get tags.
+		$tags = get_terms(
+			'events_tags',
+			array(
+				'orderby' => 'name',
+				'hide_empty' => 0,
+			)
+		);
+	
+		// Build tags array to pass as JSON.
+		$tags_json = array();
+		foreach ( $tags as $term ) {
+			$tags_json[] = $term->name;
+		}
+		$tags_json = json_encode( $tags_json );
+		$tags_json = _wp_specialchars( $tags_json, 'single', 'UTF-8' );
+		$input = new Ai1ec_Select2_Input();
+		$input->set_id( $args['id'] );
+		$input->set_name( $args['name'] );
+		$input->set_attribute( "data-placeholder",
+			__( 'Tags (optional)', AI1EC_PLUGIN_NAME )
+		);
+		$input->set_attribute( "data-ai1ec-tags", $tags_json );
+		$input->add_class( 'ai1ec-tags-selector span12' );
+		return $input;
 	}
 }

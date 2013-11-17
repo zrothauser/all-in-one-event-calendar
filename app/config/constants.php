@@ -78,6 +78,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir ) {
 		define( 'AI1EC_UPDATES_URL',        'http://api.time.ly/plugin/pro/latest' );
 	}
 
+
 	// ===============
 	// = PLUGIN PATH =
 	// ===============
@@ -90,7 +91,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir ) {
 	// ===============
 	if ( ! defined( 'AI1EC_VENDOR_PATH' ) ) {
 		define( 
-		'AI1EC_PATH',
+		'AI1EC_VENDOR_PATH',
 		AI1EC_PATH . DIRECTORY_SEPARATOR . 'vendor' .
 				DIRECTORY_SEPARATOR 
 		);
@@ -136,6 +137,14 @@ function ai1ec_initiate_constants( $ai1ec_base_dir ) {
 	// ==============
 	if ( ! defined( 'AI1EC_SCRIPT_URL' ) ) {
 		define( 'AI1EC_SCRIPT_URL',         get_option( 'home' ) . '/?plugin=' . AI1EC_PLUGIN_NAME );
+	}
+
+
+	// =========================================
+	// = BASE URL FOR ALL CALENDAR ADMIN PAGES =
+	// =========================================
+	if ( ! defined( 'AI1EC_ADMIN_BASE_URL' ) ) {
+		define( 'AI1EC_ADMIN_BASE_URL', 'edit.php?post_type=' . AI1EC_POST_TYPE );
 	}
 
 	// ==============

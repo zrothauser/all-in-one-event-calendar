@@ -127,6 +127,10 @@ class Ai1ec_Dbi {
 		return $this->_dbi->get_results( $query, $output );
 	}
 
+	public function get_insert_id() {
+		return $this->_dbi->insert_id;
+	}
+
 	/**
 	 * Retrieve one variable from the database.
 	 *

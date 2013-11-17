@@ -1,12 +1,18 @@
 <?php
 
 /**
+ * The class which handles ics feeds tab.
  *
- * @author time.ly
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Import-export.Plugin
  */
-
 class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
+
 	const ICS_OPTION_DB_VERSION = 'ai1ec_ics_db_version';
+
 	const ICS_DB_VERSION        = 106;
 
 	/**
@@ -19,9 +25,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			"id"    => "ics"
 	);
 
-	protected $_registry;
-	public function __construct( Ai1ec_Object_Registry $registry ) {
-		$this->_registry = $registry;
+	public function __construct( Ai1ec_Registry_Object $registry ) {
+		parent::__construct( $registry );
 
 		// Add AJAX Actions.
 		// Add iCalendar feed
@@ -156,9 +161,10 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		}
 	
 		$settings = $this->_registry->get( 'model.settings' );
+		$public_key = $settings->get( 'recaptcha_public_key' );
 		// Check CAPTCHA.
 		if ( ! is_user_logged_in() &&
-			! empty( $settings->get( 'recaptcha_public_key' ) ) ) {
+			! empty( $public_key ) ) {
 			$captcha = $this->_registry->get( 'security.captcha' );
 	
 			$check = $captcha->check_captcha();
@@ -171,7 +177,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$response['message'] = __( 'Your suggestion was submitted to a site administrator for review.', AI1EC_PLUGIN_NAME );
 		return $response;
 	}
-	
+
 	/**
 	 * Send an e-mail to the admin and another to the user if form passes
 	 * validation.
@@ -179,8 +185,6 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	public function add_ics_feed_frontend() {
 
 		$db = $this->_registry->get( 'dbi.dbi' );
-	
-	
 		$table_name = $db->get_table_name( 'ai1ec_event_feeds' );
 		$check = $this->validate_form();
 	
@@ -221,7 +225,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	
 		$json->render( $check );
 	}
-	
+
 	/**
 	 * Returns the translations array
 	 *
@@ -360,7 +364,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		// Render the body of the tab
 		$settings = $this->_registry->get( 'model.settings' );
 		
-		$select2_cats = Ai1ec_View_Factory::create_select2_multiselect( 
+		$select2_cats = $this->_registry->get(
+			'html.element.legacy.select2.multiselect', 
 			array( 'name' => 'ai1ec_feed_category[]', 
 				'id' => 'ai1ec_feed_category', 
 				'use_id' => true, 
@@ -377,10 +382,12 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				) 
 			) 
 		);
-		$select2_tags = Ai1ec_View_Factory::create_select2_tags( 
+		$select2_tags = $this->_registry->get(
+			'html.element.legacy.select2.input',
 			array( 'id' => 'ai1ec_feed_tags' 
 			) );
-		$modal = Ai1ec_Helper_Factory::create_bootstrap_modal_instance( 
+		$modal = $this->_registry->get(
+			'html.element.legacy.bootstrap.modal',
 			esc_html__( 
 				"Do you want to keep the events imported from the calendar or remove them?", 
 				AI1EC_PLUGIN_NAME ) 
@@ -392,18 +399,88 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$modal->set_delete_button_text( 
 			esc_html__( "Remove Events", AI1EC_PLUGIN_NAME ) );
 		$modal->set_id( 'ai1ec-ics-modal' );
+		$loader = $this->_registry->get( 'theme.loader' );
+		$cron_freq = $loader->get_file( 
+			'cron_freq.php',
+			array( 'cron_freq', $settings->get( 'cron_freq' ) ),
+			true 
+		);
 		$args = array( 
-			'cron_freq' => $ai1ec_settings_helper->get_cron_freq_dropdown( 
-				$settings->cron_freq ), 
+			'cron_freq' => $cron_freq->get_content(), 
 			'event_categories' => $select2_cats, 
 			'event_tags' => $select2_tags, 
-			'feed_rows' => $ai1ec_settings_helper->get_feed_rows(), 
+			'feed_rows' => $this->_get_feed_rows(), 
 			'modal' => $modal 
 		);
 		
-		$ai1ec_view_helper->display_admin( 'plugins/ics/display_feeds.php', 
-			$args );
+		$display_feeds = $loader->get_file( 
+			'plugins/ics/display_feeds.php', 
+			$args,
+			true
+		);
+		$display_feeds->render();
 		$this->render_closing_div_of_tab();
+	}
+
+	/**
+	 * get_feed_rows function
+	 *
+	 * Creates feed rows to display on settings page
+	 *
+	 * @return String feed rows
+	 **/
+	protected function _get_feed_rows() {
+		$db = $this->_registry->get( 'dbi.dbi' );
+
+		// Select all added feeds
+		$rows = $db->get_results(
+			'SELECT * FROM ' . $db->prefix . 'ai1ec_event_feeds'
+		);
+
+		$sql = 'SELECT COUNT(*) FROM ' . $db->prefix .
+		       'ai1ec_events WHERE ical_feed_url = %s';
+		$html = '';
+		foreach ( $rows as $row ) {
+			$events          = $db->get_var(
+				$db->prepare( $sql, $row->feed_url )
+			);
+			$feed_categories = explode( ',', $row->feed_category );
+			$categories      = array();
+
+			foreach ( $feed_categories as $cat_id ) {
+				$feed_category = get_term(
+					$cat_id,
+					'events_categories'
+				);
+				if ( $feed_category && ! is_wp_error( $feed_category ) ) {
+					$categories[] = $feed_category->name;
+				}
+			}
+
+			$args          = array(
+				'feed_url'            => $row->feed_url,
+				'event_category'      => implode( ', ', $categories ),
+				'tags'                => stripslashes(
+					str_replace( ',', ', ', $row->feed_tags )
+				),
+				'feed_id'             => $row->feed_id,
+				'comments_enabled'    => (bool) intval(
+					$row->comments_enabled
+				),
+				'map_display_enabled' => (bool) intval(
+					$row->map_display_enabled
+				),
+				'keep_tags_categories' => (bool) intval(
+					$row->keep_tags_categories
+				),
+				'events'              => $events,
+			);
+			$loader = $this->_registry->get( 'theme.loader' );
+			$file = $loader->get_file( 'feed_row.php', $args );
+			$html .= $file->get_content();
+		}
+
+		return $html;
 	}
 	/**
 	 * (non-PHPdoc)
@@ -420,7 +497,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	 */
 	public function run_uninstall_procedures() {
 		// Delete tables
-		global $db;
+		$db = $this->_registry->get( 'dbi.dbi' );
 		$table_name = $db->prefix . 'ai1ec_event_feeds';
 		$db->query( "DROP TABLE IF EXISTS $table_name" );
 		// Delete scheduled tasks
@@ -439,9 +516,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	 *        
 	 */
 	public function add_ics_feed() {
-		global $ai1ec_view_helper, $db;
-		
-		$table_name = $db->prefix . 'ai1ec_event_feeds';
+		$db = $this->_registry->get( 'dbi.dbi' );
+		$table_name = $db->get_table_name( 'ai1ec_event_feeds' );
 		
 		$feed_categories = empty( $_REQUEST['feed_category'] ) ? '' : implode( 
 			',', $_REQUEST['feed_category'] );
@@ -460,8 +536,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		);
 		
 		$db->insert( $table_name, $entry, $format );
-		$feed_id = $db->insert_id;
-		ob_start();
+		$feed_id = $db->get_insert_id();
+
 		$categories = array();
 		
 		if ( ! empty( $_REQUEST['feed_category'] ) ) {
@@ -477,20 +553,24 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'feed_id' => $feed_id, 
 			'comments_enabled' => (bool) intval( $_REQUEST['comments_enabled'] ), 
 			'map_display_enabled' => (bool) intval( 
-				$_REQUEST['map_display_enabled'] ), 
+				$_REQUEST['map_display_enabled']
+			), 
 			'events' => 0, 
 			'keep_tags_categories' => (bool) intval( 
-				$_REQUEST['keep_tags_categories'] ) 
+				$_REQUEST['keep_tags_categories']
+			) 
 		);
+		$loader = $this->_registry->get( 'theme.loader' );
 		// display added feed row
-		$ai1ec_view_helper->display_admin( 'feed_row.php', $args );
+		$file = $loader->get_file( 'feed_row.php', $args, true );
 		
-		$output = ob_get_contents();
-		ob_end_clean();
+		$output = $loader->get_content();
 		
-		$output = array( "error" => 0, "message" => stripslashes( $output ) 
+		$output = array( 
+			"error" => 0, 
+			"message" => 
+			stripslashes( $output ) 
 		);
-		
 		echo json_encode( $output );
 		exit();
 	}
@@ -510,7 +590,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			exit();
 		} else {
 			$this->delete_ics_feed( TRUE, $ics_id );
-			;
+
 		}
 	}
 	/**
@@ -527,9 +607,9 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	 *
 	 */
 	public function flush_ics_feed( $ajax = TRUE, $feed_url = FALSE ) {
-		global $db, $ai1ec_view_helper;
+		$db = $this->_registry->get( 'dbi.dbi' );
 		$ics_id = isset( $_REQUEST['ics_id'] ) ? (int) $_REQUEST['ics_id'] : 0;
-		$table_name = $db->prefix . 'ai1ec_event_feeds';
+		$table_name = $db->get_table_name( 'ai1ec_event_feeds' );
 		if ( $feed_url === FALSE ) {
 			$feed_url = $db->get_var( 
 				$db->prepare( 
@@ -537,7 +617,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					$ics_id ) );
 		}
 		if ( $feed_url ) {
-			$table_name = $db->prefix . 'ai1ec_events';
+			$table_name = $db->get_table_name( 'ai1ec_events' );
 			$sql = "SELECT post_id FROM {$table_name} WHERE ical_feed_url = '%s'";
 			$events = $db->get_results( $db->prepare( $sql, $feed_url ) );
 			$total = count( $events );
@@ -572,8 +652,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	 * @return String JSON output
 	 **/
 	public function delete_ics_feed( $ajax = TRUE, $ics_id = FALSE ) {
-		global $db,
-		$ai1ec_view_helper;
+		$db = $this->_registry->get( 'dbi.dbi' );
 		if ( $ics_id === FALSE ) {
 			$ics_id = (int) $_REQUEST['ics_id'];
 		}
@@ -585,7 +664,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'ics_id'  => $ics_id,
 		);
 		if ( $ajax === TRUE ) {
-			$ai1ec_view_helper->json_response( $output );
+			echo json_encode( $output );
 		}
 	}
 

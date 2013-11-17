@@ -31,10 +31,10 @@ class Ai1ec_Theme_Loader {
 	protected $_twig;
 
 	/**
-	 * @param Ai1ec_Object_Registry $registry The registry Object.
+	 * @param Ai1ec_Registry_Object $registry The registry Object.
 	 * @param string $active_theme the currently active theme.
 	 */
-	public function __construct( Ai1ec_Object_Registry $registry, $active_theme ) {
+	public function __construct( Ai1ec_Registry_Object $registry, $active_theme = 'vortex' ) {
 		$this->_registry = $registry;
 		$this->_paths['theme']['active'] = $active_theme;
 	}
@@ -91,7 +91,7 @@ class Ai1ec_Theme_Loader {
 				break;
 		}
 		// here file is a concrete class otherwise the exception is thrown
-		if ( ! $file->locate_file ) {
+		if ( ! $file->process_file() ) {
 			throw new Ai1ec_File_Not_Found(
 				'The specified file "' . $file . '" doesn\'t exist.'
 			);

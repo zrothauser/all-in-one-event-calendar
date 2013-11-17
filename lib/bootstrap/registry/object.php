@@ -11,7 +11,7 @@
  * @package    Ai1EC
  * @subpackage Ai1EC.Registry
  */
-class Ai1ec_Object_Registry implements Ai1ec_Registry {
+class Ai1ec_Registry_Object implements Ai1ec_Registry {
 
 	/**
 	* @var array The internal objects cache

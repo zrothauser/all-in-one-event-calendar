@@ -1,19 +1,20 @@
 <?php
-class Ai1ec_Post_Custom_Type {
+
+/**
+ * Custom Post type class.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Post
+ */
+class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 
 	/**
-	 * @var Ai1ec_Object_Registry
+	 * Registers the custom post type.
+	 * 
 	 */
-	protected $_registry;
-	
-	/**
-	 * The contructor method.
-	 *
-	 * @param Ai1ec_Object_Registry $registry
-	 */
-	function __construct( Ai1ec_Object_Registry $registry ) {
-		$this->_registry = $registry;
-	}
 	public function register() {
 		$settings = $this->_registry->get( 'model.settings' );
 		
@@ -106,7 +107,7 @@ class Ai1ec_Post_Custom_Type {
 		// =============================
 		$page_base = false;
 		if ( $settings->get( 'calendar_page_id' ) ) {
-			$page_base = get_page_uri( $settings->calendar_page_id );
+			$page_base = get_page_uri( $settings->get( 'calendar_page_id' ) );
 		}
 		
 		$rewrite     = array( 'slug' => __( 'ai1ec_event', AI1EC_PLUGIN_NAME ) );
@@ -145,7 +146,7 @@ class Ai1ec_Post_Custom_Type {
 			'hierarchical'        => false,
 			'menu_position'       => 5,
 			'supports'            => $supports,
-			'exclude_from_search' => $settings->exclude_from_search,
+			'exclude_from_search' => $settings->get( 'exclude_from_search' ),
 		);
 		
 		// ========================================
@@ -249,5 +250,33 @@ class Ai1ec_Post_Custom_Type {
 		// = register custom post type for events =
 		// ========================================
 		register_post_type( AI1EC_POST_TYPE, $args );
+	}
+	/**
+	 * get_all_items_name function
+	 *
+	 * If current user can publish events and there
+	 * is at least 1 event pending, append the pending
+	 * events number to the menu
+	 *
+	 * @return string
+	 **/
+	function get_all_items_name() {
+	
+		// if current user can publish events
+		if( current_user_can( 'publish_ai1ec_events' ) ) {
+			// get all pending events
+			$query = new WP_Query(  array ( 'post_type' => 'ai1ec_event', 'post_status' => 'pending', 'posts_per_page' => -1,  ) );
+	
+			// at least 1 pending event?
+			if( $query->post_count > 0 ) {
+				// append the pending events number to the menu
+				return sprintf(
+					__( 'All Events <span class="update-plugins count-%d" title="%d Pending Events"><span class="update-count">%d</span></span>', AI1EC_PLUGIN_NAME ),
+					$query->post_count, $query->post_count, $query->post_count );
+			}
+		}
+	
+		// no pending events, or the user doesn't have sufficient capabilities
+		return __( 'All Events', AI1EC_PLUGIN_NAME );
 	}
 }

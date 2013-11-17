@@ -3,13 +3,12 @@
 /**
  * Abstract class for notifications.
  *
- * @author     Timely Network Inc
- * @since      2013.04.22
+ * @author     Time.ly Network Inc.
+ * @since      2.0
  *
- * @package    AllInOneEventCalendar
- * @subpackage AllInOneEventCalendar.Lib.Notification.Abstract
+ * @package    AI1EC
+ * @subpackage AI1EC.Notification
  */
-
 abstract class Ai1ec_Notification {
 	
 	/**

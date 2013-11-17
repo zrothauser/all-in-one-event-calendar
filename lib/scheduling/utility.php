@@ -35,7 +35,7 @@ class Ai1ec_Scheduling_Utility {
 	 *
 	 * @return void Constructor does not return
 	 */
-	public function __construct( Ai1ec_Object_Registry $registry ) {
+	public function __construct( Ai1ec_Registry_Object $registry ) {
 		$this->_registry      = $registry;
 		$defaults = array(
 			'hooks'   => array(),

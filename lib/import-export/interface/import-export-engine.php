@@ -1,4 +1,14 @@
 <?php
+
+/**
+ * The basic import/export interface.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Import-export.Interface
+ */
 interface Ai1ec_Import_Export_Engine {
 
 	/**

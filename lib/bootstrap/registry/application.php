@@ -1,5 +1,5 @@
 <?php
-class Ai1ec_Application_Registry implements Ai1ec_Registry {
+class Ai1ec_Registry_Application_ implements Ai1ec_Registry {
 
 	/**
 	 * @var Ai1ec_Object_Registry
@@ -7,25 +7,24 @@ class Ai1ec_Application_Registry implements Ai1ec_Registry {
 	protected $_registry;
 
 	/**
-	 * @var Ai1ec_Cache_Memory
+	 * @var array
 	 */
-	protected $_environment;
+	protected $_environment = array();
 
 	/**
 	 * The contructor method.
 	 *
-	 * @param Ai1ec_Object_Registry $registry
+	 * @param Ai1ec_Registry_Object $registry
 	 */
-	function __construct( Ai1ec_Object_Registry $registry ) {
+	function __construct( Ai1ec_Registry_Object $registry ) {
 		$this->_registry = $registry;
-		$this->_environment = $registry->get( 'cache.memory', PHP_INT_MAX -1 );
 	}
 	
 	public function get( $key ) {
-		$this->_environment->get( $key );
+		return $this->_environment[$key];
 	}
 
 	public function set( $key, $value ) {
-		$this->_environment->set( $key, $value );
+		$this->_environment[$key] = $value;
 	}
 }

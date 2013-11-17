@@ -28,7 +28,7 @@ class Ai1ec_Database_Applicator {
 	 *
 	 * @return void Constructor does not return
 	 */
-	public function __construct( Ai1ec_Object_Registry $registry ) {
+	public function __construct( Ai1ec_Registry_Object $registry ) {
 		$this->_db       = $registry->get( 'dbi.dbi' );
 		$this->_database = $registry->get( 'database.helper' );
 	}

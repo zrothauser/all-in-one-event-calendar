@@ -1,19 +1,15 @@
 <?php
-class Ai1ec_Ics_Import_Export_Engine implements Ai1ec_Import_Export_Engine {
 
-	/**
-	 * @var Ai1ec_Object_Registry
-	 */
-	protected $_registry;
-
-	/**
-	 * The contructor method.
-	 *
-	 * @param Ai1ec_Object_Registry $registry
-	 */
-	function __construct( Ai1ec_Object_Registry $registry ) {
-		$this->_registry = $registry;
-	}
+/**
+ * The ics import/export engine.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Import-export
+ */
+class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_Export_Engine {
 
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Import_Export_Engine::import()

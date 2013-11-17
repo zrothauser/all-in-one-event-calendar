@@ -175,6 +175,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 		$values         = $this->_sys->get( 'model.option' )
 			->get( self::WP_OPTION_KEY, array() );
 		$values = $this->parse_legacy( $values );
+		fb($values);
 		$this->_options = $values;
 		$this->_register_defaults();
 		$this->_updated = false;
@@ -191,6 +192,12 @@ class Ai1ec_Settings extends Ai1ec_App {
 			'int',
 			'none'
 		);
+		$this->register(
+			'ai1ec_calendar_id',
+			'int',
+			'none'
+		);
+		
 	}
 
 }

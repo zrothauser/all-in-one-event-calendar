@@ -28,13 +28,13 @@ class Ai1ec_Command_Resolver {
 	/**
 	 * Public constructor
 	 *
-	 * @param Ai1ec_Object_Registry $registry
+	 * @param Ai1ec_Registry_Object $registry
 	 * @param Ai1ec_Request_Parser $request
 	 *
 	 * @return void
 	 */
 	public function __construct(
-		Ai1ec_Object_Registry $registry,
+		Ai1ec_Registry_Object $registry,
 		Ai1ec_Request_Parser $request
 	) {
 		$this->add_command(

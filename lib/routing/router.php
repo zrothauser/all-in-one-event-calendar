@@ -10,7 +10,7 @@
  * @subpackage AI1EC.Routing
  */
 
-class Ai1ec_Router {
+class Ai1ec_Router extends Ai1ec_Base {
 
 	/**
 	 * @var boolean
@@ -67,8 +67,9 @@ class Ai1ec_Router {
 	 * @return the $cookie_set_dto
 	 */
 	public function get_cookie_set_dto() {
+		$utility = $this->_registry->get( 'cookie.utility' );
 		if( null === $this->cookie_set_dto ) {
-			$this->cookie_set_dto =  Ai1ec_Cookie_Utility::is_cookie_set_for_current_page();
+			$this->cookie_set_dto =  $utility->is_cookie_set_for_current_page();
 		}
 		return $this->cookie_set_dto;
 	}
@@ -164,7 +165,8 @@ class Ai1ec_Router {
 	/**
 	 * Initiate internal variables
 	 */
-	public function __construct( Ai1ec_Object_Registry $registry ) {
+	public function __construct( Ai1ec_Registry_Object $registry ) {
+		parent::__construct( $registry );
 		$this->_query_manager = $registry->get( 'query.helper' );
 	}
 

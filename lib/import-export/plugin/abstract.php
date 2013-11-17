@@ -1,15 +1,15 @@
 <?php
-/**
- * Class Ai1ec_Connector_Plugin
- *
- * This class is the base class that must be abstracted when implementing a connector to an external service like Facebook
- * to import events
- *
- * @author The Seed Network
- *
- */
 
-abstract class Ai1ec_Connector_Plugin {
+/**
+ * The abstract class for the Calendar feeds tab.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Import-export.Plugin
+ */
+abstract class Ai1ec_Connector_Plugin extends Ai1ec_Base {
 
 	/**
 	 * An associative array where the keys are the name of the variables stored in the Settings object
@@ -19,6 +19,7 @@ abstract class Ai1ec_Connector_Plugin {
 	 *
 	 */
 	protected $settings =  array();
+
 	/**
 	 * An array of variables used by the plugin. Some of this variables are required:
 	 *   title => The name of the tab in the calendar feeds settings
@@ -55,12 +56,13 @@ abstract class Ai1ec_Connector_Plugin {
 	public function render_tab_header() {
 
 		// Use the standard view helper
-		global 	$ai1ec_view_helper;
 		$args = array(
 			"title"  => __( $this->variables['title'], AI1EC_PLUGIN_NAME ),
 			"id"     => __( $this->variables['id'], AI1EC_PLUGIN_NAME ),
 		);
-		$ai1ec_view_helper->display_admin( 'plugins/tab_header.php', $args );
+		$loader = $this->_registry->get( 'theme.loader' );
+		$file = $loader->get_file( 'plugins/tab_header.php', $args, true );
+		$file->render();
 	}
 	/**
 	 * Gets the settings for the Plugin from the settings object
@@ -73,8 +75,10 @@ abstract class Ai1ec_Connector_Plugin {
 	 *
 	 */
 	protected function get_plugin_settings( $class_name ) {
-		global $ai1ec_settings;
-		return isset( $ai1ec_settings->plugins_options[$class_name] ) ? $ai1ec_settings->plugins_options[$class_name] : array();
+
+		$settings = $this->_registry->get( 'model.settings' );
+		$plugins_options = $settings->get( 'plugins_options' );
+		return isset( $plugins_options[$class_name] ) ? $plugins_options[$class_name] : array();
 	}
 	/**
 	 * Generate an arry which contains all settings data that will be processed by the admin view
@@ -125,7 +129,6 @@ abstract class Ai1ec_Connector_Plugin {
 	 */
 	public function plugin_settings_meta_box( $object, $box ) {
 		// Use the standard view helper
-		global 	$ai1ec_view_helper;
 		$plugin_settings = $this->generate_settings_array_for_admin_view();
 		$args = array(
 			"plugin_name"     => __( $this->variables['title'], AI1EC_PLUGIN_NAME ),
@@ -134,7 +137,9 @@ abstract class Ai1ec_Connector_Plugin {
 		);
 		// Make sure that there is something to render other than the Title.
 		if( ! empty( $args["plugin_settings"] ) ) {
-			$ai1ec_view_helper->display_admin( 'plugins/general_plugin_settings.php', $args );
+			$loader = $this->_registry->get( 'theme.loader' );
+			$file = $loader->get_file( 'plugins/general_plugin_settings.php', $args, true );
+			$file->render();
 		}
 	}
 	/**
@@ -145,15 +150,17 @@ abstract class Ai1ec_Connector_Plugin {
 		global $ai1ec_settings;
 		// Get the class name.
 		$class_name = get_class( $this );
+		$settings = $this->_registry->get( 'model.settings' );
+		$plugins_options = $settings->get( 'plugins_options' );
 		// Check if the options have been set
-		if ( ! isset( $ai1ec_settings->plugins_options[$class_name] ) ) {
+		if ( ! isset( $plugins_options[$class_name] ) ) {
 			// If not set them. The key is the class name, the value is an associative array
-			$ai1ec_settings->plugins_options[$class_name] = array();
+			$plugins_options[$class_name] = array();
 			foreach ( $this->settings as $setting ) {
-				$ai1ec_settings->plugins_options[$class_name][$setting['id']] = '';
+				$plugins_options[$class_name][$setting['id']] = '';
 			}
-
 		}
+		$settings->set( 'plugins_options', $plugins_options );
 	}
 	/**
 	 * Retrieves the specified plugin setting
@@ -186,7 +193,8 @@ abstract class Ai1ec_Connector_Plugin {
 	 *   True if the function is not called from the setting page and must trigger the saving, false otherwise
 	 */
 	public function save_plugin_settings( array $data, $not_from_setting_page = FALSE ) {
-		global $ai1ec_settings;
+		$settings = $this->_registry->get( 'model.settings' );
+		$plugins_options = $settings->get( 'plugins_options' );
 		// Get the class name.
 		$class_name = get_class( $this );
 		// We need to save the old settings so that we can then let the Facebook plugin check if the user changed app-id / secret
@@ -194,17 +202,17 @@ abstract class Ai1ec_Connector_Plugin {
 
 
 		// Check if the options have been set
-		if ( isset( $ai1ec_settings->plugins_options[$class_name] ) ) {
+		if ( isset( $plugins_options[$class_name] ) ) {
 			// If the options for the plugin are set, iterate over the settings
 			foreach ( $this->settings as $setting ) {
 				// Always check that the key is set, data can come from $_POST or from an internal call
 				if( isset( $data[$setting['id']] ) ) {
-					$ai1ec_settings->plugins_options[$class_name][$setting['id']] = $data[$setting['id']];
+					$plugins_options[$class_name][$setting['id']] = $data[$setting['id']];
 				}
 			}
 		}
 		if ( $not_from_setting_page === TRUE ) {
-			$ai1ec_settings->save_only_settings_object( );
+			$settings->persist( );
 		} else {
 			$old_settings['page'] = $data['page'];
 			do_action( "ai1ec-$class_name-postsave-setting", $old_settings );
@@ -218,9 +226,11 @@ abstract class Ai1ec_Connector_Plugin {
 	 * @param boolean $close_tab_div TRUE if after the error message we should close the tab div
 	 */
 	protected function render_error_page( $message, $close_tab_div = FALSE ) {
-		global 	$ai1ec_view_helper;
+		$args = array();
 		$args['message'] = $message;
-		$ai1ec_view_helper->display_admin( 'plugins/display_error_message.php', $args );
+		$loader = $this->_registry->get( 'theme.loader' );
+		$file = $loader->get_file( 'plugins/display_error_message.php', $args, true );
+		$file->render();
 		if( $close_tab_div === TRUE ) {
 			$this->render_closing_div_of_tab();
 		}
@@ -234,8 +244,9 @@ abstract class Ai1ec_Connector_Plugin {
 		$args = array(
 				"id"     => $this->variables['id']
 		);
-		global 	$ai1ec_view_helper;
-		$ai1ec_view_helper->display_admin( 'plugins/render_opening_div.php', $args );
+		$loader = $this->_registry->get( 'theme.loader' );
+		$file = $loader->get_file( 'plugins/render_opening_div.php', $args, true );
+		$file->render();
 	}
 	/**
 	 * This renders the closing div of the tab.

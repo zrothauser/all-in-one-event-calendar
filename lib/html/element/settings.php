@@ -24,11 +24,11 @@ abstract class Ai1ec_Html_Element_Settings
 	/**
 	 * Constructor accepts system as injectable and requests HTML helper.
 	 *
-	 * @param Ai1ec_Object_Registry $system Injected system argument.
+	 * @param Ai1ec_Registry_Object $system Injected system argument.
 	 *
 	 * @return void Constructor does not return.
 	 */
-	public function __construct( Ai1ec_Object_Registry $system ) {
+	public function __construct( Ai1ec_Registry_Object $system ) {
 		$this->_sys  = $system;
 		$this->_html = $this->_sys->get( 'html.helper' );
 	}

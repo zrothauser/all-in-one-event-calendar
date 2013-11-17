@@ -152,7 +152,7 @@ class Ai1ec_Loader {
 				$param_class = $param->getClass();
 				if ( $param_class instanceof ReflectionClass ) {
 					$name = $param_class->getName();
-					if ( 'Ai1ec_Object_Registry' === $name ) {
+					if ( 'Ai1ec_Registry_Object' === $name ) {
 						return true;
 					}
 				}

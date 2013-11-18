@@ -135,10 +135,7 @@ class Ai1ec_Registry_Object implements Ai1ec_Registry {
 				case 3:
 					return $method( $params[0], $params[1], $params[2] );
 				default:
-					return call_user_func_array(
-						array( $class, $method ),
-						$params
-					);
+					return call_user_func_array( $method, $params );
 			}
 		} else {
 			// get an instance of the class

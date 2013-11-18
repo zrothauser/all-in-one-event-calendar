@@ -27,50 +27,22 @@ class Ai1ec_Event_Dispatcher {
         $priority = 10,
         $accepted_args = 1
     ) {
-        if ( !isset( $this->_registered[$hook] ) ) {
-            $this->_registered[$hook] = array();
+        if ($entity instanceof Ai1ec_Event_Callback_Filter) {
+            add_filter(
+                $hook,
+                array( $entity, 'run' ),
+                $priority,
+                $accepted_args
+            );
+        } else {
+            add_action(
+                $hook,
+                array( $entity, 'run' ),
+                $priority,
+                $accepted_args
+            );
         }
-
-        $this->_registered[$hook][$priority][] = compact(
-            'entity',
-            'priority',
-            'accepted_args'
-        );
-
-        // Lowest priority on top
-        ksort($this->_registered[$hook]);
-
-        add_action(
-            $hook,
-            array( $this, 'execute' ),
-            $priority,
-            $accepted_args
-        );
 
         return $this;
-    }
-
-	/**
-	 * Execute current action/filter event hook.
-	 *
-	 * @return mixed Value returned by the current action/filter event hook.
-	 */
-    public function execute() {
-        $hook = current_filter();
-        if ( !isset( $this->_registered[$hook] ) ) {
-            return null;
-        }
-
-        $args = $argv = func_get_args();
-        $response = null;
-        foreach ( array_shift( $this->_registered[$hook] ) as $runnable ) {
-            if ($runnable['entity'] instanceof Ai1ec_Event_Callback_Filter) {
-                $response = $args[0] = $runnable['entity']->execute( $args );
-            } else {
-                $runnable['entity']->execute( $argv );
-            }
-        }
-
-        return $response;
     }
 }

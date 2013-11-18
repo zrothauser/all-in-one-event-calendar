@@ -11,7 +11,7 @@
  *
  * @return void Method does not return
  */
-function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
+function ai1ec_initiate_constants( $ai1ec_base_dir ) {
 
 	// ===============
 	// = Plugin Path =
@@ -81,6 +81,14 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		define( 'AI1EC_UPDATES_URL', 'http://api.time.ly/plugin/pro/latest' );
 	}
 
+
+	// ===============
+	// = PLUGIN PATH =
+	// ===============
+	if ( ! defined( 'AI1EC_PATH' ) ) {
+		define( 'AI1EC_PATH',               dirname( __FILE__ ) );
+	}
+
 	// ===============
 	// = VENDOR PATH =
 	// ===============
@@ -102,16 +110,17 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		);
 	}
 
-	// ===============
-	// = AI1EC_ADMIN_THEME_JS_PATH PATH  =
-	// ===============
-	if ( ! defined( 'AI1EC_ADMIN_THEME_JS_PATH' ) ) {
+	// ==============
+	// = CACHE PATH =
+	// ==============
+	if ( ! defined( 'AI1EC_CACHE_PATH' ) ) {
 		define(
-			'AI1EC_ADMIN_THEME_JS_PATH',
-			AI1EC_PATH . DIRECTORY_SEPARATOR . 'public' .
-				DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR
+			'AI1EC_CACHE_PATH',
+			AI1EC_PATH . DIRECTORY_SEPARATOR . 'cache' .
+			DIRECTORY_SEPARATOR
 		);
 	}
+
 	// ================
 	// = THEME FOLDER =
 	// ================
@@ -173,7 +182,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// = POST TYPE =
 	// =============
 	if ( ! defined( 'AI1EC_POST_TYPE' ) ) {
-		define( 'AI1EC_POST_TYPE', 'ai1ec_event' );
+		define( 'AI1EC_POST_TYPE',           'ai1ec_event' );
 	}
 
 	// ==============

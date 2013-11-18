@@ -1,23 +1,21 @@
 <?php
 
 /**
- * Event Callback creation.
+ * Abstract Class for Callback Events.
  *
  * @author     Time.ly Network Inc.
  * @since      2.0
- * 
- * @instantiator new
- * @package      AI1EC
- * @subpackage   AI1EC.Event
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Event
  */
-class Ai1ec_Event_Callback {
+abstract class Ai1ec_Event_Callback_Abstract {
     
 	/**
 	 * @var Ai1ec_Object_Registry The Object registry.
 	 */    
     protected $_registry      = null;
     
-
 	/**
 	 * @var string The registry method name defined in the class map.
 	 */    

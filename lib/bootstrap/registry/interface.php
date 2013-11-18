@@ -6,7 +6,7 @@
  * @author     Time.ly Network, Inc.
  * @since      2.0
  * @package    Ai1EC
- * @subpackage Ai1EC.Object.Registry
+ * @subpackage Ai1EC.Object
  */
 interface Ai1ec_Registry {
 

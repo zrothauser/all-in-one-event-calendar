@@ -69,14 +69,14 @@ class Ai1ec_Import_Export_Controller {
 			throw new Ai1ec_Engine_Not_Set_Exception( 'The engine ' . $engine . 'is not registered.' );
 		}
 		// external engines must register themselves into the registry.
-		$engine = $this->_registry->get( 'import-export.' . $engine );
-		$ex = null;
+		$engine    = $this->_registry->get( 'import-export.' . $engine );
+		$exception = null;
 		try {
 			return $engine->import( $args );
-		} catch ( Ai1ec_Parse_Exception $e ) {
-			$ex = $e;
+		} catch ( Ai1ec_Parse_Exception $parse_exception ) {
+			$exception = $parse_exception;
 		}
-		throw $ex;
+		throw $exception;
 	}
 	
 	/**

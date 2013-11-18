@@ -6,9 +6,9 @@
  * @author     Time.ly Network, Inc.
  * @since      2.0
  * @package    Ai1EC
- * @subpackage Ai1EC.Object.Registry
+ * @subpackage Ai1EC.Object
  */
-class Ai1ec_Registry_Application_ implements Ai1ec_Registry {
+class Ai1ec_Registry_Application implements Ai1ec_Registry {
 
 	/**
 	 * @var Ai1ec_Registry_Object

@@ -507,10 +507,10 @@
       'c' => 'Ai1ec_Registry',
       'i' => 'g',
     ),
-    'Ai1ec_Registry_Application_' => 
+    'Ai1ec_Registry_Application' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'registry' . DIRECTORY_SEPARATOR . 'application.php',
-      'c' => 'Ai1ec_Registry_Application_',
+      'c' => 'Ai1ec_Registry_Application',
       'i' => 'g',
       'r' => 'y',
     ),
@@ -661,7 +661,7 @@
     'bootstrap.registry.application' => 
     array (
       'f' => AI1EC_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'registry' . DIRECTORY_SEPARATOR . 'application.php',
-      'c' => 'Ai1ec_Registry_Application_',
+      'c' => 'Ai1ec_Registry_Application',
       'i' => 'g',
       'r' => 'y',
     ),

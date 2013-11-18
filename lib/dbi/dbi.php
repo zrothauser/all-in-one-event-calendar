@@ -127,6 +127,11 @@ class Ai1ec_Dbi {
 		return $this->_dbi->get_results( $query, $output );
 	}
 
+	/**
+	 * Get the id of the last inserted row.
+	 * 
+	 * @return number
+	 */
 	public function get_insert_id() {
 		return $this->_dbi->insert_id;
 	}

@@ -4,7 +4,7 @@
  *
  * @author     Time.ly Network Inc.
  * @since      2.0
- *
+ * @instantiator new
  * @package    AI1EC
  * @subpackage AI1EC.Theme.File
  */
@@ -41,7 +41,7 @@ class Ai1ec_File_Php extends Ai1ec_File_Abstract {
 		}
 		foreach ( $files_to_check as $file ) {
 			if ( file_exists( $file ) ) {
-				if ( empty ( $this->_args ) ) {
+				if ( 'user_variabels.php' === $this->_name ) {
 					// it's the user variables file for now.
 					require( $file );
 					$this->_content = $less_user_variables;

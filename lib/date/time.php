@@ -12,7 +12,7 @@
 class Ai1ec_Date_Time {
 
 	/**
-	 * @var Ai1ec_Object_Registry Instance of objects registry.
+	 * @var Ai1ec_Registry_Object Instance of objects registry.
 	 */
 	protected $_registry  = null;
 
@@ -24,14 +24,14 @@ class Ai1ec_Date_Time {
 	/**
 	 * Initialize local date entity.
 	 *
-	 * @param Ai1ec_Object_Registry $registry Objects registry instance.
+	 * @param Ai1ec_Registry_Object $registry Objects registry instance.
 	 * @param string                $time     For details {@see self::format}.
 	 * @param string                $timezone For details {@see self::format}.
 	 *
 	 * @return void
 	 */
 	public function __construct(
-		Ai1ec_Object_Registry $registry,
+		Ai1ec_Registry_Object $registry,
 		$time     = 'now',
 		$timezone = 'UTC'
 	) {

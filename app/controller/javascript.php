@@ -87,11 +87,11 @@ class Ai1ec_Javascript_Controller {
 	/**
 	 * Public constructor.
 	 *
-	 * @param Ai1ec_Object_Registry $registry
+	 * @param Ai1ec_Registry_Object $registry
 	 *
 	 * @return void
 	 */
-	public function __construct( Ai1ec_Object_Registry $registry ) {
+	public function __construct( Ai1ec_Registry_Object $registry ) {
 		$this->_registry             = $registry;
 		$this->_settings             = $registry->get( 'settings' );
 		$this->_locale               = $registry->get( 'locale.helper' );
@@ -285,7 +285,7 @@ class Ai1ec_Javascript_Controller {
 			$http_encoder->encode();
 			$http_encoder->sendAll();
 		}
-		Ai1ec_Http_Response::stop( 0 );
+		Ai1ec_Http_Response_Helper::stop( 0 );
 	}
 
 	/**

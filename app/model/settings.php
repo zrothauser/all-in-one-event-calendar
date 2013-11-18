@@ -191,6 +191,12 @@ class Ai1ec_Settings extends Ai1ec_App {
 			'int',
 			'none'
 		);
+		$this->register(
+			'ai1ec_calendar_id',
+			'int',
+			'none'
+		);
+
 	}
 
 }

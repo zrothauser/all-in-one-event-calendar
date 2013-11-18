@@ -128,6 +128,15 @@ class Ai1ec_Dbi {
 	}
 
 	/**
+	 * Get the id of the last inserted row.
+	 * 
+	 * @return number
+	 */
+	public function get_insert_id() {
+		return $this->_dbi->insert_id;
+	}
+
+	/**
 	 * Retrieve one variable from the database.
 	 *
 	 * Executes a SQL query and returns the value from the SQL result.

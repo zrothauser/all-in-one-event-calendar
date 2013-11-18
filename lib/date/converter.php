@@ -11,18 +11,18 @@
 class Ai1ec_Date_Converter {
 
 	/**
-	 * @var Ai1ec_Object_Registry Instance of objects registry.
+	 * @var Ai1ec_Registry_Object Instance of objects registry.
 	 */
 	protected $_registry = null;
 
 	/**
 	 * Get reference of object registry.
 	 *
-	 * @param Ai1ec_Object_Registry $registry Injected objects registry.
+	 * @param Ai1ec_Registry_Object $registry Injected objects registry.
 	 *
 	 * @return void
 	 */
-	public function __construct( Ai1ec_Object_Registry $registry ) {
+	public function __construct( Ai1ec_Registry_Object $registry ) {
 		$this->_registry = $registry;
 	}
 

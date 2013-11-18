@@ -316,11 +316,11 @@ class Ai1ec_Date_Timezone {
 	/**
 	 * Initialize local cache and identifiers.
 	 *
-	 * @param Ai1ec_Object_Registry $registry Registry to use.
+	 * @param Ai1ec_Registry_Object $registry Registry to use.
 	 *
 	 * @return void
 	 */
-	public function __construct( Ai1ec_Object_Registry $registry ) {
+	public function __construct( Ai1ec_Registry_Object $registry ) {
 		$this->_cache = $registry->get( 'cache.memory' );
 		$this->_init_identifiers();
 	}

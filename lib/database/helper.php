@@ -36,11 +36,11 @@ class Ai1ec_Database_Helper {
 	/**
 	 * Constructor
 	 *
-	 * @param Ai1ec_Object_Registry $registry
+	 * @param Ai1ec_Registry_Object $registry
 	 *
 	 * @return void
 	 */
-	public function __construct( Ai1ec_Object_Registry $registry ) {
+	public function __construct( Ai1ec_Registry_Object $registry ) {
 		$this->_db       = $registry->get( 'dbi.dbi' );
 		$this->_prefixes = array(
 			$this->_db->get_prefix() . 'ai1ec_',

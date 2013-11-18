@@ -23,6 +23,6 @@ class Ai1ec_Render_Strategy_Jsonp extends Ai1ec_Http_Response_Render_Strategy {
 			$output = $params['callback'] . '(' . $output . ')';
 		}
 		echo $output;
-		return ai1ec_stop( 0 );
+		return Ai1ec_Http_Response_Helper::stop( 0 );
 	}
 }

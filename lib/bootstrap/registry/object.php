@@ -9,9 +9,9 @@
  * @author     Time.ly Network, Inc.
  * @since      2.0
  * @package    Ai1EC
- * @subpackage Ai1EC.Registry
+ * @subpackage Ai1EC.Object
  */
-class Ai1ec_Object_Registry {
+class Ai1ec_Registry_Object implements Ai1ec_Registry {
 
 	/**
 	* @var array The internal objects cache
@@ -71,6 +71,14 @@ class Ai1ec_Object_Registry {
 			$factory[1],
 			$args
 		);
+	}
+
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Registry::set()
+	 */
+	public function set( $key, $value ) {
+		// The set method allows to inject classes from extensions into the registry.
+		new Ai1ec_Bootstrap_Exception( 'Not implemented' );
 	}
 
 	/**

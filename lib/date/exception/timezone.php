@@ -8,5 +8,5 @@
  * @package    Ai1EC
  * @subpackage Ai1EC.Date
  */
-class Ai1ec_Date_Timezone_Exception extends Ai1ec_Time_Exception {
+class Ai1ec_Date_Timezone_Exception extends Ai1ec_Date_Exception {
 }

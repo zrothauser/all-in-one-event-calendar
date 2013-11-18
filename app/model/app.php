@@ -22,7 +22,7 @@ class Ai1ec_App {
 	 *
 	 * @return void Constructor does not return.
 	 */
-	public function __construct( Ai1ec_Object_Registry $system ) {
+	public function __construct( Ai1ec_Registry_Object $system ) {
 		$this->_sys = $system;
 		$this->_initialize();
 	}

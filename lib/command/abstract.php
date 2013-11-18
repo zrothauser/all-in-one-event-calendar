@@ -11,7 +11,7 @@
 abstract class Ai1ec_Command {
 
 	/**
-	 * @var Ai1ec_Object_Registry
+	 * @var Ai1ec_Registry_Object
 	 */
 	protected $_registry;
 
@@ -28,11 +28,11 @@ abstract class Ai1ec_Command {
 	/**
 	 * Public constructor, set the strategy according to the type.
 	 *
-	 * @param Ai1ec_Object_Registry $registry
+	 * @param Ai1ec_Registry_Object $registry
 	 * @param Ai1ec_Request_Parser $request
 	 */
 	public function __construct(
-			Ai1ec_Object_Registry $registry,
+			Ai1ec_Registry_Object $registry,
 			Ai1ec_Request_Parser $request
 	) {
 		$this->_registry = $registry;

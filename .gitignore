@@ -30,4 +30,4 @@ vendor/
 
 /app/config/constants-local.php
 /app/public/js/build.txt
-
+/lib/bootstrap/loader-map.php

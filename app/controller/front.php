@@ -12,7 +12,7 @@
 class Ai1ec_Front_Controller {
 
 	/**
-	 * @var Ai1ec_Object_Registry The Object registry.
+	 * @var Ai1ec_Registry_Object The Object registry.
 	 */
 	private $_registry;
 
@@ -57,6 +57,71 @@ class Ai1ec_Front_Controller {
 	}
 
 	/**
+	 * admin_menu function
+	 * Display the admin menu items using the add_menu_page WP function.
+	 *
+	 * @return void
+	 */
+	function admin_menu() {
+		$settings = $this->_registry->get( 'model.settings' );
+		// =======================
+		// = Calendar Feeds Page =
+		// =======================
+		$calendar_feeds = add_submenu_page(
+			AI1EC_ADMIN_BASE_URL,
+			__( 'Calendar Feeds', AI1EC_PLUGIN_NAME ),
+			__( 'Calendar Feeds', AI1EC_PLUGIN_NAME ),
+			'manage_ai1ec_feeds',
+			AI1EC_PLUGIN_NAME . '-feeds',
+			array( $this, 'view_feeds' )
+		);
+		// Add the 'ICS Import Settings' meta box.
+		add_meta_box(
+			'ai1ec-feeds',
+			_x( 'Feed Subscriptions', 'meta box', AI1EC_PLUGIN_NAME ),
+			array( $this, 'feeds_meta_box' ),
+			$calendar_feeds,
+			'left',
+			'default'
+		);
+		$settings->set( 'feeds_page', $calendar_feeds);
+	}
+
+	/**
+	 * Display this plugin's feeds page in the admin.
+	 *
+	 * @return void
+	 */
+	function view_feeds() {
+		$settings = $this->_registry->get( 'model.settings' );
+		$loader = $this->_registry->get( 'theme.loader' );
+		$args = array(
+			'title'             => __(
+				'All-in-One Event Calendar: Calendar Feeds',
+				AI1EC_PLUGIN_NAME
+			),
+			'settings_page'     => $settings->get( 'feeds_page' ),
+			'calendar_settings' => false,
+		);
+
+
+		$file = $loader->get_file( 'settings.php', $args, true );
+		$file->render();
+	}
+
+	/**
+	 * Renders the contents of the Calendar Feeds meta box.
+	 *
+	 * @return void
+	 */
+	function feeds_meta_box( $object, $box )
+	{
+		$loader = $this->_registry->get( 'theme.loader' );
+		$file = $loader->get_file( 'box_feeds.php', array(), true );
+		$file->render();
+	}
+
+	/**
 	 * Execute commands if our plugin must handle the request.
 	 *
 	 * @wp_hook init
@@ -78,6 +143,99 @@ class Ai1ec_Front_Controller {
 		}
 	}
 
+	/**
+	 * Initializes the URL router used by our plugin.
+	 *
+	 * @wp_hook init
+	 *
+	 * @return void
+	 */
+	public function initialize_router() {
+		$settings            = $this->_registry->get( 'model.settings' );
+
+		$cal_page            = $settings->get( 'calendar_page_id' );
+
+		if (
+			! $cal_page ||
+			$cal_page < 1
+		) { // Routing may not be affected in any way if no calendar page exists.
+			return NULL;
+		}
+		$router              = $this->_registry->get( 'routing.router' );
+		$localization_helper = $this->_registry->get( 'p28n.wpml' );
+		$uri_helper          = $this->_registry->get( 'routing.uri-helper' );
+		$page_base          = '';
+		$clang              = '';
+
+		if ( $localization_helper->is_wpml_active() ) {
+			$trans = $localization_helper
+				->get_wpml_translations_of_page(
+					$cal_page,
+					true
+				);
+			$clang = $localization_helper->get_language();
+			if ( isset( $trans[$clang] ) ) {
+				$cal_page = $trans[$clang];
+			}
+		}
+		$template_link_helper = $this->_registry->get( 'template.link.helper' );
+
+		$page_base = $template_link_helper->get_page_link(
+			$cal_page
+		);
+
+		$page_base = $uri_helper::get_pagebase( $page_base );
+		$page_link = 'index.php?page_id=' .
+			$cal_page;
+		$pagebase_for_href = $uri_helper::get_pagebase_for_links(
+			get_page_link( $cal_page ),
+			$clang
+		);
+
+		// save the pagebase to set up the factory later
+		$application = $this->_registry->get( 'bootstrap.registry.application' );
+		$application->set( 'calendar_base_page', $pagebase_for_href );
+		$option = $this->_registry->get( 'model.option' );
+
+		// If the calendar is set as the front page, disable permalinks.
+		// They would not be legal under a Windows server. See:
+		// https://issues.apache.org/bugzilla/show_bug.cgi?id=41441
+		if (
+			$option->get( 'permalink_structure' ) &&
+			( int ) get_option( 'page_on_front' ) !==
+			( int ) $settings->get( 'calendar_page_id' )
+		) {
+			$application->set( 'permalinks_enabled', true );
+		}
+
+		// If we are requesting the calendar page and we have a saved cookie,
+		// redirect the user. Do not redirect if the user saved the home page,
+		// otherwise we enter a loop.
+		$cookie_dto = $router->get_cookie_set_dto();
+		if ( true === $cookie_dto->get_is_cookie_set_for_calendar_page() ) {
+			$cookie = $cookie_dto->get_calendar_cookie();
+			$href = Ai1ec_View_Factory::create_href_helper_instance( $cookie );
+			// wp_redirect sanitizes the url which strips out the |
+			header( 'Location: ' . $href->generate_href(), true, '302' );
+			exit ( 0 );
+		}
+		// We need to reset the cookie, it's to early for the is_page() call
+		$router->set_cookie_set_dto();
+
+		$router->asset_base( $page_base )
+			->register_rewrite( $page_link );
+	}
+
+	/**
+	 * Initialize some actions to show things are working.
+	 */
+	private function _initialize_actions() {
+		$custom_type = $this->_registry->get( 'post.custom-type' );
+		// Initialize router
+		add_action( 'init', array( $this, 'initialize_router' ), PHP_INT_MAX - 1 );
+		add_action( 'init', array( $custom_type, 'register' ) );
+		add_action( 'admin_menu', array( $this, 'admin_menu' ), 9 );
+	}
 	/**
 	 * Initialize the system.
 	 *
@@ -104,6 +262,7 @@ class Ai1ec_Front_Controller {
 			$this->_initialize_schema();
 			// Load the textdomain
 			$this->_load_textdomain();
+			$this->_initialize_actions();
 		} catch ( Ai1ec_Constants_Not_Set_Exception $e ) {
 			// This is blocking, throw it and disable the plugin
 			$exception = $e;
@@ -220,7 +379,7 @@ class Ai1ec_Front_Controller {
 	 * @return void Method does not return
 	 */
 	private function _initialize_registry( $ai1ec_loader ) {
-		$this->_registry = new Ai1ec_Object_Registry( $ai1ec_loader );
+		$this->_registry = new Ai1ec_Registry_Object( $ai1ec_loader );
 	}
 
 	/**
@@ -340,74 +499,6 @@ class Ai1ec_Front_Controller {
 				throw new Ai1ec_Database_Update_Exception();
 			}
 		}
-	}
-
-	/**
-	 * Initializes the URL router used by our plugin.
-	 *
-	 * @wp_hook init
-	 *
-	 * @return void
-	 */
-	private function _initialize_router() {
-		$settings            = $this->_registry->get( 'model.settings' );
-		$router              = $this->_registry->get( 'routing.router' );
-		$localization_helper = $this->_registry->get( 'p28n.wpml' );
-		$uri_helper          = $this->_registry->get( 'routing.uri-helper' );
-		$cal_page            = $settings->get( 'calendar_page_id' );
-		if (
-			! $cal_page ||
-			$cal_page < 1
-		) { // Routing may not be affected in any way if no calendar page exists.
-			return NULL;
-		}
-		$page_base          = '';
-		$clang              = '';
-
-		if ( $localization_helper->is_wpml_active() ) {
-			$trans = $localization_helper
-				->get_wpml_translations_of_page(
-					$cal_page,
-					true
-			);
-			$clang = $localization_helper->get_language();
-			if ( isset( $trans[$clang] ) ) {
-				$cal_page = $trans[$clang];
-			}
-		}
-		$template_link_helper = $this->_registry->get( 'template.link.helper' );
-
-		$page_base = $template_link_helper->get_page_link(
-			$cal_page
-		);
-
-		$page_base = $uri_helper::get_pagebase( $page_base );
-		$page_link = 'index.php?page_id=' .
-				$cal_page;
-		$pagebase_for_href = $uri_helper::get_pagebase_for_links(
-				get_page_link( $cal_page ),
-				$clang
-		);
-		// save the pagebase to set up the factory later
-		$this->_pagebase_for_href = $pagebase_for_href;
-
-
-		// If we are requesting the calendar page and we have a saved cookie,
-		// redirect the user. Do not redirect if the user saved the home page,
-		// otherwise we enter a loop.
-		$cookie_dto = $router->get_cookie_set_dto();
-		if ( true === $cookie_dto->get_is_cookie_set_for_calendar_page() ) {
-			$cookie = $cookie_dto->get_calendar_cookie();
-			$href = Ai1ec_View_Factory::create_href_helper_instance( $cookie );
-			// wp_redirect sanitizes the url which strips out the |
-			header( 'Location: ' . $href->generate_href(), true, '302' );
-			exit ( 0 );
-		}
-		// We need to reset the cookie, it's to early for the is_page() call
-		$router->set_cookie_set_dto();
-
-		$router->asset_base( $page_base )
-			->register_rewrite( $page_link );
 	}
 
 }

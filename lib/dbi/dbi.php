@@ -128,15 +128,6 @@ class Ai1ec_Dbi {
 	}
 
 	/**
-	 * Get the id of the last inserted row.
-	 * 
-	 * @return number
-	 */
-	public function get_insert_id() {
-		return $this->_dbi->insert_id;
-	}
-
-	/**
 	 * Retrieve one variable from the database.
 	 *
 	 * Executes a SQL query and returns the value from the SQL result.
@@ -210,7 +201,7 @@ class Ai1ec_Dbi {
 
 	/**
 	 * Returns the db prefix.
-	 *
+	 * 
 	 * @return string
 	 */
 	public function get_prefix() {
@@ -218,17 +209,18 @@ class Ai1ec_Dbi {
 	}
 
 	/**
-	* @param string $table table name
-	*
-	* @return string the full table name for the requested table
-	*/
+	 * Return the full name for the table
+	 *
+	 * @param string $table table name
+	 *
+	 * @return string the full table name for the requested table
+	 */
 	public function get_table_name( $table ) {
 		if ( ! isset( $this->_dbi->{$table} ) ) {
 			return $this->_dbi->prefix . $table;
 		}
 		return $this->_dbi->{$table};
 	}
-
 
 }
 

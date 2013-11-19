@@ -180,7 +180,18 @@ class Ai1ec_Exception_Handler {
 	 * @return string|boolean Error message or false if plugin is not disabled
 	 */
 	public function get_disabled_message() {
-		return get_option( self::DB_DEACTIVATE_MESSAGE, false );
+		global $wpdb;
+		$row = $wpdb->get_row( 
+			$wpdb->prepare( 
+				"SELECT option_value FROM $wpdb->options WHERE option_name = %s LIMIT 1", 
+				self::DB_DEACTIVATE_MESSAGE
+			)
+		);
+		if ( is_object( $row ) ) {
+			return $row->option_value;
+		} else { // option does not exist, so we must cache its non-existence
+			return false;
+		}
 	}
 
 	/**

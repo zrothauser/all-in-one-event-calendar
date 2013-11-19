@@ -29,7 +29,7 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 		Ai1ec_Registry_Object $registry
 	 ) {
 		parent::__construct( $registry );
-		$app = $registry->get( 'bootstrap.ragistry.application' );
+		$app = $registry->get( 'bootstrap.registry.application' );
 
 		$this->page = $app->get( 'calendar_base_page' );
 		$this->pretty_permalinks_enabled = $app->get( 'pretty_permalinks' );
@@ -56,7 +56,6 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 			default:
 				break;
 		}
-
 		return $href;
 	}
 
@@ -70,12 +69,9 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 			return $this->_registry->get( 'html.element.legacy.blank' );
 		}
 		static $cached_flips = array();
-		$select2 = $this->_registry->get(
-			'html.element.legacy.select2-multiselect',
-			$args['id'],
-			$args['name']
-		);
+
 		$use_id = isset( $args['use_id'] );
+		$options_to_add = array();
 		foreach ( $options as $term ) {
 			$option_arguments = array();
 			$color = false;
@@ -115,20 +111,41 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 				}
 			}
 			if ( true === $use_id ) {
-				$select2->add_option( $term->name, $term->term_id, $option_arguments );
+				$options_to_add[] = array(
+					'text'  => $term->name,
+					'value' => $term->term_id,
+					'args'  => $option_arguments,
+				);
 			} else {
-				$select2->add_option( $term->name, $term->name, $option_arguments );
+				$options_to_add[] = array(
+					'text'  => $term->name,
+					'value' => $term->name,
+					'args'  => $option_arguments,
+				);
 			}
 		}
-		$select2->set_attribute( "multiple", "multiple" );
-		$select2->set_attribute( "data-placeholder", $args['placeholder'] );
-		$select2->add_class( 'ai1ec-select2-multiselect-selector span12' );
-		$container = Ai1ec_Helper_Factory::create_generic_html_tag( 'div' );
+		$select2_args = array(
+			'multiple' => 'multiple',
+			'data-placeholder' => $args['placeholder'],
+			'class' => 'ai1ec-select2-multiselect-selector span12'
+		);
+		$container_class = false;
 		if( isset( $args['type'] ) ) {
-			$container->add_class( 'ai1ec-' . $args['type'] . '-filter' );
+			$container_class = 'ai1ec-' . $args['type'] . '-filter';
 		}
-		$container->add_renderable_children( $select2 );
-		return $container;
+		$loader =$this->_registry->get( 'theme.loader' );
+		$select2 = $loader->get_file( 
+			'select2_multiselect.twig',
+			array( 
+				'name'            => $args['name'],
+				'id'              => $args['id'],
+				'container_class' => $container_class,
+				'select2_args'    => $select2_args,
+				'options'         => $options_to_add,
+			),
+			true
+		);
+		return $select2;
 	}
 	/**
 	 * Creates a tag selector using the Select2 widget.
@@ -155,14 +172,22 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 		}
 		$tags_json = json_encode( $tags_json );
 		$tags_json = _wp_specialchars( $tags_json, 'single', 'UTF-8' );
-		$input = new Ai1ec_Select2_Input();
-		$input->set_id( $args['id'] );
-		$input->set_name( $args['name'] );
-		$input->set_attribute( "data-placeholder",
-			__( 'Tags (optional)', AI1EC_PLUGIN_NAME )
+		$loader =$this->_registry->get( 'theme.loader' );
+		$select2_args = array(
+			'data-placeholder' => __( 'Tags (optional)', AI1EC_PLUGIN_NAME ),
+			'class'            => 'ai1ec-tags-selector span12',
+			'data-ai1ec-tags'  => $tags_json
 		);
-		$input->set_attribute( "data-ai1ec-tags", $tags_json );
-		$input->add_class( 'ai1ec-tags-selector span12' );
-		return $input;
+		$select2 = $loader->get_file(
+			'select2_input.twig',
+			array(
+				'name'            => $args['name'],
+				'id'              => $args['id'],
+				'select2_args'    => $select2_args,
+
+			),
+			true
+		);
+		return $select2;
 	}
 }

@@ -52,7 +52,10 @@ class Ai1ec_Theme_Loader {
 	 *
 	 * @return Ai1ec_File An instance of a file object with content parsed.
 	 */
-	public function get_file( $filename, $args = array(), $is_admin = false ) {
+	public function get_file( $filename, $args = array(), $is_admin = null ) {
+		if ( null === $is_admin ) {
+			$is_admin = is_admin();
+		} 
 		$dot_position = strrpos( $filename, '.' ) + 1;
 		$ext = substr( $filename, $dot_position );
 		$file = false;
@@ -85,15 +88,15 @@ class Ai1ec_Theme_Loader {
 				);
 				break;
 			default:
-				throw new Ai1ec_File_Not_Found(
+				throw new Ai1ec_Exception(
 					'We couldn\t find a suitable class for extension ' . $ext
 				);
 				break;
 		}
 		// here file is a concrete class otherwise the exception is thrown
 		if ( ! $file->process_file() ) {
-			throw new Ai1ec_File_Not_Found(
-				'The specified file "' . $file . '" doesn\'t exist.'
+			throw new Ai1ec_Exception(
+				'The specified file "' . $filename . '" doesn\'t exist.'
 			);
 		}
 		return $file;
@@ -108,8 +111,13 @@ class Ai1ec_Theme_Loader {
 	 * @return Twig_Environment
 	 */
 	private function get_twig_instance( array $paths ) {
-		if ( isset( $this->_twig ) ) {
-
+		
+		if ( ! isset( $this->_twig ) ) {
+			foreach ( $paths as &$path ) {
+				$path .= 'twig' . DIRECTORY_SEPARATOR;
+			}
+			require_once AI1EC_PATH . '/vendor/autoload.php';
+			Twig_Autoloader::register();
 			// Set up Twig environment.
 			$loader = new Twig_Loader_Filesystem( $paths );
 			// TODO: Add cache support.

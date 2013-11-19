@@ -364,9 +364,12 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		// Render the body of the tab
 		$settings = $this->_registry->get( 'model.settings' );
 
-		$select2_cats = $this->_registry->get(
-			'html.element.legacy.select2.multiselect',
-			array( 'name' => 'ai1ec_feed_category[]',
+		$factory = $this->_registry->get( 
+			'factory.html'
+		);
+		$select2_cats = $factory->create_select2_multiselect(
+			array( 
+				'name' => 'ai1ec_feed_category[]',
 				'id' => 'ai1ec_feed_category',
 				'use_id' => true,
 				'type' => 'category',
@@ -382,15 +385,15 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				)
 			)
 		);
-		$select2_tags = $this->_registry->get(
-			'html.element.legacy.select2.input',
-			array( 'id' => 'ai1ec_feed_tags'
-			) );
+		$select2_tags = $factory->create_select2_input(
+			array( 'id' => 'ai1ec_feed_tags') 
+		);
 		$modal = $this->_registry->get(
 			'html.element.legacy.bootstrap.modal',
 			esc_html__(
 				"Do you want to keep the events imported from the calendar or remove them?",
-				AI1EC_PLUGIN_NAME )
+				AI1EC_PLUGIN_NAME
+			)
 		);
 		$modal->set_header_text(
 			esc_html__( "Removing ICS Feed", AI1EC_PLUGIN_NAME ) );
@@ -402,7 +405,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$loader = $this->_registry->get( 'theme.loader' );
 		$cron_freq = $loader->get_file(
 			'cron_freq.php',
-			array( 'cron_freq', $settings->get( 'cron_freq' ) ),
+			array( 'cron_freq' => $settings->get( 'cron_freq' ) ),
 			true
 		);
 		$args = array(
@@ -434,11 +437,11 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 		// Select all added feeds
 		$rows = $db->get_results(
-			'SELECT * FROM ' . $db->prefix . 'ai1ec_event_feeds'
+			'SELECT * FROM ' . $db->get_table_name( 'ai1ec_event_feeds' )
 		);
 
-		$sql = 'SELECT COUNT(*) FROM ' . $db->prefix .
-		       'ai1ec_events WHERE ical_feed_url = %s';
+		$sql = 'SELECT COUNT(*) FROM ' . $db->get_table_name( 'ai1ec_events' ) .
+		       ' WHERE ical_feed_url = %s';
 		$html = '';
 		foreach ( $rows as $row ) {
 			$events          = $db->get_var(
@@ -476,7 +479,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				'events'              => $events,
 			);
 			$loader = $this->_registry->get( 'theme.loader' );
-			$file = $loader->get_file( 'feed_row.php', $args );
+			$file = $loader->get_file( 'feed_row.php', $args, true );
 			$html .= $file->get_content();
 		}
 

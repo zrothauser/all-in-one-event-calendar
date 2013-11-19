@@ -114,10 +114,20 @@ class Ai1ec_Front_Controller {
 	 *
 	 * @return void
 	 */
-	function feeds_meta_box( $object, $box )
-	{
+	function feeds_meta_box( $object, $box ) {
+		// register the calendar feeds page.
+		$calendar_feeds = $this->_registry->get( 'controller.calendar-feeds' );
+		$feeds = array( $this->_registry->get( 'calendar-feeds.ics' ) );
+		$feeds = apply_filters( 'ai1ec_calendar_feeds', $feeds );
+		foreach ( $feeds as $feed ) {
+			$calendar_feeds->add_plugin( $feed );
+		}
 		$loader = $this->_registry->get( 'theme.loader' );
-		$file = $loader->get_file( 'box_feeds.php', array(), true );
+		$file = $loader->get_file( 
+			'box_feeds.php',
+			array( 'calendar_feeds' => $calendar_feeds ),
+			true
+		);
 		$file->render();
 	}
 

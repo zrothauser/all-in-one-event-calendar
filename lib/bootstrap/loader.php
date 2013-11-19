@@ -55,6 +55,8 @@ class Ai1ec_Loader {
 	 */
 	protected $_base_path      = null;
 
+	protected $_registered     = array();
+
 	/**
 	 * load method
 	 *

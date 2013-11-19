@@ -50,6 +50,7 @@ $soft_disable_message = $ai1ec_exception_handler->get_disabled_message();
 if ( false !== $soft_disable_message ) {
 	return $ai1ec_exception_handler->show_notices( $soft_disable_message );
 }
+
 $prev_er_handler = set_error_handler(
 	array( $ai1ec_exception_handler, 'handle_error' )
 );

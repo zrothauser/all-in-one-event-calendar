@@ -681,7 +681,7 @@ class Ai1ec_Events_Controller {
 			8 => sprintf( __( 'Event submitted. <a target="_blank" href="%s">Preview event</a>', AI1EC_PLUGIN_NAME ), esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) ),
 			9 => sprintf( __( 'Event scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview event</a>', AI1EC_PLUGIN_NAME ),
 				// translators: Publish box date format, see http://php.net/date
-				Ai1ec_Time_Utility::date_i18n(
+				$this->_registry->get( 'time' )->date_i18n(
 					__( 'M j, Y @ G:i', AI1EC_PLUGIN_NAME ),
 					strtotime( $post->post_date )
 				),
@@ -1000,6 +1000,7 @@ HTML;
 		$ai1ec_deferred_helper = Ai1ec_Deferred_Rendering_Helper::get_instance();
 		$ai1ec_deferred_helper->add_renderable_children( $bootstrap_modal );
 	}
+
 	/**
 	 * Outputs event-specific details as HTML to be prepended to post content
 	 * when displayed in a loop alongside other event posts.

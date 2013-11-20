@@ -251,7 +251,9 @@ class Ai1ec_Event_Search {
 			return false;
 		}
 
-		return ( 86400 === $event['end']->format() - $event['start']->format() );
+		return (
+			86400 === $event['end']->format() - $event['start']->format()
+		);
 	}
 
 	/**
@@ -444,14 +446,6 @@ class Ai1ec_Event_Search {
 	}
 
 	/**
-	 * Object constructors
-	 */
-	public function __construct( Ai1ec_Registry_Object $registry ){
-		$this->_dbi       = $registry->get( 'dbi.dbi' );
-		$this->_registry  = $registry;
-	}
-
-	/**
 	 * _get_post_status_sql function
 	 *
 	 * Returns SQL snippet for properly matching event posts, as well as array
@@ -580,4 +574,13 @@ class Ai1ec_Event_Search {
 		$statement  = $this->_db->prepare( $query, $post_id, $instance_id );
 		return $this->_db->query( $statement );
 	}
+
+	/**
+	 * Object constructor.
+	 */
+	public function __construct( Ai1ec_Registry_Object $registry ){
+		$this->_dbi       = $registry->get( 'dbi' );
+		$this->_registry  = $registry;
+	}
+
 }

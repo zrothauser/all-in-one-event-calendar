@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Search Event.
  *
@@ -245,41 +246,59 @@ class Ai1ec_Event_Search {
 	 * @return array the modified filter array
 	 */
 	protected function _get_filter_sql( $filter ) {
-
-		// Set up the filter join and where strings
-		$filter['filter_join']  = '';
-		$filter['filter_where'] = '';
-
-		$where_logic = null;
+		$filter_join = $filter_where = array();
 
 		foreach ( $filter as $filter_type => $filter_ids ) {
 			$filter_object = null;
-
 			try {
 				$filter_object = $this->_registry->get(
-					"Ai1ec_Filter_Event",
-					array( $filter_type, $filter_ids)
+					'model.filter.' . $filter_type,
+					$filter_ids
 				);
+				if ( ! ( $filter_object instanceof Ai1ec_Filter_Interface ) ) {
+					throw new Ai1ec_Bootstrap_Exception(
+						'Filter \'' . get_class( $filter_object ) .
+						'\' is not instance of Ai1ec_Filter_Interface'
+					);
+				}
 			} catch ( Ai1ec_Bootstrap_Exception $exception ) {
 				continue;
 			}
-
-			$filter['filter_join'][]  .= $filter_object->get_join();
-
-			$where = $filter_object->get_where( $where_logic );
-			$where_logic = $where['logic'];
-			$where_filter = $where['filter'];
-			$filter['filter_where'][] .= $where_filter;
-
+			$filter_join[]  = $filter_object->get_join();
+			$filter_where[] = $filter_object->get_where();
 		}
 
-		// Close the Where statement bracket if any Where statements were set
-		if ( $filter['filter_where'] != '' ) {
-			$filter['filter_where'] .= ' ) ';
+		$filter_join  = array_filter( $filter_join );
+		$filter_where = array_filter( $filter_where );
+		$filter_join  = join( ' ', $filter_join );
+		if ( count( $filter_where ) > 0 ) {
+			$operator     = $this->get_distinct_types_operator();
+			$filter_where = '( ' .
+				implode( ' ) ' . $operator . ' ( ', $filter_where ) .
+				' )';
+		} else {
+			$filter_where = '';
 		}
 
-		return $filter;
+		return $filter + compact( 'filter_where', 'filter_join' );
+	}
 
+	/**
+	 * Get operator for joining distinct filters in WHERE.
+	 *
+	 * @return string SQL operator.
+	 */
+	public function get_distinct_types_operator() {
+		static $operators = array( 'AND' => 1, 'OR' => 2 );
+		$default          = key( $operators );
+		$where_operator   = strtoupper( trim( (string)apply_filters(
+			'ai1ec_filter_distinct_types_logic',
+			$default
+		) ) );
+		if ( ! isset( $operators[$where_operator] ) ) {
+			$where_operator = $default;
+		}
+		return $where_operator;
 	}
 
 	/**

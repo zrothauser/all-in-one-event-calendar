@@ -129,7 +129,7 @@ class Ai1ec_Database_Applicator {
 	 * @return string Qualified table name
 	 */
 	protected function _table( $table ) {
-		$prefix = $this->_db->get_prefix() . 'ai1ec_';
+		$prefix = $this->_db->get_table_name( 'ai1ec_' );
 		if ( substr( $table, 0, strlen( $prefix ) ) !== $prefix ) {
 			$table = $prefix . $table;
 		}

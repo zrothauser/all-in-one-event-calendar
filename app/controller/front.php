@@ -425,12 +425,11 @@ class Ai1ec_Front_Controller {
 				);
 			}
 			unset( $schema );
-			$db = $this->_registry->get( 'dbi.dbi' );
-			$prefix = $db->get_prefix();
+			$dbi = $this->_registry->get( 'dbi.dbi' );
 			// =======================
 			// = Create table events =
 			// =======================
-			$table_name = $prefix . 'ai1ec_events';
+			$table_name = $dbi->get_table_name( 'ai1ec_events' );
 			$sql = "CREATE TABLE $table_name (
 					post_id bigint(20) NOT NULL,
 					start int(10) UNSIGNED NOT NULL,
@@ -473,7 +472,7 @@ class Ai1ec_Front_Controller {
 			// ==========================
 			// = Create table instances =
 			// ==========================
-			$table_name = $prefix . 'ai1ec_event_instances';
+			$table_name = $dbi->get_table_name( 'ai1ec_event_instances' );
 			$sql .= "CREATE TABLE $table_name (
 					id bigint(20) NOT NULL AUTO_INCREMENT,
 					post_id bigint(20) NOT NULL,
@@ -486,7 +485,7 @@ class Ai1ec_Front_Controller {
 			// ================================
 			// = Create table category colors =
 			// ================================
-			$table_name = $prefix . 'ai1ec_event_category_colors';
+			$table_name = $dbi->get_table_name( 'ai1ec_event_category_colors' );
 			$sql .= "CREATE TABLE $table_name (
 				term_id bigint(20) NOT NULL,
 				term_color varchar(255) NOT NULL,

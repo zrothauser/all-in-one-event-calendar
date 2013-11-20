@@ -53,12 +53,12 @@ class Ai1ec_Dbi {
 	 * If $query is null, this function returns the specified column from the previous SQL result.
 	 *
 	 * @param string|null $query Optional. SQL query. Defaults to previous query.
-	 * @param int $x Optional. Column to return. Indexed from 0.
+	 * @param int         $col   Optional. Column to return. Indexed from 0.
 	 *
 	 * @return array Database query result. Array indexed from 0 by SQL result row number.
 	 */
-	public function get_col( $query = null , $x = 0 ) {
-		return $this->_dbi->get_col( $query, $x );
+	public function get_col( $query = null , $col = 0 ) {
+		return $this->_dbi->get_col( $query, $col );
 	}
 
 	/**
@@ -105,7 +105,7 @@ class Ai1ec_Dbi {
 		}
 		$query = str_replace( "'%s'", '%s', $query ); // in case someone mistakenly already singlequoted it
 		$query = str_replace( '"%s"', '%s', $query ); // doublequote unquoting
-		$query = preg_replace( '|(?<!%)%f|' , '%F', $query ); // Force floats to be locale unaware
+		$query = preg_replace( '|(?<!%)%f|', '%F', $query ); // Force floats to be locale unaware
 		$query = preg_replace( '|(?<!%)%s|', "'%s'", $query ); // quote the strings, avoiding escaped strings like %%s
 		array_walk( $args, array( $this->_dbi, 'escape_by_ref' ) );
 		return @vsprintf( $query, $args );
@@ -128,29 +128,20 @@ class Ai1ec_Dbi {
 	}
 
 	/**
-	 * Get the id of the last inserted row.
-	 * 
-	 * @return number
-	 */
-	public function get_insert_id() {
-		return $this->_dbi->insert_id;
-	}
-
-	/**
 	 * Retrieve one variable from the database.
 	 *
 	 * Executes a SQL query and returns the value from the SQL result.
 	 * If the SQL result contains more than one column and/or more than one row, this function returns the value in the column and row specified.
 	 * If $query is null, this function returns the value in the specified column and row from the previous SQL result.
 	 *
-	 * @param string|null $query Optional. SQL query. Defaults to null, use the result from the previous query.
-	 * @param int $x Optional. Column of value to return. Indexed from 0.
-	 * @param int $y Optional. Row of value to return. Indexed from 0.
+	 * @param string|null $query SQL query. Defaults to null, use the result from the previous query.
+	 * @param int         $col   Column of value to return. Indexed from 0.
+	 * @param int         $row   Row of value to return. Indexed from 0.
 	 *
 	 * @return string|null Database query result (as string), or null on failure
 	 */
-	public function get_var( $query = null, $x = 0, $y = 0 ) {
-		return $this->_dbi->get_var( $query, $x, $y );
+	public function get_var( $query = null, $col = 0, $row = 0 ) {
+		return $this->_dbi->get_var( $query, $col, $row );
 	}
 
 	/**
@@ -161,12 +152,12 @@ class Ai1ec_Dbi {
 	 * @param string|null $query SQL query.
 	 * @param string $output Optional. one of ARRAY_A | ARRAY_N | OBJECT constants. Return an associative array (column => value, ...),
 	 * 	a numerically indexed array (0 => value, ...) or an object ( ->column = value ), respectively.
-	 * @param int $y Optional. Row to return. Indexed from 0.
+	 * @param int $row Optional. Row to return. Indexed from 0.
 	 *
 	 * @return mixed Database query result in format specified by $output or null on failure
 	 */
-	public function get_row( $query = null, $output = OBJECT, $y = 0 ) {
-		return $this->_dbi->get_row( $query, $output, $y );
+	public function get_row( $query = null, $output = OBJECT, $row = 0 ) {
+		return $this->_dbi->get_row( $query, $output, $row );
 	}
 
 	/**
@@ -209,26 +200,26 @@ class Ai1ec_Dbi {
 	}
 
 	/**
-	 * Returns the db prefix.
+	 * Return the id of last `insert` operation.
 	 *
-	 * @return string
+	 * @return int Returns integer optionally zero when no insert was performed.
 	 */
-	public function get_prefix() {
-		return $this->_dbi->prefix;
+	public function get_insert_id() {
+		return $this->_dbi->insert_id;
 	}
 
 	/**
-	* @param string $table table name
-	*
-	* @return string the full table name for the requested table
-	*/
-	public function get_table_name( $table ) {
+	 * Return the full name for the table.
+	 *
+	 * @param string $table Table name.
+	 *
+	 * @return string Full table name for the table requested.
+	 */
+	public function get_table_name( $table = '' ) {
 		if ( ! isset( $this->_dbi->{$table} ) ) {
 			return $this->_dbi->prefix . $table;
 		}
 		return $this->_dbi->{$table};
 	}
 
-
 }
-

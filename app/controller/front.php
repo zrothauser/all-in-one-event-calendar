@@ -56,80 +56,8 @@ class Ai1ec_Front_Controller {
 		$this->_registry->get( 'rewrite' )->check_rewrites();
 	}
 
-	/**
-	 * admin_menu function
-	 * Display the admin menu items using the add_menu_page WP function.
-	 *
-	 * @return void
-	 */
-	function admin_menu() {
-		$settings = $this->_registry->get( 'model.settings' );
-		// =======================
-		// = Calendar Feeds Page =
-		// =======================
-		$calendar_feeds = add_submenu_page(
-			AI1EC_ADMIN_BASE_URL,
-			__( 'Calendar Feeds', AI1EC_PLUGIN_NAME ),
-			__( 'Calendar Feeds', AI1EC_PLUGIN_NAME ),
-			'manage_ai1ec_feeds',
-			AI1EC_PLUGIN_NAME . '-feeds',
-			array( $this, 'view_feeds' )
-		);
-		// Add the 'ICS Import Settings' meta box.
-		add_meta_box(
-			'ai1ec-feeds',
-			_x( 'Feed Subscriptions', 'meta box', AI1EC_PLUGIN_NAME ),
-			array( $this, 'feeds_meta_box' ),
-			$calendar_feeds,
-			'left',
-			'default'
-		);
-		$settings->set( 'feeds_page', $calendar_feeds);
-	}
-
-	/**
-	 * Display this plugin's feeds page in the admin.
-	 *
-	 * @return void
-	 */
-	function view_feeds() {
-		$settings = $this->_registry->get( 'model.settings' );
-		$loader = $this->_registry->get( 'theme.loader' );
-		$args = array(
-			'title'             => __(
-				'All-in-One Event Calendar: Calendar Feeds',
-				AI1EC_PLUGIN_NAME
-			),
-			'settings_page'     => $settings->get( 'feeds_page' ),
-			'calendar_settings' => false,
-		);
 
 
-		$file = $loader->get_file( 'settings.php', $args, true );
-		$file->render();
-	}
-
-	/**
-	 * Renders the contents of the Calendar Feeds meta box.
-	 *
-	 * @return void
-	 */
-	function feeds_meta_box( $object, $box ) {
-		// register the calendar feeds page.
-		$calendar_feeds = $this->_registry->get( 'controller.calendar-feeds' );
-		$feeds = array( $this->_registry->get( 'calendar-feeds.ics' ) );
-		$feeds = apply_filters( 'ai1ec_calendar_feeds', $feeds );
-		foreach ( $feeds as $feed ) {
-			$calendar_feeds->add_plugin( $feed );
-		}
-		$loader = $this->_registry->get( 'theme.loader' );
-		$file = $loader->get_file( 
-			'box_feeds.php',
-			array( 'calendar_feeds' => $calendar_feeds ),
-			true
-		);
-		$file->render();
-	}
 
 	/**
 	 * Execute commands if our plugin must handle the request.
@@ -237,16 +165,6 @@ class Ai1ec_Front_Controller {
 	}
 
 	/**
-	 * Initialize some actions to show things are working.
-	 */
-	private function _initialize_actions() {
-		$custom_type = $this->_registry->get( 'post.custom-type' );
-		// Initialize router
-		add_action( 'init', array( $this, 'initialize_router' ), PHP_INT_MAX - 1 );
-		add_action( 'init', array( $custom_type, 'register' ) );
-		add_action( 'admin_menu', array( $this, 'admin_menu' ), 9 );
-	}
-	/**
 	 * Initialize the system.
 	 *
 	 * Perform all the inizialization needed for the system.
@@ -272,7 +190,6 @@ class Ai1ec_Front_Controller {
 			$this->_initialize_schema();
 			// Load the textdomain
 			$this->_load_textdomain();
-			$this->_initialize_actions();
 		} catch ( Ai1ec_Constants_Not_Set_Exception $e ) {
 			// This is blocking, throw it and disable the plugin
 			$exception = $e;
@@ -298,8 +215,35 @@ class Ai1ec_Front_Controller {
 	 * @return void
 	 */
 	private function _initialize_dispatcher() {
-		// provide initialization for the dispatcher class.
-		// maybe inject into the dispatcher the basic add_action/add_filters.
+		$dispatcher = $this->_registry->get( 'event.dispatcher' );
+		$dispatcher->register_action(
+			'init',
+			array( 'post.custom-type', 'register' )
+		);
+		// Initialize router
+		add_action( 'init', array( $this, 'initialize_router' ), PHP_INT_MAX - 1 );
+		if ( isset( $_GET[Ai1ec_Javascript_Controller::LOAD_JS_PARAMETER] ) ) {
+			$dispatcher->register_action(
+				'wp_loaded',
+				array( 'controller.javascript', 'render_js' )
+			);
+		}
+		if ( is_admin() ) {
+			$dispatcher->register_action(
+				'admin_enqueue_scripts',
+				array( 'css.admin', 'admin_enqueue_scripts' )
+			);
+			$dispatcher->register_action(
+				'admin_menu',
+				array( 'view.calendar-feeds', 'add_page' )
+			);
+			$dispatcher->register_action(
+				'init',
+				array( 'controller.javascript', 'load_admin_js' )
+			);
+
+		}
+
 	}
 
 	/**

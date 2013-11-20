@@ -93,13 +93,12 @@ class Ai1ec_Javascript_Controller {
 	 */
 	public function __construct( Ai1ec_Registry_Object $registry ) {
 		$this->_registry             = $registry;
-		$this->_settings             = $registry->get( 'settings' );
-		$this->_locale               = $registry->get( 'locale.helper' );
+		$this->_settings             = $registry->get( 'model.settings' );
+		$this->_locale               = $registry->get( 'p28n.wpml' );
 		$this->_aco                  = $registry->get( 'acl.aco' );
 		$this->_post_helper          = $registry->get( 'post.helper' );
 		$this->_template_link_helper = $registry->get( 'template.link.helper' );
 		// this will need to be modified
-		$this->_time_controller      = $registry->get( 'controller.time' );
 		$this->_scripts_helper       = $registry->get( 'script.helper' );
 	}
 
@@ -135,7 +134,7 @@ class Ai1ec_Javascript_Controller {
 	 * @return void
 	 */
 	public function render_js() {
-		$js_path = AI1EC_ADMIN_THEME_JS_PATH . DIRECTORY_SEPARATOR;
+		$js_path = AI1EC_ADMIN_THEME_JS_PATH;
 		$common_js = '';
 		$page_to_load = $_GET[self::LOAD_JS_PARAMETER];
 
@@ -177,7 +176,7 @@ class Ai1ec_Javascript_Controller {
 
 		$translation = $this->_get_frontend_translation_data();
 		$permalink = $this->_template_link_helper
-			->get_permalink( $this->_settings->calendar_page_id );
+			->get_permalink( $this->_settings->get( 'calendar_page_id' ) );
 
 		$translation['calendar_url'] = $permalink;
 
@@ -187,7 +186,7 @@ class Ai1ec_Javascript_Controller {
 		);
 		$config = $this->_create_require_js_module(
 				'ai1ec_config',
-				$this->get_translation_data()
+				$this->_get_translation_data()
 		);
 		// let extensions add their files.
 		$extension_files = array();
@@ -212,30 +211,35 @@ class Ai1ec_Javascript_Controller {
 	 */
 	public function load_admin_js() {
 		// Initialize dashboard view
-		if( is_admin() ) {
-			$script_to_load = FALSE;
-			// Start the scripts for the event category page
-			if( $this->_are_we_editing_event_categories() === TRUE ) {
-				// Load script required when editing categories
-				$script_to_load = 'event_category.js';
-			}
-			// Load the js needed when you edit an event / add a new event
-			if (
-				true === $this->_are_we_creating_a_new_event() ||
-				true === $this->_are_we_editing_an_event()
-			) {
-				// Load script for adding / modifying events
-				$script_to_load = 'add_new_event.js';
-			}
-			if( $this->_are_we_accessing_the_calendar_settings_page() === TRUE ) {
-				$script_to_load = 'admin_settings.js';
-			}
 
-			if( false === $script_to_load ) {
-				$script_to_load = self::LOAD_ONLY_BACKEND_SCRIPTS;
-			}
-			$this->_add_link_to_render_js( $script_to_load, true );
+		$script_to_load = FALSE;
+		if( $this->are_we_on_calendar_feeds_page() === TRUE ) {
+			// Load script for the importer plugins
+			$script_to_load = 'calendar_feeds.js';
 		}
+		// Start the scripts for the event category page
+		if( $this->_are_we_editing_event_categories() === TRUE ) {
+			// Load script required when editing categories
+			$script_to_load = 'event_category.js';
+		}
+		// Load the js needed when you edit an event / add a new event
+		if (
+			true === $this->_are_we_creating_a_new_event() ||
+			true === $this->_are_we_editing_an_event()
+		) {
+			// Load script for adding / modifying events
+			$script_to_load = 'add_new_event.js';
+		}
+		if( $this->_are_we_accessing_the_calendar_settings_page() === TRUE ) {
+			$script_to_load = 'admin_settings.js';
+		}
+
+		if( false === $script_to_load ) {
+			$script_to_load = self::LOAD_ONLY_BACKEND_SCRIPTS;
+		}
+
+		$this->_add_link_to_render_js( $script_to_load, true );
+		
 	}
 
 	/**
@@ -271,13 +275,13 @@ class Ai1ec_Javascript_Controller {
 	 * @return void
 	 */
 	private function _echo_javascript( $javascript ) {
-		$conditional_get = new Ai1ec_HTTP_ConditionalGet( array(
+		$conditional_get = new HTTP_ConditionalGet( array(
 			'contentHash' => md5( $javascript )
 			)
 		);
 		$conditional_get->sendHeaders();
 		if ( ! $conditional_get->cacheIsValid ) {
-			$http_encoder = new Ai1ec_HTTP_Encoder( array(
+			$http_encoder = new HTTP_Encoder( array(
 				'content' => $javascript,
 				'type' => 'text/javascript'
 			)
@@ -310,6 +314,28 @@ class Ai1ec_Javascript_Controller {
 	}
 
 	/**
+	 * Create the array needed for translation and passing other settings to JS.
+	 *
+	 * @return $data array the dynamic data array
+	 */
+	private function _get_translation_data() {
+	
+		$force_ssl_admin = force_ssl_admin();
+		if ( $force_ssl_admin && ! is_ssl() ) {
+			force_ssl_admin( false );
+		}
+		$ajax_url        = admin_url( 'admin-ajax.php' );
+		force_ssl_admin( $force_ssl_admin );
+	
+		$data = array(
+			// ICS feed error messages
+			'duplicate_feed_message'         => esc_html__( 'This feed is already being imported.', AI1EC_PLUGIN_NAME ),
+			'invalid_url_message'            => esc_html__( 'Please enter a valid iCalendar URL.', AI1EC_PLUGIN_NAME ),
+			'invalid_email_message'          => esc_html__( 'Please enter a valid e-mail address.', AI1EC_PLUGIN_NAME ),
+		);
+		return $data;
+	}
+	/**
 	 * Get the array with translated data for the frontend
 	 *
 	 * @return array
@@ -329,7 +355,7 @@ class Ai1ec_Javascript_Controller {
 			$data['title']    = $page->post_title;
 		}
 		$data['fonts'] = array();
-		$fonts_dir = AI1EC_DEFAULT_THEME_URL . '/font_css/';
+		$fonts_dir = AI1EC_DEFAULT_THEME_URL . 'font_css/';
 		$data['fonts'][] = array(
 			'name' => 'League Gothic',
 			'url'  => $fonts_dir . 'font-league-gothic.css',
@@ -347,7 +373,7 @@ class Ai1ec_Javascript_Controller {
 	 * @return string
 	 */
 	private function _create_require_js_config_object() {
-		$js_url    = AI1EC_ADMIN_THEME_JS_URL . '/';
+		$js_url    = AI1EC_ADMIN_THEME_JS_URL;
 		$version   = AI1EC_VERSION;
 		$namespace = self::REQUIRE_NAMESPACE;
 		$config    = <<<JSC
@@ -358,6 +384,24 @@ class Ai1ec_Javascript_Controller {
 		} );
 JSC;
 		return $config;
+	}
+
+	/**
+	 *	Check if we are in the calendar feeds page
+	 *
+	 * @return boolean TRUE if we are in the calendar feeds page FALSE otherwise
+	 */
+	private function are_we_on_calendar_feeds_page() {
+		$path_details = pathinfo( $_SERVER["SCRIPT_NAME"] );
+		$post_type = isset( $_GET['post_type'] ) ? $_GET['post_type'] : FALSE;
+		$page = isset( $_GET['page'] ) ? $_GET['page'] : FALSE;
+		if( $post_type === FALSE || $page === FALSE ) {
+			return FALSE;
+		}
+		$is_calendar_feed_page = $path_details['basename'] === 'edit.php' &&
+		                         $post_type                === 'ai1ec_event' &&
+		                         $page                     === 'all-in-one-event-calendar-feeds';
+		return $is_calendar_feed_page;
 	}
 
 	/**

@@ -11,7 +11,7 @@
  *
  * @return void Method does not return
  */
-function ai1ec_initiate_constants( $ai1ec_base_dir ) {
+function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 
 	// ===============
 	// = Plugin Path =
@@ -99,6 +99,16 @@ function ai1ec_initiate_constants( $ai1ec_base_dir ) {
 		);
 	}
 
+	// ===============
+	// = AI1EC_ADMIN_THEME_JS_PATH PATH  =
+	// ===============
+	if ( ! defined( 'AI1EC_ADMIN_THEME_JS_PATH' ) ) {
+		define(
+			'AI1EC_ADMIN_THEME_JS_PATH',
+			AI1EC_PATH . DIRECTORY_SEPARATOR . 'public' .
+				DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR
+		);
+	}
 	// ================
 	// = THEME FOLDER =
 	// ================
@@ -117,18 +127,46 @@ function ai1ec_initiate_constants( $ai1ec_base_dir ) {
 		);
 	}
 
+	// ==============
+	// = Plugin Url =
+	// ==============
+	if ( ! defined( 'AI1EC_URL' ) ) {
+		define( 'AI1EC_URL', $ai1ec_base_url );
+	}
+
+	// =================
+	// = Admin CSS URL =
+	// =================
+	if ( ! defined( 'AI1EC_ADMIN_THEME_CSS_URL' ) ) {
+		define( 'AI1EC_ADMIN_THEME_CSS_URL',  AI1EC_URL .'/public/admin/css/' );
+	}
+
+	// =================
+	// = Admin Js  URL =
+	// =================
+	if ( ! defined( 'AI1EC_ADMIN_THEME_JS_URL' ) ) {
+		define( 'AI1EC_ADMIN_THEME_JS_URL',  AI1EC_URL .'/public/js/' );
+	}
+
+	// =================
+	// = Admin Js  URL =
+	// =================
+	if ( ! defined( 'AI1EC_DEFAULT_THEME_URL' ) ) {
+		define( 'AI1EC_DEFAULT_THEME_URL',  AI1EC_URL .'/public/themes-ai1ec/vortex/' );
+	}
+
 	// =============
 	// = POST TYPE =
 	// =============
 	if ( ! defined( 'AI1EC_POST_TYPE' ) ) {
-		define( 'AI1EC_POST_TYPE',           'ai1ec_event' );
+		define( 'AI1EC_POST_TYPE', 'ai1ec_event' );
 	}
 
 	// ==============
 	// = SCRIPT URL =
 	// ==============
 	if ( ! defined( 'AI1EC_SCRIPT_URL' ) ) {
-		define( 'AI1EC_SCRIPT_URL',         get_option( 'home' ) . '/?plugin=' . AI1EC_PLUGIN_NAME );
+		define( 'AI1EC_SCRIPT_URL', get_option( 'home' ) . '/?plugin=' . AI1EC_PLUGIN_NAME );
 	}
 
 
@@ -148,7 +186,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir ) {
 		// =  (webcal:// protocol does not support https://)  =
 		// ====================================================
 		$webcal_url = str_replace( 'http://', 'webcal://', AI1EC_SCRIPT_URL );
-		define( 'AI1EC_EXPORT_URL',         $webcal_url . '&controller=ai1ec_exporter_controller&action=export_events&cb=' . rand() );
+		define( 'AI1EC_EXPORT_URL', $webcal_url . '&controller=ai1ec_exporter_controller&action=export_events&cb=' . rand() );
 	}
 
 	// =================

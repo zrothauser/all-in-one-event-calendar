@@ -12,7 +12,7 @@
 abstract class Ai1ec_Event_Callback_Abstract {
 
 	/**
-	 * @var Ai1ec_Object_Registry The Object registry.
+	 * @var Ai1ec_Registry_Object The Object registry.
 	 */
 	protected $_registry	  = null;
 
@@ -29,14 +29,14 @@ abstract class Ai1ec_Event_Callback_Abstract {
 	/**
 	 * Initiate callback objects.
 	 *
-	 * @param Ai1ec_Object_Registry $registry Registry object.
+	 * @param Ai1ec_Registry_Object $registry Registry object.
 	 * @param string				$path	  Registry method name defined in the class map.
 	 * @param string				$method	  Method invoked by the currect callback.
 	 *
 	 * @return void Constructor does not return.
 	 */
 	public function __construct(
-		Ai1ec_Object_Registry $registry,
+		Ai1ec_Registry_Object $registry,
 		$path,
 		$method
 	) {

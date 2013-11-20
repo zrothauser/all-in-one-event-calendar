@@ -9,7 +9,7 @@
  * @package	   AI1EC
  * @subpackage AI1EC.Event
  */
-class Ai1ec_Event_Dispatcher {
+class Ai1ec_Event_Dispatcher extends Ai1ec_Base {
 
 	/**
 	 * Register callback object.
@@ -37,8 +37,55 @@ class Ai1ec_Event_Dispatcher {
 			$priority,
 			$accepted_args
 		);
-
 		return $this;
 	}
 
+	protected function _register(
+		$hook,
+		array $method,
+		$priority      = 10,
+		$accepted_args = 1,
+		$type
+	) {
+		$action = $this->_registry->get(
+			'event.callback.' . $type,
+			$method[0],
+			$method[1]
+		);
+		$this->register(
+			$hook,
+			$action,
+			$priority,
+			$accepted_args
+		);
+	}
+	public function register_filter(
+		$hook,
+		array $method,
+		$priority      = 10,
+		$accepted_args = 1
+	) {
+		$this->_register(
+			$hook,
+			$method,
+			$priority,
+			$accepted_args,
+			'filter'
+		);
+	}
+
+	public function register_action(
+		$hook,
+		array $method,
+		$priority      = 10,
+		$accepted_args = 1
+	) {
+		$this->_register(
+			$hook,
+			$method,
+			$priority,
+			$accepted_args,
+			'action'
+		);
+	}
 }

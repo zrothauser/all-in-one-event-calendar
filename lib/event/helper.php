@@ -23,7 +23,7 @@ class Ai1ec_Event_Helper extends Ai1ec_Base {
 	 */
 	public function get_category_color( $term_id ) {
 		static $colors = NULL;
-		
+
 		if ( ! isset( $colors ) ) {
 			$colors = $this->_registry->get( 'cache.memory' );
 		}

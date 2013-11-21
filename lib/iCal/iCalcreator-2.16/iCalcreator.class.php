@@ -7971,7 +7971,7 @@ class iCalUtilityFunctions {
  * updates an array with dates based on a recur pattern
  *
  * if missing, UNTIL is set 1 year from startdate (emergency break)
- * 
+ *
  * Some additional data from the author
  * The $result array is an array([timestamp] => TRUE).
  *

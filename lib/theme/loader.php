@@ -55,7 +55,7 @@ class Ai1ec_Theme_Loader {
 	public function get_file( $filename, $args = array(), $is_admin = null ) {
 		if ( null === $is_admin ) {
 			$is_admin = is_admin();
-		} 
+		}
 		$dot_position = strrpos( $filename, '.' ) + 1;
 		$ext = substr( $filename, $dot_position );
 		$file = false;
@@ -111,7 +111,7 @@ class Ai1ec_Theme_Loader {
 	 * @return Twig_Environment
 	 */
 	private function get_twig_instance( array $paths ) {
-		
+
 		if ( ! isset( $this->_twig ) ) {
 			foreach ( $paths as &$path ) {
 				$path .= 'twig' . DIRECTORY_SEPARATOR;

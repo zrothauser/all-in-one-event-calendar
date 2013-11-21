@@ -52,7 +52,7 @@ class SG_iCal_Freq {
 		foreach( explode(';', $rule) AS $v) {
 		  if( strpos( $v, '=' ) === false )
 		    continue;
-		  
+
 			list($k, $v) = explode('=', $v);
 			$this->rules[ strtolower($k) ] = $v;
 		}

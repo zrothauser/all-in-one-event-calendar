@@ -56,7 +56,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				"SELECT * FROM $table_name WHERE feed_id = %d", $feed_id
 			)
 		);
-
+		$output = array();
 		if ( $feed ) {
 			// flush the feed
 			$this->flush_ics_feed( false, $feed->feed_url );
@@ -64,6 +64,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			$message = false;
 			// reimport the feed
 			$response = wp_remote_get( $feed->feed_url, array( 'sslverify' => false, 'timeout' => 120 ) );
+
+
 			if (
 				! is_wp_error( $response )             &&
 				isset( $response['response'] )         &&
@@ -83,7 +85,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 					$args['do_show_map'] = 0;
 					if (
-					isset( $feed->map_display_enabled ) &&
+						isset( $feed->map_display_enabled ) &&
 						$feed->map_display_enabled > 0
 					) {
 						$args['do_show_map'] = 1;
@@ -104,7 +106,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				);
 			}
 
-			$output = array();
+
 			if ( $count == 0 ) {
 				// If results are 0, it could be result of a bad URL or other error, send a specific message
 				$return_message = false === $message ?
@@ -354,11 +356,11 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		// Render the body of the tab
 		$settings = $this->_registry->get( 'model.settings' );
 
-		$factory = $this->_registry->get( 
+		$factory = $this->_registry->get(
 			'factory.html'
 		);
 		$select2_cats = $factory->create_select2_multiselect(
-			array( 
+			array(
 				'name' => 'ai1ec_feed_category[]',
 				'id' => 'ai1ec_feed_category',
 				'use_id' => true,
@@ -376,7 +378,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			)
 		);
 		$select2_tags = $factory->create_select2_input(
-			array( 'id' => 'ai1ec_feed_tags') 
+			array( 'id' => 'ai1ec_feed_tags')
 		);
 		$modal = $this->_registry->get(
 			'html.element.legacy.bootstrap.modal',
@@ -530,8 +532,6 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 		$res = $db->insert( $table_name, $entry, $format );
 		$feed_id = $db->get_insert_id();
-		fb($feed_id);
-		fb($res);
 
 		$categories = array();
 

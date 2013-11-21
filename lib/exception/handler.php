@@ -181,9 +181,9 @@ class Ai1ec_Exception_Handler {
 	 */
 	public function get_disabled_message() {
 		global $wpdb;
-		$row = $wpdb->get_row( 
-			$wpdb->prepare( 
-				"SELECT option_value FROM $wpdb->options WHERE option_name = %s LIMIT 1", 
+		$row = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT option_value FROM $wpdb->options WHERE option_name = %s LIMIT 1",
 				self::DB_DEACTIVATE_MESSAGE
 			)
 		);

@@ -1,7 +1,7 @@
 <?php
 
 class Ai1ec_Export_Controller extends Ai1ec_Base {
-	
+
 	/**
 	 * export_location function
 	 *
@@ -24,14 +24,15 @@ class Ai1ec_Export_Controller extends Ai1ec_Base {
 		) {
 			return;
 		}
-	
+
 		// For this remote call we need to remove cUrl, because the minimum timeout
 		// of cUrl is 1 second. This causes Facebook import to fail when importing
 		// many events (even from just a few friends). A timeout greater than 0.05s
 		// will be a great hindrance to performance.
 		add_filter( 'use_curl_transport', array( $this, 'remove_curl' ) );
+
 		// Send data using post to locations API.
-		@wp_remote_post( AI1EC_LOCATIONS_API, array(
+		wp_remote_post( AI1EC_LOCATIONS_API, array(
 			'body' => array(
 				'venue'       => $data['venue'],
 				'country'     => $data['country'],
@@ -46,6 +47,7 @@ class Ai1ec_Export_Controller extends Ai1ec_Base {
 			'timeout' => 0.01,
 			'blocking' => false,
 		) );
+
 		// Revert cUrl setting to what it was.
 		remove_filter( 'use_curl_transport', array( $this, 'remove_curl' ) );
 	}

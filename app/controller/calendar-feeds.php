@@ -45,7 +45,7 @@ class Ai1ec_Controller_Calendar_Feeds extends Ai1ec_Base {
 			$plugin->handle_feeds_page_post();
 		}
 	}
-	
+
 	/**
 	 * Render the tab header for each plugin
 	 *

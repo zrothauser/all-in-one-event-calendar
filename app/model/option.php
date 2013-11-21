@@ -40,7 +40,7 @@ class Ai1ec_Option extends Ai1ec_App {
 	 * @return bool Success.
 	 */
 	public function add( $name, $value, $autoload = false ) {
-		$autoload = $this->_parse_autoload( $input );
+		$autoload = $this->_parse_autoload( $autoload );
 		if ( ! add_option( $name, $value, '', $autoload ) ) {
 			return false;
 		}

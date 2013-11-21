@@ -196,7 +196,7 @@ class Ai1ec_Event_Search {
 		$exclude_post_id = NULL
 	) {
 		$db = $this->_registry->get( 'dbi.dbi' );
-	
+
 		$table_name = $db->get_table_name( 'ai1ec_events' );
 		$query = 'SELECT post_id FROM ' . $table_name .
 				' WHERE ical_feed_url = %s ' .
@@ -209,7 +209,7 @@ class Ai1ec_Event_Search {
 			$query .= 'AND post_id <> %d';
 			$args[] = $exclude_post_id;
 		}
-	
+
 		return $db->get_var(
 			$db->prepare( $query, $args )
 		);
@@ -378,7 +378,7 @@ class Ai1ec_Event_Search {
 	 **/
 	public function cache_event( Ai1ec_Event &$event ) {
 		$db = $this->_registry->get( 'dbi.dbi' );
-	
+
 		// Convert event timestamps to local for correct calculations of
 		// recurrence. Need to also remove PHP timezone offset for each date for
 		// SG_iCal to calculate correct recurring instances.
@@ -386,7 +386,7 @@ class Ai1ec_Event_Search {
 		- date( 'Z', $event->start );
 		$event->end   = $this->_registry->get( 'date.time', $event->end )->format()
 		- date( 'Z', $event->end );
-	
+
 		$evs = array();
 		$e	 = array(
 			'post_id' => $event->post_id,
@@ -394,15 +394,15 @@ class Ai1ec_Event_Search {
 			'end'     => $event->end,
 		);
 		$duration = $event->getDuration();
-	
+
 		// Timestamp of today date + 3 years (94608000 seconds)
 		$tif = time() + 94608000;
 		// Always cache initial instance
 		$evs[] = $e;
-	
+
 		$_start = $event->start;
 		$_end   = $event->end;
-	
+
 		if ( $event->recurrence_rules ) {
 			$start  = $event->start;
 			$wdate = $startdate = iCalUtilityFunctions::_timestamp2date( $_start, 6 );
@@ -411,10 +411,10 @@ class Ai1ec_Event_Search {
 			$recurrence_dates = array();
 			$recurrence_rule = $this->_registry->get( 'recurrence.rule' );
 			if ( $event->exception_rules ) {
-				
+
 				// creat an array for the rules
-				$exception_rules = $recurrence_rule->build_recurrence_rules_array( 
-					$event->exception_rules 
+				$exception_rules = $recurrence_rule->build_recurrence_rules_array(
+					$event->exception_rules
 				);
 				$exception_rules = iCalUtilityFunctions::_setRexrule( $exception_rules );
 				$result = array();
@@ -427,7 +427,7 @@ class Ai1ec_Event_Search {
 					$enddate
 				);
 			}
-			$recurrence_rules = $recurrence_rule->build_recurrence_rules_array( 
+			$recurrence_rules = $recurrence_rule->build_recurrence_rules_array(
 				$event->recurrence_rules
 			);
 			$recurrence_rules = iCalUtilityFunctions::_setRexrule( $recurrence_rules );
@@ -447,34 +447,34 @@ class Ai1ec_Event_Search {
 				$e['start'] = $date;
 				$e['end']   = $date + $duration;
 				$excluded   = false;
-	
-	
+
+
 				// Check if exception dates match this occurence
 				if( $event->exception_dates ) {
 					if( $this->date_match_exdates( $date, $event->exception_dates ) )
 						$excluded = true;
 				}
-	
+
 				// Add event only if it is not excluded
 				if ( $excluded == false ) {
 					$evs[] = $e;
 				}
 			}
 		}
-	
+
 		// Make entries unique (sometimes recurrence generator creates duplicates?)
 		$evs_unique = array();
 		foreach ( $evs as $ev ) {
 			$evs_unique[md5( serialize( $ev ) )] = $ev;
 		}
-	
+
 		foreach ( $evs_unique as $e ) {
 			// Find out if this event instance is already accounted for by an
 			// overriding 'RECURRENCE-ID' of the same iCalendar feed (by comparing the
 			// UID, start date, recurrence). If so, then do not create duplicate
 			// instance of event.
-			$start = $this->_registry->get( 
-				'date.time', 
+			$start = $this->_registry->get(
+				'date.time',
 				$e['start'],
 				$this->_registry->get( 'model.option' )
 				 ->get( 'gmt_offset' )
@@ -489,8 +489,8 @@ class Ai1ec_Event_Search {
 									$event->post_id
 								)
 								: NULL;
-	
-	
+
+
 			// If no other instance was found
 			if ( NULL === $matching_event_id ) {
 				$start = getdate( $e['start'] );
@@ -515,12 +515,12 @@ class Ai1ec_Event_Search {
 		$db = $this->_registry->get( 'dbi.dbi' );
 		$timezone = $this->_registry->get( 'model.option' )
 				->get( 'gmt_offset' );
-	
+
 		// Return the start/end times to GMT zone
-		$event['start'] = $this->_registry->get( 
-			'date.time', 
-			$event['start'], 
-			$timezone 
+		$event['start'] = $this->_registry->get(
+			'date.time',
+			$event['start'],
+			$timezone
 		)->format_to_gmt() + date( 'Z', $event['start'] );
 		// Return the start/end times to GMT zone
 		$event['end'] = $this->_registry->get(
@@ -528,7 +528,7 @@ class Ai1ec_Event_Search {
 			$event['end'],
 			$timezone
 		)->format_to_gmt() + date( 'Z', $event['end'] );
-	
+
 		$db->query(
 			$db->prepare(
 				'INSERT INTO ' . $db->get_table_name( 'ai1ec_event_instances' ) .

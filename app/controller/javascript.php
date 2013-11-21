@@ -239,7 +239,7 @@ class Ai1ec_Javascript_Controller {
 		}
 
 		$this->_add_link_to_render_js( $script_to_load, true );
-		
+
 	}
 
 	/**
@@ -319,14 +319,14 @@ class Ai1ec_Javascript_Controller {
 	 * @return $data array the dynamic data array
 	 */
 	private function _get_translation_data() {
-	
+
 		$force_ssl_admin = force_ssl_admin();
 		if ( $force_ssl_admin && ! is_ssl() ) {
 			force_ssl_admin( false );
 		}
 		$ajax_url        = admin_url( 'admin-ajax.php' );
 		force_ssl_admin( $force_ssl_admin );
-	
+
 		$data = array(
 			// ICS feed error messages
 			'duplicate_feed_message'         => esc_html__( 'This feed is already being imported.', AI1EC_PLUGIN_NAME ),

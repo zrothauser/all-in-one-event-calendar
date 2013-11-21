@@ -68,7 +68,7 @@ class SG_iCal_Parser {
 		if( !$is_utf8 ) {
 			$content = utf8_encode($content);
 		}
-		
+
 		return $content;
 	}
 

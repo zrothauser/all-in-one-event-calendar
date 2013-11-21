@@ -44,7 +44,7 @@ final class Ai1ec_Primitive_Int {
 		}
 		return $output;
 	}
-	
+
 	/**
 	 * convert_to_int_list method
 	 *
@@ -60,7 +60,7 @@ final class Ai1ec_Primitive_Int {
 			Ai1ec_Utility_Array::opt_explode( $separator, $input )
 		);
 	}
-	
+
 	/**
 	 * db_bool method
 	 *
@@ -73,7 +73,7 @@ final class Ai1ec_Primitive_Int {
 	static public function db_bool( $value ) {
 		return (int)(bool)intval( $value );
 	}
-	
+
 	/**
 	 * index method
 	 *
@@ -92,7 +92,7 @@ final class Ai1ec_Primitive_Int {
 		}
 		return $value;
 	}
-	
+
 	/**
 	 * casts all the values of the array to int
 	 *

@@ -44,7 +44,7 @@ class SG_iCal_VCalendar implements IteratorAggregate {
 			return null;
 		}
 	}
-	
+
 	public function getTimezone() {
 		if( isset($this->data['x-wr-timezone']) ) {
 			return $this->data['x-wr-timezone'];

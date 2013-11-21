@@ -1,6 +1,6 @@
 <?php
 class Ai1ec_Recurrence_Rule extends Ai1ec_Base {
-	
+
 	/**
 	 * Parse a `recurrence rule' into an array that can be used to calculate
 	 * recurrence instances.
@@ -37,7 +37,7 @@ class Ai1ec_Recurrence_Rule extends Ai1ec_Base {
 						}
 					}
 					break;
-	
+
 				case 'BYMONTHDAY':
 				case 'BYMONTH':
 					if ( false === strpos( $val, ',' ) ) {
@@ -46,7 +46,7 @@ class Ai1ec_Recurrence_Rule extends Ai1ec_Base {
 						$rules[$key] = explode( ',', $val );
 					}
 					break;
-	
+
 				default:
 					$rules[$key] = $val;
 			}

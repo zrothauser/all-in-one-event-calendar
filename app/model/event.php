@@ -1800,6 +1800,7 @@ HTML;
 
 		$table_name = $db->get_table_name( 'ai1ec_events' );
 		if ( $this->post_id ) {
+
 			if ( ! $update ) {
 				// =========================
 				// = Insert new event data =
@@ -1811,7 +1812,7 @@ HTML;
 					join( ', ', $format ) .
 					" )",
 					$columns ) );
-				$export_controller->export_location( $columns, false );
+				// $export_controller->export_location( $columns, false );
 			} else {
 				// ==============================
 				// = Update existing event data =
@@ -1819,7 +1820,7 @@ HTML;
 				$where         = array( 'post_id' => $this->post_id );
 				$where_escape  = array( '%d'                        );
 				$db->update( $table_name, $columns, $where, $format, $where_escape );
-				$export_controller->export_location( $columns, true );
+				// $export_controller->export_location( $columns, true );
 			}
 		} else {
 			// ===================
@@ -1866,7 +1867,7 @@ HTML;
 				join( ', ', $format ) .
 				" )",
 				$columns ) );
-			$export_controller->export_location( $columns, false );
+			// $export_controller->export_location( $columns, false );
 		}
 
 		// give other plugins / extensions the ability to do things

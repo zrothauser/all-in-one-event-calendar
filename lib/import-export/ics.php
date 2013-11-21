@@ -17,10 +17,11 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 	public function import( array $arguments ) {
 		$cal = $this->_registry->get('vcalendar');
 		if( $cal->parse( $arguments['source'] ) ) {
-			return $this->_add_vcalendar_events_to_db(
+			$count = $this->_add_vcalendar_events_to_db(
 				$cal,
 				$arguments
 			);
+			return $count;
 		}
 		throw new Ai1ec_Parse_Exception( 'The passed string is not a valid ics feed' );
 	}
@@ -458,32 +459,30 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 				// ======================================================
 				// = Event was found, let's store the new event details =
 				// ======================================================
-				
+
 				// Update the post
 				$post               = get_post( $matching_event_id );
-	
+
 				if ( null !== $post ) {
 					$post->post_title   = $event->post->post_title;
 					$post->post_content = $event->post->post_content;
 					wp_update_post( $post );
-					
+
 					// Update the event
 					$event->post_id = $matching_event_id;
 					$event->post    = $post;
 					$event->save( true );
-					
+
 					// Delete event's cache
 					$search_helper->delete_event_cache( $matching_event_id );
 				}
 
 			}
-
-
 			// Regenerate event's cache
 			$search_helper->cache_event( $event );
-
 			$count++;
 		}
+
 		return $count;
 	}
 
@@ -907,7 +906,7 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 	 * @return string
 	 **/
 	protected function _exception_dates_to( $exception_dates, $to_gmt = false ) {
-		trigger_error( "need to implement this", E_USER_ERROR );
+		// trigger_error( "need to implement this", E_USER_ERROR );
 	}
 
 	/**

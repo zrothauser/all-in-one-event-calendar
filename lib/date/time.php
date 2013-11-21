@@ -62,7 +62,7 @@ class Ai1ec_Date_Time {
 
 	/**
 	 * Commodity method to format to UTC
-	 * 
+	 *
 	 * @return string
 	 */
 	public function format_to_gmt() {

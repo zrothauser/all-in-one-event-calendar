@@ -58,7 +58,7 @@
 	</div>
 </div>
 
-<?php 
+<?php
 echo $feed_rows;
 echo $modal->render();
 ?>

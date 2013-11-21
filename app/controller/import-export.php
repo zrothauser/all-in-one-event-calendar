@@ -78,13 +78,13 @@ class Ai1ec_Import_Export_Controller {
 		}
 		throw $exception;
 	}
-	
+
 	/**
 	 * Export the events using the specified engine.
-	 * 
+	 *
 	 * @param string $engine
 	 * @param array $args
-	 * 
+	 *
 	 * @throws Ai1ec_Engine_Not_Set_Exception
 	 */
 	public function export_events( $engine, array $args ) {

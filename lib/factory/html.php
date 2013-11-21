@@ -2,7 +2,7 @@
 
 /**
  * A factory class for html elements
- * 
+ *
  * @author     Time.ly Network, Inc.
  * @since      2.0
  * @package    Ai1EC
@@ -134,9 +134,9 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 			$container_class = 'ai1ec-' . $args['type'] . '-filter';
 		}
 		$loader =$this->_registry->get( 'theme.loader' );
-		$select2 = $loader->get_file( 
+		$select2 = $loader->get_file(
 			'select2_multiselect.twig',
-			array( 
+			array(
 				'name'            => $args['name'],
 				'id'              => $args['id'],
 				'container_class' => $container_class,

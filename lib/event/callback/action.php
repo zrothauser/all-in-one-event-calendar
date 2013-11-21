@@ -5,7 +5,7 @@
  *
  * @author     Time.ly Network Inc.
  * @since      2.0
- * 
+ *
  * @instantiator new
  * @package      AI1EC
  * @subpackage   AI1EC.Event

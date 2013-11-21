@@ -457,9 +457,9 @@ class Ai1ec_Front_Controller {
 				term_color varchar(255) NOT NULL,
 				PRIMARY KEY  (term_id)
 				) CHARACTER SET utf8;";
-
+			$option = $this->_registry->get( 'model.option' );
 			if ( $this->_registry->get( 'database.helper' )->apply_delta( $sql ) ) {
-				$settings->set( 'ai1ec_db_version', AI1EC_DB_VERSION );
+				$option->set( 'ai1ec_db_version', AI1EC_DB_VERSION );
 			} else {
 				throw new Ai1ec_Database_Update_Exception();
 			}

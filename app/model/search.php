@@ -17,7 +17,7 @@ class Ai1ec_Event_Search {
 	private $_dbi = null;
 
 	/**
-	 * @var Ai1ec_Object_Registry instance
+	 * @var Ai1ec_Registry_Object instance
 	 */
 	private $_registry = null;
 
@@ -62,8 +62,8 @@ class Ai1ec_Event_Search {
 	 * @return array                list of matching event objects
 	 */
 	public function get_events_between(
-		Ai1ec_Time $start,
-		Ai1ec_Time $end,
+		Ai1ec_Date_Time $start,
+		Ai1ec_Date_Time $end,
 		array $filter = array(),
 		$spanning     = false
 	) {
@@ -170,6 +170,49 @@ class Ai1ec_Event_Search {
 		}
 
 		return $events;
+	}
+
+	/**
+	 * get_matching_event function
+	 *
+	 * Return event ID by iCalendar UID, feed url, start time and whether the
+	 * event has recurrence rules (to differentiate between an event with a UID
+	 * defining the recurrence pattern, and other events with with the same UID,
+	 * which are just RECURRENCE-IDs).
+	 *
+	 * @param int      $uid             iCalendar UID property
+	 * @param string   $feed            Feed URL
+	 * @param int      $start           Start timestamp (GMT)
+	 * @param bool     $has_recurrence  Whether the event has recurrence rules
+	 * @param int|null $exclude_post_id Do not match against this post ID
+	 *
+	 * @return object|null ID of matching event post, or NULL if no match
+	 **/
+	public function get_matching_event_id(
+		$uid,
+		$feed,
+		$start,
+		$has_recurrence  = false,
+		$exclude_post_id = NULL
+	) {
+		$db = $this->_registry->get( 'dbi.dbi' );
+	
+		$table_name = $db->get_table_name( 'ai1ec_events' );
+		$query = 'SELECT post_id FROM ' . $table_name .
+				' WHERE ical_feed_url = %s ' .
+				' AND ical_uid        = %s ' .
+				' AND start           = %d ' .
+				( $has_recurrence ? 'AND NOT ' : 'AND ' ) .
+				' ( recurrence_rules IS NULL OR recurrence_rules = \'\' )';
+		$args = array( $feed, $uid, $start );
+		if ( NULL !== $exclude_post_id ) {
+			$query .= 'AND post_id <> %d';
+			$args[] = $exclude_post_id;
+		}
+	
+		return $db->get_var(
+			$db->prepare( $query, $args )
+		);
 	}
 
 	/**
@@ -323,11 +366,220 @@ class Ai1ec_Event_Search {
 	}
 
 	/**
+	 * cache_event function
+	 *
+	 * Creates a new entry in the cache table for each date that the event appears
+	 * (and does not already have an explicit RECURRENCE-ID instance, given its
+	 * iCalendar UID).
+	 *
+	 * @param Ai1ec_Event $event Event to generate cache table for
+	 *
+	 * @return void
+	 **/
+	public function cache_event( Ai1ec_Event &$event ) {
+		$db = $this->_registry->get( 'dbi.dbi' );
+	
+		// Convert event timestamps to local for correct calculations of
+		// recurrence. Need to also remove PHP timezone offset for each date for
+		// SG_iCal to calculate correct recurring instances.
+		$event->start = $this->_registry->get( 'date.time', $event->start )->format()
+		- date( 'Z', $event->start );
+		$event->end   = $this->_registry->get( 'date.time', $event->end )->format()
+		- date( 'Z', $event->end );
+	
+		$evs = array();
+		$e	 = array(
+			'post_id' => $event->post_id,
+			'start'   => $event->start,
+			'end'     => $event->end,
+		);
+		$duration = $event->getDuration();
+	
+		// Timestamp of today date + 3 years (94608000 seconds)
+		$tif = time() + 94608000;
+		// Always cache initial instance
+		$evs[] = $e;
+	
+		$_start = $event->start;
+		$_end   = $event->end;
+	
+		if ( $event->recurrence_rules ) {
+			$start  = $event->start;
+			$wdate = $startdate = iCalUtilityFunctions::_timestamp2date( $_start, 6 );
+			$enddate = iCalUtilityFunctions::_timestamp2date( $tif, 6 );
+			$exclude_dates = array();
+			$recurrence_dates = array();
+			$recurrence_rule = $this->_registry->get( 'recurrence.rule' );
+			if ( $event->exception_rules ) {
+				
+				// creat an array for the rules
+				$exception_rules = $recurrence_rule->build_recurrence_rules_array( 
+					$event->exception_rules 
+				);
+				$exception_rules = iCalUtilityFunctions::_setRexrule( $exception_rules );
+				$result = array();
+				// The first array is the result and it is passed by reference
+				iCalUtilityFunctions::_recur2date(
+					$exclude_dates,
+					$exception_rules,
+					$wdate,
+					$startdate,
+					$enddate
+				);
+			}
+			$recurrence_rules = $recurrence_rule->build_recurrence_rules_array( 
+				$event->recurrence_rules
+			);
+			$recurrence_rules = iCalUtilityFunctions::_setRexrule( $recurrence_rules );
+			iCalUtilityFunctions::_recur2date(
+				$recurrence_dates,
+				$recurrence_rules,
+				$wdate,
+				$startdate,
+				$enddate
+			);
+			// Add the instances
+			foreach ( $recurrence_dates as $date => $bool ) {
+				// The arrays are in the form timestamp => true so an isset call is what we need
+				if( isset( $exclude_dates[$date] ) ) {
+					continue;
+				}
+				$e['start'] = $date;
+				$e['end']   = $date + $duration;
+				$excluded   = false;
+	
+	
+				// Check if exception dates match this occurence
+				if( $event->exception_dates ) {
+					if( $this->date_match_exdates( $date, $event->exception_dates ) )
+						$excluded = true;
+				}
+	
+				// Add event only if it is not excluded
+				if ( $excluded == false ) {
+					$evs[] = $e;
+				}
+			}
+		}
+	
+		// Make entries unique (sometimes recurrence generator creates duplicates?)
+		$evs_unique = array();
+		foreach ( $evs as $ev ) {
+			$evs_unique[md5( serialize( $ev ) )] = $ev;
+		}
+	
+		foreach ( $evs_unique as $e ) {
+			// Find out if this event instance is already accounted for by an
+			// overriding 'RECURRENCE-ID' of the same iCalendar feed (by comparing the
+			// UID, start date, recurrence). If so, then do not create duplicate
+			// instance of event.
+			$start = $this->registry->get( 
+				'date.time', 
+				$e['start'],
+				$this->_registry->get( 'model.option' )
+				 ->get( 'gmt_offset' )
+			)->format( 'U', 'UTC' ) - date( 'Z', $e['start'] );
+			$matching_event_id = $event->ical_uid ?
+								$this->get_matching_event_id(
+									$event->ical_uid,
+									$event->ical_feed_url,
+									$start,
+									false,	// Only search events that does not define
+									// recurrence (i.e. only search for RECURRENCE-ID events)
+									$event->post_id
+								)
+								: NULL;
+	
+	
+			// If no other instance was found
+			if ( NULL === $matching_event_id ) {
+				$start = getdate( $e['start'] );
+				$end   = getdate( $e['end'] );
+				$this->insert_event_in_cache_table( $e );
+			}
+		}
+		// perform actions like cleaning the cache
+		do_action( 'ai1ec_save_event_instance', $event->post_id );
+	}
+
+	/**
+	 * insert_event_in_cache_table function
+	 *
+	 * Inserts a new record in the cache table
+	 *
+	 * @param array $event Event array
+	 *
+	 * @return void
+	 **/
+	public function insert_event_in_cache_table( $event ) {
+		$db = $this->_registry->get( 'dbi.dbi' );
+		$timezone = $this->_registry->get( 'model.option' )
+				->get( 'gmt_offset' );
+	
+		// Return the start/end times to GMT zone
+		$event['start'] = $this->_registry->get( 
+			'date.time', 
+			$event['start'], 
+			$timezone 
+		)->format_to_gmt() + date( 'Z', $event['start'] );
+		// Return the start/end times to GMT zone
+		$event['end'] = $this->_registry->get(
+			'date.time',
+			$event['end'],
+			$timezone
+		)->format_to_gmt() + date( 'Z', $event['end'] );
+	
+		$db->query(
+			$db->prepare(
+				'INSERT INTO ' . $db->get_table_name( 'ai1ec_event_instances' ) .
+				'       ( post_id,  start,  end ) ' .
+				'VALUES ( %d,       %d,     %d  )',
+				$event
+			)
+		);
+		// perform actions like cleaning the cache
+		do_action( 'ai1ec_save_event_in_table', $event->post_id );
+	}
+
+	/**
+	 * delete_event_cache function
+	 *
+	 * Delete cache of event
+	 *
+	 * @param int $pid Event post ID
+	 *
+	 * @return void
+	 **/
+	public function delete_event_cache( $pid ) {
+		return $this->_clean_instance_table( $pid );
+	}
+
+	/**
 	 * Object constructors
 	 */
-	public function __construct( Ai1ec_Object_Registry $registry ){
-		$this->_dbi       = $registry->get( 'dbi' );
+	public function __construct( Ai1ec_Registry_Object $registry ){
+		$this->_dbi       = $registry->get( 'dbi.dbi' );
 		$this->_registry  = $registry;
 	}
 
+	/**
+	 * _clean_instance_table method
+	 *
+	 * Clean event instances table for given event
+	 *
+	 * @param int $post_id     ID of post to delete instances entries for
+	 * @param int $instance_id ID of instance to delete, if any [optional=NULL]
+	 *
+	 * @return bool Success
+	 */
+	protected function _clean_instance_table( $post_id, $instance_id = NULL ) {
+		$table_name = $this->_db->get_table_name( 'ai1ec_event_instances' );
+		$query      = 'DELETE FROM `' . $table_name .
+			'` WHERE `post_id` = %d';
+		if ( NULL !== $instance_id ) {
+			$query .= ' AND `id` = %d';
+		}
+		$statement  = $this->_db->prepare( $query, $post_id, $instance_id );
+		return $this->_db->query( $statement );
+	}
 }

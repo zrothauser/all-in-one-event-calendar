@@ -416,23 +416,23 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 				'tags'              => array_keys( $imported_tags ),
 				'feed'              => $feed,
 				'post'              => array(
-				'post_status'       => 'publish',
-					'comment_status'    => $comment_status,
-					'post_type'         => AI1EC_POST_TYPE,
-					'post_author'       => 1,
-					'post_title'        => $e->getProperty( 'summary' ),
-					'post_content'      => stripslashes(
-						str_replace(
-							'\n',
-							"\n",
-							$e->getProperty( 'description' )
-						)
-					),
+					'post_status'       => 'publish',
+						'comment_status'    => $comment_status,
+						'post_type'         => AI1EC_POST_TYPE,
+						'post_author'       => 1,
+						'post_title'        => $e->getProperty( 'summary' ),
+						'post_content'      => stripslashes(
+							str_replace(
+								'\n',
+								"\n",
+								$e->getProperty( 'description' )
+							)
+						),
 				),
 			);
 
 			// Create event object.
-			$event = new Ai1ec_Event( $data );
+			$event = $this->_registry->get( 'model.event', $data );
 
 			// TODO: when singular events change their times in an ICS feed from one
 			// import to another, the matching_event_id is null, which is wrong. We
@@ -458,21 +458,26 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 				// ======================================================
 				// = Event was found, let's store the new event details =
 				// ======================================================
-
+				
 				// Update the post
 				$post               = get_post( $matching_event_id );
-				$post->post_title   = $event->post->post_title;
-				$post->post_content = $event->post->post_content;
-				wp_update_post( $post );
+	
+				if ( null !== $post ) {
+					$post->post_title   = $event->post->post_title;
+					$post->post_content = $event->post->post_content;
+					wp_update_post( $post );
+					
+					// Update the event
+					$event->post_id = $matching_event_id;
+					$event->post    = $post;
+					$event->save( true );
+					
+					// Delete event's cache
+					$search_helper->delete_event_cache( $matching_event_id );
+				}
 
-				// Update the event
-				$event->post_id = $matching_event_id;
-				$event->post    = $post;
-				$event->save( true );
-
-				// Delete event's cache
-				$search_helper->delete_event_cache( $matching_event_id );
 			}
+
 
 			// Regenerate event's cache
 			$search_helper->cache_event( $event );

@@ -49,9 +49,24 @@ class Ai1ec_Date_Time {
 	 *
 	 * @throws Ai1ec_Date_Timezone_Exception If timezone is not recognized.
 	 */
-	public function format( $format = 'U', $timezone = 'UTC' ) {
+	public function format( $format = 'U', $timezone = null ) {
+		if ( null === $timezone ) {
+			// by defoult we format to local a UTC timezone.
+			// might be a good idea to add format_to_local or format_to_gmt
+			$timezone = $this->_registry->get( 'model.option' )
+				->get( 'gmt_offset' );
+		}
 		$this->change_timezone( $timezone );
 		return $this->_date_time->format( $format );
+	}
+
+	/**
+	 * Commodity method to format to UTC
+	 * 
+	 * @return string
+	 */
+	public function format_to_gmt() {
+		return $this->format( 'U', 'UTC' );
 	}
 
 	/**

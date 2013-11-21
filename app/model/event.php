@@ -5,11 +5,12 @@
  *
  * @author     Timely Network Inc
  * @since      2011.07.13
- *
+ * @instantiator new
  * @package    AllInOneEventCalendar
  * @subpackage AllInOneEventCalendar.App.Model
  */
-class Ai1ec_Event {
+class Ai1ec_Event extends Ai1ec_Base {
+
 	/**
 	 * post class variable
 	 *
@@ -409,7 +410,8 @@ class Ai1ec_Event {
 	 *
 	 * @return void
 	 **/
-	function __construct( $data = NULL, $instance = false ) {
+	function __construct( Ai1ec_Registry_Object $registry, $data = NULL, $instance = false ) {
+		parent::__construct( $registry );
 		global $wpdb;
 
 		if ( NULL === $data ) {
@@ -1457,6 +1459,7 @@ class Ai1ec_Event {
 		return $url;
 	}
 
+
 	/**
 	 * Returns avatar image for event's location, if any.
 	 *
@@ -1717,9 +1720,8 @@ HTML;
 	 * @return int            The post_id of the new or existing event.
 	 **/
 	function save( $update = false ) {
-		global $wpdb,
-		       $ai1ec_events_helper,
-		       $ai1ec_exporter_controller;
+		$db = $this->_registry->get( 'dbi.dbi' );
+		$export_controller = $this->_registry->get( 'controller.export' );
 
 		// ===========================
 		// = Insert events meta data =
@@ -1796,28 +1798,28 @@ HTML;
 			'%s',
 		);
 
-		$table_name = $wpdb->prefix . 'ai1ec_events';
+		$table_name = $db->get_table_name( 'ai1ec_events' );
 		if ( $this->post_id ) {
 			if ( ! $update ) {
 				// =========================
 				// = Insert new event data =
 				// =========================
-				$wpdb->query( $wpdb->prepare(
+				$db->query( $db->prepare(
 					"INSERT INTO $table_name ( " .
 					join( ', ', array_keys( $columns ) ) .
 					" ) VALUES ( " .
 					join( ', ', $format ) .
 					" )",
 					$columns ) );
-				$ai1ec_exporter_controller->export_location( $columns, false );
+				$export_controller->export_location( $columns, false );
 			} else {
 				// ==============================
 				// = Update existing event data =
 				// ==============================
 				$where         = array( 'post_id' => $this->post_id );
 				$where_escape  = array( '%d'                        );
-				$wpdb->update( $table_name, $columns, $where, $format, $where_escape );
-				$ai1ec_exporter_controller->export_location( $columns, true );
+				$db->update( $table_name, $columns, $where, $format, $where_escape );
+				$export_controller->export_location( $columns, true );
 			}
 		} else {
 			// ===================
@@ -1857,17 +1859,19 @@ HTML;
 			// =========================
 			// = Insert new event data =
 			// =========================
-			$wpdb->query( $wpdb->prepare(
+			$db->query( $db->prepare(
 				"INSERT INTO $table_name ( " .
 				join( ', ', array_keys( $columns ) ) .
 				" ) VALUES ( " .
 				join( ', ', $format ) .
 				" )",
 				$columns ) );
-			$ai1ec_exporter_controller->export_location( $columns, false );
+			$export_controller->export_location( $columns, false );
 		}
 
-		Ai1ec_Author::get_instance()->get_all( true );
+		// give other plugins / extensions the ability to do things
+		// when saving, like fetching authors which i removed as it's not core.
+		do_action( 'ai1ec_save_event' );
 		return $this->post_id;
 	}
 

@@ -100,7 +100,18 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'Option "' . $option . '" was not registered'
 			);
 		}
-		if ( (string)$value !== (string)$this->_options[$option]['value'] ) {
+		if ( 'array' === $this->_options[$option]['type'] ) {
+			if (
+				! is_array( $this->_options[$option]['value'] ) ||
+				! is_array( $value ) ||
+				$value != $this->_options[$option]['value']
+			) {
+				$this->_options[$option]['value'] = $value;
+				$this->_updated                   = true;
+			}
+		} else if (
+			(string)$value !== (string)$this->_options[$option]['value']
+		) {
 			$this->_options[$option]['value'] = $value;
 			$this->_updated                   = true;
 		}
@@ -200,6 +211,11 @@ class Ai1ec_Settings extends Ai1ec_App {
 		$this->register(
 			'feeds_page',
 			'string',
+			'none'
+		);
+		$this->register(
+			'plugins_options',
+			'array',
 			'none'
 		);
 

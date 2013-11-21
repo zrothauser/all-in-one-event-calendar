@@ -27,17 +27,6 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 	public function __construct( Ai1ec_Registry_Object $registry ) {
 		parent::__construct( $registry );
-
-		// Add AJAX Actions.
-		// Add iCalendar feed
-		add_action( 'wp_ajax_ai1ec_add_ics',    array( $this, 'add_ics_feed' ) );
-		// Delete iCalendar feed
-		add_action( 'wp_ajax_ai1ec_delete_ics', array( $this, 'delete_feeds_and_events' ) );
-		// Update iCalendar feed
-		add_action( 'wp_ajax_ai1ec_update_ics', array( $this, 'update_ics_feed' ) );
-		// Add iCalendar feed frontend handling
-		add_action( 'wp_ajax_nopriv_ai1ec_add_ics_frontend', array( $this, 'add_ics_feed_frontend' ) );
-		add_action( 'wp_ajax_ai1ec_add_ics_frontend', array( $this, 'add_ics_feed_frontend' ) );
 		// Cron job hook
 		add_action( 'ai1ec_cron'              , array( $this, 'cron' ) );
 		// Handle schema changes.
@@ -527,19 +516,21 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$entry = array( 'feed_url' => $_REQUEST['feed_url'],
 			'feed_category' => $feed_categories,
 			'feed_tags' => $_REQUEST['feed_tags'],
-			'comments_enabled' => Ai1ec_Number_Utility::db_bool(
+			'comments_enabled' => Ai1ec_Primitive_Number::db_bool(
 				$_REQUEST['comments_enabled'] ),
-			'map_display_enabled' => Ai1ec_Number_Utility::db_bool(
+			'map_display_enabled' => Ai1ec_Primitive_Number::db_bool(
 				$_REQUEST['map_display_enabled'] ),
-			'keep_tags_categories' => Ai1ec_Number_Utility::db_bool(
+			'keep_tags_categories' => Ai1ec_Primitive_Number::db_bool(
 				$_REQUEST['keep_tags_categories'] )
 		);
 
 		$format = array( '%s', '%s', '%s', '%d', '%d', '%d'
 		);
 
-		$db->insert( $table_name, $entry, $format );
+		$res = $db->insert( $table_name, $entry, $format );
 		$feed_id = $db->get_insert_id();
+		fb($feed_id);
+		fb($res);
 
 		$categories = array();
 
@@ -567,7 +558,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		// display added feed row
 		$file = $loader->get_file( 'feed_row.php', $args, true );
 
-		$output = $loader->get_content();
+		$output = $file->get_content();
 
 		$output = array(
 			"error" => 0,
@@ -659,7 +650,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		if ( $ics_id === FALSE ) {
 			$ics_id = (int) $_REQUEST['ics_id'];
 		}
-		$table_name = $db->prefix . 'ai1ec_event_feeds';
+		$table_name = $db->get_table_name( 'ai1ec_event_feeds' );
 		$db->query( $db->prepare( "DELETE FROM {$table_name} WHERE feed_id = %d", $ics_id ) );
 		$output = array(
 			'error'   => false,

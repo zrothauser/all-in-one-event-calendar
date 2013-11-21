@@ -241,6 +241,18 @@ class Ai1ec_Front_Controller {
 				'init',
 				array( 'controller.javascript', 'load_admin_js' )
 			);
+			$dispatcher->register_action(
+				'wp_ajax_ai1ec_add_ics',
+				array( 'calendar-feed.ics', 'add_ics_feed' )
+			);
+			$dispatcher->register_action(
+				'wp_ajax_ai1ec_delete_ics',
+				array( 'calendar-feed.ics', 'delete_feeds_and_events' )
+			);
+			$dispatcher->register_action(
+				'wp_ajax_ai1ec_update_ics',
+				array( 'calendar-feed.ics', 'update_ics_feed' )
+			);
 
 		}
 

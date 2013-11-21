@@ -17,7 +17,7 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 	public function import( array $arguments ) {
 		$cal = $this->_registry->get('vcalendar');
 		if( $cal->parse( $arguments['source'] ) ) {
-			return $this->add_vcalendar_events_to_db(
+			return $this->_add_vcalendar_events_to_db(
 				$cal,
 				$arguments
 			);
@@ -524,7 +524,8 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		}
 
 		if ( ! empty( $timezone ) ) {
-			$timezone = Ai1ec_Tzparser::instance()->get_name( $timezone );
+			$parser = $this->_registry->get( 'parser.timezone' );
+			$timezone = $parser->get_name( $timezone );
 			if ( false === $timezone ) {
 				return false;
 			}

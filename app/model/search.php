@@ -62,8 +62,8 @@ class Ai1ec_Event_Search {
 	 * @return array                list of matching event objects
 	 */
 	public function get_events_between(
-		Ai1ec_Date_Time $start,
-		Ai1ec_Date_Time $end,
+		Ai1ec_Time $start,
+		Ai1ec_Time $end,
 		array $filter = array(),
 		$spanning     = false
 	) {
@@ -214,24 +214,6 @@ class Ai1ec_Event_Search {
 		return $db->get_var(
 			$db->prepare( $query, $args )
 		);
-	}
-
-	/**
-	 * Get operator for joining distinct filters in WHERE.
-	 *
-	 * @return string SQL operator.
-	 */
-	public function get_distinct_types_operator() {
-		static $operators = array( 'AND' => 1, 'OR' => 2 );
-		$default          = key( $operators );
-		$where_operator   = strtoupper( trim( (string)apply_filters(
-			'ai1ec_filter_distinct_types_logic',
-			$default
-		) ) );
-		if ( ! isset( $operators[$where_operator] ) ) {
-			$where_operator = $default;
-		}
-		return $where_operator;
 	}
 
 	/**
@@ -436,7 +418,7 @@ class Ai1ec_Event_Search {
 
 		// Query the correct post status
 		if ( current_user_can( 'administrator' )
-		|| current_user_can( 'editor' )
+			|| current_user_can( 'editor' )
 		) {
 			// User has privilege of seeing all published and private
 
@@ -453,7 +435,8 @@ class Ai1ec_Event_Search {
 			// include post_status = published
 			//   OR
 			// post_status = private AND post_author = userID
-			$post_status_where = 'AND ( ' .
+			$post_status_where =
+				'AND ( ' .
 				'post_status = %s ' .
 				'OR ( post_status = %s AND post_author = %d ) ' .
 				') ';
@@ -527,32 +510,30 @@ class Ai1ec_Event_Search {
 
 		return $filter + compact( 'filter_where', 'filter_join' );
 	}
+
 	/**
-	 * _clean_instance_table method
+	 * Get operator for joining distinct filters in WHERE.
 	 *
-	 * Clean event instances table for given event
-	 *
-	 * @param int $post_id     ID of post to delete instances entries for
-	 * @param int $instance_id ID of instance to delete, if any [optional=NULL]
-	 *
-	 * @return bool Success
+	 * @return string SQL operator.
 	 */
-	protected function _clean_instance_table( $post_id, $instance_id = NULL ) {
-		$table_name = $this->_db->get_table_name( 'ai1ec_event_instances' );
-		$query      = 'DELETE FROM `' . $table_name .
-			'` WHERE `post_id` = %d';
-		if ( NULL !== $instance_id ) {
-			$query .= ' AND `id` = %d';
+	public function get_distinct_types_operator() {
+		static $operators = array( 'AND' => 1, 'OR' => 2 );
+		$default          = key( $operators );
+		$where_operator   = strtoupper( trim( (string)apply_filters(
+			'ai1ec_filter_distinct_types_logic',
+			$default
+		) ) );
+		if ( ! isset( $operators[$where_operator] ) ) {
+			$where_operator = $default;
 		}
-		$statement  = $this->_db->prepare( $query, $post_id, $instance_id );
-		return $this->_db->query( $statement );
+		return $where_operator;
 	}
 
 	/**
-	 * Object constructor.
+	 * Object constructors
 	 */
 	public function __construct( Ai1ec_Registry_Object $registry ){
-		$this->_dbi       = $registry->get( 'dbi.dbi' );
+		$this->_dbi       = $registry->get( 'dbi' );
 		$this->_registry  = $registry;
 	}
 

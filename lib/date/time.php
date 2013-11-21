@@ -54,7 +54,7 @@ class Ai1ec_Date_Time {
 			// by defoult we format to local a UTC timezone.
 			// might be a good idea to add format_to_local or format_to_gmt
 			$timezone = $this->_registry->get( 'model.option' )
-				->get( 'gmt_offset' );
+				->get( 'timezone_string' );
 		}
 		$this->change_timezone( $timezone );
 		return $this->_date_time->format( $format );

@@ -105,18 +105,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'Option "' . $option . '" was not registered'
 			);
 		}
-		if ( 'array' === $this->_options[$option]['type'] ) {
-			if (
-				! is_array( $this->_options[$option]['value'] ) ||
-				! is_array( $value ) ||
-				$value != $this->_options[$option]['value']
-			) {
-				$this->_options[$option]['value'] = $value;
-				$this->_updated                   = true;
-			}
-		} else if (
-			(string)$value !== (string)$this->_options[$option]['value']
-		) {
+		if ( (string)$value !== (string)$this->_options[$option]['value'] ) {
 			$this->_options[$option]['value'] = $value;
 			$this->_updated                   = true;
 		}
@@ -188,7 +177,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	/**
 	 * Check object state and update it's database representation as needed.
 	 *
-	 * @return void No return is expected.
+	 * @return void Destructor does not return.
 	 */
 	public function shutdown() {
 		if ( $this->_updated ) {
@@ -203,7 +192,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 */
 	protected function _initialize() {
 		$this->_set_standard_values();
-		$values  = $this->_sys->get( 'model.option' )
+		$values         = $this->_sys->get( 'model.option' )
 			->get( self::WP_OPTION_KEY, array() );
 		$this->_updated = false;
 		if ( empty( $values ) ) {

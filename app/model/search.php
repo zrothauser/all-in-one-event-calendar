@@ -473,7 +473,7 @@ class Ai1ec_Event_Search {
 			// overriding 'RECURRENCE-ID' of the same iCalendar feed (by comparing the
 			// UID, start date, recurrence). If so, then do not create duplicate
 			// instance of event.
-			$start = $this->registry->get( 
+			$start = $this->_registry->get( 
 				'date.time', 
 				$e['start'],
 				$this->_registry->get( 'model.option' )
@@ -538,7 +538,7 @@ class Ai1ec_Event_Search {
 			)
 		);
 		// perform actions like cleaning the cache
-		do_action( 'ai1ec_save_event_in_table', $event->post_id );
+		do_action( 'ai1ec_save_event_in_table', $event['post_id'] );
 	}
 
 	/**

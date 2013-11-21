@@ -31,7 +31,7 @@ class Ai1ec_View_Calendar_Feeds extends Ai1ec_Base {
 		);
 		$settings->set( 'feeds_page', $calendar_feeds);
 	}
-	
+
 	/**
 	 * Display this plugin's feeds page in the admin.
 	 *

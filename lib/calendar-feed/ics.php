@@ -104,28 +104,29 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				);
 			}
 
+			$output = array();
 			if ( $count == 0 ) {
 				// If results are 0, it could be result of a bad URL or other error, send a specific message
 				$return_message = false === $message ?
 					__( 'No events were found', AI1EC_PLUGIN_NAME ) :
 					$message;
-				$output = array(
+				$output['data'] = array(
 						'error'   => true,
 						'message' => $return_message
 				);
 			} else {
-				$output = array(
+				$output['data'] = array(
 						'error'       => false,
 						'message'     => sprintf( _n( 'Imported %s event', 'Imported %s events', $count, AI1EC_PLUGIN_NAME ), $count ),
 				);
 			}
 		} else {
-			$output = array(
+			$output['data'] = array(
 					'error' 	=> true,
 					'message'	=> __( 'Invalid ICS feed ID', AI1EC_PLUGIN_NAME )
 			);
 		}
-		$output['ics_id'] = $feed_id;
+		$output['data']['ics_id'] = $feed_id;
 		if( true === $ajax ) {
 			$render_json = $this->_registry->get(
 				'http.response.render.strategy.json'
@@ -292,7 +293,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					) CHARACTER SET utf8;";
 
 			if ( $this->_registry->get( 'database.helper' )->apply_delta( $sql ) ) {
-				$option->update( self::ICS_OPTION_DB_VERSION,
+				$option->set( self::ICS_OPTION_DB_VERSION,
 					self::ICS_DB_VERSION );
 			} else {
 				trigger_error( 'Failed to upgrade ICS DB schema',
@@ -516,11 +517,11 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$entry = array( 'feed_url' => $_REQUEST['feed_url'],
 			'feed_category' => $feed_categories,
 			'feed_tags' => $_REQUEST['feed_tags'],
-			'comments_enabled' => Ai1ec_Primitive_Number::db_bool(
+			'comments_enabled' => Ai1ec_Primitive_Int::db_bool(
 				$_REQUEST['comments_enabled'] ),
-			'map_display_enabled' => Ai1ec_Primitive_Number::db_bool(
+			'map_display_enabled' => Ai1ec_Primitive_Int::db_bool(
 				$_REQUEST['map_display_enabled'] ),
-			'keep_tags_categories' => Ai1ec_Primitive_Number::db_bool(
+			'keep_tags_categories' => Ai1ec_Primitive_Int::db_bool(
 				$_REQUEST['keep_tags_categories'] )
 		);
 

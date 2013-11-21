@@ -99,7 +99,7 @@ class Ai1ec_Date_Time {
 	 */
 	public function set_time( $time = 'now', $timezone = 'UTC' ) {
 		$date_time_tz = null;
-		if ( $time > 0 && ( $time >> 10 ) < 2 ) {
+		if ( $time > 0 && ( $time >> 10 ) > 2 ) {
 			$time = '@' . $time; // treat as UNIX timestamp
 		} else {
 			$date_time_tz = $this->_registry->get( 'date.timezone' )

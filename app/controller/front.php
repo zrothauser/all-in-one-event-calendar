@@ -220,7 +220,7 @@ class Ai1ec_Front_Controller {
 			'init',
 			array( 'post.custom-type', 'register' )
 		);
-		// Initialize router
+		// Initialize router. I use add_action as the dispatcher would just add overhead.
 		add_action( 'init', array( $this, 'initialize_router' ), PHP_INT_MAX - 1 );
 		if ( isset( $_GET[Ai1ec_Javascript_Controller::LOAD_JS_PARAMETER] ) ) {
 			$dispatcher->register_action(

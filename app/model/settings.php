@@ -100,7 +100,18 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'Option "' . $option . '" was not registered'
 			);
 		}
-		if ( (string)$value !== (string)$this->_options[$option]['value'] ) {
+		if ( 'array' === $this->_options[$option]['type'] ) {
+			if (
+				! is_array( $this->_options[$option]['value'] ) ||
+				! is_array( $value ) ||
+				$value != $this->_options[$option]['value']
+			) {
+				$this->_options[$option]['value'] = $value;
+				$this->_updated                   = true;
+			}
+		} else if (
+			(string)$value !== (string)$this->_options[$option]['value']
+		) {
 			$this->_options[$option]['value'] = $value;
 			$this->_updated                   = true;
 		}
@@ -172,7 +183,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 * @return void Return from this method is ignored.
 	 */
 	protected function _initialize() {
-		$values         = $this->_sys->get( 'model.option' )
+		$values  = $this->_sys->get( 'model.option' )
 			->get( self::WP_OPTION_KEY, array() );
 		$values = $this->parse_legacy( $values );
 		$this->_options = $values;
@@ -194,6 +205,16 @@ class Ai1ec_Settings extends Ai1ec_App {
 		$this->register(
 			'ai1ec_calendar_id',
 			'int',
+			'none'
+		);
+		$this->register(
+			'feeds_page',
+			'string',
+			'none'
+		);
+		$this->register(
+			'plugins_options',
+			'array',
 			'none'
 		);
 

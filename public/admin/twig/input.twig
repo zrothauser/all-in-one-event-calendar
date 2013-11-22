@@ -1,0 +1,15 @@
+{% macro input( id, name='', value = '', type = "text", attributes = [] ) %}
+	{% if id == '' %}
+		{% set id = name %}
+	{% endif %}
+	<input 
+		type="{{ type }}"
+		name="{{ name }}" 
+		value="{{ value|e }}"
+		id="{{ id }}"
+		size="{{ size }}"
+		{% for attribute, value in attributes %}
+			{{ attribute }}="{{ value }}"
+		{% endfor %}
+		/>
+{% endmacro %}

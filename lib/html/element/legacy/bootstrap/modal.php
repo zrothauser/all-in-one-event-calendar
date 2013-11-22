@@ -1,9 +1,12 @@
 <?php
+
 /**
- * This class is responsible of handling bootstrap modals
+ * A class that renders bootstrap modals.
  *
- *  @author Timely Network Inc
- *
+ * @author     Time.ly Network, Inc.
+ * @since      2.0
+ * @package    Ai1EC
+ * @subpackage Ai1EC.Html
  */
 class Ai1ec_Bootstrap_Modal extends Ai1ec_Html_Element {
 
@@ -30,9 +33,9 @@ class Ai1ec_Bootstrap_Modal extends Ai1ec_Html_Element {
 	/**
 	 * @param string $modal_text
 	 */
-	public function __construct( $modal_text ) {
+	public function __construct( Ai1ec_Registry_Object $registry, $modal_text ) {
 		$this->body_text = $modal_text;
-		parent::__construct();
+		parent::__construct( $registry );
 	}
 
 	/**

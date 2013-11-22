@@ -1,6 +1,0 @@
-{
-    "require": {
-        "twig/twig": "1.*",
-        "mrclay/minify": "~2.1.7"
-    }
-}

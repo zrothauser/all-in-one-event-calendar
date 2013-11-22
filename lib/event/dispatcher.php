@@ -9,7 +9,7 @@
  * @package	   AI1EC
  * @subpackage AI1EC.Event
  */
-class Ai1ec_Event_Dispatcher {
+class Ai1ec_Event_Dispatcher extends Ai1ec_Base {
 
 	/**
 	 * Register callback object.
@@ -37,8 +37,87 @@ class Ai1ec_Event_Dispatcher {
 			$priority,
 			$accepted_args
 		);
-
 		return $this;
 	}
 
+	/**
+	 * Creates a callback object and register it.
+	 *
+	 * @param string  $hook          Name of the event hook.
+	 * @param array   $method        Method to call.
+	 * @param integer $priority      Priorify of the event hook execution.
+	 * @param integer $accepted_args Number of accepted method parameters.
+	 * @param string  $type          The type to add.
+	 *
+	 * @return void
+	 */
+	protected function _register(
+		$hook,
+		array $method,
+		$priority      = 10,
+		$accepted_args = 1,
+		$type
+	) {
+		$action = $this->_registry->get(
+			'event.callback.' . $type,
+			$method[0],
+			$method[1]
+		);
+		$this->register(
+			$hook,
+			$action,
+			$priority,
+			$accepted_args
+		);
+	}
+
+	/**
+	 * Register a filter.
+	 * 
+	 * @param string  $hook          Name of the event hook.
+	 * @param array   $method        Method to call.
+	 * @param integer $priority      Priorify of the event hook execution.
+	 * @param integer $accepted_args Number of accepted method parameters.
+	 *
+	 * @return void
+	 */
+	public function register_filter(
+		$hook,
+		array $method,
+		$priority      = 10,
+		$accepted_args = 1
+	) {
+		$this->_register(
+			$hook,
+			$method,
+			$priority,
+			$accepted_args,
+			'filter'
+		);
+	}
+
+	/**
+	 * Register an action.
+	 *
+	 * @param string  $hook          Name of the event hook.
+	 * @param array   $method        Method to call.
+	 * @param integer $priority      Priorify of the event hook execution.
+	 * @param integer $accepted_args Number of accepted method parameters.
+	 *
+	 * @return void
+	 */
+	public function register_action(
+		$hook,
+		array $method,
+		$priority      = 10,
+		$accepted_args = 1
+	) {
+		$this->_register(
+			$hook,
+			$method,
+			$priority,
+			$accepted_args,
+			'action'
+		);
+	}
 }

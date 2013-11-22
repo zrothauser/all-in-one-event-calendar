@@ -333,10 +333,10 @@ class Ai1ec_Date_Timezone {
 	 * @return string Timezone name to use
 	 */
 	public function get_name( $zone ) {
-		if ( false === $this->tz_identifiers ) {
+		if ( false === $this->_identifiers ) {
 			return $zone; // anything should do, as zones are not supported
 		}
-		if ( ! isset( $this->tz_identifiers[$zone] ) ) {
+		if ( ! isset( $this->_identifiers[$zone] ) ) {
 			$valid_legacy = false;
 			try {
 				new DateTimeZone( $zone ); // throw away instantly
@@ -347,7 +347,7 @@ class Ai1ec_Date_Timezone {
 			if ( ! $valid_legacy || isset( $this->_invalid_legacy[$zone] ) ) {
 				return $this->guess_zone( $zone );
 			}
-			$this->tz_identifiers[$zone] = $zone;
+			$this->_identifiers[$zone] = $zone;
 			unset( $valid_legacy );
 		}
 		return $zone;
@@ -409,7 +409,7 @@ class Ai1ec_Date_Timezone {
 	 * @throws Ai1ec_Date_Timezone_Exception If an error occurs.
 	 */
 	public function get( $timezone ) {
-		$name = $this->canonical_name( $timezone );
+		$name = $this->get_name( $timezone );
 		if ( ! $name ) {
 			throw new Ai1ec_Date_Timezone_Exception(
 				'Unrecognized timezone \'' . $timezone . '\''
@@ -423,7 +423,9 @@ class Ai1ec_Date_Timezone {
 			} catch ( Exception $invalid_tz ) {
 				$exception = $invalid_tz;
 			}
-			throw new Ai1ec_Date_Timezone_Exception( $exception->getMessage() );
+			if ( null !== $exception ) {
+				throw new Ai1ec_Date_Timezone_Exception( $exception->getMessage() );
+			}
 			$this->_cache->set( $name, $zone );
 		}
 		return $zone;

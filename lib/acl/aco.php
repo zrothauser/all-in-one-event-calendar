@@ -49,6 +49,10 @@ class Ai1ec_Acl_Aco {
 		return post_password_required( $post );
 	}
 
+	public function are_we_editing_our_post() {
+		global $post;
+		return $post->post_type === AI1EC_POST_TYPE;
+	}
 	/**
 	 * Check if it's our own custom post type.
 	 *

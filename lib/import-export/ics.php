@@ -17,10 +17,11 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 	public function import( array $arguments ) {
 		$cal = $this->_registry->get('vcalendar');
 		if( $cal->parse( $arguments['source'] ) ) {
-			return $this->add_vcalendar_events_to_db(
+			$count = $this->_add_vcalendar_events_to_db(
 				$cal,
 				$arguments
 			);
+			return $count;
 		}
 		throw new Ai1ec_Parse_Exception( 'The passed string is not a valid ics feed' );
 	}
@@ -416,23 +417,23 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 				'tags'              => array_keys( $imported_tags ),
 				'feed'              => $feed,
 				'post'              => array(
-				'post_status'       => 'publish',
-					'comment_status'    => $comment_status,
-					'post_type'         => AI1EC_POST_TYPE,
-					'post_author'       => 1,
-					'post_title'        => $e->getProperty( 'summary' ),
-					'post_content'      => stripslashes(
-						str_replace(
-							'\n',
-							"\n",
-							$e->getProperty( 'description' )
-						)
-					),
+					'post_status'       => 'publish',
+						'comment_status'    => $comment_status,
+						'post_type'         => AI1EC_POST_TYPE,
+						'post_author'       => 1,
+						'post_title'        => $e->getProperty( 'summary' ),
+						'post_content'      => stripslashes(
+							str_replace(
+								'\n',
+								"\n",
+								$e->getProperty( 'description' )
+							)
+						),
 				),
 			);
 
 			// Create event object.
-			$event = new Ai1ec_Event( $data );
+			$event = $this->_registry->get( 'model.event', $data );
 
 			// TODO: when singular events change their times in an ICS feed from one
 			// import to another, the matching_event_id is null, which is wrong. We
@@ -461,24 +462,27 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 
 				// Update the post
 				$post               = get_post( $matching_event_id );
-				$post->post_title   = $event->post->post_title;
-				$post->post_content = $event->post->post_content;
-				wp_update_post( $post );
 
-				// Update the event
-				$event->post_id = $matching_event_id;
-				$event->post    = $post;
-				$event->save( true );
+				if ( null !== $post ) {
+					$post->post_title   = $event->post->post_title;
+					$post->post_content = $event->post->post_content;
+					wp_update_post( $post );
 
-				// Delete event's cache
-				$search_helper->delete_event_cache( $matching_event_id );
+					// Update the event
+					$event->post_id = $matching_event_id;
+					$event->post    = $post;
+					$event->save( true );
+
+					// Delete event's cache
+					$search_helper->delete_event_cache( $matching_event_id );
+				}
+
 			}
-
 			// Regenerate event's cache
 			$search_helper->cache_event( $event );
-
 			$count++;
 		}
+
 		return $count;
 	}
 
@@ -524,7 +528,8 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		}
 
 		if ( ! empty( $timezone ) ) {
-			$timezone = Ai1ec_Tzparser::instance()->get_name( $timezone );
+			$parser = $this->_registry->get( 'parser.timezone' );
+			$timezone = $parser->get_name( $timezone );
 			if ( false === $timezone ) {
 				return false;
 			}
@@ -901,7 +906,7 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 	 * @return string
 	 **/
 	protected function _exception_dates_to( $exception_dates, $to_gmt = false ) {
-		trigger_error( "need to implement this", E_USER_ERROR );
+		// trigger_error( "need to implement this", E_USER_ERROR );
 	}
 
 	/**

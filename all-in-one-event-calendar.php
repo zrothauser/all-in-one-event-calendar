@@ -9,6 +9,7 @@
  */
 
 $ai1ec_base_dir = dirname( __FILE__ );
+$ai1ec_base_url = plugins_url( '', __FILE__ );
 
 $ai1ec_config_path = $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'app' .
 		DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR;
@@ -26,7 +27,7 @@ if ( ! function_exists( 'ai1ec_initiate_constants' ) ) {
 			'No constant file was found.'
 	);
 }
-ai1ec_initiate_constants( $ai1ec_base_dir );
+ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url );
 
 require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'lib' .
 	DIRECTORY_SEPARATOR . 'exception' . DIRECTORY_SEPARATOR . 'ai1ec.php';
@@ -50,6 +51,7 @@ $soft_disable_message = $ai1ec_exception_handler->get_disabled_message();
 if ( false !== $soft_disable_message ) {
 	return $ai1ec_exception_handler->show_notices( $soft_disable_message );
 }
+
 $prev_er_handler = set_error_handler(
 	array( $ai1ec_exception_handler, 'handle_error' )
 );

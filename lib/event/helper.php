@@ -23,6 +23,7 @@ class Ai1ec_Event_Helper extends Ai1ec_Base {
 	 */
 	public function get_category_color( $term_id ) {
 		static $colors = NULL;
+
 		if ( ! isset( $colors ) ) {
 			$colors = $this->_registry->get( 'cache.memory' );
 		}
@@ -31,8 +32,8 @@ class Ai1ec_Event_Helper extends Ai1ec_Base {
 			$wpdb = $this->_registry->get( 'dbi.dbi' );
 
 			$color = (string)$wpdb->get_var(
-				'SELECT term_color FROM ' . $wpdb->prefix .
-				'ai1ec_event_category_colors' . ' WHERE term_id = ' .
+				'SELECT term_color FROM ' . $wpdb->get_table_name( 'ai1ec_event_category_colors' ) .
+				 ' WHERE term_id = ' .
 				$term_id
 			);
 			$colors->set( $term_id, $color );

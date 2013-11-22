@@ -33,6 +33,9 @@ class Ai1ec_Registry_Application implements Ai1ec_Registry {
 	 * @see Ai1ec_Registry::get()
 	 */
 	public function get( $key ) {
+		if ( ! isset ( $this->_environment[$key] ) ) {
+			return false;
+		}
 		return $this->_environment[$key];
 	}
 

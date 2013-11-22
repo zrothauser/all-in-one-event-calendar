@@ -40,6 +40,17 @@ class Ai1ec_Event_Dispatcher extends Ai1ec_Base {
 		return $this;
 	}
 
+	/**
+	 * Creates a callback object and register it.
+	 *
+	 * @param string  $hook          Name of the event hook.
+	 * @param array   $method        Method to call.
+	 * @param integer $priority      Priorify of the event hook execution.
+	 * @param integer $accepted_args Number of accepted method parameters.
+	 * @param string  $type          The type to add.
+	 *
+	 * @return void
+	 */
 	protected function _register(
 		$hook,
 		array $method,
@@ -59,6 +70,17 @@ class Ai1ec_Event_Dispatcher extends Ai1ec_Base {
 			$accepted_args
 		);
 	}
+
+	/**
+	 * Register a filter.
+	 * 
+	 * @param string  $hook          Name of the event hook.
+	 * @param array   $method        Method to call.
+	 * @param integer $priority      Priorify of the event hook execution.
+	 * @param integer $accepted_args Number of accepted method parameters.
+	 *
+	 * @return void
+	 */
 	public function register_filter(
 		$hook,
 		array $method,
@@ -74,6 +96,16 @@ class Ai1ec_Event_Dispatcher extends Ai1ec_Base {
 		);
 	}
 
+	/**
+	 * Register an action.
+	 *
+	 * @param string  $hook          Name of the event hook.
+	 * @param array   $method        Method to call.
+	 * @param integer $priority      Priorify of the event hook execution.
+	 * @param integer $accepted_args Number of accepted method parameters.
+	 *
+	 * @return void
+	 */
 	public function register_action(
 		$hook,
 		array $method,

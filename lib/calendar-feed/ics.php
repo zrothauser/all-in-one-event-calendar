@@ -27,8 +27,6 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 	public function __construct( Ai1ec_Registry_Object $registry ) {
 		parent::__construct( $registry );
-		// Cron job hook
-		add_action( 'ai1ec_cron'              , array( $this, 'cron' ) );
 		// Handle schema changes.
 		$this->_install_schema();
 		// Install the CRON

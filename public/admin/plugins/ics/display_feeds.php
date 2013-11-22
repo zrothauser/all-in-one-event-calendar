@@ -13,7 +13,7 @@
 <input type="submit" name="ai1ec_save_settings" id="ai1ec_save_settings"
 	class="btn btn-primary pull-right"
 	value="<?php _e( 'Update Settings', AI1EC_PLUGIN_NAME ); ?>" />
-<?php // echo $cron_freq ?>
+<?php echo $cron_freq ?>
 <br class="clear" />
 
 <div id="ai1ec-feeds-after" class="ai1ec-feed-container well well-small clearfix">

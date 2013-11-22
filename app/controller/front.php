@@ -253,6 +253,10 @@ class Ai1ec_Front_Controller {
 				'wp_ajax_ai1ec_update_ics',
 				array( 'calendar-feed.ics', 'update_ics_feed' )
 			);
+			$dispatcher->register_action(
+				'ai1ec_cron',
+				array( 'calendar-feed.ics', 'cron' )
+			);
 
 		}
 

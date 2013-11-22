@@ -13,9 +13,9 @@ class Ai1ec_View_Calendar_Feeds extends Ai1ec_Base {
 
 	/**
 	 * admin_menu function
-	 *
+	 * 
 	 * Adds page and metabox to the menu.
-	 *
+	 * 
 	 * @wp-hook admin_menu
 	 *
 	 * @return void
@@ -42,7 +42,7 @@ class Ai1ec_View_Calendar_Feeds extends Ai1ec_Base {
 			'left',
 			'default'
 		);
-		$settings->set( 'feeds_page', $calendar_feeds);
+		$settings->set( 'feeds_page', $calendar_feeds );
 	}
 
 	/**

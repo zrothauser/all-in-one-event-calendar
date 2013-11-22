@@ -579,7 +579,7 @@ class Ai1ec_Event_Search {
 	 * Object constructor.
 	 */
 	public function __construct( Ai1ec_Registry_Object $registry ){
-		$this->_dbi       = $registry->get( 'dbi' );
+		$this->_dbi       = $registry->get( 'dbi.dbi' );
 		$this->_registry  = $registry;
 	}
 

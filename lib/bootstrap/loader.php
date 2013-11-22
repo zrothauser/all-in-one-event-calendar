@@ -29,13 +29,6 @@ class Ai1ec_Loader {
 	protected $_paths          = null;
 
 	/**
-	 * @var array Map of paths to ignore
-	 */
-	protected $_ignore_paths   = array(
-		'/vendor' => true,
-	);
-
-	/**
 	 * @var bool Set to true when internal state is changed
 	 */
 	protected $_modified       = false;

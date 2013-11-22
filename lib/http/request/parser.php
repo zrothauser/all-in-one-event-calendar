@@ -29,6 +29,25 @@ class Ai1ec_Request_Parser extends Ai1ec_Abstract_Query {
 	}
 
 	/**
+	 * get_param function
+	 *
+	 * Tries to return the parameter from POST and GET
+	 * incase it is missing, default value is returned
+	 *
+	 * @param string $param Parameter to return
+	 * @param mixed $default Default value
+	 *
+	 * @return mixed
+	 **/
+	static public function get_param( $param, $default='' ) {
+		if( isset( $_POST[$param] ) )
+			return $_POST[$param];
+		if( isset( $_GET[$param] ) )
+			return $_GET[$param];
+		return $default;
+	}
+
+	/**
 	 * get_current_page method
 	 *
 	 * Get ID of currently open page

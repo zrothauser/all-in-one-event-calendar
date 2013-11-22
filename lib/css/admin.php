@@ -12,118 +12,96 @@
 class Ai1ec_Css_Admin  extends Ai1ec_Base {
 
 	/**
-	 * admin_enqueue_scripts function
-	 *
 	 * Enqueue any scripts and styles in the admin side, depending on context.
 	 *
-	 * @wp-hook admin_enqueue_scripts
+	 * @wp_hook admin_enqueue_scripts
 	 *
 	 * @return void
 	 */
 	public function admin_enqueue_scripts( $hook_suffix ) {
-		$aco = $this->_registry->get( 'acl.aco' );
-		$settings = $this->_registry->get( 'model.settings' );
-		switch( $hook_suffix ) {
-			// Event lists.
-			// Widgets screen.
-			case 'widgets.php':
-				// Styles.
-				wp_enqueue_style(
-					'ai1ec-widget',
-					AI1EC_ADMIN_THEME_CSS_URL . 'widget.css',
-					array(),
-					AI1EC_VERSION
-				);
-				break;
+		$settings    = $this->_registry->get( 'model.settings' );
+		$enqueuables = array(
+			'widgets.php'                     => array(
+				array( 'style',  'widget.css', ),
+			),
+			'edit-tags.php'                   => array(
+				array( 'style',  'colorpicker.css', ),
+			),
+			$settings->get( 'settings_page' ) => array(
+				array( 'script', 'common', ),
+				array( 'script', 'wp-lists', ),
+				array( 'script', 'postbox', ),
+				array( 'style',  'settings.css', ),
+				array( 'style',  'bootstrap.min.css', ),
+				array( 'style',  'bootstrap_datepicker.css', ),
+			),
+			$settings->get( 'feeds_page' )    => array(
+				array( 'script', 'common', ),
+				array( 'script', 'wp-lists', ),
+				array( 'script', 'postbox', ),
+				array( 'style',  'settings.css', ),
+				array( 'style',  'bootstrap.min.css', ),
+				array( 'style',  'plugins/plugins-common.css', ),
+			),
+		);
 
-				// Calendar settings & feeds screens.
-			case $settings->get( 'settings_page' ):
-				// Scripts.
-				wp_enqueue_script( 'common' );
-				wp_enqueue_script( 'wp-lists' );
-				wp_enqueue_script( 'postbox' );
-				// Styles.
-				wp_enqueue_style(
-					'ai1ec-settings',
-					AI1EC_ADMIN_THEME_CSS_URL . 'settings.css',
-					array(),
-					AI1EC_VERSION
-				);
-				wp_enqueue_style(
-					'timely-bootstrap',
-					AI1EC_ADMIN_THEME_CSS_URL . 'bootstrap.min.css',
-					array(),
-					AI1EC_VERSION
-				);
-				wp_enqueue_style(
-					'timely-boootstrap-datepicker',
-					AI1EC_ADMIN_THEME_CSS_URL . 'bootstrap_datepicker.css',
-					array(),
-					AI1EC_VERSION
-				 );
-				break;
-
-			case $settings->get( 'feeds_page' ):
-				// Scripts.
-				wp_enqueue_script( 'common' );
-				wp_enqueue_script( 'wp-lists' );
-				wp_enqueue_script( 'postbox' );
-				// Styles.
-				wp_enqueue_style(
-					'ai1ec-settings',
-					AI1EC_ADMIN_THEME_CSS_URL . 'settings.css',
-					array(),
-					AI1EC_VERSION
-				);
-				wp_enqueue_style(
-					'timely-bootstrap',
-					AI1EC_ADMIN_THEME_CSS_URL . 'bootstrap.min.css',
-					array(),
-					AI1EC_VERSION
-				);
-				// include plugins style
-				wp_enqueue_style(
-					'ai1ec_plugins_common',
-					AI1EC_ADMIN_THEME_CSS_URL . 'plugins/plugins-common.css',
-					array(),
-					AI1EC_VERSION
-				);
-				break;
-
-			case "post.php":
-			case "post-new.php":
-				if( $aco->are_we_editing_our_post() ) {
-					wp_enqueue_style(
-						'timely-bootstrap',
-						AI1EC_ADMIN_THEME_CSS_URL . 'bootstrap.min.css',
-						array(),
-						AI1EC_VERSION
-					);
-					// include add new event style
-					wp_enqueue_style(
-						'ai1ec_add_new_event',
-						AI1EC_ADMIN_THEME_CSS_URL . 'add_new_event.css',
-						array(),
-						AI1EC_VERSION
-					);
-					// include datepicker style
-					wp_enqueue_style(
-						'ai1ec_datepicker',
-						AI1EC_ADMIN_THEME_CSS_URL . 'datepicker.css',
-						array(),
-						AI1EC_VERSION
-					);
-				}
-				break;
-
-			case "edit-tags.php":
-				wp_enqueue_style(
-					'timely-bootstrap-colorpicker',
-					AI1EC_ADMIN_THEME_CSS_URL . 'colorpicker.css',
-					array(),
-					AI1EC_VERSION
-				);
-				break;
+		if ( isset( $enqueuables[$hook_suffix] ) ) {
+			return $this->process_enqueue( $enqueuables[$hook_suffix] );
 		}
+
+		$aco = $this->_registry->get( 'acl.aco' );
+		$post_pages = array( 'post.php' => true, 'post-new.php' => true );
+		if (
+			! isset( $post_pages[$hook_suffix] ) ||
+			! $aco->are_we_editing_our_post()
+		) {
+			return null;
+		}
+		return $this->process_enqueue(
+			array(
+				array( 'style', 'bootstrap.min.css', ),
+				array( 'style', 'add_new_event.css', ),
+				array( 'style', 'datepicker.css', ),
+			)
+		);
 	}
+
+	/**
+	 * Enqueue scripts and styles.
+	 *
+	 * @param array $item_list List of scripts/styles to enqueue.
+	 *
+	 * @return bool Always true
+	 */
+	public function process_enqueue( array $item_list ) {
+		foreach ( $item_list as $item ) {
+			if ( 'script' === $item[0] ) {
+				wp_enqueue_script( $item[1] );
+			} else {
+				wp_enqueue_style(
+					$this->gen_style_hook( $item[1] ),
+					AI1EC_ADMIN_THEME_CSS_URL . $item[1],
+					array(),
+					AI1EC_VERSION
+				);
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Generate a style hook for use with WordPress.
+	 *
+	 * @param string $script Name of enqueable script.
+	 *
+	 * @return string Hook to use with WordPress.
+	 */
+	public function gen_style_hook( $script ) {
+		return 'ai1ec_' . preg_replace(
+			'|[a-z]+|',
+			'_',
+			basename( $script, '.css' )
+		);
+	}
+
 }

@@ -209,6 +209,16 @@ class Ai1ec_Front_Controller {
 	}
 
 	/**
+	 * Adds actions handled by the front controller.
+	 * 
+	 */
+	private function _add_front_controller_actions() {
+		// Initialize router. I use add_action as the dispatcher would just add overhead.
+		add_action( 'init', array( $this, 'initialize_router' ), PHP_INT_MAX - 1 );
+		// Route the request.
+		add_action( 'template_redirect', array( $this, 'route_request' ) );
+	}
+	/**
 	 * Initialize the dispatcher.
 	 *
 	 * Complete this when writing the dispatcher.
@@ -221,10 +231,7 @@ class Ai1ec_Front_Controller {
 			'init',
 			array( 'post.custom-type', 'register' )
 		);
-		// Initialize router. I use add_action as the dispatcher would just add overhead.
-		add_action( 'init', array( $this, 'initialize_router' ), PHP_INT_MAX - 1 );
-		// Initialize router.
-		add_action( 'template_redirect', array( $this, 'route_request' ) );
+		$this->_add_front_controller_actions();
 		if ( isset( $_GET[Ai1ec_Javascript_Controller::LOAD_JS_PARAMETER] ) ) {
 			$dispatcher->register_action(
 				'wp_loaded',

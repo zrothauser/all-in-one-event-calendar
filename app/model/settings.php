@@ -169,9 +169,9 @@ class Ai1ec_Settings extends Ai1ec_App {
 	/**
 	 * Check object state and update it's database representation as needed.
 	 *
-	 * @return void Destructor does not return.
+	 * @return void No return is expected.
 	 */
-	public function __destruct() {
+	public function shutdown() {
 		if ( $this->_updated ) {
 			$this->persist();
 		}
@@ -189,6 +189,9 @@ class Ai1ec_Settings extends Ai1ec_App {
 		$this->_options = $values;
 		$this->_register_defaults();
 		$this->_updated = false;
+		$this->_sys->get( 'controller.shutdown' )->register(
+			array( $this, 'shutdown' )
+		);
 	}
 
 	/**

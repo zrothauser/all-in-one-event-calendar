@@ -29,13 +29,6 @@ class Ai1ec_Loader {
 	protected $_paths          = null;
 
 	/**
-	 * @var array Map of paths to ignore
-	 */
-	protected $_ignore_paths   = array(
-		'/vendor' => true,
-	);
-
-	/**
 	 * @var bool Set to true when internal state is changed
 	 */
 	protected $_modified       = false;
@@ -218,9 +211,7 @@ class Ai1ec_Loader {
 			}
 			$local_path = $path . DIRECTORY_SEPARATOR . $entry;
 			$base_path  = substr( $local_path, strlen( $this->_base_path ) );
-			if ( isset( $this->_ignore_paths[$base_path] ) ) {
-				continue;
-			}
+
 			if ( is_dir( $local_path ) ) {
 				$class_list += $this->_locate_all_files( $local_path );
 			} else {

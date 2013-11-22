@@ -116,7 +116,6 @@ class Ai1ec_Theme_Loader {
 			foreach ( $paths as &$path ) {
 				$path .= 'twig' . DIRECTORY_SEPARATOR;
 			}
-			require_once AI1EC_PATH . '/vendor/autoload.php';
 			Twig_Autoloader::register();
 			// Set up Twig environment.
 			$loader = new Twig_Loader_Filesystem( $paths );

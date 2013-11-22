@@ -67,6 +67,7 @@ class Ai1ec_Front_Controller {
 	 * @return void
 	 */
 	public function route_request() {
+		fb($this->_request);
 		$this->_process_request();
 		// get the resolver
 		$resolver = $this->_registry->get(
@@ -222,6 +223,8 @@ class Ai1ec_Front_Controller {
 		);
 		// Initialize router. I use add_action as the dispatcher would just add overhead.
 		add_action( 'init', array( $this, 'initialize_router' ), PHP_INT_MAX - 1 );
+		// Initialize router.
+		add_action( 'template_redirect', array( $this, 'route_request' ) );
 		if ( isset( $_GET[Ai1ec_Javascript_Controller::LOAD_JS_PARAMETER] ) ) {
 			$dispatcher->register_action(
 				'wp_loaded',
@@ -271,14 +274,14 @@ class Ai1ec_Front_Controller {
 	 * @return void
 	 **/
 	private function _process_request() {
-		$settings      = $this->_registry->get( 'settings' );
-		$this->request = $this->_registry->get( 'request_parser' );
-		$aco           = $this->_registry->get( 'acl.aco' );
-		$page_id       = $settings->get( 'calendar_page_id' );
+		$settings       = $this->_registry->get( 'model.settings' );
+		$this->_request = $this->_registry->get( 'http.request.parser' );
+		$aco            = $this->_registry->get( 'acl.aco' );
+		$page_id        = $settings->get( 'calendar_page_id' );
 		if (
 			! $aco->is_admin() &&
 			$page_id &&
-			$aco->is_page( $page_id )
+			is_page( $page_id )
 		) {
 			foreach ( array( 'cat', 'tag' ) as $name ) {
 				$implosion = $this->_add_defaults( $name );

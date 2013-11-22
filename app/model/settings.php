@@ -173,7 +173,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 */
 	public function shutdown() {
 		if ( $this->_updated ) {
-			$this->persist();
+			// $this->persist();
 		}
 	}
 

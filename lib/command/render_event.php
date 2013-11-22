@@ -8,7 +8,7 @@
  * @package    AI1EC
  * @subpackage AI1EC.Command
  */
-class Ai1ec_Command_Render_Event extends Ai1ec_Command {
+class Ai1ec_Command_Render_Event extends Ai1ec_Command_Render_Calendar {
 
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Command::is_this_to_execute()

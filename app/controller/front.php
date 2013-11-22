@@ -67,7 +67,6 @@ class Ai1ec_Front_Controller {
 	 * @return void
 	 */
 	public function route_request() {
-		fb($this->_request);
 		$this->_process_request();
 		// get the resolver
 		$resolver = $this->_registry->get(

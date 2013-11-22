@@ -464,25 +464,25 @@ class Ai1ec_Event_Search {
 	 */
 	protected function _get_post_status_sql() {
 		global $current_user;
-	
+
 		$args = array();
-	
+
 		// Query the correct post status
 		if ( current_user_can( 'administrator' )
 		|| current_user_can( 'editor' )
 		) {
 			// User has privilege of seeing all published and private
-	
+
 			$post_status_where = 'AND post_status IN ( %s, %s ) ';
 			$args[]            = 'publish';
 			$args[]            = 'private';
 		} elseif ( is_user_logged_in() ) {
 			// User has privilege of seeing all published and only their own
 			// private posts.
-	
+
 			// get user info
 			get_currentuserinfo();
-	
+
 			// include post_status = published
 			//   OR
 			// post_status = private AND post_author = userID
@@ -491,7 +491,7 @@ class Ai1ec_Event_Search {
 			'post_status = %s ' .
 			'OR ( post_status = %s AND post_author = %d ) ' .
 			') ';
-	
+
 			$args[] = 'publish';
 			$args[] = 'private';
 			$args[] = $current_user->ID;
@@ -500,7 +500,7 @@ class Ai1ec_Event_Search {
 			$post_status_where = 'AND post_status = %s ';
 			$args[]            = 'publish';
 		}
-	
+
 		return array(
 			'post_status_where' => $post_status_where,
 			'args'              => $args
@@ -526,7 +526,7 @@ class Ai1ec_Event_Search {
 	 */
 	protected function _get_filter_sql( $filter ) {
 		$filter_join = $filter_where = array();
-	
+
 		foreach ( $filter as $filter_type => $filter_ids ) {
 			$filter_object = null;
 			try {
@@ -546,7 +546,7 @@ class Ai1ec_Event_Search {
 			$filter_join[]  = $filter_object->get_join();
 			$filter_where[] = $filter_object->get_where();
 		}
-	
+
 		$filter_join  = array_filter( $filter_join );
 		$filter_where = array_filter( $filter_where );
 		$filter_join  = join( ' ', $filter_join );
@@ -558,7 +558,7 @@ class Ai1ec_Event_Search {
 		} else {
 			$filter_where = '';
 		}
-	
+
 		return $filter + compact( 'filter_where', 'filter_join' );
 	}
 	/**

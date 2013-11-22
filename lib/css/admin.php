@@ -15,7 +15,7 @@ class Ai1ec_Css_Admin  extends Ai1ec_Base {
 	 * admin_enqueue_scripts function
 	 *
 	 * Enqueue any scripts and styles in the admin side, depending on context.
-	 * 
+	 *
 	 * @wp-hook admin_enqueue_scripts
 	 *
 	 * @return void

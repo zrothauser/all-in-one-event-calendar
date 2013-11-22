@@ -108,7 +108,7 @@ abstract class Ai1ec_Html_Element implements Ai1ec_Renderable {
 	public function add_class( $class ) {
 		$this->classes[] = $class;
 	}
-	
+
 	/**
 	 * Creates the markup to be used to create classes
 	 *

@@ -37,10 +37,10 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 
 	/**
 	 * Creates an instance of the class which generates href for links.
-	 * 
+	 *
 	 * @param array $args
 	 * @param string $type
-	 * 
+	 *
 	 * @return Ai1ec_Href_Helper
 	 */
 	public function create_href_helper_instance( array $args, $type = 'normal' ) {
@@ -64,11 +64,11 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 
 	/**
 	 * Creates a select2 Multiselect.
-	 * 
+	 *
 	 * @param array $args      The arguments for the select.
 	 * @param array $options   The options of the select
 	 * @param array $view_args The args used in the front end.
-	 * 
+	 *
 	 * @return Ai1ec_File_Twig
 	 */
 	public function create_select2_multiselect(
@@ -163,9 +163,9 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 
 	/**
 	 * Creates a select2 input.
-	 * 
+	 *
 	 * @param array $args The arguments of the input.
-	 * 
+	 *
 	 * @return Ai1ec_File_Twig
 	 */
 	public function create_select2_input( array $args ) {

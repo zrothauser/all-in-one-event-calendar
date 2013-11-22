@@ -461,9 +461,11 @@ JSC;
 			return FALSE;
 		}
 
-		$editing = $path_details['basename']   === 'post.php' &&
-		$action                                === 'edit' &&
-		$this->_aco->get_post_type( $post_id ) === AI1EC_POST_TYPE;
+		$editing = (
+			'post.php' === $path_details['basename'] &&
+			'edit'     === $action &&
+			$this->_aco->is_our_post_type( $post_id )
+		);
 		return $editing;
 	}
 

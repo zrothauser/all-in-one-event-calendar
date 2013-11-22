@@ -78,6 +78,7 @@ class Ai1ec_Css_Admin  extends Ai1ec_Base {
 			if ( 'script' === $item[0] ) {
 				wp_enqueue_script( $item[1] );
 			} else {
+				var_dump( $this->gen_style_hook( $item[1] ) );
 				wp_enqueue_style(
 					$this->gen_style_hook( $item[1] ),
 					AI1EC_ADMIN_THEME_CSS_URL . $item[1],
@@ -98,7 +99,7 @@ class Ai1ec_Css_Admin  extends Ai1ec_Base {
 	 */
 	public function gen_style_hook( $script ) {
 		return 'ai1ec_' . preg_replace(
-			'|[a-z]+|',
+			'|[^a-z]+|',
 			'_',
 			basename( $script, '.css' )
 		);

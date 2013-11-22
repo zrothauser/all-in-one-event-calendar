@@ -14,6 +14,7 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 	/**
 	 * Registers the custom post type.
 	 *
+	 * @wp-hook init
 	 */
 	public function register() {
 		$settings = $this->_registry->get( 'model.settings' );

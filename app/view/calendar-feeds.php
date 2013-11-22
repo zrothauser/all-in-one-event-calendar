@@ -1,9 +1,22 @@
 <?php
+
+/**
+ * The Calendar Feeds page.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.View
+ */
 class Ai1ec_View_Calendar_Feeds extends Ai1ec_Base {
 
 	/**
 	 * admin_menu function
-	 * Display the admin menu items using the add_menu_page WP function.
+	 * 
+	 * Adds page and metabox to the menu.
+	 * 
+	 * @wp-hook admin_menu
 	 *
 	 * @return void
 	 */

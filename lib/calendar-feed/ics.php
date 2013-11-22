@@ -7,7 +7,7 @@
  * @since      2.0
  *
  * @package    AI1EC
- * @subpackage AI1EC.Import-export.Plugin
+ * @subpackage AI1EC.Calendar-feed
  */
 class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
@@ -135,87 +135,6 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			);
 			$render_json->render( $output );
 		}
-	}
-
-	/**
-	 * Validates the add new feed url form
-	 *
-	 * @return array
-	 */
-	private function validate_form() {
-		$response = array( 'success' => true );
-		// Check nonce.
-		if ( isset( $_POST[AI1EC_POST_TYPE] ) &&
-		! wp_verify_nonce( $_POST[AI1EC_POST_TYPE], 'ai1ec_submit_ics_form' ) ) {
-			$response['message'] = __( 'Access denied.', AI1EC_PLUGIN_NAME );
-			$response['success'] = false;
-			return $response;
-		}
-
-		$settings = $this->_registry->get( 'model.settings' );
-		$public_key = $settings->get( 'recaptcha_public_key' );
-		// Check CAPTCHA.
-		if ( ! is_user_logged_in() &&
-			! empty( $public_key ) ) {
-			$captcha = $this->_registry->get( 'security.captcha' );
-
-			$check = $captcha->check_captcha();
-			if( false === $check['success'] ) {
-				$response['success'] = false;
-				$response['message'] = $check['message'];
-				return $response;
-			}
-		}
-		$response['message'] = __( 'Your suggestion was submitted to a site administrator for review.', AI1EC_PLUGIN_NAME );
-		return $response;
-	}
-
-	/**
-	 * Send an e-mail to the admin and another to the user if form passes
-	 * validation.
-	 */
-	public function add_ics_feed_frontend() {
-
-		$db = $this->_registry->get( 'dbi.dbi' );
-		$table_name = $db->get_table_name( 'ai1ec_event_feeds' );
-		$check = $this->validate_form();
-
-		$check['nonce'] = wp_nonce_field(
-			'ai1ec_submit_ics_form',
-			AI1EC_POST_TYPE,
-			true,
-			false
-		);
-
-		if ( true === $check['success'] ) {
-			$ai1ec_settings = $this->_registry->get( 'model.settings' );
-			// Strip slashes if ridiculous PHP setting magic_quotes_gpc is enabled.
-			if ( get_magic_quotes_gpc() ) {
-				foreach ( $_POST as &$param ) {
-					$param = stripslashes( $param );
-				}
-			}
-			$translations = $this->get_translations();
-			$notification_for_admin = $this->_registry->get(
-				'notification.mail',
-				array( get_option( 'admin_email' ) ),
-				$ai1ec_settings->get( 'admin_mail_body' ),
-				$ai1ec_settings->get( 'admin_mail_subject' )
-			);
-			$notification_for_user = $this->_registry->get(
-				'notification.mail',
-				array( $_POST['ai1ec_submitter_email'] ),
-				$ai1ec_settings->get( 'user_mail_body' ),
-				$ai1ec_settings->get( 'user_mail_subject' )
-			);
-			$notification_for_admin->set_translations( $translations );
-			$notification_for_admin->send();
-			$notification_for_user->set_translations( $translations );
-			$notification_for_user->send();
-		}
-		$json = $this->_registry->get( 'http.response.strategy.json' );
-
-		$json->render( $check );
 	}
 
 	/**

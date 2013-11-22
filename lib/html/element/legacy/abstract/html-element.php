@@ -1,9 +1,12 @@
 <?php
 
 /**
+ * Base html element.
  *
- * @author nicola
- *
+ * @author     Time.ly Network, Inc.
+ * @since      2.0
+ * @package    Ai1EC
+ * @subpackage Ai1EC.Html
  */
 abstract class Ai1ec_Html_Element implements Ai1ec_Renderable {
 
@@ -30,7 +33,6 @@ abstract class Ai1ec_Html_Element implements Ai1ec_Renderable {
 	 */
 	protected $template_adapter;
 
-	protected $_registry;
 	/**
 	 * Adds the passed attribute name & value to the link's attributes.
 	 *
@@ -75,8 +77,9 @@ abstract class Ai1ec_Html_Element implements Ai1ec_Renderable {
 		$this->set_attribute( $name, $value );
 	}
 
+
 	public function __construct( Ai1ec_Registry_Object $registry ) {
-		$this->_registry        = $registry;
+		$this->_registry = $registry;
 		$this->template_adapter = $registry->get( 'html.helper' );
 	}
 
@@ -105,7 +108,7 @@ abstract class Ai1ec_Html_Element implements Ai1ec_Renderable {
 	public function add_class( $class ) {
 		$this->classes[] = $class;
 	}
-
+	
 	/**
 	 * Creates the markup to be used to create classes
 	 *

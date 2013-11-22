@@ -7,7 +7,7 @@
  * @since      2.0
  *
  * @package    AI1EC
- * @subpackage AI1EC.Import-export.Plugin
+ * @subpackage AI1EC.Calendar-feed
  */
 abstract class Ai1ec_Connector_Plugin extends Ai1ec_Base {
 

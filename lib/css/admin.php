@@ -1,10 +1,22 @@
 <?php
+
+/**
+ * The class which handles Admin CSS.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Css
+ */
 class Ai1ec_Css_Admin  extends Ai1ec_Base {
 
 	/**
 	 * admin_enqueue_scripts function
 	 *
 	 * Enqueue any scripts and styles in the admin side, depending on context.
+	 * 
+	 * @wp-hook admin_enqueue_scripts
 	 *
 	 * @return void
 	 */

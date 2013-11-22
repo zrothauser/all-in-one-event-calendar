@@ -1,4 +1,14 @@
 <?php
+
+/**
+ * Helper for recurrence rules.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Recurrence
+ */
 class Ai1ec_Recurrence_Rule extends Ai1ec_Base {
 
 	/**

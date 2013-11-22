@@ -48,6 +48,9 @@ class Ai1ec_Loader {
 	 */
 	protected $_base_path      = null;
 
+	/**
+	 * @var array Registered folders.
+	 */
 	protected $_registered     = array();
 
 	/**

@@ -1,9 +1,12 @@
 <?php
+
 /**
- * This class is responsible of handling bootstrap modals
+ * A class that renders bootstrap modals.
  *
- *  @author Timely Network Inc
- *
+ * @author     Time.ly Network, Inc.
+ * @since      2.0
+ * @package    Ai1EC
+ * @subpackage Ai1EC.Html
  */
 class Ai1ec_Bootstrap_Modal extends Ai1ec_Html_Element {
 

@@ -1,9 +1,13 @@
 <?php
 
 /**
-* This is the interface around wich i build a composit pattern to represent html
-*/
-
+ * Basic interface for the composite.
+ *
+ * @author     Time.ly Network, Inc.
+ * @since      2.0
+ * @package    Ai1EC
+ * @subpackage Ai1EC.Html
+ */
 interface Ai1ec_Renderable {
 	/**
 	 * This is the main function, it just renders the method for the element,

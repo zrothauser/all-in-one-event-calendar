@@ -216,117 +216,6 @@ class Ai1ec_Event_Search {
 	}
 
 	/**
-	 * _get_post_status_sql function
-	 *
-	 * Returns SQL snippet for properly matching event posts, as well as array
-	 * of arguments to pass to $this_dbi->prepare, in function argument
-	 * references.
-	 * Nothing is returned by the function.
-	 *
-	 * @return array An array containing post_status_where: the sql string,
-	 * args: the arguments for prepare()
-	 */
-	protected function _get_post_status_sql() {
-		global $current_user;
-
-		$args = array();
-
-		// Query the correct post status
-		if ( current_user_can( 'administrator' )
-			|| current_user_can( 'editor' )
-		) {
-			// User has privilege of seeing all published and private
-
-			$post_status_where = 'AND post_status IN ( %s, %s ) ';
-			$args[]            = 'publish';
-			$args[]            = 'private';
-		} elseif ( is_user_logged_in() ) {
-			// User has privilege of seeing all published and only their own
-			// private posts.
-
-			// get user info
-			get_currentuserinfo();
-
-			// include post_status = published
-			//   OR
-			// post_status = private AND post_author = userID
-			$post_status_where =
-				'AND ( ' .
-				'post_status = %s ' .
-				'OR ( post_status = %s AND post_author = %d ) ' .
-				') ';
-
-			$args[] = 'publish';
-			$args[] = 'private';
-			$args[] = $current_user->ID;
-		} else {
-			// User can only see published posts.
-			$post_status_where = 'AND post_status = %s ';
-			$args[]            = 'publish';
-		}
-
-		return array(
-			'post_status_where' => $post_status_where,
-			'args'              => $args
-		);
-	}
-
-	/**
-	 * _get_filter_sql function
-	 *
-	 * Takes an array of filtering options and turns it into JOIN and WHERE
-	 * statements for running an SQL query limited to the specified options
-	 *
-	 * @param array $filter    Array of filters for the events returned:
-	 *                         ['cat_ids']   => list of category IDs
-	 *                         ['tag_ids']   => list of tag IDs
-	 *                         ['post_ids']  => list of event post IDs
-	 *                         ['auth_ids']  => list of event author IDs
-	 *                         This array is modified to have:
-	 *                         ['filter_join']  the Join statements for the SQL
-	 *                         ['filter_where'] the Where statements for the SQL
-	 *
-	 * @return array the modified filter array
-	 */
-	protected function _get_filter_sql( $filter ) {
-		$filter_join = $filter_where = array();
-
-		foreach ( $filter as $filter_type => $filter_ids ) {
-			$filter_object = null;
-			try {
-				$filter_object = $this->_registry->get(
-					'model.filter.' . $filter_type,
-					$filter_ids
-				);
-				if ( ! ( $filter_object instanceof Ai1ec_Filter_Interface ) ) {
-					throw new Ai1ec_Bootstrap_Exception(
-						'Filter \'' . get_class( $filter_object ) .
-						'\' is not instance of Ai1ec_Filter_Interface'
-					);
-				}
-			} catch ( Ai1ec_Bootstrap_Exception $exception ) {
-				continue;
-			}
-			$filter_join[]  = $filter_object->get_join();
-			$filter_where[] = $filter_object->get_where();
-		}
-
-		$filter_join  = array_filter( $filter_join );
-		$filter_where = array_filter( $filter_where );
-		$filter_join  = join( ' ', $filter_join );
-		if ( count( $filter_where ) > 0 ) {
-			$operator     = $this->get_distinct_types_operator();
-			$filter_where = '( ' .
-				implode( ' ) ' . $operator . ' ( ', $filter_where ) .
-				' )';
-		} else {
-			$filter_where = '';
-		}
-
-		return $filter + compact( 'filter_where', 'filter_join' );
-	}
-
-	/**
 	 * Get operator for joining distinct filters in WHERE.
 	 *
 	 * @return string SQL operator.
@@ -562,6 +451,116 @@ class Ai1ec_Event_Search {
 		$this->_registry  = $registry;
 	}
 
+	/**
+	 * _get_post_status_sql function
+	 *
+	 * Returns SQL snippet for properly matching event posts, as well as array
+	 * of arguments to pass to $this_dbi->prepare, in function argument
+	 * references.
+	 * Nothing is returned by the function.
+	 *
+	 * @return array An array containing post_status_where: the sql string,
+	 * args: the arguments for prepare()
+	 */
+	protected function _get_post_status_sql() {
+		global $current_user;
+	
+		$args = array();
+	
+		// Query the correct post status
+		if ( current_user_can( 'administrator' )
+		|| current_user_can( 'editor' )
+		) {
+			// User has privilege of seeing all published and private
+	
+			$post_status_where = 'AND post_status IN ( %s, %s ) ';
+			$args[]            = 'publish';
+			$args[]            = 'private';
+		} elseif ( is_user_logged_in() ) {
+			// User has privilege of seeing all published and only their own
+			// private posts.
+	
+			// get user info
+			get_currentuserinfo();
+	
+			// include post_status = published
+			//   OR
+			// post_status = private AND post_author = userID
+			$post_status_where =
+			'AND ( ' .
+			'post_status = %s ' .
+			'OR ( post_status = %s AND post_author = %d ) ' .
+			') ';
+	
+			$args[] = 'publish';
+			$args[] = 'private';
+			$args[] = $current_user->ID;
+		} else {
+			// User can only see published posts.
+			$post_status_where = 'AND post_status = %s ';
+			$args[]            = 'publish';
+		}
+	
+		return array(
+			'post_status_where' => $post_status_where,
+			'args'              => $args
+		);
+	}
+
+	/**
+	 * _get_filter_sql function
+	 *
+	 * Takes an array of filtering options and turns it into JOIN and WHERE
+	 * statements for running an SQL query limited to the specified options
+	 *
+	 * @param array $filter    Array of filters for the events returned:
+	 *                         ['cat_ids']   => list of category IDs
+	 *                         ['tag_ids']   => list of tag IDs
+	 *                         ['post_ids']  => list of event post IDs
+	 *                         ['auth_ids']  => list of event author IDs
+	 *                         This array is modified to have:
+	 *                         ['filter_join']  the Join statements for the SQL
+	 *                         ['filter_where'] the Where statements for the SQL
+	 *
+	 * @return array the modified filter array
+	 */
+	protected function _get_filter_sql( $filter ) {
+		$filter_join = $filter_where = array();
+	
+		foreach ( $filter as $filter_type => $filter_ids ) {
+			$filter_object = null;
+			try {
+				$filter_object = $this->_registry->get(
+					'model.filter.' . $filter_type,
+					$filter_ids
+				);
+				if ( ! ( $filter_object instanceof Ai1ec_Filter_Interface ) ) {
+					throw new Ai1ec_Bootstrap_Exception(
+						'Filter \'' . get_class( $filter_object ) .
+						'\' is not instance of Ai1ec_Filter_Interface'
+					);
+				}
+			} catch ( Ai1ec_Bootstrap_Exception $exception ) {
+				continue;
+			}
+			$filter_join[]  = $filter_object->get_join();
+			$filter_where[] = $filter_object->get_where();
+		}
+	
+		$filter_join  = array_filter( $filter_join );
+		$filter_where = array_filter( $filter_where );
+		$filter_join  = join( ' ', $filter_join );
+		if ( count( $filter_where ) > 0 ) {
+			$operator     = $this->get_distinct_types_operator();
+			$filter_where = '( ' .
+				implode( ' ) ' . $operator . ' ( ', $filter_where ) .
+				' )';
+		} else {
+			$filter_where = '';
+		}
+	
+		return $filter + compact( 'filter_where', 'filter_join' );
+	}
 	/**
 	 * _clean_instance_table method
 	 *

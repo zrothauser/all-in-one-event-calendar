@@ -486,11 +486,10 @@ class Ai1ec_Event_Search {
 			// include post_status = published
 			//   OR
 			// post_status = private AND post_author = userID
-			$post_status_where =
-			'AND ( ' .
-			'post_status = %s ' .
-			'OR ( post_status = %s AND post_author = %d ) ' .
-			') ';
+			$post_status_where = 'AND ( ' .
+				'post_status = %s ' .
+				'OR ( post_status = %s AND post_author = %d ) ' .
+				') ';
 
 			$args[] = 'publish';
 			$args[] = 'private';

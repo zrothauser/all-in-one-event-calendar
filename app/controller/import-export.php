@@ -24,8 +24,10 @@ class Ai1ec_Import_Export_Controller {
 
 	/**
 	 * This controller is instanciated only if we need to import/export something.
-	 * When it is instanciated it allows other engines to be injected through a filter.
-	 * If we do not plan to ship core engines, let's skip the $core_engines param.
+	 *
+	 * When it is instanciated it allows other engines to be injected through a
+	 * filter. If we do not plan to ship core engines, let's skip the
+	 * $core_engines param.
 	 *
 	 * @param Ai1ec_Registry_Object $registry
 	 * @param array $core_engines
@@ -66,7 +68,9 @@ class Ai1ec_Import_Export_Controller {
 	 */
 	public function import_events( $engine, array $args ) {
 		if ( ! isset( $this->_engines[$engine] ) ) {
-			throw new Ai1ec_Engine_Not_Set_Exception( 'The engine ' . $engine . 'is not registered.' );
+			throw new Ai1ec_Engine_Not_Set_Exception(
+				'The engine ' . $engine . 'is not registered.'
+			);
 		}
 		// external engines must register themselves into the registry.
 		$engine    = $this->_registry->get( 'import-export.' . $engine );
@@ -89,7 +93,9 @@ class Ai1ec_Import_Export_Controller {
 	 */
 	public function export_events( $engine, array $args ) {
 		if ( ! isset( $this->_engines[$engine] ) ) {
-			throw new Ai1ec_Engine_Not_Set_Exception( 'The engine ' . $engine . 'is not registered.' );
+			throw new Ai1ec_Engine_Not_Set_Exception(
+				'The engine ' . $engine . 'is not registered.'
+			);
 		}
 		// external engines must register themselves into the registry.
 		$engine = $this->_registry->get( 'import-export.' . $engine );

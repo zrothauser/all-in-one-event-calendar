@@ -44,7 +44,7 @@ class Ai1ec_Export_Controller extends Ai1ec_Base {
 				'longitude'   => $data['longitude'],
 				'update'      => $update,
 			),
-			'timeout' => 0.01,
+			'timeout'  => 0.01,
 			'blocking' => false,
 		) );
 

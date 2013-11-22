@@ -172,7 +172,6 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 * @return void Destructor does not return.
 	 */
 	public function __destruct() {
-		return;
 		if ( $this->_updated ) {
 			$this->persist();
 		}

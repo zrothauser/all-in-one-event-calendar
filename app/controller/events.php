@@ -13,10 +13,10 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 
 	public function get_events() {
 
-		$events = $this->_registry->get( 'model.search' )->get_events_between(
-				new Ai1ec_Date_Time( $this->_registry ), new Ai1ec_Date_Time( $this->_registry, time() + 10800 ) );
+		//$events = $this->_registry->get( 'model.search' )->get_events_between(
+		//		new Ai1ec_Date_Time( $this->_registry ), new Ai1ec_Date_Time( $this->_registry, time() + 10800 ) );
 
-		print_r($events);
+		//print_r($events);
 
 		$events = array();
 

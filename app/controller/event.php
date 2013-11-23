@@ -218,9 +218,9 @@ class Ai1ec_Events_Controller {
 
 		global $post;
 
-		$ai1ec_settings       = $this->_registry->get( 'settings' );
-		$ai1ec_events_helper  = $this->_registry->get( 'event.helper' );
-		$ai1ec_view_helper    = $this->_registry->get( 'view.helper' );
+		$ai1ec_settings       = $this->_registry->get( 'Ai1ec_Settings' );
+		$ai1ec_events_helper  = $this->_registry->get( 'Ai1ec_Event_Helper' );
+		$ai1ec_view_helper    = $this->_registry->get( 'Ai1ec_View_Helper' );
 
 		$empty_event          = new Ai1ec_Event( $this->_registry );
 
@@ -278,10 +278,10 @@ class Ai1ec_Events_Controller {
 			// this is why we use this approach.
 			$excpt = NULL;
 			try {
-				$event = new Ai1ec_Event( $post->ID, $instance_id );
+				$event = new Ai1ec_Event( $this->_registry, $post->ID, $instance_id );
 			} catch ( Ai1ec_Event_Not_Found $excpt ) {
 				$ai1ec_localization_helper = $this->_registry
-					->get( 'localization.helper' );
+					->get( 'Ai1ec_Localization_Helper' );
 				$translatable_id = $ai1ec_localization_helper
 					->get_translatable_id();
 				if ( false !== $translatable_id ) {
@@ -357,7 +357,8 @@ class Ai1ec_Events_Controller {
 
 		// Time zone; display if set.
 		$timezone = '';
-		$timezone_string = Ai1ec_Meta::get_option( 'timezone_string' );
+		$timezone_string = $this->_registry->get( 'Ai1ec_Meta_Post' )
+			->get_option( 'timezone_string' );
 		if ( $timezone_string ) {
 			$timezone = $this->_registry->get( 'time' )->get_gmt_offset_expr();
 		}

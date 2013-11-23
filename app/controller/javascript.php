@@ -134,7 +134,7 @@ class Ai1ec_Javascript_Controller {
 	 * @return void
 	 */
 	public function render_js() {
-		$js_path = AI1EC_ADMIN_THEME_JS_PATH;
+		$js_path = AI1EC_ADMIN_THEME_JS_PATH . DIRECTORY_SEPARATOR;
 		$common_js = '';
 		$page_to_load = $_GET[self::LOAD_JS_PARAMETER];
 

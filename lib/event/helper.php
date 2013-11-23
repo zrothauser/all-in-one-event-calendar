@@ -80,4 +80,71 @@ class Ai1ec_Event_Helper extends Ai1ec_Base {
 		}
 		return apply_filters( 'wp_trim_excerpt', $text, $raw_excerpt );
 	}
+
+	/**
+	 * event_parent method
+	 *
+	 * Get/set event parent
+	 *
+	 * @param int $event_id    ID of checked event
+	 * @param int $parent_id   ID of new parent [optional=NULL, acts as getter]
+	 * @param int $instance_id ID of old instance id
+	 *
+	 * @return int|bool Value depends on mode:
+	 *     Getter: {@see self::get_parent_event()} for details
+	 *     Setter: true on success.
+	 */
+	public function event_parent(
+		$event_id,
+		$parent_id   = NULL,
+		$instance_id = NULL
+	) {
+		$meta_key = '_ai1ec_event_parent';
+		if ( NULL === $parent_id ) {
+			return $this->get_parent_event( $event_id );
+		}
+		$meta_value = json_encode( array(
+			'created'  => Ai1ec_Time_Utility::current_time(),
+			'instance' => $instance_id,
+		) );
+		return add_post_meta( $event_id, $meta_key, $meta_value, true );
+	}
+
+	/**
+	 * Get parent ID for given event
+	 *
+	 * @param int $current_id Current event ID
+	 *
+	 * @return int|bool ID of parent event or bool(false)
+	 */
+	public function get_parent_event( $current_id ) {
+		static $parents = NULL;
+		if ( NULL === $parents ) {
+			$parents = $this->_registry->get( 'Ai1ec_Memory_Utility' );
+		}
+		$current_id = (int)$current_id;
+		if ( NULL === ( $parent_id = $parents->get( $current_id ) ) ) {
+			$dbi = $this->_registry->get( 'Ai1ec_Dbi' );
+			$query      = '
+				SELECT parent.ID, parent.post_status
+				FROM
+					' . $dbi->get_table_name( 'posts' ) . ' AS child
+					INNER JOIN ' . $dbi->get_table_name( 'posts' ) . ' AS parent
+						ON ( parent.ID = child.post_parent )
+				WHERE child.ID = ' . $current_id;
+			$parent     = $dbi->get_row( $query );
+			if (
+				empty( $parent ) ||
+				'trash' === $parent->post_status
+			) {
+				$parent_id = false;
+			} else {
+				$parent_id = $parent->ID;
+			}
+			$parents->set( $current_id, $parent_id );
+			unset( $query );
+		}
+		return $parent_id;
+	}
+
 }

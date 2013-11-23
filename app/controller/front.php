@@ -317,7 +317,10 @@ class Ai1ec_Front_Controller {
 				'add_meta_boxes',
 				array( 'app.helper', 'add_meta_boxes' )
 			);
-
+			$dispatcher->register_action(
+				'init',
+				array( 'app.helper', 'create_post_type' )
+			);
 		}
 
 	}

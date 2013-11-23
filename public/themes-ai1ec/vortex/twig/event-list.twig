@@ -1,2 +1,24 @@
+<h5 style="margin:0;">Event List (1 week period)</h5>
 
-event list
+<table>
+    <thead>
+        <tr>
+            <th>Venue</th>
+            <th>Country</th>
+            <th>Address</th>
+            <th>Start</th>
+            <th>End</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for event in events %}
+        <tr>
+            <td>{{ event.venue }}</td>
+            <td>{{ event.country }}</td>
+            <td>{{ event.address }}</td>
+            <td>{{ event.start }}</td>
+            <td>{{ event.end }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

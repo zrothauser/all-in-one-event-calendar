@@ -410,6 +410,7 @@ class Ai1ec_Date_Timezone {
 	 */
 	public function get( $timezone ) {
 		$name = $this->get_name( $timezone );
+		$name = 'UTC';
 		if ( ! $name ) {
 			throw new Ai1ec_Date_Timezone_Exception(
 				'Unrecognized timezone \'' . $timezone . '\''

@@ -13,12 +13,9 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 
 	public function get_events() {
 
-		//$events = $this->_registry->get( 'model.search' )->get_events_between(
-		//		new Ai1ec_Date_Time( $this->_registry ), new Ai1ec_Date_Time( $this->_registry, time() + 10800 ) );
-
-		//print_r($events);
-
-		$events = array();
+		$events = $this->_registry->get( 'model.search' )->get_events_between(
+				new Ai1ec_Date_Time( $this->_registry, time() ),
+				new Ai1ec_Date_Time( $this->_registry, time() + 604800 ) ); // 1 week
 
 		$template = $this->_registry->get( 'theme.loader' )->get_file(
 			'twig/event-list.twig',

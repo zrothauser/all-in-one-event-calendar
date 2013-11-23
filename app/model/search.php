@@ -84,7 +84,7 @@ class Ai1ec_Event_Search {
 		// on $filter elements specified
 		$filter = $this->_get_filter_sql( $filter );
 
-		$ai1ec_localization_helper = $this->_registry->get( 'localization' );
+		$ai1ec_localization_helper = $this->_registry->get( 'Ai1ec_Localization_Helper' );
 
 		$wpml_join_particle = $ai1ec_localization_helper
 			->get_wpml_table_join( 'p.ID' );

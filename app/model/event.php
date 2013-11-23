@@ -412,7 +412,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 **/
 	function __construct( Ai1ec_Registry_Object $registry, $data = null, $instance = false ) {
 		parent::__construct( $registry );
-		global $wpdb;
+		$dbi = $registry->get ( 'dbi.dbi' );
 
 		if ( null === $data ) {
 			return;
@@ -452,7 +452,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 
 				$instance = (int) $instance;
 				$this->instance_id = $instance;
-				$left_join = 	"LEFT JOIN {$wpdb->prefix}ai1ec_event_instances aei ON aei.id = $instance AND e.post_id = aei.post_id ";
+				$left_join = 	"LEFT JOIN {$dbi->get_table_name( 'ai1ec_event_instances' )} aei ON aei.id = $instance AND e.post_id = aei.post_id ";
 			} else {
 				$select_sql .= ", e.start as start, e.end as end, e.allday ";
 			}
@@ -460,18 +460,18 @@ class Ai1ec_Event extends Ai1ec_Base {
 			// =============================
 			// = Fetch event from database =
 			// =============================
-			$query = $wpdb->prepare(
+			$query = $dbi->prepare(
 				"SELECT {$select_sql}" .
-				"FROM {$wpdb->prefix}ai1ec_events e " .
-					"LEFT JOIN $wpdb->term_relationships tr ON e.post_id = tr.object_id " .
-					"LEFT JOIN $wpdb->term_taxonomy ttc ON tr.term_taxonomy_id = ttc.term_taxonomy_id AND ttc.taxonomy = 'events_categories' " .
-					"LEFT JOIN $wpdb->term_taxonomy ttt ON tr.term_taxonomy_id = ttt.term_taxonomy_id AND ttt.taxonomy = 'events_tags' " .
+				"FROM {$dbi->get_table_name( 'ai1ec_events' )} e " .
+					"LEFT JOIN $dbi->term_relationships tr ON e.post_id = tr.object_id " .
+					"LEFT JOIN $dbi->term_taxonomy ttc ON tr.term_taxonomy_id = ttc.term_taxonomy_id AND ttc.taxonomy = 'events_categories' " .
+					"LEFT JOIN $dbi->term_taxonomy ttt ON tr.term_taxonomy_id = ttt.term_taxonomy_id AND ttt.taxonomy = 'events_tags' " .
 					"{$left_join}" .
 				"WHERE e.post_id = %d " .
 				"GROUP BY e.post_id",
 				$data );
 
-			$event = $wpdb->get_row( $query );
+			$event = $dbi->get_row( $query );
 
 			if ( NULL === $event || NULL === $event->post_id ) {
 				throw new Ai1ec_Event_Not_Found_Exception(

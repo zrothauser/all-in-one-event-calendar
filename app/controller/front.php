@@ -209,7 +209,7 @@ class Ai1ec_Front_Controller {
 
 	/**
 	 * Adds actions handled by the front controller.
-	 * 
+	 *
 	 */
 	private function _add_front_controller_actions() {
 		// Initialize router. I use add_action as the dispatcher would just add overhead.

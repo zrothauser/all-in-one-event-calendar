@@ -8,6 +8,8 @@
  * Version: 2.0
  */
 
+ini_set('memory_limit', '128M');
+
 $ai1ec_base_dir = dirname( __FILE__ );
 $ai1ec_base_url = plugins_url( '', __FILE__ );
 

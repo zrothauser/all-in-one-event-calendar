@@ -1,0 +1,465 @@
+@CHARSET "UTF-8";
+
+#ai1ec_event {
+    overflow: hidden;
+}
+.ai1ec-form, .ai1ec-form-nested {
+    margin-bottom: 1em;
+    width: 100%;
+}
+.ai1ec-form td.ai1ec-first, .ai1ec-form-nested td.ai1ec-first {
+    width: 8.5em;
+}
+.ai1ec-first-padding {
+    padding-left: 8.5em;
+}
+.ai1ec-form label, .ai1ec-form-nested label {
+    font-size: 9pt;
+}
+.ai1ec-form td, .ai1ec-form-nested td {
+    line-height: 1.5em;
+}
+.ai1ec-section-title {
+    border-bottom: 1px solid #EEEEEE;
+    clear: both;
+    color: #AAAAAA;
+    padding-bottom: 0.4em;
+    text-transform: uppercase;
+}
+.ai1ec_hidden {
+    display: none;
+}
+.ai1ec_week_days_list, .ai1ec_month_days_list, .ai1ec_yearly_months_list {
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+}
+.ai1ec_week_days_list li, .ai1ec_month_days_list li, .ai1ec_yearly_months_list li {
+    background-color: #FFFFFF;
+    border: 1px solid #DFDFDF;
+    border-radius: 0.4em 0.4em 0.4em 0.4em;
+    float: left;
+    margin-right: 0.2em;
+    padding: 0.3em 0;
+    text-align: center;
+    width: 2.2em;
+}
+.ai1ec_yearly_months_list li {
+    padding: 0.5em 0 !important;
+    width: 2.5em !important;
+}
+.ai1ec_week_days_list li:hover, .ai1ec_month_days_list li:hover, .ai1ec_yearly_months_list li:hover {
+    cursor: pointer;
+}
+.ai1ec_selected {
+    background-color: #E2E2E2 !important;
+}
+.ai1ec-date-input {
+    width: 7em;
+}
+.ai1ec-time-input {
+    width: 5.5em;
+}
+#ai1ec_venue, #ai1ec_address, #ai1ec_cost, #ai1ec_contact_name, #ai1ec_contact_phone, #ai1ec_contact_email {
+    max-width: 20em;
+    width: 100%;
+}
+.ai1ec-form.ai1ec-location-form {
+    float: left;
+    width: 33em;
+}
+#side-info-column .ai1ec-form.ai1ec-location-form {
+    float: none;
+    width: 100%;
+}
+.ac_results img {
+    float: left;
+    margin: 0.2em 0.7em 0.2em 0.2em;
+}
+.ai1ec_box_map {
+    border: 1px solid #DDDDDD;
+    float: right;
+    margin-bottom: 1em;
+    margin-top: -11em;
+    position: absolute;
+    visibility: hidden;
+}
+.ai1ec_box_map.ai1ec_box_map_visible {
+    position: static;
+    visibility: visible;
+}
+#ai1ec_map_canvas {
+    height: 16em;
+    width: 264px;
+}
+.ai1ec_bottom_publish {
+    min-width: 80px;
+    text-align: center;
+}
+.calendricalDatePopup, .calendricalTimePopup {
+    z-index: 2;
+}
+.calendricalDatePopup {
+    background: none repeat scroll 0 0 white;
+    border: 1px solid #999999;
+    padding: 2px;
+    text-align: center;
+    width: 200px;
+}
+.calendricalDatePopup table {
+    border-collapse: collapse;
+    width: 200px;
+}
+.calendricalDatePopup table .monthCell {
+    padding: 2px 0;
+}
+.calendricalDatePopup table .monthCell a {
+    display: block;
+    float: left;
+    line-height: 20px;
+}
+.calendricalDatePopup table .monthCell .prevMonth, .calendricalDatePopup table .monthCell .nextMonth {
+    width: 24px;
+}
+.calendricalDatePopup table .monthCell .monthName {
+    width: 150px;
+}
+.calendricalDatePopup table a {
+    padding: 0;
+    text-decoration: none !important;
+}
+.calendricalDatePopup table th {
+    text-align: center;
+}
+.calendricalDatePopup table td {
+    font-family: inherit;
+    font-size: 12px;
+    padding: 0;
+    text-align: center;
+}
+.calendricalDatePopup table td a {
+    color: black;
+    display: block;
+    padding: 2px 3px;
+}
+.calendricalDatePopup table td a:hover {
+    background: none repeat scroll 0 0 #CCCCFF;
+    border: medium none;
+    padding: 2px 3px;
+}
+.calendricalDatePopup table td.today a {
+    background: none repeat scroll 0 0 #F8F8C0;
+}
+.calendricalDatePopup table td.selected a {
+    background: none repeat scroll 0 0 #CCCCFF;
+}
+.calendricalDatePopup table td.today_selected a {
+    background: none repeat scroll 0 0 #F8F8C0;
+    border: 1px solid #DDDD66;
+    padding: 1px 2px;
+}
+.calendricalDatePopup table td.nonMonth a {
+    color: #999999;
+}
+.calendricalTimePopup {
+    background: none repeat scroll 0 0 white;
+    border: 1px solid #999999;
+    height: 130px;
+    overflow: auto;
+    width: 110px;
+}
+.calendricalTimePopup ul {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.calendricalTimePopup ul li {
+    list-style: none outside none !important;
+    margin: 0;
+    padding: 0 !important;
+}
+.calendricalTimePopup ul li a, .calendricalTimePopup ul li a:visited {
+    color: black;
+    display: block;
+    padding: 4px;
+    text-decoration: none !important;
+    text-indent: 10px;
+}
+.calendricalTimePopup ul li a:hover, .calendricalTimePopup ul li.selected a {
+    background: none repeat scroll 0 0 #CCCCFF;
+}
+.calendricalEndTimePopup {
+    width: 200px;
+}
+.ai1ec-slider {
+    background: none repeat scroll 0 0 #EEEEEE;
+    border: 1px solid #CCCCCC;
+    border-radius: 3px 3px 3px 3px;
+    clear: right;
+    cursor: pointer;
+    float: left;
+    height: 0.4em;
+    margin: 0.7em 0.25em 0 0;
+    position: relative;
+    width: 8.8em;
+}
+.ai1ec-progress {
+    background-color: #C5FF00;
+    display: none;
+    height: 0.5em;
+}
+.ai1ec-handle {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #CCCCCC;
+    border-radius: 0.25em 0.25em 0.25em 0.25em;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    cursor: move;
+    display: block;
+    height: 1em;
+    margin-top: 1px;
+    position: absolute;
+    top: -0.5em;
+    width: 1em;
+    z-index: 0;
+}
+.ai1ec-range {
+    -moz-box-sizing: border-box;
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #DFDFDF;
+    border-radius: 4px 4px 4px 4px;
+    text-align: center;
+    width: 3em;
+}
+.ai1ec_date_select {
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+}
+.ai1ec_date_select li {
+    background: -moz-linear-gradient(center top , #F6F8F9 0%, #E5EBEE 50%, #D7DEE3 51%, #F5F7F9 100%) repeat scroll 0 0 transparent;
+    border: 1px solid #CCCCCC;
+    border-radius: 3px 3px 3px 3px;
+    cursor: pointer;
+    float: left;
+    margin-right: 5px;
+    padding: 3px;
+    text-align: center;
+    width: 20px;
+}
+.ai1ec_date_select li:hover {
+    background: -moz-linear-gradient(center top , #F5F7F9 0%, #D7DEE3 49%, #E5EBEE 50%, #F6F8F9 100%) repeat scroll 0 0 transparent;
+}
+.ai1ec_date_select li.ai1ec_selected {
+    background: -moz-linear-gradient(center top , #DEEFFF 0%, #98BEDE 100%) repeat scroll 0 0 transparent;
+}
+.ai1ec_date_select li.ai1ec_selected:hover {
+    background: -moz-linear-gradient(center top , #98BEDE 0%, #DEEFFF 100%) repeat scroll 0 0 transparent;
+}
+#ai1ec_weekly_date_select {
+    margin-left: 25px;
+}
+#ai1ec_montly_date_select {
+    margin-left: 25px;
+    width: 231px;
+}
+#ai1ec_yearly_date_select {
+    margin-left: 30px;
+    width: 208px;
+}
+#ai1ec_yearly_date_select li {
+    padding: 10px 5px;
+    width: 35px;
+}
+#ai1ec_repeat_box {
+    display: none;
+    margin-top: 10px;
+    width: 450px;
+}
+ul.ai1ec_repeat_tabs {
+    margin: 0 0 6px 15px;
+    padding: 0;
+    text-align: left;
+    width: 95%;
+}
+ul.ai1ec_repeat_tabs li {
+    display: inline;
+    list-style: none outside none;
+}
+ul.ai1ec_repeat_tabs li a {
+    background-color: #464C54;
+    border: 1px solid #464C54;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    color: #FFEBB5;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-size: 9px;
+    font-weight: bold;
+    padding: 8px 14px;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+ul.ai1ec_repeat_tabs li a:hover {
+    background-color: #2F343A;
+    border-color: #2F343A;
+}
+ul.ai1ec_repeat_tabs li a.ai1ec_active {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #FFFFFF;
+    border-color: #464C54 #464C54 #FFFFFF;
+    border-image: none;
+    border-style: solid;
+    border-width: 1px;
+    color: #282E32;
+    padding-bottom: 9px;
+}
+.ai1ec_tab_content {
+    background-color: #FFFFFF;
+    border: 1px solid #464C54;
+    border-radius: 5px 5px 5px 5px;
+    margin-top: -1px;
+    padding: 10px;
+}
+#ai1ec_weekly_content, #ai1ec_monthly_content, #ai1ec_yearly_content {
+    display: none;
+}
+.ai1ec_repeat_centered_content {
+    border-bottom: 1px solid #EEEEEE;
+    float: left;
+    padding-bottom: 10px;
+    text-align: center;
+    width: 100%;
+}
+#ai1ec_apply_button_holder {
+    float: left;
+    text-align: center;
+    width: 100%;
+}
+.ai1ec_tab_content label {
+    float: left;
+    text-align: left;
+    width: 61px;
+}
+.ai1ec_tab_content label:nth-of-type(2) {
+    text-align: right;
+}
+#ai1c_repeat_monthly_byday {
+    display: none;
+    float: left;
+}
+.ai1ec_repeat_monthly_type {
+    clear: both;
+    float: left;
+    margin: 0.4em 0;
+}
+.ai1ec_repeat_monthly_type label {
+    float: none;
+}
+#ai1ec_ending_box, #ai1ec_end_holder, #ai1ec_repeat_text, #ai1ec_exclude_text {
+    float: left;
+}
+#ai1ec_repeat_text a, #ai1ec_exclude_text a {
+    border-bottom: 1px dashed red;
+    text-decoration: none;
+}
+#ai1ec_exclude_text {
+    margin-right: 20px;
+}
+#ai1ec_ending_box, #ai1ec_apply_button_holder {
+    margin-top: 10px;
+}
+.ai1ec_repeat_cancel {
+    border-bottom: 1px solid red;
+    color: red;
+    text-decoration: none;
+}
+a.ai1ec_repeat_cancel:hover {
+    background-color: red;
+    color: white;
+}
+#ai1ec_count_holder, #ai1ec_until_holder {
+    display: none;
+}
+#ai1ec_until_holder input {
+    float: left;
+}
+#ai1ec_end_holder {
+    height: 30px;
+}
+div.growlUI h1, div.growlUI h2 {
+    color: white;
+    padding: 5px 5px 5px 75px;
+    text-align: left;
+}
+.ai1ec-repeat-box-loading {
+    background: url("../img/ajax-loader.gif") no-repeat scroll right center transparent !important;
+    height: 31px;
+    padding-left: 163px;
+    width: 31px;
+}
+#ai1ec-date-picker-input {
+    height: 0;
+    width: 0;
+}
+#datepicker-widget {
+    position: relative;
+}
+#widgetField {
+    background: url("../img/field.png") repeat scroll 0 0 transparent;
+    height: 26px;
+    overflow: hidden;
+    position: relative;
+    width: 290px;
+}
+#widgetField a {
+    display: block;
+    height: 26px;
+    position: absolute;
+    right: 0;
+    text-decoration: none;
+    text-indent: -3000px;
+    top: 0;
+    width: 26px;
+}
+#widgetField span {
+    color: #000000;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    height: 26px;
+    left: 5px;
+    line-height: 26px;
+    position: absolute;
+    text-align: center;
+    top: 0;
+    width: 250px;
+}
+#widgetCalendar {
+    background: none repeat scroll 0 0 #B9B9B9;
+    height: 0;
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    top: 26px;
+    width: 588px;
+    z-index: 2;
+}
+#widgetCalendar .datepicker {
+    bottom: 0;
+    position: absolute;
+    top: auto;
+}
+#widgetCalendar .datepickerContainer, #widgetCalendar .datepickerBorderT, #widgetCalendar .datepickerBorderB, #widgetCalendar .datepickerBorderL, #widgetCalendar .datepickerBorderR, #widgetCalendar .datepickerBorderTL, #widgetCalendar .datepickerBorderTR, #widgetCalendar .datepickerBorderBL, #widgetCalendar .datepickerBorderBR {
+    background: none repeat scroll 0 0 transparent !important;
+}
+#widgetCalendar .datepicker a:hover {
+    color: #B6F063;
+}
+.ai1ec-info-text {
+    float: left;
+    font-size: 10px;
+}
+#ai1ec-inside-wrapper {
+    width: 33em;
+}

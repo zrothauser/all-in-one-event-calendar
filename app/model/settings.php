@@ -166,7 +166,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 * @return bool Success.
 	 */
 	public function persist() {
-		$success = $this->_sys->get( 'model.option' )
+		$success = $this->_registry->get( 'model.option' )
 			->set( self::WP_OPTION_KEY, $this->_options );
 		if ( $success ) {
 			$this->_updated = false;

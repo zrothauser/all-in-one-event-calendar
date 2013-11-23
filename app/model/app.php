@@ -11,19 +11,18 @@
 class Ai1ec_App {
 
 	/**
-	 * @var Ai1ec_System Instance of system layer.
+	 * @var Ai1ec_Registry_Object Instance of system layer.
 	 */
-	protected $_sys = null;
+	protected $_registry = null;
 
 	/**
 	 * Initiate base objects.
 	 *
-	 * @param Ai1ec_System $system Injectable system object.
-	 *
-	 * @return void Constructor does not return.
+	 * @param Ai1ec_Registry_Object $registry
+	 * @internal param \Ai1ec_Registry_Object $system Injectable system object.
 	 */
-	public function __construct( Ai1ec_Registry_Object $system ) {
-		$this->_sys = $system;
+	public function __construct( Ai1ec_Registry_Object $registry ) {
+		$this->_registry = $registry;
 		$this->_initialize();
 	}
 
@@ -35,5 +34,6 @@ class Ai1ec_App {
 	 * @return void Return from this method is ignored.
 	 */
 	protected function _initialize() {}
+
 
 }

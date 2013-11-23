@@ -14,11 +14,6 @@
 class Ai1ec_Loader {
 
 	/**
-	 * @var array The list of registered classes
-	 */
-	protected $_registered = array();
-
-	/**
 	 * @var string Used to specify new instances every time.
 	 */
 	CONST NEWINST    = 'n';

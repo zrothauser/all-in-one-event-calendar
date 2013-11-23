@@ -313,6 +313,10 @@ class Ai1ec_Front_Controller {
 				10,
 				2
 			);
+			$dispatcher->register_action(
+				'add_meta_boxes',
+				array( 'app.helper', 'add_meta_boxes' )
+			);
 
 		}
 

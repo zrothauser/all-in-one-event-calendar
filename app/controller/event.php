@@ -22,7 +22,7 @@ class Ai1ec_Events_Controller {
 	 * @param Ai1ec_Registry_Object $registry
 	 *
 	 **/
-	private function __construct( Ai1ec_Registry_Object $registry ) {
+	public function __construct( Ai1ec_Registry_Object $registry ) {
 
 		$this->_registry = $registry;
 
@@ -222,7 +222,7 @@ class Ai1ec_Events_Controller {
 		$ai1ec_events_helper  = $this->_registry->get( 'event.helper' );
 		$ai1ec_view_helper    = $this->_registry->get( 'view.helper' );
 
-		$empty_event          = new Ai1ec_Event();
+		$empty_event          = new Ai1ec_Event( $this->_registry );
 
 		// ==================
 		// = Default values =
@@ -597,7 +597,7 @@ class Ai1ec_Events_Controller {
 			// Post exists, but event data hasn't been saved yet. Create new event
 			// object.
 			$is_new = true;
-			$event = new Ai1ec_Event();
+			$event = new Ai1ec_Event( $this->_registry );
 			$event->post_id = $post_id;
 		}
 		// If the events is marked as instant, make it last 30 minutes

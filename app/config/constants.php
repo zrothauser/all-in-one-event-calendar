@@ -81,14 +81,6 @@ function ai1ec_initiate_constants( $ai1ec_base_dir ) {
 		define( 'AI1EC_UPDATES_URL', 'http://api.time.ly/plugin/pro/latest' );
 	}
 
-
-	// ===============
-	// = PLUGIN PATH =
-	// ===============
-	if ( ! defined( 'AI1EC_PATH' ) ) {
-		define( 'AI1EC_PATH',               dirname( __FILE__ ) );
-	}
-
 	// ===============
 	// = VENDOR PATH =
 	// ===============
@@ -274,6 +266,50 @@ function ai1ec_initiate_constants( $ai1ec_base_dir ) {
 			'http://aggregator.time.ly/ticket_redirect/'
 		);
 	}
+
+	// ===================
+	// = CSS Folder name =
+	// ===================
+	if ( ! defined( 'AI1EC_CSS_FOLDER' ) ) {
+		define( 'AI1EC_CSS_FOLDER',         'css' );
+	}
+
+	// ==================
+	// = JS Folder name =
+	// ==================
+	if ( ! defined( 'AI1EC_JS_FOLDER' ) ) {
+		define( 'AI1EC_JS_FOLDER',          'js' );
+	}
+
+	// =====================
+	// = Image folder name =
+	// =====================
+	if ( ! defined( 'AI1EC_IMG_FOLDER' ) ) {
+		define( 'AI1EC_IMG_FOLDER',         'img' );
+	}
+
+	
+	// ================
+	// = Admin JS URL =
+	// ================
+	if ( ! defined( 'AI1EC_ADMIN_THEME_JS_URL' ) ) {
+		define( 'AI1EC_ADMIN_THEME_JS_URL',   $ai1ec_base_dir . '/app/view/admin/' . AI1EC_JS_FOLDER );
+	}
+
+	// =================
+	// = Admin CSS URL =
+	// =================
+	if ( ! defined( 'AI1EC_ADMIN_THEME_CSS_URL' ) ) {
+		define( 'AI1EC_ADMIN_THEME_CSS_URL',  $ai1ec_base_dir . '/app/view/admin/' . AI1EC_CSS_FOLDER );
+	}
+
+	// =================
+	// = Admin IMG URL =
+	// =================
+	if ( ! defined( 'AI1EC_ADMIN_THEME_IMG_URL' ) ) {
+		define( 'AI1EC_ADMIN_THEME_IMG_URL',  $ai1ec_base_dir . '/app/view/admin/' . AI1EC_IMG_FOLDER );
+	}
+
 
 	// Enable All-in-One-Event-Calendar to work in debug mode, which means,
 	// that cache is ignored, extra output may appear at places, etc.

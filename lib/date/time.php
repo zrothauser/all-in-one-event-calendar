@@ -109,4 +109,13 @@ class Ai1ec_Date_Time {
 		return $this;
 	}
 
+	/**
+	 * Magic method for compatibility.
+	 *
+	 * @return string ISO-8601 formatted date-time.
+	 */
+	public function __toString() {
+		return $this->format( 'c' );
+	}
+
 }

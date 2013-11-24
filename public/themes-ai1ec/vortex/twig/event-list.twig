@@ -1,0 +1,28 @@
+<div class="timely">
+<h5 style="margin:0;">
+	Event List (from {{ start.format( 'Y-m-d' ) }} to {{ end.format( 'Y-m-d' ) }})
+</h5>
+
+<table>
+    <thead>
+        <tr>
+            <th>Venue</th>
+            <th>Country</th>
+            <th>Address</th>
+            <th>Start</th>
+            <th>End</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for event in events %}
+        <tr>
+            <td>{{ event.venue }}</td>
+            <td>{{ event.country }}</td>
+            <td>{{ event.address }}</td>
+            <td>{{ event.start }}</td>
+            <td>{{ event.end }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>

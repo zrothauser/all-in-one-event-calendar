@@ -25,34 +25,15 @@ class Ai1ec_Acl_Aco {
 	}
 
 	/**
-	 * Is the query for an existing single page?
-	 *
-	 * If the $page parameter is specified, this function will additionally
-	 * check if the query is for one of the pages specified.
-	 *
-	 * @param mixed $page Page ID, title, slug, or array of such.
-	 *
-	 * @return bool
+	 * Check if we are editing our custom post type.
+	 * 
+	 * @return boolean
 	 */
-	public function is_page( $page = '' ) {
-		return is_page( $page );
-	}
-
-	/**
-	 * Whether post requires password and correct password has been provided.
-	 *
-	 * @param int|WP_Post $post An optional post. Global $post used if not provided.
-	 *
-	 * @return bool false if a password is not required or the correct password cookie is present, true otherwise.
-	 */
-	public function post_password_required( $post = null ) {
-		return post_password_required( $post );
-	}
-
 	public function are_we_editing_our_post() {
 		global $post;
 		return $post->post_type === AI1EC_POST_TYPE;
 	}
+
 	/**
 	 * Check if it's our own custom post type.
 	 *

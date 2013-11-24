@@ -37,8 +37,6 @@ abstract class Ai1ec_Command {
 	) {
 		$this->_registry = $registry;
 		$this->_request = $request;
-		$type = $request->get( 'type' );
-		$this->_render_strategy = $registry->get( 'http.response.render.strategy.' . $type );
 	}
 
 	/**
@@ -49,6 +47,8 @@ abstract class Ai1ec_Command {
 	public function execute() {
 		// get the data from the concrete implementation
 		$data = $this->do_execute();
+		// Set the render strategy
+		$this->set_render_strategy( $this->_request );
 		// render it.
 		$this->_render_strategy->render( $data );
 	}
@@ -73,4 +73,11 @@ abstract class Ai1ec_Command {
 	 * @return boolean
 	 */
 	abstract public function is_this_to_execute();
+	
+	/**
+	 * Sets the render strategy.
+	 * 
+	 * @param Ai1ec_Request_Parser $request
+	 */
+	abstract public function set_render_strategy( Ai1ec_Request_Parser $request );
 }

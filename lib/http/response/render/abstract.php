@@ -8,7 +8,7 @@
  * @package    AI1EC
  * @subpackage AI1EC.Http.Response.Render
  */
-abstract class Ai1ec_Http_Response_Render_Strategy {
+abstract class Ai1ec_Http_Response_Render_Strategy extends Ai1ec_Base {
 
 	/**
 	 * Dump output buffers before starting output

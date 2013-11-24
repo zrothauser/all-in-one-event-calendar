@@ -84,7 +84,7 @@ class Ai1ec_Event_Search {
 		// on $filter elements specified
 		$filter = $this->_get_filter_sql( $filter );
 
-		$ai1ec_localization_helper = $this->_registry->get( 'localization' );
+		$ai1ec_localization_helper = $this->_registry->get( 'Ai1ec_Localization_Helper' );
 
 		$wpml_join_particle = $ai1ec_localization_helper
 			->get_wpml_table_join( 'p.ID' );
@@ -139,7 +139,7 @@ class Ai1ec_Event_Search {
 					ON `e`.`post_id` = `i`.`post_id`
 				{$filter['filter_join']}
 			WHERE
-				post_type = " . AI1EC_POST_TYPE . "
+				post_type = '" . AI1EC_POST_TYPE . "'
 				$wpml_where_particle
 			AND
 				$spanning_string
@@ -166,7 +166,7 @@ class Ai1ec_Event_Search {
 
 		foreach ( $events as &$event ) {
 			$event['allday'] = $this->_is_all_day( $event );
-			$event           = new Ai1ec_Event( $event );
+			$event           = $this->_registry->get( 'model.event', $event );
 		}
 
 		return $events;
@@ -251,9 +251,7 @@ class Ai1ec_Event_Search {
 			return false;
 		}
 
-		return (
-			86400 === $event['end']->format() - $event['start']->format()
-		);
+		return ( 86400 === $event['end'] - $event['start'] );
 	}
 
 	/**

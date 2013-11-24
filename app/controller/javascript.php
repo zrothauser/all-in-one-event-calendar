@@ -418,10 +418,7 @@ JSC;
 			$load_backend_script = self::TRUE_PARAM;
 		}
 		$is_calendar_page = false;
-		if( true === $this->_aco->is_page(
-				$this->_settings->get( 'calendar_page_id' )
-			)
-		) {
+		if( true === is_page( $this->_settings->get( 'calendar_page_id' ) ) ) {
 			$is_calendar_page = self::TRUE_PARAM;
 		}
 		$url = $this->_template_link_helper->get_site_url() . '?' .

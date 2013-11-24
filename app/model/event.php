@@ -480,9 +480,6 @@ class Ai1ec_Event extends Ai1ec_Base {
 				);
 			}
 
-			$event->start = $event->start;
-			$event->end   = $event->end;
-
 			// ===========================
 			// = Assign post to property =
 			// ===========================
@@ -532,6 +529,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 				', not \'' . $data . '\'.'
 			);
 		}
+		$this->_initialize_datetime();
 	}
 
 	/**
@@ -1943,5 +1941,16 @@ HTML;
 	function getDuration() {
 		return $this->end - $this->start;
 	}
+
+	/**
+	 * Initialize datetime objects from UNIX timestamps.
+	 *
+	 * @return void
+	 */
+	protected function _initialize_datetime() {
+		$this->start = $this->_registry->get( 'date.time', $this->start );
+		$this->end   = $this->_registry->get( 'date.time', $this->end );
+	}
+
 }
 // END class

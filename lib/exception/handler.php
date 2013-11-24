@@ -132,7 +132,7 @@ class Ai1ec_Exception_Handler {
 		$errstr,
 		$errfile,
 		$errline,
-		array $errcontext
+		$errcontext
 	) {
 		// if the error is not in our plugin, let PHP handle things.
 		if ( false === strpos( $errfile, AI1EC_PLUGIN_NAME ) ) {

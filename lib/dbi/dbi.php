@@ -15,23 +15,41 @@
 class Ai1ec_Dbi {
 
 	/**
+	 * @var Ai1ec_Registry_Object Instance of object registry.
+	 */
+	protected $_registry = null;
+
+	/**
 	 * @var wpdb Instance of database interface object
 	 */
 	protected $_dbi = null;
 
 	/**
-	 * Constructor assigns injected database access object to class variable
-	 *
-	 * @param wpdb $dbi Injected database access object
-	 *
-	 * @return void Constructor does not return
+	 * @var array Queries executed for log.
 	 */
-	public function __construct( $dbi = null ) {
+	protected $_queries = array();
+
+	/**
+	 * Constructor assigns injected database access object to class variable.
+	 *
+	 * @param Ai1ec_Registry_Object $registry Injected registry.
+	 * @param wpdb                  $dbi      Injected database access object.
+	 *
+	 * @return void Constructor does not return.
+	 */
+	public function __construct(
+		Ai1ec_Registry_Object $registry,
+		$dbi = null
+	) {
 		if ( null === $dbi ) {
 			global $wpdb;
 			$dbi = $wpdb;
 		}
-		$this->_dbi = $dbi;
+		$this->_dbi      = $dbi;
+		$this->_registry = $registry;
+		$this->_registry->get( 'controller.shutdown' )->register(
+			array( $this, 'shutdown' )
+		);
 	}
 
 	/**
@@ -42,7 +60,10 @@ class Ai1ec_Dbi {
 	 * @return int|false Number of rows affected/selected or false on error
 	 */
 	public function query( $sql_query ) {
-		return $this->_dbi->query( $sql_query );
+		$this->_query_profile( $sql_query );
+		$result = $this->_dbi->query( $sql_query );
+		$this->_query_profile( $result );
+		return $result;
 	}
 
 	/**
@@ -58,7 +79,10 @@ class Ai1ec_Dbi {
 	 * @return array Database query result. Array indexed from 0 by SQL result row number.
 	 */
 	public function get_col( $query = null , $col = 0 ) {
-		return $this->_dbi->get_col( $query, $col );
+		$this->_query_profile( $query );
+		$result = $this->_dbi->get_col( $query, $col );
+		$this->_query_profile( count( $result ) );
+		return $result;
 	}
 
 	/**
@@ -124,7 +148,10 @@ class Ai1ec_Dbi {
 	 * @return mixed Database query results
 	 */
 	public function get_results( $query, $output = OBJECT ){
-		return $this->_dbi->get_results( $query, $output );
+		$this->_query_profile( $query );
+		$result = $this->_dbi->get_results( $query, $output );
+		$this->_query_profile( count( $result ) );
+		return $result;
 	}
 
 	/**
@@ -141,7 +168,10 @@ class Ai1ec_Dbi {
 	 * @return string|null Database query result (as string), or null on failure
 	 */
 	public function get_var( $query = null, $col = 0, $row = 0 ) {
-		return $this->_dbi->get_var( $query, $col, $row );
+		$this->_query_profile( $query );
+		$result = $this->_dbi->get_var( $query, $col, $row );
+		$this->_query_profile( null !== $result );
+		return $result;
 	}
 
 	/**
@@ -157,7 +187,10 @@ class Ai1ec_Dbi {
 	 * @return mixed Database query result in format specified by $output or null on failure
 	 */
 	public function get_row( $query = null, $output = OBJECT, $row = 0 ) {
-		return $this->_dbi->get_row( $query, $output, $row );
+		$this->_query_profile( $query );
+		$result = $this->_dbi->get_row( $query, $output, $row );
+		$this->_query_profile( null !== $result );
+		return $result;
 	}
 
 	/**
@@ -171,7 +204,10 @@ class Ai1ec_Dbi {
 	 * @return int|false The number of rows inserted, or false on error.
 	 */
 	public function insert( $table, $data, $format = null ) {
-		return $this->_dbi->insert( $table, $data, $format );
+		$this->_query_profile( 'INSERT ' . $table . ': ' . implode( '//', $data ) );
+		$result = $this->_dbi->insert( $table, $data, $format );
+		$this->_query_profile( $result );
+		return $result;
 	}
 
 	/**
@@ -187,7 +223,10 @@ class Ai1ec_Dbi {
 	 * @return int|false The number of rows updated, or false on error.
 	 */
 	public function update( $table, $data, $where, $format = null, $where_format = null ) {
-		return $this->_dbi->update( $table, $data, $where, $format, $where_format );
+		$this->_query_profile( 'UPDATE ' . $table . ': ' . implode( '//', $data ) );
+		$result = $this->_dbi->update( $table, $data, $where, $format, $where_format );
+		$this->_query_profile( $result );
+		return $result;
 	}
 
 	/**
@@ -220,6 +259,81 @@ class Ai1ec_Dbi {
 			return $this->_dbi->prefix . $table;
 		}
 		return $this->_dbi->{$table};
+	}
+
+	/**
+	 * In debug mode prints DB queries table.
+	 *
+	 * @return void
+	 */
+	public function shutdown() {
+		if ( ! AI1EC_DEBUG ) {
+			return false;
+		}
+		echo '<div class="timely timely-debug">
+		  <table>
+		    <thead>
+		      <tr>
+		        <th>N.</th>
+		        <th>Query</th>
+		        <th>Duration, ms</th>
+		        <th>Row Count</th>
+		      </tr>
+		    </thead>
+		    <tbody>';
+		$i    = 0;
+		$time = 0;
+		foreach ( $this->_queries as $query ) {
+			$time += $query['d'];
+			echo '<tr>
+			        <td>', ++$i, '</td>
+			        <td>', $query['q'], '</td>
+			        <td>', round( $query['d'] * 1000, 2 ), '</td>
+			        <td>', (int)$query['r'], '</td>
+			      </tr>';
+		}
+		echo '
+		    </tbody>
+            <tfoot>
+              <tr>
+                <th colspan="4">Total time, ms: ',
+				round( $time * 1000, 2 ), '</th>
+              </tr>
+            </tfoot>
+		  </table>
+		</div>';
+		return true;
+	}
+
+	/**
+	 * Method aiding query profiling.
+	 *
+	 * How to use:
+	 * - on method resulting in query start call _query_profiler( 'SQL query' )
+	 * - on it's end call _query_profiler( (int)number_of_rows|(bool)false )
+	 *
+	 * @param mixed $query_or_result Query on first call, result on second.
+	 *
+	 * @return void
+	 */
+	protected function _query_profile( $query_or_result ) {
+		static $last = null;
+		if ( null === $last ) {
+			$last = array(
+				'd' => microtime( true ),
+				'q' => $query_or_result,
+			);
+		} else {
+			if ( count( $this->_queries ) > 200 ) {
+				array_shift( $this->_queries );
+			}
+			$this->_queries[] = array(
+				'd' => microtime( true ) - $last['d'],
+				'q' => $last['q'],
+				'r' => $query_or_result,
+			);
+			$last = null;
+		}
 	}
 
 }

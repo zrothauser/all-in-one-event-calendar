@@ -303,6 +303,9 @@ class Ai1ec_Dbi {
 		return $this->_dbi->insert_id;
 	}
 
+	public function get_wpdb_variable( $variable ) {
+		return $this->_dbi->{$variable};
+	}
 	/**
 	 * Return the full name for the table.
 	 *

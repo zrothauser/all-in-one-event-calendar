@@ -50,10 +50,7 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 			$c =$this->_insert_event_in_calendar( $event, $c, $export = true );
 		}
 		$str = ltrim( $c->createCalendar() );
-
-		header( 'Content-type: text/calendar; charset=utf-8' );
-		echo $str;
-		exit;
+		return $str;
 	}
 
 	/**

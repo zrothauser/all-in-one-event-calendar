@@ -42,7 +42,7 @@ class Ai1ec_View_Helper {
 			throw new Ai1ec_File_Not_Provided( "You need to specify a view file." );
 		}
 
-		$file = AI1EC_ADMIN_THEME_PATH . '/' . $file;
+		$file = AI1EC_ADMIN_PATH . '/' . $file;
 
 		if( ! file_exists( $file ) ) {
 			throw new Ai1ec_File_Not_Found( "The specified view file doesn't exist." );

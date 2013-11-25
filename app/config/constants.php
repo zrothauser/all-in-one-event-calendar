@@ -313,13 +313,6 @@ function ai1ec_initiate_constants( $ai1ec_base_dir ) {
 	// ============
 	// = App Path =
 	// ============
-	if ( ! defined( 'AI1EC_APP_PATH' ) ) {
-		define( 'AI1EC_APP_PATH', AI1EC_PATH . DIRECTORY_SEPARATOR . "app" );
-	}
-
-	// ============
-	// = App Path =
-	// ============
 	if ( ! defined( 'AI1EC_URL' ) ) {
 		$plugin_name = plugin_basename( AI1EC_PATH );
 		$plugin_url = plugins_url();
@@ -332,32 +325,20 @@ function ai1ec_initiate_constants( $ai1ec_base_dir ) {
 	}
 
 
-	// =============
-	// = View Path =
-	// =============
-	if ( ! defined( 'AI1EC_VIEW_PATH' ) ) {
-		define( 'AI1EC_VIEW_PATH',          AI1EC_APP_PATH . DIRECTORY_SEPARATOR . 'view' );
-	}
-
-	// ====================
-	// = Admin Theme Path =
-	// ====================
-	if ( ! defined( 'AI1EC_ADMIN_THEME_PATH' ) ) {
-		define( 'AI1EC_ADMIN_THEME_PATH',   AI1EC_VIEW_PATH . DIRECTORY_SEPARATOR . 'admin' );
-	}
 
 	// ========================
 	// = Admin theme CSS path =
 	// ========================
 	if ( ! defined( 'AI1EC_ADMIN_THEME_CSS_PATH' ) ) {
-		define( 'AI1EC_ADMIN_THEME_CSS_PATH', AI1EC_ADMIN_THEME_PATH . DIRECTORY_SEPARATOR . AI1EC_CSS_FOLDER );
+		define( 'AI1EC_ADMIN_THEME_CSS_PATH', AI1EC_ADMIN_PATH . AI1EC_CSS_FOLDER );
 	}
 
 	// =======================
 	// = Admin theme JS path =
 	// =======================
 	if ( ! defined( 'AI1EC_ADMIN_THEME_JS_PATH' ) ) {
-		define( 'AI1EC_ADMIN_THEME_JS_PATH', AI1EC_ADMIN_THEME_PATH . DIRECTORY_SEPARATOR . AI1EC_JS_FOLDER );
+		define( 'AI1EC_ADMIN_THEME_JS_PATH', AI1EC_PATH . DIRECTORY_SEPARATOR . 'public' .
+            DIRECTORY_SEPARATOR . AI1EC_JS_FOLDER );
 	}
 
 
@@ -366,21 +347,21 @@ function ai1ec_initiate_constants( $ai1ec_base_dir ) {
 	// = Admin JS URL =
 	// ================
 	if ( ! defined( 'AI1EC_ADMIN_THEME_JS_URL' ) ) {
-		define( 'AI1EC_ADMIN_THEME_JS_URL',   AI1EC_URL . '/app/view/admin/' . AI1EC_JS_FOLDER );
+		define( 'AI1EC_ADMIN_THEME_JS_URL',   AI1EC_URL . '/public/' . AI1EC_JS_FOLDER );
 	}
 
 	// =================
 	// = Admin CSS URL =
 	// =================
 	if ( ! defined( 'AI1EC_ADMIN_THEME_CSS_URL' ) ) {
-		define( 'AI1EC_ADMIN_THEME_CSS_URL',  AI1EC_URL . '/app/view/admin/' . AI1EC_CSS_FOLDER );
+		define( 'AI1EC_ADMIN_THEME_CSS_URL',  AI1EC_URL . '/public/admin/' . AI1EC_CSS_FOLDER );
 	}
 
 	// =================
 	// = Admin IMG URL =
 	// =================
 	if ( ! defined( 'AI1EC_ADMIN_THEME_IMG_URL' ) ) {
-		define( 'AI1EC_ADMIN_THEME_IMG_URL',  AI1EC_URL . '/app/view/admin/' . AI1EC_IMG_FOLDER );
+		define( 'AI1EC_ADMIN_THEME_IMG_URL',  AI1EC_URL . '/public/admin/' . AI1EC_IMG_FOLDER );
 	}
 
 

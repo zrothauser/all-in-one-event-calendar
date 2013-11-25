@@ -63,22 +63,14 @@ class Ai1ec_Event_Search {
 	) {
 		$db = $this->_dbi;
 		$localization_helper = $this->_registry->get( 'p28n.wpml' );
-	
-		// holds event_categories sql
-		$c_sql = '';
-		$c_where_sql = '';
-		// holds event_tags sql
-		$t_sql = '';
-		$t_where_sql ='';
-		// holds posts sql
-		$p_where_sql = '';
+
 		// holds start sql
 		$start_where_sql = '';
 		// holds end sql
 		$end_where_sql = '';
 		// hold escape values
 		$args = array();
-	
+
 		// =============================
 		// = Generating start date sql =
 		// =============================
@@ -86,7 +78,7 @@ class Ai1ec_Event_Search {
 			$start_where_sql = "AND (e.start >= %d OR e.recurrence_rules != '')";
 			$args[] = $start;
 		}
-	
+
 		// ===========================
 		// = Generating end date sql =
 		// ===========================
@@ -94,12 +86,12 @@ class Ai1ec_Event_Search {
 			$end_where_sql = "AND (e.end <= %d OR e.recurrence_rules != '')";
 			$args[] = $end;
 		}
-	
+
 		$wpml_join_particle  = $localization_helper
 			->get_wpml_table_join();
 		$wpml_where_particle = $localization_helper
 			->get_wpml_table_where();
-	
+
 		// Get the Join (filter_join) and Where (filter_where) statements based on $filter elements specified
 		$filter = $this->_get_filter_sql( $filter );
 		$query = $db->prepare(
@@ -107,8 +99,8 @@ class Ai1ec_Event_Search {
 				e.recurrence_dates, e.exception_dates, e.venue, e.country, e.address, e.city, e.province, e.postal_code,
 				e.show_map, e.contact_name, e.contact_phone, e.contact_email, e.cost, e.ical_feed_url, e.ical_source_url,
 				e.ical_organizer, e.ical_contact, e.ical_uid " .
-			"FROM " . $db->get_wpdb_variable( 'post' ) .
-			"INNER JOIN " . $db->get_table_name( 'ai1ec_events' ) . " AS e ON e.post_id = ID " .
+			"FROM " . $db->get_wpdb_variable( 'posts' ) .
+			" INNER JOIN " . $db->get_table_name( 'ai1ec_events' ) . " AS e ON e.post_id = ID " .
 			$wpml_join_particle .
 			$filter['filter_join'] .
 			"WHERE post_type = '" . AI1EC_POST_TYPE . "' " .
@@ -118,31 +110,31 @@ class Ai1ec_Event_Search {
 			$start_where_sql .
 			$end_where_sql,
 			$args );
-	
+
 		$events = $db->get_results( $query, ARRAY_A );
-	
+
 		foreach( $events as &$event ) {
 			$event['start'] = $event['start'];
 			$event['end']   = $event['end'];
 			try {
-				$event = new Ai1ec_Event( $event );
+				$event = $this->_registry->get( 'model.event', $event );
 			} catch( Ai1ec_Event_Not_Found $n ) {
 				unset( $event );
 				// The event is not found, continue to the next event
 				continue;
 			}
-	
+
 			// if there are recurrence rules, include the event, else...
 			if( empty( $event->recurrence_rules ) ) {
 				// if start time is set, and event start time is before the range
 				// it, continue to the next event
-				if( $start !== false && $event->start < $start ) {
+				if( $start !== false && $event->start->format() < $start ) {
 					unset( $event );
 					continue;
 				}
 				// if end time is set, and event end time is after
 				// it, continue to the next event
-				if( $end !== false && $ev->end < $end ) {
+				if( $end !== false && $event->end->format() < $end ) {
 					unset( $event );
 					continue;
 				}

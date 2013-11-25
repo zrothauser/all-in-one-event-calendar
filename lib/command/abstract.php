@@ -62,7 +62,7 @@ abstract class Ai1ec_Command {
 		if ( (string)AI1EC_PLUGIN_NAME === (string)$plugin && 
 			null !== $controller && null !== $action
 		) {
-			$params = array(
+			return array(
 				'controller' => $controller,
 				'action'     => $action
 			);

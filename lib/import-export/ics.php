@@ -39,7 +39,7 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		}
 		$c->setProperty( 'X-FROM-URL', home_url() );
 		// Timezone setup
-		$tz = $this->_registry->get( 'meta' )->get( 'timezone_string' );
+		$tz = $this->_registry->get( 'model.option' )->get( 'timezone_string' );
 		if ( $tz ) {
 			$c->setProperty( 'X-WR-TIMEZONE', $tz );
 			$tz_xprops = array( 'X-LIC-LOCATION' => $tz );

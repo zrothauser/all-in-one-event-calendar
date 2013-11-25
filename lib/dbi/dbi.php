@@ -303,6 +303,12 @@ class Ai1ec_Dbi {
 		return $this->_dbi->insert_id;
 	}
 
+	/**
+	 * Get a variable from the wpdb object.
+	 *
+	 * @param string $variable
+	 * @return mixed
+	 */
 	public function get_wpdb_variable( $variable ) {
 		return $this->_dbi->{$variable};
 	}

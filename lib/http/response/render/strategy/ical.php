@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Render the request as ical.
  *

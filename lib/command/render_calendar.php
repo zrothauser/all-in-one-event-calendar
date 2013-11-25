@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The concrete command that renders the calendar.
  *

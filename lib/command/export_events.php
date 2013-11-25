@@ -1,8 +1,24 @@
 <?php
+
+/**
+ * The concrete command that export events.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Command
+ */
 class Ai1ec_Command_Export_Events extends Ai1ec_Command {
 
+	/**
+	 * @var array Request parameters
+	 */
 	protected $_params;
 
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Command::is_this_to_execute()
+	 */
 	public function is_this_to_execute() {
 		$params = $this->get_parameters();
 		if ( false === $params ) {
@@ -32,6 +48,9 @@ class Ai1ec_Command_Export_Events extends Ai1ec_Command {
 		return false;
 	}
 
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Command::set_render_strategy()
+	 */
 	public function set_render_strategy( Ai1ec_Request_Parser $request ) {
 		$this->_render_strategy = $this->_registry->get(
 			'http.response.render.strategy.ical'

@@ -10,13 +10,8 @@
  * @subpackage Ai1EC.Events
  */
 
-class Ai1ec_Events_List_Helper
+class Ai1ec_Events_List_Helper extends Ai1ec_Base
 {
-
-	/**
-	 * @var Ai1ec_Registry_Object The Object registry.
-	 */
-	private $_registry;
 
 	/**
 	 * @var Ai1ec_Dbi database access wrapper
@@ -147,6 +142,7 @@ class Ai1ec_Events_List_Helper
 		return $this->_dbi->query( $statement );
 	}
 
+
 	/**
 	 * Constructor
 	 *
@@ -156,9 +152,10 @@ class Ai1ec_Events_List_Helper
 	 *
 	 * @param Ai1ec_Registry_Object $registry
 	 */
-	protected function __construct( Ai1ec_Registry_Object $registry ) {
-		$this->_registry    = $registry;
+	public function __construct( Ai1ec_Registry_Object $registry ) {
 		$this->_force_purge = false;
+        $this->_registry = $registry;
+        $this->_dbi = $this->_registry->get( 'Ai1ec_Dbi' );
 	}
 
 }

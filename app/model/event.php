@@ -463,9 +463,9 @@ class Ai1ec_Event extends Ai1ec_Base {
 			$query = $dbi->prepare(
 				"SELECT {$select_sql}" .
 				"FROM {$dbi->get_table_name( 'ai1ec_events' )} e " .
-					"LEFT JOIN $dbi->term_relationships tr ON e.post_id = tr.object_id " .
-					"LEFT JOIN $dbi->term_taxonomy ttc ON tr.term_taxonomy_id = ttc.term_taxonomy_id AND ttc.taxonomy = 'events_categories' " .
-					"LEFT JOIN $dbi->term_taxonomy ttt ON tr.term_taxonomy_id = ttt.term_taxonomy_id AND ttt.taxonomy = 'events_tags' " .
+					"LEFT JOIN {$dbi->get_table_name( 'term_relationships' )} tr ON e.post_id = tr.object_id " .
+					"LEFT JOIN {$dbi->get_table_name( 'term_taxonomy' )} ttc ON tr.term_taxonomy_id = ttc.term_taxonomy_id AND ttc.taxonomy = 'events_categories' " .
+					"LEFT JOIN {$dbi->get_table_name( 'term_taxonomy' )} ttt ON tr.term_taxonomy_id = ttt.term_taxonomy_id AND ttt.taxonomy = 'events_tags' " .
 					"{$left_join}" .
 				"WHERE e.post_id = %d " .
 				"GROUP BY e.post_id",

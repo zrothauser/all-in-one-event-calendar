@@ -22,7 +22,7 @@ class Ai1ec_Importer_Plugin_Helper {
 	 *
 	 * Default constructor
 	 **/
-	private function __construct() {}
+	public function __construct() {}
 
 	/**
 	 * add plugin to the internal Array. This assure us that the plugins extends our base abstract class.

@@ -10,12 +10,8 @@
  * @subpackage   Ai1EC.Utility
  */
 
-class Ai1ec_Time_Utility {
+class Ai1ec_Time_Utility extends Ai1ec_Base{
 
-	/**
-	 * @var Ai1ec_Time_Utility Instance of self to save resources
-	 */
-	static protected $_instance  = NULL;
 
 	/**
 	 * @var Ai1ec_Memory_Utility Instance, where DateTimeZone objects are held
@@ -60,20 +56,6 @@ class Ai1ec_Time_Utility {
 	 */
 	protected $_current_time      = NULL;
 
-	/**
-	 * instance method
-	 *
-	 * Singleton creation method, to allow saving resources and having single
-	 * object instance throughout system.
-	 *
-	 * @return Ai1ec_Time_Utility Single instance of self
-	 */
-	static public function instance() {
-		if ( ! ( self::$_instance instanceof Ai1ec_Time_Utility ) ) {
-			self::$_instance = new Ai1ec_Time_Utility();
-		}
-		return self::$_instance;
-	}
 
 	/**
 	 * to_mysql_date method
@@ -85,7 +67,7 @@ class Ai1ec_Time_Utility {
 	 *
 	 * @return string MySQL date to use in queries
 	 */
-	static public function to_mysql_date( $timestamp ) {
+	public function to_mysql_date( $timestamp ) {
 		return date( 'Y-m-d H:i:s', $timestamp );
 	}
 
@@ -98,7 +80,7 @@ class Ai1ec_Time_Utility {
 	 *
 	 * @return int UNIX timestamp decoded from date given
 	 */
-	static public function from_mysql_date( $date ) {
+	 public function from_mysql_date( $date ) {
 		return strtotime( $date );
 	}
 
@@ -117,7 +99,7 @@ class Ai1ec_Time_Utility {
 	 *
 	 * @return array Supported date patterns
 	 */
-	static public function get_date_patterns() {
+	 public function get_date_patterns() {
 		return array(
 			'def' => 'd/m/yyyy',
 			'us'  => 'm/d/yyyy',
@@ -128,13 +110,13 @@ class Ai1ec_Time_Utility {
 
 	/**
 	 * Returns the date pattern (in the form 'd-m-yyyy', for example) associated
-	 * with the provided key, used by plugin settings. Simply a static map as
+	 * with the provided key, used by plugin settings. Simply a  map as
 	 * follows:
 	 *
 	 * @param  string $key Key for the date format
 	 * @return string      Associated date format pattern
 	 */
-	static public function get_date_pattern_by_key( $key = 'def' ) {
+	 public function get_date_pattern_by_key( $key = 'def' ) {
 		$patterns = self::get_date_patterns();
 		return $patterns[$key];
 	}
@@ -150,7 +132,7 @@ class Ai1ec_Time_Utility {
 	 *                           format date with
 	 * @return string            Formatted date string
 	 */
-	static public function format_date_for_url( $timestamp, $pattern = 'def' ) {
+	 public function format_date_for_url( $timestamp, $pattern = 'def' ) {
 		$date = self::format_date( $timestamp, $pattern );
 		$date = str_replace( '/', '-', $date );
 		return $date;
@@ -166,7 +148,7 @@ class Ai1ec_Time_Utility {
 	 *                           format date with
 	 * @return string            Formatted date string
 	 */
-	static public function format_date( $timestamp, $pattern = 'def' ) {
+	 public function format_date( $timestamp, $pattern = 'def' ) {
 		$pattern = self::get_date_pattern_by_key( $pattern );
 		$pattern = str_replace(
 			array( 'dd', 'd', 'mm', 'm', 'yyyy', 'yy' ),
@@ -186,9 +168,8 @@ class Ai1ec_Time_Utility {
 	 *
 	 * @throws Ai1ec_Date_Exception If default timezone is invalid/undefined
 	 */
-	static public function get_default_timezone() {
-		$_this = self::instance();
-		if ( NULL === $_this->_default_timezone ) {
+	 public function get_default_timezone() {
+		if ( NULL === $this->_default_timezone ) {
 			$name       = date_default_timezone_get();
 			$name_entry = array(
 				'name'  => $name,
@@ -197,13 +178,13 @@ class Ai1ec_Time_Utility {
 			if ( is_string( $name ) ) {
 				$name_entry['valid'] = true;
 			}
-			$_this->_default_timezone = $name_entry;
+			$this->_default_timezone = $name_entry;
 			unset( $name, $name_entry );
 		}
-		if ( ! $_this->_default_timezone['valid'] ) {
+		if ( ! $this->_default_timezone['valid'] ) {
 			throw new Ai1ec_Date_Exception( 'Default timezone undefined' );
 		}
-		return $_this->_default_timezone['name'];
+		return $this->_default_timezone['name'];
 	}
 
 	/**
@@ -215,13 +196,14 @@ class Ai1ec_Time_Utility {
 	 *
 	 * @return string Timezone identified as local
 	 */
-	static public function get_local_timezone( $default = 'America/Los_Angeles' ) {
-		static $_cached = NULL;
+	public function get_local_timezone( $default = 'America/Los_Angeles' ) {
+		 $_cached = NULL;
 		if ( NULL === $_cached ) {
 			$user = wp_get_current_user();
 			$zone = '';
 			if ( $user->ID > 0 ) {
-				global $ai1ec_app_helper;
+
+                $ai1ec_app_helper = $this->_registry->get( 'Ai1ec_App_Helper' );
 				$zone = $ai1ec_app_helper->user_selected_tz( $user->ID );
 			}
 			unset( $user );
@@ -252,21 +234,21 @@ class Ai1ec_Time_Utility {
 	 *
 	 * @return float Timezone offset from GMT in hours
 	 */
-	static public function get_gmt_offset( $timestamp = false, $zone = NULL ) {
-		$_this = self::instance();
+	 public function get_gmt_offset( $timestamp = false, $zone = NULL ) {
+		
 		if ( NULL === $zone ) {
-			$zone = $_this->get_local_timezone();
+			$zone = $this->get_local_timezone();
 		}
-		if ( NULL === ( $offset = $_this->_gmt_offsets->get( $zone ) ) ) {
-			$timezone  = $_this->_get_timezone( $zone );
-			$reference = $_this->_date_time_from_timestamp( $timestamp );
+		if ( NULL === ( $offset = $this->_gmt_offsets->get( $zone ) ) ) {
+			$timezone  = $this->_get_timezone( $zone );
+			$reference = $this->_date_time_from_timestamp( $timestamp );
 			if ( false === $timezone || false === $reference ) {
 				$offset = get_option( 'gmt_offset' );
 			} else {
 				$offset = round( $timezone->getOffset( $reference ) / 3600, 2);
 			}
 			unset( $timezone, $reference );
-			$_this->_gmt_offsets->set( $zone, $offset );
+			$this->_gmt_offsets->set( $zone, $offset );
 		}
 		return $offset;
 	}
@@ -279,7 +261,7 @@ class Ai1ec_Time_Utility {
 	 *
 	 * @return string           GMT offset expression
 	 */
-	static public function get_gmt_offset_expr(
+	 public function get_gmt_offset_expr(
 		$timestamp = false, $zone = NULL
 	) {
 		$timezone = self::get_gmt_offset( $timestamp, $zone );
@@ -305,19 +287,18 @@ class Ai1ec_Time_Utility {
 	 *
 	 * @return int Local timezone offset from GMT
 	 *
-	 * @staticvar Ai1ec_Memory_Utility $offsets Instance of UTC offsets storage
+	 * @var Ai1ec_Memory_Utility $offsets Instance of UTC offsets storage
 	 *
 	 * @throws Ai1ec_Date_Exception If local timezone is invalid
 	 */
-	static public function get_local_offset_from_gmt( $timestamp ) {
-		$_this  = self::instance();
-		$zone   = $_this->get_local_timezone();
+	 public function get_local_offset_from_gmt( $timestamp ) {
+		$zone   = $this->get_local_timezone();
 		$offset = false;
 		try {
-			$offset = $_this->get_timezone_offset( 'UTC', $zone, $timestamp );
+			$offset = $this->get_timezone_offset( 'UTC', $zone, $timestamp );
 		} catch ( Exception $tz_excpt ) {
 			try {
-				$offset = $_this->get_gmt_offset( $timestamp, $zone ) * 3600;
+				$offset = $this->get_gmt_offset( $timestamp, $zone ) * 3600;
 			} catch ( Exception $gmt_excpt ) {
 				throw new Ai1ec_Date_Exception(
 					'Invalid local timezone ' . var_export( $zone, true )
@@ -336,7 +317,7 @@ class Ai1ec_Time_Utility {
 	 *
 	 * @return int UNIX timestamp in local timezone
 	 */
-	static public function gmt_to_local( $timestamp ) {
+	 public function gmt_to_local( $timestamp ) {
 		return $timestamp + self::get_local_offset_from_gmt( $timestamp );
 	}
 
@@ -353,13 +334,12 @@ class Ai1ec_Time_Utility {
 	 * @return int Number of seconds to add to local time to counteract DST
 	 *             effect when converting to UTC
 	 */
-	static public function dst_difference( $timestamp ) {
-		$_this          = self::instance();
+	 public function dst_difference( $timestamp ) {
 		if (
-			NULL === ( $actual = $_this->_dst_differences->get( $timestamp ) )
+			NULL === ( $actual = $this->_dst_differences->get( $timestamp ) )
 		) {
-			$local_tz       = $_this->get_local_timezone();
-			$tz_object      = $_this->_get_timezone( $local_tz );
+			$local_tz       = $this->get_local_timezone();
+			$tz_object      = $this->_get_timezone( $local_tz );
 			$transitions    = $tz_object->getDetailedTransitions( $timestamp );
 			$dst_offset     = absint( $transitions['curr']['offset'] );
 			$dst_length     = $transitions['curr']['offset'] -
@@ -387,7 +367,7 @@ class Ai1ec_Time_Utility {
 			if ( NULL === $actual ) {
 				$actual = 0;
 			}
-			$_this->_dst_differences->set( $timestamp, $actual );
+			$this->_dst_differences->set( $timestamp, $actual );
 		}
 		return $actual;
 	}
@@ -401,7 +381,7 @@ class Ai1ec_Time_Utility {
 	 *
 	 * @return int UNIX timestamp in GMT
 	 */
-	static public function local_to_gmt( $timestamp ) {
+	 public function local_to_gmt( $timestamp ) {
 		$gmtized    = $timestamp - self::get_local_offset_from_gmt(
 				$timestamp
 			);
@@ -425,29 +405,28 @@ class Ai1ec_Time_Utility {
 	 * @return int Difference, in seconds, between timezones
 	 *
 	 */
-	static public function get_timezone_offset(
+	 public function get_timezone_offset(
 		$remote_tz,
 		$origin_tz = NULL,
 		$timestamp = false
 	) {
 		$use_key         = ( (string)$remote_tz ) . '@*@' .
 			( (string)$origin_tz ) . '@*@' . ( (string)$timestamp );
-		$_this           = self::instance();
-		if ( NULL === ( $offset = $_this->_timezone_offsets->get( $use_key ) ) ) {
+		if ( NULL === ( $offset = $this->_timezone_offsets->get( $use_key ) ) ) {
 			if ( NULL === $origin_tz ) {
-				$origin_tz = $_this->get_default_timezone();
+				$origin_tz = $this->get_default_timezone();
 			}
 			if ( $remote_tz === $origin_tz ) {
 				$offset = 0;
 			} else {
-				$remote_zone_obj = $_this->_get_timezone( $remote_tz );
-				$origin_zone_obj = $_this->_get_timezone( $origin_tz );
-				$reference_time  = $_this->_date_time_from_timestamp( $timestamp );
+				$remote_zone_obj = $this->_get_timezone( $remote_tz );
+				$origin_zone_obj = $this->_get_timezone( $origin_tz );
+				$reference_time  = $this->_date_time_from_timestamp( $timestamp );
 				$offset          = $origin_zone_obj->getOffset(
 						$reference_time
 					) - $remote_zone_obj->getOffset( $reference_time );
 			}
-			$_this->_timezone_offsets->set( $use_key, $offset );
+			$this->_timezone_offsets->set( $use_key, $offset );
 		}
 		return $offset;
 	}
@@ -461,12 +440,11 @@ class Ai1ec_Time_Utility {
 	 *
 	 * @return array Associative array of information related to the timestamp
 	 */
-	static public function gmgetdate( $timestamp = NULL ) {
-		$_this = self::instance();
+	 public function gmgetdate( $timestamp = NULL ) {
 		if ( NULL === $timestamp ) {
 			$timestamp = (int)$_SERVER['REQUEST_TIME'];
 		}
-		if ( NULL === ( $date = $_this->_gmtdates->get( $timestamp ) ) ) {
+		if ( NULL === ( $date = $this->_gmtdates->get( $timestamp ) ) ) {
 			$particles = explode(
 				',',
 				gmdate( 's,i,G,j,w,n,Y,z,l,F,U', $timestamp )
@@ -487,7 +465,7 @@ class Ai1ec_Time_Utility {
 				),
 				$particles
 			);
-			$_this->_gmtdates->set( $timestamp, $date );
+			$this->_gmtdates->set( $timestamp, $date );
 		}
 		return $date;
 	}
@@ -505,12 +483,12 @@ class Ai1ec_Time_Utility {
 	 *
 	 * @return string Formatted date-time entry
 	 */
-	static public function date_i18n(
+	 public function date_i18n(
 		$format,
 		$timestamp = false,
 		$is_gmt    = true
 	) {
-		return self::instance()->_time_i18n
+		return $this->_time_i18n
 			->format( $format, $timestamp, $is_gmt );
 	}
 
@@ -523,8 +501,8 @@ class Ai1ec_Time_Utility {
 	 *
 	 * @return int Current time UNIX timestamp
 	 */
-	static public function current_time( $is_gmt = false ) {
-		return self::instance()->_current_time( $is_gmt );
+	 public function current_time( $is_gmt = false ) {
+		return $this->_current_time( $is_gmt );
 	}
 
 	/**
@@ -573,11 +551,11 @@ class Ai1ec_Time_Utility {
 	 *
 	 * @return int Normalized timestamp
 	 */
-	static public function normalize_timestamp(
+	 public function normalize_timestamp(
 		$timestamp = false,
 		$is_gmt    = false
 	) {
-		return self::instance()->_normalize_timestamp( $timestamp, $is_gmt );
+		return $this->_normalize_timestamp( $timestamp, $is_gmt );
 	}
 
 	/**
@@ -662,7 +640,9 @@ class Ai1ec_Time_Utility {
 	 *
 	 * @return \Ai1ec_Time_Utility Constructor does not return
 	 */
-	protected function __construct() {
+	public function __construct( Ai1ec_Registry_Object $registry ) {
+        $this->_registry = $registry;
+
 		$this->_timezones        = Ai1ec_Memory_Utility::instance(
 			__CLASS__ . '/timezones'
 		);

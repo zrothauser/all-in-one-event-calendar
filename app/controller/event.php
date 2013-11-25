@@ -139,7 +139,7 @@ class Ai1ec_Events_Controller {
 	 **/
 	function delete_post( $pid ) {
 		$ai1ec_importer_plugin_helper = $this->
-			_registry->get( 'importer.plugin.helper' );
+			_registry->get( 'Ai1ec_Importer_Plugin_Helper' );
 		$dbi = $this->_registry->get( 'dbi' );
 		$pid = (int)$pid;
 		$sql = '
@@ -512,7 +512,7 @@ class Ai1ec_Events_Controller {
 	 */
 	function save_post( $post_id, $post ) {
 		$ai1ec_events_helper          = $this->_registry->get( 'event.helper' );
-		$ai1ec_importer_plugin_helper = $this->_registry->get( 'importer.plugin.helper' );
+		$ai1ec_importer_plugin_helper = $this->_registry->get( 'Ai1ec_Importer_Plugin_Helper' );
 
 		// verify this came from the our screen and with proper authorization,
 		// because save_post can be triggered at other times
@@ -593,7 +593,7 @@ class Ai1ec_Events_Controller {
 		$is_new = false;
 		$event 	= null;
 		try {
-			$event = new Ai1ec_Event( $post_id ? $post_id : null );
+			$event = new Ai1ec_Event( $this->_registry, $post_id ? $post_id : null );
 		} catch( Ai1ec_Event_Not_Found $e ) {
 			// Post exists, but event data hasn't been saved yet. Create new event
 			// object.
@@ -632,7 +632,8 @@ class Ai1ec_Events_Controller {
 		$event->latitude            = trim( $latitude ) !== '' ? (float) $latitude : NULL;
 
 		// if we are not saving a draft, give the event to the plugins. Also do not pass events that are imported from facebook
-		if( $post->post_status !== 'draft' && $event->facebook_status !== Ai1ecFacebookConnectorPlugin::FB_IMPORTED_EVENT ) {
+	//	if( $post->post_status !== 'draft' && $event->facebook_status !== Ai1ecFacebookConnectorPlugin::FB_IMPORTED_EVENT ) { // TODO: reenable facebook check!
+        if( $post->post_status !== 'draft'){
 			$ai1ec_importer_plugin_helper->handle_post_event( $event, 'save' );
 		}
 		$saved_post_id = $event->save( ! $is_new );

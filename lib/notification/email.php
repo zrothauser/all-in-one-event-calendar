@@ -14,32 +14,33 @@ class Ai1ec_Email_Notification extends Ai1ec_Notification {
 	/**
 	 * @var string
 	 */
-	private $subject;
+	private $_subject;
 
 	/**
 	 * @var array
 	 */
-	private $translations = array();
+	private $_translations = array();
 
 	/**
 	 * @param array: $translations
 	 */
 	public function set_translations( array $translations ) {
-		$this->translations = $translations;
+		$this->_translations = $translations;
 	}
 
-	public function __construct( array $recipients, $message, $subject ) {
-		parent::__construct( $recipients, $message );
-		$this->subject = $subject;
+	public function __construct( $message, array $recipients, $subject ) {
+		parent::__construct( $message, $recipients );
+		$this->_subject = $subject;
 	}
 
 	public function send() {
-		$this->parse_text();
-		return wp_mail( $this->recipients, $this->subject, $this->message );
+		$this->_parse_text();
+		return wp_mail( $this->_recipients, $this->_subject, $this->_message );
 	}
 
-	private function parse_text() {
-		$this->message = strtr( $this->message, $this->translations );
-		$this->subject = strtr( $this->subject, $this->translations );
+	private function _parse_text() {
+		$this->_message = strtr( $this->_message, $this->_translations );
+		$this->_subject = strtr( $this->_subject, $this->_translations );
 	}
+
 }

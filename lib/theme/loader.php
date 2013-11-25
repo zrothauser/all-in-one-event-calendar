@@ -128,7 +128,7 @@ class Ai1ec_Theme_Loader {
 			$loader = new Twig_Loader_Filesystem( $loader_path );
 			unset( $loader_path );
 
-			// TODO: Add cache support.
+			// @TODO: Add cache support.
 			$this->_twig = new Twig_Environment( $loader );
 
 			// Add translation filter.

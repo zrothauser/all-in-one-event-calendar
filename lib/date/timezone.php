@@ -8,7 +8,7 @@
  * @package    Ai1EC
  * @subpackage Ai1EC.Date
  */
-class Ai1ec_Date_Timezone {
+class Ai1ec_Date_Timezone extends Ai1ec_Base {
 
 	/**
 	 * @var Ai1ec_Cache_Interface In-memory storage for timezone objects.
@@ -321,8 +321,54 @@ class Ai1ec_Date_Timezone {
 	 * @return void
 	 */
 	public function __construct( Ai1ec_Registry_Object $registry ) {
-		$this->_cache = $registry->get( 'cache.memory' );
+		parent::__construct( $registry );
+		$this->_cache = $this->_registry->get( 'cache.memory' );
 		$this->_init_identifiers();
+	}
+
+	/**
+	 * Get default timezone to use in input/output.
+	 *
+	 * Approach is as follows:
+	 * - check user profile for timezone preference;
+	 * - if user has no preference - check site for timezone selection;
+	 * - if site has no selection - raise notice and use 'UTC'.
+	 *
+	 * @return string Olson timezone string identifier.
+	 */
+	public function get_default_timezone() {
+		static $default_timezone = null;
+		if ( null === $default_timezone ) {
+			$candidates = array();
+			$candidates[] = (string)$this->_registry->get( 'model.meta-user' )
+				->get_current( 'ai1ec_timezone' );
+			$candidates[] = (string)$this->_registry->get( 'model.option' )
+				->get( 'timezone_string' );
+			$candidates = array_filter( $candidates );
+			foreach ( $candidates as $timezone ) {
+				$timezone = $this->get_name( $timezone );
+				if ( false !== $timezone ) {
+					$default_timezone = $timezone;
+					break;
+				}
+			}
+			if ( null === $default_timezone ) {
+				$default_timezone = 'UTC';
+				$this->_registry->get(
+					'notification.admin',
+					sprintf(
+						Ai1ec_I18n::__(
+							'Please select site timezone in %s <em>Timezone</em> dropdown menu.'
+						),
+						'<a href="' . admin_url( 'options-general.php' ) .
+						'">' . Ai1ec_I18n::__( 'Settings' ) . '</a>'
+					),
+					array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
+					'error'
+				);
+			}
+		}
+		return $default_timezone;
 	}
 
 	/**

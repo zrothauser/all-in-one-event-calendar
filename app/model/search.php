@@ -269,12 +269,6 @@ class Ai1ec_Event_Search {
 	public function cache_event( Ai1ec_Event &$event ) {
 		$db = $this->_registry->get( 'dbi.dbi' );
 
-		// Convert event timestamps to local for correct calculations of
-		// recurrence. Need to also remove PHP timezone offset for each date for
-		// SG_iCal to calculate correct recurring instances.
-		//$event->start = $event->start->format() - $event->start->format( 'Z' );
-		//$event->end   = $event->end->format()   - $event->end->format( 'Z' );
-
 		$evs = array();
 		$e	 = array(
 			'post_id' => $event->post_id,

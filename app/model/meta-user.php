@@ -24,7 +24,7 @@ class Ai1ec_Meta_User extends Ai1ec_Meta {
 		$user    = wp_get_current_user();
 		$user_id = (int)$user->ID;
 		unset( $user );
-		if ( $user_id < 0 ) {
+		if ( $user_id <= 0 ) {
 			return $default;
 		}
 		return $this->get( $user_id, $meta_key, $default );

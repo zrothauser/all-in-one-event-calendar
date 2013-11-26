@@ -11,6 +11,17 @@
  */
 class Ai1ec_Command_Export_Events extends Ai1ec_Command {
 
+
+	/**
+	 * @var string The name of the old exporter controller.
+	 */
+	const EXPORT_CONTROLLER = 'ai1ec_exporter_controller';
+	
+	/**
+	 * @var string The name of the old export method.
+	 */
+	const EXPORT_METHOD = 'export_events';
+
 	/**
 	 * @var array Request parameters
 	 */
@@ -24,8 +35,8 @@ class Ai1ec_Command_Export_Events extends Ai1ec_Command {
 		if ( false === $params ) {
 			return false;
 		}
-		if ( $params['action'] === Ai1ec_Command::EXPORT_METHOD &&
- 			$params['controller'] === Ai1ec_Command::EXPORT_CONTROLLER ) {
+		if ( $params['action'] === self::EXPORT_METHOD &&
+ 			$params['controller'] === self::EXPORT_CONTROLLER ) {
 			$params['tag_ids'] = Ai1ec_Request_Parser::get_param(
 				'ai1ec_cat_ids',
 				false
@@ -71,7 +82,7 @@ class Ai1ec_Command_Export_Events extends Ai1ec_Command {
 			$loc_helper = $this->_registry->get( 'p28n.wpml' );
 			$loc_helper->set_language( $this->_params['lang'] );
 		}
-        $args = array( 'do_not_export_as_calendar' => false );
+		$args = array( 'do_not_export_as_calendar' => false );
 		$filter = array();
 		if ( $ai1ec_cat_ids ) {
 			$filter['cat_ids']  = Ai1ec_Number_Utility::convert_to_int_list(
@@ -86,7 +97,7 @@ class Ai1ec_Command_Export_Events extends Ai1ec_Command {
 			);
 		}
 		if ( $ai1ec_post_ids ) {
-            $args['do_not_export_as_calendar'] = true;
+			$args['do_not_export_as_calendar'] = true;
 			$filter['post_ids'] = Ai1ec_Number_Utility::convert_to_int_list(
 				',',
 				$ai1ec_post_ids
@@ -100,8 +111,9 @@ class Ai1ec_Command_Export_Events extends Ai1ec_Command {
 		$end    = false;
 		$search = $this->_registry->get( 'model.search' );
 		$export_controller = $this->_registry->get( 'controller.import-export' );
-		$events = $search->get_matching_events( $start, $end, $filter );
-        $args['events'] = $events;
+		$events = $search->get_events_between( $start, $end, $filter );
+
+		$args['events'] = $events;
 		$ics = $export_controller->export_events( 'ics', $args );
 		return array( 'data' => $ics );
 

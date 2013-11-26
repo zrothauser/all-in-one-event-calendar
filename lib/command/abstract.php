@@ -11,16 +11,6 @@
 abstract class Ai1ec_Command {
 
 	/**
-	 * @var string The name of the old exporter controller.
-	 */
-	const EXPORT_CONTROLLER = 'ai1ec_exporter_controller';
-
-	/**
-	 * @var string The name of the old export method.
-	 */
-	const EXPORT_METHOD = 'export_events';
-
-	/**
 	 * @var Ai1ec_Registry_Object
 	 */
 	protected $_registry;
@@ -60,15 +50,16 @@ abstract class Ai1ec_Command {
 		$controller = Ai1ec_Request_Parser::get_param( 'controller', $controller );
 		$action     = Ai1ec_Request_Parser::get_param( 'action', $action );
 		if ( (string)AI1EC_PLUGIN_NAME === (string)$plugin && 
-			null !== $controller && null !== $action
+			null !== $controller && 
+			null !== $action
 		) {
 			return array(
 				'controller' => $controller,
 				'action'     => $action
 			);
-		} else {
-			return false;
 		}
+		return false;
+
 	}
 
 	/**

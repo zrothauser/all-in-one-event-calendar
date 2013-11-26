@@ -198,15 +198,16 @@ class Ai1ec_Event_Search {
 		$db = $this->_registry->get( 'dbi.dbi' );
 
 		$table_name = $db->get_table_name( 'ai1ec_events' );
-		$query = 'SELECT post_id FROM ' . $table_name .
-				' WHERE ical_feed_url = %s ' .
-				' AND ical_uid        = %s ' .
-				' AND start           = %d ' .
-				( $has_recurrence ? 'AND NOT ' : 'AND ' ) .
-				' ( recurrence_rules IS NULL OR recurrence_rules = \'\' )';
+		$query = 'SELECT `post_id` FROM ' . $table_name . '
+			WHERE
+				    ical_feed_url   = %s
+				AND ical_uid        = %s
+				AND start           = %d ' .
+			( $has_recurrence ? 'AND NOT ' : 'AND ' ) .
+			' ( recurrence_rules IS NULL OR recurrence_rules = \'\' )';
 		$args = array( $feed, $uid, $start );
-		if ( NULL !== $exclude_post_id ) {
-			$query .= 'AND post_id <> %d';
+		if ( null !== $exclude_post_id ) {
+			$query .= ' AND post_id <> %d';
 			$args[] = $exclude_post_id;
 		}
 
@@ -271,10 +272,8 @@ class Ai1ec_Event_Search {
 		// Convert event timestamps to local for correct calculations of
 		// recurrence. Need to also remove PHP timezone offset for each date for
 		// SG_iCal to calculate correct recurring instances.
-		$event->start = $this->_registry->get( 'date.time', $event->start )->format()
-		- date( 'Z', $event->start );
-		$event->end   = $this->_registry->get( 'date.time', $event->end )->format()
-		- date( 'Z', $event->end );
+		//$event->start = $event->start->format() - $event->start->format( 'Z' );
+		//$event->end   = $event->end->format()   - $event->end->format( 'Z' );
 
 		$evs = array();
 		$e	 = array(
@@ -358,32 +357,25 @@ class Ai1ec_Event_Search {
 		}
 
 		foreach ( $evs_unique as $e ) {
+
 			// Find out if this event instance is already accounted for by an
 			// overriding 'RECURRENCE-ID' of the same iCalendar feed (by comparing the
 			// UID, start date, recurrence). If so, then do not create duplicate
 			// instance of event.
-			$start = $this->_registry->get(
-				'date.time',
-				$e['start'],
-				$this->_registry->get( 'model.option' )
-				 ->get( 'gmt_offset' )
-			)->format( 'U', 'UTC' ) - date( 'Z', $e['start'] );
-			$matching_event_id = $event->ical_uid ?
-								$this->get_matching_event_id(
-									$event->ical_uid,
-									$event->ical_feed_url,
-									$start,
-									false,	// Only search events that does not define
-									// recurrence (i.e. only search for RECURRENCE-ID events)
-									$event->post_id
-								)
-								: NULL;
-
+			$matching_event_id = null;
+			if ( $event->ical_uid ) {
+				$matching_event_id = $this->get_matching_event_id(
+					$event->ical_uid,
+					$event->ical_feed_url,
+					$e['start'],
+					false,	// Only search events that does not define
+					// recurrence (i.e. only search for RECURRENCE-ID events)
+					$event->post_id
+				);
+			}
 
 			// If no other instance was found
-			if ( NULL === $matching_event_id ) {
-				$start = getdate( $e['start'] );
-				$end   = getdate( $e['end'] );
+			if ( null === $matching_event_id ) {
 				$this->insert_event_in_cache_table( $e );
 			}
 		}
@@ -399,31 +391,22 @@ class Ai1ec_Event_Search {
 	 * @param array $event Event array
 	 *
 	 * @return void
-	 **/
-	public function insert_event_in_cache_table( $event ) {
-		$db = $this->_registry->get( 'dbi.dbi' );
-		$timezone = $this->_registry->get( 'model.option' )
-				->get( 'gmt_offset' );
-
+	 */
+	public function insert_event_in_cache_table( array $event ) {
 		// Return the start/end times to GMT zone
-		$event['start'] = $this->_registry->get(
-			'date.time',
-			$event['start'],
-			$timezone
-		)->format_to_gmt() + date( 'Z', $event['start'] );
-		// Return the start/end times to GMT zone
-		$event['end'] = $this->_registry->get(
-			'date.time',
-			$event['end'],
-			$timezone
-		)->format_to_gmt() + date( 'Z', $event['end'] );
+		$values = array(
+			'post_id' => $event['post_id'],
+			'start'   => $event['start']->format_to_gmt(),
+			'end'     => $event['end']->format_to_gmt(),
+		);
+		$dbi            = $this->_registry->get( 'dbi.dbi' );
 
-		$db->query(
-			$db->prepare(
-				'INSERT INTO ' . $db->get_table_name( 'ai1ec_event_instances' ) .
+		$dbi->query(
+			$dbi->prepare(
+				'INSERT INTO ' . $dbi->get_table_name( 'ai1ec_event_instances' ) .
 				'       ( post_id,  start,  end ) ' .
 				'VALUES ( %d,       %d,     %d  )',
-				$event
+				$values
 			)
 		);
 		// perform actions like cleaning the cache

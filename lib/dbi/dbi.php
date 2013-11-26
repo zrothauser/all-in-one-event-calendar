@@ -30,6 +30,11 @@ class Ai1ec_Dbi {
 	protected $_queries = array();
 
 	/**
+	 * @var bool Set to true when logging is enabled.
+	 */
+	protected $_log_enabled = false;
+
+	/**
 	 * Constructor assigns injected database access object to class variable.
 	 *
 	 * @param Ai1ec_Registry_Object $registry Injected registry.
@@ -50,6 +55,14 @@ class Ai1ec_Dbi {
 		$this->_registry->get( 'controller.shutdown' )->register(
 			array( $this, 'shutdown' )
 		);
+		if (
+			AI1EC_DEBUG && (
+				! isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) ||
+				'XMLHttpRequest' !== $_SERVER['HTTP_X_REQUESTED_WITH']
+			)
+		) {
+			$this->_log_enabled = true;
+		}
 	}
 
 	/**
@@ -230,6 +243,21 @@ class Ai1ec_Dbi {
 	}
 
 	/**
+	 * Retrieve all results from given table.
+	 *
+	 * @param string $table   Name of table.
+	 * @param array  $columns List of columns to retrieve.
+	 * @param string $output  See {@see self::get_results()} $output for more.
+	 *
+	 * @return array Collection.
+	 */
+	public function select( $table, array $columns, $output = OBJECT ) {
+		$sql_query = 'SELECT `' . implode( '`, `', $columns ) . '` FROM ' .
+			$this->get_table_name( $table );
+		return $this->get_results( $sql_query, $output );
+	}
+
+	/**
 	 * The database version number.
 	 *
 	 * @return false|string false on failure, version number on success
@@ -262,16 +290,28 @@ class Ai1ec_Dbi {
 	}
 
 	/**
+	 * Return escaped value.
+	 *
+	 * @param string $input Value to be escaped.
+	 *
+	 * @return string Escaped value.
+	 */
+	public function escape( $input ) {
+		$this->_dbi->escape_by_ref( $input );
+		return $input;
+	}
+
+	/**
 	 * In debug mode prints DB queries table.
 	 *
 	 * @return void
 	 */
 	public function shutdown() {
-		if ( ! AI1EC_DEBUG ) {
+		if ( ! $this->_log_enabled ) {
 			return false;
 		}
 		echo '<div class="timely timely-debug">
-		  <table>
+		  <table class="table table-striped">
 		    <thead>
 		      <tr>
 		        <th>N.</th>

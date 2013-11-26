@@ -113,14 +113,20 @@ class Ai1ec_Theme_Loader {
 	private function get_twig_instance( array $paths ) {
 
 		if ( ! isset( $this->_twig ) ) {
-// @TODO: Review commented lines
-//			foreach ( $paths as &$path ) {
-//				$path .= 'twig' . DIRECTORY_SEPARATOR;
-//			}
 
 			// Set up Twig environment.
-			$loader = new Twig_Loader_Filesystem(
-					sprintf( '%s%s%s', $paths['default'], $paths['active'], DIRECTORY_SEPARATOR ) );
+			$loader_path = null;
+			if ( isset( $paths['default'] ) ) {
+				$loader_path = $paths['default'] . $paths['active'] .
+					DIRECTORY_SEPARATOR;
+			} else {
+				$loader_path = array();
+				foreach ( $paths as $path ) {
+					$loader_path[] = $path . 'twig' . DIRECTORY_SEPARATOR;
+				}
+			}
+			$loader = new Twig_Loader_Filesystem( $loader_path );
+			unset( $loader_path );
 
 			// TODO: Add cache support.
 			$this->_twig = new Twig_Environment( $loader );

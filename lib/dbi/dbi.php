@@ -218,7 +218,7 @@ class Ai1ec_Dbi {
 	 */
 	public function insert( $table, $data, $format = null ) {
 		$this->_query_profile(
-			'INSERT INTO ' . $table . '; data: ' . json_encode( '//', $data )
+			'INSERT INTO ' . $table . '; data: ' . json_encode( $data )
 		);
 		$result = $this->_dbi->insert(
 			$this->get_table_name( $table ),

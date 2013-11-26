@@ -66,7 +66,4 @@
 			</button>
 		</div>
 	</div>
-	<?php if( $events ): ?>
-		<input type="hidden" class="ai1ec_flush_ics" value="<?php echo $events ?>" />
-	<?php endif ?>
 </div>

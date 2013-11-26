@@ -280,8 +280,8 @@ class Ai1ec_Dbi {
 	 * @return array Collection.
 	 */
 	public function select( $table, array $columns, $output = OBJECT ) {
-		$sql_query = 'SELECT `' . implode( '`, `', $columns ) . '` FROM ' .
-			$this->get_table_name( $table );
+		$sql_query = 'SELECT `' . implode( '`, `', $columns ) . '` FROM `' .
+			$this->get_table_name( $table ) . '`';
 		return $this->get_results( $sql_query, $output );
 	}
 

@@ -342,73 +342,57 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	 * @return String feed rows
 	 **/
 	protected function _get_feed_rows() {
-		$db = $this->_registry->get( 'dbi.dbi' );
-
 		// Select all added feeds
-		$rows = $db->get_results(
-			'SELECT * FROM ' . $db->get_table_name( 'ai1ec_event_feeds' )
+		$rows = $this->_registry->get( 'dbi.dbi' )->select(
+			'ai1ec_event_feeds',
+			array(
+				'feed_id',
+				'feed_url',
+				'feed_category',
+				'feed_tags',
+				'comments_enabled',
+				'map_display_enabled',
+				'keep_tags_categories',
+			)
 		);
 
-		$feed_urls = array();
-		foreach ( $rows as $feed ) {
-			$feed_urls[] = $db->escape( $feed->feed_url );
-		}
-		unset( $feed );
-		$html = '';
-		if ( ! empty( $feed_urls ) ) {
-			$query = 'SELECT `ical_feed_url`, COUNT( `post_id` ) AS `imported`' .
-				' FROM ' . $db->get_table_name( 'ai1ec_events' ) .
-				' WHERE `ical_feed_url` IN (\'' .
-				implode( '\', \'', $feed_urls ) .
-				'\') GROUP BY `ical_feed_url`';
-			unset( $feed_urls );
-			$counters = array();
-			$count_result = $db->get_results( $query );
-			foreach ( $count_result as $row ) {
-				$counters[$row->ical_feed_url] = (int)$row->imported;
-			}
-			unset( $count_result );
+		$html         = '';
+		$theme_loader = $this->_registry->get( 'theme.loader' );
 
-			foreach ( $rows as $row ) {
-				$events          = 0;
-				$feed_categories = explode( ',', $row->feed_category );
-				$categories      = array();
-				if ( isset( $counters[$row->feed_url] ) ) {
-					$events = $counters[$row->feed_url];
-				}
+		foreach ( $rows as $row ) {
+			$feed_categories = explode( ',', $row->feed_category );
+			$categories      = array();
 
-				foreach ( $feed_categories as $cat_id ) {
-					$feed_category = get_term(
-						$cat_id,
-						'events_categories'
-					);
-					if ( $feed_category && ! is_wp_error( $feed_category ) ) {
-						$categories[] = $feed_category->name;
-					}
-				}
-
-				$args          = array(
-					'feed_url'            => $row->feed_url,
-					'event_category'      => implode( ', ', $categories ),
-					'tags'                => stripslashes(
-						str_replace( ',', ', ', $row->feed_tags )
-					),
-					'feed_id'             => $row->feed_id,
-					'comments_enabled'    => (bool) intval(
-							$row->comments_enabled
-						),
-					'map_display_enabled' => (bool) intval(
-							$row->map_display_enabled
-						),
-					'keep_tags_categories' => (bool) intval(
-							$row->keep_tags_categories
-						),
-					'events'              => $events,
+			foreach ( $feed_categories as $cat_id ) {
+				$feed_category = get_term(
+					$cat_id,
+					'events_categories'
 				);
-				$loader = $this->_registry->get( 'theme.loader' );
-				$file = $loader->get_file( 'feed_row.php', $args, true );
-				$html .= $file->get_content();
+				if ( $feed_category && ! is_wp_error( $feed_category ) ) {
+					$categories[] = $feed_category->name;
+				}
 			}
+			unset( $feed_categories );
+
+			$args          = array(
+				'feed_url'            => $row->feed_url,
+				'event_category'      => implode( ', ', $categories ),
+				'tags'                => stripslashes(
+					str_replace( ',', ', ', $row->feed_tags )
+				),
+				'feed_id'             => $row->feed_id,
+				'comments_enabled'    => (bool) intval(
+						$row->comments_enabled
+				),
+				'map_display_enabled' => (bool) intval(
+						$row->map_display_enabled
+				),
+				'keep_tags_categories' => (bool) intval(
+						$row->keep_tags_categories
+				),
+			);
+			$html .= $theme_loader->get_file( 'feed_row.php', $args, true )
+				->get_content();
 		}
 
 

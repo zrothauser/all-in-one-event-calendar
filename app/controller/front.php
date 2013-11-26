@@ -237,6 +237,10 @@ class Ai1ec_Front_Controller {
 				array( 'controller.javascript', 'render_js' )
 			);
 		}
+		$dispatcher->register_action(
+			'delete_post',
+			array( 'controller.events', 'delete' )
+		);
 		if ( is_admin() ) {
 			$dispatcher->register_action(
 				'admin_enqueue_scripts',

@@ -525,47 +525,54 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 		}
 	}
+
 	/**
-	 * flush_ics_feed function
-	 *
 	 * Deletes all event posts that are from that selected feed
 	 *
-	 * @param bool $ajax
-	 *        	When set to TRUE, the data is outputted using json_response
-	 * @param bool|string $feed_url
-	 *        	Feed URL
+	 * @param bool        $ajax     When true data is output using json_response
+	 * @param bool|string $feed_url Feed URL
 	 *
 	 * @return void
-	 *
 	 */
-	public function flush_ics_feed( $ajax = TRUE, $feed_url = FALSE ) {
-		$db = $this->_registry->get( 'dbi.dbi' );
-		$ics_id = isset( $_REQUEST['ics_id'] ) ? (int) $_REQUEST['ics_id'] : 0;
+	public function flush_ics_feed( $ajax = true, $feed_url = false ) {
+		$db         = $this->_registry->get( 'dbi.dbi' );
+		$ics_id     = 0;
+		if ( isset( $_REQUEST['ics_id'] ) ) {
+			$ics_id = (int) $_REQUEST['ics_id'];
+		}
 		$table_name = $db->get_table_name( 'ai1ec_event_feeds' );
-		if ( $feed_url === FALSE ) {
+		if ( false === $feed_url ) {
 			$feed_url = $db->get_var(
 				$db->prepare(
-					"SELECT feed_url FROM $table_name WHERE feed_id = %d",
-					$ics_id ) );
+					'SELECT feed_url FROM ' . $table_name .
+						' WHERE feed_id = %d',
+					$ics_id
+				)
+			);
 		}
 		if ( $feed_url ) {
 			$table_name = $db->get_table_name( 'ai1ec_events' );
-			$sql = "SELECT post_id FROM {$table_name} WHERE ical_feed_url = '%s'";
-			$events = $db->get_results( $db->prepare( $sql, $feed_url ) );
-			$total = count( $events );
-			foreach ( $events as $event ) {
+			$sql        = 'SELECT `post_id` FROM ' . $table_name .
+				' WHERE `ical_feed_url` = %s';
+			$events     = $db->get_col( $db->prepare( $sql, $feed_url ) );
+			$total      = count( $events );
+			foreach ( $events as $event_id ) {
 				// delete post (this will trigger deletion of cached events, and
 				// remove the event from events table)
-				wp_delete_post( $event->post_id, 'true' );
+				wp_delete_post( $event_id, true );
 			}
-			$output = array( 'error' => FALSE,
+			$output = array(
+				'error'   => false,
 				'message' => sprintf(
-					__( 'Deleted %d events', AI1EC_PLUGIN_NAME ), $total ),
-				'count' => $total
+					Ai1ec_I18n::__( 'Deleted %d events' ),
+					$total
+				),
+				'count'   => $total,
 			);
 		} else {
-			$output = array( 'error' => TRUE,
-				'message' => __( 'Invalid ICS feed ID', AI1EC_PLUGIN_NAME )
+			$output = array(
+				'error'   => true,
+				'message' => Ai1ec_I18n::__( 'Invalid ICS feed ID' ),
 			);
 		}
 		if ( $ajax ) {

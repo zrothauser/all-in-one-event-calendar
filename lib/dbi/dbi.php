@@ -217,8 +217,36 @@ class Ai1ec_Dbi {
 	 * @return int|false The number of rows inserted, or false on error.
 	 */
 	public function insert( $table, $data, $format = null ) {
-		$this->_query_profile( 'INSERT ' . $table . ': ' . implode( '//', $data ) );
-		$result = $this->_dbi->insert( $table, $data, $format );
+		$this->_query_profile(
+			'INSERT INTO ' . $table . '; data: ' . json_encode( '//', $data )
+		);
+		$result = $this->_dbi->insert(
+			$this->get_table_name( $table ),
+			$data,
+			$format
+		);
+		$this->_query_profile( $result );
+		return $result;
+	}
+
+	/**
+	 * Perform removal from table.
+	 *
+	 * @param string $table  Table to remove from.
+	 * @param array  $where  Where conditions
+	 * @param array  $format Format entities for where.
+	 *
+	 * @return int|false Number of rows deleted or false.
+	 */
+	public function delete( $table, $where, $format = null ) {
+		$this->_query_profile(
+			'DELETE FROM ' . $table . '; conditions: ' . json_encode( $where )
+		);
+		$result = $this->_dbi->delete(
+			$this->get_table_name( $table ),
+			$where,
+			$format
+		);
 		$this->_query_profile( $result );
 		return $result;
 	}
@@ -283,7 +311,14 @@ class Ai1ec_Dbi {
 	 * @return string Full table name for the table requested.
 	 */
 	public function get_table_name( $table = '' ) {
+		static $prefix_len = null;
 		if ( ! isset( $this->_dbi->{$table} ) ) {
+			if ( null === $prefix_len ) {
+				$prefix_len = strlen( $this->_dbi->prefix );
+			}
+			if ( 0 === strncmp( $this->_dbi->prefix, $table, $prefix_len ) ) {
+				return $table;
+			}
 			return $this->_dbi->prefix . $table;
 		}
 		return $this->_dbi->{$table};

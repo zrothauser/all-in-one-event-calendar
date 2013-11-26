@@ -43,107 +43,6 @@ class Ai1ec_Event_Search {
 	}
 
 	/**
-	 * get_matching_events function
-	 *
-	 * Get events that match with the arguments provided.
-	 *
-	 * @param int | bool          $start      Events start before this (GMT) time
-	 * @param int | bool          $end        Events end before this (GMT) time
-	 * @param array $filter       Array of filters for the events returned.
-	 *                            ['cat_ids']   => non-associatative array of category IDs
-	 *                            ['tag_ids']   => non-associatative array of tag IDs
-	 *                            ['post_ids']  => non-associatative array of post IDs
-	 *
-	 * @return array Matching events #'
-	 **/
-	public function get_matching_events(
-		$start  = false,
-		$end    = false,
-		$filter = array()
-	) {
-		$db = $this->_dbi;
-		$localization_helper = $this->_registry->get( 'p28n.wpml' );
-
-		// holds start sql
-		$start_where_sql = '';
-		// holds end sql
-		$end_where_sql = '';
-		// hold escape values
-		$args = array();
-
-		// =============================
-		// = Generating start date sql =
-		// =============================
-		if( $start !== false ) {
-			$start_where_sql = "AND (e.start >= %d OR e.recurrence_rules != '')";
-			$args[] = $start;
-		}
-
-		// ===========================
-		// = Generating end date sql =
-		// ===========================
-		if( $end !== false ) {
-			$end_where_sql = "AND (e.end <= %d OR e.recurrence_rules != '')";
-			$args[] = $end;
-		}
-
-		$wpml_join_particle  = $localization_helper
-			->get_wpml_table_join();
-		$wpml_where_particle = $localization_helper
-			->get_wpml_table_where();
-
-		// Get the Join (filter_join) and Where (filter_where) statements based on $filter elements specified
-		$filter = $this->_get_filter_sql( $filter );
-		$query = $db->prepare(
-			"SELECT *, e.post_id, e.start as start, e.end as end, e.allday, e.recurrence_rules, e.exception_rules,
-				e.recurrence_dates, e.exception_dates, e.venue, e.country, e.address, e.city, e.province, e.postal_code,
-				e.show_map, e.contact_name, e.contact_phone, e.contact_email, e.cost, e.ical_feed_url, e.ical_source_url,
-				e.ical_organizer, e.ical_contact, e.ical_uid " .
-			"FROM " . $db->get_wpdb_variable( 'posts' ) .
-			" INNER JOIN " . $db->get_table_name( 'ai1ec_events' ) . " AS e ON e.post_id = ID " .
-			$wpml_join_particle .
-			$filter['filter_join'] .
-			"WHERE post_type = '" . AI1EC_POST_TYPE . "' " .
-			"AND post_status = 'publish' " .
-			$wpml_where_particle .
-			$filter['filter_where'] .
-			$start_where_sql .
-			$end_where_sql,
-			$args );
-
-		$events = $db->get_results( $query, ARRAY_A );
-
-		foreach( $events as &$event ) {
-			$event['start'] = $event['start'];
-			$event['end']   = $event['end'];
-			try {
-				$event = $this->_registry->get( 'model.event', $event );
-			} catch( Ai1ec_Event_Not_Found $n ) {
-				unset( $event );
-				// The event is not found, continue to the next event
-				continue;
-			}
-
-			// if there are recurrence rules, include the event, else...
-			if( empty( $event->recurrence_rules ) ) {
-				// if start time is set, and event start time is before the range
-				// it, continue to the next event
-				if( $start !== false && $event->start->format() < $start ) {
-					unset( $event );
-					continue;
-				}
-				// if end time is set, and event end time is after
-				// it, continue to the next event
-				if( $end !== false && $event->end->format() < $end ) {
-					unset( $event );
-					continue;
-				}
-			}
-		}
-		return $events;
-	}
-
-	/**
 	 * get_events_between function
 	 *
 	 * Return all events starting after the given start time and before the
@@ -256,6 +155,7 @@ class Ai1ec_Event_Search {
 		$query  = $this->_dbi->prepare( $sql, $args );
 		$events = $this->_dbi->get_results( $query, ARRAY_A );
 
+		fb($sql);
 		$id_list = array();
 		foreach ( $events as $event ) {
 			$id_list[] = $event['post_id'];

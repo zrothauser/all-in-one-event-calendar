@@ -304,15 +304,6 @@ class Ai1ec_Dbi {
 	}
 
 	/**
-	 * Get a variable from the wpdb object.
-	 *
-	 * @param string $variable
-	 * @return mixed
-	 */
-	public function get_wpdb_variable( $variable ) {
-		return $this->_dbi->{$variable};
-	}
-	/**
 	 * Return the full name for the table.
 	 *
 	 * @param string $table Table name.

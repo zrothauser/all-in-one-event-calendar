@@ -30,6 +30,11 @@ class Ai1ec_Dbi {
 	protected $_queries = array();
 
 	/**
+	 * @var bool Set to true when logging is enabled.
+	 */
+	protected $_log_enabled = false;
+
+	/**
 	 * Constructor assigns injected database access object to class variable.
 	 *
 	 * @param Ai1ec_Registry_Object $registry Injected registry.
@@ -50,6 +55,14 @@ class Ai1ec_Dbi {
 		$this->_registry->get( 'controller.shutdown' )->register(
 			array( $this, 'shutdown' )
 		);
+		if (
+			AI1EC_DEBUG && (
+				! isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) ||
+				'XMLHttpRequest' !== $_SERVER['HTTP_X_REQUESTED_WITH']
+			)
+		) {
+			$this->_log_enabled = true;
+		}
 	}
 
 	/**
@@ -204,8 +217,36 @@ class Ai1ec_Dbi {
 	 * @return int|false The number of rows inserted, or false on error.
 	 */
 	public function insert( $table, $data, $format = null ) {
-		$this->_query_profile( 'INSERT ' . $table . ': ' . implode( '//', $data ) );
-		$result = $this->_dbi->insert( $table, $data, $format );
+		$this->_query_profile(
+			'INSERT INTO ' . $table . '; data: ' . json_encode( $data )
+		);
+		$result = $this->_dbi->insert(
+			$this->get_table_name( $table ),
+			$data,
+			$format
+		);
+		$this->_query_profile( $result );
+		return $result;
+	}
+
+	/**
+	 * Perform removal from table.
+	 *
+	 * @param string $table  Table to remove from.
+	 * @param array  $where  Where conditions
+	 * @param array  $format Format entities for where.
+	 *
+	 * @return int|false Number of rows deleted or false.
+	 */
+	public function delete( $table, $where, $format = null ) {
+		$this->_query_profile(
+			'DELETE FROM ' . $table . '; conditions: ' . json_encode( $where )
+		);
+		$result = $this->_dbi->delete(
+			$this->get_table_name( $table ),
+			$where,
+			$format
+		);
 		$this->_query_profile( $result );
 		return $result;
 	}
@@ -227,6 +268,21 @@ class Ai1ec_Dbi {
 		$result = $this->_dbi->update( $table, $data, $where, $format, $where_format );
 		$this->_query_profile( $result );
 		return $result;
+	}
+
+	/**
+	 * Retrieve all results from given table.
+	 *
+	 * @param string $table   Name of table.
+	 * @param array  $columns List of columns to retrieve.
+	 * @param string $output  See {@see self::get_results()} $output for more.
+	 *
+	 * @return array Collection.
+	 */
+	public function select( $table, array $columns, $output = OBJECT ) {
+		$sql_query = 'SELECT `' . implode( '`, `', $columns ) . '` FROM `' .
+			$this->get_table_name( $table ) . '`';
+		return $this->get_results( $sql_query, $output );
 	}
 
 	/**
@@ -255,10 +311,29 @@ class Ai1ec_Dbi {
 	 * @return string Full table name for the table requested.
 	 */
 	public function get_table_name( $table = '' ) {
+		static $prefix_len = null;
 		if ( ! isset( $this->_dbi->{$table} ) ) {
+			if ( null === $prefix_len ) {
+				$prefix_len = strlen( $this->_dbi->prefix );
+			}
+			if ( 0 === strncmp( $this->_dbi->prefix, $table, $prefix_len ) ) {
+				return $table;
+			}
 			return $this->_dbi->prefix . $table;
 		}
 		return $this->_dbi->{$table};
+	}
+
+	/**
+	 * Return escaped value.
+	 *
+	 * @param string $input Value to be escaped.
+	 *
+	 * @return string Escaped value.
+	 */
+	public function escape( $input ) {
+		$this->_dbi->escape_by_ref( $input );
+		return $input;
 	}
 
 	/**
@@ -267,11 +342,11 @@ class Ai1ec_Dbi {
 	 * @return void
 	 */
 	public function shutdown() {
-		if ( ! AI1EC_DEBUG ) {
+		if ( ! $this->_log_enabled ) {
 			return false;
 		}
 		echo '<div class="timely timely-debug">
-		  <table>
+		  <table class="table table-striped">
 		    <thead>
 		      <tr>
 		        <th>N.</th>

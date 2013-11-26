@@ -22,22 +22,22 @@ class Ai1ec_Event_Helper extends Ai1ec_Base {
 	 * @staticvar Ai1ec_Memory_Utility $colors Cached entries instance
 	 */
 	public function get_category_color( $term_id ) {
-		static $colors = NULL;
-
-		if ( ! isset( $colors ) ) {
-			$colors = $this->_registry->get( 'cache.memory' );
+		static $colors = null;
+		if ( null === $colors ) {
+			$colors  = array();
+			$results = $this->_registry->get( 'dbi.dbi' )->select(
+				'ai1ec_event_category_colors',
+				array( 'term_id', 'term_color' )
+			);
+			foreach ( $results as $row ) {
+				$colors[(int)$row->term_id] = $row->term_color;
+			}
 		}
 		$term_id = (int)$term_id;
-		if ( NULL === ( $color = $colors->get( $term_id ) ) ) {
-			$wpdb = $this->_registry->get( 'dbi.dbi' );
-
-			$color = (string)$wpdb->get_var(
-				'SELECT term_color FROM ' . $wpdb->get_table_name( 'ai1ec_event_category_colors' ) .
-				 ' WHERE term_id = ' .
-				$term_id
-			);
-			$colors->set( $term_id, $color );
+		if ( ! isset( $colors[$term_id] ) ) {
+			return null;
 		}
-		return $color;
+		return $colors[$term_id];
 	}
+
 }

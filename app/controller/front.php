@@ -237,6 +237,10 @@ class Ai1ec_Front_Controller {
 				array( 'controller.javascript', 'render_js' )
 			);
 		}
+		$dispatcher->register_action(
+			'delete_post',
+			array( 'controller.events', 'delete' )
+		);
 		if ( is_admin() ) {
 			$dispatcher->register_action(
 				'admin_enqueue_scripts',
@@ -384,12 +388,10 @@ class Ai1ec_Front_Controller {
 	 * @return void
 	 */
 	private function _initialize_schema() {
-		$settings = $this->_registry->get( 'model.settings' );
+		$option = $this->_registry->get( 'model.option' );
 		// If existing DB version is not consistent with current plugin's version,
 		// or does not exist, then create/update table structure using dbDelta().
-		if (
-			$settings->get( 'ai1ec_db_version' ) != AI1EC_DB_VERSION
-		) {
+		if ( $option->get( 'ai1ec_db_version' ) != AI1EC_DB_VERSION ) {
 
 			$applicator = $this->_registry->get( 'database.applicator' );
 
@@ -470,7 +472,6 @@ class Ai1ec_Front_Controller {
 				term_color varchar(255) NOT NULL,
 				PRIMARY KEY  (term_id)
 				) CHARACTER SET utf8;";
-			$option = $this->_registry->get( 'model.option' );
 			if ( $this->_registry->get( 'database.helper' )->apply_delta( $sql ) ) {
 				$option->set( 'ai1ec_db_version', AI1EC_DB_VERSION );
 			} else {

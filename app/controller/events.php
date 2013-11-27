@@ -235,7 +235,7 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 
 		global $post;
 
-		$ai1ec_events_helper  = $this->_registry->get( 'lib.event.helper' );
+		$ai1ec_events_helper  = $this->_registry->get( 'event.helper' );
 		$theme_loader         = $this->_registry->get( 'theme.loader' );
 		$empty_event          = $this->_registry->get( 'model.event' );
 
@@ -372,8 +372,11 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 
 		// Time zone; display if set.
 		$timezone = '';
-		$timezone_string = $this->_registry->get( 'Ai1ec_Meta_Post' )
-			->get_option( 'timezone_string' );
+
+		$timezone_string = $this
+			->_registry->get( 'Ai1ec_Meta_Post' )
+			->get( 'timezone_string', NULL );
+
 		if ( $timezone_string ) {
 			$timezone = $this->_registry->get( 'time' )->get_gmt_offset_expr();
 		}

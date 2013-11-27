@@ -1943,6 +1943,9 @@ HTML;
 	 * @return int
 	 **/
 	function getDuration() {
+		if( is_numeric($this->end) && is_numeric($this->start) ) {
+			return $this->end - $this->start;
+		}
 		return $this->end->format_to_gmt() - $this->start->format_to_gmt();
 	}
 	

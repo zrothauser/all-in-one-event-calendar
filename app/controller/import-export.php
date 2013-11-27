@@ -99,6 +99,6 @@ class Ai1ec_Import_Export_Controller {
 		}
 		// external engines must register themselves into the registry.
 		$engine = $this->_registry->get( 'import-export.' . $engine );
-		$engine->export( $args );
+		return $engine->export( $args );
 	}
 }

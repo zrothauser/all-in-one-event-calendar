@@ -17,6 +17,7 @@ abstract class Ai1ec_Http_Response_Render_Strategy extends Ai1ec_Base {
 	 */
 	protected function _dump_buffers() {
 		// ob_end_clean() fails if any level of compression is set.
+		$this->_registry->get( 'dbi.dbi' )->disable_debug();
 		if ( ini_get( 'zlib.output_compression' ) ) {
 			return false;
 		}
@@ -33,4 +34,5 @@ abstract class Ai1ec_Http_Response_Render_Strategy extends Ai1ec_Base {
 	 * @param array $params
 	 */
 	abstract public function render( array $params );
+
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The concrete command that renders the calendar.
  *
@@ -14,7 +15,6 @@ class Ai1ec_Command_Render_Calendar extends Ai1ec_Command {
 	 * @see Ai1ec_Command::is_this_to_execute()
 	 */
 	public function is_this_to_execute() {
-		return true;
 		$settings          = $this->_registry->get( 'model.settings' );
 		$calendar_page_id  = $settings->get( 'calendar_page_id' );
 		if ( empty( $calendar_page_id ) ) {

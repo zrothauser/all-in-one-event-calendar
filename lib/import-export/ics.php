@@ -39,7 +39,7 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		}
 		$c->setProperty( 'X-FROM-URL', home_url() );
 		// Timezone setup
-		$tz = $this->_registry->get( 'meta' )->get( 'timezone_string' );
+		$tz = $this->_registry->get( 'date.timezone' )->get_default_timezone();
 		if ( $tz ) {
 			$c->setProperty( 'X-WR-TIMEZONE', $tz );
 			$tz_xprops = array( 'X-LIC-LOCATION' => $tz );
@@ -50,10 +50,7 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 			$c =$this->_insert_event_in_calendar( $event, $c, $export = true );
 		}
 		$str = ltrim( $c->createCalendar() );
-
-		header( 'Content-type: text/calendar; charset=utf-8' );
-		echo $str;
-		exit;
+		return $str;
 	}
 
 	/**
@@ -556,8 +553,8 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 	) {
 		global $ai1ec_events_helper;
 
-		$tz  = $this->_registry->get( 'model.option' )
-			->get( 'timezone_string' );
+		$tz  = $this->_registry->get( 'date.timezone' )
+			->get_default_timezone();
 
 		$e   = & $calendar->newComponent( 'vevent' );
 		$uid = '';
@@ -605,8 +602,8 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		if ( $event->allday ) {
 			$dtstart["VALUE"] = $dtend["VALUE"] = 'DATE';
 			// For exporting all day events, don't set a timezone
-			if ( $tz && !$export ) {
-				$dtstart["TZID"] = $dtend["TZID"] = $tz;
+			if ( $tz && ! $export ) {
+				$dtstart['TZID'] = $dtend['TZID'] = $tz;
 			}
 
 			// For exportin' all day events, only set the date not the time

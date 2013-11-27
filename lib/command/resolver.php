@@ -39,6 +39,11 @@ class Ai1ec_Command_Resolver {
 	) {
 		$this->add_command(
 			$registry->get(
+				'command.export_events', $request
+			)
+		);
+		$this->add_command(
+			$registry->get(
 				'command.render_event', $request
 			)
 		);
@@ -47,6 +52,7 @@ class Ai1ec_Command_Resolver {
 				'command.render_calendar', $request
 			)
 		);
+
 		$this->_registry = $registry;
 		$this->_request  = $request;
 	}

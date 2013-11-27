@@ -62,7 +62,7 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 			$instance_id = $_POST['ai1ec_instance_id'];
 			$post_id = $this->_create_duplicate_post( );
 			if ( false !== $post_id ) {
-				$created_event = new Ai1ec_Event( $post_id );
+				$created_event = $this->_registry->get( 'model.event', $post_id );
 				$ai1ec_events_helper->add_exception_date(
 					$old_post_id,
 					$created_event->getStart()
@@ -173,7 +173,7 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 
 				// We need to pass an event object to the importer plugins
 				// to clean up.
-				$ai1ec_event = new Ai1ec_Event( $pid );
+				$ai1ec_event = $this->_registry->get( 'model.event', $pid );
 				if (
 					isset( $ai1ec_event->post ) &&
 					! empty( $ai1ec_event->recurrence_rules )
@@ -290,14 +290,14 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 			// this is why we use this approach.
 			$excpt = NULL;
 			try {
-				$event = new Ai1ec_Event( $this->_registry, $post->ID, $instance_id );
+				$event = $this->_registry->get( 'model.event', $post->ID, $instance_id );
 			} catch ( Ai1ec_Event_Not_Found $excpt ) {
 				$ai1ec_localization_helper = $this->_registry
 					->get( 'Ai1ec_Localization_Helper' );
 				$translatable_id = $ai1ec_localization_helper
 					->get_translatable_id();
 				if ( false !== $translatable_id ) {
-					$event = new Ai1ec_Event( $translatable_id, $instance_id );
+					$event = $this->_registry->get( 'model.event', $translatable_id, $instance_id );
 				}
 			}
 			if ( NULL !== $excpt ) {
@@ -489,7 +489,7 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 				->get_parent_event( $event->post_id );
 			if ( $parent ) {
 				try {
-					$parent = new Ai1ec_Event( $parent );
+					$parent =  $this->_registry->get( 'model.event', $parent );
 				} catch ( Ai1ec_Event_Not_Found $exception ) { // ignore
 					$parent = NULL;
 				}
@@ -607,12 +607,12 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 		$is_new = false;
 		$event 	= null;
 		try {
-			$event = new Ai1ec_Event( $this->_registry, $post_id ? $post_id : null );
+			$event =  $this->_registry->get( 'model.event', $post_id ? $post_id : null );
 		} catch( Ai1ec_Event_Not_Found $e ) {
 			// Post exists, but event data hasn't been saved yet. Create new event
 			// object.
 			$is_new = true;
-			$event = new Ai1ec_Event( $this->_registry );
+			$event =  $this->_registry->get( 'model.event' );
 			$event->post_id = $post_id;
 		}
 		// If the events is marked as instant, make it last 30 minutes
@@ -793,7 +793,7 @@ HTML;
 			return $text;
 		}
 
-		$event = new Ai1ec_Event( get_the_ID() );
+		$event = $this->_registry->get( 'model.event', get_the_ID() );
 
 		ob_start();
 

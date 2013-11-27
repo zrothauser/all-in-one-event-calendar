@@ -155,7 +155,6 @@ class Ai1ec_Event_Search {
 		$query  = $this->_dbi->prepare( $sql, $args );
 		$events = $this->_dbi->get_results( $query, ARRAY_A );
 
-		fb($sql);
 		$id_list = array();
 		foreach ( $events as $event ) {
 			$id_list[] = $event['post_id'];

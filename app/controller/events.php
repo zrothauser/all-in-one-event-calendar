@@ -40,7 +40,11 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 
 		if ( basename( $_SERVER['SCRIPT_NAME'] ) == 'post.php' ||
             basename( $_SERVER['SCRIPT_NAME'] ) == 'post-new.php') {
-			add_action( 'admin_action_editpost', array( $this, 'admin_init_post' ) );
+			$dispatcher = $this->_registry->get( 'event.dispatcher' );
+			$dispatcher->register_action(
+				'admin_action_editpost',
+				array( $this, 'admin_init_post' )
+			);
 		}
 	}
 
@@ -233,7 +237,6 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 
 		$ai1ec_events_helper  = $this->_registry->get( 'lib.event.helper' );
 		$theme_loader         = $this->_registry->get( 'theme.loader' );
-
 		$empty_event          = $this->_registry->get( 'model.event' );
 
 		// ==================

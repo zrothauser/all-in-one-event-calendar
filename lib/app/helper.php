@@ -19,7 +19,7 @@ class Ai1ec_App_Helper extends Ai1ec_Base {
 	 **/
 	function add_meta_boxes() {
 
-		$ai1ec_events_controller = $this->_registry->get( 'Ai1ec_Events_Controller' );
+		$ai1ec_events_controller = $this->_registry->get( 'controller.events' );
 
 		add_meta_box(
 			AI1EC_POST_TYPE,

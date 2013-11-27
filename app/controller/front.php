@@ -327,7 +327,7 @@ class Ai1ec_Front_Controller {
 			);
 			$dispatcher->register_action(
 				'save_post',
-				array( 'Ai1ec_Events_Controller', 'save_post'),
+				array( 'controller.events', 'save_post'),
 				10,
 				2
 			);

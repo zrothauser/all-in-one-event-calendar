@@ -66,6 +66,15 @@ class Ai1ec_Dbi {
 	}
 
 	/**
+	 * Call explicitly when debug output must be disabled.
+	 *
+	 * @return void Method is not meant to return.
+	 */
+	public function disable_debug() {
+		$this->_log_enabled = false;
+	}
+
+	/**
 	 * Perform a MySQL database query, using current database connection.
 	 *
 	 * @param string $sql_query Database query

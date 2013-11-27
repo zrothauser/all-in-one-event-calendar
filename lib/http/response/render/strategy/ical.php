@@ -15,8 +15,10 @@ class Ai1ec_Render_Strategy_Ical extends Ai1ec_Http_Response_Render_Strategy {
 	 * @see Ai1ec_Http_Response_Render_Strategy::render()
 	*/
 	public function render( array $params ) {
+		$this->_dump_buffers();
 		header( 'Content-type: text/calendar; charset=utf-8' );
 		echo $params['data'];
 		return Ai1ec_Http_Response_Helper::stop( 0 );
 	}
+
 }

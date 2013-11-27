@@ -12,27 +12,35 @@
 abstract class Ai1ec_Notification {
 
 	/**
-	 * An array of recipients
-	 *
-	 * @var array
+	 * @var string The message to send.
+	 */
+	protected $_message;
+
+	/**
+	 * @var array A list of recipients.
 	 */
 	protected $recipients = array();
 
 	/**
-	 * The message to send
+	 * Set local variables.
 	 *
-	 * @var string
+	 * @param array  $recipients List of recipients.
+	 * @param string $message    Message text.
+	 *
+	 * @return void
 	 */
-	protected $message;
-
-	public function __construct( array $recipients, $message ) {
-		$this->recipients = $recipients;
-		$this->message = $message;
+	public function __construct( $message, array $recipients ) {
+		$this->_message    = $message;
+		$this->_recipients = $recipients;
 	}
 
 	/**
-	 * This function performs the actual sending of the message
+	 * This function performs the actual sending of the message.
 	 *
+	 * Must be implemented in child classes.
+	 *
+	 * @return bool Success.
 	 */
 	abstract public function send();
+
 }

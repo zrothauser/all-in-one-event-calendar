@@ -43,7 +43,7 @@ class Ai1ec_Date_Time {
 	 * Return formatted date in desired timezone.
 	 *
 	 * @param string $format   Desired format as accepted by {@see date}.
-	 * @param string $timezone Valid timezone identifier.
+	 * @param string $timezone Valid timezone identifier. Defaults to current.
 	 *
 	 * @return string Formatted date time.
 	 *
@@ -51,22 +51,22 @@ class Ai1ec_Date_Time {
 	 */
 	public function format( $format = 'U', $timezone = null ) {
 		if ( null === $timezone ) {
-			// by defoult we format to local a UTC timezone.
-			// might be a good idea to add format_to_local or format_to_gmt
-			$timezone = $this->_registry->get( 'model.option' )
-				->get( 'timezone_string' );
+			$timezone = $this->_registry->get( 'date.timezone' )
+				->get_default_timezone();
 		}
 		$this->change_timezone( $timezone );
 		return $this->_date_time->format( $format );
 	}
 
 	/**
-	 * Commodity method to format to UTC
+	 * Commodity method to format to UTC.
 	 *
-	 * @return string
+	 * @param string $format Target format, defaults to UNIX timestamp.
+	 *
+	 * @return string Formatted datetime string.
 	 */
-	public function format_to_gmt() {
-		return $this->format( 'U', 'UTC' );
+	public function format_to_gmt( $format = 'U' ) {
+		return $this->format( $format, 'UTC' );
 	}
 
 	/**
@@ -98,6 +98,7 @@ class Ai1ec_Date_Time {
 	 * @return Ai1ec_Date Instance of self for chaining.
 	 */
 	public function set_time( $time = 'now', $timezone = 'UTC' ) {
+		$this->assert_utc_timezone();
 		$date_time_tz = null;
 		if ( $time > 0 && ( $time >> 10 ) > 2 ) {
 			$time = '@' . $time; // treat as UNIX timestamp
@@ -107,6 +108,21 @@ class Ai1ec_Date_Time {
 		}
 		$this->_date_time = new DateTime( $time, $date_time_tz );
 		return $this;
+	}
+
+	/**
+	 * Assert that current timezone is UTC.
+	 *
+	 * @return bool Success.
+	 */
+	public function assert_utc_timezone() {
+		$default = (string)date_default_timezone_get();
+		$success = true;
+		if ( 'UTC' !== $default ) {
+			// issue admin notice
+			$success = date_default_timezone_set( 'UTC' );
+		}
+		return $success;
 	}
 
 	/**

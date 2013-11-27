@@ -270,6 +270,14 @@ class Ai1ec_Front_Controller {
 				'ai1ec_cron',
 				array( 'calendar-feed.ics', 'cron' )
 			);
+			$dispatcher->register_action(
+				'network_admin_notices',
+				array( 'notification.admin', 'send' )
+			);
+			$dispatcher->register_action(
+				'admin_notices',
+				array( 'notification.admin', 'send' )
+			);
 
 		}
 

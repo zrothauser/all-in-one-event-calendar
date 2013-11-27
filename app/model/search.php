@@ -17,11 +17,6 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	private $_dbi = null;
 
 	/**
-	 * @var Ai1ec_Registry_Object instance
-	 */
-	private $_registry = null;
-
-	/**
 	 * get_event function
 	 *
 	 * Fetches the event object with the given post ID. Uses the WP cache to

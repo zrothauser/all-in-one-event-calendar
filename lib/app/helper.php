@@ -8,21 +8,7 @@
  * @package    AI1EC
  * @subpackage AI1EC.lib
  */
-class Ai1ec_App_Helper {
-
-	/**
-	 * @var Ai1ec_Registry_Object The Object registry.
-	 */
-	private $_registry;
-
-	/**
-	 * Constructor
-	 *
-	 * Default constructor
-	 **/
-	public function __construct( Ai1ec_Registry_Object $registry ){
-		$this->_registry = $registry;
-	}
+class Ai1ec_App_Helper extends Ai1ec_Base {
 
 	/**
 	 * add_meta_boxes function
@@ -55,7 +41,7 @@ class Ai1ec_App_Helper {
 	 * @return void
 	 **/
 	function create_post_type() {
-		$ai1ec_settings = $this->_registry->get( 'Ai1ec_Settings' );
+		$ai1ec_settings = $this->_registry->get( 'model.settings' );
 
 		// Create event contributor role with the same capabilities
 		// as subscriber role, plus event managing capabilities
@@ -145,14 +131,15 @@ class Ai1ec_App_Helper {
 		// = args for custom post type =
 		// =============================
 		$page_base = false;
-		if ( $ai1ec_settings->calendar_page_id ) {
-			$page_base = get_page_uri( $ai1ec_settings->calendar_page_id );
+
+		if ( $ai1ec_settings->get( 'calendar_page_id' ) ) {
+			$page_base = get_page_uri( $ai1ec_settings->get( 'calendar_page_id' ) );
 		}
 
 		$rewrite     = true;
 		$has_archive = true;
 		if (
-			$ai1ec_settings->calendar_base_url_for_permalinks &&
+			$ai1ec_settings->get( 'calendar_base_url_for_permalinks' ) &&
 			$page_base
 		) {
 			$rewrite     =  array( 'slug' => $page_base );
@@ -185,7 +172,7 @@ class Ai1ec_App_Helper {
 			'hierarchical' 				=> false,
 			'menu_position' 			=> 5,
 			'supports'						=> $supports,
-			'exclude_from_search' => $ai1ec_settings->exclude_from_search,
+			'exclude_from_search' => $ai1ec_settings->get( 'exclude_from_search' ),
 		);
 
 		// ========================================

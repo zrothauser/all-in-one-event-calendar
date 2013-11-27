@@ -84,7 +84,7 @@ class Ai1ec_Theme_Loader {
 					'theme.file.twig',
 					$filename,
 					$args,
-					$this->get_twig_instance( $paths )
+					$this->_get_twig_instance( $paths )
 				);
 				break;
 			default:
@@ -102,6 +102,14 @@ class Ai1ec_Theme_Loader {
 		return $file;
 	}
 
+	protected function _add_twig_functions() {
+		$screen_icon = new Twig_SimpleFunction( 'screen_icon', 'screen_icon' );
+		$wp_nonce_field = new Twig_SimpleFunction( 'wp_nonce_field', 'wp_nonce_field' );
+		$do_meta_boxes = new Twig_SimpleFunction( 'do_meta_boxes', 'do_meta_boxes' );
+		$this->_twig->addFunction( $screen_icon );
+		$this->_twig->addFunction( $wp_nonce_field );
+		$this->_twig->addFunction( $do_meta_boxes );
+	}
 	/**
 	 * This method whould be in a factory called by the object registry.
 	 * I leave it here for reference.
@@ -110,7 +118,7 @@ class Ai1ec_Theme_Loader {
 	 *
 	 * @return Twig_Environment
 	 */
-	private function get_twig_instance( array $paths ) {
+	protected function _get_twig_instance( array $paths ) {
 
 		if ( ! isset( $this->_twig ) ) {
 
@@ -133,7 +141,11 @@ class Ai1ec_Theme_Loader {
 
 			// Add translation filter.
 			$filter = new Twig_SimpleFilter( '__', 'Ai1ec_I18n::__' );
+			
 			$this->_twig->addFilter( $filter );
+			// $this->_add_twig_functions();
+			$extension = $this->_registry->get( 'twig.ai1ec-extension' );
+			$this->_twig->addExtension( $extension );
 		}
 		return $this->_twig;
 	}

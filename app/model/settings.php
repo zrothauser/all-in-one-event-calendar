@@ -216,6 +216,11 @@ class Ai1ec_Settings extends Ai1ec_App {
 			'none'
 		);
 		$this->register(
+				'settings_page',
+				'string',
+				'none'
+		);
+		$this->register(
 			'plugins_options',
 			'array',
 			'none'

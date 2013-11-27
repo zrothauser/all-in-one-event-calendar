@@ -1312,7 +1312,7 @@ HTML;
 		return $result_rule;
 	}
 
->>>>>>> Fixes according to comments form @jbukutus and @nicoladj77
+
 	public function get_events() {
 		$start  = $this->_registry->get( 'date.time', strtotime( '-1 month' ) );
 		$end    = $this->_registry->get( 'date.time', strtotime( '+1 month' ) );

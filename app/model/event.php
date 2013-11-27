@@ -404,13 +404,17 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 *
 	 * Create new event object, using provided data for initialization.
 	 *
+	 * @param Ai1ec_Registry_Object $registry
 	 * @param int|array $data  Look up post with id $data, or initialize fields
 	 *                         with flat associative array $data containing both
 	 *                         post and event fields returned by join query
 	 *
-	 * @return void
-	 **/
-	function __construct( Ai1ec_Registry_Object $registry, $data = null, $instance = false ) {
+	 * @param bool $instance
+	 * @throws Ai1ec_Invalid_Argument
+	 * @throws Ai1ec_Event_Not_Found
+	 * @return \Ai1ec_Event
+	 */
+	function __construct( Ai1ec_Registry_Object $registry, $data = NULL, $instance = false ) {
 		parent::__construct( $registry );
 		$dbi = $registry->get ( 'dbi.dbi' );
 
@@ -434,41 +438,41 @@ class Ai1ec_Event extends Ai1ec_Base {
 				);
 			}
 
-			$left_join  = "";
-			$select_sql = "e.post_id, e.recurrence_rules, e.exception_rules, " .
-				"e.allday, e.instant_event, e.recurrence_dates, e.exception_dates, " .
-				"e.venue, e.country, e.address, e.city, e.province, e.postal_code, " .
-				"e.show_map, e.contact_name, e.contact_phone, e.contact_email, " .
-				"e.contact_url, e.cost, e.ticket_url, e.ical_feed_url, " .
-				"e.ical_source_url, e.ical_organizer, e.ical_contact, e.ical_uid, " .
-				"e.longitude, e.latitude, e.show_coordinates, e.facebook_eid, " .
-				"e.facebook_status, e.facebook_user, " .
-				"GROUP_CONCAT( ttc.term_id ) AS categories, " .
-				"GROUP_CONCAT( ttt.term_id ) AS tags ";
+			$left_join  = '';
+			$select_sql = 'e.post_id, e.recurrence_rules, e.exception_rules, ' .
+				'e.allday, e.instant_event, e.recurrence_dates, e.exception_dates, ' .
+				'e.venue, e.country, e.address, e.city, e.province, e.postal_code, ' .
+				'e.show_map, e.contact_name, e.contact_phone, e.contact_email, ' .
+				'e.contact_url, e.cost, e.ticket_url, e.ical_feed_url, ' .
+				'e.ical_source_url, e.ical_organizer, e.ical_contact, e.ical_uid, ' .
+				'e.longitude, e.latitude, e.show_coordinates, e.facebook_eid, ' .
+				'e.facebook_status, e.facebook_user, ' .
+				'GROUP_CONCAT( ttc.term_id ) AS categories, ' .
+				'GROUP_CONCAT( ttt.term_id ) AS tags ';
 
 			if ( false !== $instance && is_numeric( $instance ) ) {
-				$select_sql .= ", IF( aei.start IS NOT NULL, aei.start, e.start ) as start," .
-							   "  IF( aei.start IS NOT NULL, aei.end,   e.end )   as end ";
+				$select_sql .= ', IF( aei.start IS NOT NULL, aei.start, e.start ) as start,' .
+							   '  IF( aei.start IS NOT NULL, aei.end,   e.end )   as end ';
 
 				$instance = (int) $instance;
 				$this->instance_id = $instance;
-				$left_join = 	"LEFT JOIN {$dbi->get_table_name( 'ai1ec_event_instances' )} aei ON aei.id = $instance AND e.post_id = aei.post_id ";
+				$left_join = 	'LEFT JOIN ' . $dbi->get_table_name( 'ai1ec_event_instances' ) .' aei ON aei.id = $instance AND e.post_id = aei.post_id ';
 			} else {
-				$select_sql .= ", e.start as start, e.end as end, e.allday ";
+				$select_sql .= ', e.start as start, e.end as end, e.allday ';
 			}
 
 			// =============================
 			// = Fetch event from database =
 			// =============================
 			$query = $dbi->prepare(
-				"SELECT {$select_sql}" .
-				"FROM {$dbi->get_table_name( 'ai1ec_events' )} e " .
-					"LEFT JOIN {$dbi->get_table_name( 'term_relationships' )} tr ON e.post_id = tr.object_id " .
-					"LEFT JOIN {$dbi->get_table_name( 'term_taxonomy' )} ttc ON tr.term_taxonomy_id = ttc.term_taxonomy_id AND ttc.taxonomy = 'events_categories' " .
-					"LEFT JOIN {$dbi->get_table_name( 'term_taxonomy' )} ttt ON tr.term_taxonomy_id = ttt.term_taxonomy_id AND ttt.taxonomy = 'events_tags' " .
-					"{$left_join}" .
-				"WHERE e.post_id = %d " .
-				"GROUP BY e.post_id",
+				'SELECT ' . $select_sql . ' '.
+				'FROM ' . $dbi->get_table_name( 'ai1ec_events' ) . ' e ' .
+					'LEFT JOIN ' . $dbi->get_table_name( 'term_relationships' ) . ' tr ON e.post_id = tr.object_id ' .
+					'LEFT JOIN ' . $dbi->get_table_name( 'term_taxonomy' ) . ' ttc ON tr.term_taxonomy_id = ttc.term_taxonomy_id AND ttc.taxonomy = "events_categories" ' .
+					'LEFT JOIN ' . $dbi->get_table_name( 'term_taxonomy' ) . ' ttt ON tr.term_taxonomy_id = ttt.term_taxonomy_id AND ttt.taxonomy = "events_tags" ' .
+					$left_join .
+				'WHERE e.post_id = %d ' .
+				'GROUP BY e.post_id',
 				$data );
 
 			$event = $dbi->get_row( $query );

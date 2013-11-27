@@ -231,9 +231,8 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 
 		global $post;
 
-		$ai1ec_settings       = $this->_registry->get( 'model.settings' );
 		$ai1ec_events_helper  = $this->_registry->get( 'lib.event.helper' );
-		$ai1ec_view_helper    = $this->_registry->get( 'lib.view.helper' );
+		$theme_loader         = $this->_registry->get( 'theme.loader' );
 
 		$empty_event          = $this->_registry->get( 'model.event' );
 
@@ -282,7 +281,7 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 		if ( $instance_id ) {
 			add_filter(
 				'print_scripts_array',
-				array( $ai1ec_view_helper, 'disable_autosave' )
+				array( $this, 'disable_autosave' )
 			);
 		}
 
@@ -400,10 +399,10 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 			'parent_event_id'    => $parent_event_id,
 			'instance_id'        => $instance_id,
 		);
-		$boxes[] = $ai1ec_view_helper->get_admin_view(
-			'box_time_and_date.php',
-			$args
-		);
+
+		$boxes[] = $theme_loader
+			->get_file( 'box_time_and_date.php', $args, true )
+			->get_content();
 
 		// =================================================
 		// = Display event location details and Google map =
@@ -422,10 +421,9 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 			'latitude'         => $latitude,
 			'coordinates'      => $coordinates,
 		);
-		$boxes[] = $ai1ec_view_helper->get_admin_view(
-			'box_event_location.php',
-			$args
-		);
+		$boxes[] = $theme_loader
+			->get_file( 'box_event_location.php', $args, true )
+			->get_content();
 
 		// ======================
 		// = Display event cost =
@@ -436,10 +434,11 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 			'ticket_url' => $ticket_url,
 			'event'      => $empty_event,
 		);
-		$boxes[] = $ai1ec_view_helper->get_admin_view(
-			'box_event_cost.php',
-			$args
-		);
+		$boxes[] = $theme_loader
+			->get_file( 'box_event_cost.php', $args, true )
+			->get_content();
+
+
 
 		// =========================================
 		// = Display organizer contact information =
@@ -451,10 +450,9 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 			'contact_url'     => $contact_url,
 			'event'           => $empty_event,
 		);
-		$boxes[] = $ai1ec_view_helper->get_admin_view(
-			'box_event_contact.php',
-			$args
-		);
+		$boxes[] = $theme_loader
+			->get_file( 'box_event_contact.php', $args, true )
+			->get_content();
 
 		/*
 			TODO Display Eventbrite ticketing
@@ -477,10 +475,10 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 				$args['button_value'] = __( 'Submit for Review', AI1EC_PLUGIN_NAME );
 			}
 
-			$publish_button = $ai1ec_view_helper->get_admin_view(
-				'box_publish_button.php',
-				$args
-			);
+			$boxes[] = $theme_loader
+				->get_file( 'box_publish_button.php', $args, true )
+				->get_content();
+
 		}
 
 		// ==========================
@@ -499,10 +497,9 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 			$children = $ai1ec_events_helper
 				->get_child_event_objects( $event->post_id );
 			$args    = compact( 'parent', 'children' );
-			$boxes[] = $ai1ec_view_helper->get_admin_view(
-				'box_event_children.php',
-				$args
-			);
+			$boxes[] = $theme_loader
+				->get_file( 'box_event_children.php', $args, true )
+				->get_content();
 		}
 
 		// Display the final view of the meta box.
@@ -510,7 +507,11 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 			'boxes'          => $boxes,
 			'publish_button' => $publish_button,
 		);
-		$ai1ec_view_helper->display_admin( 'add_new_event_meta_box.php', $args );
+
+		echo($theme_loader
+			->get_file( 'add_new_event_meta_box.php', $args, true )
+			->get_content());
+
 	}
 
 	/**
@@ -1323,4 +1324,23 @@ HTML;
 
 		return $template->get_content();
 	}
+
+	/**
+	 * disable_autosave method
+	 *
+	 * Callback to disable autosave script
+	 *
+	 * @param array $input List of scripts registered
+	 *
+	 * @return array Modified scripts list
+	 */
+	public function disable_autosave( array $input ) {
+		wp_deregister_script( 'autosave' );
+		$autosave_key = array_search( 'autosave', $input );
+		if ( false === $autosave_key || ! is_scalar( $autosave_key ) ) {
+			unset( $input[$autosave_key] );
+		}
+		return $input;
+	}
+
 }

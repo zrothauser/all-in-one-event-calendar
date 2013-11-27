@@ -1,13 +1,14 @@
 <?php
 
 /**
- * Exception raised when event initialized to is not found.
+ * Ai1ec_Event_Not_Found class
  *
  * @author     Time.ly Network Inc.
  * @since      2.0
  *
  * @package    AI1EC
- * @subpackage AI1EC.Exception
+ * @subpackage AI1EC.Controller.Exception
  */
-class Ai1ec_Event_Not_Found_Exception extends Ai1ec_Exception {
+class Ai1ec_Event_Not_Found extends Exception {
+
 }

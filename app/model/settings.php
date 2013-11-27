@@ -30,21 +30,6 @@ class Ai1ec_Settings extends Ai1ec_App {
 	protected $_options          = array();
 
 	/**
-	 * show_publish_button class variable
-	 *
-	 * Display publish button at the bottom of the
-	 * submission form
-	 *
-	 * @var bool
-	 **/
-	public $show_publish_button;
-
-	/**
-	 * @var array Map of value names and their representations.
-	 */
-	protected $_standard_options = array();
-
-	/**
 	 * @var bool Indicator for modified object state.
 	 */
 	protected $_updated          = false;
@@ -130,7 +115,18 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'Option "' . $option . '" was not registered'
 			);
 		}
-		if ( (string)$value !== (string)$this->_options[$option]['value'] ) {
+		if ( 'array' === $this->_options[$option]['type'] ) {
+			if (
+				! is_array( $this->_options[$option]['value'] ) ||
+				! is_array( $value ) ||
+				$value != $this->_options[$option]['value']
+			) {
+				$this->_options[$option]['value'] = $value;
+				$this->_updated                   = true;
+			}
+		} else if (
+			(string)$value !== (string)$this->_options[$option]['value']
+		) {
 			$this->_options[$option]['value'] = $value;
 			$this->_updated                   = true;
 		}
@@ -229,7 +225,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 		} else {
 			$this->_options = $values;
 		}
-		$this->_sys->get( 'controller.shutdown' )->register(
+		$this->_registry->get( 'controller.shutdown' )->register(
 			array( $this, 'shutdown' )
 		);
 	}
@@ -607,172 +603,4 @@ class Ai1ec_Settings extends Ai1ec_App {
 		}
 	}
 
-	/**
-	 * set_defaults function
-	 *
-	 * Set default values for settings.
-	 *
-	 * @return void
-	 **/
-	function set_defaults() {
-		$admin_mail_subject = __(
-			"[[site_title]] New iCalendar (.ics) feed submitted for review",
-			AI1EC_PLUGIN_NAME
-		);
-		$admin_mail_body = __(
-			"A visitor has submitted their calendar feed for review:\n\niCalendar feed URL: [feed_url]\nCategories: [categories]\n\nTo add this feed to your calendar, visit your Calendar Feeds admin screen and add it as an ICS feed:\n[feeds_url]\n\nPlease respond to this user by e-mail ([user_email]) to let them know whether or not their feed is approved.\n\n[site_title]\n[site_url]",
-			AI1EC_PLUGIN_NAME
-		);
-		$user_mail_subject = __(
-			"[[site_title]] Thanks for your calendar submission",
-			AI1EC_PLUGIN_NAME
-		);
-		$user_mail_body = __(
-			"We have received your calendar submission. We will review it shortly and let you know if it is approved.\n\nThere is a small chance that your submission was lost in a spam trap. If you don't hear from us soon, please resubmit.\n\nThanks,\n[site_title]\n[site_url]",
-			AI1EC_PLUGIN_NAME
-		);
-		$admin_add_new_event_subject = __(
-			"[[site_title]] New event submission",
-			AI1EC_PLUGIN_NAME
-		);
-		$admin_add_new_event_body = __(
-			"A new event has been submitted to the site.\n\nEvent title: [event_title]\nModify the event here: [event_admin_url].\n\nThanks,\n[site_title]\n[site_url]",
-			AI1EC_PLUGIN_NAME
-		);
-		$user_upcoming_event_subject = __(
-			'[[site_title]] Event reminder: [event_title]',
-			AI1EC_PLUGIN_NAME
-		);
-		$user_upcoming_event_body = __(
-			"An event you have indicated interest in is about to start:\n\nEvent title: [event_title]\nStarting at: [event_start]\n\nView the event’s details here: [event_url]\n\n(You have received this alert because you asked to receive an email notification for this event.)\n\nRegards,\n[site_title]\n[site_url]",
-			AI1EC_PLUGIN_NAME
-		);
-		$license_key = $this->get_license_key();
-		$defaults    = array(
-			'calendar_page_id'                 => 0,
-			'default_calendar_view'            => 'posterboard',
-			'default_categories'               => array(),
-			'default_tags'                     => array(),
-			'view_posterboard_enabled'         => TRUE,
-			'view_stream_enabled'              => TRUE,
-			'view_month_enabled'               => TRUE,
-			'view_week_enabled'                => TRUE,
-			'view_oneday_enabled'              => TRUE,
-			'view_agenda_enabled'              => TRUE,
-			'calendar_css_selector'            => '',
-			'week_start_day'                   => $this->_registry
-				->get( 'Ai1ec_Meta_Post' )
-				->get_option(
-					'start_of_week'
-			),
-			'exact_date'                       => '',
-			'posterboard_events_per_page'      => 30,
-			'disable_standard_filter_menu'     => false,
-			'posterboard_tile_min_width'       => 240,
-			'stream_events_per_page'           => 30,
-			'week_view_starts_at'              => self::WEEK_VIEW_STARTS_AT,
-			'week_view_ends_at'                => self::WEEK_VIEW_ENDS_AT,
-			'agenda_events_per_page'           => $this->_registry
-				->get( 'Ai1ec_Meta_Post' )
-				->get_option(
-				'posts_per_page'
-			),
-			'agenda_include_entire_last_day'   => FALSE,
-			'agenda_events_expanded'           => FALSE,
-			'include_events_in_rss'            => FALSE,
-			'allow_publish_to_facebook'        => FALSE,
-			'facebook_credentials'             => NULL,
-			'user_role_can_create_event'       => NULL,
-			'show_publish_button'              => FALSE,
-			'hide_maps_until_clicked'          => FALSE,
-			'exclude_from_search'              => FALSE,
-			'show_create_event_button'         => FALSE,
-			'show_front_end_create_form'       => FALSE,
-			'allow_anonymous_submissions'      => FALSE,
-			'allow_anonymous_uploads'          => FALSE,
-			'show_add_calendar_button'         => FALSE,
-			'recaptcha_public_key'             => '',
-			'recaptcha_private_key'            => '',
-			'turn_off_subscription_buttons'    => FALSE,
-			'inject_categories'                => FALSE,
-			'input_date_format'                => 'def',
-			'input_24h_time'                   => FALSE,
-			'cron_freq'                        => 'daily',
-			'timezone'                         => $this->_registry
-				->get( 'Ai1ec_Meta_Post' )
-				->get_option(
-				'timezone_string'
-			),
-			'geo_region_biasing'               => FALSE,
-			'show_data_notification'           => TRUE,
-			'show_intro_video'                 => TRUE,
-			'license_warning'                  => 'valid',
-			'allow_statistics'                 => TRUE,
-			'event_platform'                   => FALSE,
-			'event_platform_strict'            => FALSE,
-			'require_disclaimer'               => FALSE,
-			'disclaimer'                       => '',
-			'plugins_options'                  => array(),
-			'disable_autocompletion'           => FALSE,
-			'show_location_in_title'           => TRUE,
-			'show_year_in_agenda_dates'        => FALSE,
-			'views_enabled_ticket_button'      => array(),
-			'skip_in_the_loop_check'           => false,
-			'ajaxify_events_in_web_widget'     => false,
-			'admin_mail_subject'               => $admin_mail_subject,
-			'admin_mail_body'                  => $admin_mail_body,
-			'user_mail_subject'                => $user_mail_subject,
-			'user_mail_body'                   => $user_mail_body,
-			'admin_add_new_event_mail_body'    => $admin_add_new_event_body,
-			'admin_add_new_event_mail_subject' => $admin_add_new_event_subject,
-			'user_upcoming_event_mail_body'    => $user_upcoming_event_body,
-			'user_upcoming_event_mail_subject' => $user_upcoming_event_subject,
-			'license_key'                      => $license_key,
-			'calendar_base_url_for_permalinks' => false,
-			'view_cache_refresh_interval'      => NULL,
-			'enable_user_event_notifications'  => true,
-			'oauth_twitter_id'                 => '',
-			'oauth_twitter_pass'               => '',
-			'use_select2_widgets'              => false,
-			'twitter_notice_interval'          => '8h',
-			'use_authors_filter'               => false,
-			'disable_gzip_compression'         => false,
-		);
-		$ai1ec_purge_events_cache = $this->_registry
-			->get( 'Ai1ec_Scheduling_Utility' )
-			->get_details( 'ai1ec_purge_events_cache' );
-		$defaults['view_cache_refresh_interval'] =
-			$ai1ec_purge_events_cache['freq'];
-		unset( $ai1ec_purge_events_cache );
-
-		foreach ( $defaults as $key => $default ) {
-			if ( ! isset( $this->$key ) ) {
-				$this->$key = $default;
-			}
-		}
-
-		// Force enable data collection setting.
-		$this->allow_statistics = $defaults['allow_statistics'];
-	}
-
-	/**
-	 * Get a licence key
-	 *
-	 * @return string Time.ly Pro edition license key
-	 */
-	public function get_license_key() {
-		$candidate_keys = array();
-		if ( isset( $this->license_key ) ) {
-			$candidate_keys[] = $this->license_key;
-		}
-		if ( defined( 'AI1EC_TIMELY_SUBSCRIPTION' ) ) {
-			$candidate_keys[] = AI1EC_TIMELY_SUBSCRIPTION;
-		}
-		foreach ( $candidate_keys as $license_key ) {
-			if ( 'REPLACE_ME' !== $license_key && ! empty( $license_key ) ) {
-				return $license_key;
-			}
-		}
-		return ''; // no key available
-	}
 }

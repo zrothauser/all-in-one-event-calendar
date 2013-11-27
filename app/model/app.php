@@ -8,12 +8,7 @@
  * @package    Ai1EC
  * @subpackage Ai1EC.Model
  */
-class Ai1ec_App {
-
-	/**
-	 * @var Ai1ec_Registry_Object Instance of system layer.
-	 */
-	protected $_registry = null;
+class Ai1ec_App extends Ai1ec_Base {
 
 	/**
 	 * Initiate base objects.
@@ -22,7 +17,7 @@ class Ai1ec_App {
 	 * @internal param \Ai1ec_Registry_Object $system Injectable system object.
 	 */
 	public function __construct( Ai1ec_Registry_Object $registry ) {
-		$this->_registry = $registry;
+		parent::__construct( $registry );
 		$this->_initialize();
 	}
 

@@ -325,12 +325,12 @@ class Ai1ec_Front_Controller {
 				'init',
 				array( 'app.helper', 'create_post_type' )
 			);
-            $dispatcher->register_action(
-                'save_post',
-                array( 'Ai1ec_Events_Controller', 'save_post'),
-                10,
-                2
-            );
+			$dispatcher->register_action(
+				'save_post',
+				array( 'Ai1ec_Events_Controller', 'save_post'),
+				10,
+				2
+			);
 
 		}
 

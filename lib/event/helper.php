@@ -120,7 +120,7 @@ class Ai1ec_Event_Helper extends Ai1ec_Base {
 	public function get_parent_event( $current_id ) {
 		static $parents = NULL;
 		if ( NULL === $parents ) {
-			$parents = $this->_registry->get( 'Ai1ec_Memory_Utility' );
+			$parents = $this->_registry->get( 'cache.memory' );
 		}
 		$current_id = (int)$current_id;
 		if ( NULL === ( $parent_id = $parents->get( $current_id ) ) ) {

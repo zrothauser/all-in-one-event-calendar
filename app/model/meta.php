@@ -36,21 +36,6 @@ abstract class Ai1ec_Meta extends Ai1ec_App {
 	}
 
 	/**
-	 * get_option method
-	 *
-	 * Method to simplify call to option retrieval.
-	 * Options are commonly retrieved, thus a helper method.
-	 *
-	 * @param string $name     Option to fetch
-	 * @param NULL   $default  Value to return if $name is not found
-	 *
-	 * @return mixed Found option or {$default}
-	 */
-	public function get_option( $name, $default = false ) {
-		return $this->get( $name, NULL, $default, true );
-	}
-
-	/**
 	 * Create new entry if it does not exist and cache provided value.
 	 *
 	 * @param string $object_id ID of object to store.

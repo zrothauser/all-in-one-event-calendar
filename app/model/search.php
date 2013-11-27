@@ -9,7 +9,7 @@
  * @package    AI1EC
  * @subpackage AI1EC.search
  */
-class Ai1ec_Event_Search {
+class Ai1ec_Event_Search extends Ai1ec_Base {
 
 	/**
 	 * @var Ai1ec_Dbi instance
@@ -50,8 +50,8 @@ class Ai1ec_Event_Search {
 	 * If $spanning is true, then also include events that span this
 	 * period. All-day events are returned first.
 	 *
-	 * @param Ai1ec_Time $start     limit to events starting after this
-	 * @param Ai1ec_Time $end       limit to events starting before this
+	 * @param Ai1ec_Date_Time $start     limit to events starting after this
+	 * @param Ai1ec_Date_Time $end       limit to events starting before this
 	 * @param array $filter         Array of filters for the events returned:
 	 *                              ['cat_ids']  => list of category IDs
 	 *                              ['tag_ids']  => list of tag IDs
@@ -62,8 +62,8 @@ class Ai1ec_Event_Search {
 	 * @return array                list of matching event objects
 	 */
 	public function get_events_between(
-		Ai1ec_Time $start,
-		Ai1ec_Time $end,
+		Ai1ec_Date_Time $start,
+		Ai1ec_Date_Time $end,
 		array $filter = array(),
 		$spanning     = false
 	) {
@@ -533,8 +533,9 @@ class Ai1ec_Event_Search {
 	 * Object constructors
 	 */
 	public function __construct( Ai1ec_Registry_Object $registry ){
-		$this->_dbi       = $registry->get( 'dbi' );
-		$this->_registry  = $registry;
+		parent::__construct( $registry );
+		$this->_dbi       = $this->_registry->get( 'dbi.dbi' );
+
 	}
 
 }

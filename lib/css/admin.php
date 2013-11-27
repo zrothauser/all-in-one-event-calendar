@@ -16,7 +16,6 @@ class Ai1ec_Css_Admin  extends Ai1ec_Base {
 	 *
 	 * @wp_hook admin_enqueue_scripts
 	 *
-	 * @return void
 	 */
 	public function admin_enqueue_scripts( $hook_suffix ) {
 		$settings    = $this->_registry->get( 'model.settings' );
@@ -80,7 +79,7 @@ class Ai1ec_Css_Admin  extends Ai1ec_Base {
 			} else {
 				wp_enqueue_style(
 					$this->gen_style_hook( $item[1] ),
-					AI1EC_ADMIN_THEME_CSS_URL . DIRECTORY_SEPARATOR . $item[1],
+					AI1EC_ADMIN_THEME_CSS_URL . $item[1],
 					array(),
 					AI1EC_VERSION
 				);

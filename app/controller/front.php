@@ -241,6 +241,16 @@ class Ai1ec_Front_Controller {
 			'delete_post',
 			array( 'controller.events', 'delete' )
 		);
+		$dispatcher->register_action(
+			'pre_http_request',
+			array( 'http.request', 'pre_http_request' ),
+			10,
+			2
+		);
+		$dispatcher->register_action(
+			'http_api_curl',
+			array( 'http.request', 'curl_inject_certificate' )
+		);
 		if ( is_admin() ) {
 			$dispatcher->register_action(
 				'admin_enqueue_scripts',

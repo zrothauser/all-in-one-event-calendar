@@ -7,9 +7,9 @@
  * @since      2.0
  *
  * @package    AI1EC
- * @subpackage AI1EC.Utility
+ * @subpackage AI1EC.Http
  */
-class Ai1ec_Utility_Http {
+class Ai1ec_Http_Request {
 
 	/**
 	 * Public constructor

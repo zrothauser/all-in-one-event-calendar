@@ -19,12 +19,12 @@ class Ai1ec_App_Helper extends Ai1ec_Base {
 	 **/
 	function add_meta_boxes() {
 
-		$ai1ec_events_controller = $this->_registry->get( 'controller.events' );
+		$events_add_new = $this->_registry->get( 'view.add-new-event' );
 
 		add_meta_box(
 			AI1EC_POST_TYPE,
 			__( 'Event Details', AI1EC_PLUGIN_NAME ),
-			array( &$ai1ec_events_controller, 'meta_box_view' ),
+			array( &$events_add_new, 'meta_box_view' ),
 			AI1EC_POST_TYPE,
 			'normal',
 			'high'

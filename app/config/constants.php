@@ -12,7 +12,7 @@
  * @return void Method does not return
  */
 
-function ai1ec_initiate_constants( $ai1ec_base_dir ) {
+function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url) {
 
 	// ===============
 	// = Plugin Path =

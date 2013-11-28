@@ -525,6 +525,24 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	}
 
 	/**
+	 * Retrieve events
+	*/
+	public function get_events() {
+		$start  = $this->_registry->get( 'date.time', strtotime( '-1 month' ) );
+		$end    = $this->_registry->get( 'date.time', strtotime( '+1 month' ) );
+		$events = $this->_registry->get( 'model.search' )
+			->get_events_between( $start, $end );
+
+		$template = $this->_registry->get( 'theme.loader' )->get_file(
+			'twig/event-list.twig',
+			compact( 'events', 'start', 'end' ),
+			false
+		);
+
+		return $template->get_content();
+	}
+
+	/**
 	 * Object constructors
 	 */
 	public function __construct( Ai1ec_Registry_Object $registry ){

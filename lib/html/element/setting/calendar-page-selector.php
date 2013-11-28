@@ -87,6 +87,7 @@ class Ai1ec_Html_Element_Calendar_Page_Selector
 		$html = '<select id="' . self::ELEMENT_ID .
 			'" class="inputwidth" name="' . self::ELEMENT_ID . '">';
 		$list = $this->_get_pages();
+		fb($list);
 		foreach ( $list as $key => $value ) {
 			$html .= '<option value="' . $this->_html->esc_attr( $key ) . '"';
 			if ( $this->_selected === $key ) {

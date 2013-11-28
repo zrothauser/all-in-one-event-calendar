@@ -102,14 +102,6 @@ class Ai1ec_Theme_Loader {
 		return $file;
 	}
 
-	protected function _add_twig_functions() {
-		$screen_icon = new Twig_SimpleFunction( 'screen_icon', 'screen_icon' );
-		$wp_nonce_field = new Twig_SimpleFunction( 'wp_nonce_field', 'wp_nonce_field' );
-		$do_meta_boxes = new Twig_SimpleFunction( 'do_meta_boxes', 'do_meta_boxes' );
-		$this->_twig->addFunction( $screen_icon );
-		$this->_twig->addFunction( $wp_nonce_field );
-		$this->_twig->addFunction( $do_meta_boxes );
-	}
 	/**
 	 * This method whould be in a factory called by the object registry.
 	 * I leave it here for reference.
@@ -136,8 +128,15 @@ class Ai1ec_Theme_Loader {
 			$loader = new Twig_Loader_Filesystem( $loader_path );
 			unset( $loader_path );
 
-			// @TODO: Add cache support.
-			$this->_twig = new Twig_Environment( $loader );
+			// TODO: Add cache support.
+			if ( AI1EC_DEBUG ) {
+				$this->_twig = new Twig_Environment( $loader, array( 'debug' => true ) );
+				$this->_twig->addExtension(new Twig_Extension_Debug());
+			} else {
+				$this->_twig = new Twig_Environment( $loader );
+			}
+			
+
 
 			// Add translation filter.
 			$filter = new Twig_SimpleFilter( '__', 'Ai1ec_I18n::__' );

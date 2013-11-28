@@ -48,8 +48,70 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 	}
 	public function handle_post() {
 	}
-	public function display_meta_box( $object, $box ) {
-		echo 'meta!';
+	
+	/**
+	 * Dump output buffers before starting output
+	 *
+	 * @return bool True unless an error occurs
+	 */
+	protected function _dump_buffers() {
+		// ob_end_clean() fails if any level of compression is set.
+		$result = true;
+		while ( ob_get_level() ) {
+			$result &= ob_end_clean();
+		}
+		return $result;
+	}
+
+	public function display_meta_box( $object, $box )  {
+		$tabs = array(
+			'viewing-events' => array(
+				'name' => Ai1ec_I18n::__( 'Viewing Events' ),
+			),
+			'editing-events' => array(
+				'name' => Ai1ec_I18n::__( 'Adding/Editing Events' ),
+			),
+			'advanced' => array(
+				'name' => Ai1ec_I18n::__( 'Advanced' ),
+				'items' => array(
+					'advanced' => Ai1ec_I18n::__( 'Advanced Settings' ),
+					'email' => Ai1ec_I18n::__( 'E-mail Templates' ),
+					'apis' => Ai1ec_I18n::__( 'External Services' ),
+				)
+			),
+		);
+		$settings = $this->_registry->get( 'model.settings' );
+		$plugin_settings = $settings->get_options();
+		$tabs = $this->_get_tabs_to_show( $plugin_settings, $tabs );
+		$loader = $this->_registry->get( 'theme.loader' );
+		$args = array(
+			'tabs' => $tabs
+		);
+		
+		$file = $loader->get_file( 'bootstrap_tabs.twig', $args, true );
+		$file->render();
+	}
+	
+	protected function _get_tabs_to_show( $plugin_settings, $tabs ) {
+		foreach ( $plugin_settings as $id => $setting ) {
+			// if the setting is shown
+			if ( isset ( $setting['renderer'] ) ) {
+				// check if it's the first one of the 
+				if ( ! isset ( $tabs[$setting['renderer']['tab']]['elements'] ) ) {
+					$tabs[$setting['renderer']['tab']]['elements'] = array();
+				}
+				$renderer = $setting['renderer']['class'];
+				$setting['id'] = $id;
+				$renderer = $this->_registry->get( 
+					'html.element.setting.' . $renderer, 
+					$setting
+				);
+				$tabs[$setting['renderer']['tab']]['elements'][] = array(
+					'html' => $renderer->render()
+				);
+			}
+		}
+		return $tabs;
 	}
 }
 

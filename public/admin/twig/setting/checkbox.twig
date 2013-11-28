@@ -1,0 +1,7 @@
+<label for="{{ id }}">
+{% from 'input.twig' import input %}
+{{ input( id, id, 1, 'checkbox', attributes ) }}
+	{% autoescape false %}
+	{{ renderer.label }}
+	{% endautoescape %}
+</label>

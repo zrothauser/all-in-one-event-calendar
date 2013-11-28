@@ -22,6 +22,11 @@ class Ai1ec_Settings extends Ai1ec_App {
 
 
 	/**
+	 * @var array Map of value names and their representations.
+	 */
+	protected $_standard_options;
+
+	/**
 	 * @var bool Indicator for modified object state.
 	 */
 	protected $_updated         = false;
@@ -37,25 +42,24 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 */
 	public function register(
 		$option,
+		$value,
 		$type,
-		$renderer = 'Ai1ec_Html_Element_Settings'
+		$renderer
 	) {
-		$value = null;
-		if ( isset( $this->_options[$option] ) ) {
-			$value = $this->_options[$option]['value'];
-		} else {
-			$this->_updated = true;
-		}
 		$this->_options[$option] = array(
-			'name'     => $option,
 			'value'    => $value,
 			'type'     => $type,
-			'renderer' => $renderer,
 			'legacy'   => false,
 		);
+		if ( null !== $renderer ) {
+			$this->_options[$option]['renderer'] = $renderer;
+		}
 		return $this;
 	}
 
+	public function get_options() {
+		return $this->_options;
+	}
 	/**
 	 * Get field options as registered.
 	 *
@@ -125,10 +129,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 *
 	 * @return array Parsed values representation, or input cast as array.
 	 */
-	public function parse_legacy( $values ) {
-		if ( ! $values instanceof Ai1ec_Settings ) {
-			return (array)$values;
-		}
+	protected function _parse_legacy( Ai1ec_Settings $values ) {
 		$result    = array();
 		$variables = get_object_vars( $values );
 		foreach ( $variables as $key => $value ) {
@@ -137,14 +138,17 @@ class Ai1ec_Settings extends Ai1ec_App {
 				$type = 'array';
 			} elseif ( is_bool( $value ) ) {
 				$type = 'bool';
+			} elseif ( is_int( $value ) ) {
+				$type = 'int';
 			}
 			$result[$key] = array(
-				'name'     => $key,
 				'value'    => $value,
 				'type'     => $type,
-				'renderer' => 'Ai1ec_Html_Element_Settings',
 				'legacy'   => true,
 			);
+			if ( isset ( $this->_standard_options[$key]['renderer'] ) ) {
+				$result[$key]['renderer'] = $this->_standard_options[$key]['renderer'];
+			}
 		}
 		return $result;
 	}
@@ -183,49 +187,71 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 * @return void Return from this method is ignored.
 	 */
 	protected function _initialize() {
+		$this->_set_standard_values();
 		$values  = $this->_sys->get( 'model.option' )
 			->get( self::WP_OPTION_KEY, array() );
-		$values = $this->parse_legacy( $values );
-		$this->_options = $values;
-		$this->_register_defaults();
 		$this->_updated = false;
+		$values = array();
+		if ( empty( $values ) ) {
+			$this->_register_standard_values();
+			$this->_updated = true;
+		} else if ( $values instanceof Ai1ec_Settings ) {
+			$values = $this->_parse_legacy( $values );
+			$this->_updated = true;
+		} else {
+			$this->_options = $values;
+		}
 		$this->_sys->get( 'controller.shutdown' )->register(
 			array( $this, 'shutdown' )
 		);
 	}
 
-	/**
-	 * Initialize default (globally used) options.
-	 *
-	 * @return void Method does not return.
-	 */
-	protected function _register_defaults() {
-		$this->register(
-			'ai1ec_db_version',
-			'int',
-			'none'
+	protected function _set_standard_values() {
+		$this->_standard_options = array(
+			'ai1ec_db_version' => array(
+				'type' => 'int',
+				'default'  => false,
+			),
+			'ai1ec_calendar_id' => array(
+				'type' => 'int',
+				'renderer' => array(
+					'class' => 'calendar-page-selector',
+					'tab'   => 'viewing-events',
+					'label' => Ai1ec_I18n::__( 'Calendar page:' )
+				),
+				'default'  => false,
+		
+			),
+			'feeds_page' => array(
+				'type' => 'string',
+				'default'  => false,
+			),
+			'settings_page' => array(
+				'type' => 'string',
+				'default'  => false,
+			),
+			'plugins_options' => array(
+				'type' => 'array',
+				'default'  => array(),
+			),
+			'show_location_in_title' => array(
+				'type' => 'int',
+				'renderer' => array(
+					'class' => 'checkbox',
+					'tab'   => 'viewing-events',
+					'label' => Ai1ec_I18n::__(
+						'<strong>Show location in event titles</strong> in calendar views'
+					)
+				),
+				'default'  => false,
+			),
 		);
-		$this->register(
-			'ai1ec_calendar_id',
-			'int',
-			'none'
-		);
-		$this->register(
-			'feeds_page',
-			'string',
-			'none'
-		);
-		$this->register(
-				'settings_page',
-				'string',
-				'none'
-		);
-		$this->register(
-			'plugins_options',
-			'array',
-			'none'
-		);
-
+	}
+	protected function _register_standard_values() {
+		foreach ( $this->_standard_options as $key => $option ) {
+			$renderer = isset( $option['renderer'] ) ? $option['renderer'] : null;
+			$this->register( $key, $option['default'], $option['type'], $renderer );
+		}
 	}
 
 }

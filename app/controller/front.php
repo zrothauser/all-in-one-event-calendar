@@ -181,6 +181,8 @@ class Ai1ec_Front_Controller {
 	 */
 	private function _init( $ai1ec_loader ) {
 		$exception = null;
+		// Load the textdomain
+		add_action( 'plugins_loaded', array( $this, '_load_textdomain' ) );
 		try {
 			// Initialize the registry object
 			$this->_initialize_registry( $ai1ec_loader );
@@ -188,8 +190,6 @@ class Ai1ec_Front_Controller {
 			$this->_install_crons();
 			// Register the activation hook
 			$this->_initialize_schema();
-			// Load the textdomain
-			$this->_load_textdomain();
 		} catch ( Ai1ec_Constants_Not_Set_Exception $e ) {
 			// This is blocking, throw it and disable the plugin
 			$exception = $e;

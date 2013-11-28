@@ -6,6 +6,8 @@
  * Author: Time.ly Network Inc.
  * Author URI: http://time.ly/
  * Version: 2.0
+ * Text Domain: all-in-one-event-calendar
+ * Domain Path: /language
  */
 
 $ai1ec_base_dir = dirname( __FILE__ );

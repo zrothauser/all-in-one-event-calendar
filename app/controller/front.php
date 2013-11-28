@@ -19,7 +19,7 @@ class Ai1ec_Front_Controller {
 	/**
 	 * @var bool Whether the domain has alredy been loaded or not.
 	 */
-	private $_load_domain = false;
+	private $_domain_loaded = false;
 
 	/**
 	 * @var string The pagebase used by Ai1ec_Href_Helper.
@@ -182,7 +182,7 @@ class Ai1ec_Front_Controller {
 	private function _init( $ai1ec_loader ) {
 		$exception = null;
 		// Load the textdomain
-		add_action( 'plugins_loaded', array( $this, '_load_textdomain' ) );
+		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 		try {
 			// Initialize the registry object
 			$this->_initialize_registry( $ai1ec_loader );
@@ -376,14 +376,16 @@ class Ai1ec_Front_Controller {
 	/**
 	 * Load the texdomain for the plugin.
 	 *
+	 * @wp_hook plugins_loaded
+	 *
 	 * @return void
 	 */
-	private function _load_textdomain() {
-		if ( false === $this->_load_domain ) {
+	public function load_textdomain() {
+		if ( false === $this->_domain_loaded ) {
 			load_plugin_textdomain(
 				AI1EC_PLUGIN_NAME, false, AI1EC_LANGUAGE_PATH
 			);
-			$this->_load_domain = true;
+			$this->_domain_loaded = true;
 		}
 	}
 

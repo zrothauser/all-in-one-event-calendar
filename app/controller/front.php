@@ -277,7 +277,7 @@ class Ai1ec_Front_Controller {
 			);
 			$dispatcher->register_action(
 				'admin_menu',
-				array( 'Ai1ec_View_Calendar_Feeds', 'add_page' )
+				array( 'view.calendar-feeds', 'add_page' )
 			);
 			$dispatcher->register_action(
 				'init',

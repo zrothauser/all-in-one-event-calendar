@@ -28,15 +28,27 @@ class Ai1ec_Post_Helper {
 	public function get_post( $post = null, $output = OBJECT, $filter = 'raw' ) {
 		return get_post( $post, $output, $filter );
 	}
-	 /**
-	  * Retrieve the post type of the current post or of a given post.
-	  *
-	  * @since 2.1.0
-	  *
-	  * @param int|object $post Optional. Post ID or post object. Default is the current post from the loop.
-	  * @return string|bool Post type on success, false on failure.
-	  */
+	/**
+	 * Retrieve the post type of the current post or of a given post.
+	 *
+	 * @since 2.1.0
+	 *
+	 * @param int|object $post Optional. Post ID or post object. Default is the current post from the loop.
+	 * @return string|bool Post type on success, false on failure.
+	*/
 	function get_post_type( $post = null ) {
 		return get_post_type( $post );
-	 }
+	}
+
+	/**
+	 * Proxy to the shared $post object from wordpress
+	 *
+	 * @param $value string value to get
+	 * @return array|mixed the value in the $post object
+	 */
+	function get_post_object_value( $value ) {
+		global $post;
+		return $post->{$value};
+	}
+
 }

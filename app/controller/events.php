@@ -28,7 +28,7 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 		return true;
 	}
 
-	/*
+	/**
 	 * Constructor
 	 *
 	 * @param Ai1ec_Registry_Object $registry
@@ -39,12 +39,9 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 		parent::__construct( $registry );
 
 		if ( basename( $_SERVER['SCRIPT_NAME'] ) == 'post.php' ||
-            basename( $_SERVER['SCRIPT_NAME'] ) == 'post-new.php') {
-			$dispatcher = $this->_registry->get( 'event.dispatcher' );
-			$dispatcher->register_action(
-				'admin_action_editpost',
-				array( $this, 'admin_init_post' )
-			);
+			basename( $_SERVER['SCRIPT_NAME'] ) == 'post-new.php'
+		) {
+			add_action( 'admin_action_editpost', array( $this, 'admin_init_post' ) );
 		}
 	}
 
@@ -85,7 +82,7 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 					$location,
 					$post_id
 				) );
-				exit( );
+				Ai1ec_Http_Response_Helper::stop();
 			}
 		}
 	}
@@ -204,14 +201,8 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 				// delete from ai1ec_events
 				$dbi->query( $sql );
 
-				$table_name = $dbi->prefix . 'ai1ec_event_instances';
-				$sql = '
-					DELETE FROM
-						' . $table_name . '
-					WHERE
-						post_id = ' . $pid;
-				// delete from ai1ec_event_instances
-				return $dbi->query( $sql );
+				return $this->delete( $pid );
+
 			} catch ( Ai1ec_Event_Not_Found $exception ) {
 				/**
 				 * Possible reason, why event `delete` is triggered, albeit
@@ -233,11 +224,10 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 	 */
 	public function meta_box_view() {
 
-		global $post;
-
 		$ai1ec_events_helper  = $this->_registry->get( 'event.helper' );
 		$theme_loader         = $this->_registry->get( 'theme.loader' );
 		$empty_event          = $this->_registry->get( 'model.event' );
+		$post_helper          = $this->_registry->get( 'post.helper' );
 
 		// ==================
 		// = Default values =
@@ -280,7 +270,8 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 		if ( isset( $_REQUEST['instance'] ) ) {
 			$instance_id = absint( $_REQUEST['instance'] );
 		}
-		$parent_event_id = $ai1ec_events_helper->event_parent( $post->ID );
+		$parent_event_id = $ai1ec_events_helper->event_parent( $post_helper
+			->get_post_object_value("ID") );
 		if ( $instance_id ) {
 			add_filter(
 				'print_scripts_array',
@@ -293,10 +284,11 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 			// this is why we use this approach.
 			$excpt = NULL;
 			try {
-				$event = $this->_registry->get( 'model.event', $post->ID, $instance_id );
+				$event = $this->_registry->get( 'model.event', $post_helper
+					->get_post_object_value("ID"), $instance_id );
 			} catch ( Ai1ec_Event_Not_Found $excpt ) {
 				$ai1ec_localization_helper = $this->_registry
-					->get( 'Ai1ec_Localization_Helper' );
+					->get( 'p28n.wpml' );
 				$translatable_id = $ai1ec_localization_helper
 					->get_translatable_id();
 				if ( false !== $translatable_id ) {
@@ -312,8 +304,8 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 			$all_day_event    = $event->allday ? 'checked' : '';
 			$instant_event    = $event->instant_event ? 'checked' : '';
 
-			$start_timestamp  = $ai1ec_events_helper->gmt_to_local( $event->start );
-			$end_timestamp 	  = $ai1ec_events_helper->gmt_to_local( $event->end );
+			$start_timestamp  = $event->start->format_to_gmt();
+			$end_timestamp 	  = $event->end->format_to_gmt();
 
 			$multi_day        = $event->get_multiday();
 
@@ -374,8 +366,9 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 		$timezone = '';
 
 		$timezone_string = $this
-			->_registry->get( 'Ai1ec_Meta_Post' )
-			->get( 'timezone_string', NULL );
+			->_registry
+			->get( 'date.timezone' )
+			->get_default_timezone();
 
 		if ( $timezone_string ) {
 			$timezone = $this->_registry->get( 'time' )->get_gmt_offset_expr();
@@ -460,18 +453,13 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 			->get_file( 'box_event_contact.php', $args, true )
 			->get_content();
 
-		/*
-			TODO Display Eventbrite ticketing
-			$ai1ec_view_helper->display( 'box_eventbrite.php' );
-		*/
-
 		// ==================
 		// = Publish button =
 		// ==================
 		$publish_button = '';
 		if ( $this->_registry->get( 'model.settings' )->get( 'show_publish_button' ) ) {
 			$args             = array();
-			$post_type        = $post->post_type;
+			$post_type        = $post_helper->get_post_object_value("post_type");
 			$post_type_object = get_post_type_object( $post_type );
 			if ( current_user_can( $post_type_object->cap->publish_posts ) ) {
 				$args['button_value'] = is_null( $event )
@@ -536,9 +524,10 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 
 		// verify this came from the our screen and with proper authorization,
 		// because save_post can be triggered at other times
-		if( isset( $_POST[AI1EC_POST_TYPE] ) && ! wp_verify_nonce( $_POST[AI1EC_POST_TYPE], 'ai1ec' ) ) {
-			return null;
-		} else if( ! isset( $_POST[AI1EC_POST_TYPE] ) ) {
+		if (
+			! isset( $_POST[AI1EC_POST_TYPE] ) ||
+			! wp_verify_nonce( $_POST[AI1EC_POST_TYPE], 'ai1ec' )
+		) {
 			return null;
 		}
 
@@ -652,25 +641,10 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 		$event->latitude            = trim( $latitude ) !== '' ? (float) $latitude : NULL;
 
 		// if we are not saving a draft, give the event to the plugins. Also do not pass events that are imported from facebook
-	//	if( $post->post_status !== 'draft' && $event->facebook_status !== Ai1ecFacebookConnectorPlugin::FB_IMPORTED_EVENT ) { // TODO: reenable facebook check!
         if( $post->post_status !== 'draft'){
 			$ai1ec_importer_plugin_helper->handle_post_event( $event, 'save' );
 		}
 		$saved_post_id = $event->save( ! $is_new );
-		if ( $post_twitter ) {
-			if ( ! add_post_meta(
-				$saved_post_id,
-				'_ai1ec_post_twitter',
-				'pending',
-				true
-			) ) {
-				update_post_meta(
-					$saved_post_id,
-					'_ai1ec_post_twitter',
-					'pending'
-				);
-			}
-		}
 
 		$ai1ec_events_helper->delete_event_cache( $post_id );
 		$ai1ec_events_helper->cache_event( $event );
@@ -686,9 +660,11 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 	 * Filter success messages returned by WordPress when an event post is
 	 * updated/saved.
 	 */
-	function post_updated_messages( $messages )
-	{
-		global $post, $post_ID;
+	function post_updated_messages( $messages ) {
+
+		$post_helper = $this->_registry->get( 'post.helper' );
+		$post_ID     = $post_helper->get_post_object_value("ID");
+
 
 		$messages[AI1EC_POST_TYPE] = array(
 			0 => '', // Unused. Messages start at index 1.
@@ -703,7 +679,7 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 			8 => sprintf( __( 'Event submitted. <a target="_blank" href="%s">Preview event</a>', AI1EC_PLUGIN_NAME ), esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) ),
 			9 => sprintf( __( 'Event scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview event</a>', AI1EC_PLUGIN_NAME ),
 				// translators: Publish box date format, see http://php.net/date
-                $this->_registry->get( 'date.time', $post->post_date )->format(
+                $this->_registry->get( 'date.time', $post_helper->get_post_object_value("post_daet") )->format(
                     Ai1ec_I18n::__( 'M j, Y @ G:i' )
                 ),
 				esc_url( get_permalink($post_ID) ) ),
@@ -723,8 +699,7 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 	 *
 	 * @return string         Post/Page content
 	 **/
-	function event_content( $content )
-	{
+	function event_content( $content ) {
 		$ai1ec_events_helper = $this->_registry->get( 'event.helper' );
 		$event_content = null;
 		$event = null;
@@ -866,37 +841,6 @@ HTML;
 	}
 
 	/**
-	 * Check if e-mail subscription button should be displayed
-	 *
-	 * @param Ai1ec_Event $event Event being checked
-	 *
-	 * @return bool True to display e-mail subscription button
-	 */
-	protected function _show_email_subscribe( Ai1ec_Event $event ) {
-		global $ai1ec_settings;
-		if ( ! $ai1ec_settings->enable_user_event_notifications ) {
-			return false;
-		}
-		if (
-			isset( $_COOKIE['ai1ec_event_subscribed'] ) &&
-			in_array(
-				$event->instance_id,
-				(array)json_decode( $_COOKIE['ai1ec_event_subscribed'] )
-			)
-		) {
-			return false;
-		}
-		$notification_controller = $this->_registry-get( 'notification.controller' );
-		if (
-		$notification_controller
-			->check_if_notification_should_be_sent_for_event( $event )
-		) {
-			return false;
-		}
-		return true;
-	}
-
-	/**
 	 * Outputs event-specific details as HTML to be prepended to post content
 	 * when displayed as a single page.
 	 *
@@ -955,212 +899,6 @@ HTML;
 		$ai1ec_view_helper->display_theme( 'event-single.php', $args );
 	}
 
-	/**
-	 * Create the modal for the event subscription
-	 *
-	 * @param $event Ai1ec_Event
-	 */
-	private function add_modal_for_email_subscription( Ai1ec_Event $event ) {
-		$current_user = wp_get_current_user();
-		$user_email = $current_user->user_email;
-		unset( $current_user );
-		// Create containing div
-		$div = Ai1ec_Helper_Factory::create_generic_html_tag( 'div' );
-		$div->add_class( 'ai1ec_email_container form-horizontal' );
-		$div->set_attribute( 'data-event_id', $event->post_id );
-		$div->set_attribute( 'data-event_instance', $event->instance_id );
-		// Add alert container to containing div
-		$div_alerts = Ai1ec_Helper_Factory::create_generic_html_tag( 'div' );
-		$div_alerts->add_class( 'alerts' );
-		// Add paragraph to containing div
-		$paragraph = Ai1ec_Helper_Factory::create_generic_html_tag( 'p' );
-		$paragraph->set_text(
-			__(
-				'Enter your email address below to receive a notification about the event 6 hours before it starts.',
-				AI1EC_PLUGIN_NAME )
-		);
-		$div->add_renderable_children( $paragraph );
-		// Add div.control-group to containing div
-		$control_group = Ai1ec_Helper_Factory::create_generic_html_tag( 'div' );
-		$control_group->add_class( 'control-group' );
-		$div->add_renderable_children( $control_group );
-		// Add label to div.control-group
-		$label = Ai1ec_Helper_Factory::create_generic_html_tag( 'label' );
-		$label->add_class( 'control-label' );
-		$label->set_attribute( 'for', 'ai1ec_email_subscribe' );
-		$label->set_text( __( 'Email:', AI1EC_PLUGIN_NAME ) );
-		$control_group->add_renderable_children( $label );
-		// Add div.controls to div.control-group
-		$controls = Ai1ec_Helper_Factory::create_generic_html_tag( 'div' );
-		$controls->add_class( 'controls' );
-		$control_group->add_renderable_children( $controls );
-		// Add input to div.controls
-		$input = Ai1ec_Helper_Factory::create_input_instance();
-		$input->set_id( 'ai1ec_email_subscribe' );
-		$input->set_name( 'ai1ec_email_subscribe' );
-		if (! empty( $user_email )) {
-			$input->set_value( $user_email );
-		}
-		$input->set_attribute( 'placeholder', __( 'Email', AI1EC_PLUGIN_NAME ) );
-		$controls->add_renderable_children( $input );
-		// Create modal and add our enclosing div to it
-		$bootstrap_modal = Ai1ec_Helper_Factory::create_bootstrap_modal_instance(
-			$div_alerts->render_as_html() . $div->render_as_html()
-		);
-		$bootstrap_modal->set_header_text(
-			__( 'Get notified about this event', AI1EC_PLUGIN_NAME )
-		);
-		$bootstrap_modal->set_id( 'ai1ec_subscribe_email_modal' );
-		$bootstrap_modal->add_class( 'fade' );
-		$bootstrap_modal->set_keep_button_text(
-			'<i class="icon-ok"></i> ' . __( 'Subscribe', AI1EC_PLUGIN_NAME )
-		);
-		$bootstrap_modal->set_delete_button_text(
-			'<i class="icon-remove"></i> ' . __( 'Close', AI1EC_PLUGIN_NAME )
-		);
-		$ai1ec_deferred_helper = Ai1ec_Deferred_Rendering_Helper::get_instance();
-		$ai1ec_deferred_helper->add_renderable_children( $bootstrap_modal );
-	}
-
-	/**
-	 * Outputs event-specific details as HTML to be prepended to post content
-	 * when displayed in a loop alongside other event posts.
-	 *
-	 * @param Ai1ec_Event $event  The event being displayed
-	 */
-	function multi_view( $event ) {
-		global $ai1ec_view_helper,
-			   $ai1ec_calendar_helper;
-
-		$location = esc_html(
-			str_replace( "\n", ', ', rtrim( $event->get_location() ) )
-		);
-
-		$args = array(
-			'event'              => $event,
-			'recurrence'         => $event->get_recurrence_html(),
-			'categories'         => $event->get_categories_html(),
-			'tags'               => $event->get_tags_html(),
-			'location'           => $location,
-			'contact'            => $event->get_contact_html(),
-			'calendar_url'       => $ai1ec_calendar_helper->get_calendar_url(),
-		);
-		$ai1ec_view_helper->display_theme( 'event-multi.php', $args );
-	}
-
-	/**
-	 * Outputs event-specific details as HTML to be prepended to post content
-	 * when displayed in an excerpt format.
-	 *
-	 * @param Ai1ec_Event $event  The event being displayed
-	 */
-	function excerpt_view( $event ) {
-
-		$ai1ec_view_helper = $this->_registry->get( 'view.helper' );
-
-		$location          = esc_html(
-			str_replace( "\n", ', ', rtrim( $event->get_location() ) )
-		);
-
-		$args = array(
-			'event'    => $event,
-			'location' => $location,
-		);
-		$ai1ec_view_helper->display_theme( 'event-excerpt.php', $args );
-	}
-
-	/**
-	 * get_map_view function
-	 *
-	 * Returns HTML markup displaying a Google map of the given event, if the event
-	 * has show_map set to true. Returns a zero-length string otherwise.
-	 *
-	 * @param Ai1ec_Event $event
-	 *
-	 * @return void
-	 */
-	function get_map_view( &$event ) {
-		$ai1ec_events_helper = $this->_registry->get( 'event.helper' );
-		$ai1ec_settings      = $this->_registry->get( 'settings' );
-		$ai1ec_view_helper   = $this->_registry->get( 'view.helper' );
-		if( ! $event->show_map )
-			return '';
-
-		$location = $ai1ec_events_helper->get_latlng( $event );
-		if ( ! $location ) {
-			$location = $event->address;
-		}
-
-		$args = array(
-			'address'                 => $location,
-			'gmap_url_link'           => $ai1ec_events_helper->get_gmap_url( $event, false ),
-			'hide_maps_until_clicked' => $ai1ec_settings->hide_maps_until_clicked,
-		);
-		return $ai1ec_view_helper->get_theme_view( 'event-map.php', $args );
-	}
-
-	/**
-	 * single_event_footer function
-	 *
-	 * Outputs any markup that should appear below the post's content on the
-	 * single post page for this event.
-	 *
-	 * @param Ai1ec_Event $event
-	 *
-	 * @return void
-	 **/
-	function single_event_footer( &$event ) {
-		$ai1ec_view_helper = $this->_registry->get( 'view.helper' );
-
-		$args = array(
-			'event' => &$event,
-		);
-		return $ai1ec_view_helper->display_theme( 'event-single-footer.php', $args );
-	}
-
-	/**
-	 * events_categories_add_form_fields function
-	 *
-	 * @return void
-	 **/
-	function events_categories_add_form_fields() {
-		$ai1ec_view_helper = $this->_registry->get( 'view.helper' );
-
-		$args = array( 'edit' => false );
-		$ai1ec_view_helper->display_admin( 'event_categories-color_picker.php', $args );
-	}
-
-	/**
-	 * events_categories_edit_form_fields function
-	 *
-	 * @param $term
-	 *
-	 * @return void
-	 **/
-	function events_categories_edit_form_fields( $term ) {
-		$ai1ec_view_helper = $this->_registry->get( 'view.helper' );
-		$dbi = $this->_registry->get( 'dbi' );
-
-		$table_name = $dbi->get_table_name( 'ai1ec_event_category_colors' );
-		$color      = $dbi->get_var(
-			$dbi->prepare( "SELECT term_color FROM {$table_name} WHERE term_id = %d ", $term->term_id )
-		);
-
-		$style = '';
-		$clr   = '';
-
-		if( ! is_null( $color ) && ! empty( $color ) ) {
-			$style = 'style="background-color: ' . $color . '"';
-			$clr = $color;
-		}
-
-		$args = array(
-			'style' => $style,
-			'color' => $clr,
-			'edit'  => true,
-		);
-		$ai1ec_view_helper->display_admin( 'event_categories-color_picker.php', $args );
-	}
 
 	/**
 	 * Hook to process event categories creation

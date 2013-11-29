@@ -59,12 +59,8 @@ class Ai1ec_File_Php extends Ai1ec_File_Abstract {
 					$this->_content = $this
 						->_registry
 						->get( 'compatibility.outputbuffer' )
-						->get_contents();
+						->get_clean();
 
-					$this
-						->_registry
-						->get( 'compatibility.outputbuffer' )
-						->end_clean();
 				}
 				return true;
 			}

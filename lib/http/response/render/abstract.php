@@ -25,7 +25,7 @@ abstract class Ai1ec_Http_Response_Render_Strategy extends Ai1ec_Base {
 		return $this
 			->_registry
 			->get( 'compatibility.outputbuffer' )
-			->end_clean();
+			->end_clean_all();
 
 	}
 

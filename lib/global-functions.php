@@ -10,6 +10,11 @@
  * @subpackage AI1EC.Lib
  */
 
+/**
+ * Always return false for action/filter hooks
+ *
+ * @return boolean
+ */
 function ai1ec_return_false() {
 	return false;
 }

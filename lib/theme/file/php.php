@@ -50,7 +50,7 @@ class Ai1ec_File_Php extends Ai1ec_File_Abstract {
 				} else {
 					$this
 						->_registry
-						->get( 'compatibility.outputbuffer' )
+						->get( 'compatibility.ob' )
 						->start();
 
 					extract( $this->_args );
@@ -58,7 +58,7 @@ class Ai1ec_File_Php extends Ai1ec_File_Abstract {
 
 					$this->_content = $this
 						->_registry
-						->get( 'compatibility.outputbuffer' )
+						->get( 'compatibility.ob' )
 						->get_clean();
 
 				}

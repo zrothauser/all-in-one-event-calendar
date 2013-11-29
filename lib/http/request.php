@@ -68,7 +68,7 @@ class Ai1ec_Http_Request {
 	 *
 	 * @return mixed Original or modified $output
 	 */
-	public function pre_http_request( $output, $url ) {
+	public function pre_http_request( $status, $output, $url ) {
 		$cron_url = site_url( 'wp-cron.php' );
 		remove_filter( 'use_streams_transport', 'ai1ec_return_false' );
 		if (

@@ -245,7 +245,7 @@ class Ai1ec_Front_Controller {
 			'pre_http_request',
 			array( 'http.request', 'pre_http_request' ),
 			10,
-			2
+			3
 		);
 		$dispatcher->register_action(
 			'http_api_curl',

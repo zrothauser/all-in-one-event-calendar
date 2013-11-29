@@ -8,7 +8,7 @@
  * @package    Ai1EC
  * @subpackage Ai1EC.Html
  */
-abstract class Ai1ec_Html_Element implements Ai1ec_Renderable {
+abstract class Ai1ec_Html_Element extends Ai1ec_Base implements Ai1ec_Renderable {
 
 	/**
 	 *
@@ -165,8 +165,8 @@ abstract class Ai1ec_Html_Element implements Ai1ec_Renderable {
 	 * @return string
 	 */
 	public function render_as_html() {
-		ob_start();
+		$this->_registry->get( 'compatibility.outputbuffer' )->start();
 		$this->render();
-		return ob_get_clean();
+		return $this->_registry->get( 'compatibility.outputbuffer' )->get_clean();
 	}
 }

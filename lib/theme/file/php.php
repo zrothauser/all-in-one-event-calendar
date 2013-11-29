@@ -18,16 +18,18 @@ class Ai1ec_File_Php extends Ai1ec_File_Abstract {
 	/**
 	 * Initialize class specific variables.
 	 *
+	 * @parma Ai1ec_Registry_Object $registry
 	 * @param string $name
 	 * @param array $paths
 	 * @param array $args
 	 */
 	public function __construct(
-			$name,
-			array $paths,
-			array $args
+		Ai1ec_Registry_Object $registry,
+		$name,
+		array $paths,
+		array $args
 	) {
-		parent::__construct( $name, $paths );
+		parent::__construct( $registry, $name, $paths );
 		$this->_args  = $args;
 	}
 
@@ -46,11 +48,23 @@ class Ai1ec_File_Php extends Ai1ec_File_Abstract {
 					require( $file );
 					$this->_content = $less_user_variables;
 				} else {
-					ob_start();
+					$this
+						->_registry
+						->get( 'compatibility.outputbuffer' )
+						->start();
+
 					extract( $this->_args );
 					require( $file );
-					$this->_content = ob_get_contents();
-					ob_end_clean();
+
+					$this->_content = $this
+						->_registry
+						->get( 'compatibility.outputbuffer' )
+						->get_contents();
+
+					$this
+						->_registry
+						->get( 'compatibility.outputbuffer' )
+						->end_clean();
 				}
 				return true;
 			}

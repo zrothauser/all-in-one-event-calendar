@@ -5,7 +5,7 @@
 	keepBuildDir: false,
 	fileExclusionRegExp: /(jasmine|build|jshintr|^\.|.bat|.sh$)/,
 	mainConfigFile: '../main.js', // This is relative to this file's dir
-	 optimize: "none",          // Uncomment this line if you need to debug
+	// optimize: "none",          // Uncomment this line if you need to debug
 	modules: [ {
 				name: "pages/calendar"
 			},

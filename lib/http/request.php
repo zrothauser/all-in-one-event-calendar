@@ -85,7 +85,7 @@ class Ai1ec_Http_Request {
 	 *
 	 * @param resource $curl Instance of cURL resource
 	 *
-	 * @return void Method does not return
+	 * @return void Method does not return value
 	 */
 	public function curl_inject_certificate( $curl ) {
 		// verify that the passed argument
@@ -98,5 +98,19 @@ class Ai1ec_Http_Request {
 			curl_setopt( $curl, CURLOPT_CAINFO, AI1EC_CA_ROOT_PEM );
 		}
 	}
-
+	
+	/**
+	 * Initialize time.ly certificate only for time.ly domain
+	 *
+	 * @param array  $args Http arguments.
+	 * @param string $url Current URL address.
+	 *
+	 * @return void Method does not return value
+	 */	
+	public function init_certificate( $args, $url ) {
+		remove_action( 'http_api_curl', array( $this, 'curl_inject_certificate' ) );
+		if ( false !== stripos( $url, '//time.ly' ) ) {
+			add_action( 'http_api_curl', array( $this, 'curl_inject_certificate' ) );
+		}
+	}
 }

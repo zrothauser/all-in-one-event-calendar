@@ -23,7 +23,7 @@ abstract class Ai1ec_Meta extends Ai1ec_App {
 	protected $_cache = null;
 
 	/**
-	 * Guess object name from child class name and initiate cache object.
+	 * Initialize instance-specific in-memory cache storage.
 	 *
 	 * @return void Method does not return.
 	 */
@@ -32,7 +32,7 @@ abstract class Ai1ec_Meta extends Ai1ec_App {
 		$this->_object = strtolower(
 			substr( $class, strlen( __CLASS__ ) + 1  )
 		);
-		$this->_cache = $this->_registry->get( 'cache.memory', $class );
+		$this->_cache = $this->_registry->get( 'cache.memory' );
 	}
 
 	/**

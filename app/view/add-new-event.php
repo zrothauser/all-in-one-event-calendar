@@ -25,8 +25,8 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		// TODO: Fix this duplication.
 		$all_day_event    = '';
 		$instant_event    = '';
-		$start_timestamp  = '';
-		$end_timestamp    = '';
+		$start            = $this->_registry->get( 'date.time' );
+		$end              = $this->_registry->get( 'date.time', '+1 hour' );
 		$show_map         = false;
 		$google_map       = '';
 		$venue            = '';
@@ -58,8 +58,12 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		if ( isset( $_REQUEST['instance'] ) ) {
 			$instance_id = absint( $_REQUEST['instance'] );
 		}
-		$parent_event_id = $ai1ec_events_helper->event_parent( $post_helper
-			->get_post_object_value("ID") );
+		$parent_event_id = (int)$ai1ec_events_helper->event_parent(
+			$post_helper->get_post_object_value( 'ID' )
+		);
+		if ( empty( $parent_event_id ) ) {
+			$parent_event_id = null;
+		}
 		if ( $instance_id ) {
 			add_filter(
 				'print_scripts_array',
@@ -70,21 +74,28 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		try {
 			// on some php version, nested try catch blocks fail and the exception would never be caught.
 			// this is why we use this approach.
-			$excpt = NULL;
-			$event = NULL;
+			$excpt = null;
+			$event = null;
 			try {
-				$event = $this->_registry->get( 'model.event', $post_helper
-					->get_post_object_value("ID"), $instance_id );
+				$event = $this->_registry->get(
+					'model.event',
+					$parent_event_id,
+					$instance_id
+				);
 			} catch ( Ai1ec_Event_Not_Found $excpt ) {
 				$ai1ec_localization_helper = $this->_registry
 					->get( 'p28n.wpml' );
 				$translatable_id = $ai1ec_localization_helper
 					->get_translatable_id();
 				if ( false !== $translatable_id ) {
-					$event = $this->_registry->get( 'model.event', $translatable_id, $instance_id );
+					$event = $this->_registry->get(
+						'model.event',
+						$translatable_id,
+						$instance_id
+					);
 				}
 			}
-			if ( NULL !== $excpt ) {
+			if ( null !== $excpt ) {
 				throw $excpt;
 			}
 
@@ -93,8 +104,8 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			$all_day_event    = $event->allday ? 'checked' : '';
 			$instant_event    = $event->instant_event ? 'checked' : '';
 
-			$start_timestamp  = $event->start->format_to_gmt();
-			$end_timestamp 	  = $event->end->format_to_gmt();
+			$start            = $event->start;
+			$end 	          = $event->end;
 
 			$multi_day        = $event->get_multiday();
 
@@ -143,8 +154,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			if ( $exclude_event ) {
 				$exrule_text = ucfirst( $ai1ec_events_helper->rrule_to_text( $exrule ) );
 			}
-		}
-		catch ( Ai1ec_Event_Not_Found $e ) {
+		} catch ( Ai1ec_Event_Not_Found $e ) {
 			// Event does not exist.
 			// Leave form fields undefined (= zero-length strings)
 			$event = null;
@@ -153,9 +163,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		// Time zone; display if set.
 		$timezone = '';
 
-		$timezone_string = $this
-			->_registry
-			->get( 'date.timezone' )
+		$timezone_string = $this->_registry->get( 'date.timezone' )
 			->get_default_timezone();
 
 		if ( $timezone_string ) {
@@ -172,8 +180,8 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		$args = array(
 			'all_day_event'      => $all_day_event,
 			'instant_event'      => $instant_event,
-			'start_timestamp'    => $start_timestamp,
-			'end_timestamp'      => $end_timestamp,
+			'start'              => $start,
+			'end'                => $end,
 			'repeating_event'    => $repeating_event,
 			'rrule'              => $rrule,
 			'rrule_text'         => $rrule_text,
@@ -245,16 +253,20 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		// = Publish button =
 		// ==================
 		$publish_button = '';
-		if ( $this->_registry->get( 'model.settings' )->get( 'show_publish_button' ) ) {
+		if (
+			$this->_registry->get( 'model.settings' )
+				->get( 'show_publish_button' )
+		) {
 			$args             = array();
-			$post_type        = $post_helper->get_post_object_value("post_type");
-			$post_type_object = get_post_type_object( $post_type );
+			$post_type_object = get_post_type_object(
+				$post_helper->get_post_object_value( 'post_type' )
+			);
 			if ( current_user_can( $post_type_object->cap->publish_posts ) ) {
 				$args['button_value'] = is_null( $event )
-					? __( 'Publish', AI1EC_PLUGIN_NAME )
-					: __( 'Update', AI1EC_PLUGIN_NAME );
+					? Ai1ec_I18n::__( 'Publish' )
+					: Ai1ec_I18n::__( 'Update' );
 			} else {
-				$args['button_value'] = __( 'Submit for Review', AI1EC_PLUGIN_NAME );
+				$args['button_value'] = Ai1ec_I18n::__( 'Submit for Review' );
 			}
 
 			$boxes[] = $theme_loader
@@ -263,382 +275,15 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 
 		}
 
-		// ==========================
-		// = Parent/Child relations =
-		// ==========================
-		if ( $event ) {
-			$parent   = $ai1ec_events_helper
-				->get_parent_event( $event->post_id );
-			if ( $parent ) {
-				try {
-					$parent =  $this->_registry->get( 'model.event', $parent );
-				} catch ( Ai1ec_Event_Not_Found $exception ) { // ignore
-					$parent = NULL;
-				}
-			}
-			$children = $ai1ec_events_helper
-				->get_child_event_objects( $event->post_id );
-			$args    = compact( 'parent', 'children' );
-			$boxes[] = $theme_loader
-				->get_file( 'box_event_children.php', $args, true )
-				->get_content();
-		}
-
 		// Display the final view of the meta box.
 		$args = array(
 			'boxes'          => $boxes,
 			'publish_button' => $publish_button,
 		);
 
-		echo($theme_loader
+		echo $theme_loader
 			->get_file( 'add_new_event_meta_box.php', $args, true )
-			->get_content());
-
-	}
-
-
-	/**
-	 * Outputs event-specific details as HTML to be prepended to post content
-	 * when displayed as a single page.
-	 *
-	 * @param Ai1ec_Event $event  The event being displayed
-	 */
-	function single_view( $event ) {
-
-		$ai1ec_settings               = $this->_registry->get( 'settings' );
-		$ai1ec_view_helper            = $this->_registry->get( 'view.helper' );
-
-		static $bootstrap_modal_added = false;
-		$subscribe_url                = AI1EC_EXPORT_URL . "&ai1ec_post_ids=$event->post_id";
-		$subscribe_url                = str_replace( 'webcal://', 'http://', $subscribe_url );
-		// if we are inside the notification time ( 6 hour from start ) do not show the button
-		// also do not show the button if the cookie is set since it means the user already subscribed
-		// i save the instance id in the cookie to check for recurring events
-
-		$show_email_subscribe         = $this->_show_email_subscribe( $event );
-		$args = array(
-			'event'                   => $event,
-			'recurrence'              => $event->get_recurrence_html(),
-			'exclude'                 => $event->get_exclude_html(),
-			'categories'              => $event->get_categories_html(),
-			'tags'                    => $event->get_tags_html(),
-			'location'                => nl2br(
-				esc_html( $event->get_location() )
-			),
-			'map'                     => $this->get_map_view( $event ),
-			'contact'                 => $event->get_contact_html(),
-			'back_to_calendar'        => $event->get_back_to_calendar_button_html(),
-			'subscribe_url'           => $subscribe_url,
-			'edit_instance_url'       => NULL,
-			'edit_instance_text'      => NULL,
-			'google_url'              => 'http://www.google.com/calendar/render?cid=' . urlencode( $subscribe_url ),
-			'show_subscribe_buttons'  => ! $ai1ec_settings->turn_off_subscription_buttons,
-			'show_email_subscribe'    => $show_email_subscribe,
-		);
-		if (
-			! empty( $args['recurrence'] ) &&
-			! empty( $event->instance_id ) &&
-			current_user_can( 'edit_ai1ec_events' )
-		) {
-			$args['edit_instance_url'] = admin_url(
-				'post.php?post=' . $event->post_id .
-				'&action=edit&instance=' . $event->instance_id
-			);
-			$args['edit_instance_text'] = sprintf(
-				__( 'Edit this occurrence (%s)', AI1EC_PLUGIN_NAME ),
-				$event->get_short_start_date()
-			);
-		}
-		if ( false === $bootstrap_modal_added && true === $show_email_subscribe ) {
-			$bootstrap_modal_added = true;
-			$this->add_modal_for_email_subscription( $event );
-		}
-		$ai1ec_view_helper->display_theme( 'event-single.php', $args );
-	}
-
-	/**
-	 * Check if e-mail subscription button should be displayed
-	 *
-	 * @param Ai1ec_Event $event Event being checked
-	 *
-	 * @return bool True to display e-mail subscription button
-	 */
-	protected function _show_email_subscribe( Ai1ec_Event $event ) {
-		global $ai1ec_settings;
-		if ( ! $ai1ec_settings->enable_user_event_notifications ) {
-			return false;
-		}
-		if (
-			isset( $_COOKIE['ai1ec_event_subscribed'] ) &&
-			in_array(
-				$event->instance_id,
-				(array)json_decode( $_COOKIE['ai1ec_event_subscribed'] )
-			)
-		) {
-			return false;
-		}
-		$notification_controller = $this
-			->_registry
-			->get( 'notification.controller' );
-
-		if (
-			$notification_controller
-				->check_if_notification_should_be_sent_for_event( $event )
-		) {
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * Create the modal for the event subscription
-	 *
-	 * @param $event Ai1ec_Event
-	 */
-	private function add_modal_for_email_subscription( Ai1ec_Event $event ) {
-		$current_user = wp_get_current_user();
-		$user_email = $current_user->user_email;
-		unset( $current_user );
-		// Create containing div
-		$div = Ai1ec_Helper_Factory::create_generic_html_tag( 'div' );
-		$div->add_class( 'ai1ec_email_container form-horizontal' );
-		$div->set_attribute( 'data-event_id', $event->post_id );
-		$div->set_attribute( 'data-event_instance', $event->instance_id );
-		// Add alert container to containing div
-		$div_alerts = Ai1ec_Helper_Factory::create_generic_html_tag( 'div' );
-		$div_alerts->add_class( 'alerts' );
-		// Add paragraph to containing div
-		$paragraph = Ai1ec_Helper_Factory::create_generic_html_tag( 'p' );
-		$paragraph->set_text(
-			__(
-				'Enter your email address below to receive a notification about the event 6 hours before it starts.',
-				AI1EC_PLUGIN_NAME )
-		);
-		$div->add_renderable_children( $paragraph );
-		// Add div.control-group to containing div
-		$control_group = Ai1ec_Helper_Factory::create_generic_html_tag( 'div' );
-		$control_group->add_class( 'control-group' );
-		$div->add_renderable_children( $control_group );
-		// Add label to div.control-group
-		$label = Ai1ec_Helper_Factory::create_generic_html_tag( 'label' );
-		$label->add_class( 'control-label' );
-		$label->set_attribute( 'for', 'ai1ec_email_subscribe' );
-		$label->set_text( __( 'Email:', AI1EC_PLUGIN_NAME ) );
-		$control_group->add_renderable_children( $label );
-		// Add div.controls to div.control-group
-		$controls = Ai1ec_Helper_Factory::create_generic_html_tag( 'div' );
-		$controls->add_class( 'controls' );
-		$control_group->add_renderable_children( $controls );
-		// Add input to div.controls
-		$input = Ai1ec_Helper_Factory::create_input_instance();
-		$input->set_id( 'ai1ec_email_subscribe' );
-		$input->set_name( 'ai1ec_email_subscribe' );
-		if (! empty( $user_email )) {
-			$input->set_value( $user_email );
-		}
-		$input->set_attribute( 'placeholder', __( 'Email', AI1EC_PLUGIN_NAME ) );
-		$controls->add_renderable_children( $input );
-		// Create modal and add our enclosing div to it
-		$bootstrap_modal = Ai1ec_Helper_Factory::create_bootstrap_modal_instance(
-			$div_alerts->render_as_html() . $div->render_as_html()
-		);
-		$bootstrap_modal->set_header_text(
-			__( 'Get notified about this event', AI1EC_PLUGIN_NAME )
-		);
-		$bootstrap_modal->set_id( 'ai1ec_subscribe_email_modal' );
-		$bootstrap_modal->add_class( 'fade' );
-		$bootstrap_modal->set_keep_button_text(
-			'<i class="icon-ok"></i> ' . __( 'Subscribe', AI1EC_PLUGIN_NAME )
-		);
-		$bootstrap_modal->set_delete_button_text(
-			'<i class="icon-remove"></i> ' . __( 'Close', AI1EC_PLUGIN_NAME )
-		);
-		$ai1ec_deferred_helper = Ai1ec_Deferred_Rendering_Helper::get_instance();
-		$ai1ec_deferred_helper->add_renderable_children( $bootstrap_modal );
-	}
-
-	/**
-	 * Outputs event-specific details as HTML to be prepended to post content
-	 * when displayed in a loop alongside other event posts.
-	 *
-	 * @param Ai1ec_Event $event  The event being displayed
-	 */
-	function multi_view( $event ) {
-		$ai1ec_view_helper = $this->_registry->get( 'view.helper' );
-		global $ai1ec_calendar_helper;
-
-		$location = esc_html(
-			str_replace( "\n", ', ', rtrim( $event->get_location() ) )
-		);
-
-		$args = array(
-			'event'              => $event,
-			'recurrence'         => $event->get_recurrence_html(),
-			'categories'         => $event->get_categories_html(),
-			'tags'               => $event->get_tags_html(),
-			'location'           => $location,
-			'contact'            => $event->get_contact_html(),
-			'calendar_url'       => $ai1ec_calendar_helper->get_calendar_url(),
-		);
-		$ai1ec_view_helper->display_theme( 'event-multi.php', $args );
-	}
-
-	/**
-	 * Outputs event-specific details as HTML to be prepended to post content
-	 * when displayed in an excerpt format.
-	 *
-	 * @param Ai1ec_Event $event  The event being displayed
-	 */
-	function excerpt_view( $event ) {
-
-		$ai1ec_view_helper = $this->_registry->get( 'view.helper' );
-
-		$location          = esc_html(
-			str_replace( "\n", ', ', rtrim( $event->get_location() ) )
-		);
-
-		$args = array(
-			'event'    => $event,
-			'location' => $location,
-		);
-		$ai1ec_view_helper->display_theme( 'event-excerpt.php', $args );
-	}
-
-	/**
-	 * get_map_view function
-	 *
-	 * Returns HTML markup displaying a Google map of the given event, if the event
-	 * has show_map set to true. Returns a zero-length string otherwise.
-	 *
-	 * @param Ai1ec_Event $event
-	 *
-	 * @return void
-	 */
-	function get_map_view( &$event ) {
-		$ai1ec_events_helper = $this->_registry->get( 'event.helper' );
-		$ai1ec_settings      = $this->_registry->get( 'settings' );
-		$ai1ec_view_helper   = $this->_registry->get( 'view.helper' );
-		if( ! $event->show_map )
-			return '';
-
-		$location = $ai1ec_events_helper->get_latlng( $event );
-		if ( ! $location ) {
-			$location = $event->address;
-		}
-
-		$args = array(
-			'address'                 => $location,
-			'gmap_url_link'           => $ai1ec_events_helper->get_gmap_url( $event, false ),
-			'hide_maps_until_clicked' => $ai1ec_settings->hide_maps_until_clicked,
-		);
-		return $ai1ec_view_helper->get_theme_view( 'event-map.php', $args );
-	}
-
-	/**
-	 * single_event_footer function
-	 *
-	 * Outputs any markup that should appear below the post's content on the
-	 * single post page for this event.
-	 *
-	 * @param Ai1ec_Event $event
-	 *
-	 * @return void
-	 **/
-	function single_event_footer( &$event ) {
-		$ai1ec_view_helper = $this->_registry->get( 'view.helper' );
-
-		$args = array(
-			'event' => &$event,
-		);
-		return $ai1ec_view_helper->display_theme( 'event-single-footer.php', $args );
-	}
-
-
-
-
-
-	/**
-	 * event_excerpt function
-	 *
-	 * Overrides what wp_trim_excerpt() returned if the post is an event,
-	 * and outputs better rich-text (but not too rich) excerpt instead.
-	 *
-	 * @param string $text
-	 *
-	 * @return string the post excerpt
-	 **/
-	function event_excerpt( $text ) {
-
-		$ai1ec_events_helper = $this->_registry->get( 'event.helper' );
-
-		if ( get_post_type() != AI1EC_POST_TYPE ) {
-			return $text;
-		}
-
-		$event = $this->_registry->get( 'model.event', get_the_ID() );
-
-		ob_start();
-
-		$this->excerpt_view( $event );
-
-		// Re-apply any filters to the post content that normally would have been
-		// applied if it weren't for our interference (below).
-		echo shortcode_unautop( wpautop(
-			$ai1ec_events_helper->trim_excerpt(
-				apply_filters( 'the_content', $event->post->post_content )
-			)
-		) );
-
-		$page_content = ob_get_contents();
-		ob_end_clean();
-
-		return $page_content;
-	}
-
-	/**
-	 * event_excerpt_noautop function
-	 *
-	 * Conditionally apply wpautop() filter to content, only if it is not an
-	 * event.
-	 *
-	 * @param string $content the post content
-	 *
-	 * @return string
-	 **/
-	function event_excerpt_noautop( $content ) {
-		if ( get_post_type() != AI1EC_POST_TYPE ) {
-			return wpautop( $content );
-		}
-		return $content;
-	}
-
-	/**
-	 * Returns the appropriate output to prepend to an event post, depending on
-	 * WP loop context.
-	 *
-	 * @param Ai1ec_Event $event  The event post being displayed
-	 * @param string $content     The post's original content
-	 *
-	 * @return string             The event data markup to prepend to the post content
-	 */
-	function get_view( $event, $content ) {
-
-		ob_start();
-
-		if( is_single() ) {
-			$this->single_view( $event );
-		} else {
-			$this->multi_view( $event );
-		}
-		echo $content;
-
-		if( is_single() )
-			$this->single_event_footer( $event );
-
-		$page_content = ob_get_contents();
-		ob_end_clean();
-
-		return $page_content;
+			->get_content();
 	}
 
 	/**

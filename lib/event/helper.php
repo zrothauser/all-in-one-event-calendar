@@ -181,20 +181,11 @@ class Ai1ec_Event_Helper extends Ai1ec_Base {
      *
      **/
     public function cache_event( Ai1ec_Event& $event ) {
-
-        // Convert event timestamps to local for correct calculations of
-        // recurrence. Need to also remove PHP timezone offset for each date for
-        // SG_iCal to calculate correct recurring instances.
-        $event->start = $this->gmt_to_local( $event->start )
-            - date( 'Z', $event->start );
-        $event->end   = $this->gmt_to_local( $event->end )
-            - date( 'Z', $event->end );
-
         $evs = array();
         $e	 = array(
             'post_id' => $event->post_id,
-            'start'   => $event->start,
-            'end'     => $event->end,
+            'start'   => $event->start->format_to_gmt(),
+            'end'     => $event->end->format_to_gmt(),
         );
         $duration = $event->getDuration();
 
@@ -203,11 +194,11 @@ class Ai1ec_Event_Helper extends Ai1ec_Base {
         // Always cache initial instance
         $evs[] = $e;
 
-        $_start = $event->start;
-        $_end   = $event->end;
+        $_start = $event->start->format_to_gmt();
+        $_end   = $event->end->format_to_gmt();
 
         if ( $event->recurrence_rules ) {
-            $start  = $event->start;
+            $start  = $event->start->format_to_gmt();
             $wdate = $startdate = iCalUtilityFunctions::_timestamp2date( $_start, 6 );
             $enddate = iCalUtilityFunctions::_timestamp2date( $tif, 6 );
             $exclude_dates = array();
@@ -270,24 +261,21 @@ class Ai1ec_Event_Helper extends Ai1ec_Base {
             // overriding 'RECURRENCE-ID' of the same iCalendar feed (by comparing the
             // UID, start date, recurrence). If so, then do not create duplicate
             // instance of event.
-            $start = $this->local_to_gmt( $e['start'] )
-                - date( 'Z', $e['start'] );
-            $matching_event_id = $event->ical_uid ?
-                $this->get_matching_event_id(
+            $start = $e['start'];
+			$matching_event_id = null;
+			if ( $event->ical_uid ) {
+				$matching_event_id = $this->get_matching_event_id(
                     $event->ical_uid,
                     $event->ical_feed_url,
                     $start,
                     false,	// Only search events that does not define
                     // recurrence (i.e. only search for RECURRENCE-ID events)
                     $event->post_id
-                )
-                : NULL;
-
+                );
+			}
 
             // If no other instance was found
-            if ( NULL === $matching_event_id ) {
-                $start = getdate( $e['start'] );
-                $end   = getdate( $e['end'] );
+            if ( null === $matching_event_id ) {
                 $this->insert_event_in_cache_table( $e );
             }
         }
@@ -428,33 +416,25 @@ class Ai1ec_Event_Helper extends Ai1ec_Base {
         );
     }
 
-    /**
-     * insert_event_in_cache_table function
-     *
-     * Inserts a new record in the cache table
-     *
-     * @param array $event Event array
-     **/
-    public function insert_event_in_cache_table( $event ) {
-        $dbi = $this->_registry->get( 'Ai1ec_Dbi' );
+	/**
+	 * insert_event_in_cache_table function
+	 *
+	 * Inserts a new record in the cache table
+	 *
+	 * @param array $event Event array
+	 */
+	public function insert_event_in_cache_table( $event ) {
+		$dbi = $this->_registry->get( 'dbi.dbi' );
 
-        // Return the start/end times to GMT zone
-        $event['start'] = $this->local_to_gmt( $event['start'] ) + date( 'Z', $event['start'] );
-        $event['end']   = $this->local_to_gmt( $event['end'] )   + date( 'Z', $event['end'] );
-
-        $dbi->query(
-            $dbi->prepare(
-                'INSERT INTO ' . $dbi->get_table_name( 'ai1ec_event_instances ') .
-                '       ( post_id,  start,  end ) ' .
-                'VALUES ( %d,       %d,     %d  )',
-                $event
-            )
-        );
-
-        return $this->_registry->get( 'Ai1ec_Events_List_Helper' )->clean_post_cache(
-            $event['post_id']
-        );
-    }
+		return $dbi->query(
+			$dbi->prepare(
+				'INSERT INTO ' . $dbi->get_table_name( 'ai1ec_event_instances ') .
+				'		( post_id,	start,	end ) ' .
+				'VALUES ( %d,		%d,		%d	)',
+				$event
+			)
+		);
+	}
 
     /**
      * when using BYday you need an array of arrays.

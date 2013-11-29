@@ -21,6 +21,8 @@ class Ai1ec_Http_Response_Helper {
 	 * @param string $location Location to redirect user to
 	 * @param int    $code     HTTP response code to use in redirects
 	 *
+	 * @uses wp_redirect To create actual headers.
+	 *
 	 * @return int|NULL Method does call {@see self::stop()} to halt further
 	 *                  script execution unless mocked
 	 */

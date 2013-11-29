@@ -17,15 +17,22 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	private $_dbi = null;
 
 	/**
-	 * get_event function
+	 * Creates local DBI instance.
+	 */
+	public function __construct( Ai1ec_Registry_Object $registry ){
+		parent::__construct( $registry );
+		$this->_dbi = $this->_registry->get( 'dbi.dbi' );
+	}
+
+	/**
+	 * Fetches the event object with the given post ID.
 	 *
-	 * Fetches the event object with the given post ID. Uses the WP cache to
-	 * make this more efficient if possible.
+	 * Uses the WP cache to make this more efficient if possible.
 	 *
-	 * @param int $post_id              The ID of the post associated
-	 * @param bool|int $instance_id     Instance ID, to fetch post details for
+	 * @param int      $post_id     The ID of the post associated.
+	 * @param bool|int $instance_id Instance ID, to fetch post details for.
 	 *
-	 * @return Ai1ec_Event              The associated event object
+	 * @return Ai1ec_Event The associated event object.
 	 */
 	public function get_event( $post_id, $instance_id = false ) {
 		$post_id     = (int)$post_id;
@@ -33,28 +40,27 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		if ( $instance_id < 1 ) {
 			$instance_id = false;
 		}
-
 		return new Ai1ec_Event( $post_id, $instance_id );
 	}
 
 	/**
-	 * get_events_between function
+	 * Return events falling within some time range.
 	 *
 	 * Return all events starting after the given start time and before the
 	 * given end time that the currently logged in user has permission to view.
 	 * If $spanning is true, then also include events that span this
 	 * period. All-day events are returned first.
 	 *
-	 * @param Ai1ec_Date_Time $start     limit to events starting after this
-	 * @param Ai1ec_Date_Time $end       limit to events starting before this
-	 * @param array $filter         Array of filters for the events returned:
-	 *                              ['cat_ids']  => list of category IDs
-	 *                              ['tag_ids']  => list of tag IDs
-	 *                              ['post_ids'] => list of post IDs
-	 *                              ['auth_ids'] => list of author IDs
-	 * @param bool $spanning        also include events that span this period
+	 * @param Ai1ec_Date_Time $start Limit to events starting after this.
+	 * @param Ai1ec_Date_Time $end   Limit to events starting before this.
+	 * @param array $filter          Array of filters for the events returned:
+	 *                                   ['cat_ids']  => list of category IDs;
+	 *                                   ['tag_ids']  => list of tag IDs;
+	 *                                   ['post_ids'] => list of post IDs;
+	 *                                   ['auth_ids'] => list of author IDs.
+	 * @param bool $spanning         Also include events that span this period.
 	 *
-	 * @return array                list of matching event objects
+	 * @return array List of matching event objects.
 	 */
 	public function get_events_between(
 		Ai1ec_Date_Time $start,
@@ -62,13 +68,11 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		array $filter = array(),
 		$spanning     = false
 	) {
-
-		// Convert timestamps to MySQL format in GMT time
-		$start_timestamp = $start->format();
-		$end_timestamp   = $end->format();
-
 		// Query arguments
-		$args = array( $start_timestamp, $end_timestamp );
+		$args = array(
+			$start->format_to_gmt(),
+			$end->format_to_gmt(),
+		);
 
 		// Get post status Where snippet and associated SQL arguments
 		$where_parameters  = $this->_get_post_status_sql();
@@ -79,7 +83,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		// on $filter elements specified
 		$filter = $this->_get_filter_sql( $filter );
 
-		$ai1ec_localization_helper = $this->_registry->get( 'Ai1ec_Localization_Helper' );
+		$ai1ec_localization_helper = $this->_registry->get( 'p28n.wpml' );
 
 		$wpml_join_particle = $ai1ec_localization_helper
 			->get_wpml_table_join( 'p.ID' );
@@ -93,7 +97,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 			$spanning_string = 'i.start BETWEEN %d AND %d ';
 		}
 
-		$sql = "
+		$sql = '
 			SELECT
 				`p`.*,
 				`e`.`post_id`,
@@ -124,28 +128,28 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 				`e`.`ical_contact`,
 				`e`.`ical_uid`
 			FROM
-				{$this->_dbi->get_table_name( 'ai1ec_events' )} e
-			INNER JOIN
-				{$this->_dbi->get_table_name( 'posts' )} p
-					ON `p`.`ID` = `e`.`post_id`
-				$wpml_join_particle
-			INNER JOIN
-				{$this->_dbi->get_table_name( 'ai1ec_event_instances' )} i
-					ON `e`.`post_id` = `i`.`post_id`
-				{$filter['filter_join']}
+				' . $this->_dbi->get_table_name( 'ai1ec_events' ) . ' e
+				INNER JOIN
+					' . $this->_dbi->get_table_name( 'posts' ) . ' p
+						ON ( `p`.`ID` = `e`.`post_id` )
+				' . $wpml_join_particle . '
+				INNER JOIN
+					' . $this->_dbi->get_table_name( 'ai1ec_event_instances' ) . ' i
+					ON ( `e`.`post_id` = `i`.`post_id` )
+				' . $filter['filter_join'] . '
 			WHERE
-				post_type = '" . AI1EC_POST_TYPE . "'
-				$wpml_where_particle
+				post_type = \'' . AI1EC_POST_TYPE . '\'
+				' . $wpml_where_particle . '
 			AND
-				$spanning_string
-				{$filter['filter_where']}
-				$post_status_where
+				' . $spanning_string . '
+				' . $filter['filter_where'] . '
+				' . $post_status_where . '
 			GROUP BY
 				`i`.`id`
 			ORDER BY
-				`allday` DESC,
-				`i`.`start` ASC,
-				`post_title` ASC";
+				`e` . `allday`     DESC,
+				`i` . `start`      ASC,
+				`p` . `post_title` ASC';
 
 		$query  = $this->_dbi->prepare( $sql, $args );
 		$events = $this->_dbi->get_results( $query, ARRAY_A );
@@ -168,7 +172,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	}
 
 	/**
-	 * get_matching_event function
+	 * Get ID of event in database, matching imported one.
 	 *
 	 * Return event ID by iCalendar UID, feed url, start time and whether the
 	 * event has recurrence rules (to differentiate between an event with a UID
@@ -190,10 +194,9 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		$has_recurrence  = false,
 		$exclude_post_id = NULL
 	) {
-		$db = $this->_registry->get( 'dbi.dbi' );
-
-		$table_name = $db->get_table_name( 'ai1ec_events' );
-		$query = 'SELECT `post_id` FROM ' . $table_name . '
+		$dbi        = $this->_registry->get( 'dbi.dbi' );
+		$table_name = $dbi->get_table_name( 'ai1ec_events' );
+		$query      = 'SELECT `post_id` FROM ' . $table_name . '
 			WHERE
 				    ical_feed_url   = %s
 				AND ical_uid        = %s
@@ -206,19 +209,19 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 			$args[] = $exclude_post_id;
 		}
 
-		return $db->get_var(
-			$db->prepare( $query, $args )
-		);
+		return $dbi->get_var( $dbi->prepare( $query, $args ) );
 	}
 
 	/**
-	 * Check if given event must be treated as all-day event
+	 * Check if given event must be treated as all-day event.
 	 *
-	 * Event instances that span 24 hours are treated as all-day
+	 * Event instances that span 24 hours are treated as all-day.
+	 * NOTICE: event is passed in before being transformed into
+	 * Ai1ec_Event object, with Ai1ec_Date_Time fields.
 	 *
-	 * @param array $event Event data returned from database
+	 * @param array $event Event data returned from database.
 	 *
-	 * @return bool True if event is all-day event
+	 * @return bool True if event is all-day event.
 	 */
 	protected function _is_all_day( array $event ) {
 		if ( isset( $event['event_allday'] ) && $event['event_allday'] ) {
@@ -233,16 +236,14 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	}
 
 	/**
-	 * cache_event function
+	 * Creates a new entry in the cache table for each date.
 	 *
-	 * Creates a new entry in the cache table for each date that the event appears
-	 * (and does not already have an explicit RECURRENCE-ID instance, given its
-	 * iCalendar UID).
+	 * Only for events not already cached.
 	 *
-	 * @param Ai1ec_Event $event Event to generate cache table for
+	 * @param Ai1ec_Event $event Event to generate cache table for.
 	 *
 	 * @return void
-	 **/
+	 */
 	public function cache_event( Ai1ec_Event &$event ) {
 		$db = $this->_registry->get( 'dbi.dbi' );
 
@@ -255,18 +256,19 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		$duration = $event->getDuration();
 
 		// Timestamp of today date + 3 years (94608000 seconds)
-		$tif = time() + 94608000;
+		$tif    = time() + 94608000;
 		// Always cache initial instance
-		$evs[] = $e;
+		$evs[]  = $e;
 
 		$_start = $event->start->format_to_gmt();
 
 		if ( $event->recurrence_rules ) {
-			$wdate = $startdate = iCalUtilityFunctions::_timestamp2date( $_start, 6 );
-			$enddate = iCalUtilityFunctions::_timestamp2date( $tif, 6 );
-			$exclude_dates = array();
+			$start            = $event->start;
+			$wdate            = $startdate = iCalUtilityFunctions::_timestamp2date( $_start, 6 );
+			$enddate          = iCalUtilityFunctions::_timestamp2date( $tif, 6 );
+			$exclude_dates    = array();
 			$recurrence_dates = array();
-			$recurrence_rule = $this->_registry->get( 'recurrence.rule' );
+			$recurrence_rule  = $this->_registry->get( 'recurrence.rule' );
 			if ( $event->exception_rules ) {
 
 				// creat an array for the rules
@@ -298,7 +300,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 			// Add the instances
 			foreach ( $recurrence_dates as $date => $bool ) {
 				// The arrays are in the form timestamp => true so an isset call is what we need
-				if( isset( $exclude_dates[$date] ) ) {
+				if ( isset( $exclude_dates[$date] ) ) {
 					continue;
 				}
 				$e['start'] = $date;
@@ -307,13 +309,19 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 
 
 				// Check if exception dates match this occurence
-				if( $event->exception_dates ) {
-					if( $this->date_match_exdates( $date, $event->exception_dates ) )
+				if ( $event->exception_dates ) {
+					if (
+						$this->date_match_exdates(
+							$date,
+							$event->exception_dates
+						)
+					) {
 						$excluded = true;
+					}
 				}
 
 				// Add event only if it is not excluded
-				if ( $excluded == false ) {
+				if ( false === $excluded ) {
 					$evs[] = $e;
 				}
 			}
@@ -412,11 +420,11 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		$args = array();
 
 		// Query the correct post status
-		if ( current_user_can( 'administrator' )
-			|| current_user_can( 'editor' )
+		if (
+			current_user_can( 'administrator' ) ||
+			current_user_can( 'editor' )
 		) {
 			// User has privilege of seeing all published and private
-
 			$post_status_where = 'AND post_status IN ( %s, %s ) ';
 			$args[]            = 'publish';
 			$args[]            = 'private';
@@ -522,33 +530,6 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 			$where_operator = $default;
 		}
 		return $where_operator;
-	}
-
-	/**
-	 * Retrieve events
-	*/
-	public function get_events() {
-		$start  = $this->_registry->get( 'date.time', strtotime( '-1 month' ) );
-		$end    = $this->_registry->get( 'date.time', strtotime( '+1 month' ) );
-		$events = $this->_registry->get( 'model.search' )
-			->get_events_between( $start, $end );
-
-		$template = $this->_registry->get( 'theme.loader' )->get_file(
-			'twig/event-list.twig',
-			compact( 'events', 'start', 'end' ),
-			false
-		);
-
-		return $template->get_content();
-	}
-
-	/**
-	 * Object constructors
-	 */
-	public function __construct( Ai1ec_Registry_Object $registry ){
-		parent::__construct( $registry );
-		$this->_dbi       = $this->_registry->get( 'dbi.dbi' );
-
 	}
 
 }

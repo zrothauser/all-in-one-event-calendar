@@ -414,9 +414,16 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 * @throws Ai1ec_Event_Not_Found
 	 * @return \Ai1ec_Event
 	 */
-	function __construct( Ai1ec_Registry_Object $registry, $data = NULL, $instance = false ) {
+	function __construct(
+		Ai1ec_Registry_Object $registry,
+		$data     = null,
+		$instance = false
+	) {
 		parent::__construct( $registry );
 		$dbi = $registry->get ( 'dbi.dbi' );
+
+		$this->start = $registry->get( 'date.time' );
+		$this->end   = $registry->get( 'date.time', '+1 hour' );
 
 		if ( null === $data ) {
 			return;
@@ -891,7 +898,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 		if ( ! isset( $this->_is_multiday ) ) {
 			global $ai1ec_events_helper;
 			$this->_is_multiday = (
-				$this->end - $this->start >= 24 * 60 * 60
+				$this->end->format_to_gmt() - $this->start->format_to_gmt() >= 24 * 60 * 60
 				&&
 				$ai1ec_events_helper->get_long_date( $this->start )
 				!=
@@ -1948,7 +1955,20 @@ HTML;
 		}
 		return $this->end->format_to_gmt() - $this->start->format_to_gmt();
 	}
-	
+
+	public function set_time_property( $property, $value ) {
+		$this->$property = $this->_registry->get( 'date.time', $value );
+		return $this;
+	}
+
+	public function set_start( $time ) {
+		return $this->set_time_property( 'start', $time );
+	}
+
+	public function set_end( $time ) {
+		return $this->set_time_property( 'end', $time );
+	}
+
 	/**
 	 * Initialize datetime objects from UNIX timestamps.
 	 *

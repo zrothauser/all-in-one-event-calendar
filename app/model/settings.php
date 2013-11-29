@@ -11,15 +11,6 @@
 class Ai1ec_Settings extends Ai1ec_App {
 
 	/**
-	 * Default start hour for week/day views.
-	 */
-	const WEEK_VIEW_STARTS_AT = 8;
-	/**
-	 * Default end hour for week/day views.
-	 */
-	const WEEK_VIEW_ENDS_AT = 24;
-
-	/**
 	 * @constant string Name of WordPress options key used to store settings.
 	 */
 	const WP_OPTION_KEY          = 'ai1ec_settings';
@@ -33,13 +24,6 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 * @var bool Indicator for modified object state.
 	 */
 	protected $_updated          = false;
-
-	/**
-	 * Whether to collect event data for Timely.
-	 *
-	 * @var bool
-	 */
-	public $allow_statistics;
 
 	/**
 	 * Register new option to be used.

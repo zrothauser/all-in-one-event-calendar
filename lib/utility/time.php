@@ -197,29 +197,12 @@ class Ai1ec_Time_Utility extends Ai1ec_Base{
 	 * @return string Timezone identified as local
 	 */
 	public function get_local_timezone( $default = 'America/Los_Angeles' ) {
-		 $_cached = NULL;
-		if ( NULL === $_cached ) {
-			$user = wp_get_current_user();
-			$zone = '';
-			if ( $user->ID > 0 ) {
-
-                $ai1ec_app_helper = $this->_registry->get( 'Ai1ec_App_Helper' );
-				$zone = $ai1ec_app_helper->user_selected_tz( $user->ID );
-			}
-			unset( $user );
-			if ( empty( $zone ) ) {
-				$zone = get_option( 'timezone_string', $default );
-				if ( empty( $zone ) ) {
-					$zone = false;
-				}
-			}
-			$_cached = $zone;
-			unset( $zone );
-		}
-		if ( false === $_cached ) {
-			return $default;
-		}
-		return $_cached;
+		_deprecated_function(
+			__METHOD__,
+			'Ai1EC/2.0-Core',
+			'date.timezone::get_default_timezone'
+		);
+		return $this->_registry->get( 'date.timezone' )->get_default_timezone();
 	}
 
 	/**
@@ -335,6 +318,7 @@ class Ai1ec_Time_Utility extends Ai1ec_Base{
 	 *             effect when converting to UTC
 	 */
 	 public function dst_difference( $timestamp ) {
+		 echo '<pre>', print_r( debug_backtrace( false ), true ), '</pre>';
 		if (
 			NULL === ( $actual = $this->_dst_differences->get( $timestamp ) )
 		) {
@@ -519,26 +503,12 @@ class Ai1ec_Time_Utility extends Ai1ec_Base{
 	 * @throws Ai1ec_Date_Exception When timezone name is invalid
 	 */
 	protected function _get_timezone( $name ) {
-		if (
-			NULL === $name &&
-			! ( $name = $this->get_default_tz() )
-		) {
-			return false;
-		}
-		if ( NULL === ( $zone = $this->_timezones->get( $name ) ) ) {
-			try {
-				$zone = new Ai1ec_Date_Time_Zone_Utility( $name );
-			} catch ( Exception $excpt ) {
-				$zone = false;
-			}
-			$this->_timezones->set( $name, $zone );
-		}
-		if ( false === $zone ) {
-			throw new Ai1ec_Date_Exception(
-				'Invalid timezone ' . var_export( $name, true )
-			);
-		}
-		return $zone;
+		_deprecated_function(
+			__METHOD__,
+			'Ai1EC/2.0-Core',
+			'date.timezone::get'
+		);
+		return $this->_registry->get( 'date.timezone' )->get( $name );
 	}
 
 	/**

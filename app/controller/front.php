@@ -237,7 +237,15 @@ class Ai1ec_Front_Controller {
 		}
 		$dispatcher->register_action(
 			'delete_post',
-			array( 'controller.events', 'delete' )
+			array( 'model.event.trashing', 'delete' )
+		);
+		$dispatcher->register_action(
+			'trashed_post',
+			array( 'model.event.trashing', 'trash' )
+		);
+		$dispatcher->register_action(
+			'untrashed_post',
+			array( 'model.event.trashing', 'untrash' )
 		);
 		$dispatcher->register_action(
 			'pre_http_request',
@@ -327,7 +335,7 @@ class Ai1ec_Front_Controller {
 			);
 			$dispatcher->register_action(
 				'save_post',
-				array( 'model.event.creating', 'save_post'),
+				array( 'model.event.creating', 'save_post' ),
 				10,
 				2
 			);

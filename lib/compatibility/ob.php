@@ -33,11 +33,12 @@ class Ai1ec_Compatibility_OutputBuffer {
 	 * Wrap the ob_start() method:
 	 * This function will turn output buffering on.
 	 */
-	public function start( $output_callback = NULL,
-		$chunk_size = 0,
-		$flags = PHP_OUTPUT_HANDLER_STDFLAGS
+	public function start(
+		$output_callback = NULL,
+		$chunk_size      = 0,
+		$flags           = PHP_OUTPUT_HANDLER_STDFLAGS
 	){
-		return ob_start( $output_callback, $chunk_size, $flags);
+		return ob_start( $output_callback, $chunk_size, $flags );
 	}
 
 	/**

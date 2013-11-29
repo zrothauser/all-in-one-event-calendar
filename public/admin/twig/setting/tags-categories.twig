@@ -1,0 +1,26 @@
+<div class="ai1ec-default-filters clearfix">
+	<label class="textinput">
+	{{ label }}
+		<div class="help-block">
+		{% autoescape false %}
+		{{ help }}
+		{% endautoescape %}
+		</div>
+	</label>
+	<div class="pull-left">
+		{% if categories is defined %}
+			<div class="pull-left">
+				{% autoescape false %}
+				{{ categories }}
+				{% endautoescape %}
+			</div>
+		{% endif %}
+		{% if tags is defined %}
+			<div class="pull-left">
+				{% autoescape false %}
+				{{ tags }}
+				{% endautoescape %}
+			</div>
+		{% endif %}
+	</div>
+</div>

@@ -28,7 +28,7 @@ class Ai1ec_Command_Render_Calendar extends Ai1ec_Command {
 		if ( empty( $calendar_page_id ) ) {
 			return false;
 		}
-		$localization      = $this->_registry->get( 'localization.helper' );
+		$localization      = $this->_registry->get( 'p28n.wpml' );
 		$aco               = $this->_registry->get( 'acl.aco' );
 		$page_ids_to_match = array( $calendar_page_id ) +
 		$localization->get_translations_of_page(

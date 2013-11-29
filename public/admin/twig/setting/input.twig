@@ -1,0 +1,17 @@
+<label class="textinput" for="{{ id }}">{{ label }}</label>
+{% if append is defined %}
+	<div class="input-append">
+{% endif %}
+{% from 'form-elements/input.twig' import input %}
+{{ input( id, id, value, 'text', input_args ) }}
+{% if append is defined %}
+	<span class="add-on">{{ append }}</span>
+	</div>
+{% endif %}
+{% if help is defined %}
+<span class="help-block">
+	{% autoescape false %}
+	{{ help }}
+	{% endautoescape %}
+</span>
+{% endif %}

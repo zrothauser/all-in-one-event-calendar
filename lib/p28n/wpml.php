@@ -112,6 +112,10 @@ class Ai1ec_Localization_Helper {
 		return false;
 	}
 
+	public function get_weekday( $day_index ) {
+		global $wp_locale;
+		return $wp_locale->get_weekday( $day_index );
+	}
 	/**
 	 * get_wpml_table_join method
 	 *

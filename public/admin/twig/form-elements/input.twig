@@ -1,13 +1,12 @@
 {% macro input( id, name='', value = '', type = "text", attributes = [] ) %}
-	{% if id == '' %}
+	{% if name == '' %}
 		{% set id = name %}
 	{% endif %}
 	<input 
 		type="{{ type }}"
 		name="{{ name }}" 
-		value="{{ value|e }}"
+		value="{{ value }}"
 		id="{{ id }}"
-		size="{{ size }}"
 		{% for attribute, value in attributes %}
 			{{ attribute }}="{{ value }}"
 		{% endfor %}

@@ -1,26 +1,38 @@
 <?php
 class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
+	
+	CONST NONCE_ACTION = 'ai1ec_settings_save';
+	CONST NONCE_NAME = 'ai1ec_settings_nonce';
 	public function display_page() {
 		$settings = $this->_registry->get( 'model.settings' );
 		$args = array(
-				'title'             => __(
-					'All-in-One Event Calendar: Calendar Feeds',
-					AI1EC_PLUGIN_NAME
-				),
-				'nonce' => array(
-					'action' => 'meta-box-order',
-					'name' => 'meta-box-order-nonce',
-					'referrer' => false,
-				),
-				'metabox' => array(
-					'screen' => $settings->get( 'settings_page' ),
-					'action' => 'left',
-					'object' => null
-				
-				),
+			'title' =>Ai1ec_I18n:: __(
+				'All-in-One Event Calendar: Calendar Feeds'
+			),
+			'nonce' => array(
+				'action' => self::NONCE_ACTION,
+				'name' => self::NONCE_NAME,
+				'referrer' => false,
+			),
+			'metabox' => array(
+				'screen' => $settings->get( 'settings_page' ),
+				'action' => 'left',
+				'object' => null
+			
+			),
+			'action' => 
+				'?controller=front&action=ai1ec_save_settings&plugin=' . AI1EC_PLUGIN_NAME
+			,
+			'submit' => array(
+				'id' => 'ai1ec_save_settings',
+				'value' => Ai1ec_I18n::__( 'Update Settings' ),
+				'args'  => array(
+					'class' => 'button button-primary',
+				)
+			)
 		);
 		$loader = $this->_registry->get( 'theme.loader' );
-		$file = $loader->get_file( 'base_page.twig', $args, true );
+		$file = $loader->get_file( 'setting/page.twig', $args, true );
 		$file->render();
 	}
 
@@ -77,7 +89,8 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 					'advanced' => Ai1ec_I18n::__( 'Advanced Settings' ),
 					'email' => Ai1ec_I18n::__( 'E-mail Templates' ),
 					'apis' => Ai1ec_I18n::__( 'External Services' ),
-				)
+				),
+				'items_active' => array(),
 			),
 		);
 		$settings = $this->_registry->get( 'model.settings' );
@@ -96,22 +109,61 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 		foreach ( $plugin_settings as $id => $setting ) {
 			// if the setting is shown
 			if ( isset ( $setting['renderer'] ) ) {
-				// check if it's the first one of the 
+				// check if it's the first one
 				if ( ! isset ( $tabs[$setting['renderer']['tab']]['elements'] ) ) {
 					$tabs[$setting['renderer']['tab']]['elements'] = array();
 				}
+				// get the renderer
 				$renderer = $setting['renderer']['class'];
 				$setting['id'] = $id;
 				$renderer = $this->_registry->get( 
 					'html.element.setting.' . $renderer, 
 					$setting
 				);
+				// render the settings
 				$tabs[$setting['renderer']['tab']]['elements'][] = array(
 					'html' => $renderer->render()
 				);
+				// 
+				if ( isset( $setting['renderer']['item'] ) ) {
+					if ( ! isset( $tabs[$setting['renderer']['tab']]['items_active'][$setting['renderer']['item']] ) ) {
+						$tabs[$setting['renderer']['tab']]['items_active'][$setting['renderer']['item']] = true;
+					}
+				}
 			}
 		}
-		return $tabs;
+		$tabs_to_display = array();
+		// now let's see what tabs to display.
+		foreach ( $tabs as $name => $tab ) {
+			// if a tab has more than one item.
+			if ( isset( $tab['items'] ) ) {
+				// if no item is active, nothing is shown
+				if ( empty( $tab['items_active'] ) ) {
+					continue;
+				}
+				// if only one item is active, do not use the dropdown
+				if ( count( $tab['items_active'] ) === 1 ) {
+					
+					$name = key($tab['items_active']);
+					$tab['name'] = $tab['items'][$name];
+					unset ( $tab['items'] );
+				} else {
+					// check active items for the dropdown
+					foreach ( $tab['items'] as &$item ) {
+						if ( ! isset( $tab['items_active'][$item] ) ) {
+							unset( $item );
+						}
+					}
+				}
+				$tabs_to_display[$name] = $tab;
+			} else {
+				// no items, just check there is at least one setting to display.
+				if ( isset( $tab['elements'] ) ) {
+					$tabs_to_display[$name] = $tab;
+				}
+			}
+		}
+		return $tabs_to_display;
 	}
 }
 

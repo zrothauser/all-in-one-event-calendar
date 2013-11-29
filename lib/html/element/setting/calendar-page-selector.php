@@ -87,10 +87,9 @@ class Ai1ec_Html_Element_Calendar_Page_Selector
 		$html = '<select id="' . self::ELEMENT_ID .
 			'" class="inputwidth" name="' . self::ELEMENT_ID . '">';
 		$list = $this->_get_pages();
-		fb($list);
 		foreach ( $list as $key => $value ) {
 			$html .= '<option value="' . $this->_html->esc_attr( $key ) . '"';
-			if ( $this->_selected === $key ) {
+			if ( $this->_args['value'] === $key ) {
 				$html .= ' selected="selected"';
 			}
 			$html .= '>' . $this->_html->esc_html( $value ) . '</option>';
@@ -105,7 +104,7 @@ class Ai1ec_Html_Element_Calendar_Page_Selector
 	 * @return array Map of page keys and titles.
 	 */
 	protected function _get_pages() {
-		$pages = $this->_pages;
+		$pages = get_pages();
 		if ( ! is_array( $pages ) ) {
 			$pages = array();
 		}
@@ -113,7 +112,7 @@ class Ai1ec_Html_Element_Calendar_Page_Selector
 			'__auto_page:Calendar' => Ai1ec_I18n::__( '- Auto-Create New Page -' ),
 		);
 		foreach ( $pages as $key => $value ) {
-			$output[$key] = $value;
+			$output[$value->ID] = $value->post_title;
 		}
 		return $output;
 	}

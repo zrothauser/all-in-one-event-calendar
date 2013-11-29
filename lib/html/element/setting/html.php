@@ -1,0 +1,28 @@
+<?php
+/**
+ * Renderer of settings page Calendar page selection snippet.
+ *
+ * @author     Time.ly Network, Inc.
+ * @instantiator new
+ * @since      2.0
+ * @package    Ai1EC
+ * @subpackage Ai1EC.Html
+ */
+class Ai1ec_Html_Setting_Html extends Ai1ec_Html_Element_Settings {
+	public function render( $output = '' ) {
+		$file = $this->_args['id'] . '.twig';
+		$method = 'get_' . $this->_args['id'] . '_args';
+		$args = array();
+		if ( method_exists( $this, $method ) ) {
+			$args = $this->{$method}();
+		}
+		$loader = $this->_registry->get( 'theme.loader' );
+		$file = $loader->get_file( 'setting/' . $file, $args, true );
+		return parent::render( $file->get_content() );
+	}
+	protected function get_embedding_args() {
+		return array(
+			'siteurl' => site_url( '/?ai1ec_super_widget' )
+		);
+	}
+}

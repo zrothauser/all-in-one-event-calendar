@@ -21,6 +21,6 @@ class Ai1ec_Html_Settings_Checkbox extends Ai1ec_Html_Element_Settings {
 		$args['attributes'] = $attributes;
 		$loader = $this->_registry->get( 'theme.loader' );
 		$file = $loader->get_file( 'setting/checkbox.twig', $args, true );
-		return $file->get_content();
+		return parent::render( $file->get_content() );
 	}
 }

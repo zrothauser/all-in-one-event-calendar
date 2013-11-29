@@ -215,7 +215,7 @@ class Ai1ec_Front_Controller {
 		// Initialize router. I use add_action as the dispatcher would just add overhead.
 		add_action( 'init', array( $this, 'initialize_router' ), PHP_INT_MAX - 1 );
 		// Route the request.
-		add_action( 'template_redirect', array( $this, 'route_request' ) );
+		add_action( 'init', array( $this, 'route_request' ) );
 	}
 	/**
 	 * Initialize the dispatcher.

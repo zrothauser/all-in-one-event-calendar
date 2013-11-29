@@ -25,12 +25,7 @@ class Ai1ec_Http_Response_Helper {
 	 *                  script execution unless mocked
 	 */
 	public static function redirect( $location, $code = 302 ) {
-		if ( defined( 'AI1EC_DEBUG' ) && AI1EC_DEBUG ) {
-			echo '<br/><br /><p>STOPPED EXECUTION WITH REDIRECT: <a href="',
-			     $location, '">', $location, '</a></p>';
-		} else {
-			header( 'Location: ' . $location, true, $code );
-		}
+		header( 'Location: ' . $location, true, $code );
 		return self::stop();
 	}
 

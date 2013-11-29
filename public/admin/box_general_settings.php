@@ -211,7 +211,8 @@
 
 		<br class="clear" />
 
-		<p></p><p>
+		<p></p>
+		<p>
 			<a href="#ai1ec-embedding" id="ai1ec-embedding-trigger"
 				data-toggle="ai1ec_collapse">
 				<i class="icon-info-sign icon-large"></i>

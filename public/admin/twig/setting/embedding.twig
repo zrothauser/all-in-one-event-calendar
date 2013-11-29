@@ -1,0 +1,94 @@
+{% autoescape false %}
+<p>
+	<a href="#ai1ec-embedding" id="ai1ec-embedding-trigger"
+		data-toggle="ai1ec_collapse">
+		<i class="icon-info-sign icon-large"></i>
+		{{ 'Alternative methods to embed a calendar'|__ }}
+		<i class="icon-caret-down"></i>
+		<i class="icon-caret-up hide"></i>
+	</a>
+</p>
+<div id="ai1ec-embedding" class="collapse">
+	<div class="well">
+		<h4>{{ 'With a shortcode'|__ }}</h4>
+		<p>{{ 'Insert one of these shortcodes into your page body to embed the calendar into any arbitrary WordPress Page:'|__ }}</p>
+		<ul>
+			<li>{{ 'Posterboard view:'|__ }} <code>[ai1ec view="posterboard"]</code></li>
+			<li>{{ 'Stream view:'|__ }} <code>[ai1ec view="stream"]</code></li>
+			<li>{{ 'Month view:'|__ }} <code>[ai1ec view="monthly"]</code></li>
+			<li>{{ 'Week view:'|__ }} <code>[ai1ec view="weekly"]</code></li>
+			<li>{{ 'Day view:'|__ }} <code>[ai1ec view="daily"]</code></li>
+			<li>{{ 'Agenda view:'|__ }} <code>[ai1ec view="agenda"]</code></li>
+			<li>{{ 'Default view as per settings:'|__ }} <code>[ai1ec]</code></li>
+		</ul>
+		<p>
+			<span class="muted">{{ 'Optional.'|__ }}</span>
+			{{ 'Add options to display a filtered calender. (You can find out category and tag IDs by inspecting the URL of your filtered calendar page.)'|__ }}
+		</p>
+		<ul>
+			<li>{{ 'Filter by event category name/slug:'|__ }} <code>[ai1ec cat_name="{{ 'Holidays'|__ }}"]</code></li>
+			<li>{{ 'Filter by event category names/slugs (separate names by comma):'|__ }} <code>[ai1ec cat_name="{{ 'Lunar Cycles'|__ }},{{ 'zodiac-date-ranges'|__ }}"]</code></li>
+			<li>{{ 'Filter by event category ID:'|__ }} <code>[ai1ec cat_id="1"]</code></li>
+			<li>{{ 'Filter by event category IDs (separate IDs by comma):'|__ }} <code>[ai1ec cat_id="1,2"]</code></li>
+
+			<li>{{ 'Filter by event tag name/slug:'|__ }} <code>[ai1ec tag_name="{{ 'tips-and-tricks'|__ }}"]</code></li>
+			<li>{{ 'Filter by event tag names/slugs (separate names by comma):'|__ }} <code>[ai1ec tag_name="{{ 'creative writing'|__ }},{{ 'performing arts'|__ }}"]</code></li>
+			<li>{{ 'Filter by event tag ID:'|__ }} <code>[ai1ec tag_id="1"]</code></li>
+			<li>{{ 'Filter by event tag IDs (separate IDs by comma):'|__ }} <code>[ai1ec tag_id="1,2"]</code></li>
+
+			<li>{{ 'Filter by post ID:'|__ }} <code>[ai1ec post_id="1"]</code></li>
+			<li>{{ 'Filter by post IDs (separate IDs by comma):'|__ }} <code>[ai1ec post_id="1,2"]</code></li>
+		</ul>
+
+		<h4>
+			{{ 'As a Super Widget'|__ }}
+		</h4>
+		<p>{{ "You can also embed a calendar into a remote webpage (for example, a static HTML page hosted on a different server). Here's how:"|__ }}</p>
+		<ol>
+			<li>
+				<p>{{ "Add this line just before the closing <code>&lt;/head&gt;</code> tag:"|__ }}</p>
+				<pre>&lt;script type="text/javascript" src="{{ siteurl }}"&gt;&lt;/script&gt;</pre>
+			</li>
+			<li>
+				<p>{{ 'Insert this markup where you would like to embed the Super Widget (using default options):'|__ }}</p>
+				<pre>&lt;div class="timely-calendar"&gt;&lt;/div&gt;</pre>
+			</li>
+			<li>
+				<p>
+					<span class="muted">{{ 'Optional.'|__ }}</span>
+					{{ 'Add options to your Super Widget:'|__ }}
+				</p>
+				<ul>
+					<li>{{ 'Posterboard view:'|__ }} <code>&lt;div class="timely-calendar" data-action="posterboard"&gt;&lt;/div&gt;</code></li>
+					<li>{{ 'Stream view:'|__ }} <code>&lt;div class="timely-calendar" data-action="stream"&gt;&lt;/div&gt;</code></li>
+					<li>{{ 'Month view:'|__ }} <code>&lt;div class="timely-calendar" data-action="month"&gt;&lt;/div&gt;</code></li>
+					<li>{{ 'Week view:'|__ }} <code>&lt;div class="timely-calendar" data-action="week"&gt;&lt;/div&gt;</code></li>
+					<li>{{ 'Day view:'|__ }} <code>&lt;div class="timely-calendar" data-action="day"&gt;&lt;/div&gt;</code></li>
+					<li>{{ 'Agenda view:'|__ }} <code>&lt;div class="timely-calendar" data-action="agenda"&gt;&lt;/div&gt;</code></li>
+					<li>{{ 'Default view as per settings:'|__ }} <code>&lt;div class="timely-calendar"&gt;&lt;/div&gt;</code></li>
+
+					<li>{{ 'Filter by event category ID:'|__ }} <code>&lt;div class="timely-calendar" data-cat_ids="1"&gt;&lt;/div&gt;</code></li>
+					<li>{{ 'Filter by event category IDs (separate IDs by comma):'|__ }} <code>&lt;div class="timely-calendar" data-cat_ids="1,2"&gt;&lt;/div&gt;</code></li>
+
+					<li>{{ 'Filter by event tag ID:'|__ }} <code>&lt;div class="timely-calendar" data-tag_ids="1"&gt;&lt;/div&gt;</code></li>
+					<li>{{ 'Filter by event tag IDs (separate IDs by comma):'|__ }} <code>&lt;div class="timely-calendar" data-tag_ids="1,2"&gt;&lt;/div&gt;</code></li>
+
+					<li>{{ 'Filter by post ID:'|__ }} <code>&lt;div class="timely-calendar" data-post_ids="1"&gt;&lt;/div&gt;</code></li>
+					<li>{{ 'Filter by post IDs (separate IDs by comma):'|__ }} <code>&lt;div class="timely-calendar" data-post_ids="1,2"&gt;&lt;/div&gt;</code></li>
+
+					<li>{{ 'Hide title and navigation buttons:'|__ }} <code>&lt;div class="timely-calendar" data-no_navigation="true"&gt;&lt;/div&gt;</code></li>
+
+					<li>{{ 'Set a default start date: *'|__ }} <code>&lt;div class="timely-calendar" data-exact_date="21-12-2012"&gt;&lt;/div&gt;</code></li>
+				</ul>
+			</li>
+		</ol>
+		<div class="alert alert-block">
+			<p>{{ "* Provide a date in the same format specified by the <strong>Input dates in this format</strong> setting on the <strong>Adding/Editing Events</strong> tab."|__ }}</p>
+		</div>
+		<div class="alert alert-block">
+			<p><strong>{{ 'Warning'|__ }}</strong></p>
+			<p>{{ 'It is currently not supported to embed more than one calendar in the same page. Do not attempt to embed the calendar via shortcode or Super Widget in a page that already displays the calendar.'|__ }}</p>
+		</div>
+	</div>
+</div>
+{% endautoescape %}

@@ -66,28 +66,6 @@ define(
 		$.cookie( 'ai1ec_general_settings_active_tab', active );
 	};
 
-	/**
-	 * Toggle disabled states on certain settings depending on value of other
-	 * settings.
-	 */
-	var set_disabled_states = function() {
-		var show_create_button = $( '#show_create_event_button' )[0].checked,
-		    $show_front_end_form = $( '#show_front_end_create_form' ),
-		    show_front_end_form = $show_front_end_form[0].checked,
-		    $allow_anonymous = $( '#allow_anonymous_submissions' ),
-		    allow_anonymous = $allow_anonymous[0].checked;
-
-		$show_front_end_form.attr( 'disabled',
-			! show_create_button
-		);
-		$allow_anonymous.attr( 'disabled',
-			! ( show_create_button && show_front_end_form )
-		);
-		$( '#allow_anonymous_uploads' ).attr( 'disabled',
-			! ( show_create_button && show_front_end_form && allow_anonymous )
-		);
-	}
-
 	var validate_week_start_end = function() {
 		var $start = $( '#week_view_starts_at' )
 		  , $end = $( '#week_view_ends_at' )
@@ -195,13 +173,6 @@ define(
 					.prop( 'checked', true );
 			} );
 
-			// Enable/disable show_front_end_create_form checkbox based on status of
-			// show_create_event_button checkbox.
-			$( document ).on(
-				'click ready',
-				'#show_create_event_button, #show_front_end_create_form, #allow_anonymous_submissions',
-				set_disabled_states
-			);
 
 			$( '#ai1ec_save_settings' ).on( 'click', validate_week_start_end );
 			$( '#show_create_event_button' ).trigger( 'ready' );

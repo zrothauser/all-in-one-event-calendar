@@ -249,7 +249,9 @@ class Ai1ec_Front_Controller {
 		);
 		$dispatcher->register_action(
 			'http_api_curl',
-			array( 'http.request', 'init_certificate' )
+			array( 'http.request', 'init_certificate' ),
+			10, 
+			2
 		);
 		if ( is_admin() ) {
 			$dispatcher->register_action(

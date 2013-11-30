@@ -106,6 +106,12 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command {
 			)
 		);
 	}
+
+	/**
+	 * Handle saving default_tag_categories option
+	 * 
+	 * @return array
+	 */
 	protected function _handle_saving_default_tags_categories() {
 		return array(
 			'tags' => isset( $_POST['default_tags'] ) ? 
@@ -116,6 +122,14 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command {
 				array(),
 		);
 	}
+
+	/**
+	 * Creates the calendar page if a string is passed.
+	 * 
+	 * @param int|string $calendar_page
+	 * 
+	 * @return int
+	 */
 	protected function _handle_saving_calendar_page_id( $calendar_page ) {
 		if ( ! is_numeric( $calendar_page ) &&
 			preg_match( '#^__auto_page:(.*?)$#', $calendar_page, $matches ) 

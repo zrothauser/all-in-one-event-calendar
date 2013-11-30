@@ -1,14 +1,19 @@
 <?php
+
 /**
- * Renderer of settings page Calendar page selection snippet.
+ * Renderer of settings page html.
  *
- * @author     Time.ly Network, Inc.
+ * @author       Time.ly Network, Inc.
  * @instantiator new
- * @since      2.0
- * @package    Ai1EC
- * @subpackage Ai1EC.Html
+ * @since        2.0
+ * @package      Ai1EC
+ * @subpackage   Ai1EC.Html
  */
 class Ai1ec_Html_Setting_Html extends Ai1ec_Html_Element_Settings {
+
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Html_Element_Settings::render()
+	 */
 	public function render( $output = '' ) {
 		$file = $this->_args['id'] . '.twig';
 		$method = 'get_' . $this->_args['id'] . '_args';
@@ -20,6 +25,12 @@ class Ai1ec_Html_Setting_Html extends Ai1ec_Html_Element_Settings {
 		$file = $loader->get_file( 'setting/' . $file, $args, true );
 		return parent::render( $file->get_content() );
 	}
+
+	/**
+	 * Gets the arguments for the embedding.twig page.
+	 * 
+	 * @return array 
+	 */
 	protected function get_embedding_args() {
 		return array(
 			'siteurl' => site_url( '/?ai1ec_super_widget' )

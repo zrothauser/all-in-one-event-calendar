@@ -263,9 +263,9 @@ class Ai1ec_Settings extends Ai1ec_App {
 			'week_start_day' => array(
 				'type' => 'int',
 				'renderer' => array(
-					'class' => 'select',
-					'tab'   => 'viewing-events',
-					'label' => Ai1ec_I18n::__( 'Week starts on' ),
+					'class'   => 'select',
+					'tab'     => 'viewing-events',
+					'label'   => Ai1ec_I18n::__( 'Week starts on' ),
 					'options' => 'get_weekdays',
 				),
 				'default'  => $this->_sys->get( 'model.option' )->get(
@@ -300,11 +300,11 @@ class Ai1ec_Settings extends Ai1ec_App {
 			'posterboard_tile_min_width' => array(
 				'type' => 'int',
 				'renderer' => array(
-					'class' => 'input',
-					'tab'   => 'viewing-events',
-					'label' => Ai1ec_I18n::__( 'Posterboard tile minimum width' ),
-					'append' => 'px',
-					'type'  => 'append',
+					'class'     => 'input',
+					'tab'       => 'viewing-events',
+					'label'     => Ai1ec_I18n::__( 'Posterboard tile minimum width' ),
+					'append'    => 'px',
+					'type'      => 'append',
 					'validator' => 'numeric'
 				),
 				'default'  => 240,
@@ -312,11 +312,11 @@ class Ai1ec_Settings extends Ai1ec_App {
 			'posterboard_events_per_page' => array(
 				'type' => 'int',
 				'renderer' => array(
-					'class' => 'input',
-					'tab'   => 'viewing-events',
-					'label' => Ai1ec_I18n::__( 'Posterboard pages show at most' ),
-					'append' => 'events',
-					'type'  => 'append',
+					'class'     => 'input',
+					'tab'       => 'viewing-events',
+					'label'     => Ai1ec_I18n::__( 'Posterboard pages show at most' ),
+					'append'    => 'events',
+					'type'      => 'append',
 					'validator' => 'numeric',
 				),
 				'default'  => 30,
@@ -324,11 +324,11 @@ class Ai1ec_Settings extends Ai1ec_App {
 			'agenda_events_per_page' => array(
 				'type' => 'int',
 				'renderer' => array(
-					'class' => 'input',
-					'tab'   => 'viewing-events',
-					'label' => Ai1ec_I18n::__( 'Agenda pages show at most' ),
-					'type'  => 'append',
-					'append' => 'events',
+					'class'     => 'input',
+					'tab'       => 'viewing-events',
+					'label'     => Ai1ec_I18n::__( 'Agenda pages show at most' ),
+					'type'      => 'append',
+					'append'    => 'events',
 					'validator' => 'numeric',
 				),
 				'default'  => 10,
@@ -425,9 +425,9 @@ class Ai1ec_Settings extends Ai1ec_App {
 			'input_date_format' => array(
 				'type' => 'string',
 				'renderer' => array(
-					'class' => 'select',
-					'tab'   => 'editing-events',
-					'label' => Ai1ec_I18n::__(
+					'class'   => 'select',
+					'tab'     => 'editing-events',
+					'label'   => Ai1ec_I18n::__(
 						'Input dates in this format'
 					),
 					'options' => array(
@@ -503,7 +503,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'label' => Ai1ec_I18n::__(
 						' Show the old <strong>Post Your Event</strong> button above the calendar to privileged users'
 					),
-					'help' => Ai1ec_I18n::__(
+					'help'  => Ai1ec_I18n::__(
 						'<a target="_blank" href="http://time.ly/pro-calendar">Upgrade to Pro</a> for the new <strong>front-end Post Your Event form</strong>.'
 					),
 				),
@@ -517,7 +517,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'item'  => 'advanced',
 					'label' => Ai1ec_I18n::__( 'Move calendar into this DOM element' ),
 					'type'  => 'normal',
-					'help' => Ai1ec_I18n::__(
+					'help'  => Ai1ec_I18n::__(
 						'Optional. Use this JavaScript-based shortcut to place the 
 						calendar a DOM element other than the usual page content container 
 						if you are unable to create an appropriate page template
@@ -539,7 +539,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'label' => Ai1ec_I18n::__(
 						'<strong>Skip <tt>in_the_loop()</tt> check </strong> that protects against multiple calendar output'
 					),
-					'help' => Ai1ec_I18n::__(
+					'help'  => Ai1ec_I18n::__(
 						'Try enabling this option if your calendar does not appear on the calendar page. It is needed for compatibility with a small number of themes that call <tt>the_content()</tt> from outside of The Loop. Leave disabled otherwise.'
 					),
 				),
@@ -578,7 +578,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'label' => Ai1ec_I18n::__(
 						'<strong>Strict</strong> event platform mode'
 					),
-					'help' => Ai1ec_I18n::__(
+					'help'  => Ai1ec_I18n::__(
 						'Prevents plugins from adding menu items unrelated to calendar/media/user management'
 					),
 				),
@@ -586,6 +586,11 @@ class Ai1ec_Settings extends Ai1ec_App {
 			),
 		);
 	}
+
+	/**
+	 * Register the standard setting values.
+	 * 
+	 */
 	protected function _register_standard_values() {
 		foreach ( $this->_standard_options as $key => $option ) {
 			$renderer = isset( $option['renderer'] ) ? $option['renderer'] : null;

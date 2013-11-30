@@ -1,5 +1,19 @@
 <?php
+
+/**
+ * The concrete command that save settings.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Command
+ */
 class Ai1ec_Command_Save_Settings extends Ai1ec_Command {
+
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Command::is_this_to_execute()
+	 */
 	public function is_this_to_execute() {
 		$params = $this->get_parameters();
 		if ( false === $params ) {
@@ -20,14 +34,23 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command {
 		}
 		return false;
 	}
+
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Command::set_render_strategy()
+	 */
 	public function set_render_strategy( Ai1ec_Request_Parser $request ) {
 		$this->_render_strategy = $this->_registry->get(
 			'http.response.render.strategy.redirect'
 		);
 	}
+
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Command::do_execute()
+	 */
 	public function do_execute() {
 		$settings = $this->_registry->get( 'model.settings' );
 		$options = $settings->get_options();
+		// if either tag or categories are set, process the setting.
 		if( isset( $_POST['default_tags'] ) || 
 				isset( $_POST['default_categories'] ) ) {
 			$_POST['default_tags_categories'] = true;
@@ -35,6 +58,7 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command {
 		foreach ( $options as $name => $data ) {
 			if ( isset( $_POST[$name] ) ) {
 				$value = null;
+				// if a validator is pecified, use it.
 				if ( isset( $data['renderer']['validator'] ) ) {
 					$validator = $this->_registry->get(
 						'validator.' . $data['renderer']['validator'],
@@ -43,10 +67,8 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command {
 					try {
 						$value = $validator->validate();
 					} catch ( Ai1ec_Value_Not_Valid_Exception $e ) {
-						fb($e);
 						// don't save
 						continue;
-						die();
 					}
 				} else {
 					switch ( $data['type'] ) {

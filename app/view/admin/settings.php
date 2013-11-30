@@ -1,8 +1,29 @@
 <?php
+
+/**
+ * The Settings page.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.View
+ */
 class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 	
+	/**
+	 * @var string The nonce action
+	 */
 	CONST NONCE_ACTION = 'ai1ec_settings_save';
+
+	/**
+	 * @var The nonce name
+	 */
 	CONST NONCE_NAME = 'ai1ec_settings_nonce';
+
+	/* (non-PHPdoc)
+	 * @see Ai1ec_View_Admin_Abstract::display_page()
+	 */
 	public function display_page() {
 		$settings = $this->_registry->get( 'model.settings' );
 		$args = array(
@@ -36,6 +57,9 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 		$file->render();
 	}
 
+	/* (non-PHPdoc)
+	 * @see Ai1ec_View_Admin_Abstract::add_page()
+	 */
 	public function add_page() {
 		$settings = $this->_registry->get( 'model.settings' );
 		$settings_page = add_submenu_page(
@@ -56,25 +80,21 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 			'default'
 		);
 		$settings->set( 'settings_page', $settings_page );
-
 	}
+
+	/* (non-PHPdoc)
+	 * @see Ai1ec_View_Admin_Abstract::handle_post()
+	 */
 	public function handle_post() {
 	}
-	
-	/**
-	 * Dump output buffers before starting output
-	 *
-	 * @return bool True unless an error occurs
-	 */
-	protected function _dump_buffers() {
-		// ob_end_clean() fails if any level of compression is set.
-		$result = true;
-		while ( ob_get_level() ) {
-			$result &= ob_end_clean();
-		}
-		return $result;
-	}
 
+
+	/**
+	 * Displays the meta box for the settings page.
+	 * 
+	 * @param unknown_type $object
+	 * @param unknown_type $box
+	 */
 	public function display_meta_box( $object, $box )  {
 		$tabs = array(
 			'viewing-events' => array(
@@ -93,6 +113,8 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 				'items_active' => array(),
 			),
 		);
+		// let other extensions add tabs.
+		$tabs = apply_filter( 'ai1ec_add_setting_tabs', $tabs );
 		$settings = $this->_registry->get( 'model.settings' );
 		$plugin_settings = $settings->get_options();
 		$tabs = $this->_get_tabs_to_show( $plugin_settings, $tabs );
@@ -104,8 +126,18 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 		$file = $loader->get_file( 'bootstrap_tabs.twig', $args, true );
 		$file->render();
 	}
-	
-	protected function _get_tabs_to_show( $plugin_settings, $tabs ) {
+
+	/**
+	 * Based on the plugin options, decides what tabs to render.
+	 * 
+	 * 
+	 * 
+	 * @param array $plugin_settings
+	 * @param array $tabs
+	 * 
+	 * @return array
+	 */
+	protected function _get_tabs_to_show( array $plugin_settings, array $tabs ) {
 		foreach ( $plugin_settings as $id => $setting ) {
 			// if the setting is shown
 			if ( isset ( $setting['renderer'] ) ) {
@@ -124,7 +156,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 				$tabs[$setting['renderer']['tab']]['elements'][] = array(
 					'html' => $renderer->render()
 				);
-				// 
+				// if the settings has an item tab, set the item as active.
 				if ( isset( $setting['renderer']['item'] ) ) {
 					if ( ! isset( $tabs[$setting['renderer']['tab']]['items_active'][$setting['renderer']['item']] ) ) {
 						$tabs[$setting['renderer']['tab']]['items_active'][$setting['renderer']['item']] = true;
@@ -166,5 +198,3 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 		return $tabs_to_display;
 	}
 }
-
-?>

@@ -1,14 +1,20 @@
 <?php
+
 /**
- * Renderer of settings page Calendar page selection snippet.
+ * Renderer of settings page input option.
  *
- * @author     Time.ly Network, Inc.
+ * @author       Time.ly Network, Inc.
  * @instantiator new
- * @since      2.0
- * @package    Ai1EC
- * @subpackage Ai1EC.Html
+ * @since        2.0
+ * @package      Ai1EC
+ * @subpackage   Ai1EC.Html
  */
 class Ai1ec_Html_Setting_Input extends Ai1ec_Html_Element_Settings {
+
+	
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Html_Element_Settings::render()
+	 */
 	public function render( $output = '' ) {
 		$type = $this->_args['renderer']['type'];
 		$date = $append = false;

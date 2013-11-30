@@ -1,15 +1,20 @@
 <?php
 
 /**
- * Renderer of settings page Calendar page selection snippet.
+ * Renderer of settings page select option.
  *
- * @author     Time.ly Network, Inc.
+ * @author       Time.ly Network, Inc.
  * @instantiator new
- * @since      2.0
- * @package    Ai1EC
- * @subpackage Ai1EC.Html
+ * @since        2.0
+ * @package      Ai1EC
+ * @subpackage   Ai1EC.Html
  */
 class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
+
+	
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Html_Element_Settings::render()
+	 */
 	public function render( $output = '' ) {
 		$options = $this->_args['renderer']['options'];
 		if ( ! is_array( $options ) ) {
@@ -37,7 +42,12 @@ class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 		$file = $loader->get_file( 'setting/select.twig', $args, true );
 		return parent::render( $file->get_content() );
 	}
-	
+
+	/**
+	 * Gets the options for the "Starting day of week" select.
+	 * 
+	 * @return array
+	 */
 	protected function get_weekdays() {
 		$locale = $this->_registry->get( 'p28n.wpml' );
 		$options = array();

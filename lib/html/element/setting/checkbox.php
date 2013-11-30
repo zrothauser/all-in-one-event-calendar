@@ -1,15 +1,20 @@
 <?php
 
 /**
- * Renderer of settings page Calendar page selection snippet.
+ * Renderer of settings page checkbox option.
  *
- * @author     Time.ly Network, Inc.
+ * @author       Time.ly Network, Inc.
  * @instantiator new
- * @since      2.0
- * @package    Ai1EC
- * @subpackage Ai1EC.Html
+ * @since        2.0
+ * @package      Ai1EC
+ * @subpackage   Ai1EC.Html
  */
 class Ai1ec_Html_Settings_Checkbox extends Ai1ec_Html_Element_Settings {
+
+	
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Html_Element_Settings::render()
+	 */
 	public function render( $output = '' ) {
 		$attributes = array(
 			'class' => 'checkbox',

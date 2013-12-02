@@ -13,23 +13,23 @@ class Ai1ec_Settings extends Ai1ec_App {
 	/**
 	 * @constant string Name of WordPress options key used to store settings.
 	 */
-	const WP_OPTION_KEY         = 'ai1ec_settings';
+	const WP_OPTION_KEY          = 'ai1ec_settings';
 
 	/**
 	 * @var array Map of value names and their representations.
 	 */
-	protected $_options         = array();
+	protected $_options          = array();
 
 
 	/**
 	 * @var array Map of value names and their representations.
 	 */
-	protected $_standard_options;
+	protected $_standard_options = array();
 
 	/**
 	 * @var bool Indicator for modified object state.
 	 */
-	protected $_updated         = false;
+	protected $_updated          = false;
 
 	/**
 	 * Register new option to be used.
@@ -40,12 +40,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 *
 	 * @return Ai1ec_Settings Instance of self for chaining.
 	 */
-	public function register(
-		$option,
-		$value,
-		$type,
-		$renderer
-	) {
+	public function register( $option, $value, $type, $renderer ) {
 		$this->_options[$option] = array(
 			'value'    => $value,
 			'type'     => $type,
@@ -226,7 +221,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	}
 
 	/**
-	 * Set the standard values for the options of th core plugin.
+	 * Set the standard values for the options of the core plugin.
 	 * 
 	 */
 	protected function _set_standard_values() {

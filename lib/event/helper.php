@@ -40,4 +40,44 @@ class Ai1ec_Event_Helper extends Ai1ec_Base {
 		return $colors[$term_id];
 	}
 
+	/**
+	 * trim_excerpt function
+	 *
+	 * Generates an excerpt from the given content string. Adapted from
+	 * WordPress's `wp_trim_excerpt' function that is not useful for applying
+	 * to custom content.
+	 *
+	 * @param string $text The content to trim.
+	 *
+	 * @return string      The excerpt.
+	 **/
+	public function trim_excerpt( $text ) {
+		$raw_excerpt    = $text;
+
+		$text           = preg_replace(
+			'#<\s*script[^>]*>.+<\s*/\s*script\s*>#x',
+			'',
+			$text
+		);
+		$text           = strip_shortcodes( $text );
+		$text           = str_replace( ']]>', ']]&gt;', $text );
+		$text           = strip_tags( $text );
+
+		$excerpt_length = apply_filters( 'excerpt_length', 55 );
+		$excerpt_more   = apply_filters( 'excerpt_more', ' [...]' );
+		$words          = preg_split(
+			"/[\n\r\t ]+/",
+			$text,
+			$excerpt_length + 1,
+			PREG_SPLIT_NO_EMPTY
+		);
+		if ( count( $words ) > $excerpt_length ) {
+			array_pop( $words );
+			$text = implode( ' ', $words );
+			$text = $text . $excerpt_more;
+		} else {
+			$text = implode( ' ', $words );
+		}
+		return apply_filters( 'wp_trim_excerpt', $text, $raw_excerpt );
+	}
 }

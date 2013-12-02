@@ -3,6 +3,6 @@
 		class="{{ container_class }}"
 	{% endif %}
 	>
-	{% from 'select.twig' import select %}
+	{% from 'form-elements/select.twig' import select %}
 	{{ select( id, name, select2_args, options ) }}
 </div>

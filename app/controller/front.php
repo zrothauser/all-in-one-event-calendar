@@ -39,8 +39,11 @@ class Ai1ec_Front_Controller {
 	 * @return void
 	 */
 	public function initialize( $ai1ec_loader ) {
+		ai1ec_start();
 		$this->_init( $ai1ec_loader );
 		$this->_initialize_dispatcher();
+		$this->_registry->get( 'controller.shutdown' )
+			->register( 'ai1ec_stop' );
 	}
 
 	/**
@@ -215,7 +218,7 @@ class Ai1ec_Front_Controller {
 		// Initialize router. I use add_action as the dispatcher would just add overhead.
 		add_action( 'init', array( $this, 'initialize_router' ), PHP_INT_MAX - 1 );
 		// Route the request.
-		add_action( 'template_redirect', array( $this, 'route_request' ) );
+		add_action( 'init', array( $this, 'route_request' ) );
 	}
 	/**
 	 * Initialize the dispatcher.
@@ -260,7 +263,11 @@ class Ai1ec_Front_Controller {
 			);
 			$dispatcher->register_action(
 				'admin_menu',
-				array( 'view.calendar-feeds', 'add_page' )
+				array( 'view.admin.calendar-feeds', 'add_page' )
+			);
+			$dispatcher->register_action(
+				'admin_menu',
+				array( 'view.admin.settings', 'add_page' )
 			);
 			$dispatcher->register_action(
 				'init',

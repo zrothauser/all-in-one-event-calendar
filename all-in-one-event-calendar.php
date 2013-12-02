@@ -68,6 +68,9 @@ $ai1ec_exception_handler->set_prev_ex_handler( $prev_ex_handler );
 require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'lib' .
 	DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'loader.php';
 
+require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'lib' .
+	DIRECTORY_SEPARATOR . 'global-functions.php';
+
 $ai1ec_loader = new Ai1ec_Loader( $ai1ec_base_dir );
 $ai1ec_loader->register_map(
 	$ai1ec_base_dir . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR .

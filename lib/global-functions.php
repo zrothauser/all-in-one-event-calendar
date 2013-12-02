@@ -18,3 +18,23 @@
 function ai1ec_return_false() {
 	return false;
 }
+
+/**
+ * Executed after initialization of Front Controller.
+ *
+ * @return void
+ */
+function ai1ec_start() {
+	ob_start();
+}
+
+/**
+ * Executed before script shutdown, when WP core objects are present.
+ *
+ * @return void
+ */
+function ai1ec_stop() {
+	if ( ob_get_level() ) {
+		echo ob_get_clean();
+	}
+}

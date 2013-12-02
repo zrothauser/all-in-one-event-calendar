@@ -113,6 +113,18 @@ class Ai1ec_Localization_Helper {
 	}
 
 	/**
+	 * Uses $wp_locale to get the translated weekday.
+	 * 
+	 * @param int $day_index
+	 * 
+	 * @return strin
+	 */
+	public function get_weekday( $day_index ) {
+		global $wp_locale;
+		return $wp_locale->get_weekday( $day_index );
+	}
+
+	/**
 	 * get_wpml_table_join method
 	 *
 	 * Get join conditions to WPML plugin table

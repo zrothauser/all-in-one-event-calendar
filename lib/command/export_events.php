@@ -73,11 +73,9 @@ class Ai1ec_Command_Export_Events extends Ai1ec_Command {
 	 * @see Ai1ec_Command::do_execute()
 	 */
 	public function do_execute() {
-
-
 		$ai1ec_cat_ids  = $this->_params['cat_ids'];
 		$ai1ec_tag_ids  = $this->_params['tag_ids'];
-		$ai1ec_post_ids = $this->_params['cat_ids'];
+		$ai1ec_post_ids = $this->_params['post_ids'];
 		if ( ! empty( $this->_params['lang'] ) ) {
 			$loc_helper = $this->_registry->get( 'p28n.wpml' );
 			$loc_helper->set_language( $this->_params['lang'] );

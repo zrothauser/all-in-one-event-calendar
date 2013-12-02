@@ -52,7 +52,11 @@ class Ai1ec_Command_Resolver {
 				'command.render_calendar', $request
 			)
 		);
-
+		$this->add_command(
+			$registry->get(
+				'command.save_settings', $request
+			)
+		);
 		$this->_registry = $registry;
 		$this->_request  = $request;
 	}

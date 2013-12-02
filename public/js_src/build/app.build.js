@@ -19,6 +19,9 @@
 				name: "pages/add_new_event"
 			},
 			{
+				name: "pages/calendar_feeds"
+			},
+			{
 				name: "pages/event_category"
 			},
 			{

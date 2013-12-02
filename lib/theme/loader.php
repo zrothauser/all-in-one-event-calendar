@@ -84,7 +84,7 @@ class Ai1ec_Theme_Loader {
 					'theme.file.twig',
 					$filename,
 					$args,
-					$this->get_twig_instance( $paths )
+					$this->_get_twig_instance( $paths )
 				);
 				break;
 			default:
@@ -110,7 +110,7 @@ class Ai1ec_Theme_Loader {
 	 *
 	 * @return Twig_Environment
 	 */
-	private function get_twig_instance( array $paths ) {
+	protected function _get_twig_instance( array $paths ) {
 
 		if ( ! isset( $this->_twig ) ) {
 
@@ -128,12 +128,23 @@ class Ai1ec_Theme_Loader {
 			$loader = new Twig_Loader_Filesystem( $loader_path );
 			unset( $loader_path );
 
-			// @TODO: Add cache support.
-			$this->_twig = new Twig_Environment( $loader );
+			// TODO: Add cache support.
+			if ( AI1EC_DEBUG ) {
+				$this->_twig = new Twig_Environment( $loader, array( 'debug' => true ) );
+				$this->_twig->addExtension(new Twig_Extension_Debug());
+			} else {
+				$this->_twig = new Twig_Environment( $loader );
+			}
+			
+
 
 			// Add translation filter.
 			$filter = new Twig_SimpleFilter( '__', 'Ai1ec_I18n::__' );
+			
 			$this->_twig->addFilter( $filter );
+			// $this->_add_twig_functions();
+			$extension = $this->_registry->get( 'twig.ai1ec-extension' );
+			$this->_twig->addExtension( $extension );
 		}
 		return $this->_twig;
 	}

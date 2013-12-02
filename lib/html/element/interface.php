@@ -34,6 +34,6 @@ interface Ai1ec_Html_Element_Interface {
 	 *
 	 * @throws Ai1ec_Html_Exception If rendering may not be completed.
 	 */
-	public function render( $snippet );
+	public function render( $snippet = '' );
 
 }

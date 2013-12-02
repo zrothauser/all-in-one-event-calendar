@@ -1,0 +1,32 @@
+<ul class="nav nav-tabs">
+{% for id, data in tabs %}
+	{% if data.items is defined %}
+		<li class="dropdown">
+			<a href="#" data-toggle="dropdown">
+				{{ data.name }}<i class="icon-caret-down"></i>
+			</a>
+			<ul class="dropdown-menu">
+				{% for drop_id, drop_name in data.items %}
+					<li><a href="#ai1ec-{{ drop_id }}" data-toggle="tab">{{ drop_name }}</a></li>
+				{% endfor %}
+			</ul>
+		</li>
+	{% else %}
+		<li>
+			<a href="#ai1ec-{{ id }}" data-toggle="tab">{{ data.name }}</a>
+		</li>
+	{% endif %}
+{% endfor %}
+</ul>
+<div class="tab-content ai1ec-boxed-tabs">
+{% for id, data in tabs %}
+	<div class="tab-pane" id="ai1ec-{{ id }}">
+		<h2>{{ data.name }}</h2>
+		{% for element in data.elements %}
+		{% autoescape false %}
+			{{ element.html }}
+		{% endautoescape %}
+		{% endfor %}
+	</div>
+{% endfor %}
+</div>

@@ -9,7 +9,7 @@
  * @package    AI1EC
  * @subpackage AI1EC.View
  */
-class Ai1ec_View_Calendar_Feeds extends Ai1ec_Base {
+class Ai1ec_View_Calendar_Feeds extends Ai1ec_View_Admin_Abstract {
 
 	/**
 	 * admin_menu function
@@ -20,7 +20,7 @@ class Ai1ec_View_Calendar_Feeds extends Ai1ec_Base {
 	 *
 	 * @return void
 	 */
-	function add_page() {
+	public function add_page() {
 		$settings = $this->_registry->get( 'model.settings' );
 		// =======================
 		// = Calendar Feeds Page =
@@ -50,7 +50,7 @@ class Ai1ec_View_Calendar_Feeds extends Ai1ec_Base {
 	 *
 	 * @return void
 	 */
-	function display_page() {
+	public function display_page() {
 		$settings = $this->_registry->get( 'model.settings' );
 		$loader = $this->_registry->get( 'theme.loader' );
 		$args = array(
@@ -70,7 +70,7 @@ class Ai1ec_View_Calendar_Feeds extends Ai1ec_Base {
 	 *
 	 * @return void
 	 */
-	function display_meta_box( $object, $box ) {
+	public function display_meta_box( $object, $box ) {
 		// register the calendar feeds page.
 		$calendar_feeds = $this->_registry->get( 'controller.calendar-feeds' );
 		$feeds = array( $this->_registry->get( 'calendar-feed.ics' ) );
@@ -85,5 +85,8 @@ class Ai1ec_View_Calendar_Feeds extends Ai1ec_Base {
 			true
 		);
 		$file->render();
+	}
+	public function handle_post() {
+		
 	}
 }

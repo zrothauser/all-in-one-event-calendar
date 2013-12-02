@@ -1,0 +1,7 @@
+<label class="textinput" for="{{ id }}">
+	{% autoescape false %}
+	{{ label }}
+	{% endautoescape %}
+</label>
+{% from 'form-elements/select.twig' import select %}
+{{ select( id, name, attributes, options ) }}

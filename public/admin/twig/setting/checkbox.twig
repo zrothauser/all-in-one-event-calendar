@@ -1,0 +1,14 @@
+<label for="{{ id }}">
+{% from 'form-elements/input.twig' import input %}
+{{ input( id, id, 1, 'checkbox', attributes ) }}
+	{% autoescape false %}
+	{{ renderer.label }}
+	{% endautoescape %}
+	{% if renderer.help is defined %}
+	<div class="help-block">
+		{% autoescape false %}
+		{{ renderer.help }}
+		{% endautoescape %}
+	</div>
+	{% endif %}
+</label>

@@ -15,7 +15,7 @@ class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Html_Element_Settings::render()
 	 */
-	public function render( $output = '' ) {
+	public function render( $output ) {
 		$options = $this->_args['renderer']['options'];
 		if ( ! is_array( $options ) ) {
 			$options = $this->{$options}();

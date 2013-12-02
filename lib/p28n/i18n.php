@@ -21,4 +21,16 @@ class Ai1ec_I18n {
 		return __( $term, AI1EC_PLUGIN_NAME );
 	}
 
+	/**
+	 * Translates string in context. Wrapper for WordPress `_x()` function.
+	 *
+	 * @param string $term Message to translate.
+	 * @param string $ctxt Translation context for message.
+	 *
+	 * @return string Translated string representation.
+	 */
+	static public function _x( $term, $ctxt ) {
+		return _x( $term, $ctxt, AI1EC_PLUGIN_NAME );
+	}
+
 }

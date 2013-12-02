@@ -12,6 +12,7 @@ local.properties
 .classpath
 .settings/
 .loadpath
+/public/js/build.txt
 
 # External tool builders
 .externalToolBuilders/

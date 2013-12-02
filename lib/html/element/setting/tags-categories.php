@@ -22,7 +22,6 @@ class Ai1ec_Html_Setting_Tags_Categories extends Ai1ec_Html_Element_Settings {
 			$options = array(
 				'taxonomy'     => 'events_' . $type,
 				'hierarchical' => true,
-				'hide_empty'   => false,
 			);
 			${$type} = get_categories( $options );
 		}
@@ -71,10 +70,12 @@ class Ai1ec_Html_Setting_Tags_Categories extends Ai1ec_Html_Element_Settings {
 				'text'  => $term->name,
 			);
 		}
-		if ( in_array( $term->term_id , $this->_args['value'][$type]) ) {
-			$option['args'] = array(
-				'selected' => 'selected',
-			);
+		if ( isset( $this->_args['value'][$type] ) ) {
+			if ( in_array( $term->term_id , $this->_args['value'][$type] ) ) {
+				$option['args'] = array(
+					'selected' => 'selected',
+				);
+			}
 		}
 		$options[] = $option;
 		$args = array(

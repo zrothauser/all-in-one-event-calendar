@@ -39,8 +39,11 @@ class Ai1ec_Front_Controller {
 	 * @return void
 	 */
 	public function initialize( $ai1ec_loader ) {
+		ai1ec_start();
 		$this->_init( $ai1ec_loader );
 		$this->_initialize_dispatcher();
+		$this->_registry->get( 'controller.shutdown' )
+			->register( 'ai1ec_stop' );
 	}
 
 	/**

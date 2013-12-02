@@ -9,7 +9,6 @@
  * Text Domain: all-in-one-event-calendar
  * Domain Path: /language
  */
-ob_start();
 
 $ai1ec_base_dir = dirname( __FILE__ );
 $ai1ec_base_url = plugins_url( '', __FILE__ );
@@ -68,6 +67,9 @@ $ai1ec_exception_handler->set_prev_ex_handler( $prev_ex_handler );
 
 require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'lib' .
 	DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'loader.php';
+
+require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'lib' .
+	DIRECTORY_SEPARATOR . 'global-functions.php';
 
 $ai1ec_loader = new Ai1ec_Loader( $ai1ec_base_dir );
 $ai1ec_loader->register_map(

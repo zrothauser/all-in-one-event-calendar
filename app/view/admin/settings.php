@@ -114,7 +114,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 			),
 		);
 		// let other extensions add tabs.
-		$tabs = apply_filter( 'ai1ec_add_setting_tabs', $tabs );
+		$tabs = apply_filters( 'ai1ec_add_setting_tabs', $tabs );
 		$settings = $this->_registry->get( 'model.settings' );
 		$plugin_settings = $settings->get_options();
 		$tabs = $this->_get_tabs_to_show( $plugin_settings, $tabs );

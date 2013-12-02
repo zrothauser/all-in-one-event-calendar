@@ -10,7 +10,7 @@
  * @subpackage   AI1EC.Validator
  */
 class Ai1ec_Validator_Numeric_Or_Default extends Ai1ec_Validator {
-	
+
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Validator::validate()
 	 */
@@ -20,4 +20,5 @@ class Ai1ec_Validator_Numeric_Or_Default extends Ai1ec_Validator {
 		}
 		return (int)$this->_value;
 	}
+
 }

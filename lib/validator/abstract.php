@@ -10,7 +10,7 @@
  * @subpackage AI1EC.Validator
  */
 abstract class Ai1ec_Validator extends Ai1ec_Base {
-	
+
 	/**
 	 * @var mixed The value to validate.
 	 */
@@ -20,7 +20,7 @@ abstract class Ai1ec_Validator extends Ai1ec_Base {
 	 * @var mixed Additional info needed for complex validation
 	 */
 	protected $_context;
-	
+
 	/**
 	 * Constructor function
 	 * 
@@ -30,10 +30,10 @@ abstract class Ai1ec_Validator extends Ai1ec_Base {
 	 */
 	public function __construct( Ai1ec_Registry_Object $registry, $value, $context = array() ) {
 		parent::__construct( $registry );
-		$this->_value = $value;
+		$this->_value   = $value;
 		$this->_context = $context;
 	}
-	
+
 	/**
 	 * Validates the value.
 	 * 
@@ -42,4 +42,5 @@ abstract class Ai1ec_Validator extends Ai1ec_Base {
 	 * @return mixed the validated value (allows to set it to default)
 	 */
 	abstract public function validate();
+
 }

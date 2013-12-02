@@ -50,7 +50,7 @@ class Ai1ec_Html_Element_Calendar_Page_Selector
 	 *
 	 * @return string HTML snippet for page selection.
 	 */
-	public function render( $snippet ) {
+	public function render( $snippet = '' ) {
 		$output = $this->_get_pages_selector() . $this->_get_page_view_link();
 		$output = '<div class="pull-left">' . $output . '</div>';
 		$output = '<label class="textinput" for="' . self::ELEMENT_ID . '">' .

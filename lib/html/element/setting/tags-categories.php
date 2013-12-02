@@ -15,7 +15,7 @@ class Ai1ec_Html_Setting_Tags_Categories extends Ai1ec_Html_Element_Settings {
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Html_Element_Settings::render()
 	 */
-	public function render( $output ) {
+	public function render( $output = '' ) {
 		$tags       = array();
 		$categories = array();
 		foreach ( array( 'tags', 'categories' ) as $type ) {

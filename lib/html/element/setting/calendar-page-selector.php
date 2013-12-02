@@ -24,7 +24,7 @@ class Ai1ec_Html_Element_Calendar_Page_Selector
 	/**
 	 * @var int ID of page currently selected, NULL if none.
 	 */
-	protected $_selected = NULL;
+	protected $_selected = null;
 
 	/**
 	 * Set attributes for element.
@@ -109,7 +109,9 @@ class Ai1ec_Html_Element_Calendar_Page_Selector
 			$pages = array();
 		}
 		$output = array(
-			'__auto_page:Calendar' => Ai1ec_I18n::__( '- Auto-Create New Page -' ),
+			'__auto_page:Calendar' => Ai1ec_I18n::__(
+				'- Auto-Create New Page -'
+			),
 		);
 		foreach ( $pages as $key => $value ) {
 			$output[$value->ID] = $value->post_title;

@@ -33,13 +33,13 @@ class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 			'class' => 'inputwidth'
 		);
 		$args = array(
-			'id' => $this->_args['id'],
-			'label' => $this->_args['renderer']['label'],
+			'id'         => $this->_args['id'],
+			'label'      => $this->_args['renderer']['label'],
 			'attributes' => $select_args,
-			'options' => $options,
+			'options'    => $options,
 		);
 		$loader = $this->_registry->get( 'theme.loader' );
-		$file = $loader->get_file( 'setting/select.twig', $args, true );
+		$file   = $loader->get_file( 'setting/select.twig', $args, true );
 		return parent::render( $file->get_content() );
 	}
 
@@ -49,11 +49,11 @@ class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 	 * @return array
 	 */
 	protected function get_weekdays() {
-		$locale = $this->_registry->get( 'p28n.wpml' );
+		$locale  = $this->_registry->get( 'p28n.wpml' );
 		$options = array();
-		for( $day_index = 0; $day_index <= 6; $day_index++ ) {
+		for ( $day_index = 0; $day_index <= 6; $day_index++ ) {
 			$option = array(
-				'text' => $locale->get_weekday( $day_index ),
+				'text'  => $locale->get_weekday( $day_index ),
 				'value' => $day_index,
 			);
 			if ( $this->_args['value'] === $day_index ) {
@@ -65,4 +65,5 @@ class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 		}
 		return $options;
 	}
+
 }

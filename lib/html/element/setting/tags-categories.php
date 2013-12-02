@@ -16,7 +16,7 @@ class Ai1ec_Html_Setting_Tags_Categories extends Ai1ec_Html_Element_Settings {
 	 * @see Ai1ec_Html_Element_Settings::render()
 	 */
 	public function render( $output = '' ) {
-		$tags = array();
+		$tags       = array();
 		$categories = array();
 		foreach ( array( 'tags', 'categories' ) as $type ) {
 			$options = array(
@@ -30,7 +30,7 @@ class Ai1ec_Html_Setting_Tags_Categories extends Ai1ec_Html_Element_Settings {
 		}
 		$args = array(
 			'label' => $this->_args['renderer']['label'],
-			'help' => $this->_args['renderer']['help'],
+			'help'  => $this->_args['renderer']['help'],
 		);
 		$loader = $this->_registry->get( 'theme.loader' );
 		if ( ! empty ( $tags ) ) {
@@ -62,7 +62,7 @@ class Ai1ec_Html_Setting_Tags_Categories extends Ai1ec_Html_Element_Settings {
 	 * @return string The html for the select
 	 */
 	protected function _get_select_for_terms( $type, $label, array $terms ) {
-		$loader = $this->_registry->get( 'theme.loader' );
+		$loader  = $this->_registry->get( 'theme.loader' );
 		$options = array();
 		foreach ( $terms as $term ) {
 			$option = array(
@@ -79,16 +79,17 @@ class Ai1ec_Html_Setting_Tags_Categories extends Ai1ec_Html_Element_Settings {
 		}
 		$options[] = $option;
 		$args = array(
-			'id' => 'default_' . $type,
-			'name' => 'default_' . $type . '[]',
-			'label' => $label,
-			'options' => $options,
+			'id'         => 'default_' . $type,
+			'name'       => 'default_' . $type . '[]',
+			'label'      => $label,
+			'options'    => $options,
 			'attributes' => array(
-				'class' => 'inputwidth',
+				'class'    => 'inputwidth',
 				'multiple' => 'multiple',
 			),
 		);
 		return $loader->get_file( 'setting/select.twig', $args, true )
 						->get_content();
 	}
+
 }

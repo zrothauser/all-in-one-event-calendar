@@ -22,10 +22,15 @@ class Ai1ec_Html_Settings_Checkbox extends Ai1ec_Html_Element_Settings {
 		if ( true === $this->_args['value'] ) {
 			$attributes['checked'] = 'checked';
 		}
-		$args = $this->_args;
+		$args               = $this->_args;
 		$args['attributes'] = $attributes;
-		$loader = $this->_registry->get( 'theme.loader' );
-		$file = $loader->get_file( 'setting/checkbox.twig', $args, true );
+		$loader             = $this->_registry->get( 'theme.loader' );
+		$file               = $loader->get_file(
+			'setting/checkbox.twig',
+			$args,
+			true
+		);
 		return parent::render( $file->get_content() );
 	}
+
 }

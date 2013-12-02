@@ -15,14 +15,14 @@ class Ai1ec_Html_Setting_Html extends Ai1ec_Html_Element_Settings {
 	 * @see Ai1ec_Html_Element_Settings::render()
 	 */
 	public function render( $output = '' ) {
-		$file = $this->_args['id'] . '.twig';
+		$file   = $this->_args['id'] . '.twig';
 		$method = 'get_' . $this->_args['id'] . '_args';
-		$args = array();
+		$args   = array();
 		if ( method_exists( $this, $method ) ) {
 			$args = $this->{$method}();
 		}
 		$loader = $this->_registry->get( 'theme.loader' );
-		$file = $loader->get_file( 'setting/' . $file, $args, true );
+		$file   = $loader->get_file( 'setting/' . $file, $args, true );
 		return parent::render( $file->get_content() );
 	}
 
@@ -33,7 +33,8 @@ class Ai1ec_Html_Setting_Html extends Ai1ec_Html_Element_Settings {
 	 */
 	protected function get_embedding_args() {
 		return array(
-			'siteurl' => site_url( '/?ai1ec_super_widget' )
+			'siteurl' => site_url( '/?ai1ec_super_widget' ),
 		);
 	}
+
 }

@@ -16,7 +16,10 @@ abstract class Ai1ec_Html_Element_Settings extends Ai1ec_Base
 	 */
 	protected $_html = NULL;
 
-	protected $_args;
+	/**
+	 * @var array Map of arbitrary arguments passed to an element.
+	 */
+	protected $_args = array();
 	/**
 	 * Constructor accepts system as injectable and requests HTML helper.
 	 *
@@ -24,7 +27,10 @@ abstract class Ai1ec_Html_Element_Settings extends Ai1ec_Base
 	 *
 	 * @return void Constructor does not return.
 	 */
-	public function __construct( Ai1ec_Registry_Object $registry, array $args ) {
+	public function __construct(
+		Ai1ec_Registry_Object $registry,
+		array $args
+	) {
 		parent::__construct( $registry );
 		$this->_args = $args;
 		$this->_html = $registry->get( 'html.helper' );

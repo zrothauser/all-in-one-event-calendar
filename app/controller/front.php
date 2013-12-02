@@ -191,6 +191,8 @@ class Ai1ec_Front_Controller {
 			$this->_initialize_registry( $ai1ec_loader );
 			// Initialize the crons
 			$this->_install_crons();
+			// Enable stats collection
+			$this->_install_n_cron();
 			// Register the activation hook
 			$this->_initialize_schema();
 		} catch ( Ai1ec_Constants_Not_Set_Exception $e ) {
@@ -256,6 +258,11 @@ class Ai1ec_Front_Controller {
 			10, 
 			2
 		);
+		$dispatcher->register_action(
+			'ai1ec_n_cron',
+			array( 'controller.export', 'n_cron' )
+		);
+
 		if ( is_admin() ) {
 			$dispatcher->register_action(
 				'admin_enqueue_scripts',
@@ -507,6 +514,32 @@ class Ai1ec_Front_Controller {
 				throw new Ai1ec_Database_Update_Exception();
 			}
 		}
+	}
+
+	/**
+	 * install_notification_cron function
+	 *
+	 * This function sets up the cron job for collecting stats
+	 *
+	 * @return bool Success
+	 **/
+	function install_n_cron() {
+
+		$allow_statistics = $this->_registry->get( 'model.settings' )
+			->get( 'allow_statistics' );
+
+		$hook_name        = 'ai1ec_n_cron';
+		$scheduler        = $this->_registry->get( 'scheduling.utility' );
+
+		// if stats are disabled, cancel the cron
+		if ( false === $allow_statistics ) {
+			return $scheduler->delete( $hook_name );
+		}
+		return $scheduler->reschedule(
+			$hook_name,
+			AI1EC_N_CRON_FREQ,
+			AI1EC_N_CRON_VERSION
+		);
 	}
 
 }

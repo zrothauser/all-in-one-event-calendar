@@ -151,13 +151,21 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		define( 'AI1EC_ADMIN_THEME_JS_URL', AI1EC_URL .'/public/js/' );
 	}
 
+	// ======================
+	// = Default theme name =
+	// ======================
+	if ( ! defined( 'AI1EC_DEFAULT_THEME_NAME' ) ) {
+		define(
+		'AI1EC_DEFAULT_THEME_NAME', 'vortex' );
+	}
+
 	// =================
 	// = Admin Js  URL =
 	// =================
 	if ( ! defined( 'AI1EC_DEFAULT_THEME_URL' ) ) {
 		define(
 			'AI1EC_DEFAULT_THEME_URL',
-			AI1EC_URL .'/public/themes-ai1ec/vortex/'
+			AI1EC_URL .'/public/themes-ai1ec/' . AI1EC_DEFAULT_THEME_NAME . '/'
 		);
 	}
 

@@ -59,9 +59,6 @@ class Ai1ec_Front_Controller {
 		$this->_registry->get( 'rewrite' )->check_rewrites();
 	}
 
-
-
-
 	/**
 	 * Execute commands if our plugin must handle the request.
 	 *
@@ -256,6 +253,11 @@ class Ai1ec_Front_Controller {
 			10, 
 			2
 		);
+		$dispatcher->register_action(
+			'ai1ec_n_cron',
+			array( 'controller.export', 'n_cron' )
+		);
+
 		if ( is_admin() ) {
 			$dispatcher->register_action(
 				'admin_enqueue_scripts',
@@ -341,22 +343,24 @@ class Ai1ec_Front_Controller {
 		$scheduling = $this->_registry->get( 'scheduling.utility', $this->_registry );
 		$allow      = $this->_registry->get( 'model.settings', $this->_registry )
 				->get( 'allow_statistics' );
-		$correct   = false;
+		$correct    = false;
 		// install the cron for stats
 		$hook_name = 'ai1ec_n_cron';
 		// if stats are disabled, cancel the cron
 		if ( false === $allow ) {
 			$scheduling->delete( $hook_name );
+			$correct = true;
+		} else {
+			$correct = $scheduling->reschedule(
+				$hook_name,
+				AI1EC_N_CRON_FREQ,
+				AI1EC_N_CRON_VERSION
+			);
 		}
-		$correct = $scheduling->reschedule(
-			$hook_name,
-			AI1EC_N_CRON_FREQ,
-			AI1EC_N_CRON_VERSION
-		);
 		// Enable checking for cron updates
 		$hook_name = 'ai1ec_u_cron';
 		// reschedule the cron
-		$correct = $scheduling->reschedule(
+		$correct   = $scheduling->reschedule(
 			$hook_name,
 			AI1EC_U_CRON_FREQ,
 			AI1EC_U_CRON_VERSION

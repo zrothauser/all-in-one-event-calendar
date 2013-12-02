@@ -193,8 +193,6 @@ class Ai1ec_Front_Controller {
 		} catch ( Ai1ec_Constants_Not_Set_Exception $e ) {
 			// This is blocking, throw it and disable the plugin
 			$exception = $e;
-		} catch ( Ai1ec_Scheduling_Exception $e ) {
-			// This is minor, maybe display a notice
 		} catch ( Ai1ec_Database_Update_Exception $e ) {
 			// Blocking throw it so that the plugin is disabled
 			$exception = $e;
@@ -304,6 +302,16 @@ class Ai1ec_Front_Controller {
 			$dispatcher->register_action(
 				'admin_notices',
 				array( 'notification.admin', 'send' )
+			);
+			$dispatcher->register_action(
+				'admin_footer-edit.php',
+				array( 'clone.renderer-helper', 'duplicate_custom_bulk_admin_footer' )
+			);
+			$dispatcher->register_filter(
+				'post_row_actions',
+				array( 'clone.renderer-helper', 'duplicate_post_make_duplicate_link_row' ),
+				10,
+				2
 			);
 
 		}

@@ -121,7 +121,6 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 		$args            = array(
 			'tabs' => $tabs,
 		);
-		
 		$file = $loader->get_file( 'bootstrap_tabs.twig', $args, true );
 		$file->render();
 	}

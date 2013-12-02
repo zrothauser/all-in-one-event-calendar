@@ -107,6 +107,9 @@ class Ai1ec_Dbi {
 		return $result;
 	}
 
+	public function are_terms_set() {
+		return isset( $db->terms );
+	}
 	/**
 	 * Prepares a SQL query for safe execution. Uses sprintf()-like syntax.
 	 *

@@ -103,7 +103,7 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 	 *
 	 * @return void
 	 */
-	public function excerpt_view( Ai1ec_Event $event ) {
+	public function excerpt_view( $event ) {
 		$location = esc_html(
 			str_replace( "\n", ', ', rtrim( $event->get_location() ) )
 		);

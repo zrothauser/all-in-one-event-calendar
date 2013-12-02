@@ -1,13 +1,21 @@
 <?php
+
+/**
+ * Helps Rendering clone html.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Clone
+ */
 class Ai1ec_Clone_Renderer_Helper extends Ai1ec_Base {
-	
-	// =========================================
-	// = Bulk Duplicate Custom Action For Events
-	// =========================================
-	
+
 	/**
 	 * add clone bluk action in the dropdown
-	 * */
+	 * 
+	 * @wp_hook admin_footer-edit.php
+	 */
 	public function duplicate_custom_bulk_admin_footer() {
 		$aco = $this->_registry->get( 'acl.aco' );
 		if ( true === $aco->are_we_editing_our_post() ) {
@@ -23,9 +31,12 @@ class Ai1ec_Clone_Renderer_Helper extends Ai1ec_Base {
 			<?php
 		}
 	}
-	
+
 	/**
 	 * Add the link to action list for post_row_actions
+	 * 
+	 * @wp_hook post_row_action
+	 * 
 	 */
 	function duplicate_post_make_duplicate_link_row( $actions, $post ) {
 		if ( $post->post_type == "ai1ec_event" ) {

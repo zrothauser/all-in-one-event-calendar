@@ -1,12 +1,24 @@
 <?php
+
+/**
+ * The concrete command that clone events.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Command
+ */
 class Ai1ec_Command_Clone extends Ai1ec_Command {
 	
-	const CLONE_AS_DRAFT_ACTION = 'duplicate_post_save_as_new_post_draft';
-	
-	const CLONE_ACTION          = 'duplicate_post_save_as_new_post';
-	
+	/**
+	 * @var array The posts that must be cloned
+	 */
 	protected $_posts = array();
 
+	/**
+	 * @var bool Whether to redirect or not
+	 */
 	protected $_redirect = false;
 
 	/**
@@ -37,6 +49,8 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 				);
 			}
 		}
+		// no redirect, just go on with the page
+		return array();
 	}
 
 	/**
@@ -87,11 +101,13 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 			$_REQUEST['action'] === 'duplicate_post_save_as_new_post' &&
 			! empty( $_REQUEST['post'] )
 		) {
+			
 			$this->_posts[] = array(
 				'status' => '',
 				'post'   => get_post( $_REQUEST['post'] )
 			);
 			$this->_redirect = true;
+			return true;
 		}
 		// duplicate single post as draft
 		if (
@@ -104,6 +120,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 				'post'   => get_post( $_REQUEST['post'] )
 			);
 			$this->_redirect = true;
+			return true;
 		}
 		return false;
 	}
@@ -115,18 +132,17 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 	 */
 	public function set_render_strategy( Ai1ec_Request_Parser $request ) {
 		if ( true === $this->_redirect ) {
-			$this->_render_strategy = $this->_registry->get( 'http.respons.render.strategy.redirect' );
+			$this->_render_strategy = $this->_registry->get( 'http.response.render.strategy.redirect' );
 		} else {
-			$this->_render_strategy = $this->_registry->get( 'http.respons.render.strategy.void' );
+			$this->_render_strategy = $this->_registry->get( 'http.response.render.strategy.void' );
 		}
-		
 	}
 	
 	/**
 	 * Create a duplicate from a posts' instance
 	 */
 	public function duplicate_post_create_duplicate( $post , $status = '' ) {
-		$new_post_author = $this->duplicate_post_get_current_user();
+		$new_post_author = $this->_duplicate_post_get_current_user();
 		$new_post_status = $status;
 		if ( empty( $new_post_status ) ) {
 			$new_post_status = $post->post_status;
@@ -162,14 +178,14 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 			$edit_event_url
 		);
 		$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 'updated' );
-		$this->duplicate_post_copy_post_taxonomies( $new_post_id , $post );
-		$this->duplicate_post_copy_attachments( $new_post_id, $post );
-		$this->duplicate_post_copy_post_meta_info( $new_post_id, $post );
+		$this->_duplicate_post_copy_post_taxonomies( $new_post_id , $post );
+		$this->_duplicate_post_copy_attachments( $new_post_id, $post );
+		$this->_duplicate_post_copy_post_meta_info( $new_post_id, $post );
 
 	
 		if ( 'ai1ec_event' === $post->post_type ) {
 			try {
-				$old_event          = new Ai1ec_Event( $post->ID );
+				$old_event          = $this->_registry->get( 'model.event', $post->ID );
 				$old_event->post_id = $new_post_id;
 				unset( $old_event->post );
 				$old_event->save();
@@ -208,7 +224,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 	/**
 	 * Copy the meta information of a post to another post
 	 */
-	function duplicate_post_copy_post_meta_info( $new_id , $post ) {
+	protected function _duplicate_post_copy_post_meta_info( $new_id , $post ) {
 		$post_meta_keys = get_post_custom_keys( $post->ID );
 		if ( empty( $post_meta_keys ) ) return;
 		//$meta_blacklist = explode(",",get_option('duplicate_post_blacklist'));
@@ -229,14 +245,14 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 	 * Copy the attachments
 	 * It simply copies the table entries, actual file won't be duplicated
 	 */
-	function duplicate_post_copy_attachments( $new_id , $post ) {
+	protected function _duplicate_post_copy_attachments( $new_id , $post ) {
 		//if (get_option('duplicate_post_copyattachments') == 0) return;
 	
 		// get old attachments
 		$attachments = get_posts( array( 'post_type' => 'attachment' , 'numberposts' => -1 , 'post_status' => null , 'post_parent' => $post->ID ) );
 		// clone old attachments
 		foreach ( $attachments as $att ) {
-			$new_att_author = $this->duplicate_post_get_current_user();
+			$new_att_author = $this->_duplicate_post_get_current_user();
 	
 			$new_att = array (
 				'menu_order'     => $att->menu_order,
@@ -277,7 +293,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 	/**
 	 * Copy the taxonomies of a post to another post
 	 */
-	function duplicate_post_copy_post_taxonomies( $new_id , $post ) {
+	protected function _duplicate_post_copy_post_taxonomies( $new_id , $post ) {
 		$db = $this->_registry->get( 'dbi.dbi' );
 		if ( $db->are_terms_set() ) {
 			// Clear default category (added by wp_insert_post)
@@ -301,7 +317,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 	/**
 	 * Get the currently registered user
 	 */
-	function duplicate_post_get_current_user() {
+	protected function _duplicate_post_get_current_user() {
 		if ( function_exists( 'wp_get_current_user' ) ) {
 			return wp_get_current_user();
 		} else {

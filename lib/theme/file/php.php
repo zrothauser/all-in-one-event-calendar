@@ -43,23 +43,18 @@ class Ai1ec_File_Php extends Ai1ec_File_Abstract {
 		}
 		foreach ( $files_to_check as $file ) {
 			if ( file_exists( $file ) ) {
-				if ( 'user_variabels.php' === $this->_name ) {
+				if ( 'user_variables.php' === $this->_name ) {
 					// it's the user variables file for now.
-					require( $file );
+					require $file;
 					$this->_content = $less_user_variables;
 				} else {
-					$this
-						->_registry
-						->get( 'compatibility.ob' )
-						->start();
+					$this->_registry->get( 'compatibility.ob' )->start();
 
 					extract( $this->_args );
-					require( $file );
+					require $file;
 
-					$this->_content = $this
-						->_registry
-						->get( 'compatibility.ob' )
-						->get_clean();
+					$this->_content = $this->_registry
+						->get( 'compatibility.ob' )->get_clean();
 
 				}
 				return true;

@@ -44,7 +44,8 @@ abstract class Ai1ec_File_Abstract extends Ai1ec_Base {
 		Ai1ec_Registry_Object $registry,
 		$name,
 		array $paths
-		) {
+	) {
+		parent::__construct( $registry );
 		$this->_paths = $paths;
 		$this->_name  = $name;
 	}

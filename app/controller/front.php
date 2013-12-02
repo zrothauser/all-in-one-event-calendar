@@ -59,9 +59,6 @@ class Ai1ec_Front_Controller {
 		$this->_registry->get( 'rewrite' )->check_rewrites();
 	}
 
-
-
-
 	/**
 	 * Execute commands if our plugin must handle the request.
 	 *
@@ -191,8 +188,6 @@ class Ai1ec_Front_Controller {
 			$this->_initialize_registry( $ai1ec_loader );
 			// Initialize the crons
 			$this->_install_crons();
-			// Enable stats collection
-			$this->_install_n_cron();
 			// Register the activation hook
 			$this->_initialize_schema();
 		} catch ( Ai1ec_Constants_Not_Set_Exception $e ) {
@@ -348,22 +343,24 @@ class Ai1ec_Front_Controller {
 		$scheduling = $this->_registry->get( 'scheduling.utility', $this->_registry );
 		$allow      = $this->_registry->get( 'model.settings', $this->_registry )
 				->get( 'allow_statistics' );
-		$correct   = false;
+		$correct    = false;
 		// install the cron for stats
 		$hook_name = 'ai1ec_n_cron';
 		// if stats are disabled, cancel the cron
 		if ( false === $allow ) {
 			$scheduling->delete( $hook_name );
+			$correct = true;
+		} else {
+			$correct = $scheduling->reschedule(
+				$hook_name,
+				AI1EC_N_CRON_FREQ,
+				AI1EC_N_CRON_VERSION
+			);
 		}
-		$correct = $scheduling->reschedule(
-			$hook_name,
-			AI1EC_N_CRON_FREQ,
-			AI1EC_N_CRON_VERSION
-		);
 		// Enable checking for cron updates
 		$hook_name = 'ai1ec_u_cron';
 		// reschedule the cron
-		$correct = $scheduling->reschedule(
+		$correct   = $scheduling->reschedule(
 			$hook_name,
 			AI1EC_U_CRON_FREQ,
 			AI1EC_U_CRON_VERSION
@@ -514,32 +511,6 @@ class Ai1ec_Front_Controller {
 				throw new Ai1ec_Database_Update_Exception();
 			}
 		}
-	}
-
-	/**
-	 * install_notification_cron function
-	 *
-	 * This function sets up the cron job for collecting stats
-	 *
-	 * @return bool Success
-	 **/
-	function install_n_cron() {
-
-		$allow_statistics = $this->_registry->get( 'model.settings' )
-			->get( 'allow_statistics' );
-
-		$hook_name        = 'ai1ec_n_cron';
-		$scheduler        = $this->_registry->get( 'scheduling.utility' );
-
-		// if stats are disabled, cancel the cron
-		if ( false === $allow_statistics ) {
-			return $scheduler->delete( $hook_name );
-		}
-		return $scheduler->reschedule(
-			$hook_name,
-			AI1EC_N_CRON_FREQ,
-			AI1EC_N_CRON_VERSION
-		);
 	}
 
 }

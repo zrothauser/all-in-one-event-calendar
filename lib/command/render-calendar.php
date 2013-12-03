@@ -30,6 +30,7 @@ class Ai1ec_Command_Render_Calendar extends Ai1ec_Command {
 			if ( is_page( $page_id ) ) {
 				$this->_request->set_current_page( $page_id );
 				if ( ! post_password_required( $page_id ) ) {
+					fb('true');
 					return true;
 				}
 			}

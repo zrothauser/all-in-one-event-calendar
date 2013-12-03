@@ -14,22 +14,22 @@ class Ai1ec_Front_Controller {
 	/**
 	 * @var Ai1ec_Registry_Object The Object registry.
 	 */
-	private $_registry;
+	protected $_registry;
 
 	/**
 	 * @var bool Whether the domain has alredy been loaded or not.
 	 */
-	private $_domain_loaded = false;
+	protected $_domain_loaded = false;
 
 	/**
 	 * @var string The pagebase used by Ai1ec_Href_Helper.
 	 */
-	private $_pagebase_for_href;
+	protected $_pagebase_for_href;
 
 	/**
 	 * @var Ai1ec_Request_Parser Instance of the request pa
 	 */
-	private $_request;
+	protected $_request;
 
 	/**
 	 * Initialize the controller.
@@ -189,7 +189,7 @@ class Ai1ec_Front_Controller {
 	 *
 	 * @return void Method does not return
 	 */
-	private function _init( $ai1ec_loader ) {
+	protected function _init( $ai1ec_loader ) {
 		$exception = null;
 		// Load the textdomain
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
@@ -232,6 +232,7 @@ class Ai1ec_Front_Controller {
 			$action = 'init';
 		}
 		add_action( $action, array( $this, 'route_request' ) );
+
 	}
 	/**
 	 * Initialize the dispatcher.
@@ -240,7 +241,7 @@ class Ai1ec_Front_Controller {
 	 *
 	 * @return void
 	 */
-	private function _initialize_dispatcher() {
+	protected function _initialize_dispatcher() {
 		$dispatcher = $this->_registry->get( 'event.dispatcher' );
 		$dispatcher->register_action(
 			'init',
@@ -359,6 +360,53 @@ class Ai1ec_Front_Controller {
 	}
 
 	/**
+	 * _add_defaults method
+	 *
+	 * Add (merge) default options to given query variable.
+	 *
+	 * @param string settingsquery variable to ammend
+	 *
+	 * @return string|NULL Modified variable values or NULL on failure
+	 *
+	 * @global    Ai1ec_Settings $ai1ec_settings Instance of settings object
+	 *                                           to pull data from
+	 * @staticvar array          $mapper         Mapping of query names to
+	 *                                           default in settings
+	 */
+	protected function _add_defaults( $name ) {
+		$settings = $this->_registry->get( 'model.settings' );
+		static $mapper = array(
+			'cat' => 'categories',
+			'tag' => 'tags',
+		);
+		$rq_name = 'ai1ec_' . $name . '_ids';
+		if (
+			! isset( $mapper[$name] ) ||
+			! array_key_exists( $rq_name, $this->_request )
+		) {
+			return NULL;
+		}
+		$options  = explode( ',', $this->_request[$rq_name] );
+		$property = 'default_' . $mapper[$name];
+		$options  = array_merge(
+			$options,
+			$settings->get( $property )
+		);
+		$filtered = array();
+		foreach ( $options as $item ) { // avoid array_filter + is_numeric
+			$item = (int)$item;
+			if ( $item > 0 ) {
+				$filtered[] = $item;
+			}
+		}
+		unset( $options );
+		if ( empty( $filtered ) ) {
+			return NULL;
+		}
+		return implode( ',', $filtered );
+	}
+
+	/**
 	 * Process_request function.
 	 *
 	 * Initialize/validate custom request array, based on contents of $_REQUEST,
@@ -366,7 +414,7 @@ class Ai1ec_Front_Controller {
 	 *
 	 * @return void
 	 **/
-	private function _process_request() {
+	protected function _process_request() {
 		$settings       = $this->_registry->get( 'model.settings' );
 		$this->_request = $this->_registry->get( 'http.request.parser' );
 		$aco            = $this->_registry->get( 'acl.aco' );
@@ -393,7 +441,7 @@ class Ai1ec_Front_Controller {
 	 *
 	 * @return void
 	 */
-	private function _install_crons() {
+	protected function _install_crons() {
 		$scheduling = $this->_registry->get( 'scheduling.utility', $this->_registry );
 		$allow      = $this->_registry->get( 'model.settings', $this->_registry )
 				->get( 'allow_statistics' );
@@ -431,7 +479,7 @@ class Ai1ec_Front_Controller {
 	 *
 	 * @return void
 	 */
-	private function _register_activation_hook() {
+	protected function _register_activation_hook() {
 		// register_activation_hook
 		register_activation_hook(
 			AI1EC_PLUGIN_NAME . '/' . AI1EC_PLUGIN_NAME . '.php',
@@ -446,7 +494,7 @@ class Ai1ec_Front_Controller {
 	 *
 	 * @return void Method does not return
 	 */
-	private function _initialize_registry( $ai1ec_loader ) {
+	protected function _initialize_registry( $ai1ec_loader ) {
 		$this->_registry = new Ai1ec_Registry_Object( $ai1ec_loader );
 	}
 
@@ -474,7 +522,7 @@ class Ai1ec_Front_Controller {
 	 *
 	 * @return void
 	 */
-	private function _initialize_schema() {
+	protected function _initialize_schema() {
 		$option = $this->_registry->get( 'model.option' );
 		// If existing DB version is not consistent with current plugin's version,
 		// or does not exist, then create/update table structure using dbDelta().

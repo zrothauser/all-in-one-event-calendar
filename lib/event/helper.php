@@ -66,7 +66,7 @@ class Ai1ec_Event_Helper extends Ai1ec_Base {
 		$excerpt_length = apply_filters( 'excerpt_length', 55 );
 		$excerpt_more   = apply_filters( 'excerpt_more', ' [...]' );
 		$words          = preg_split(
-			"/[\n\r\t ]+/",
+			"/\s+/",
 			$text,
 			$excerpt_length + 1,
 			PREG_SPLIT_NO_EMPTY

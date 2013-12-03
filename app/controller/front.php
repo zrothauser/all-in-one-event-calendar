@@ -250,14 +250,20 @@ class Ai1ec_Front_Controller {
 		$dispatcher->register_action(
 			'http_api_curl',
 			array( 'http.request', 'init_certificate' ),
-			10, 
+			10,
 			2
 		);
-		$dispatcher->register_action(
-			'ai1ec_n_cron',
-			array( 'controller.export', 'n_cron' )
+		$dispatcher->register_filter(
+			'get_the_excerpt',
+			array( 'view.event.content', 'event_excerpt' ),
+			11
 		);
-
+		remove_filter( 'the_excerpt', 'wpautop', 10 );
+		$dispatcher->register_filter(
+			'the_excerpt',
+			array( 'view.event.content', 'event_excerpt_noautop' ),
+			11
+		);
 		if ( is_admin() ) {
 			$dispatcher->register_action(
 				'admin_enqueue_scripts',

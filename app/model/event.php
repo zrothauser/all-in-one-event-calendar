@@ -1941,7 +1941,7 @@ HTML;
 	function getDuration() {
 		return $this->end->format_to_gmt() - $this->start->format_to_gmt();
 	}
-
+	
 	/**
 	 * Initialize datetime objects from UNIX timestamps.
 	 *

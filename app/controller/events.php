@@ -42,5 +42,4 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 
 		return $template->get_content();
 	}
-
 }

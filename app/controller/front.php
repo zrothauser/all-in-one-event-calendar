@@ -255,13 +255,13 @@ class Ai1ec_Front_Controller {
 		);
 		$dispatcher->register_filter(
 			'get_the_excerpt',
-			array( 'controller.events', 'event_excerpt' ),
+			array( 'view.event.content', 'event_excerpt' ),
 			11
 		);
 		remove_filter( 'the_excerpt', 'wpautop', 10 );
 		$dispatcher->register_filter(
 			'the_excerpt',
-			array( 'controller.events', 'event_excerpt_noautop' ),
+			array( 'view.event.content', 'event_excerpt_noautop' ),
 			11
 		);
 		if ( is_admin() ) {

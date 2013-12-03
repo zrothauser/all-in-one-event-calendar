@@ -41,7 +41,6 @@ class Ai1ec_View_Evenet_Content extends Ai1ec_Base {
 		) );
 
 		$page_content = $this->_registry->get( 'compatibility.ob' )->get_clean();
-		$this->_registry->get( 'compatibility.ob' )->end_clean();
 
 		return $page_content;
 	}

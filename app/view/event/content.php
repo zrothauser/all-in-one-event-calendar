@@ -26,7 +26,7 @@ class Ai1ec_View_Evenet_Content extends Ai1ec_Base {
 			return $content;
 		}
 
-		$event = new Ai1ec_Event( $this->_registry, get_the_ID() );
+		$event = $this->_registry->get( 'model.event', get_the_ID() );
 
 		$this->_registry->get( 'compatibility.ob' )->start();
 

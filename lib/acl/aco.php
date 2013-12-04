@@ -31,7 +31,11 @@ class Ai1ec_Acl_Aco {
 	 */
 	public function are_we_editing_our_post() {
 		global $post;
-		return $post->post_type === AI1EC_POST_TYPE;
+		return (
+			is_object( $post ) &&
+			isset( $post->post_type ) &&
+			AI1EC_POST_TYPE === $post->post_type
+		);
 	}
 
 	/**

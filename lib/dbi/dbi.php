@@ -108,6 +108,13 @@ class Ai1ec_Dbi {
 	}
 
 	/**
+	 * Check if the terms variable is set in the Wpdb object
+	 */
+	public function are_terms_set() {
+		return isset( $this->_dbi->terms );
+	}
+
+	/**
 	 * Prepares a SQL query for safe execution. Uses sprintf()-like syntax.
 	 *
 	 * The following directives can be used in the query format string:

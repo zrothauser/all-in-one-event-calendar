@@ -57,6 +57,11 @@ class Ai1ec_Command_Resolver {
 				'command.save_settings', $request
 			)
 		);
+		$this->add_command(
+			$registry->get(
+				'command.clone', $request
+			)
+		);
 		$this->_registry = $registry;
 		$this->_request  = $request;
 	}

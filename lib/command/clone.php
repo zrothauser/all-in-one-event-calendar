@@ -91,7 +91,6 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 					'post'   => $post
 				);
 			}
-			$this->_posts = $_REQUEST['post'];
 			return true;
 		}
 
@@ -142,6 +141,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 	 * Create a duplicate from a posts' instance
 	 */
 	public function duplicate_post_create_duplicate( $post , $status = '' ) {
+		$post            = get_post( $post );
 		$new_post_author = $this->_duplicate_post_get_current_user();
 		$new_post_status = $status;
 		if ( empty( $new_post_status ) ) {
@@ -167,8 +167,8 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 			'to_ping'        => $post->to_ping,
 		);
 	
-		$new_post_id = wp_insert_post( $new_post );
-		$notification = $this->_registry->get( 'notification.admin' );
+		$new_post_id    = wp_insert_post( $new_post );
+		$notification   = $this->_registry->get( 'notification.admin' );
 		$edit_event_url = esc_attr(
 			admin_url( "post.php?post={$new_post_id}&action=edit" )
 		);
@@ -182,8 +182,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 		$this->_duplicate_post_copy_attachments( $new_post_id, $post );
 		$this->_duplicate_post_copy_post_meta_info( $new_post_id, $post );
 
-	
-		if ( 'ai1ec_event' === $post->post_type ) {
+		if ( $this->_registry->get( 'acl.aco' )->is_our_post_type( $post ) ) {
 			try {
 				$old_event          = $this->_registry->get( 'model.event', $post->ID );
 				$old_event->post_id = $new_post_id;
@@ -191,7 +190,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 				$old_event->save();
 				$search_helper = $this->_registry->get( 'model.search' );
 				$search_helper->cache_event( $old_event );
-			} catch ( Ai1ec_Event_Not_Found $exception ) { /* ignore */ }
+			} catch ( Ai1ec_Event_Not_Found_Exception $exception ) { /* ignore */ }
 		}
 	
 		delete_post_meta( $new_post_id, '_dp_original' );

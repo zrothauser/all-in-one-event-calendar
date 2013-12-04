@@ -410,11 +410,11 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 *
 	 * @return void
 	 **/
-	function __construct( Ai1ec_Registry_Object $registry, $data = NULL, $instance = false ) {
+	function __construct( Ai1ec_Registry_Object $registry, $data = null, $instance = false ) {
 		parent::__construct( $registry );
 		global $wpdb;
 
-		if ( NULL === $data ) {
+		if ( null === $data ) {
 			return;
 		}
 
@@ -428,7 +428,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 			$post = get_post( $data );
 
 			if ( ! $post || $post->post_status == 'auto-draft' ) {
-				throw new Ai1ec_Event_Not_Found(
+				throw new Ai1ec_Event_Not_Found_Exception(
 					'Post with ID \'' . $data .
 					'\' could not be retrieved from the database.'
 				);
@@ -474,7 +474,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 			$event = $wpdb->get_row( $query );
 
 			if ( NULL === $event || NULL === $event->post_id ) {
-				throw new Ai1ec_Event_Not_Found(
+				throw new Ai1ec_Event_Not_Found_Exception(
 					'Event with ID \'' . $data .
 					'\' could not be retrieved from the database.'
 				);

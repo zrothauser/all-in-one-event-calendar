@@ -282,11 +282,9 @@ class Ai1ec_Event_Search {
 		// Always cache initial instance
 		$evs[] = $e;
 
-		$_start = $event->start;
-		$_end   = $event->end;
+		$_start = $event->start->format_to_gmt();
 
 		if ( $event->recurrence_rules ) {
-			$start  = $event->start;
 			$wdate = $startdate = iCalUtilityFunctions::_timestamp2date( $_start, 6 );
 			$enddate = iCalUtilityFunctions::_timestamp2date( $tif, 6 );
 			$exclude_dates = array();

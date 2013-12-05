@@ -51,6 +51,8 @@ class Ai1ec_Command_Render_Calendar extends Ai1ec_Command {
 	 */
 	public function do_execute() {
 		// get the calendar html
-		return array( 'data' => $this->_registry->get( 'controller.events' )->get_events() );
+		$calendar = $this->_registry->get( 'view.calendar.page' );
+		
+		return array( 'data' => $calendar->get_content( $this->_request ) );
 	}
 }

@@ -1,0 +1,9 @@
+<div class="control-group">
+    {{ label }}
+    <div class="controls">
+        <div class="input-append color colorpickers" data-color="$value" data-color-format="{$this->format}">
+            <input type="text" id="$id" name="$id" class="span2" {{ readonly }} value="$value"/>
+            <span class="add-on"><i style="background-color: $value"></i></span>
+        </div>
+    </div>
+</div>

@@ -197,7 +197,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 */
 	protected function _initialize() {
 		$this->_set_standard_values();
-		$values         = $this->_sys->get( 'model.option' )
+		$values         = $this->_registry->get( 'model.option' )
 			->get( self::WP_OPTION_KEY, array() );
 		$this->_updated = false;
 		if ( empty( $values ) ) {
@@ -257,7 +257,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'label'   => Ai1ec_I18n::__( 'Week starts on' ),
 					'options' => 'get_weekdays',
 				),
-				'default'  => $this->_sys->get( 'model.option' )->get(
+				'default'  => $this->_registry->get( 'model.option' )->get(
 					'start_of_week'
 				),
 			),

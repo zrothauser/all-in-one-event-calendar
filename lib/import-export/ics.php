@@ -439,12 +439,13 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 			// the case of recurring events, and different events with different
 			// RECURRENCE-IDs... ponder how to solve this.. may require saving the
 			// RECURRENCE-ID as another field in the database.
+			$recurrence = $event->get( 'recurrence_rules' );
 			$matching_event_id = $this->_registry->get( 'model.search' )
 				->get_matching_event_id(
 					$event->get( 'ical_uid' ),
 					$event->get( 'ical_feed_url' ),
 					$event->get( 'start' ),
-					! empty( $event->get( 'recurrence_rules' ) )
+					! empty( $recurrence )
 				);
 
 			if ( NULL === $matching_event_id ) {
@@ -741,7 +742,8 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		// = Recurrence rules =
 		// ====================
 		$rrule = array();
-		if ( ! empty( $event->get( 'recurrence_rules' ) ) ) {
+		$recurrence = $event->get( 'recurrence_rules' );
+		if ( ! empty( $recurrence ) ) {
 			$rules = array();
 			foreach ( explode( ';', $event->get( 'recurrence_rules' ) ) as $v) {
 				if ( strpos( $v, '=' ) === false ) {
@@ -783,10 +785,12 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		// ===================
 		// = Exception rules =
 		// ===================
+		$exceptions = $event->get( 'exception_rules' );
 		$exrule = array();
-		if ( ! empty( $event->get( 'exception_rules' ) ) ) {
+		if ( ! empty( $exceptions ) ) {
 			$rules = array();
-			foreach ( explode( ';', $event->get( 'exception_rules' ) ) as $v) {
+			
+			foreach ( explode( ';', $exceptions ) as $v) {
 				if ( strpos( $v, '=' ) === false ) {
 					continue;
 				}
@@ -838,9 +842,10 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		// For all day events that use a date as DTSTART, date must be supplied
 		// For other other events which use DATETIME, we must use that as well
 		// We must also match the exact starting time
-		if ( ! empty( $event->get( 'exception_dates' ) ) ) {
+		$exception_dates = $event->get( 'exception_dates' );
+		if ( ! empty( $exception_dates ) ) {
 			foreach (
-				explode( ',', $event->get( 'exception_dates' ) )
+				explode( ',', $exception_dates )
 				as $exdate
 			) {
 				if ( $event->is_allday() ) {

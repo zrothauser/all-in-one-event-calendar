@@ -95,9 +95,7 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 			// If they are not set in the db, get them from file.
 			// this happen when the user switched the theme and triggered a new parse.
 			if( false === $variables ) {
-				$variables = $this->get_less_variable_data_from_config_file(
-					$this->_registry->get( 'less.file', Ai1ec_File_Less::USER_VARIABLES_FILE )
-				);
+				$variables = $this->get_less_variable_data_from_config_file();
 			}
 		}
 		// convert the variables to key / value
@@ -162,18 +160,15 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 	 * @param Ai1ec_Less_File $file
 	 * @internal param string $theme_path
 	 */
-	public function initialize_less_variables_if_not_set(
-		Ai1ec_Less_File $file
-	) {
+	public function initialize_less_variables_if_not_set() {
 		$saved_variables = $this->_registry->get( 'model.option' )->get(
 			self::DB_KEY_FOR_LESS_VARIABLES
 		);
 
 		// If the key is not set, we create the variables
 		if ( false === $saved_variables ) {
-			$variables_to_save = $this->get_less_variable_data_from_config_file(
-				$file
-			);
+			$variables_to_save = $this->get_less_variable_data_from_config_file();
+
 			// do not store the description
 			foreach( $variables_to_save as $name => $attributes ) {
 				unset( $variables_to_save[$name]['description'] );
@@ -194,13 +189,9 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 	public function update_less_variables_on_theme_update() {
 		// Get old variables from the DB.
 		$saved_variables = $this->get_saved_variables();
+		$file =
 		// Get the new variables from file.
-		$new_variables = $this->get_less_variable_data_from_config_file(
-			$this->_registry->get(
-				'less.file',
-				Ai1ec_Less_File::USER_VARIABLES_FILE
-			)
-		);
+		$new_variables = $this->get_less_variable_data_from_config_file();
 		foreach ( $new_variables as $variable_name => $variable_data ) {
 			unset( $variable_data['description'] );
 			// If the variable already exists, keep the old value.
@@ -219,14 +210,15 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 	/**
 	 * Get the data for the config from the parsed file.
 	 *
-	 * @param Ai1ec_Less_File $file
+	 * @param Ai1ec_File_Less $file
 	 * @return array
 	 */
-	public function get_less_variable_data_from_config_file(
-		Ai1ec_Less_File $file
-	) {
+	public function get_less_variable_data_from_config_file() {
+		$loader = $this->_registry->get( 'theme.loader' );
+
 		// load the file to parse using the usal convention
-		require( $file->locate_exact_file_to_load_in_theme_folders() );
+		require( $loader->get_file( 'user_variables.php') );
+
 		// This variable is locate in the required file
 		return $less_user_variables;
 	}
@@ -253,7 +245,7 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 	 *
 	 */
 	private function load_less_variables_from_file() {
-		$filename = $this->variable_file->locate_exact_file_to_load_in_theme_folders();
+		$filename = $this->variable_file->process_file();
 		$this->unparsed_variable_file = file_get_contents( $filename );
 	}
 
@@ -269,9 +261,7 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 		if ( ! $variables ) {
 			return array();
 		}
-		$variables_with_description = $this->get_less_variable_data_from_config_file(
-			$this->_registry->get( 'less.file',  Ai1ec_Less_File::USER_VARIABLES_FILE )
-		);
+		$variables_with_description = $this->get_less_variable_data_from_config_file();
 		// Add the description at runtime so that it can get the translation
 		foreach( $variables as $name => $attrs ) {
 			if( isset( $variables_with_description[$name]['description'] ) ) {

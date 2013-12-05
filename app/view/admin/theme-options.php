@@ -26,7 +26,7 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 	 */
 	public function add_page() {
 
-		$settings           = $this->_registry->get( 'model.settings' );
+		$settings      = $this->_registry->get( 'model.settings' );
 
 		$theme_options_page = add_submenu_page(
 			AI1EC_ADMIN_BASE_URL,
@@ -46,6 +46,7 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 			);
 		};
 
+		// Add the 'General Settings' meta box.
 		add_meta_box(
 			'ai1ec-less-variables-tabs',
 			Ai1ec_I18n::_x( 'Calendar Theme Options', 'meta box' ),
@@ -69,16 +70,13 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 			'title' => Ai1ec_I18n::__(
 				'Calendar Theme Options'
 			),
-
 			'metabox' => array(
 				'screen' => $settings->get( 'themes_option_page' ),
-				'action' => 'tabs-left',
+				'action' => 'left',
 				'object' => null
 			),
-
 			'action' =>
 				'?controller=front&action=ai1ec_save_themes_options&plugin=' . AI1EC_PLUGIN_NAME,
-
 			'submit' => array(
 				'id'    => 'ai1ec_save_themes_options',
 				'value' => Ai1ec_I18n::__( 'Save Options' ),
@@ -86,7 +84,6 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 					'class' => 'button button-primary',
 				),
 			),
-
 			'reset' => array(
 				'id'    => 'ai1ec_reset_themes_options',
 				'value' => Ai1ec_I18n::__( 'Reset to defaults' ),
@@ -94,8 +91,8 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 					'class' => 'button',
 				),
 			),
-
 		);
+
 
 		$loader = $this->_registry->get( 'theme.loader' );
 		$file   = $loader->get_file( 'theme-options/page.twig', $args, true );
@@ -110,6 +107,7 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 	 * @param mixed $box
 	 */
 	public function display_meta_box( $object, $box )  {
+
 		$tabs = array(
 			'general' => array(
 				'name' => Ai1ec_I18n::__( 'General' ),
@@ -141,6 +139,11 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 		);
 
 		$lessc           = $this->_registry->get( 'lessc' );
+
+		$this->_registry
+			->get( 'controller.lessphp', $lessc  )
+			->update_less_variables_on_theme_update();
+
 		$less_variables  = $this->_registry
 			->get( 'controller.lessphp', $lessc  )->get_saved_variables();
 		$tabs            = $this->_get_tabs_to_show( $less_variables, $tabs );
@@ -151,6 +154,7 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 		);
 		$file = $loader->get_file( 'bootstrap_tabs.twig', $args, true );
 		$file->render();
+
 	}
 
 	/**
@@ -172,7 +176,8 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 			$bootstrap_tabs_to_add[$id] = $tab;
 		}
 
-		print_r($bootstrap_tabs_to_add);exit();
+		echo("<pre>");print_r($bootstrap_tabs_to_add);exit();
+
 
 		/*
 		// initialize the array of tab bodyes that will be added to the tabs
@@ -229,5 +234,7 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 	/**
 	 * Handle post, likely to be deprecated to use commands.
 	 */
-	public function handle_post() {}
+	public function handle_post()  {
+
+	}
 }

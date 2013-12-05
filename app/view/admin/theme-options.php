@@ -26,7 +26,7 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 	 */
 	public function add_page() {
 
-		$settings      = $this->_registry->get( 'model.settings' );
+		$settings           = $this->_registry->get( 'model.settings' );
 
 		$theme_options_page = add_submenu_page(
 			AI1EC_ADMIN_BASE_URL,
@@ -46,7 +46,6 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 			);
 		};
 
-		// Add the 'General Settings' meta box.
 		add_meta_box(
 			'ai1ec-less-variables-tabs',
 			Ai1ec_I18n::_x( 'Calendar Theme Options', 'meta box' ),
@@ -64,34 +63,8 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 	 */
 	public function display_page() {
 
-		/*
-		$args = array(
-			'title' => Ai1ec_I18n::__(
-				'All-in-One Event Calendar: Calendar Feeds'
-			),
-			'nonce' => array(
-				'action'   => self::NONCE_ACTION,
-				'name'     => self::NONCE_NAME,
-				'referrer' => false,
-			),
-			'metabox' => array(
-				'screen' => $settings->get( 'settings_page' ),
-				'action' => 'left',
-				'object' => null
-			),
-			'action' =>
-			'?controller=front&action=ai1ec_save_settings&plugin=' . AI1EC_PLUGIN_NAME
-		,
-			'submit' => array(
-				'id'    => 'ai1ec_save_settings',
-				'value' => Ai1ec_I18n::__( 'Update Settings' ),
-				'args'  => array(
-					'class' => 'button button-primary',
-				),
-			),
-		);
-		*/
 		$settings = $this->_registry->get( 'model.settings' );
+
 		$args = array(
 			'title' => Ai1ec_I18n::__(
 				'Calendar Theme Options'
@@ -100,6 +73,15 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 				'screen' => $settings->get( 'themes_option_page' ),
 				'action' => 'tabs-left',
 				'object' => null
+			),
+			'action' =>
+				'?controller=front&action=ai1ec_save_themes_options&plugin=' . AI1EC_PLUGIN_NAME,
+			'submit' => array(
+				'id'    => 'ai1ec_save_themes_options',
+				'value' => Ai1ec_I18n::__( 'Save Options' ),
+				'args'  => array(
+					'class' => 'button button-primary',
+				),
 			),
 		);
 
@@ -116,7 +98,6 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 	 * @param mixed $box
 	 */
 	public function display_meta_box( $object, $box )  {
-
 		$tabs = array(
 			'general' => array(
 				'name' => Ai1ec_I18n::__( 'General' ),
@@ -179,6 +160,8 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 			$bootstrap_tabs_to_add[$id] = $tab;
 		}
 
+		print_r($bootstrap_tabs_to_add);exit();
+
 		/*
 		// initialize the array of tab bodyes that will be added to the tabs
 		$tabs_bodies = array();
@@ -234,7 +217,5 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 	/**
 	 * Handle post, likely to be deprecated to use commands.
 	 */
-	public function handle_post()  {
-
-	}
+	public function handle_post() {}
 }

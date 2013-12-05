@@ -78,6 +78,9 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 	/**
 	 * Parse all the less files resolving the dependencies.
 	 *
+	 * @param array $variables
+	 * @throws Ai1ec_File_Not_Found_Exception|Exception
+	 * @throws Exception
 	 * @return string
 	 */
 	public function parse_less_files( array $variables = null ) {

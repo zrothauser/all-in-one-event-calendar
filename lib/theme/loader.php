@@ -45,12 +45,12 @@ class Ai1ec_Theme_Loader {
 	 * Get the requested file from the filesystem. The file is already parsed.
 	 *
 	 * @param string $filename
-	 * @param array  $args
+	 * @param array $args
 	 * @param boolean $is_admin
 	 *
 	 * @throws Ai1ec_Exception If File is not found or not possible to handle
 	 *
-	 * @return Ai1ec_Exception An instance of a file object with content parsed.
+	 * @return Ai1ec_File_Abstract An instance of a file object with content parsed.
 	 */
 	public function get_file( $filename, $args = array(), $is_admin = null ) {
 		if ( null === $is_admin ) {

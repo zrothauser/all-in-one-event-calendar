@@ -16,9 +16,14 @@ class Ai1ec_File_Less extends Ai1ec_File_Abstract {
 	const THEME_CSS_FOLDER = 'css';
 
 	/**
-	 * @var strinf The default less folder.
+	 * @var string The default less folder.
 	 */
 	const THEME_LESS_FOLDER = 'less';
+
+	/**
+	 * @var string filename with the variables
+	 */
+	const USER_VARIABLES_FILE = 'user_variables';
 
 	/* (non-PHPdoc)
 	 * @see Ai1ec_File_Abstract::locate_file()
@@ -41,13 +46,13 @@ class Ai1ec_File_Less extends Ai1ec_File_Abstract {
 		$files_to_check = array(
 			$active_css_folder  . DIRECTORY_SEPARATOR . $css_file,
 			$active_less_folder . DIRECTORY_SEPARATOR . $less_file,
-			$active_less_folder . DIRECTORY_SEPARATOR . $less_file,
+			$standard_less_folder . DIRECTORY_SEPARATOR . $less_file,
 		);
 
 		foreach ( $files_to_check as $file_to_check ) {
 			if ( file_exists( $file_to_check ) ) {
-				$this->_content = file_get_contents($file_to_check );
-				return true;
+				$this->_content = file_get_contents( $file_to_check );
+				return $file_to_check;
 			}
 		}
 		return false;

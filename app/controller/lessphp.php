@@ -43,7 +43,7 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 
 	/**
 	 *
-	 * @var Ai1ec_Less_File
+	 * @var Ai1ec_File_Less
 	 */
 	private $variable_file;
 
@@ -61,17 +61,17 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 
 	/**
 	 *
-	 * @param Ai1ec_Less_File $file
+	 * @param Ai1ec_File_Less $file
 	 */
-	public function set_variable_file( Ai1ec_Less_File $file ) {
+	public function set_variable_file( Ai1ec_File_Less $file ) {
 		$this->variable_file = $file;
 	}
 
 	/**
 	 *
-	 * @param Ai1ec_Less_File $file
+	 * @param Ai1ec_File_Less $file
 	 */
-	public function add_file( Ai1ec_Less_File $file ) {
+	public function add_file( Ai1ec_File_Less $file ) {
 		$this->files[] = $file;
 	}
 
@@ -96,7 +96,7 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 			// this happen when the user switched the theme and triggered a new parse.
 			if( false === $variables ) {
 				$variables = $this->get_less_variable_data_from_config_file(
-					$this->_registry->get( 'less.file', Ai1ec_Less_File::USER_VARIABLES_FILE )
+					$this->_registry->get( 'less.file', Ai1ec_File_Less::USER_VARIABLES_FILE )
 				);
 			}
 		}
@@ -112,7 +112,7 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 			 */
 			try {
 				// Get the filename following our fallback convention
-				$filename = $file->locate_exact_file_to_load_in_theme_folders();
+				$filename = $file->process_file();
 
 			} catch ( Ai1ec_File_Not_Found_Exception $e ) {
 				// We let child themes ovverride properties of vortex.

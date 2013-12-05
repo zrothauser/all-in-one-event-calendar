@@ -12,7 +12,6 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 	 */
 	public function meta_box_view() {
 
-		$ai1ec_events_helper  = $this->_registry->get( 'event.helper' );
 		$theme_loader         = $this->_registry->get( 'theme.loader' );
 		$empty_event          = $this->_registry->get( 'model.event' );
 		$post_helper          = $this->_registry->get( 'post.helper' );
@@ -58,12 +57,6 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		if ( isset( $_REQUEST['instance'] ) ) {
 			$instance_id = absint( $_REQUEST['instance'] );
 		}
-		$parent_event_id = (int)$ai1ec_events_helper->event_parent(
-			$post_helper->get_post_object_value( 'ID' )
-		);
-		if ( empty( $parent_event_id ) ) {
-			$parent_event_id = null;
-		}
 		if ( $instance_id ) {
 			add_filter(
 				'print_scripts_array',
@@ -79,7 +72,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			try {
 				$event = $this->_registry->get(
 					'model.event',
-					$parent_event_id,
+					$post_helper->get_post_object_value( 'ID' ),
 					$instance_id
 				);
 			} catch ( Ai1ec_Event_Not_Found $excpt ) {
@@ -101,60 +94,66 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 
 			// Existing event was found. Initialize form values with values from
 			// event object.
-			$all_day_event    = $event->allday ? 'checked' : '';
-			$instant_event    = $event->instant_event ? 'checked' : '';
+			$all_day_event    = $event->is_allday()  ? 'checked' : '';
+			$instant_event    = $event->is_instant() ? 'checked' : '';
 
-			$start            = $event->start;
-			$end 	          = $event->end;
+			$start            = $event->get( 'start' );
+			$end 	          = $event->get( 'end' );
 
-			$multi_day        = $event->get_multiday();
+			$multi_day        = $event->is_multiday();
 
-			$show_map         = $event->show_map;
+			$show_map         = $event->get( 'show_map' );
 			$google_map       = $show_map ? 'checked="checked"' : '';
 
-			$show_coordinates = $event->show_coordinates;
+			$show_coordinates = $event->get( 'show_coordinates' );
 			$coordinates      = $show_coordinates ? 'checked="checked"' : '';
-			$longitude        = $event->longitude !== NULL ? floatval( $event->longitude ) : '';
-			$latitude         = $event->latitude !== NULL ?  floatval( $event->latitude ) : '';
+			$longitude        = (float)$event->get( 'longitude', 0 );
+			$latitude         = (float)$event->get( 'latitude',  0 );
 			// There is a known bug in Wordpress (https://core.trac.wordpress.org/ticket/15158) that saves 0 to the DB instead of null.
 			// We handle a special case here to avoid having the fields with a value of 0 when the user never inputted any coordinates
 			if ( ! $show_coordinates ) {
 				$longitude = '';
-				$latitude = '';
+				$latitude  = '';
 			}
 
-			$venue            = $event->venue;
-			$country          = $event->country;
-			$address          = $event->address;
-			$city             = $event->city;
-			$province         = $event->province;
-			$postal_code      = $event->postal_code;
-			$contact_name     = $event->contact_name;
-			$contact_phone    = $event->contact_phone;
-			$contact_email    = $event->contact_email;
-			$contact_url      = $event->contact_url;
-			$cost             = $event->cost;
-			$ticket_url       = $event->ticket_url;
-			$rrule            = empty( $event->recurrence_rules ) ? '' : $ai1ec_events_helper->ics_rule_to_local( $event->recurrence_rules );
-			$exrule           = empty( $event->exception_rules )  ? '' : $ai1ec_events_helper->ics_rule_to_local( $event->exception_rules );
-			$exdate           = empty( $event->exception_dates )  ? '' :  $ai1ec_events_helper->exception_dates_to_local( $event->exception_dates );
-			$repeating_event  = empty( $rrule )  ? false : true;
-			$exclude_event    = empty( $exrule ) ? false : true;
+			$venue            = $event->get( 'venue' );
+			$country          = $event->get( 'country' );
+			$address          = $event->get( 'address' );
+			$city             = $event->get( 'city' );
+			$province         = $event->get( 'province' );
+			$postal_code      = $event->get( 'postal_code' );
+			$contact_name     = $event->get( 'contact_name' );
+			$contact_phone    = $event->get( 'contact_phone' );
+			$contact_email    = $event->get( 'contact_email' );
+			$contact_url      = $event->get( 'contact_url' );
+			$cost             = $event->get( 'cost' );
+			$ticket_url       = $event->get( 'ticket_url' );
+			$rrule            = $event->get( 'recurrence_rules' );
+			$exrule           = $event->get( 'exception_rules' );
+			$exdate           = $event->get( 'exception_dates' );
+			$repeating_event  = ! empty( $rrule );
+			$exclude_event    = ! empty( $exrule );
 
 			$is_free = '';
-			if ( ! empty( $event->is_free ) ) {
+			if ( ! empty( $event->is_free() ) ) {
 				$is_free = 'checked="checked" ';
 				$cost    = '';
 			}
 
 			if ( $repeating_event ) {
-				$rrule_text = ucfirst( $ai1ec_events_helper->rrule_to_text( $rrule ) );
+				$rrule_text = ucfirst(
+					$this->_registry->get( 'recurrence.rule' )
+					->rrule_to_text( $rrule )
+				);
 			}
 
 			if ( $exclude_event ) {
-				$exrule_text = ucfirst( $ai1ec_events_helper->rrule_to_text( $exrule ) );
+				$exrule_text = ucfirst(
+					$this->_registry->get( 'recurrence.rule' )
+					->rrule_to_text( $exrule )
+				);
 			}
-		} catch ( Ai1ec_Event_Not_Found $e ) {
+		} catch ( Ai1ec_Event_Not_Found_Exception $excpt ) {
 			// Event does not exist.
 			// Leave form fields undefined (= zero-length strings)
 			$event = null;
@@ -167,7 +166,8 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			->get_default_timezone();
 
 		if ( $timezone_string ) {
-			$timezone = $this->_registry->get( 'utility.time' )->get_gmt_offset_expr();
+			$timezone = $this->_registry->get( 'date.system' )
+				->get_gmt_offset_expr();
 		}
 
 		// This will store each of the accordion tabs' markup, and passed as an
@@ -191,7 +191,6 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			'timezone'           => $timezone,
 			'timezone_string'    => $timezone_string,
 			'exdate'             => $exdate,
-			'parent_event_id'    => $parent_event_id,
 			'instance_id'        => $instance_id,
 		);
 

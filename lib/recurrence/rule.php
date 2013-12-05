@@ -12,6 +12,42 @@
 class Ai1ec_Recurrence_Rule extends Ai1ec_Base {
 
 	/**
+	 * Return given recurrence data as text.
+	 *
+	 * @param  string  $rrule   Recurrence rule
+	 *
+	 * @return string
+	 */
+	public function rrule_to_text( $rrule = '' ) {
+		$txt = '';
+		$rc  = new SG_iCal_Recurrence( new SG_iCal_Line( 'RRULE:' . $rrule ) );
+		switch( $rc->getFreq() ) {
+			case 'DAILY':
+				$this->_get_interval( $txt, 'daily', $rc->getInterval() );
+				$this->_ending_sentence( $txt, $rc );
+				break;
+			case 'WEEKLY':
+				$this->_get_interval( $txt, 'weekly', $rc->getInterval() );
+				$this->_get_sentence_by( $txt, 'weekly', $rc );
+				$this->_ending_sentence( $txt, $rc );
+				break;
+			case 'MONTHLY':
+				$this->_get_interval( $txt, 'monthly', $rc->getInterval() );
+				$this->_get_sentence_by( $txt, 'monthly', $rc );
+				$this->_ending_sentence( $txt, $rc );
+				break;
+			case 'YEARLY':
+				$this->_get_interval( $txt, 'yearly', $rc->getInterval() );
+				$this->_get_sentence_by( $txt, 'yearly', $rc );
+				$this->_ending_sentence( $txt, $rc );
+				break;
+			default:
+				$txt = $rrule;
+		}
+		return $txt;
+	}
+
+	/**
 	 * Parse a `recurrence rule' into an array that can be used to calculate
 	 * recurrence instances.
 	 *

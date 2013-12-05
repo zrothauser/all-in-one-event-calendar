@@ -329,10 +329,17 @@ class Ai1ec_Javascript_Controller {
 
 		$data = array(
 			// ICS feed error messages
-			'duplicate_feed_message'         => esc_html__( 'This feed is already being imported.', AI1EC_PLUGIN_NAME ),
-			'invalid_url_message'            => esc_html__( 'Please enter a valid iCalendar URL.', AI1EC_PLUGIN_NAME ),
-			'invalid_email_message'          => esc_html__( 'Please enter a valid e-mail address.', AI1EC_PLUGIN_NAME ),
-			'now'                            => $this->_registry->get( 'utility.time' )->current_time()
+			'duplicate_feed_message' => esc_html(
+				Ai1ec_I18n::__( 'This feed is already being imported.' )
+			),
+			'invalid_url_message'    => esc_html(
+				Ai1ec_I18n::__( 'Please enter a valid iCalendar URL.' )
+			),
+			'invalid_email_message'  => esc_html(
+				Ai1ec_I18n::__( 'Please enter a valid e-mail address.' )
+			),
+			'now'                    => $this->_registry->get( 'date.system' )
+				->current_time()
 		);
 		return $data;
 	}

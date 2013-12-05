@@ -192,7 +192,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		$feed,
 		$start,
 		$has_recurrence  = false,
-		$exclude_post_id = NULL
+		$exclude_post_id = null
 	) {
 		$dbi        = $this->_registry->get( 'dbi.dbi' );
 		$table_name = $dbi->get_table_name( 'ai1ec_events' );

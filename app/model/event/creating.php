@@ -53,8 +53,6 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 			return null;
 		}
 
-		$ai1ec_events_helper          = $this->_registry->get( 'event.helper' );
-
 		/**
 		 * =====================================================================
 		 *
@@ -101,9 +99,7 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 			isset( $_POST['ai1ec_repeat'] ) &&
 			! empty( $_POST['ai1ec_repeat'] )
 		) {
-			$rrule = $ai1ec_events_helper->ics_rule_to_gmt(
-				$_POST['ai1ec_rrule']
-			);
+			$rrule = $_POST['ai1ec_rrule'];
 		}
 
 		// if exrule is set, convert it from local to UTC time
@@ -116,7 +112,7 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 				$_POST['ai1ec_exrule'],
 				$_POST['ai1ec_rrule']
 			);
-			$exrule = $ai1ec_events_helper->ics_rule_to_gmt( $exrule );
+			$exrule = $exrule;
 		}
 
 		// if exdate is set, convert it from local to UTC time
@@ -124,9 +120,7 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 			isset( $_POST['ai1ec_exdate'] ) &&
 			! empty( $_POST['ai1ec_exdate'] )
 		) {
-			$exdate = $ai1ec_events_helper->exception_dates_to_gmt(
-				$_POST['ai1ec_exdate']
-			);
+			$exdate = $_POST['ai1ec_exdate'];
 		}
 
 		$is_new = false;
@@ -136,97 +130,48 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 				'model.event',
 				$post_id ? $post_id : null
 			);
-		} catch ( Ai1ec_Event_Not_Found $excpt ) {
+		} catch ( Ai1ec_Event_Not_Found_Exception $excpt ) {
 			// Post exists, but event data hasn't been saved yet. Create new event
 			// object.
-			$is_new         = true;
-			$event          =  $this->_registry->get( 'model.event' );
-			$event->post_id = $post_id;
+			$is_new = true;
+			$event  =  $this->_registry->get( 'model.event' );
 		}
 		// If the events is marked as instant, make it last 30 minutes
 		if ( $instant_event ) {
 			$end_time = $start_time + 1800;
 		}
 
-		$event->set_start( $start_time );
-		$event->set_end(   $end_time );
-		$event->allday              = $all_day;
-		$event->instant_event       = $instant_event;
-		$event->venue               = $venue;
-		$event->address             = $address;
-		$event->city                = $city;
-		$event->province            = $province;
-		$event->postal_code         = $postal_code;
-		$event->country             = $country;
-		$event->show_map            = $google_map;
-		$event->cost                = $cost;
-		$event->is_free             = $is_free;
-		$event->ticket_url          = $ticket_url;
-		$event->contact_name        = $contact_name;
-		$event->contact_phone       = $contact_phone;
-		$event->contact_email       = $contact_email;
-		$event->contact_url         = $contact_url;
-		$event->recurrence_rules    = $rrule;
-		$event->exception_rules     = $exrule;
-		$event->exception_dates     = $exdate;
-		$event->show_coordinates    = $show_coordinates;
-		$event->longitude           = trim( $longitude ) !== '' ? (float) $longitude : NULL;
-		$event->latitude            = trim( $latitude ) !== '' ? (float) $latitude : NULL;
+		$event->set( 'start',            $start_time );
+		$event->set( 'end',              $end_time );
+		$event->set( 'allday',           $all_day );
+		$event->set( 'instant_event',    $instant_event );
+		$event->set( 'venue',            $venue );
+		$event->set( 'address',          $address );
+		$event->set( 'city',             $city );
+		$event->set( 'province',         $province );
+		$event->set( 'postal_code',      $postal_code );
+		$event->set( 'country',          $country );
+		$event->set( 'show_map',         $google_map );
+		$event->set( 'cost',             $cost );
+		$event->set( 'is_free',          $is_free );
+		$event->set( 'ticket_url',       $ticket_url );
+		$event->set( 'contact_name',     $contact_name );
+		$event->set( 'contact_phone',    $contact_phone );
+		$event->set( 'contact_email',    $contact_email );
+		$event->set( 'contact_url',      $contact_url );
+		$event->set( 'recurrence_rules', $rrule );
+		$event->set( 'exception_rules',  $exrule );
+		$event->set( 'exception_dates',  $exdate );
+		$event->set( 'show_coordinates', $show_coordinates );
+		$event->set( 'longitude',        trim( $longitude ) );
+		$event->set( 'latitude',         trim( $latitude ) );
 
 		$event->save( ! $is_new );
 
-		$ai1ec_events_helper->delete_event_cache( $post_id );
-		$ai1ec_events_helper->cache_event( $event );
 		// LABEL:magicquotes
 		// restore `magic` WordPress quotes to maintain compatibility
 		$_POST = add_magic_quotes( $_POST );
 		return $event;
-	}
-
-	/**
-	 * Create a copy of an event.
-	 *
-	 * Copy is created calling {@uses wp_insert_post} function.
-	 * Using 'post_parent' to add hierarchy.
-	 *
-	 * NOTICE: it depends on `$_POST` to be populated correctly.
-	 *
-	 * @return int|bool New post ID or false on failure.
-	 */
-	public function create_duplicate_post( ) {
-		if ( ! isset( $_POST['post_ID'] ) ) {
-			return false;
-		}
-
-		$ai1ec_events_helper = $this->_registry->get( 'event.helper' );
-
-		$clean_fields        = array(
-			'ai1ec_repeat'      => null,
-			'ai1ec_rrule'       => '',
-			'ai1ec_exrule'      => '',
-			'ai1ec_exdate'      => '',
-			'post_ID'           => null,
-			'post_name'         => null,
-			'ai1ec_instance_id' => null,
-		);
-		$old_post_id = $_POST['post_ID'];
-		$instance_id = $_POST['ai1ec_instance_id'];
-		foreach ( $clean_fields as $field => $to_value ) {
-			if ( null === $to_value ) {
-				unset( $_POST[$field] );
-			} else {
-				$_POST[$field] = $to_value;
-			}
-		}
-		$_POST                = _wp_translate_postdata( false, $_POST );
-		$_POST['post_parent'] = $old_post_id;
-		$post_id              = wp_insert_post( $_POST );
-		$ai1ec_events_helper->event_parent(
-			$post_id,
-			$old_post_id,
-			$instance_id
-		);
-		return $post_id;
 	}
 
 }

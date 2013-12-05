@@ -59,6 +59,15 @@ class Ai1ec_Date_Time {
 	}
 
 	/**
+	 * Offset from GMT in minutes.
+	 *
+	 * @return int Signed integer - offset.
+	 */
+	public function get_gmt_offset() {
+		return $this->_date_time->getOffset() / 60;
+	}
+
+	/**
 	 * Commodity method to format to UTC.
 	 *
 	 * @param string $format Target format, defaults to UNIX timestamp.
@@ -83,6 +92,23 @@ class Ai1ec_Date_Time {
 			->get( $timezone );
 		$this->_date_time->setTimezone( $date_time_tz );
 		return $this;
+	}
+
+	/**
+	 * Get difference in seconds between to dates.
+	 *
+	 * @param Ai1ec_Date_Time $comparable Other date time entity.
+	 *
+	 * @return int Number of seconds between two dates.
+	 */
+	public function diff_sec( Ai1ec_Date_Time $comparable ) {
+		$difference = $this->_date_time->diff( $comparable->_date_time, true );
+		return (
+			$difference->days * 86400 +
+			$difference->h    * 3600  +
+			$difference->i    * 60    +
+			$difference->s
+		);
 	}
 
 	/**

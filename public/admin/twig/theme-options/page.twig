@@ -8,5 +8,13 @@
                 {{ input( submit.id, submit.id, submit.value, 'submit', submit.args ) }}
             </div>
         {% endif %}
+
+        {% if reset is defined %}
+            {% from 'form-elements/input.twig' import input %}
+            <div class="submit">
+                {{ input( reset.id, reset.id, reset.value, 'submit', reset.args ) }}
+            </div>
+        {% endif %}
+
     </div>
 {% endblock %}

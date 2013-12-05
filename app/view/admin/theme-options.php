@@ -69,13 +69,16 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 			'title' => Ai1ec_I18n::__(
 				'Calendar Theme Options'
 			),
+
 			'metabox' => array(
 				'screen' => $settings->get( 'themes_option_page' ),
 				'action' => 'tabs-left',
 				'object' => null
 			),
+
 			'action' =>
 				'?controller=front&action=ai1ec_save_themes_options&plugin=' . AI1EC_PLUGIN_NAME,
+
 			'submit' => array(
 				'id'    => 'ai1ec_save_themes_options',
 				'value' => Ai1ec_I18n::__( 'Save Options' ),
@@ -83,6 +86,15 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 					'class' => 'button button-primary',
 				),
 			),
+
+			'reset' => array(
+				'id'    => 'ai1ec_reset_themes_options',
+				'value' => Ai1ec_I18n::__( 'Reset to defaults' ),
+				'args'  => array(
+					'class' => 'button',
+				),
+			),
+
 		);
 
 		$loader = $this->_registry->get( 'theme.loader' );

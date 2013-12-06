@@ -20,12 +20,6 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 */
 	protected $_options          = array();
 
-
-	/**
-	 * @var array Map of value names and their representations.
-	 */
-	protected $_standard_options = array();
-
 	/**
 	 * @var bool Indicator for modified object state.
 	 */
@@ -177,7 +171,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 * @return bool Success.
 	 */
 	public function persist() {
-		$success = $this->_sys->get( 'model.option' )
+		$success = $this->_registry->get( 'model.option' )
 			->set( self::WP_OPTION_KEY, $this->_options );
 		if ( $success ) {
 			$this->_updated = false;
@@ -188,7 +182,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	/**
 	 * Check object state and update it's database representation as needed.
 	 *
-	 * @return void No return is expected.
+	 * @return void Destructor does not return.
 	 */
 	public function shutdown() {
 		if ( $this->_updated ) {
@@ -203,7 +197,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 */
 	protected function _initialize() {
 		$this->_set_standard_values();
-		$values  = $this->_sys->get( 'model.option' )
+		$values         = $this->_registry->get( 'model.option' )
 			->get( self::WP_OPTION_KEY, array() );
 		$this->_updated = false;
 		if ( empty( $values ) ) {
@@ -215,7 +209,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 		} else {
 			$this->_options = $values;
 		}
-		$this->_sys->get( 'controller.shutdown' )->register(
+		$this->_registry->get( 'controller.shutdown' )->register(
 			array( $this, 'shutdown' )
 		);
 	}
@@ -263,7 +257,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'label'   => Ai1ec_I18n::__( 'Week starts on' ),
 					'options' => 'get_weekdays',
 				),
-				'default'  => $this->_sys->get( 'model.option' )->get(
+				'default'  => $this->_registry->get( 'model.option' )->get(
 					'start_of_week'
 				),
 			),

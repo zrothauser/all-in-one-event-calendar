@@ -48,9 +48,9 @@ class Ai1ec_Theme_Loader {
 	 * @param array  $args
 	 * @param boolean $is_admin
 	 *
-	 * @throws Ai1ec_File_Not_Found If File is not found or not possible to handle
+	 * @throws Ai1ec_Exception If File is not found or not possible to handle
 	 *
-	 * @return Ai1ec_File An instance of a file object with content parsed.
+	 * @return Ai1ec_Exception An instance of a file object with content parsed.
 	 */
 	public function get_file( $filename, $args = array(), $is_admin = null ) {
 		if ( null === $is_admin ) {

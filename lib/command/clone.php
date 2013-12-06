@@ -188,9 +188,9 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 				$old_event->post_id = $new_post_id;
 				unset( $old_event->post );
 				$old_event->save();
-				$search_helper = $this->_registry->get( 'model.search' );
-				$search_helper->cache_event( $old_event );
-			} catch ( Ai1ec_Event_Not_Found_Exception $exception ) { /* ignore */ }
+			} catch ( Ai1ec_Event_Not_Found_Exception $exception ) {
+				/* ignore */
+			}
 		}
 	
 		delete_post_meta( $new_post_id, '_dp_original' );

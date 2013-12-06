@@ -237,7 +237,15 @@ class Ai1ec_Front_Controller {
 		}
 		$dispatcher->register_action(
 			'delete_post',
-			array( 'controller.events', 'delete' )
+			array( 'model.event.trashing', 'delete' )
+		);
+		$dispatcher->register_action(
+			'trashed_post',
+			array( 'model.event.trashing', 'trash' )
+		);
+		$dispatcher->register_action(
+			'untrashed_post',
+			array( 'model.event.trashing', 'untrash' )
 		);
 		$dispatcher->register_action(
 			'pre_http_request',
@@ -246,7 +254,7 @@ class Ai1ec_Front_Controller {
 			3
 		);
 		$dispatcher->register_action(
-			'http_api_curl',
+			'http_request_args',
 			array( 'http.request', 'init_certificate' ),
 			10,
 			2
@@ -310,6 +318,16 @@ class Ai1ec_Front_Controller {
 			$dispatcher->register_filter(
 				'post_row_actions',
 				array( 'clone.renderer-helper', 'duplicate_post_make_duplicate_link_row' ),
+				10,
+				2
+			);
+			$dispatcher->register_action(
+				'add_meta_boxes',
+				array( 'view.add-new-event', 'event_meta_box_container' )
+			);
+			$dispatcher->register_action(
+				'save_post',
+				array( 'model.event.creating', 'save_post' ),
 				10,
 				2
 			);

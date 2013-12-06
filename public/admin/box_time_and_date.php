@@ -55,7 +55,10 @@
 								); ?>
 							</small>
 						<?php endif; ?>
-						<input type="hidden" name="ai1ec_start_time" id="ai1ec_start-time" value="<?php echo $start_timestamp; ?>" />
+						<input type="hidden"
+							   name="ai1ec_start_time"
+							   id="ai1ec_start-time"
+							   value="<?php echo $start->format_to_gmt(); ?>" />
 					</td>
 				</tr>
 				<tr>
@@ -67,16 +70,13 @@
 					<td>
 						<input type="text" class="ai1ec-date-input" id="ai1ec_end-date-input" />
 						<input type="text" class="ai1ec-time-input" id="ai1ec_end-time-input" />
-						<input type="hidden" name="ai1ec_end_time" id="ai1ec_end-time" value="<?php echo $end_timestamp; ?>" />
+						<input type="hidden"
+							   name="ai1ec_end_time"
+							   id="ai1ec_end-time"
+							   value="<?php echo $end->format_to_gmt(); ?>" />
 					</td>
 				</tr>
-				<?php
-				$recurrence_attr = '';
-				if ( $parent_event_id || $instance_id ) :
-					$recurrence_attr = ' style="visibility: hidden; display: none;"';
-				endif;
-				?>
-				<tr<?php echo $recurrence_attr; ?>>
+				<tr>
 					<td>
 					  <input type="checkbox" name="ai1ec_repeat" id="ai1ec_repeat" value="1" <?php echo $repeating_event ? 'checked="checked"' : ''; ?>/>
 					  <input type="hidden" name="ai1ec_rrule" id="ai1ec_rrule" value="<?php echo $rrule; ?>" />
@@ -90,7 +90,7 @@
 					  </div>
 					</td>
 				</tr>
-				<tr<?php echo $recurrence_attr; ?>>
+				<tr>
 					<td>
 					  <input type="checkbox" name="ai1ec_exclude" id="ai1ec_exclude" value="1" <?php echo $exclude_event ? 'checked="checked"' : ''; ?> <?php echo $repeating_event ? '' : 'disabled="true"'; ?>/>
 					  <input type="hidden" name="ai1ec_exrule" id="ai1ec_exrule" value="<?php echo $exrule; ?>" />
@@ -105,7 +105,7 @@
 						<span class="ai1ec-info-text">(<?php _e( 'Choose a rule for exclusion', AI1EC_PLUGIN_NAME ); ?>)</span>
 					</td>
 				</tr>
-				<tr<?php echo $recurrence_attr; ?>>
+				<tr>
 					<td>
 						<label for="ai1ec_exdate_calendar_icon" id="ai1ec_exclude_date_label">
 							<?php _e( 'Exclude dates', AI1EC_PLUGIN_NAME ); ?>:

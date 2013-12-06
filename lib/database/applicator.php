@@ -9,7 +9,7 @@
  * @package    AI1EC
  * @subpackage AI1EC.Database
  */
-class Ai1ec_Database_Applicator {
+class Ai1ec_Database_Applicator extends Ai1ec_Base {
 
 	/**
 	 * @var Ai1ec_Dbi Instance of wpdb object
@@ -29,6 +29,7 @@ class Ai1ec_Database_Applicator {
 	 * @return void Constructor does not return
 	 */
 	public function __construct( Ai1ec_Registry_Object $registry ) {
+		parent::__construct( $registry );
 		$this->_db       = $registry->get( 'dbi.dbi' );
 		$this->_database = $registry->get( 'database.helper' );
 	}
@@ -65,16 +66,19 @@ class Ai1ec_Database_Applicator {
 			$this->_db->query( $sql_query );
 		}
 		if ( 'post_id' === $use_field ) { // slow branch
-			global $ai1ec_events_helper;
+			$event_instance_model = $this->_registry->get(
+				'model.event.instance'
+			);
 			foreach ( $duplicates as $post_id ) {
 				try {
-					$event = new Ai1ec_Event( $post_id );
-					$ai1ec_events_helper->cache_event( $event );
-				} catch ( Exception $excpt ) {
-					// discard any errors
+					$event_instance_model->recreate(
+						$this->_registry->get( 'model.event', $post_id )
+					);
+				} catch ( Ai1ec_Exception $excpt ) {
+					// discard any internal errors
 				}
 			}
-		} elseif ( $count > 0 ) { // retry
+		} else if ( $count > 0 ) { // retry
 			return $this->remove_instance_duplicates( --$depth );
 		}
 		return true;

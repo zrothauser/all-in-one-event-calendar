@@ -49,12 +49,15 @@ class Ai1ec_Frequency_Utility {
 	 * @param int    $quant  Number of seconds quantifier represents
 	 *
 	 * @return Ai1ec_Frequency_Utility Instance of self for chaining
+	 *
+	 * @throws Ai1ec_Invalid_Argument_Exception If first argument is not
+	 *                                          an ASCII letter.
 	 */
 	public function add_multiplier( $letter, $quant ) {
 		$letter   = substr( (string)$letter, 0, 1 );
 		$quant = (int)$quant;
 		if ( $quant < 0 || ! preg_match( '/^[a-z]$/i', $letter ) ) {
-			throw new Ai1ec_Invalid_Argument(
+			throw new Ai1ec_Invalid_Argument_Exception(
 				'First argument to add_multiplier must be ASCII letter' .
 				'(a-zA-Z), and second - an integer'
 			);

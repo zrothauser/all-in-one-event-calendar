@@ -16,7 +16,6 @@ class Ai1ec_Css_Admin  extends Ai1ec_Base {
 	 *
 	 * @wp_hook admin_enqueue_scripts
 	 *
-	 * @return void
 	 */
 	public function admin_enqueue_scripts( $hook_suffix ) {
 		$settings    = $this->_registry->get( 'model.settings' );

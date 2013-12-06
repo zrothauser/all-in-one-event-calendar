@@ -26,4 +26,5 @@ abstract class Ai1ec_View_Admin_Abstract extends Ai1ec_Base {
 	 * Handle post, likely to be deprecated to use commands.
 	 */
 	abstract public function handle_post();
+
 }

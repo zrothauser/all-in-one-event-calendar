@@ -340,18 +340,19 @@ class Ai1ec_Loader {
 		return $content;
 	}
 
-	/**
-	 * Generate all the alternatives name that the loaded recognize.
-	 *
-	 * For example:
-	 * The class Ai1ec_Html_Helper can be loaded as
-	 * - html.helper ( the path to the file )
-	 * - Ai1ec_Html_Helper ( needed by Autoload )
-	 *
-	 * @params string $class_name the original name of the class.
-	 *
-	 * @return array An array of strings with the availables names.
-	 */
+    /**
+     * Generate all the alternatives name that the loaded recognize.
+     *
+     * For example:
+     * The class Ai1ec_Html_Helper can be loaded as
+     * - html.helper ( the path to the file )
+     * - Ai1ec_Html_Helper ( needed by Autoload )
+     *
+     * @param $class string the original name of the class.
+     * @param $file string the file
+     *
+     * @return array An array of strings with the availables names.
+     */
 	protected function _generate_loader_names( $class, $file ) {
 		$names = array( $class );
 		// Remove the extension.

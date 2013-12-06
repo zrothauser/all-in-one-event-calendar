@@ -11,18 +11,17 @@
 class Ai1ec_Event_Helper extends Ai1ec_Base {
 
 	/**
-	 * get_category_color function
-	 *
 	 * Returns the color of the Event Category having the given term ID.
 	 *
-	 * @param int $term_id The ID of the Event Category
+	 * @param int $term_id The ID of the Event Category.
 	 *
 	 * @return string Color to use
 	 *
-	 * @staticvar Ai1ec_Memory_Utility $colors Cached entries instance
+	 * @staticvar array $colors Map or retrieved category colors.
 	 */
 	public function get_category_color( $term_id ) {
 		static $colors = null;
+		//ai1ec_deprecated( __METHOD__ );
 		if ( null === $colors ) {
 			$colors  = array();
 			$results = $this->_registry->get( 'dbi.dbi' )->select(
@@ -41,17 +40,17 @@ class Ai1ec_Event_Helper extends Ai1ec_Base {
 	}
 
 	/**
-	 * trim_excerpt function
+	 * Generates an excerpt from the given content string.
 	 *
-	 * Generates an excerpt from the given content string. Adapted from
-	 * WordPress's `wp_trim_excerpt' function that is not useful for applying
-	 * to custom content.
+	 * Adapted from WordPress's `wp_trim_excerpt' function that is not useful
+	 * for applying to custom content.
 	 *
 	 * @param string $text The content to trim.
 	 *
-	 * @return string      The excerpt.
-	 **/
+	 * @return string The excerpt.
+	 */
 	public function trim_excerpt( $text ) {
+		ai1ec_deprecated( __METHOD__ );
 		$raw_excerpt    = $text;
 
 		$text           = preg_replace(
@@ -66,7 +65,7 @@ class Ai1ec_Event_Helper extends Ai1ec_Base {
 		$excerpt_length = apply_filters( 'excerpt_length', 55 );
 		$excerpt_more   = apply_filters( 'excerpt_more', ' [...]' );
 		$words          = preg_split(
-			"/\s+/",
+			'/\s+/',
 			$text,
 			$excerpt_length + 1,
 			PREG_SPLIT_NO_EMPTY
@@ -80,4 +79,5 @@ class Ai1ec_Event_Helper extends Ai1ec_Base {
 		}
 		return apply_filters( 'wp_trim_excerpt', $text, $raw_excerpt );
 	}
+
 }

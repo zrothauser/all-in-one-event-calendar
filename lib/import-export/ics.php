@@ -439,13 +439,14 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 			// the case of recurring events, and different events with different
 			// RECURRENCE-IDs... ponder how to solve this.. may require saving the
 			// RECURRENCE-ID as another field in the database.
-			$search_helper = $this->_registry->get( 'model.search' );
-			$matching_event_id = $search_helper->get_matching_event_id(
-					$event->ical_uid,
-					$event->ical_feed_url,
-					$event->start,
-					! empty( $event->recurrence_rules )
-			);
+			$recurrence = $event->get( 'recurrence_rules' );
+			$matching_event_id = $this->_registry->get( 'model.search' )
+				->get_matching_event_id(
+					$event->get( 'ical_uid' ),
+					$event->get( 'ical_feed_url' ),
+					$event->get( 'start' ),
+					! empty( $recurrence )
+				);
 
 			if ( NULL === $matching_event_id ) {
 				// =================================================
@@ -461,22 +462,17 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 				$post               = get_post( $matching_event_id );
 
 				if ( null !== $post ) {
-					$post->post_title   = $event->post->post_title;
-					$post->post_content = $event->post->post_content;
+					$post->post_title   = $event->get( 'post' )->post_title;
+					$post->post_content = $event->get( 'post' )->post_content;
 					wp_update_post( $post );
 
 					// Update the event
-					$event->post_id = $matching_event_id;
-					$event->post    = $post;
+					$event->set( 'post_id', $matching_event_id );
+					$event->set( 'post',    $post );
 					$event->save( true );
-
-					// Delete event's cache
-					$search_helper->delete_event_cache( $matching_event_id );
 				}
 
 			}
-			// Regenerate event's cache
-			$search_helper->cache_event( $event );
 			$count++;
 		}
 
@@ -559,14 +555,14 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		$e   = & $calendar->newComponent( 'vevent' );
 		$uid = '';
 		if ( $event->ical_uid ) {
-			$uid = addcslashes( $event->ical_uid, "\\;,\n" );
+			$uid = addcslashes( $event->get( 'ical_uid' ), "\\;,\n" );
 		} else {
-			$uid = sprintf( $this->get_uid_format(), $event->post->ID );
+			$uid = sprintf( $this->get_uid_format(), $event->get( 'post_id' ) );
 		}
 		$e->setProperty( 'uid', $this->_sanitize_value( $uid ) );
 		$e->setProperty(
 			'url',
-			get_permalink( $event->post_id )
+			get_permalink( $event->get( 'post_id' ) )
 		);
 
 		// =========================
@@ -576,13 +572,13 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 			'summary',
 			$this->_sanitize_value(
 				html_entity_decode(
-					apply_filters( 'the_title', $event->post->post_title ),
+					apply_filters( 'the_title', $event->get( 'post' )->post_title ),
 					ENT_QUOTES,
 					'UTF-8'
 				)
 			)
 		);
-		$content = apply_filters( 'the_content', $event->post->post_content );
+		$content = apply_filters( 'the_content', $event->get( 'post' )->post_content );
 		$content = str_replace(']]>', ']]&gt;', $content);
 		$content = html_entity_decode( $content, ENT_QUOTES, 'UTF-8' );
 		// Prepend featured image if available.
@@ -599,8 +595,8 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		// =====================
 		$dtstartstring = '';
 		$dtstart = $dtend = array();
-		if ( $event->allday ) {
-			$dtstart["VALUE"] = $dtend["VALUE"] = 'DATE';
+		if ( $event->is_allday() ) {
+			$dtstart['VALUE'] = $dtend['VALUE'] = 'DATE';
 			// For exporting all day events, don't set a timezone
 			if ( $tz && ! $export ) {
 				$dtstart['TZID'] = $dtend['TZID'] = $tz;
@@ -610,49 +606,40 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 			if ( $export ) {
 				$e->setProperty(
 					'dtstart',
-					$this->_sanitize_value( gmdate(
-						"Ymd",
-						$event->start->format()
-					) ),
+					$this->_sanitize_value(
+						$event->get( 'start' )->format( 'Ymd' )
+					),
 					$dtstart
 				);
 				$e->setProperty(
 					'dtend',
-					$this->_sanitize_value( gmdate(
-						"Ymd",
-						$event->end->format()
-					) ),
+					$this->_sanitize_value(
+						$event->get( 'end' )->format( 'Ymd' )
+					),
 					$dtend
 				);
 			} else {
 				$e->setProperty(
 					'dtstart',
 					$this->_sanitize_value(
-						gmdate(
-							"Ymd\T",
-							$event->start->format()
-						)
+						$event->get( 'start' )->format( "Ymd\T" )
 					),
 					$dtstart
 				);
 				$e->setProperty(
 					'dtend',
-					$this->_sanitize_value( gmdate(
-							"Ymd\T",
-							$event->end->format()
-					) ),
+					$this->_sanitize_value(
+						$event->get( 'end' )->format( "Ymd\T" )
+					),
 					$dtend
 				);
 			}
 		} else {
 			if ( $tz ) {
-				$dtstart["TZID"] = $dtend["TZID"] = $tz;
+				$dtstart['TZID'] = $dtend['TZID'] = $tz;
 			}
 			// This is used later.
-			$dtstartstring = gmdate(
-				"Ymd\THis",
-				$event->start->format()
-			);
+			$dtstartstring = $event->get( 'start' )->format( "Ymd\THis" );
 			$e->setProperty(
 				'dtstart',
 				$this->_sanitize_value( $dtstartstring ),
@@ -661,10 +648,9 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 
 			$e->setProperty(
 				'dtend',
-				$this->_sanitize_value( gmdate(
-						"Ymd\THis",
-						$event->end->format()
-				) ),
+				$this->_sanitize_value(
+					$event->end->format( "Ymd\THis" )
+				),
 				$dtend
 			);
 		}
@@ -672,23 +658,36 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		// ========================
 		// = Latitude & longitude =
 		// ========================
-		if ( floatval( $event->latitude ) || floatval( $event->longitude ) ) {
-			$e->setProperty( 'geo', $event->latitude, $event->longitude );
+		if (
+			floatval( $event->get( 'latitude' ) ) ||
+			floatval( $event->get( 'longitude' ) )
+		) {
+			$e->setProperty(
+				'geo',
+				$event->get( 'latitude' ),
+				$event->get( 'longitude' )
+			);
 		}
 
 		// ===================
 		// = Venue & address =
 		// ===================
-		if ( $event->venue || $event->address ) {
-			$location = array( $event->venue, $event->address );
+		if ( $event->get( 'venue' ) || $event->get( 'address' ) ) {
+			$location = array(
+				$event->get( 'venue' ),
+				$event->get( 'address' )
+			);
 			$location = array_filter( $location );
 			$location = implode( ' @ ', $location );
 			$e->setProperty( 'location', $this->_sanitize_value( $location ) );
 		}
 
 		$categories = array();
-		$language = get_bloginfo( 'language' );
-		foreach( wp_get_post_terms( $event->post_id, 'events_categories' ) as $cat ) {
+		$language   = get_bloginfo( 'language' );
+		foreach (
+			wp_get_post_terms( $event->get( 'post_id' ), 'events_categories' )
+			as $cat
+		) {
 			$categories[] = $cat->name;
 		}
 		$e->setProperty(
@@ -697,7 +696,10 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 			array( "LANGUAGE" => $language )
 		);
 		$tags = array();
-		foreach( wp_get_post_terms( $event->post_id, 'events_tags' ) as $tag ) {
+		foreach (
+			wp_get_post_terms( $event->get( 'post_id' ), 'events_tags' )
+			as $tag
+		) {
 			$tags[] = $tag->name;
 		}
 		if( ! empty( $tags) ) {
@@ -710,13 +712,16 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		// ==================
 		// = Cost & tickets =
 		// ==================
-		if ( $event->cost ) {
-			$e->setProperty( 'X-COST', $this->_sanitize_value( $event->cost ) );
+		if ( $event->get( 'cost' ) ) {
+			$e->setProperty(
+				'X-COST',
+				$this->_sanitize_value( $event->get( 'cost' ) )
+			);
 		}
-		if ( $event->ticket_url ) {
+		if ( $event->get( 'ticket_url' ) ) {
 			$e->setProperty(
 				'X-TICKETS-URL',
-				$this->_sanitize_value( $event->ticket_url )
+				$this->_sanitize_value( $event->get( 'ticket_url' ) )
 			);
 		}
 
@@ -724,10 +729,10 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		// = Contact name, phone, e-mail, URL =
 		// ====================================
 		$contact = array(
-			$event->contact_name,
-			$event->contact_phone,
-			$event->contact_email,
-			$event->contact_url,
+			$event->get( 'contact_name' ),
+			$event->get( 'contact_phone' ),
+			$event->get( 'contact_email' ),
+			$event->get( 'contact_url' ),
 		);
 		$contact = array_filter( $contact );
 		$contact = implode( '; ', $contact );
@@ -737,9 +742,10 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		// = Recurrence rules =
 		// ====================
 		$rrule = array();
-		if ( ! empty( $event->recurrence_rules ) ) {
+		$recurrence = $event->get( 'recurrence_rules' );
+		if ( ! empty( $recurrence ) ) {
 			$rules = array();
-			foreach ( explode( ';', $event->recurrence_rules ) as $v) {
+			foreach ( explode( ';', $event->get( 'recurrence_rules' ) ) as $v) {
 				if ( strpos( $v, '=' ) === false ) {
 					continue;
 				}
@@ -779,10 +785,12 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		// ===================
 		// = Exception rules =
 		// ===================
+		$exceptions = $event->get( 'exception_rules' );
 		$exrule = array();
-		if ( ! empty( $event->exception_rules ) ) {
+		if ( ! empty( $exceptions ) ) {
 			$rules = array();
-			foreach ( explode( ';', $event->exception_rules ) as $v) {
+			
+			foreach ( explode( ';', $exceptions ) as $v) {
 				if ( strpos( $v, '=' ) === false ) {
 					continue;
 				}
@@ -834,9 +842,13 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		// For all day events that use a date as DTSTART, date must be supplied
 		// For other other events which use DATETIME, we must use that as well
 		// We must also match the exact starting time
-		if ( ! empty( $event->exception_dates ) ) {
-			foreach( explode( ',', $event->exception_dates ) as $exdate ) {
-				if( $event->allday ) {
+		$exception_dates = $event->get( 'exception_dates' );
+		if ( ! empty( $exception_dates ) ) {
+			foreach (
+				explode( ',', $exception_dates )
+				as $exdate
+			) {
+				if ( $event->is_allday() ) {
 					// the local date will be always something like 20121122T000000Z
 					// we just need the date
 					$exdate = substr(
@@ -921,26 +933,24 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 	 *
 	 * @return array
 	 */
-	protected function _add_categories_and_tags( $terms, array $imported_terms,
-			$is_tag, $use_name ) {
-		$taxonomy = $is_tag ? 'events_tags' : 'events_categories';
-		$categories = explode( ',', $terms );
-		$get_term_by = $use_name ? 'name' : 'id';
+	protected function _add_categories_and_tags(
+		$terms,
+		array $imported_terms,
+		$is_tag,
+		$use_name
+	) {
+		$taxonomy       = $is_tag ? 'events_tags' : 'events_categories';
+		$categories     = explode( ',', $terms );
+		$get_term_by    = $use_name ? 'name' : 'id';
+		$event_taxonomy = $this->_registry->get( 'model.event.taxonomy' );
 		foreach ( $categories as $cat_name ) {
 			$cat_name = trim( $cat_name );
 			if ( empty( $cat_name ) ) {
 				continue;
 			}
-			// check if the category exist
-			$cat = get_term_by( $get_term_by, $cat_name, $taxonomy );
-			// If it doesn't exist
-			if ( false === $cat ) {
-				$term = wp_insert_term( $cat_name, $taxonomy );
-				if ( ! is_wp_error( $term ) ) {
-					$imported_terms[$term ['term_id']] = true;
-				}
-			} else {
-				$imported_terms[$cat->term_id] = true;
+			$term_id = $event_taxonomy->initiate_term( $cat_name, $taxonomy );
+			if ( false !== $term_id ) {
+				$imported_terms[$term_id] = true;
 			}
 		}
 		return $imported_terms;

@@ -12,18 +12,16 @@
 class Ai1ec_Event_Creating extends Ai1ec_Base {
 
 	/**
-	 * save_post function
-	 *
-	 * Saves meta post data
+	 * Saves meta post data.
 	 *
 	 * @wp_hook save_post
 	 *
-	 * @param  int    $post_id Post ID
-	 * @param  object $post    Post object
+	 * @param  int    $post_id Post ID.
+	 * @param  object $post    Post object.
 	 *
 	 * @return object|null Saved Ai1ec_Event object if successful or null.
 	 */
-	function save_post( $post_id, $post ) {
+	public function save_post( $post_id, $post ) {
 		// verify this came from the our screen and with proper authorization,
 		// because save_post can be triggered at other times
 		if (

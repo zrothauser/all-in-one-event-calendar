@@ -44,7 +44,7 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 			$role_list = array( 'administrator', 'editor', 'author' );
 			foreach ( $role_list as $role_name ) {
 				$role = get_role( $role_name );
-				if ( NULL === $role || ! ( $role instanceof WP_Role ) ) {
+				if ( null === $role || ! ( $role instanceof WP_Role ) ) {
 					continue;
 				}
 				// Read events.
@@ -82,18 +82,18 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 		// = labels for custom post type =
 		// ===============================
 		$labels = array(
-			'name'               => _x( 'Events', 'Custom post type name', AI1EC_PLUGIN_NAME ),
-			'singular_name'      => _x( 'Event', 'Custom post type name (singular)', AI1EC_PLUGIN_NAME ),
-			'add_new'            => __( 'Add New', AI1EC_PLUGIN_NAME ),
-			'add_new_item'       => __( 'Add New Event', AI1EC_PLUGIN_NAME ),
-			'edit_item'          => __( 'Edit Event', AI1EC_PLUGIN_NAME ),
-			'new_item'           => __( 'New Event', AI1EC_PLUGIN_NAME ),
-			'view_item'          => __( 'View Event', AI1EC_PLUGIN_NAME ),
-			'search_items'       => __( 'Search Events', AI1EC_PLUGIN_NAME ),
-			'not_found'          => __( 'No Events found', AI1EC_PLUGIN_NAME ),
-			'not_found_in_trash' => __( 'No Events found in Trash', AI1EC_PLUGIN_NAME ),
-			'parent_item_colon'  => __( 'Parent Event', AI1EC_PLUGIN_NAME ),
-			'menu_name'          => __( 'Events', AI1EC_PLUGIN_NAME ),
+			'name'               => Ai1ec_I18n::_x( 'Events', 'Custom post type name' ),
+			'singular_name'      => Ai1ec_I18n::_x( 'Event', 'Custom post type name (singular)' ),
+			'add_new'            => Ai1ec_I18n::__( 'Add New' ),
+			'add_new_item'       => Ai1ec_I18n::__( 'Add New Event' ),
+			'edit_item'          => Ai1ec_I18n::__( 'Edit Event' ),
+			'new_item'           => Ai1ec_I18n::__( 'New Event' ),
+			'view_item'          => Ai1ec_I18n::__( 'View Event' ),
+			'search_items'       => Ai1ec_I18n::__( 'Search Events' ),
+			'not_found'          => Ai1ec_I18n::__( 'No Events found' ),
+			'not_found_in_trash' => Ai1ec_I18n::__( 'No Events found in Trash' ),
+			'parent_item_colon'  => Ai1ec_I18n::__( 'Parent Event' ),
+			'menu_name'          => Ai1ec_I18n::__( 'Events' ),
 			'all_items'          => $this->get_all_items_name(),
 		);
 
@@ -111,7 +111,7 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 			$page_base = get_page_uri( $settings->get( 'calendar_page_id' ) );
 		}
 
-		$rewrite     = array( 'slug' => __( 'ai1ec_event', AI1EC_PLUGIN_NAME ) );
+		$rewrite     = array( 'slug' => Ai1ec_I18n::__( 'ai1ec_event' ) );
 		$has_archive = true;
 		if (
 			$settings->get( 'calendar_base_url_for_permalinks' ) &&
@@ -154,24 +154,24 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 		// = labels for event categories taxonomy =
 		// ========================================
 		$events_categories_labels = array(
-			'name'          => _x( 'Event Categories', 'Event categories taxonomy', AI1EC_PLUGIN_NAME ),
-			'singular_name' => _x( 'Event Category', 'Event categories taxonomy (singular)', AI1EC_PLUGIN_NAME )
+			'name'          => Ai1ec_I18n::_x( 'Event Categories', 'Event categories taxonomy' ),
+			'singular_name' => Ai1ec_I18n::_x( 'Event Category', 'Event categories taxonomy (singular)' )
 		);
 
 		// ==================================
 		// = labels for event tags taxonomy =
 		// ==================================
 		$events_tags_labels = array(
-			'name'          => _x( 'Event Tags', 'Event tags taxonomy', AI1EC_PLUGIN_NAME ),
-			'singular_name' => _x( 'Event Tag', 'Event tags taxonomy (singular)', AI1EC_PLUGIN_NAME )
+			'name'          => Ai1ec_I18n::_x( 'Event Tags', 'Event tags taxonomy' ),
+			'singular_name' => Ai1ec_I18n::_x( 'Event Tag', 'Event tags taxonomy (singular)' )
 		);
 
 		// ==================================
 		// = labels for event feeds taxonomy =
 		// ==================================
 		$events_feeds_labels = array(
-			'name'          => _x( 'Event Feeds', 'Event feeds taxonomy', AI1EC_PLUGIN_NAME ),
-			'singular_name' => _x( 'Event Feed', 'Event feed taxonomy (singular)', AI1EC_PLUGIN_NAME )
+			'name'          => Ai1ec_I18n::_x( 'Event Feeds', 'Event feeds taxonomy' ),
+			'singular_name' => Ai1ec_I18n::_x( 'Event Feed', 'Event feed taxonomy (singular)' )
 		);
 
 		// ======================================
@@ -252,32 +252,43 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 		// ========================================
 		register_post_type( AI1EC_POST_TYPE, $args );
 	}
+
 	/**
-	 * get_all_items_name function
+	 * Appending pending items number to the menu name.
 	 *
 	 * If current user can publish events and there
 	 * is at least 1 event pending, append the pending
 	 * events number to the menu
 	 *
 	 * @return string
-	 **/
-	function get_all_items_name() {
-
+	 */
+	public function get_all_items_name() {
 		// if current user can publish events
-		if( current_user_can( 'publish_ai1ec_events' ) ) {
+		if ( current_user_can( 'publish_ai1ec_events' ) ) {
 			// get all pending events
-			$query = new WP_Query(  array ( 'post_type' => 'ai1ec_event', 'post_status' => 'pending', 'posts_per_page' => -1,  ) );
+			$query = array (
+				'post_type'      => AI1EC_POST_TYPE,
+				'post_status'    => 'pending',
+				'posts_per_page' => -1,
+			);
+			$query = new WP_Query( $query );
 
 			// at least 1 pending event?
-			if( $query->post_count > 0 ) {
+			if ( $query->post_count > 0 ) {
 				// append the pending events number to the menu
 				return sprintf(
-					__( 'All Events <span class="update-plugins count-%d" title="%d Pending Events"><span class="update-count">%d</span></span>', AI1EC_PLUGIN_NAME ),
-					$query->post_count, $query->post_count, $query->post_count );
+					Ai1ec_I18n::__(
+						'All Events <span class="update-plugins count-%d" title="%d Pending Events"><span class="update-count">%d</span></span>'
+					),
+					$query->post_count,
+					$query->post_count,
+					$query->post_count
+				);
 			}
 		}
 
 		// no pending events, or the user doesn't have sufficient capabilities
-		return __( 'All Events', AI1EC_PLUGIN_NAME );
+		return Ai1ec_I18n::__( 'All Events' );
 	}
+
 }

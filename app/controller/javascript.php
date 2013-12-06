@@ -53,13 +53,6 @@ class Ai1ec_Javascript_Controller {
 	private $_settings;
 
 	/**
-	 * The event helper class
-	 *
-	 * @var Ai1ec_Events_Helper
-	 */
-	private $_time_controller;
-
-	/**
 	 * @var Ai1ec_Locale
 	 */
 	private $_locale;
@@ -73,11 +66,6 @@ class Ai1ec_Javascript_Controller {
 	 * @var Ai1ec_Acl_Aco
 	 */
 	private $_aco;
-
-	/**
-	 * @var Ai1ec_Post_Helper
-	 */
-	private $_post_helper;
 
 	/**
 	 * @var Ai1ec_Template_Link_Helper
@@ -96,7 +84,6 @@ class Ai1ec_Javascript_Controller {
 		$this->_settings             = $registry->get( 'model.settings' );
 		$this->_locale               = $registry->get( 'p28n.wpml' );
 		$this->_aco                  = $registry->get( 'acl.aco' );
-		$this->_post_helper          = $registry->get( 'post.helper' );
 		$this->_template_link_helper = $registry->get( 'template.link.helper' );
 		// this will need to be modified
 		$this->_scripts_helper       = $registry->get( 'script.helper' );
@@ -356,7 +343,7 @@ class Ai1ec_Javascript_Controller {
 		// Replace desired CSS selector with calendar, if selector has been set
 		$calendar_selector = $this->_settings->get( 'calendar_css_selector' );
 		if( $calendar_selector ) {
-			$page             = $this->_post_helper->get_post(
+			$page             = get_post(
 				$this->_settings->get( 'calendar_post_id ' )
 			);
 			$data['selector'] = $calendar_selector;

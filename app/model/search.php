@@ -186,7 +186,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	 * @param int|null $exclude_post_id Do not match against this post ID
 	 *
 	 * @return object|null ID of matching event post, or NULL if no match
-	 **/
+	 */
 	public function get_matching_event_id(
 		$uid,
 		$feed,
@@ -233,174 +233,6 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		}
 
 		return ( 86400 === $event['end'] - $event['start'] );
-	}
-
-	/**
-	 * Creates a new entry in the cache table for each date.
-	 *
-	 * Only for events not already cached.
-	 *
-	 * @param Ai1ec_Event $event Event to generate cache table for.
-	 *
-	 * @return void
-	 */
-	public function cache_event( Ai1ec_Event &$event ) {
-		$db = $this->_registry->get( 'dbi.dbi' );
-
-		$evs = array();
-		$e	 = array(
-			'post_id' => $event->post_id,
-			'start'   => $event->start,
-			'end'     => $event->end,
-		);
-		$duration = $event->getDuration();
-
-		// Timestamp of today date + 3 years (94608000 seconds)
-		$tif    = time() + 94608000;
-		// Always cache initial instance
-		$evs[]  = $e;
-
-		$_start = $event->start->format_to_gmt();
-
-		if ( $event->recurrence_rules ) {
-			$start            = $event->start;
-			$wdate            = $startdate = iCalUtilityFunctions::_timestamp2date( $_start, 6 );
-			$enddate          = iCalUtilityFunctions::_timestamp2date( $tif, 6 );
-			$exclude_dates    = array();
-			$recurrence_dates = array();
-			$recurrence_rule  = $this->_registry->get( 'recurrence.rule' );
-			if ( $event->exception_rules ) {
-
-				// creat an array for the rules
-				$exception_rules = $recurrence_rule->build_recurrence_rules_array(
-					$event->exception_rules
-				);
-				$exception_rules = iCalUtilityFunctions::_setRexrule( $exception_rules );
-				$result = array();
-				// The first array is the result and it is passed by reference
-				iCalUtilityFunctions::_recur2date(
-					$exclude_dates,
-					$exception_rules,
-					$wdate,
-					$startdate,
-					$enddate
-				);
-			}
-			$recurrence_rules = $recurrence_rule->build_recurrence_rules_array(
-				$event->recurrence_rules
-			);
-			$recurrence_rules = iCalUtilityFunctions::_setRexrule( $recurrence_rules );
-			iCalUtilityFunctions::_recur2date(
-				$recurrence_dates,
-				$recurrence_rules,
-				$wdate,
-				$startdate,
-				$enddate
-			);
-			// Add the instances
-			foreach ( $recurrence_dates as $date => $bool ) {
-				// The arrays are in the form timestamp => true so an isset call is what we need
-				if ( isset( $exclude_dates[$date] ) ) {
-					continue;
-				}
-				$e['start'] = $date;
-				$e['end']   = $date + $duration;
-				$excluded   = false;
-
-
-				// Check if exception dates match this occurence
-				if ( $event->exception_dates ) {
-					if (
-						$this->date_match_exdates(
-							$date,
-							$event->exception_dates
-						)
-					) {
-						$excluded = true;
-					}
-				}
-
-				// Add event only if it is not excluded
-				if ( false === $excluded ) {
-					$evs[] = $e;
-				}
-			}
-		}
-
-		// Make entries unique (sometimes recurrence generator creates duplicates?)
-		$evs_unique = array();
-		foreach ( $evs as $ev ) {
-			$evs_unique[md5( serialize( $ev ) )] = $ev;
-		}
-
-		foreach ( $evs_unique as $e ) {
-
-			// Find out if this event instance is already accounted for by an
-			// overriding 'RECURRENCE-ID' of the same iCalendar feed (by comparing the
-			// UID, start date, recurrence). If so, then do not create duplicate
-			// instance of event.
-			$matching_event_id = null;
-			if ( $event->ical_uid ) {
-				$matching_event_id = $this->get_matching_event_id(
-					$event->ical_uid,
-					$event->ical_feed_url,
-					$e['start'],
-					false,	// Only search events that does not define
-					// recurrence (i.e. only search for RECURRENCE-ID events)
-					$event->post_id
-				);
-			}
-
-			// If no other instance was found
-			if ( null === $matching_event_id ) {
-				$this->insert_event_in_cache_table( $e );
-			}
-		}
-		// perform actions like cleaning the cache
-		do_action( 'ai1ec_save_event_instance', $event->post_id );
-	}
-
-	/**
-	 * insert_event_in_cache_table function
-	 *
-	 * Inserts a new record in the cache table
-	 *
-	 * @param array $event Event array
-	 *
-	 * @return void
-	 */
-	public function insert_event_in_cache_table( array $event ) {
-		// Return the start/end times to GMT zone
-		$values = array(
-			'post_id' => $event['post_id'],
-			'start'   => $event['start']->format_to_gmt(),
-			'end'     => $event['end']->format_to_gmt(),
-		);
-		$dbi            = $this->_registry->get( 'dbi.dbi' );
-
-		$dbi->query(
-			$dbi->prepare(
-				'INSERT INTO ' . $dbi->get_table_name( 'ai1ec_event_instances' ) .
-				'       ( post_id,  start,  end ) ' .
-				'VALUES ( %d,       %d,     %d  )',
-				$values
-			)
-		);
-		// perform actions like cleaning the cache
-		do_action( 'ai1ec_save_event_in_table', $event['post_id'] );
-	}
-
-	/**
-	 * delete_event_cache function
-	 *
-	 * Delete cache of event
-	 *
-	 * @param int $pid Event post ID
-	 *
-	 * @return void
-	 **/
-	public function delete_event_cache( $pid ) {
-		return $this->_clean_instance_table( $pid );
 	}
 
 	/**
@@ -460,21 +292,20 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	}
 
 	/**
-	 * _get_filter_sql function
+	 * Take filter and return SQL options.
 	 *
 	 * Takes an array of filtering options and turns it into JOIN and WHERE
-	 * statements for running an SQL query limited to the specified options
+	 * statements for running an SQL query limited to the specified options.
 	 *
-	 * @param array $filter    Array of filters for the events returned:
-	 *                         ['cat_ids']   => list of category IDs
-	 *                         ['tag_ids']   => list of tag IDs
-	 *                         ['post_ids']  => list of event post IDs
-	 *                         ['auth_ids']  => list of event author IDs
-	 *                         This array is modified to have:
-	 *                         ['filter_join']  the Join statements for the SQL
-	 *                         ['filter_where'] the Where statements for the SQL
+	 * @param array $filter Array of filters for the events returned:
+	 *                          ['cat_ids']   => list of category IDs
+	 *                          ['tag_ids']   => list of tag IDs
+	 *                          ['post_ids']  => list of event post IDs
+	 *                          ['auth_ids']  => list of event author IDs
 	 *
-	 * @return array the modified filter array
+	 * @return array The modified filter array to having:
+	 *                   ['filter_join']  the Join statements for the SQL
+	 *                   ['filter_where'] the Where statements for the SQL
 	 */
 	protected function _get_filter_sql( $filter ) {
 		$filter_join = $filter_where = array();

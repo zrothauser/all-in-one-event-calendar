@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Modal class representing an event or an event instance.
+ * Model representing an event or an event instance.
  *
  * @author       Time.ly Network, Inc.
  * @since        2.0
@@ -16,6 +16,13 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 */
 	protected $_entity    = null;
 
+	/**
+	 * @var array Map of fields that require special care during set/get
+	 *            operations. Values have following meanings:
+	 *            [0]  - both way care required;
+	 *            [1]  - only `set` operations require care;
+	 *            [-1] - only `get` (for storage) operations require care.
+	 */
 	protected $_swizzable = array(
 		'contact_url' => 0,
 		'cost'        => 0,
@@ -24,8 +31,21 @@ class Ai1ec_Event extends Ai1ec_Base {
 		'end'         => -1,
 	);
 
+	/**
+	 * @var bool|null Boolean cache-definition indicating if event is multiday.
+	 */
 	protected $_is_multiday = null;
 
+	/**
+	 * Overload access to former fields to diagnose problems early.
+	 *
+	 * @TODO: remove this before 2.0/Core-beta.
+	 *
+	 * @param string $property Name of property being set.
+	 * @param mixed  $value    Value attempted to set.
+	 *
+	 * @return Ai1ec_Event Instance of self for chaining.
+	 */
 	public function __set( $property, $value ) {
 		trigger_error(
 			'Directly accessing Ai1ec_Event attributes is deprecated',
@@ -55,6 +75,13 @@ class Ai1ec_Event extends Ai1ec_Base {
 		return $this->get( $name );
 	}
 
+	/**
+	 * Wrapper to get property value.
+	 *
+	 * @param string $property Name of property to get.
+	 *
+	 * @return mixed Actual property.
+	 */
 	public function get( $property ) {
 		return $this->_entity->get( $property );
 	}
@@ -81,6 +108,13 @@ class Ai1ec_Event extends Ai1ec_Base {
 		return $this;
 	}
 
+	/**
+	 * Set object fields from arbitrary array.
+	 *
+	 * @param array $data Supposedly map of fields to initiate.
+	 *
+	 * @return Ai1ec_Event Instance of self for chaining.
+	 */
 	public function initialize_from_array( array $data ) {
 		// =======================================================
 		// = Assign each event field the value from the database =
@@ -102,6 +136,19 @@ class Ai1ec_Event extends Ai1ec_Base {
 		return $this;
 	}
 
+	/**
+	 * Initialize object from ID.
+	 *
+	 * Attempts to retrieve entity from database and if succeeds - uses
+	 * {@see self::initialize_from_array} to initiate actual values.
+	 *
+	 * @param int      $post_id  ID of post (event) to initiate.
+	 * @param int|bool $instance ID of event instance, false for base event.
+	 *
+	 * @return Ai1ec_Event Instance of self for chaining.
+	 *
+	 * @throws Ai1ec_Event_Not_Found_Exception If entity is not locatable.
+	 */
 	public function initialize_from_id( $post_id, $instance = false ) {
 		$post = get_post( $post_id );
 		if ( ! $post || $post->post_status == 'auto-draft' ) {
@@ -199,14 +246,17 @@ class Ai1ec_Event extends Ai1ec_Base {
 	/**
 	 * Create new event object, using provided data for initialization.
 	 *
-	 * @param Ai1ec_Registry_Object $registry
-	 * @param int|array $data  Look up post with id $data, or initialize fields
-	 *                         with flat associative array $data containing both
-	 *                         post and event fields returned by join query
-	 * @param bool $instance
+	 * @param Ai1ec_Registry_Object $registry  Injected object registry.
+	 * @param int|array|null        $data      Look up post with id $data, or
+	 *                                         initialize fields with associative
+	 *                                         array $data containing both post
+	 *                                         and event fields.
+	 * @param bool                  $instance  Optionally instance ID.
 	 *
-	 * @throws Ai1ec_Invalid_Argument
-	 * @throws Ai1ec_Event_Not_Found_Exception
+	 * @throws Ai1ec_Invalid_Argument_Exception When $data is not one
+	 *                                          of int|array|null.
+	 * @throws Ai1ec_Event_Not_Found_Exception  When $data relates to
+	 *                                          non-existent ID.
 	 *
 	 * @return void
 	 */
@@ -225,7 +275,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 		} else if ( is_array( $data ) ) {
 			$this->initialize_from_array( $data );
 		} else {
-			throw new Ai1ec_Invalid_Argument(
+			throw new Ai1ec_Invalid_Argument_Exception(
 				'Argument to constructor must be integer, array or null' .
 				', not ' . var_export( $data, true )
 			);
@@ -268,6 +318,8 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 * @param string $intent Char definition: 'b' - buy, 'd' - details
 	 *
 	 * @return string Loggable URL form
+	 *
+	 * @staticvar array $options Defaut options to persist between instances.
 	 */
 	protected function _make_url_loggable( $url, $intent ) {
 		static $options = NULL;
@@ -341,6 +393,13 @@ class Ai1ec_Event extends Ai1ec_Base {
 		return (string)$cost;
 	}
 
+	/**
+	 * Return UID to use according to ICS rules.
+	 *
+	 * @return string UID event identifier.
+	 *
+	 * @staticvar string $_blog_url Base URL of blog, used as part of UID.
+	 */
 	public function get_uid() {
 		static $_blog_url = NULL;
 		if ( NULL === $_blog_url ) {
@@ -349,18 +408,41 @@ class Ai1ec_Event extends Ai1ec_Base {
 		return $this->post_id . '@' . $_blog_url;
 	}
 
+	/**
+	 * Check if event is free.
+	 *
+	 * @return bool Free status.
+	 */
 	public function is_free() {
-		return $this->get( 'is_free' );
+		return (bool)$this->get( 'is_free' );
 	}
 
+	/**
+	 * Check if event is taking all day.
+	 *
+	 * @return bool True for all-day long events.
+	 */
 	public function is_allday() {
-		return $this->get( 'allday' );
+		return (bool)$this->get( 'allday' );
 	}
 
+	/**
+	 * Check if event has virtually no time.
+	 *
+	 * @return bool True for instant events.
+	 */
 	public function is_instant() {
-		return $this->get( 'instant_event' );
+		return (bool)$this->get( 'instant_event' );
 	}
 
+	/**
+	 * Check if event is taking multiple days.
+	 *
+	 * Uses object-wide variable {@see self::$_is_multiday} to store
+	 * calculated value after first call.
+	 *
+	 * @return bool True for multiday events.
+	 */
 	public function is_multiday() {
 		if ( null === $this->_is_multiday ) {
 			$start = $this->get( 'start' );

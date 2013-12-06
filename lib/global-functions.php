@@ -38,3 +38,17 @@ function ai1ec_stop() {
 		echo ob_get_clean();
 	}
 }
+
+/**
+ * Indicate deprecated function.
+ *
+ * @param string $function Name of called function.
+ *
+ * @return void
+ */
+function ai1ec_deprecated( $function ) {
+	trigger_error(
+		'Function \'' . $function . '\' is deprecated.',
+		E_USER_WARNING
+	);
+}

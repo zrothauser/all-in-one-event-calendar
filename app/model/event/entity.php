@@ -1,21 +1,25 @@
 <?php
 
+/**
+ * Event internal structure representation. Plain value object.
+ *
+ * @author       Time.ly Network, Inc.
+ * @since        2.0
+ * @instantiator new
+ * @package      Ai1EC
+ * @subpackage   Ai1EC.Model
+ */
 class Ai1ec_Event_Entity extends Ai1ec_Base {
 
-	public function set( $name, $value ) {
-		static $time_fields = array(
-			'start' => true,
-			'end'   => true,
-		);
-		$field = '_' . $name;
-		if ( isset( $time_fields[$name] ) ) {
-			$this->{$field}->set_time( $value );
-		} else {
-			$this->{$field} = $value;
-		}
-		return $this;
-	}
-
+	/**
+	 * Get list of object properties.
+	 *
+	 * Special value `registry` ({@see Ai1ec_Registry_Object}) is excluded.
+	 *
+	 * @return array List of accessible properties.
+	 *
+	 * @staticvar array $known List of properties.
+	 */
 	public function list_properties() {
 		static $known = null;
 		if ( null === $known ) {
@@ -31,6 +35,48 @@ class Ai1ec_Event_Entity extends Ai1ec_Base {
 		return $known;
 	}
 
+	/**
+	 * Change stored property.
+	 *
+	 * @param string $name  Name of property to change.
+	 * @param mixed  $value Arbitrary value to use.
+	 *
+	 * @return Ai1ec_Event_Entity Instance of self for chaining.
+	 *
+	 * @staticvar array $time_fields Map of fields holding a value of
+	 *                               {@see Ai1ec_Date_Time}, which
+	 *                               require modification instead of
+	 *                               replacement.
+	 */
+	public function set( $name, $value ) {
+		static $time_fields = array(
+			'start' => true,
+			'end'   => true,
+		);
+		if ( 'registry' === $name ) {
+			return $this; // short-circuit: protection mean.
+		}
+		$field = '_' . $name;
+		if ( isset( $time_fields[$name] ) ) {
+			if ( $value instanceof Ai1ec_Date_Time ) {
+				$this->{$field} = $value;
+			} else {
+				$this->{$field}->set_time( $value );
+			}
+		} else {
+			$this->{$field} = $value;
+		}
+		return $this;
+	}
+
+	/**
+	 * Get a value of some property.
+	 *
+	 * @param string $name    Name of property to get.
+	 * @param mixed  $default Value to return if property is not defined.
+	 *
+	 * @return mixed Found value or $default.
+	 */
 	public function get( $name, $default = null ) {
 		if ( ! isset( $this->{ '_' . $name } ) ) {
 			return $default;
@@ -38,6 +84,13 @@ class Ai1ec_Event_Entity extends Ai1ec_Base {
 		return $this->{ '_' . $name };
 	}
 
+	/**
+	 * Initialize values to some sane defaults.
+	 *
+	 * @param Ai1ec_Registry_Object $registry Injected registry.
+	 *
+	 * @return void
+	 */
 	public function __construct( Ai1ec_Registry_Object $registry ) {
 		parent::__construct( $registry );
 		$ctime = $this->_registry->get( 'date.time' );

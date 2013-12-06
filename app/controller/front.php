@@ -284,10 +284,6 @@ class Ai1ec_Front_Controller {
 				array( 'view.admin.settings', 'add_page' )
 			);
 			$dispatcher->register_action(
-				'admin_menu',
-				array( 'view.calendar-feeds', 'add_page' )
-			);
-			$dispatcher->register_action(
 				'init',
 				array( 'controller.javascript', 'load_admin_js' )
 			);
@@ -327,11 +323,7 @@ class Ai1ec_Front_Controller {
 			);
 			$dispatcher->register_action(
 				'add_meta_boxes',
-				array( 'app.helper', 'add_meta_boxes' )
-			);
-			$dispatcher->register_action(
-				'init',
-				array( 'app.helper', 'create_post_type' )
+				array( 'view.add-new-event', 'event_meta_box_container' )
 			);
 			$dispatcher->register_action(
 				'save_post',

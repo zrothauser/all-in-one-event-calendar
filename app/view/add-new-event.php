@@ -6,6 +6,24 @@
 class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 
 	/**
+	 * Create hook to display event meta box when creating or editing an event.
+	 *
+	 * @wp_hook add_meta_boxes
+	 *
+	 * @return void
+	 */
+	public function event_meta_box_container() {
+		add_meta_box(
+			AI1EC_POST_TYPE,
+			Ai1ec_I18n::__( 'Event Details' ),
+			array( $this, 'meta_box_view' ),
+			AI1EC_POST_TYPE,
+			'normal',
+			'high'
+		);
+	}
+
+	/**
 	 * Add Event Details meta box to the Add/Edit Event screen in the dashboard.
 	 *
 	 * @return void
@@ -72,7 +90,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			try {
 				$event = $this->_registry->get(
 					'model.event',
-					$post_helper->get_post_object_value( 'ID' ),
+					get_the_ID(),
 					$instance_id
 				);
 			} catch ( Ai1ec_Event_Not_Found $excpt ) {
@@ -258,7 +276,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		) {
 			$args             = array();
 			$post_type_object = get_post_type_object(
-				$post_helper->get_post_object_value( 'post_type' )
+				get_post()->post_type
 			);
 			if ( current_user_can( $post_type_object->cap->publish_posts ) ) {
 				$args['button_value'] = is_null( $event )

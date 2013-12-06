@@ -31,6 +31,13 @@ class Ai1ec_Event_Taxonomy {
 	 */
 	protected $_post_id = 0;
 
+	/**
+	 * Store event ID in local variable.
+	 *
+	 * @param int $post_id ID of post being managed.
+	 *
+	 * @return void
+	 */
 	public function __construct( $post_id = 0 ) {
 		$this->_post_id = (int)$post_id;
 	}
@@ -68,9 +75,9 @@ class Ai1ec_Event_Taxonomy {
 	 *
 	 * @param array  $terms    List of terms to set.
 	 * @param string $taxonomy Name of taxonomy to set terms to.
-	 * @param append 
-	 * 
-	 * @return 
+	 * @param bool   $append   When true post may have multiple same instances.
+	 *
+	 * @return bool Success.
 	 */
 	public function set_terms( array $terms, $taxonomy, $append = false ) {
 		$result = wp_set_post_terms(
@@ -85,14 +92,35 @@ class Ai1ec_Event_Taxonomy {
 		return $result;
 	}
 
+	/**
+	 * Update event categories.
+	 *
+	 * @param array $categories List of category IDs.
+	 *
+	 * @return bool Success.
+	 */
 	public function set_categories( array $categories ) {
 		return $this->set_terms( $categories, self::CATEGORIES );
 	}
 
+	/**
+	 * Update event tags.
+	 *
+	 * @param array $tags List of tag IDs.
+	 *
+	 * @return bool Success.
+	 */
 	public function set_tags( array $tags ) {
 		return $this->set_terms( $tags, self::TAGS );
 	}
 
+	/**
+	 * Update event feed description.
+	 *
+	 * @param object $feed Feed object.
+	 *
+	 * @return bool Success.
+	 */
 	public function set_feed( $feed ) {
 		$feed_name = $feed->feed_url;
 		// If the feed is not from an imported file, parse the url.

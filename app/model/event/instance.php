@@ -1,14 +1,40 @@
 <?php
 
+/**
+ * Event instance management model.
+ *
+ * @author       Time.ly Network, Inc.
+ * @since        2.0
+ * @package      Ai1EC
+ * @subpackage   Ai1EC.Model
+ */
 class Ai1ec_Event_Instance extends Ai1ec_Base {
 
+	/**
+	 * @var Ai1ec_Dbi Instance of database abstraction.
+	 */
 	protected $_dbi = null;
 
+	/**
+	 * Store locally instance of Ai1ec_Dbi.
+	 *
+	 * @param Ai1ec_Registry_Object $registry Injected object registry.
+	 *
+	 * @return void
+	 */
 	public function __construct( Ai1ec_Registry_Object $registry ) {
 		parent::__construct( $registry );
 		$this->_dbi = $this->_registry->get( 'dbi.dbi' );
 	}
 
+	/**
+	 * Remove entries for given post. Optionally delete particular instance.
+	 *
+	 * @param int      $post_id     Event ID to remove instances for.
+	 * @param int|null $instance_id Instance ID, or null for all.
+	 *
+	 * @return int|bool Number of entries removed, or false on failure.
+	 */
 	public function clean( $post_id, $instance_id = null ) {
 		$where  = array( 'post_id' => $post_id );
 		$format = array( '%d' );
@@ -19,11 +45,25 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 		return $this->_dbi->delete( 'ai1ec_event_instances', $where, $format );
 	}
 
+	/**
+	 * Remove and then create instance entries for given event.
+	 *
+	 * @param Ai1ec_Event $event Instance of event to recreate entries for.
+	 *
+	 * @return bool Success.
+	 */
 	public function recreate( Ai1ec_Event $event ) {
 		$this->clean( $event->get( 'post_id' ) );
-		return $this->create( $event );
+		return ( false !== $this->create( $event ) );
 	}
 
+	/**
+	 * Generate and store instance entries in database for given event.
+	 *
+	 * @param Ai1ec_Event $event Instance of event to create entries for.
+	 *
+	 * @return bool Success.
+	 */
 	public function create( Ai1ec_Event $event ) {
         $evs = array();
         $e	 = array(
@@ -143,6 +183,14 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
         return true;
 	}
 
+	/**
+	 * Check if given date match dates in EXDATES rule.
+	 *
+	 * @param string $date     Date to check.
+	 * @param string $ics_rule ICS EXDATES rule.
+	 *
+	 * @return bool True if given date is in rule.
+	 */
     public function date_match_exdates( $date, $ics_rule ) {
         foreach ( explode( ',', $ics_rule ) as $_date ) {
             $_date_start = $this->_registry->get( 'date.time', $_date )

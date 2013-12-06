@@ -1,7 +1,15 @@
 <?php
 
 /**
- * Class Ai1ec_View_Add_New_Event
+ * Event create/update form backend view layer.
+ *
+ * Manage creation of boxes (containers) for our control elements
+ * and instantiating, as well as updating them.
+ *
+ * @author       Time.ly Network, Inc.
+ * @since        2.0
+ * @package      Ai1EC
+ * @subpackage   Ai1EC.View
  */
 class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 

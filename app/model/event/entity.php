@@ -93,9 +93,8 @@ class Ai1ec_Event_Entity extends Ai1ec_Base {
 	 */
 	public function __construct( Ai1ec_Registry_Object $registry ) {
 		parent::__construct( $registry );
-		$ctime = $this->_registry->get( 'date.time' );
-		$this->_start = $ctime;
-		$this->_end   = $ctime;
+		$this->_start = $this->_registry->get( 'date.time' );
+		$this->_end   = $this->_registry->get( 'date.time', '+1 hour' );
 	}
 
 	/**

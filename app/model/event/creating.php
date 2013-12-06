@@ -139,6 +139,7 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 			$end_time = $start_time + 1800;
 		}
 
+		$event->set( 'post_id',          $post_id );
 		$event->set( 'start',            $start_time );
 		$event->set( 'end',              $end_time );
 		$event->set( 'allday',           $all_day );

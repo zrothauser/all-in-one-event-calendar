@@ -540,6 +540,15 @@ class Ai1ec_Event extends Ai1ec_Base {
 		return $post_id;
 	}
 
+	/**
+	 * Prepare fields format flags to use in database operations.
+	 *
+	 * NOTICE: parameter $entity is ignored as of now.
+	 *
+	 * @param array $entity Serialized entity to prepare flags for.
+	 *
+	 * @return array List of format flags to use in integrations with DBI.
+	 */
 	public function prepare_store_format( array $entity ) {
 		$format = array(
 			'%d',
@@ -577,6 +586,13 @@ class Ai1ec_Event extends Ai1ec_Base {
 		return $format;
 	}
 
+	/**
+	 * Prepare event entity {@see self::$_entity} for persistent storage.
+	 *
+	 * Creates an array of database fields and corresponding values.
+	 *
+	 * @return array Map of fields to store.
+	 */
 	public function prepare_store_entity() {
 		$entity = array(
 			'post_id'          => $this->storage_format( 'post_id' ),
@@ -605,8 +621,8 @@ class Ai1ec_Event extends Ai1ec_Base {
 			'ical_source_url'  => $this->storage_format( 'ical_source_url' ),
 			'ical_uid'         => $this->storage_format( 'ical_uid' ),
 			'show_coordinates' => $this->storage_format( 'show_coordinates' ),
-			'latitude'         => $this->storage_format( 'latitude' ),
-			'longitude'        => $this->storage_format( 'longitude' ),
+			'latitude'         => $this->storage_format( 'latitude',  '' ),
+			'longitude'        => $this->storage_format( 'longitude', '' ),
 			'facebook_eid'     => $this->storage_format( 'facebook_eid',  0 ),
 			'facebook_user'    => $this->storage_format( 'facebook_user', 0 ),
 			'facebook_status'  => $this->storage_format( 'facebook_status' ),
@@ -614,6 +630,14 @@ class Ai1ec_Event extends Ai1ec_Base {
 		return $entity;
 	}
 
+	/**
+	 * Compact field for writing to persistent storage.
+	 *
+	 * @param string $field   Name of field to compact.
+	 * @param mixed  $default Default value to use for undescribed fields.
+	 *
+	 * @return mixed Value or $default.
+	 */
 	public function storage_format( $field, $default = null ) {
 		$value = $this->_entity->get( $field, $default );
 		if (
@@ -636,10 +660,24 @@ class Ai1ec_Event extends Ai1ec_Base {
 		return $this->get_nonloggable_url( $ticket_url );
 	}
 
+	/**
+	 * Format datetime to UNIX timestamp for storage.
+	 *
+	 * @param Ai1ec_Date_Time $start Datetime object to compact.
+	 *
+	 * @return int UNIX timestamp.
+	 */
 	protected function _handle_property_destruct_start( Ai1ec_Date_Time $start ) {
 		return $start->format_to_gmt();
 	}
 
+	/**
+	 * Format datetime to UNIX timestamp for storage.
+	 *
+	 * @param Ai1ec_Date_Time $end Datetime object to compact.
+	 *
+	 * @return int UNIX timestamp.
+	 */
 	protected function _handle_property_destruct_end( Ai1ec_Date_Time $end ) {
 		return $end->format_to_gmt();
 	}

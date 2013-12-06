@@ -153,7 +153,8 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			$exclude_event    = ! empty( $exrule );
 
 			$is_free = '';
-			if ( ! empty( $event->is_free() ) ) {
+			$free = $event->is_free();
+			if ( ! empty( $free ) ) {
 				$is_free = 'checked="checked" ';
 				$cost    = '';
 			}

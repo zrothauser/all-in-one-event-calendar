@@ -52,7 +52,8 @@ class Ai1ec_Time_I18n_Utility extends Ai1ec_Base {
 	 *
 	 * @return void Constructor does not return
 	 */
-	public function __construct( Ai1ec_Cache_Memory $memory = NULL ) {
+	public function __construct( Ai1ec_Registry_Object $registry, Ai1ec_Cache_Memory $memory = NULL ) {
+		parent::__construct( $registry );
 		if ( NULL === $memory ) {
 			$memory = $this->_registry->get( 'cache.memory', 120 ); // 30 * 4
 		}

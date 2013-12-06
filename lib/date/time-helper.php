@@ -317,6 +317,27 @@ class Ai1ec_Time_Utility extends Ai1ec_Base {
 	}
 
 	/**
+	 * get_short_time function
+	 *
+	 * Format a short-form time for use in compressed (e.g. month) views;
+	 * this is also converted to the local timezone.
+	 *
+	 * @param int  $timestamp
+	 * @param bool $convert_from_gmt Whether to convert from GMT time to local
+	 *
+	 * @return string
+	 **/
+	public function get_short_time( $timestamp, $convert_from_gmt = true ) {
+		$time_format = $this->_registry->get(
+			'model.option' 
+		)->get( 'time_format', 'g:i a' );
+		if( $convert_from_gmt ) {
+			$timestamp = $this->gmt_to_local( $timestamp );
+		}
+		return $this->date_i18n( $time_format, $timestamp, true );
+	}
+
+	/**
 	 * Get time difference occuring during DST change time
 	 *
 	 * Return the offset required to add to local time required to
@@ -636,7 +657,8 @@ class Ai1ec_Time_Utility extends Ai1ec_Base {
 	 *
 	 * @return void Constructor does not return
 	 */
-	public function __construct() {
+	public function __construct( Ai1ec_Registry_Object $registry ) {
+		parent::__construct( $registry );
 		$this->_timezones        = $this->_registry->get( 'cache.memory' );
 		$this->_gmt_offsets      = $this->_registry->get( 'cache.memory' );
 		$this->_gmtdates         = $this->_registry->get( 'cache.memory' );
@@ -651,7 +673,7 @@ class Ai1ec_Time_Utility extends Ai1ec_Base {
 			(int)$_SERVER['REQUEST_TIME'],
 			$gmt_time,
 		);
-		$this->_time_i18n        = new Ai1ec_Time_I18n_Utility();
+		$this->_time_i18n        = $this->_registry->get( 'date.time-i18n' );
 	}
 
 }

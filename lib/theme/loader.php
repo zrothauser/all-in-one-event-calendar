@@ -85,6 +85,13 @@ class Ai1ec_Theme_Loader {
 					$this->_paths['theme']
 				 );
 				break;
+			case 'png':
+				$file = $this->_registry->get(
+					'theme.file.less',
+					$filename,
+					$this->_paths['theme']
+				);
+				break;
 			case 'php':
 				$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
 				$file = $this->_registry->get(

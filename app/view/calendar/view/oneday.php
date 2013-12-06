@@ -14,7 +14,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		return $view_args;
 	}
 	
-	public function render_view( array $view_args ) {
+	public function get_content( array $view_args ) {
 
 		$time_helper = $this->_registry->get( 'date.time-helper' );
 		$defaults = array(
@@ -25,7 +25,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			'post_ids'      => array(),
 			'exact_date'    => $time_helper->current_time(),
 		);
-		$args = wp_parse_args( $args, $defaults );
+		$args = wp_parse_args( $view_args, $defaults );
 
 		// Localize requested date and get components.
 		$local_date = $time_helper->gmt_to_local( $args['exact_date'] );
@@ -49,29 +49,29 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		);
 		
 		// Create pagination links.
-		$pagination_links = $ai1ec_calendar_helper->get_oneday_pagination_links( $args );
-		$pagination_links = $ai1ec_view_helper->get_theme_view(
+		$pagination_links = $this->get_oneday_pagination_links( $args );
+		$loader = $this->_registry->get( 'theme.loader' );
+		$pagination_links = $loader->get_file(
 			'pagination.php',
-			array( 'links' => $pagination_links, 'data_type' => $args['data_type'] )
+			array( 'links' => $pagination_links, 'data_type' => $args['data_type'] ),
+			false
 		);
-		
-		$date_format = Ai1ec_Meta::get_option( 'date_format', 'l, M j, Y' );
+		$option = $this->_registry->get( 'model.option' );
+		$date_format = $option->get( 'date_format', 'l, M j, Y' );
 		$title = $time_helper->date_i18n(
 			$date_format, $local_date, true
 		);
-		$time_format = Ai1ec_Meta::get_option( 'time_format', 'g a' );
+		$time_format = $option->get( 'time_format', 'g a' );
 		
 		// Calculate today marker's position.
 		$now = $time_helper->current_time();
 		$now = $time_helper->gmt_to_local( $now );
-		$now_text = $ai1ec_events_helper->get_short_time( $now, false );
+		$now_text = $time_helper->get_short_time( $now, false );
 		$now = $time_helper->gmgetdate( $now );
 		$now = $now['hours'] * 60 + $now['minutes'];
 		
 		$is_ticket_button_enabled = false;
-		$show_reveal_button =
-			$ai1ec_settings->week_view_starts_at > 0 ||
-			$ai1ec_settings->week_view_ends_at < 24;
+		$show_reveal_button = false;
 		$view_args = array(
 			'title'                    => $title,
 			'type'                     => 'oneday',
@@ -93,13 +93,19 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			$view_args['data_type_events'] = $args['data_type'];
 		}
 		// Add navigation if requested.
-		$navigation = Ai1ec_Render_Entity_Utility::get_instance( 'Navigation' )
-			->set( $view_args )->get_content( $args['no_navigation'] );
+		$navigation = '';
+		if ( true !== $args['no_navigation'] ) {
+			$navigation = $loader->get_file( 
+				'navigation.php',
+				$view_args,
+				false
+			)->get_content();
+		} 
 		$view_args['navigation'] = $navigation;
 		
 		return apply_filters(
 			'ai1ec_get_oneday_view',
-			$ai1ec_view_helper->get_theme_view( 'oneday.php', $view_args ),
+			$loader->get_file( 'oneday.php', $view_args, false )->get_content(),
 			$view_args
 		);
 	}
@@ -132,7 +138,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			$bits['mon'], $bits['mday'] + $args['oneday_offset'] - 1, $bits['year']
 		);
 		$args['exact_date'] = $time_helper->local_to_gmt( $local_date );
-		$href = Ai1ec_View_Factory::create_href_helper_instance( $args );
+		$href = $this->_registry->get( 'html.element.href', $args );
 		$links[] = array(
 			'enabled' => true,
 			'class'=> 'ai1ec-prev-day',
@@ -144,7 +150,8 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		// = Minical datepicker =
 		// ======================
 		$args['exact_date'] = $orig_date;
-		$links[] = Ai1ec_View_Factory::create_datepicker_link(
+		$factory = $this->_registry->get( 'factory.html' );
+		$links[] = $factory->create_datepicker_link(
 			$args,
 			$args['exact_date']
 		);

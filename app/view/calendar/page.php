@@ -20,14 +20,9 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		$type       = $request->get( 'request_type' );
 		
 		$exact_date = $this->get_exact_date( $request );
-		$view = $this->_registry->get( 'view.calendar.view.' . $action );
+		$view = $this->_registry->get( 'view.calendar.view.oneday', $request );
 		$view_args = $view->get_extra_arguments( $view_args, $exact_date );
-		$view            = $this->$get_view( $view_args );
-		$content         = '';
-		$categories      = '';
-		$tags            = '';
-		$authors         = '';
-		$args_for_filter = array();
+		return $view->get_content( $view_args );
 	}
 
 	/**
@@ -109,6 +104,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 	}
 
 	public function get_view_args_for_view( Ai1ec_Abstract_Query $request ) {
+		$settings = $this->_registry->get( 'model.settings' );
 		// Define arguments for specific calendar sub-view (month, agenda,
 		// posterboard, etc.)
 		// Preprocess action.
@@ -131,7 +127,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		);
 		foreach ( $add_defaults as $query => $default ) {
 			if ( empty( $view_args[$query] ) ) {
-				$view_args[$query] = $ai1ec_settings->{$default};
+				$view_args[$query] = $settings->get( $default );
 			}
 		}
 	

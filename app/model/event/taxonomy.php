@@ -81,7 +81,7 @@ class Ai1ec_Event_Taxonomy {
 	 */
 	public function set_terms( array $terms, $taxonomy, $append = false ) {
 		$result = wp_set_post_terms(
-			$this->post_id,
+			$this->_post_id,
 			$terms,
 			$taxonomy,
 			$append

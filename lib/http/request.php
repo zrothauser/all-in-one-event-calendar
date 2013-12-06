@@ -77,7 +77,7 @@ class Ai1ec_Http_Request {
 		) {
 			add_filter( 'use_streams_transport', 'ai1ec_return_false' );
 		}
-		return $output;
+		return $status;
 	}
 
 	/**
@@ -112,5 +112,6 @@ class Ai1ec_Http_Request {
 		if ( false !== stripos( $url, '//time.ly' ) ) {
 			add_action( 'http_api_curl', array( $this, 'curl_inject_certificate' ) );
 		}
+		return $args;
 	}
 }

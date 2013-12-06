@@ -21,7 +21,7 @@ class Ai1ec_Event_Helper extends Ai1ec_Base {
 	 */
 	public function get_category_color( $term_id ) {
 		static $colors = null;
-		ai1ec_deprecated( __METHOD__ );
+		//ai1ec_deprecated( __METHOD__ );
 		if ( null === $colors ) {
 			$colors  = array();
 			$results = $this->_registry->get( 'dbi.dbi' )->select(

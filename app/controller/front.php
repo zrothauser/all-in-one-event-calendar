@@ -254,7 +254,7 @@ class Ai1ec_Front_Controller {
 			3
 		);
 		$dispatcher->register_action(
-			'http_api_curl',
+			'http_request_args',
 			array( 'http.request', 'init_certificate' ),
 			10,
 			2

@@ -278,7 +278,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// = AI1EC Theme URL =
 	// ===================
 	if ( ! defined( 'AI1EC_THEMES_URL' ) ) {
-		define( 'AI1EC_THEMES_URL',         WP_CONTENT_URL . '/' . AI1EC_THEMES_FOLDER );
+		define( 'AI1EC_THEMES_URL',         WP_CONTENT_URL . '/' . AI1EC_THEME_FOLDER );
 	}
 
 	// =====================

@@ -11,10 +11,6 @@
  */
 class Ai1ec_Events_Controller extends Ai1ec_Base {
 
-	public function __construct( Ai1ec_Registry_Object $registry ) {
-		parent::__construct( $registry );
-	}
-
 	/**
 	 * Retrieve events display template.
 	 */
@@ -29,7 +25,6 @@ class Ai1ec_Events_Controller extends Ai1ec_Base {
 			compact( 'events', 'start', 'end' ),
 			false
 		);
-
 		return $template->get_content();
 	}
 

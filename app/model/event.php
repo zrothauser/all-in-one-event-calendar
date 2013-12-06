@@ -339,7 +339,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 		}
 		$options['l'] = (string)$url;
 		$options['i'] = (string)$intent;
-		$options['c'] = (string)$this->cost;
+		$options['c'] = (string)$this->get( 'cost' );
 		return AI1EC_REDIRECTION_SERVICE .
 			base64_encode( json_encode( $options ) );
 	}

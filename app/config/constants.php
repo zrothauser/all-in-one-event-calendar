@@ -127,7 +127,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		define(
 			'AI1EC_DEFAULT_THEME_PATH',
 			AI1EC_PATH . DIRECTORY_SEPARATOR . 'public' .
-				DIRECTORY_SEPARATOR . AI1EC_THEMES_FOLDER . DIRECTORY_SEPARATOR
+				DIRECTORY_SEPARATOR . AI1EC_THEME_FOLDER . DIRECTORY_SEPARATOR
 		);
 	}
 

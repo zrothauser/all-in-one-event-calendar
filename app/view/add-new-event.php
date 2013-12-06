@@ -32,7 +32,6 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 
 		$theme_loader         = $this->_registry->get( 'theme.loader' );
 		$empty_event          = $this->_registry->get( 'model.event' );
-		$post_helper          = $this->_registry->get( 'post.helper' );
 
 		// ==================
 		// = Default values =

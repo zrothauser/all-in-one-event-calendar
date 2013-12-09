@@ -101,7 +101,6 @@ class Ai1ec_Front_Controller {
 		}
 		$router              = $this->_registry->get( 'routing.router' );
 		$localization_helper = $this->_registry->get( 'p28n.wpml' );
-		$uri_helper          = $this->_registry->get( 'routing.uri-helper' );
 		$page_base          = '';
 		$clang              = '';
 
@@ -122,10 +121,10 @@ class Ai1ec_Front_Controller {
 			$cal_page
 		);
 
-		$page_base = $uri_helper::get_pagebase( $page_base );
+		$page_base = Ai1ec_Wp_Uri_Helper::get_pagebase( $page_base );
 		$page_link = 'index.php?page_id=' .
 			$cal_page;
-		$pagebase_for_href = $uri_helper::get_pagebase_for_links(
+		$pagebase_for_href = Ai1ec_Wp_Uri_Helper::get_pagebase_for_links(
 			get_page_link( $cal_page ),
 			$clang
 		);

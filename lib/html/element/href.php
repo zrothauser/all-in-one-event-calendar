@@ -4,7 +4,7 @@
  * Renderer of settings page checkbox option.
  *
  * @author       Time.ly Network, Inc.
- * @instantiator new
+ * @instantiator Ai1ec_Factory_Html.create_href_helper_instance
  * @since        2.0
  * @package      Ai1EC
  * @subpackage   Ai1EC.Html

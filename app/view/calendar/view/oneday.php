@@ -15,8 +15,9 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 	}
 	
 	public function get_content( array $view_args ) {
-
+		fb($view_args);
 		$time_helper = $this->_registry->get( 'date.time-helper' );
+		$settings = $this->_registry->get( 'model.settings' );
 		$defaults = array(
 			'oneday_offset' => 0,
 			'cat_ids'       => array(),
@@ -26,7 +27,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			'exact_date'    => $time_helper->current_time(),
 		);
 		$args = wp_parse_args( $view_args, $defaults );
-
+		fb($args);
 		// Localize requested date and get components.
 		$local_date = $time_helper->gmt_to_local( $args['exact_date'] );
 		$bits = $time_helper->gmgetdate( $local_date );
@@ -55,7 +56,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			'pagination.php',
 			array( 'links' => $pagination_links, 'data_type' => $args['data_type'] ),
 			false
-		);
+		)->get_content();
 		$option = $this->_registry->get( 'model.option' );
 		$date_format = $option->get( 'date_format', 'l, M j, Y' );
 		$title = $time_helper->date_i18n(
@@ -72,15 +73,15 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		
 		$is_ticket_button_enabled = false;
 		$show_reveal_button = false;
+
 		$view_args = array(
 			'title'                    => $title,
 			'type'                     => 'oneday',
 			'cell_array'               => $cell_array,
-			'show_location_in_title'   => $ai1ec_settings->show_location_in_title,
+			'show_location_in_title'   => $settings->get( 'show_location_in_title' ),
 			'now_top'                  => $now,
 			'now_text'                 => $now_text,
 			'pagination_links'         => $pagination_links,
-			'post_ids'                 => join( ',', $args['post_ids'] ),
 			'time_format'              => $time_format,
 			'done_allday_label'        => false,
 			'done_grid'                => false,
@@ -88,10 +89,10 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			'data_type_events'         => '',
 			'is_ticket_button_enabled' => $is_ticket_button_enabled,
 			'show_reveal_button'       => $show_reveal_button,
+			'time_helper'              => $time_helper,
+			'event_renderer'           => $this->_registry->get( 'view.event.renderer' ),
 		);
-		if( $ai1ec_settings->ajaxify_events_in_web_widget ) {
-			$view_args['data_type_events'] = $args['data_type'];
-		}
+
 		// Add navigation if requested.
 		$navigation = '';
 		if ( true !== $args['no_navigation'] ) {
@@ -102,10 +103,11 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			)->get_content();
 		} 
 		$view_args['navigation'] = $navigation;
-		
+		$file = $loader->get_file( 'oneday.php', $view_args, false );
+		fb($file);
 		return apply_filters(
 			'ai1ec_get_oneday_view',
-			$loader->get_file( 'oneday.php', $view_args, false )->get_content(),
+			$file->get_content(),
 			$view_args
 		);
 	}
@@ -164,7 +166,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			$bits['mon'], $bits['mday'] + $args['oneday_offset'] + 1, $bits['year']
 		);
 		$args['exact_date'] = $time_helper->local_to_gmt( $local_date );
-		$href = Ai1ec_View_Factory::create_href_helper_instance( $args );
+		$href = $this->_registry->get( 'html.element.href', $args );
 		$links[] = array(
 			'enabled' => true,
 			'class'=> 'ai1ec-next-day',
@@ -214,9 +216,14 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 				$time_helper->current_time()
 			)
 		);
+		$start = $this->_registry->get( 'date.time', $timestamp );
+		$end = $this->_registry->get( 
+			'date.time', 
+			gmmktime( 0, 0, 0, $bits['mon'], $bits['mday'] + 1, $bits['year'] )
+		);
 		$day_events = $search->get_events_between( 
-			$timestamp, 
-			gmmktime( 0, 0, 0, $bits['mon'], $bits['mday'] + 1, $bits['year'] ), 
+			$start, 
+			$end, 
 			$filter
 		);
 	
@@ -224,36 +231,49 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		$all_events = array();
 	
 		foreach ( $day_events as $evt ) {
-			$evt_start = $time_helper->gmt_to_local( $evt->start );
-			$evt_end   = $time_helper->gmt_to_local( $evt->end );
+			$evt_start = $evt->get( 'start' )->format();
+			$evt_end   = $evt->get( 'end' )->format();
 	
 			// generate new event object
 			// based on this one day
-			$day_start = gmmktime( 0, 0, 0, $bits['mon'], $bits['mday'], $bits['year'] );
-			$day_end   = gmmktime( 0, 0, 0, $bits['mon'], $bits['mday']+1, $bits['year'] );
+			$timezone = $this->_registry->get( 'date.timezone' )
+				->get_default_timezone();
+			$day_start = $this->_registry->get( 
+				'date.time',
+				gmmktime( 0, 0, 0, $bits['mon'], $bits['mday'], $bits['year'] ),
+				$timezone
+			);
+			$day_end = $this->_registry->get( 
+				'date.time',
+				gmmktime( 0, 0, 0, $bits['mon'], $bits['mday'] + 1, $bits['year'] ),
+				$timezone
+			);
+			$day_start_ts = $day_start->format();
+			$day_end_ts = $day_end->format();
+			
 	
 			// If event falls on this day, make a copy.
-			if ( $evt_end > $day_start && $evt_start < $day_end ) {
+			if ( $evt_end > $day_start_ts && $evt_start < $day_end_ts ) {
 				$_evt = clone $evt;
 				if ( $evt_start < $day_start ) {
 					// If event starts before this day, adjust copy's start time
-					$_evt->start = $time_helper->local_to_gmt( $day_start );
-					$_evt->start_truncated = true;
+					$_evt->set( 'start', $day_start->format_to_gmt() );
+					$_evt->set( 'start_truncated', true );
 				}
 				if ( $evt_end > $day_end ) {
 					// If event ends after this day, adjust copy's end time
-					$_evt->end = $time_helper->local_to_gmt( $day_end );
-					$_evt->end_truncated = true;
+					$_evt->set( 'end', $day_end->format_to_gmt() );
+					$_evt->set( 'end_truncated', true );
 				}
 	
 				// Store reference to original, unmodified event, required by view.
-				$_evt->_orig = $evt;
+				$_evt->set( '_orig', $evt );
 	
 				// Place copy of event in appropriate category
-				if ( $_evt->allday ) {
-					$all_events[$day_start]['allday'][] = $_evt;
+				if ( $_evt->is_allday() ) {
+					$all_events[$day_start_ts]['allday'][] = $_evt;
 				} else {
-					$all_events[$day_start]['notallday'][] = $_evt;
+					$all_events[$day_start_ts]['notallday'][] = $_evt;
 				}
 			}
 		}
@@ -273,11 +293,11 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		$notallday = array();
 		$evt_stack = array( 0 ); // Stack to keep track of indentation
 		foreach ( $all_events[$day_date]['notallday'] as $evt ) {
-			$start_bits = $time_helper->gmgetdate( $time_helper->gmt_to_local( $evt->start ) );
+			$start_bits = $time_helper->gmgetdate( $evt->get( 'start' )->format() );
 	
 			// Calculate top and bottom edges of current event
 			$top = $start_bits['hours'] * 60 + $start_bits['minutes'];
-			$bottom = min( $top + $evt->getDuration() / 60, 1440 );
+			$bottom = min( $top + $evt->get_duration() / 60, 1440 );
 	
 			// While there's more than one event in the stack and this event's top
 			// position is beyond the last event's bottom, pop the stack

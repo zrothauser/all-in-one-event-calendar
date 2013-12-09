@@ -96,7 +96,8 @@ class Ai1ec_Time_I18n_Utility extends Ai1ec_Base {
 	 * @return array Map of date format keys and corresponding time values
 	 */
 	public function parse( $timestamp = false, $is_gmt = false ) {
-		$timestamp = Ai1ec_Time_Utility::normalize_timestamp(
+		$time_helper = $this->_registry->get( 'date.time-helper' );
+		$timestamp = $time_helper->normalize_timestamp(
 			$timestamp,
 			$is_gmt
 		);

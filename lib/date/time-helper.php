@@ -199,8 +199,8 @@ class Ai1ec_Time_Utility extends Ai1ec_Base {
 			$user = wp_get_current_user();
 			$zone = '';
 			if ( $user->ID > 0 ) {
-				global $ai1ec_app_helper;
-				$zone = $ai1ec_app_helper->user_selected_tz( $user->ID );
+				$meta_user = $this->_registry->get( 'model.meta-user' );
+				$zone = $meta_user->user_selected_tz( $user->ID );
 			}
 			unset( $user );
 			if ( empty( $zone ) ) {
@@ -288,6 +288,7 @@ class Ai1ec_Time_Utility extends Ai1ec_Base {
 	 */
 	public function get_local_offset_from_gmt( $timestamp ) {
 		$zone   = $this->get_local_timezone();
+
 		$offset = false;
 		try {
 			$offset = $this->get_timezone_offset( 'UTC', $zone, $timestamp );
@@ -295,7 +296,7 @@ class Ai1ec_Time_Utility extends Ai1ec_Base {
 			try {
 				$offset = $this->get_gmt_offset( $timestamp, $zone ) * 3600;
 			} catch ( Exception $gmt_excpt ) {
-				throw new Ai1ec_Datetime_Exception(
+				throw new Ai1ec_Date_Timezone_Exception(
 					'Invalid local timezone ' . var_export( $zone, true )
 				);
 			}
@@ -461,7 +462,7 @@ class Ai1ec_Time_Utility extends Ai1ec_Base {
 		if ( NULL === $timestamp ) {
 			$timestamp = (int)$_SERVER['REQUEST_TIME'];
 		}
-		if ( NULL === ( $date = $_this->_gmtdates->get( $timestamp ) ) ) {
+		if ( NULL === ( $date = $this->_gmtdates->get( $timestamp ) ) ) {
 			$particles = explode(
 				',',
 				gmdate( 's,i,G,j,w,n,Y,z,l,F,U', $timestamp )
@@ -544,7 +545,7 @@ class Ai1ec_Time_Utility extends Ai1ec_Base {
 		}
 		if ( NULL === ( $zone = $this->_timezones->get( $name ) ) ) {
 			try {
-				$zone = new Ai1ec_Date_Time_Zone_Utility( $name );
+				$zone = $this->_registry->get( 'date.date-time-zone', $name );
 			} catch ( Exception $excpt ) {
 				$zone = false;
 			}

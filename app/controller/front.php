@@ -232,7 +232,6 @@ class Ai1ec_Front_Controller {
 			$action = 'init';
 		}
 		add_action( $action, array( $this, 'route_request' ) );
-
 	}
 	/**
 	 * Initialize the dispatcher.

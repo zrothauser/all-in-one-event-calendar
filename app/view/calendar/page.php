@@ -122,12 +122,13 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		) );
 	
 		$add_defaults = array(
-			'cat_ids' => 'default_categories',
-			'tag_ids' => 'default_tags',
+			'cat_ids' => 'categories',
+			'tag_ids' => 'tags',
 		);
 		foreach ( $add_defaults as $query => $default ) {
 			if ( empty( $view_args[$query] ) ) {
-				$view_args[$query] = $settings->get( $default );
+				$setting = $settings->get( 'default_tags_categories' );
+				$view_args[$query] = $setting[$default];
 			}
 		}
 	

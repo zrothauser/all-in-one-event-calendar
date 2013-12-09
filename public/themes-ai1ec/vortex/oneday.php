@@ -15,7 +15,7 @@
 						</div>
 					<?php endif; ?>
 					<span class="ai1ec-weekday-date"><?php
-					echo Ai1ec_Time_Utility::date_i18n( 'l', $date, true );
+					echo $time_helper->date_i18n( 'l', $date, true );
 					?> </span>
 				</th>
 			<?php endforeach; // weekday ?>
@@ -33,24 +33,24 @@
 					foreach( $day['allday'] as $event ) :
 						$full_link = esc_attr(
 							get_permalink( $event->post_id ) .
-							$event->instance_id
+							$event->get( 'instance_id' )
 						);
 					?>
 						<a href="<?php echo $full_link; ?>"
 							<?php echo $data_type_events; ?>
-							data-instance-id="<?php echo $event->instance_id; ?>"
+							data-instance-id="<?php echo $event->get( 'instance_id' ); ?>"
 							class="ai1ec-event-container ai1ec-load-event ai1ec-popup-trigger
-								ai1ec-event-id-<?php echo $event->post_id ?>
-								ai1ec-event-instance-id-<?php echo $event->instance_id ?>
+								ai1ec-event-id-<?php echo $event->get( 'post_id' ) ?>
+								ai1ec-event-instance-id-<?php echo $event->get( 'instance_id' ) ?>
 								ai1ec-allday
-								<?php if ( $event->_orig->get_multiday() ) echo 'ai1ec-multiday'; ?>"
+								<?php if ( $event->_orig->is_multiday() ) echo 'ai1ec-multiday'; ?>"
 							>
 							<div class="ai1ec-event"
-								style="<?php echo $event->get_color_style() ?>">
+								style="<?php echo $event_renderer->get_color_style( $event ) ?>">
 								<span class="ai1ec-event-title">
-									<?php echo esc_html( apply_filters( 'the_title', $event->post->post_title, $event->post_id ) ) ?>
-									<?php if ( $show_location_in_title && isset( $event->venue ) && $event->venue != '' ): ?>
-										<span class="ai1ec-event-location"><?php echo sprintf( __( '@ %s', AI1EC_PLUGIN_NAME ), $event->venue ); ?></span>
+									<?php echo esc_html( apply_filters( 'the_title', $event->get( 'post' )->post_title, $event->get( 'post_id' ) ) ) ?>
+									<?php if ( $show_location_in_title && $event->get( 'venue' ) != '' ): ?>
+										<span class="ai1ec-event-location"><?php echo sprintf( __( '@ %s', AI1EC_PLUGIN_NAME ), $event->get( 'venue' ) ); ?></span>
 									<?php endif; ?>
 								</span>
 							</div>
@@ -64,17 +64,17 @@
 							<span class="ai1ec-popup-title popover-title">
 								<a href="<?php echo $full_link; ?>">
 									<?php if( function_exists( 'mb_strimwidth' ) ) : ?>
-										<?php echo esc_html( apply_filters( 'the_title', mb_strimwidth( $event->post->post_title, 0, 35, '...' ), $event->post_id ) );
+										<?php echo esc_html( apply_filters( 'the_title', mb_strimwidth( $event->get( 'post' )->post_title, 0, 35, '...' ), $event->get( 'post_id' ) ) );
 									else : ?>
-										<?php $read_more = strlen( $event->post->post_title ) > 35 ? '...' : ''; ?>
-										<?php echo esc_html( apply_filters( 'the_title', substr( $event->post->post_title, 0, 35 ) . $read_more, $event->post_id ) );
+										<?php $read_more = strlen( $event->get( 'post' )->post_title ) > 35 ? '...' : ''; ?>
+										<?php echo esc_html( apply_filters( 'the_title', substr( $event->get( 'post' )->post_title, 0, 35 ) . $read_more, $event->get( 'post_id' ) ) );
 									endif;
 								?></a>
-								<?php if ( $show_location_in_title && isset( $event->venue ) && $event->venue != '' ): ?>
-									<span class="ai1ec-event-location"><?php echo esc_html( sprintf( __( '@ %s', AI1EC_PLUGIN_NAME ), $event->venue ) ); ?></span>
+								<?php if ( $show_location_in_title && $event->get( 'venue' ) ): ?>
+									<span class="ai1ec-event-location"><?php echo esc_html( sprintf( __( '@ %s', AI1EC_PLUGIN_NAME ), $event->get( 'venue' ) ) ); ?></span>
 								<?php endif; ?>
-								<?php if ( $is_ticket_button_enabled && ! empty( $event->ticket_url ) ) : ?>
-									<a class="pull-right btn btn-primary btn-mini ai1ec-buy-tickets" target="_blank" href="<?php echo $event->ticket_url; ?>"><?php echo $event->get_tickets_url_label( false ); ?></a>
+								<?php if ( $is_ticket_button_enabled && ! $event->get( 'ticket_url' ) ) : ?>
+									<a class="pull-right btn btn-primary btn-mini ai1ec-buy-tickets" target="_blank" href="<?php echo $event->get( 'ticket_url' ); ?>"><?php echo $event->get_tickets_url_label( false ); ?></a>
 								<?php endif; ?>
 							</span>
 							<?php edit_post_link(

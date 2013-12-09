@@ -36,8 +36,8 @@ abstract class Ai1ec_Filter_Int implements Ai1ec_Filter_Interface {
 		$this->_registry = $registry;
 		$this->_values   = array_filter(
 			array_map(
-				$filter_values,
-				array( $this->_registry->get( 'primitive.int', 'positive' ) )
+				array( $this->_registry->get( 'primitive.int' ), 'positive' ),
+				$filter_values
 			)
 		);
 	}

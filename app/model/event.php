@@ -453,6 +453,14 @@ class Ai1ec_Event extends Ai1ec_Base {
 		}
 		return $this->_is_multiday;
 	}
+	
+	public function get_duration() {
+		static $duration;
+		if ( null === $duration ) {
+			$duration = $this->get( 'end' )->format() - $this->get( 'start' )->format();
+		}
+		return $duration;
+	}
 
 	/**
 	 * Create/update entity representation.

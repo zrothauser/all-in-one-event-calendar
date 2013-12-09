@@ -30,7 +30,6 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 	 ) {
 		parent::__construct( $registry );
 		$app = $registry->get( 'bootstrap.registry.application' );
-
 		$this->page = $app->get( 'calendar_base_page' );
 		$this->pretty_permalinks_enabled = $app->get( 'pretty_permalinks' );
 	}
@@ -44,7 +43,7 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 	 * @return Ai1ec_Href_Helper
 	 */
 	public function create_href_helper_instance( array $args, $type = 'normal' ) {
-		$href = new Ai1ec_Html_Element_Href( $args, $this->$page );
+		$href = new Ai1ec_Html_Element_Href( $args, $this->page );
 		$href->set_pretty_permalinks_enabled( $this->pretty_permalinks_enabled );
 		switch ( $type ) {
 			case 'category':

@@ -18,6 +18,8 @@ class Ai1ec_Theme_Loader {
 		'theme' => array(),
 	);
 
+	protected $_active;
+
 	/**
 	 * @var Ai1ec_Registry_Object The registry Object.
 	 */
@@ -52,7 +54,6 @@ class Ai1ec_Theme_Loader {
 		if ( AI1EC_DEFAULT_THEME_NAME !== $active_theme ) {
 			$this->_paths['theme'][] = AI1EC_DEFAULT_THEME_PATH . AI1EC_DEFAULT_THEME_NAME . DIRECTORY_SEPARATOR;
 		}
-	
 	}
 
 	/**
@@ -86,10 +87,11 @@ class Ai1ec_Theme_Loader {
 				 );
 				break;
 			case 'png':
+				$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
 				$file = $this->_registry->get(
-					'theme.file.less',
+					'theme.file.png',
 					$filename,
-					$this->_paths['theme']
+					$paths
 				);
 				break;
 			case 'php':

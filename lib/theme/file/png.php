@@ -17,7 +17,7 @@ class Ai1ec_File_Png extends Ai1ec_File_Abstract {
 	public function process_file() {
 		$files_to_check = array();
 		foreach ( array_values( $this->_paths ) as $path ) {
-			$files_to_check[] = $path . 'img/' . $this->_name;
+			$files_to_check[] = $path . '/img/' . $this->_name;
 		}
 		foreach ( $files_to_check as $file ) {
 			if ( file_exists( $file ) ) {

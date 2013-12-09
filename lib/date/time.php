@@ -97,11 +97,23 @@ class Ai1ec_Date_Time {
 	/**
 	 * Get difference in seconds between to dates.
 	 *
+	 * In PHP versions post 5.3.0 the {@see DateTimeImmutable::diff()} is
+	 * used. In earlier versions the difference between two timestamps is
+	 * being checked.
+	 *
 	 * @param Ai1ec_Date_Time $comparable Other date time entity.
 	 *
 	 * @return int Number of seconds between two dates.
 	 */
 	public function diff_sec( Ai1ec_Date_Time $comparable ) {
+		if ( version_compare( PHP_VERSION, '5.3.0' ) < 0 ) {
+			$difference = $this->_date_time->format( 'U' ) -
+				$comparable->_date_time->format( 'U' );
+			if ( $difference < 0 ) {
+				$difference *= -1;
+			}
+			return $difference;
+		}
 		$difference = $this->_date_time->diff( $comparable->_date_time, true );
 		return (
 			$difference->days * 86400 +
@@ -132,7 +144,10 @@ class Ai1ec_Date_Time {
 			$date_time_tz = $this->_registry->get( 'date.timezone' )
 				->get( $timezone );
 		}
-		$this->_date_time = new DateTime( $time, $date_time_tz );
+		// PHP <= 5.3.5 compatible
+		$this->_date_time = ( null === $date_time_tz )
+			? new DateTime( $time )
+			: new DateTime( $time, $date_time_tz );
 		return $this;
 	}
 

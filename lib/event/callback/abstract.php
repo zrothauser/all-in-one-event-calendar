@@ -51,10 +51,11 @@ abstract class Ai1ec_Event_Callback_Abstract {
 	 * @return mixed Value returned by the current method.
 	 */
 	public function run() {
+		$argv = func_get_args();
 		return $this->_registry->dispatch(
 			$this->_registry_name,
 			$this->_method,
-			func_get_args()
+			$argv
 		);
 	}
 

@@ -38,19 +38,26 @@ class Ai1ec_Compatibility_OutputBuffer {
 	}
 
 	/**
-	 * Wrap the ob_start() method:
-	 * This function will turn output buffering on.
+	 * Wrap the ob_start() method: turn output buffering on.
 	 *
-	 * @param null $output_callback
-	 * @param int $chunk_size
-	 * @param int $flags
+	 * @param callback      $output_callback Method to be called on finish.
+	 * @param int           $chunk_size      Buffer size limite.
+	 * @param int|bool|null $flags           Control performable operations.
+	 *
 	 * @return bool Returns TRUE on success or FALSE on failure.
 	 */
 	public function start(
 		$output_callback = null,
 		$chunk_size      = 0,
-		$flags           = PHP_OUTPUT_HANDLER_STDFLAGS
+		$flags           = null
 	) {
+		if ( null === $flags ) {
+			if ( defined( 'PHP_OUTPUT_HANDLER_STDFLAGS' ) ) {
+				$flags = PHP_OUTPUT_HANDLER_STDFLAGS;
+			} else {
+				$flags = true;
+			}
+		}
 		return ob_start( $output_callback, $chunk_size, $flags );
 	}
 

@@ -44,6 +44,15 @@ class Ai1ec_Front_Controller {
 		$this->_initialize_dispatcher();
 		$this->_registry->get( 'controller.shutdown' )
 			->register( 'ai1ec_stop' );
+		add_action( 'plugins_loaded', array( $this, 'register_extensions' ) );
+	}
+
+	/**
+	 * Notify extensions and pass them instance of objects registry.
+	 *
+	 * @return void
+	 */
+	public function register_extensions() {
 		do_action( 'ai1ec_loaded', $this->_registry );
 	}
 

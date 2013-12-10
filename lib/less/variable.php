@@ -28,11 +28,6 @@ abstract class Ai1ec_Less_Variable extends Ai1ec_Html_Element {
 	protected $value;
 
 	/**
-	 * @var Ai1ec_Renderable
-	 */
-	protected $renderable;
-
-	/**
 	 * it takes an array of parameters and a renderable.
 	 *
 	 * @param Ai1ec_Registry_Object $registry
@@ -47,30 +42,4 @@ abstract class Ai1ec_Less_Variable extends Ai1ec_Html_Element {
 
 	}
 
-	/**
-	 * Render the opening part of the control group html
-	 *
-	 * @return string
-	 */
-	protected function render_opening_of_control_group() {
-
-		$args = array(
-			'label' => $this->description,
-			'id'    => $this->template_adapter->escape_attribute( $this->id )
-		);
-		$loader = $this->_registry->get( 'theme.loader' );
-		$file   = $loader->get_file( 'control-group-open.twig', $args, true );
-		return $file->render();
-	}
-
-	/**
-	 * Render the closing part of the control group html
-	 *
-	 * @return string
-	 */
-	protected function render_closing_of_control_group() {
-		$loader = $this->_registry->get( 'theme.loader' );
-		$file   = $loader->get_file( 'control-group-close.twig', null, true );
-		return $file->render();
-	}
 }

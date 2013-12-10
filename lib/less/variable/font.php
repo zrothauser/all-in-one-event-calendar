@@ -5,7 +5,7 @@
  *
  * @author     Time.ly Network Inc.
  * @since      2.0
- *
+ * @instantiator new
  * @package    AI1EC
  * @subpackage AI1EC.Less
  */
@@ -50,30 +50,33 @@ class Ai1ec_Less_Variable_Font extends Ai1ec_Less_Variable {
 	 */
 	public function __construct( Ai1ec_Registry_Object $registry, array $params ) {
 		$this->fonts[__( "Custom...", AI1EC_PLUGIN_NAME )] = self::CUSTOM_FONT;
-		$select = Ai1ec_Helper_Factory::create_select_instance(
-			$params['id']
-		);
-		$select->add_class( 'ai1ec_font' );
+		if( ! in_array( $this->value, $this->fonts ) ) {
+			$this->use_custom_value = true;
+			$this->custom_value = $this->value;
+			$this->value = self::CUSTOM_FONT;
+		}
 		parent::__construct( $registry, $params );
-		$this->renderable = $this->set_up_renderable( $select );
-
 	}
 	/**
 	 * (non-PHPdoc)
 	 * add the fonts
 	 * @see Ai1ec_Less_Variable::set_up_renderable()
 	 */
-	public function set_up_renderable( Ai1ec_Renderable $renderable ) {
+	public function _get_options() {
+		$options = array();
 		foreach( $this->fonts as $text => $key ) {
-			$renderable->add_option( $text, $key );
+			$option = array(
+				'text' => $text,
+				'value' => $key,
+			);
+			if ( $key === $this->value ) {
+				$option['arg'] = array(
+					'selected' => 'selected',
+				);
+			}
+			$options[] = $option;
 		}
-		if( ! in_array( $this->value, $this->fonts ) ) {
-			$this->use_custom_value = true;
-			$this->custom_value = $this->value;
-			$this->value = self::CUSTOM_FONT;
-		}
-		$renderable->set_value( $this->value );
-		return $renderable;
+		return $options;
 	}
 
 	/**
@@ -81,23 +84,34 @@ class Ai1ec_Less_Variable_Font extends Ai1ec_Less_Variable {
 	 * @see Ai1ec_Less_Variable::render()
 	 */
 	public function render() {
-		$input = Ai1ec_Helper_Factory::create_input_instance();
-		$input->set_name( $this->id . self::CUSTOM_FONT_ID_SUFFIX );
-		$input->set_id( $this->id . self::CUSTOM_FONT_ID_SUFFIX );
-		if( $this->value !== self::CUSTOM_FONT ) {
-			$input->add_class( 'hide' );
-		} else {
-			$input->set_value( $this->custom_value );
-		}
-		$input->add_class( 'ai1ec-custom-font' );
-		$input->set_attribute(
-			'placeholder',
-			__( "Enter custom font(s)", AI1EC_PLUGIN_NAME )
+		$args = array(
+			'label' => $this->description,
+			'id'    => $this->id,
+			'input' => array(
+				'id' => $this->id . self::CUSTOM_FONT_ID_SUFFIX,
+				'value' => '',
+				'args'  => array(
+					'placeholder' => __( "Enter custom font(s)", AI1EC_PLUGIN_NAME ),
+					'class'       => 'ai1ec-custom-font',
+				),
+			),
+			'select' => array(
+				'id' => $this->id,
+				'args' => array(
+					'class' => 'ai1ec_font'
+				),
+				'options' => $this->_get_options(),
+			)
+			
 		);
-		echo $this->render_opening_of_control_group();
-		$this->renderable->render();
-		echo ' '; // Required for adequate spacing between <select> and <input>.
-		$input->render();
-		echo $this->render_closing_of_control_group();
+
+		if( $this->value !== self::CUSTOM_FONT ) {
+			$args['input']['args']['class'] = 'ai1ec-custom-font hide';
+		} else {
+			$args['input']['value'] = $this->custom_value;
+		}
+		$loader = $this->_registry->get( 'theme.loader' );
+		$file   = $loader->get_file( 'theme-options/font.twig', $args, true );
+		return $file->get_content();
 	}
 }

@@ -26,7 +26,7 @@ abstract class Ai1ec_Command {
 	protected $_render_strategy;
 
 	/**
-	 * Public constructor, set the strategy according to the type.
+	 * Public constructor.
 	 *
 	 * @param Ai1ec_Registry_Object $registry
 	 * @param Ai1ec_Request_Parser $request

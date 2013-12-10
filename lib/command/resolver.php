@@ -39,24 +39,43 @@ class Ai1ec_Command_Resolver {
 	) {
 		$this->add_command(
 			$registry->get(
-				'command.export_events', $request
+				'command.export-events', $request
 			)
 		);
 		$this->add_command(
 			$registry->get(
-				'command.render_event', $request
+				'command.render-event', $request
 			)
 		);
 		$this->add_command(
 			$registry->get(
-				'command.render_calendar', $request
+				'command.render-calendar', $request
 			)
 		);
 		$this->add_command(
 			$registry->get(
-				'command.save_settings', $request
+				'command.save-settings', 
+				$request,
+				array(
+					'action' => 'ai1ec_save_settings',
+					'nonce_action' => Ai1ec_View_Admin_Settings::NONCE_ACTION,
+					'nonce_name' => Ai1ec_View_Admin_Settings::NONCE_NAME,
+				)
 			)
 		);
+		fb('here');
+		$this->add_command(
+			$registry->get(
+				'command.save-theme-options',
+				$request,
+				array(
+					'action' => 'ai1ec_save_theme_options',
+					'nonce_action' => Ai1ec_View_Theme_Options::NONCE_ACTION,
+					'nonce_name' => Ai1ec_View_Theme_Options::NONCE_NAME,
+				)
+			)
+		);
+		fb('after');
 		$this->add_command(
 			$registry->get(
 				'command.clone', $request

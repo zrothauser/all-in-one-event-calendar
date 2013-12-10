@@ -1,0 +1,7 @@
+{% extends "theme-options/base_option.twig" %}
+{% from 'form-elements/select.twig' import select %}
+{% from 'form-elements/input.twig' import input %}
+{% block variable %}
+{{ select( select.id, select.id, select.args, select.options ) }}
+{{ input( input.id, input.id, input.value, 'text', input.args ) }}
+{% endblock %}

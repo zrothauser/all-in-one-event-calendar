@@ -9,7 +9,21 @@
  * @package    AI1EC
  * @subpackage AI1EC.Less
  */
-class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
+class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
+
+	/**
+	 * @var string The nonce action
+	 */
+	CONST NONCE_ACTION = 'ai1ec_theme_options_save';
+	
+	/**
+	 * @var string The nonce name
+	 */
+	CONST NONCE_NAME  = 'ai1ec_theme_options_nonce';
+
+	const SUBMIT_ID = 'ai1ec_save_themes_options';
+	
+	const RESET_ID = 'ai1ec_reset_themes_options';
 
 	/**
 	 * @var string
@@ -56,7 +70,7 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 			'default'
 		);
 
-		$settings->set( 'themes_option_page', $theme_options_page );
+		$settings->set( 'less_variables_page', $theme_options_page );
 	}
 
 	/**
@@ -70,27 +84,18 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 			'title' => Ai1ec_I18n::__(
 				'Calendar Theme Options'
 			),
+			'nonce' => array(
+				'action'   => self::NONCE_ACTION,
+				'name'     => self::NONCE_NAME,
+				'referrer' => false,
+			),
 			'metabox' => array(
 				'screen' => $settings->get( 'themes_option_page' ),
 				'action' => 'left',
 				'object' => null
 			),
 			'action' =>
-				'?controller=front&action=ai1ec_save_themes_options&plugin=' . AI1EC_PLUGIN_NAME,
-			'submit' => array(
-				'id'    => 'ai1ec_save_themes_options',
-				'value' => Ai1ec_I18n::__( 'Save Options' ),
-				'args'  => array(
-					'class' => 'button button-primary',
-				),
-			),
-			'reset' => array(
-				'id'    => 'ai1ec_reset_themes_options',
-				'value' => Ai1ec_I18n::__( 'Reset to defaults' ),
-				'args'  => array(
-					'class' => 'button',
-				),
-			),
+				'?controller=front&action=ai1ec_save_theme_options&plugin=' . AI1EC_PLUGIN_NAME
 		);
 
 
@@ -141,18 +146,33 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 		$lessc           = $this->_registry->get( 'lessc' );
 
 		$this->_registry
-			->get( 'controller.lessphp', $lessc  )
+			->get( 'less.lessphp', $lessc  )
 			->update_less_variables_on_theme_update();
 
 		$less_variables  = $this->_registry
-			->get( 'controller.lessphp', $lessc  )->get_saved_variables();
+			->get( 'less.lessphp' )->get_saved_variables();
 		$tabs            = $this->_get_tabs_to_show( $less_variables, $tabs );
 		$loader          = $this->_registry->get( 'theme.loader' );
 		$args            = array(
-			'class' => "left",
+			'class' => 'tabs-left form-horizontal',
 			'tabs'  => $tabs,
+			'hide_name' => true,
+			'submit' => array(
+				'id'    => self::SUBMIT_ID,
+				'value' => Ai1ec_I18n::__( 'Save Options' ),
+				'args'  => array(
+					'class' => 'button button-primary',
+				),
+			),
+			'reset' => array(
+				'id'    => self::RESET_ID,
+				'value' => Ai1ec_I18n::__( 'Reset to defaults' ),
+				'args'  => array(
+					'class' => 'button',
+				),
+			),
 		);
-		$file = $loader->get_file( 'bootstrap_tabs.twig', $args, true );
+		$file = $loader->get_file( 'theme-options/bootstrap_tabs.twig', $args, true );
 		$file->render();
 
 	}
@@ -170,64 +190,19 @@ class Ai1ec_View_Admin_Theme_Options extends Ai1ec_View_Admin_Abstract {
 		// Inizialize the array of tabs that will be added to the layout
 		$bootstrap_tabs_to_add = array();
 
-		foreach($tabs as $id => $tab){
+		foreach( $tabs as $id => $tab ){
 			$tab['elements'] = array();
-			$tab['elements'][] = array('html' => "TEST");
 			$bootstrap_tabs_to_add[$id] = $tab;
-		}
-
-		echo("<pre>");print_r($bootstrap_tabs_to_add);exit();
-
-
-		/*
-		// initialize the array of tab bodyes that will be added to the tabs
-		$tabs_bodies = array();
-		foreach ( $tabs as $id => $description ) {
-
-			$bootstrap_tabs_to_add['ai1ec-' . $id] =
-				Ai1ec_Helper_Factory::create_bootstrap_tab_instance(
-					$id,
-					$description
-				);
-			$bootstrap_tabs_to_add['ai1ec-' . $id]
-				->add_class( 'form-horizontal' );
-			// create the main div that will hold all the variables
-			$div = Ai1ec_Helper_Factory::create_generic_html_tag( 'div' );
-			$tabs_bodies['ai1ec-' . $id] = $div;
 		}
 		foreach ( $less_variables as $variable_id => $variable_attributes ) {
 			$variable_attributes['id'] = $variable_id;
-			$less_variable = Ai1ec_Less_Factory::create_less_variable(
-				$variable_attributes['type'],
-				$variable_attributes
+			$renderable = $this->_registry->get( 'less.variable.' . $variable_attributes['type'], $variable_attributes );
+			$bootstrap_tabs_to_add[$variable_attributes['tab']]['elements'][] = array(
+				'html' => $renderable->render()
 			);
-			$tabs_bodies['ai1ec-' . $variable_attributes['tab']]
-				->add_renderable_children( $less_variable );
-		}
-		foreach ( $tabs_bodies as $tab => $div ) {
-			$bootstrap_tabs_to_add[$tab]->add_renderable_children( $div );
-		}
-		foreach ( $bootstrap_tabs_to_add as $tab ) {
-			$bootstrap_tabs_layout->add_renderable_children( $tab );
-		}
-		$this->add_renderable_children( $bootstrap_tabs_layout );
 
-		$input = Ai1ec_Helper_Factory::create_input_instance();
-		$input->set_type( 'submit' );
-		$input->set_value( __( 'Save Options', AI1EC_PLUGIN_NAME ) );
-		$input->set_name( Ai1ec_Less_Variables_Editing_Page::FORM_SUBMIT_NAME );
-		$input->add_class( 'button-primary' );
-		$reset_theme = Ai1ec_Helper_Factory::create_input_instance();
-		$reset_theme->set_type( 'submit' );
-		$reset_theme->set_value( __( 'Reset to defaults', AI1EC_PLUGIN_NAME ) );
-		$reset_theme->set_name(
-			Ai1ec_Less_Variables_Editing_Page::FORM_SUBMIT_RESET_THEME
-		);
-		$reset_theme->add_class( 'button' );
-		$reset_theme->set_id( 'ai1ec-reset-variables' );
-		$this->add_renderable_children( $input );
-		$this->add_renderable_children( $reset_theme );
-		*/
+		}
+
 		return $bootstrap_tabs_to_add;
 	}
 

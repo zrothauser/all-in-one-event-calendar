@@ -15,9 +15,7 @@ class Ai1ec_Theme_Loader {
 	 */
 	protected $_paths = array(
 		'admin' => array( AI1EC_ADMIN_PATH ),
-		'theme' => array(
-			'default' => AI1EC_DEFAULT_THEME_PATH,
-		),
+		'theme' => array(),
 	);
 
 	/**
@@ -30,13 +28,26 @@ class Ai1ec_Theme_Loader {
 	 */
 	protected $_twig;
 
+	protected $_active;
+	
 	/**
-	 * @param Ai1ec_Registry_Object $registry The registry Object.
-	 * @param string $active_theme the currently active theme.
+	 *
+	 * @param $registry Ai1ec_Registry_Object
+	 *       	 The registry Object.
+	 * @param $active_theme string
+	 *       	 the currently active theme.
 	 */
-	public function __construct( Ai1ec_Registry_Object $registry, $active_theme = 'vortex' ) {
+	public function __construct( 
+		Ai1ec_Registry_Object $registry, 
+		$active_theme = 'vortex' ) {
 		$this->_registry = $registry;
-		$this->_paths['theme']['active'] = $active_theme;
+		$this->_active = $active_theme;
+		$this->_paths['theme'][] = AI1EC_DEFAULT_THEME_PATH .
+			$active_theme . DIRECTORY_SEPARATOR;
+		if (AI1EC_DEFAULT_THEME_NAME !== $active_theme) {
+			$this->_paths['theme'][] = AI1EC_DEFAULT_THEME_PATH . AI1EC_DEFAULT_THEME_NAME . DIRECTORY_SEPARATOR;
+		}
+	
 	}
 
 	/**
@@ -115,16 +126,12 @@ class Ai1ec_Theme_Loader {
 		if ( ! isset( $this->_twig ) ) {
 
 			// Set up Twig environment.
-			$loader_path = null;
-			if ( isset( $paths['default'] ) ) {
-				$loader_path = $paths['default'] . $paths['active'] .
-					DIRECTORY_SEPARATOR;
-			} else {
-				$loader_path = array();
-				foreach ( $paths as $path ) {
-					$loader_path[] = $path . 'twig' . DIRECTORY_SEPARATOR;
-				}
+			$loader_path = array();
+
+			foreach ( $paths as $path ) {
+				$loader_path[] = $path . 'twig' . DIRECTORY_SEPARATOR;
 			}
+
 			$loader = new Twig_Loader_Filesystem( $loader_path );
 			unset( $loader_path );
 

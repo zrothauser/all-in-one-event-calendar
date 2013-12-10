@@ -42,6 +42,11 @@ class Ai1ec_Css_Admin  extends Ai1ec_Base {
 				array( 'style',  'bootstrap.min.css', ),
 				array( 'style',  'plugins/plugins-common.css', ),
 			),
+			$settings->get( 'less_variables_page' ) => array(
+				array( 'style', 'settings.css', ),
+				array( 'style', 'bootstrap.min.css', ),
+				array( 'style', 'bootstrap_colorpicker.css', ),
+			),
 		);
 
 		if ( isset( $enqueuables[$hook_suffix] ) ) {

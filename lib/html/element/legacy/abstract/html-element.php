@@ -165,8 +165,8 @@ abstract class Ai1ec_Html_Element extends Ai1ec_Base implements Ai1ec_Renderable
 	 * @return string
 	 */
 	public function render_as_html() {
-		$this->_registry->get( 'compatibility.outputbuffer' )->start();
+		$this->_registry->get( 'compatibility.ob' )->start();
 		$this->render();
-		return $this->_registry->get( 'compatibility.outputbuffer' )->get_clean();
+		return $this->_registry->get( 'compatibility.ob' )->get_clean();
 	}
 }

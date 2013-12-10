@@ -200,14 +200,18 @@ class Ai1ec_Javascript_Controller {
 		// Initialize dashboard view
 
 		$script_to_load = FALSE;
-		if( $this->are_we_on_calendar_feeds_page() === TRUE ) {
+		if ( $this->are_we_on_calendar_feeds_page() === TRUE ) {
 			// Load script for the importer plugins
 			$script_to_load = 'calendar_feeds.js';
 		}
 		// Start the scripts for the event category page
-		if( $this->_are_we_editing_event_categories() === TRUE ) {
+		if ( $this->_are_we_editing_event_categories() === TRUE ) {
 			// Load script required when editing categories
 			$script_to_load = 'event_category.js';
+		}
+		if ( $this->_are_we_editing_less_variables() === TRUE ) {
+			// Load script required when editing categories
+			$script_to_load = 'less_variables_editing.js';
 		}
 		// Load the js needed when you edit an event / add a new event
 		if (
@@ -485,6 +489,16 @@ JSC;
 				$page === AI1EC_PLUGIN_NAME . '-settings';
 	}
 
+	/**
+	 * Check if we are editing less variables
+	 *
+	 * @return boolean TRUE if we are accessing a single event page FALSE otherwise
+	 */
+	private function _are_we_editing_less_variables() {
+		$path_details = pathinfo( $_SERVER["SCRIPT_NAME"] );
+		$page = isset( $_GET['page'] ) ? $_GET['page'] : '';
+		return $path_details['basename'] === 'edit.php' && $page === AI1EC_PLUGIN_NAME . '-edit-css';
+	}
 
 	/**
 	 * Check if we are accessing the events category page

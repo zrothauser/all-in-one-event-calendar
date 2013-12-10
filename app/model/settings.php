@@ -235,7 +235,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'type' => 'string',
 				'default'  => false,
 			),
-			'themes_option_page' => array(
+			'less_variables_page' => array(
 				'type' => 'string',
 				'default'  => false,
 			),

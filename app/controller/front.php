@@ -213,16 +213,24 @@ class Ai1ec_Front_Controller {
 			throw $exception;
 		}
 	}
-
+	
 	/**
 	 * Adds actions handled by the front controller.
-	 *
 	 */
 	private function _add_front_controller_actions() {
-		// Initialize router. I use add_action as the dispatcher would just add overhead.
-		add_action( 'init', array( $this, 'initialize_router' ), PHP_INT_MAX - 1 );
+		// Initialize router. I use add_action as the dispatcher would just add
+		// overhead.
+		add_action( 
+			'init', 
+			array( $this, 'initialize_router' ), 
+			PHP_INT_MAX - 1 
+		);
 		// Route the request.
-		add_action( 'init', array( $this, 'route_request' ) );
+		$action = 'init';
+		if ( is_admin() ) {
+			$action = 'init';
+		}
+		add_action( $action, array( $this, 'route_request' ) );
 	}
 	/**
 	 * Initialize the dispatcher.

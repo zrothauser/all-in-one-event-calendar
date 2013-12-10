@@ -17,7 +17,16 @@ abstract class Ai1ec_Http_Response_Render_Strategy extends Ai1ec_Base {
 	 */
 	protected function _dump_buffers() {
 		$this->_registry->get( 'dbi.dbi' )->disable_debug();
-		return $this->_registry->get( 'compatibility.ob' )->end_clean_all();
+
+		if ( ini_get( 'zlib.output_compression' ) ) {
+			return false;
+		}
+
+		return $this
+			->_registry
+			->get( 'compatibility.ob' )
+			->end_clean_all();
+
 	}
 
 	/**

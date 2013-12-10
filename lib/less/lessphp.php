@@ -49,12 +49,11 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 
 	public function __construct(
 		Ai1ec_Registry_Object $registry,
-		lessc $lessc,
 		$default_theme_url = AI1EC_DEFAULT_THEME_URL
 
 	) {
 		parent::__construct( $registry );
-		$this->lessc = $lessc;
+		$this->lessc = $this->_registry->get( 'lessc' );;
 		$this->default_theme_url = $this->sanitize_default_theme_url( $default_theme_url );
 		$this->parsed_css = '';
 	}
@@ -189,7 +188,6 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 	public function update_less_variables_on_theme_update() {
 		// Get old variables from the DB.
 		$saved_variables = $this->get_saved_variables();
-		$file =
 		// Get the new variables from file.
 		$new_variables = $this->get_less_variable_data_from_config_file();
 		foreach ( $new_variables as $variable_name => $variable_data ) {
@@ -217,10 +215,10 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 		$loader = $this->_registry->get( 'theme.loader' );
 
 		// load the file to parse using the usal convention
-		require( $loader->get_file( 'user_variables.php') );
+		$file = $loader->get_file( 'less/user_variables.php', array(), false );
 
 		// This variable is locate in the required file
-		return $less_user_variables;
+		return $file->get_content();
 	}
 
 

@@ -44,6 +44,7 @@ class Ai1ec_Front_Controller {
 		$this->_initialize_dispatcher();
 		$this->_registry->get( 'controller.shutdown' )
 			->register( 'ai1ec_stop' );
+		do_action( 'ai1ec_loaded', $this->_registry );
 	}
 
 	/**

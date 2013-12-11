@@ -1,9 +1,14 @@
 <?php
 
 /**
- * This abstract class defines the basic cache operations
+ * Base class for caching strategy.
+ *
+ *
+ * @author       Time.ly Network, Inc.
+ * @since        2.0
+ * @package      Ai1EC
+ * @subpackage   Ai1EC.Cache.Strategy
  */
-
 abstract class Ai1ec_Cache_Strategy extends Ai1ec_Base {
 
 	/**

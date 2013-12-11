@@ -1,28 +1,34 @@
 <?php
 
 /**
- * The Theem options page.
+ * The Theme options page.
  *
  * @author     Time.ly Network Inc.
  * @since      2.0
  *
  * @package    AI1EC
- * @subpackage AI1EC.Less
+ * @subpackage AI1EC.View
  */
 class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 
 	/**
 	 * @var string The nonce action
 	 */
-	CONST NONCE_ACTION = 'ai1ec_theme_options_save';
+	const NONCE_ACTION = 'ai1ec_theme_options_save';
 	
 	/**
 	 * @var string The nonce name
 	 */
-	CONST NONCE_NAME  = 'ai1ec_theme_options_nonce';
+	const NONCE_NAME  = 'ai1ec_theme_options_nonce';
 
+	/**
+	 * @var string The id/name of the submit button.
+	 */
 	const SUBMIT_ID = 'ai1ec_save_themes_options';
-	
+
+	/**
+	 * @var string The id/name of the Reset button.
+	 */
 	const RESET_ID = 'ai1ec_reset_themes_options';
 
 	/**
@@ -150,7 +156,7 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 		$less_variables  = $this->_registry
 			->get( 'less.lessphp' )->get_saved_variables();
 		$tabs            = $this->_get_tabs_to_show( $less_variables, $tabs );
-		fb($less_variables);
+
 		$loader          = $this->_registry->get( 'theme.loader' );
 		$args            = array(
 			'class' => 'tabs-left form-horizontal',
@@ -195,13 +201,14 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 		}
 		foreach ( $less_variables as $variable_id => $variable_attributes ) {
 			$variable_attributes['id'] = $variable_id;
-			$renderable = $this->_registry->get( 'less.variable.' . $variable_attributes['type'], $variable_attributes );
+			$renderable = $this->_registry->get( 
+				'less.variable.' . $variable_attributes['type'],
+				$variable_attributes
+			);
 			$bootstrap_tabs_to_add[$variable_attributes['tab']]['elements'][] = array(
 				'html' => $renderable->render()
 			);
-
 		}
-
 		return $bootstrap_tabs_to_add;
 	}
 

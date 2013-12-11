@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Controller that handles less related functions.
+ * Class that handles less related functions.
  *
  * @author     Time.ly Network Inc.
  * @since      2.0
  *
  * @package    AI1EC
- * @subpackage AI1EC.Controller
+ * @subpackage AI1EC.Less
  */
-class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
+class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 
 	/**
 	 *
@@ -83,7 +83,7 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 	 *
 	 * @param Ai1ec_File_Less $file
 	 */
-	public function add_file( Ai1ec_File_Less $file ) {
+	public function add_file( $file ) {
 		$this->files[] = $file;
 	}
 
@@ -96,9 +96,6 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 	 * @return string
 	 */
 	public function parse_less_files( array $variables = null ) {
-
-		$ai1ec_themes_controller = $this->_registry->get( 'themes.controller' );
-
 		// If no variables are passed i get them from the db
 		if( null === $variables ) {
 			$variables = $this->_registry->get( 'model.option' )->get(
@@ -114,20 +111,17 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 		$variables = $this->convert_less_variables_for_parsing( $variables );
 		// Load the variable.less file to use
 		$this->load_less_variables_from_file();
-
+		$loader = $this->_registry->get( 'theme.loader' );
 		foreach ( $this->files as $file ) {
-			$filename = '';
-			/*
-			 * @var $file Ai1ec_Less_File
-			 */
+			$file_to_parse = null;
 			try {
 				// Get the filename following our fallback convention
-				$filename = $file->process_file();
+				$file_to_parse = $loader->get_file( $file );
 
-			} catch ( Ai1ec_File_Not_Found_Exception $e ) {
+			} catch ( Ai1ec_Exception $e ) {
 				// We let child themes ovverride properties of vortex.
 				// So there is no fallback for override and we can continue.
-				if( $file->get_name() !== 'override' ) {
+				if( $file !== 'override.less' ) {
 					throw $e;
 				} else {
 					// it's override, skip it.
@@ -135,25 +129,19 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 				}
 			}
 			// if the file is a css file, no need to parse it, just serve it as usual.
-			if( substr_compare( $filename, '.css', -strlen( '.css' ), strlen( '.css' ) ) === 0 ) {
-				$this->parsed_css .= file_get_contents( $filename );
+			if( substr_compare( $file_to_parse->get_name(), '.css', -strlen( '.css' ), strlen( '.css' ) ) === 0 ) {
+				$this->parsed_css .= $file_to_parse->get_content();
 				continue;
 			}
+
 			// We prepend the unparsed variables.less file we got earlier.
 			// We do this as we do not import that anymore in the less files.
-			$css_to_parse = $this->unparsed_variable_file . file_get_contents( $filename );
+			$css_to_parse = $this->unparsed_variable_file . $file_to_parse->get_content();
 
 			// Set the import dir for the file. This is important as
 			// dependencies will be resolved correctly
-			$this->lessc->importDir = dirname( $filename );
+			$this->lessc->importDir = dirname( $file_to_parse->get_name() );
 
-			// Set the font & img dirs
-			$active_theme_url = AI1EC_THEMES_URL . '/' .
-				$ai1ec_themes_controller->active_template_url();
-			$variables['fontdir'] = '~"' . $active_theme_url . "/font\"";
-			$variables['imgdir'] = '~"' . $active_theme_url . "/img\"";
-			$variables['fontdir_default'] = '~"' . $this->default_theme_url . "/font\"";
-			$variables['imgdir_default'] = '~"' . $this->default_theme_url . "/img\"";
 			try {
 				$this->parsed_css .= $this->lessc->parse(
 					$css_to_parse,
@@ -179,7 +167,7 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 
 		// If the key is not set, we create the variables
 		if ( ! $saved_variables ) {
-			fb('save');
+
 			$variables_to_save = $this->get_less_variable_data_from_config_file();
 
 			// do not store the description
@@ -257,8 +245,9 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 	 *
 	 */
 	private function load_less_variables_from_file() {
-		$filename = $this->variable_file->process_file();
-		$this->unparsed_variable_file = file_get_contents( $filename );
+		$loader = $this->_registry->get( 'theme.loader' );
+		$file = $loader->get_file( 'variables.less', array(), false );
+		$this->unparsed_variable_file = $file->get_content();
 	}
 
 	/**

@@ -1,6 +1,7 @@
 <?php
+
 /**
- * The concrete command that export events.
+ * The concrete command that save theme options.
  *
  * @author     Time.ly Network Inc.
  * @since      2.0
@@ -50,7 +51,8 @@ class Ai1ec_Command_Save_Theme_Options extends Ai1ec_Command_Save_Abstract {
 		return array(
 			'url' => admin_url( 
 				'edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-edit-css'
-			)
+			),
+			'query_args' => array(),
 		);
 	}
 

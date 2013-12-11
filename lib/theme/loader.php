@@ -44,7 +44,7 @@ class Ai1ec_Theme_Loader {
 		$this->_active = $active_theme;
 		$this->_paths['theme'][] = AI1EC_DEFAULT_THEME_PATH .
 			$active_theme . DIRECTORY_SEPARATOR;
-		if (AI1EC_DEFAULT_THEME_NAME !== $active_theme) {
+		if ( AI1EC_DEFAULT_THEME_NAME !== $active_theme ) {
 			$this->_paths['theme'][] = AI1EC_DEFAULT_THEME_PATH . AI1EC_DEFAULT_THEME_NAME . DIRECTORY_SEPARATOR;
 		}
 	

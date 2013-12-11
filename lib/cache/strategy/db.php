@@ -1,12 +1,14 @@
 <?php
 
 /**
+ * Concrete class for DB caching strategy.
  *
- * @author Timely Network Inc
- *
- * Concrete implementation for db cache.
+ * @instantiator new
+ * @author       Time.ly Network, Inc.
+ * @since        2.0
+ * @package      Ai1EC
+ * @subpackage   Ai1EC.Cache.Strategy
  */
-
 class Ai1ec_Db_Cache extends Ai1ec_Cache_Strategy {
 
 	/**

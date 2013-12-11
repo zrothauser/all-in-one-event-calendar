@@ -4,11 +4,11 @@
  * This class represents a LESS variable of type color. It supports hex, rgb
  * and rgba formats.
  *
- * @author     Time.ly Network Inc.
- * @since      2.0
+ * @author       Time.ly Network Inc.
+ * @since        2.0
  * @instantiator new
- * @package    AI1EC
- * @subpackage AI1EC.Less
+ * @package      AI1EC
+ * @subpackage   AI1EC.Less.Variable
  */
 class Ai1ec_Less_Variable_Color extends Ai1ec_Less_Variable {
 
@@ -18,8 +18,6 @@ class Ai1ec_Less_Variable_Color extends Ai1ec_Less_Variable {
 	protected  $readonly = false;
 
 	public function render() {
-
-
 		$readonly = $this->readonly === true ? 'readonly' : '';
 		
 		$args = array(

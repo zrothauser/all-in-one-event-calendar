@@ -1,9 +1,13 @@
 <?php
 
 /**
- * @author Timely Network Inc
+ * Concrete class for void caching strategy.
  *
- * Concrete implementation for void cache implementation
+ * @instantiator new
+ * @author       Time.ly Network, Inc.
+ * @since        2.0
+ * @package      Ai1EC
+ * @subpackage   Ai1EC.Cache.Strategy
  */
 class Ai1ec_Void_Cache extends Ai1ec_Cache_Strategy {
 

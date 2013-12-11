@@ -1,12 +1,14 @@
 <?php
+
 /**
- *
- * @author Timely Network Inc
+ * The context class which handles the caching strategy.
  *
  * @instantiator Ai1ec_Factory_Strategy.create_persistence_context
- * This class handles reading/writing of the CSS to the persistence layer.
+ * @author       Time.ly Network, Inc.
+ * @since        2.0
+ * @package      Ai1EC
+ * @subpackage   Ai1EC.Cache.Strategy
  */
-
 class Ai1ec_Persistence_Context {
 
 	/**

@@ -1,6 +1,7 @@
 <?php
+
 /**
- * The concrete command that save settings.
+ * The abstract command that save something in the admin.
  *
  * @author     Time.ly Network Inc.
  * @since      2.0

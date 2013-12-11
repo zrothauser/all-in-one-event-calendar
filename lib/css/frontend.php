@@ -1,11 +1,14 @@
 <?php
 
 /**
- * @author Timely Network Inc
+ * The class which handles Frontend CSS.
  *
- * This class is responsible of Handling CSS generation functions
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Css
  */
-
 class Ai1ec_Css_Frontend extends Ai1ec_Base {
 
 	const GET_VARIBALE_NAME                 = 'ai1ec_render_css';
@@ -67,11 +70,12 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		$etag = '"' . md5( __FILE__ . $_GET[self::GET_VARIBALE_NAME] ) . '"';
 		header( 'ETag: ' . $etag );
 		$max_age = 31536000;
+		$time_sys = $this->_registry->get( 'date.system' );
 		header(
 			'Expires: ' .
 			gmdate(
 				'D, d M Y H:i:s',
-				Ai1ec_Time_Utility::current_time() + $max_age
+				$time_sys->current_time() + $max_age
 			) .
 			' GMT'
 		);
@@ -81,7 +85,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 			$etag !== stripslashes( $_SERVER['HTTP_IF_NONE_MATCH'] )
 		) {
 			// compress data if possible
-			if ( Ai1ec_Http_Utility::client_use_gzip() ) {
+			if ( Ai1ec_Http_Response_Helper::client_use_gzip() ) {
 				ob_start( 'ob_gzhandler' );
 				header( 'Content-Encoding: gzip' );
 			} else {
@@ -116,7 +120,8 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	 */
 	public function get_css_url() {
 		$time = $this->db_adapter->get( self::GET_VARIBALE_NAME );
-		return $this->template_adapter->get_site_url() . "/?" . self::GET_VARIBALE_NAME . "=$time";
+		$template_helper = $this->_registry->get( 'template.link.helper' );
+		return $template_helper->get_site_url() . "/?" . self::GET_VARIBALE_NAME . "=$time";
 	}
 
 	/**
@@ -130,7 +135,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 			$preview = "&preview=1&nocache={$now}&ai1ec_stylesheet=" . $_GET['ai1ec_stylesheet'];
 		}
 		$url = $this->get_css_url() . $preview;
-		$this->template_adapter->enqueue_script( 'ai1ec_style', $url );
+		wp_enqueue_script( 'ai1ec_style', $url );
 	}
 
 	/**
@@ -145,6 +150,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		// Reset the parse time to force a browser reload of the CSS, whether we are
 		// updating persistence or not.
 		$this->save_less_parse_time();
+		$notification = $this->_registry->get( 'notification.admin' );
 		try {
 			// Try to parse the css
 			$css = $this->lessphp_controller->parse_less_files( $variables );
@@ -154,22 +160,16 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 				$this->persistance_context->delete_data_from_persistence();
 			}
 		} catch ( Ai1ec_Cache_Write_Exception $e ) {
-			$message = Ai1ec_Helper_Factory::create_admin_message_instance(
-				'<p>' . __( "The LESS file compiled correctly but there was an error while saving the generated CSS to persistence.", AI1EC_PLUGIN_NAME ) . '</p>',
-				__( "An error ocurred while updating CSS", AI1EC_PLUGIN_NAME )
-			);
-			$this->admin_notices_helper->add_renderable_children( $message );
+			$message = '<p>' . __( "The LESS file compiled correctly but there was an error while saving the generated CSS to persistence.", AI1EC_PLUGIN_NAME ) . '</p>';
+			$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 'error' );
 			// this means a correct parsing but an error in saving to persistance
 			return false;
 		} catch ( Exception $e ) {
-			$message = Ai1ec_Helper_Factory::create_admin_message_instance(
-				sprintf(
-					__( '<p>The message returned was: <em>%s</em></p>', AI1EC_PLUGIN_NAME ),
-					$e->getMessage()
-				),
-				__( "An error occurred while compiling LESS files", AI1EC_PLUGIN_NAME )
+			$message = sprintf(
+				__( '<p>The message returned was: <em>%s</em></p>', AI1EC_PLUGIN_NAME ),
+				$e->getMessage()
 			);
-			$this->admin_notices_helper->add_renderable_children( $message );
+			$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 'error' );
 			return false;
 		}
 		return true;
@@ -199,7 +199,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 				) . '</p>',
 				get_site_url()
 			);
-			$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 'updated' );
+			$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ) );
 
 			if ( true === $resetting ) {
 				$message = sprintf(
@@ -209,7 +209,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 					) . '</p>',
 					get_site_url()
 				);
-				$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 'updated' );
+				$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ) );
 			}
 		}
 	}

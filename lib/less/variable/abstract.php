@@ -1,14 +1,13 @@
 <?php
 
 /**
- * This class represents a LESS variable of type color. It supports hex, rgb
- * and rgba formats.
+ * Abstract class for less variables.
  *
  * @author     Time.ly Network Inc.
  * @since      2.0
  *
  * @package    AI1EC
- * @subpackage AI1EC.Less
+ * @subpackage AI1EC.Less.Variable
  */
 abstract class Ai1ec_Less_Variable extends Ai1ec_Html_Element {
 

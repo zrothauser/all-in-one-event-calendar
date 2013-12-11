@@ -3,11 +3,11 @@
 /**
  * This class represent a LESS variable of type size.
  *
- * @author     Time.ly Network Inc.
- * @since      2.0
+ * @author       Time.ly Network Inc.
+ * @since        2.0
  * @instantiator new
- * @package    AI1EC
- * @subpackage AI1EC.Less
+ * @package      AI1EC
+ * @subpackage   AI1EC.Less.Variable
  */
 class Ai1ec_Less_Variable_Size extends Ai1ec_Less_Variable {
 

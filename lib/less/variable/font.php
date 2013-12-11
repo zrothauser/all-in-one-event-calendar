@@ -3,20 +3,33 @@
 /**
  * This class represent a LESS variable of type font.
  *
- * @author     Time.ly Network Inc.
- * @since      2.0
+ * @author       Time.ly Network Inc.
+ * @since        2.0
  * @instantiator new
- * @package    AI1EC
- * @subpackage AI1EC.Less
+ * @package      AI1EC
+ * @subpackage   AI1EC.Less.Variable
  */
 class Ai1ec_Less_Variable_Font extends Ai1ec_Less_Variable {
 
+	/**
+	 * @var string Value saved when a custom font is used
+	 */
 	const CUSTOM_FONT = 'custom';
 
+	/**
+	 * @var string suffix added to custom font fields
+	 */
 	const CUSTOM_FONT_ID_SUFFIX = '_custom';
 
+	
+	/**
+	 * @var string True if using a custom value
+	 */
 	private $use_custom_value = false;
 
+	/**
+	 * @var string The custom value.
+	 */
 	private $custom_value;
 
 	/**

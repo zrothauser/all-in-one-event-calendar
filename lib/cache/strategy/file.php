@@ -1,10 +1,13 @@
 <?php
 
 /**
+ * Concrete class for file caching strategy.
  *
- * @author Timely Network Inc
- *
- * Concrete implementation for file cache.
+ * @instantiator new
+ * @author       Time.ly Network, Inc.
+ * @since        2.0
+ * @package      Ai1EC
+ * @subpackage   Ai1EC.Cache.Strategy
  */
 class Ai1ec_File_Cache extends Ai1ec_Cache_Strategy {
 

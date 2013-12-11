@@ -165,7 +165,6 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 			// this means a correct parsing but an error in saving to persistance
 			return false;
 		} catch ( Exception $e ) {
-			die();
 			$message = sprintf(
 				Ai1ec_I18n::__( '<p>The message returned was: <em>%s</em></p>' ),
 				$e->getMessage()

@@ -67,7 +67,7 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 			'event.less', 
 			'calendar.less',
 			'override.less',
-			'../style.less'
+			'../style.less',
 		);
 	}
 

@@ -78,6 +78,9 @@ class Ai1ec_Compatibility_OutputBuffer {
 	 * @return bool Returns TRUE on success or FALSE on failure
 	 */
 	public function end_clean_all() {
+		if ( ini_get( 'zlib.output_compression' ) ) {
+			return false;
+		}
 		$level   = $this->get_level();
 		$success = true;
 		while ( $level ) {

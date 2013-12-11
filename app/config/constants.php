@@ -131,11 +131,36 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		);
 	}
 
+	// ======================
+	// = Default theme name =
+	// ======================
+	if ( ! defined( 'AI1EC_DEFAULT_THEME_NAME' ) ) {
+		define(
+			'AI1EC_DEFAULT_THEME_NAME', 'vortex' );
+	}
+
+	// ===================
+	// = AI1EC Theme URL =
+	// ===================
+	if ( ! defined( 'AI1EC_THEMES_URL' ) ) {
+		define( 'AI1EC_THEMES_URL',         WP_CONTENT_URL . '/' . AI1EC_THEME_FOLDER );
+	}
+
 	// ==============
 	// = Plugin Url =
 	// ==============
 	if ( ! defined( 'AI1EC_URL' ) ) {
 		define( 'AI1EC_URL', $ai1ec_base_url );
+	}
+
+	// =================
+	// = Admin Js  URL =
+	// =================
+	if ( ! defined( 'AI1EC_DEFAULT_THEME_URL' ) ) {
+		define(
+			'AI1EC_DEFAULT_THEME_URL',
+			AI1EC_URL .'/public/themes-ai1ec/' . AI1EC_DEFAULT_THEME_NAME . '/'
+		);
 	}
 
 	// =================
@@ -150,24 +175,6 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// =================
 	if ( ! defined( 'AI1EC_ADMIN_THEME_JS_URL' ) ) {
 		define( 'AI1EC_ADMIN_THEME_JS_URL', AI1EC_URL .'/public/js/' );
-	}
-
-	// ======================
-	// = Default theme name =
-	// ======================
-	if ( ! defined( 'AI1EC_DEFAULT_THEME_NAME' ) ) {
-		define(
-		'AI1EC_DEFAULT_THEME_NAME', 'vortex' );
-	}
-
-	// =================
-	// = Admin Js  URL =
-	// =================
-	if ( ! defined( 'AI1EC_DEFAULT_THEME_URL' ) ) {
-		define(
-			'AI1EC_DEFAULT_THEME_URL',
-			AI1EC_URL .'/public/themes-ai1ec/' . AI1EC_DEFAULT_THEME_NAME . '/'
-		);
 	}
 
 	// =============
@@ -187,12 +194,19 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		);
 	}
 
-
 	// =========================================
 	// = BASE URL FOR ALL CALENDAR ADMIN PAGES =
 	// =========================================
 	if ( ! defined( 'AI1EC_ADMIN_BASE_URL' ) ) {
 		define( 'AI1EC_ADMIN_BASE_URL', 'edit.php?post_type=' . AI1EC_POST_TYPE );
+	}
+
+	
+	// =====================================================
+	// = THEME OPTIONS PAGE BASE URL (wrap in admin_url()) =
+	// =====================================================
+	if ( ! defined( 'AI1EC_THEME_OPTIONS_BASE_URL' ) ) {
+		define( 'AI1EC_THEME_OPTIONS_BASE_URL', AI1EC_ADMIN_BASE_URL . '&page=' . AI1EC_PLUGIN_NAME . '-edit-css' );
 	}
 
 	// ==============

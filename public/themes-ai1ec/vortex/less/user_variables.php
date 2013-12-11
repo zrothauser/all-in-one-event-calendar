@@ -1,5 +1,5 @@
 <?php
-$less_user_variables = array(
+return array(
 	"bodyBackground" => array(
 		"value" => "#ffffff",
 		"description" => __( "Body background", AI1EC_PLUGIN_NAME ),

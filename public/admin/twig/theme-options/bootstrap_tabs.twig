@@ -1,0 +1,6 @@
+{% extends "bootstrap_tabs.twig" %}
+{% block extra_html %}
+	{% from 'form-elements/input.twig' import input %}
+	{{ input( submit.id, submit.id, submit.value, 'submit', submit.args ) }}
+	{{ input( reset.id, reset.id, reset.value, 'submit', reset.args ) }}
+{% endblock %}

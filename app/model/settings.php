@@ -29,6 +29,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 * Register new option to be used.
 	 *
 	 * @param string $option   Name of option.
+	 * @param mixed $value     The value
 	 * @param string $type     Option type to be used for validation.
 	 * @param string $renderer Name of class to render the option.
 	 *
@@ -90,6 +91,8 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 *
 	 * @param string $option Name of option to update.
 	 * @param mixed  $value  Actual value to be used for option.
+	 *
+	 * @throws Ai1ec_Settings_Exception
 	 *
 	 * @return Ai1ec_Settings Instance of self for chaining.
 	 */
@@ -229,6 +232,10 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'default'  => false,
 			),
 			'settings_page' => array(
+				'type' => 'string',
+				'default'  => false,
+			),
+			'less_variables_page' => array(
 				'type' => 'string',
 				'default'  => false,
 			),

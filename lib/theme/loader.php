@@ -15,9 +15,7 @@ class Ai1ec_Theme_Loader {
 	 */
 	protected $_paths = array(
 		'admin' => array( AI1EC_ADMIN_PATH ),
-		'theme' => array(
-			'default' => AI1EC_DEFAULT_THEME_PATH,
-		),
+		'theme' => array(),
 	);
 
 	/**
@@ -30,13 +28,31 @@ class Ai1ec_Theme_Loader {
 	 */
 	protected $_twig;
 
+	
 	/**
-	 * @param Ai1ec_Registry_Object $registry The registry Object.
-	 * @param string $active_theme the currently active theme.
+	 * @var string active theme.
 	 */
-	public function __construct( Ai1ec_Registry_Object $registry, $active_theme = 'vortex' ) {
+	protected $_active;
+	
+	/**
+	 *
+	 * @param $registry Ai1ec_Registry_Object
+	 *       	 The registry Object.
+	 * @param $active_theme string
+	 *       	 the currently active theme.
+	 */
+	public function __construct( 
+		Ai1ec_Registry_Object $registry, 
+		$active_theme = AI1EC_DEFAULT_THEME_NAME
+		) {
 		$this->_registry = $registry;
-		$this->_paths['theme']['active'] = $active_theme;
+		$this->_active = $active_theme;
+		$this->_paths['theme'][] = AI1EC_DEFAULT_THEME_PATH .
+			$active_theme . DIRECTORY_SEPARATOR;
+		if ( AI1EC_DEFAULT_THEME_NAME !== $active_theme ) {
+			$this->_paths['theme'][] = AI1EC_DEFAULT_THEME_PATH . AI1EC_DEFAULT_THEME_NAME . DIRECTORY_SEPARATOR;
+		}
+	
 	}
 
 	/**
@@ -45,12 +61,12 @@ class Ai1ec_Theme_Loader {
 	 * Get the requested file from the filesystem. The file is already parsed.
 	 *
 	 * @param string $filename
-	 * @param array  $args
+	 * @param array $args
 	 * @param boolean $is_admin
 	 *
 	 * @throws Ai1ec_Exception If File is not found or not possible to handle
 	 *
-	 * @return Ai1ec_Exception An instance of a file object with content parsed.
+	 * @return Ai1ec_File_Abstract An instance of a file object with content parsed.
 	 */
 	public function get_file( $filename, $args = array(), $is_admin = null ) {
 		if ( null === $is_admin ) {
@@ -93,6 +109,7 @@ class Ai1ec_Theme_Loader {
 				);
 				break;
 		}
+		
 		// here file is a concrete class otherwise the exception is thrown
 		if ( ! $file->process_file() ) {
 			throw new Ai1ec_Exception(
@@ -115,16 +132,12 @@ class Ai1ec_Theme_Loader {
 		if ( ! isset( $this->_twig ) ) {
 
 			// Set up Twig environment.
-			$loader_path = null;
-			if ( isset( $paths['default'] ) ) {
-				$loader_path = $paths['default'] . $paths['active'] .
-					DIRECTORY_SEPARATOR;
-			} else {
-				$loader_path = array();
-				foreach ( $paths as $path ) {
-					$loader_path[] = $path . 'twig' . DIRECTORY_SEPARATOR;
-				}
+			$loader_path = array();
+
+			foreach ( $paths as $path ) {
+				$loader_path[] = $path . 'twig' . DIRECTORY_SEPARATOR;
 			}
+
 			$loader = new Twig_Loader_Filesystem( $loader_path );
 			unset( $loader_path );
 

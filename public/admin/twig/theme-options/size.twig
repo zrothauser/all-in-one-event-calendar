@@ -1,0 +1,5 @@
+{% extends "theme-options/base_option.twig" %}
+{% from 'form-elements/input.twig' import input %}
+{% block variable %}
+{{ input( id, id, value, 'text', args ) }}
+{% endblock %}

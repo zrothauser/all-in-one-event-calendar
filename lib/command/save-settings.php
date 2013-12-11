@@ -9,45 +9,13 @@
  * @package    AI1EC
  * @subpackage AI1EC.Command
  */
-class Ai1ec_Command_Save_Settings extends Ai1ec_Command {
-
-	/* (non-PHPdoc)
-	 * @see Ai1ec_Command::is_this_to_execute()
-	 */
-	public function is_this_to_execute() {
-		$params = $this->get_parameters();
-		if ( false === $params ) {
-			return false;
-		}
-		if ( $params['controller'] === 'front' &&
- 			$params['action'] === 'ai1ec_save_settings' ) {
-			if ( isset( $_POST['ai1ec_save_settings'] ) ) {
-				$pass = wp_verify_nonce( 
-					$_POST[Ai1ec_View_Admin_Settings::NONCE_NAME], 
-					Ai1ec_View_Admin_Settings::NONCE_ACTION
-				);
-				if ( ! $pass ) {
-					wp_die( "Failed security check" );
-				}
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/* (non-PHPdoc)
-	 * @see Ai1ec_Command::set_render_strategy()
-	 */
-	public function set_render_strategy( Ai1ec_Request_Parser $request ) {
-		$this->_render_strategy = $this->_registry->get(
-			'http.response.render.strategy.redirect'
-		);
-	}
+class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Command::do_execute()
 	 */
 	public function do_execute() {
+
 		$settings = $this->_registry->get( 'model.settings' );
 		$options = $settings->get_options();
 		// if either tag or categories are set, process the setting.

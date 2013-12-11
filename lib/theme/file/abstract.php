@@ -37,6 +37,7 @@ abstract class Ai1ec_File_Abstract extends Ai1ec_Base {
 	/**
 	 * Standard constructor for basic files.
 	 *
+	 * @param Ai1ec_Registry_Object $registry
 	 * @param string $name
 	 * @param array $paths
 	 */

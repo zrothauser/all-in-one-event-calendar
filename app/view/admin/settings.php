@@ -17,7 +17,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 	CONST NONCE_ACTION = 'ai1ec_settings_save';
 
 	/**
-	 * @var The nonce name
+	 * @var string The nonce name
 	 */
 	CONST NONCE_NAME  = 'ai1ec_settings_nonce';
 
@@ -90,8 +90,8 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 	/**
 	 * Displays the meta box for the settings page.
 	 * 
-	 * @param unknown_type $object
-	 * @param unknown_type $box
+	 * @param mixed $object
+	 * @param mixed $box
 	 */
 	public function display_meta_box( $object, $box )  {
 		$tabs = array(

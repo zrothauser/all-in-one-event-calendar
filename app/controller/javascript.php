@@ -200,14 +200,18 @@ class Ai1ec_Javascript_Controller {
 		// Initialize dashboard view
 
 		$script_to_load = FALSE;
-		if( $this->are_we_on_calendar_feeds_page() === TRUE ) {
+		if ( $this->are_we_on_calendar_feeds_page() === TRUE ) {
 			// Load script for the importer plugins
 			$script_to_load = 'calendar_feeds.js';
 		}
 		// Start the scripts for the event category page
-		if( $this->_are_we_editing_event_categories() === TRUE ) {
+		if ( $this->_are_we_editing_event_categories() === TRUE ) {
 			// Load script required when editing categories
 			$script_to_load = 'event_category.js';
+		}
+		if ( $this->_are_we_editing_less_variables() === TRUE ) {
+			// Load script required when editing categories
+			$script_to_load = 'less_variables_editing.js';
 		}
 		// Load the js needed when you edit an event / add a new event
 		if (
@@ -316,17 +320,23 @@ class Ai1ec_Javascript_Controller {
 
 		$data = array(
 			// ICS feed error messages
-			'duplicate_feed_message' => esc_html(
+			'duplicate_feed_message'         => esc_html(
 				Ai1ec_I18n::__( 'This feed is already being imported.' )
 			),
-			'invalid_url_message'    => esc_html(
+			'invalid_url_message'            => esc_html(
 				Ai1ec_I18n::__( 'Please enter a valid iCalendar URL.' )
 			),
-			'invalid_email_message'  => esc_html(
+			'invalid_email_message'          => esc_html(
 				Ai1ec_I18n::__( 'Please enter a valid e-mail address.' )
 			),
-			'now'                    => $this->_registry->get( 'date.system' )
-				->current_time()
+			'now'                            => $this->_registry->get( 'date.system' )
+				->current_time(),
+			'size_less_variable_not_ok'      => Ai1ec_I18n::__( 
+				'The value you have entered is not a valid CSS length.'
+			),
+			'confirm_reset_theme'            => Ai1ec_I18n::__( 
+				'Are you sure you want to reset your theme options to their default values?'
+			),
 		);
 		return $data;
 	}
@@ -485,6 +495,16 @@ JSC;
 				$page === AI1EC_PLUGIN_NAME . '-settings';
 	}
 
+	/**
+	 * Check if we are editing less variables
+	 *
+	 * @return boolean TRUE if we are accessing a single event page FALSE otherwise
+	 */
+	private function _are_we_editing_less_variables() {
+		$path_details = pathinfo( $_SERVER["SCRIPT_NAME"] );
+		$page = isset( $_GET['page'] ) ? $_GET['page'] : '';
+		return $path_details['basename'] === 'edit.php' && $page === AI1EC_PLUGIN_NAME . '-edit-css';
+	}
 
 	/**
 	 * Check if we are accessing the events category page

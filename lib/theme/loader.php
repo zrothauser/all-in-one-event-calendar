@@ -104,6 +104,7 @@ class Ai1ec_Theme_Loader {
 				);
 				break;
 		}
+		
 		// here file is a concrete class otherwise the exception is thrown
 		if ( ! $file->process_file() ) {
 			throw new Ai1ec_Exception(

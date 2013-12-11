@@ -57,7 +57,9 @@ class Ai1ec_File_Twig extends Ai1ec_File_Abstract {
 	public function process_file() {
 		$loader = $this->_twig->getLoader();
 		if ( $loader->exists( $this->_name ) ) {
+
 			$this->_content = $this->_twig->render( $this->_name, $this->_args );
+
 			return true;
 		}
 		return false;

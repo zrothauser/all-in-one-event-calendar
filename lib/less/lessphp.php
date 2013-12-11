@@ -10,31 +10,37 @@
  * @subpackage AI1EC.Controller
  */
 class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
+
 	/**
 	 *
 	 * @var string
 	 */
 	const DB_KEY_FOR_LESS_VARIABLES = "ai1ec_less_variables";
+
 	/**
 	 *
 	 * @var lessc
 	 */
 	private $lessc;
+
 	/**
 	 *
 	 * @var array
 	 */
 	private $files = array();
+
 	/**
 	 *
 	 * @var string
 	 */
 	private $unparsed_variable_file;
+
 	/**
 	 *
 	 * @var string
 	 */
 	private $parsed_css;
+
 	/**
 	 *
 	 * @var string
@@ -56,6 +62,13 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 		$this->lessc = $this->_registry->get( 'lessc' );;
 		$this->default_theme_url = $this->sanitize_default_theme_url( $default_theme_url );
 		$this->parsed_css = '';
+		$this->files = array( 
+			'style.less', 
+			'event.less', 
+			'calendar.less',
+			'override.less',
+			'../style.less'
+		);
 	}
 
 	/**
@@ -93,7 +106,7 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 			);
 			// If they are not set in the db, get them from file.
 			// this happen when the user switched the theme and triggered a new parse.
-			if( false === $variables ) {
+			if( ! $variables ) {
 				$variables = $this->get_less_variable_data_from_config_file();
 			}
 		}
@@ -165,7 +178,8 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 		);
 
 		// If the key is not set, we create the variables
-		if ( false === $saved_variables ) {
+		if ( ! $saved_variables ) {
+			fb('save');
 			$variables_to_save = $this->get_less_variable_data_from_config_file();
 
 			// do not store the description
@@ -256,10 +270,12 @@ class Ai1ec_Lessphp_Controller extends Ai1ec_Base {
 		$variables = $this->_registry->get( 'model.option' )->get(
 			self::DB_KEY_FOR_LESS_VARIABLES
 		);
+
 		if ( ! $variables ) {
-			return array();
+			return $this->get_less_variable_data_from_config_file();
 		}
 		$variables_with_description = $this->get_less_variable_data_from_config_file();
+
 		// Add the description at runtime so that it can get the translation
 		foreach( $variables as $name => $attrs ) {
 			if( isset( $variables_with_description[$name]['description'] ) ) {

@@ -70,6 +70,7 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 			'default'
 		);
 
+
 		$settings->set( 'less_variables_page', $theme_options_page );
 	}
 
@@ -100,7 +101,9 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 
 
 		$loader = $this->_registry->get( 'theme.loader' );
+		
 		$file   = $loader->get_file( 'theme-options/page.twig', $args, true );
+		
 		return $file->render();
 
 	}
@@ -143,15 +146,11 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 			),
 		);
 
-		$lessc           = $this->_registry->get( 'lessc' );
-
-		$this->_registry
-			->get( 'less.lessphp', $lessc  )
-			->update_less_variables_on_theme_update();
 
 		$less_variables  = $this->_registry
 			->get( 'less.lessphp' )->get_saved_variables();
 		$tabs            = $this->_get_tabs_to_show( $less_variables, $tabs );
+		fb($less_variables);
 		$loader          = $this->_registry->get( 'theme.loader' );
 		$args            = array(
 			'class' => 'tabs-left form-horizontal',

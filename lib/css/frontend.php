@@ -44,7 +44,11 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		$preview_mode = false
 	) {
 		parent::__construct( $registry );
-		$this->persistance_context = $this->_registry->get( 'cache.strategy.persistence-context' );
+		$this->persistance_context = $this->_registry->get( 
+			'cache.strategy.persistence-context',
+			self::KEY_FOR_PERSISTANCE,
+			AI1EC_CACHE_PATH 
+		);
 		$this->lessphp_controller  = $this->_registry->get( 'less.lessphp' );
 		$this->db_adapter          = $this->_registry->get( 'model.option' );
 		$this->preview_mode        = $preview_mode;
@@ -178,7 +182,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	 * @param array $variables
 	 * @param boolean $resetting are we resetting or updating variables?
 	 */
-	private function update_variables_and_compile_css( array $variables, $resetting ) {
+	public function update_variables_and_compile_css( array $variables, $resetting ) {
 		$no_parse_errors = $this->invalidate_cache( $variables, true );
 		$notification   = $this->_registry->get( 'notification.admin' );
 		if ( $no_parse_errors ) {
@@ -229,11 +233,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 			// If we are in preview mode we force a recompile and we pass the variables.
 			if( $this->preview_mode ) {
 				return $this->lessphp_controller->parse_less_files(
-					$this->lessphp_controller->get_less_variable_data_from_config_file(
-						Ai1ec_Less_Factory::create_less_file_instance(
-							Ai1ec_Less_File::USER_VARIABLES_FILE
-						)
-					)
+					$this->lessphp_controller->get_less_variable_data_from_config_file()
 				);
 			} else {
 				$css = $this->lessphp_controller->parse_less_files();
@@ -255,7 +255,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	private function save_less_parse_time() {
 		$this->db_adapter->set(
 			self::GET_VARIBALE_NAME,
-			Ai1ec_Time_Utility::current_time()
+			$this->_registry->get( 'date.system' )->current_time()
 		);
 	}
 }

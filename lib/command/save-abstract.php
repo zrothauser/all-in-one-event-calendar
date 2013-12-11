@@ -33,7 +33,6 @@ abstract class Ai1ec_Command_Save_Abstract extends Ai1ec_Command {
 		$this->_action = $args['action'];
 		$this->_nonce_action = $args['nonce_action'];
 		$this->_nonce_name = $args['nonce_name'];
-		fb($args);
 	}
 	
 	/* (non-PHPdoc)
@@ -41,7 +40,6 @@ abstract class Ai1ec_Command_Save_Abstract extends Ai1ec_Command {
 	*/
 	public function is_this_to_execute() {
 		$params = $this->get_parameters();
-		fb($params);
 		if ( false === $params ) {
 			return false;
 		}

@@ -37,14 +37,21 @@ class Ai1ec_Command_Save_Theme_Options extends Ai1ec_Command_Save_Abstract {
 		}
 		// Handle reset of theme variables.
 		if ( isset( $_POST[Ai1ec_View_Theme_Options::RESET_ID] ) ) {
-			$lessphp = $this->_registry->get( 'les.lessphp' );
+			$lessphp = $this->_registry->get( 'less.lessphp' );
 			$variables = $lessphp->get_less_variable_data_from_config_file();
 		}
-		$this->update_variables_and_compile_css(
+		$css = $this->_registry->get( 'css.frontend' );
+		$css->update_variables_and_compile_css(
 			$variables,
 			isset(
 				$_POST[Ai1ec_View_Theme_Options::RESET_ID]
 			)
 		);
+		return array(
+			'url' => admin_url( 
+				'edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-edit-css'
+			)
+		);
 	}
+
 }

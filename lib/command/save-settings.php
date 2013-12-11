@@ -15,6 +15,7 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 	 * @see Ai1ec_Command::do_execute()
 	 */
 	public function do_execute() {
+
 		$settings = $this->_registry->get( 'model.settings' );
 		$options = $settings->get_options();
 		// if either tag or categories are set, process the setting.

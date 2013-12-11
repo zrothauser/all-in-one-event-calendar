@@ -63,7 +63,6 @@ class Ai1ec_Command_Resolver {
 				)
 			)
 		);
-		fb('here');
 		$this->add_command(
 			$registry->get(
 				'command.save-theme-options',
@@ -75,7 +74,6 @@ class Ai1ec_Command_Resolver {
 				)
 			)
 		);
-		fb('after');
 		$this->add_command(
 			$registry->get(
 				'command.clone', $request

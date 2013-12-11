@@ -23,23 +23,21 @@ class Ai1ec_Factory_Strategy extends Ai1ec_Base {
 	) {
 		$engine = NULL;
 		$name   = '';
+		fb($cache_directory);
 		if ( true !== $skip_small_bits && Ai1ec_Apc_Cache::is_available() ) {
 			$engine = new Ai1ec_Apc_Cache();
-			$name   = 'apc';
 		} else if (
 			NULL !== $cache_directory &&
 			$this->_is_cache_dir_writable( $cache_directory )
 		) {
-			$engine = new Ai1ec_File_Cache( $cache_directory );
-			$name   = 'file';
+			$engine = $this->_registry->get( 'cache.strategy.file', $cache_directory );
 		} else if ( true !== $skip_small_bits ) {
-			$engine = new Ai1ec_Db_Cache(
+			$engine = $this->_registry->get( 
+				'cache.strategy.db',
 				$this->_registry->get( 'model.option' )
 			);
-			$name   = 'db';
 		} else {
 			$engine = new Ai1ec_Void_Cache();
-			$name   = 'void';
 		}
 		return $engine;
 	}

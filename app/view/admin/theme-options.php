@@ -50,8 +50,8 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 
 		$theme_options_page = add_submenu_page(
 			AI1EC_ADMIN_BASE_URL,
-			__( 'Theme Options', AI1EC_PLUGIN_NAME ),
-			__( 'Theme Options', AI1EC_PLUGIN_NAME ),
+			Ai1ec_I18n::__( 'Theme Options' ),
+			Ai1ec_I18n::__( 'Theme Options' ),
 			'manage_ai1ec_options',
 			AI1EC_PLUGIN_NAME . '-edit-css',
 			array( $this, 'display_page' )
@@ -60,7 +60,7 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 		if ( false !== $settings->get( 'less_variables_page' ) ) {
 			// Make copy of Theme Options page at its old location.
 			$submenu['themes.php'][] = array(
-				__( 'Calendar Theme Options', AI1EC_PLUGIN_NAME ),
+				Ai1ec_I18n::__( 'Calendar Theme Options' ),
 				'manage_ai1ec_options',
 				AI1EC_THEME_OPTIONS_BASE_URL,
 			);

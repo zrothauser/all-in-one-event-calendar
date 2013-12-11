@@ -9,7 +9,7 @@
  * @package      Ai1EC
  * @subpackage   Ai1EC.Cache.Strategy
  */
-class Ai1ec_Apc_Cache extends Ai1ec_Cache_Strategy {
+class Ai1ec_Cache_Strategy_Apc extends Ai1ec_Cache_Strategy {
 
 	/**
 	 * is_available method

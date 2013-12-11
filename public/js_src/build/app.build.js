@@ -28,6 +28,9 @@
 				name: "pages/common_backend"
 			},
 			{
+				name: "pages/less_variables_editing"
+			},
+			{
 				name: "pages/common_frontend"
 			}
 	],

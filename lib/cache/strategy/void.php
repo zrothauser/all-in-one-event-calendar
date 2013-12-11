@@ -9,7 +9,7 @@
  * @package      Ai1EC
  * @subpackage   Ai1EC.Cache.Strategy
  */
-class Ai1ec_Void_Cache extends Ai1ec_Cache_Strategy {
+class Ai1ec_Cache_Strategy_Void extends Ai1ec_Cache_Strategy {
 
 	/**
 	 * Checks if engine is available

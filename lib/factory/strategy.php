@@ -27,8 +27,8 @@ class Ai1ec_Factory_Strategy extends Ai1ec_Base {
 	) {
 		$engine = NULL;
 		$name   = '';
-		if ( true !== $skip_small_bits && Ai1ec_Apc_Cache::is_available() ) {
-			$engine = new Ai1ec_Apc_Cache();
+		if ( true !== $skip_small_bits && Ai1ec_Cache_Strategy_Apc::is_available() ) {
+			$engine = new Ai1ec_Cache_Strategy_Apc();
 		} else if (
 			NULL !== $cache_directory &&
 			$this->_is_cache_dir_writable( $cache_directory )
@@ -40,7 +40,7 @@ class Ai1ec_Factory_Strategy extends Ai1ec_Base {
 				$this->_registry->get( 'model.option' )
 			);
 		} else {
-			$engine = new Ai1ec_Void_Cache();
+			$engine = new Ai1ec_Cache_Strategy_Void();
 		}
 		return $engine;
 	}

@@ -28,6 +28,10 @@ class Ai1ec_Theme_Loader {
 	 */
 	protected $_twig;
 
+	
+	/**
+	 * @var string active theme.
+	 */
 	protected $_active;
 	
 	/**
@@ -39,7 +43,8 @@ class Ai1ec_Theme_Loader {
 	 */
 	public function __construct( 
 		Ai1ec_Registry_Object $registry, 
-		$active_theme = 'vortex' ) {
+		$active_theme = AI1EC_DEFAULT_THEME_NAME
+		) {
 		$this->_registry = $registry;
 		$this->_active = $active_theme;
 		$this->_paths['theme'][] = AI1EC_DEFAULT_THEME_PATH .

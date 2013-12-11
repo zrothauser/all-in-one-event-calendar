@@ -9,7 +9,7 @@
  * @package      Ai1EC
  * @subpackage   Ai1EC.Cache.Strategy
  */
-class Ai1ec_File_Cache extends Ai1ec_Cache_Strategy {
+class Ai1ec_Cache_Strategy_File extends Ai1ec_Cache_Strategy {
 
 	/**
 	 * @var string

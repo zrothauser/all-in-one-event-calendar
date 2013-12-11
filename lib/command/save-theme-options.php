@@ -19,7 +19,7 @@ class Ai1ec_Command_Save_Theme_Options extends Ai1ec_Command_Save_Abstract {
 		// Handle updating of variables
 		if ( isset( $_POST[Ai1ec_View_Theme_Options::SUBMIT_ID] ) ) {
 			$variables = $this->_registry->get( 'model.option')->get(
-				Ai1ec_Lessphp_Controller::DB_KEY_FOR_LESS_VARIABLES
+				Ai1ec_Less_Lessphp::DB_KEY_FOR_LESS_VARIABLES
 			);
 			foreach ( $variables as $variable_name => $variable_params ) {
 				if ( isset( $_POST[$variable_name] ) ) {

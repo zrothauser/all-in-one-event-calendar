@@ -23,7 +23,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	private $persistance_context;
 
 	/**
-	 * @var Ai1ec_Lessphp_Controller
+	 * @var Ai1ec_Less_Lessphp
 	 */
 	private $lessphp_controller;
 
@@ -99,7 +99,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 			status_header( 304 );
 		}
 		// We're done!
-		ai1ec_stop( 0 );
+		Ai1ec_Http_Response_Helper::stop( 0 );
 	}
 
 	/**
@@ -160,13 +160,13 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 				$this->persistance_context->delete_data_from_persistence();
 			}
 		} catch ( Ai1ec_Cache_Write_Exception $e ) {
-			$message = '<p>' . __( "The LESS file compiled correctly but there was an error while saving the generated CSS to persistence.", AI1EC_PLUGIN_NAME ) . '</p>';
+			$message = '<p>' . Ai1ec_I18n::__( "The LESS file compiled correctly but there was an error while saving the generated CSS to persistence." ) . '</p>';
 			$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 'error' );
 			// this means a correct parsing but an error in saving to persistance
 			return false;
 		} catch ( Exception $e ) {
 			$message = sprintf(
-				__( '<p>The message returned was: <em>%s</em></p>', AI1EC_PLUGIN_NAME ),
+				Ai1ec_I18n::__( '<p>The message returned was: <em>%s</em></p>' ),
 				$e->getMessage()
 			);
 			$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 'error' );
@@ -187,29 +187,27 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		$notification   = $this->_registry->get( 'notification.admin' );
 		if ( $no_parse_errors ) {
 			$this->db_adapter->set(
-				Ai1ec_Lessphp_Controller::DB_KEY_FOR_LESS_VARIABLES,
+				Ai1ec_Less_Lessphp::DB_KEY_FOR_LESS_VARIABLES,
 				$variables
 			);
 			
 
 			$message = sprintf(
-				'<p>' . __(
-					"Theme options were updated successfully. <a href='%s'>Visit site</a>",
-					AI1EC_PLUGIN_NAME
+				'<p>' .Ai1ec_I18n::__(
+					"Theme options were updated successfully. <a href='%s'>Visit site</a>"
 				) . '</p>',
 				get_site_url()
 			);
-			$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ) );
+			$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 'updated' );
 
 			if ( true === $resetting ) {
 				$message = sprintf(
-					'<p>' . __(
-						"Theme options were successfully reset to their default values. <a href='%s'>Visit site</a>",
-						AI1EC_PLUGIN_NAME
+					'<p>' . Ai1ec_I18n::__(
+						"Theme options were successfully reset to their default values. <a href='%s'>Visit site</a>"
 					) . '</p>',
 					get_site_url()
 				);
-				$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ) );
+				$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 'updated' );
 			}
 		}
 	}

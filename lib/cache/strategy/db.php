@@ -9,7 +9,7 @@
  * @package      Ai1EC
  * @subpackage   Ai1EC.Cache.Strategy
  */
-class Ai1ec_Db_Cache extends Ai1ec_Cache_Strategy {
+class Ai1ec_Cache_Strategy_Db extends Ai1ec_Cache_Strategy {
 
 	/**
 	 * @var Ai1ec_Option Instance of database adapter

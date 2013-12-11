@@ -227,7 +227,7 @@ class Ai1ec_Front_Controller {
 			PHP_INT_MAX - 1 
 		);
 		// Route the request.
-		$action = 'init';
+		$action = 'template_redirect';
 		if ( is_admin() ) {
 			$action = 'init';
 		}

@@ -320,17 +320,23 @@ class Ai1ec_Javascript_Controller {
 
 		$data = array(
 			// ICS feed error messages
-			'duplicate_feed_message' => esc_html(
+			'duplicate_feed_message'         => esc_html(
 				Ai1ec_I18n::__( 'This feed is already being imported.' )
 			),
-			'invalid_url_message'    => esc_html(
+			'invalid_url_message'            => esc_html(
 				Ai1ec_I18n::__( 'Please enter a valid iCalendar URL.' )
 			),
-			'invalid_email_message'  => esc_html(
+			'invalid_email_message'          => esc_html(
 				Ai1ec_I18n::__( 'Please enter a valid e-mail address.' )
 			),
-			'now'                    => $this->_registry->get( 'date.system' )
-				->current_time()
+			'now'                            => $this->_registry->get( 'date.system' )
+				->current_time(),
+			'size_less_variable_not_ok'      => Ai1ec_I18n::__( 
+				'The value you have entered is not a valid CSS length.'
+			),
+			'confirm_reset_theme'            => Ai1ec_I18n::__( 
+				'Are you sure you want to reset your theme options to their default values?'
+			),
 		);
 		return $data;
 	}

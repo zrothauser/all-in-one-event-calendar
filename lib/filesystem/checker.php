@@ -35,7 +35,7 @@ class Ai1ec_Filesystem_Checker {
 	 * @param string $file
 	 * @param string $content
 	 */
-	public function put_content( $file, $content ) {
+	public function put_contents( $file, $content ) {
 		global $wp_filesystem;
 		return $wp_filesystem->put_contents(
 			$file,

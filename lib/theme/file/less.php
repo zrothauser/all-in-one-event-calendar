@@ -47,7 +47,7 @@ class Ai1ec_File_Less extends Ai1ec_File_Abstract {
 			$files_to_check[] = $path . self::THEME_LESS_FOLDER . DIRECTORY_SEPARATOR . $less_file;
 			$files_to_check[] = $path . self::THEME_CSS_FOLDER . DIRECTORY_SEPARATOR . $css_file;
 		}
-		fb($files_to_check);
+
 		foreach ( $files_to_check as $file_to_check ) {
 			if ( file_exists( $file_to_check ) ) {
 				$this->_content = file_get_contents( $file_to_check );

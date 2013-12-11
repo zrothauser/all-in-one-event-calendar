@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Excpetion thrown when failing to write to cache.
+ * Exception thrown when failing to write to cache.
  *
  * @author       Time.ly Network, Inc.
  * @since        2.0

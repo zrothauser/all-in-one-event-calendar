@@ -1,11 +1,13 @@
 <?php
 
 /**
- * @author Timely Network Inc
+ * A helper class for Filesystem checks.
  *
- *
+ * @author     Time.ly Network, Inc.
+ * @since      2.0
+ * @package    Ai1EC
+ * @subpackage Ai1EC.Filesystem
  */
-
 class Ai1ec_Filesystem_Checker {
 
 	/**
@@ -27,6 +29,12 @@ class Ai1ec_Filesystem_Checker {
 		return $writable && $wp_filesystem->method === 'direct';
 	}
 	
+	/**
+	 * Creates a file using $wp_filesystem.
+	 * 
+	 * @param string $file
+	 * @param string $content
+	 */
 	public function put_content( $file, $content ) {
 		global $wp_filesystem;
 		return $wp_filesystem->put_contents(

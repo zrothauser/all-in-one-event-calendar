@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Excpetion thrown when reading from cache.
+ * Exception thrown when reading from cache.
  *
  * @author       Time.ly Network, Inc.
  * @since        2.0

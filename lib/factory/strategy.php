@@ -1,10 +1,14 @@
 <?php
-class Ai1ec_Factory_Strategy extends Ai1ec_Base {
 
-	/**
-	 * @var array Map of cache directories and writability
-	 */
-	private static $cache_directories = array();
+/**
+ * A factory class for caching strategy.
+ *
+ * @author     Time.ly Network, Inc.
+ * @since      2.0
+ * @package    Ai1EC
+ * @subpackage Ai1EC.Factory
+ */
+class Ai1ec_Factory_Strategy extends Ai1ec_Base {
 
 	/**
 	 * create_cache_strategy_instance method
@@ -23,7 +27,6 @@ class Ai1ec_Factory_Strategy extends Ai1ec_Base {
 	) {
 		$engine = NULL;
 		$name   = '';
-		fb($cache_directory);
 		if ( true !== $skip_small_bits && Ai1ec_Apc_Cache::is_available() ) {
 			$engine = new Ai1ec_Apc_Cache();
 		} else if (
@@ -72,7 +75,6 @@ class Ai1ec_Factory_Strategy extends Ai1ec_Base {
 	 */
 	protected function _is_cache_dir_writable( $directory ) {
 		static $cache_directories = array();
-
 		if ( ! isset( $cache_directories[$directory] ) ) {
 			$filesystem = $this->_registry->get( 'filesystem.checker' );
 			$cache_directories[$directory] = $filesystem->is_writable(

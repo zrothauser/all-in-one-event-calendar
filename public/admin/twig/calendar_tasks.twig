@@ -1,0 +1,82 @@
+<div class="timely">
+    <div class="hero-unit">
+        <h1>{{ welcome }}</h1>
+        <p>{{ description }}</p>
+    </div>
+
+    <div class="clearfix">
+        <div class="row-fluid">
+            {% if add_allowed %}
+                <div class="span6">
+                    <p>
+                        <a class="btn btn-primary btn-large" href="{{ add_url|e }}">
+                            <i class="icon-plus"></i>&nbsp;&nbsp;{{ post_event_label }}
+                        </a>
+                    </p>
+                    <strong>{{ add_event_label }}</strong>
+                </div>
+            {% endif %}
+
+            {% if edit_allowed %}
+                <div class="span6">
+                    <p>
+                        <a class="btn btn-primary btn-large" href="{{ edit_url|e }}">
+                            <i class="icon-pencil"></i>&nbsp;&nbsp;{{ manage_event_label }}
+                        </a>
+                    </p>
+                    <strong>{{ view_events_label }}</strong>
+                </div>
+            {% endif %}
+        </div>
+        
+        <hr />
+        
+        <div class="row-fluid">
+            {% if categories_allowed %}
+                <div class="span6">
+                    <p>
+                        <a class="btn" href="{{ categories_url|e }}">
+                            <i class="icon-tags icon-large"></i> {{ manage_categories_label }}
+                        </a>
+                    </p>
+                    <p><strong>{{ organize_events_label }}</strong></p>
+                </div>
+            {% endif %}
+            
+            {% if themes_allowed %}
+                <div class="span6">
+                    <p>
+                        <a class="btn" href="{{ themes_url|e }}">
+                            <i class="icon-leaf icon-large"></i> {{ choose_theme_label }}
+                        </a>
+                    </p>
+                    <p><strong>{{ change_theme_label }}</strong></p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="row-fluid">
+            {% if feeds_allowed %}
+                <div class="span6">
+                    <p>
+                        <a class="btn" href="{{ feeds_url|e }}">
+                            <i class="icon-refresh icon-large"></i> {{ manage_feeds_label }}
+                        </a>
+                    </p>
+                    <p><strong>{{ subscribe_label }}</strong></p>
+                </div>
+            {% endif %}
+
+            {% if settings_allowed %}
+                <div class="span6">
+                    <p>
+                        <a class="btn" href="{{ settings_url|e }}">
+                            <i class="icon-cog icon-large"></i> {{ edit_settings_label }}
+                        </a>
+                    </p>
+                    <p><strong>{{ calendar_label }}</strong></p>
+                </div>
+            {% endif %}
+        </div>        
+    </div>
+</div>

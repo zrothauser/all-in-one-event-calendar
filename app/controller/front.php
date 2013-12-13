@@ -312,6 +312,42 @@ class Ai1ec_Front_Controller {
 			array( 'view.event.content', 'event_excerpt_noautop' ),
 			11
 		);
+		
+		// Modify role permissions.
+		$dispatcher->register_action(
+			'ai1ec_upgrade',
+			array( 'layer.platform', 'modify_roles' )
+		);
+
+		$ai1ec_settings = $this->_registry->get( 'model.settings' );
+		if ( $ai1ec_settings->get( 'event_platform_active' ) ) {
+			// Check Ai1ec & WordPress settings.
+			$dispatcher->register_action(
+				'init',
+				array( 'layer.platform', 'check_settings' )
+			);
+
+			// Modify meta boxes on admin dashboard for Calendar Administrators.
+			$dispatcher->register_action(
+				'admin_init',
+				array( 'layer.platform', 'modify_dashboard' )
+			);
+
+			// Add option to general settings page.
+			$dispatcher->register_action(
+				'ai1ec_general_settings_before',
+				array( 'layer.platform', 'ai1ec_general_settings_before' )
+			);
+
+			// Save general settings page.
+			$dispatcher->register_action(
+				'ai1ec_save_settings',
+				array( 'layer.platform', 'ai1ec_save_settings' ),
+				10,
+				2
+			);
+		}
+		
 		if ( is_admin() ) {
 			$dispatcher->register_action(
 				'admin_enqueue_scripts',

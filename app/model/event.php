@@ -31,6 +31,8 @@ class Ai1ec_Event extends Ai1ec_Base {
 		'end'         => -1,
 	);
 
+	protected $_runtime_props = array();
+
 	/**
 	 * @var bool|null Boolean cache-definition indicating if event is multiday.
 	 */
@@ -86,6 +88,15 @@ class Ai1ec_Event extends Ai1ec_Base {
 		return $this->_entity->get( $property );
 	}
 
+	public function get_runtime( $property ) {
+		return isset( $this->_runtime_props[$property] ) ?
+			$this->_runtime_props[$property] :
+			'';
+	}
+	
+	public function set_runtime( $property, $value ) {
+		$this->_runtime_props[$property] = $value;
+	}
 	/**
 	 * Handle property initiation.
 	 *

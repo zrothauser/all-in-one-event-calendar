@@ -15,7 +15,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 	}
 	
 	public function get_content( array $view_args ) {
-		fb($view_args);
+
 		$time_helper = $this->_registry->get( 'date.time-helper' );
 		$settings = $this->_registry->get( 'model.settings' );
 		$defaults = array(
@@ -27,7 +27,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			'exact_date'    => $time_helper->current_time(),
 		);
 		$args = wp_parse_args( $view_args, $defaults );
-		fb($args);
+
 		// Localize requested date and get components.
 		$local_date = $time_helper->gmt_to_local( $args['exact_date'] );
 		$bits = $time_helper->gmgetdate( $local_date );
@@ -48,7 +48,6 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 				'auth_ids' => $args['auth_ids'],
 			)
 		);
-		
 		// Create pagination links.
 		$pagination_links = $this->get_oneday_pagination_links( $args );
 		$loader = $this->_registry->get( 'theme.loader' );
@@ -74,6 +73,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		$is_ticket_button_enabled = false;
 		$show_reveal_button = false;
 
+
 		$view_args = array(
 			'title'                    => $title,
 			'type'                     => 'oneday',
@@ -82,15 +82,10 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			'now_top'                  => $now,
 			'now_text'                 => $now_text,
 			'pagination_links'         => $pagination_links,
-			'time_format'              => $time_format,
-			'done_allday_label'        => false,
-			'done_grid'                => false,
 			'data_type'                => $args['data_type'],
 			'data_type_events'         => '',
 			'is_ticket_button_enabled' => $is_ticket_button_enabled,
 			'show_reveal_button'       => $show_reveal_button,
-			'time_helper'              => $time_helper,
-			'event_renderer'           => $this->_registry->get( 'view.event.renderer' ),
 		);
 
 		// Add navigation if requested.
@@ -103,8 +98,8 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			)->get_content();
 		} 
 		$view_args['navigation'] = $navigation;
-		$file = $loader->get_file( 'oneday.php', $view_args, false );
-		fb($file);
+		$file = $loader->get_file( 'oneday.twig', $view_args, false );
+
 		return apply_filters(
 			'ai1ec_get_oneday_view',
 			$file->get_content(),
@@ -204,7 +199,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 	 *
 	 * @return array            array of arrays as per function description
 	 */
-	function get_oneday_cell_array( $timestamp, $filter = array() ) {
+	function get_oneday_cell_array( $timestamp, $filter = array(), $legacy = false ) {
 		$time_helper = $this->_registry->get( 'date.time-helper' );
 		$search = $this->_registry->get( 'model.search' );
 
@@ -226,13 +221,13 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			$end, 
 			$filter
 		);
-	
 		// Split up events on a per-day basis
 		$all_events = array();
 	
 		foreach ( $day_events as $evt ) {
 			$evt_start = $evt->get( 'start' )->format();
 			$evt_end   = $evt->get( 'end' )->format();
+			
 	
 			// generate new event object
 			// based on this one day
@@ -268,7 +263,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 	
 				// Store reference to original, unmodified event, required by view.
 				$_evt->set( '_orig', $evt );
-	
+				$evt = $this->_add_runtime_properties( $evt );
 				// Place copy of event in appropriate category
 				if ( $_evt->is_allday() ) {
 					$all_events[$day_start_ts]['allday'][] = $_evt;
@@ -276,6 +271,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 					$all_events[$day_start_ts]['notallday'][] = $_evt;
 				}
 			}
+			
 		}
 	
 		// This will store the returned array
@@ -328,4 +324,32 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 	
 		return apply_filters( 'ai1ec_get_oneday_cell_array', $days, $timestamp, $filter );
 	}
+	
+	protected function _add_runtime_properties( Ai1ec_Event $event ) {
+		$event->set_runtime( 
+			'instance_permalink',
+			get_permalink( $event->get( 'post_id' ) . $event->get( 'instance_id' ) ) 
+		);
+		$event->set_runtime( 'multiday', $event->get( '_orig' )->is_multiday() );
+		$taxonomy = $this->_registry->get( 'view.event.taxonomy' );
+		$ticket = $this->_registry->get( 'view.event.ticket' );
+		$event->set_runtime( 'color_style', $taxonomy->get_color_style( $event ) );
+		$event->set_runtime( 'filtered_title', apply_filters( 'the_title', $event->get( 'post' )->post_title, $event->get( 'post_id' ) ) );
+		$event->set_runtime( 'category_colors', $taxonomy->get_category_colors( $event ) );
+		$event->set_runtime( 'ticket_url_label', $ticket->get_tickets_url_label( $event, false ) );
+		$event->set_runtime( 'edit_post_link', get_edit_post_link( $event->get( 'post_id' ) ) );
+		$post = $this->_registry->get( 'view.event.post' );
+		$event->set_runtime( 'post_excerpt', $post->trim_excerpt( $event ) );
+		$color = $this->_registry->get( 'view.event.color' );
+		$event->set_runtime( 'faded_color', $color->get_faded_color( $event ) );
+		$event->set_runtime( 'rgba_color', $color->get_rgba_color( $event ) );
+		$time = $this->_registry->get( 'view.event.time' );
+		$event->set_runtime( 
+			'short_start_time',
+			$time->get_short_time( 
+				$event->get( 'start' )->format()
+			) 
+		);
+		return $event;
+	} 
 }

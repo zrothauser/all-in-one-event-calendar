@@ -1,25 +1,26 @@
 <?php
-class Ai1ec_View_Event_Renderer extends Ai1ec_Base {
+class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 	
 	/**
 	 * Style attribute for event category
 	 */
 	public function get_color_style( Ai1ec_Event $event ) {
 		static $color_styles = array();
-		$id = $event->get( 'id' );
-		if ( ! isset( $color_styles[$id] ) ) {
-			$categories = wp_get_post_terms(
-				$id,
-				'events_categories'
+		$id = $event->get( 'post_id' );
+		$categories = wp_get_post_terms(
+			$id,
+			'events_categories'
+		);
+		if ( $categories && ! empty( $categories ) ) {
+			if ( ! isset( $color_styles[$categories[0]->term_id] ) )
+			$color_styles[$categories[0]->term_id] = $this->get_event_category_color_style(
+				$categories[0]->term_id,
+				$event->is_allday() || $event->is_multiday()
 			);
-			if ( $categories && ! empty( $categories ) ) {
-				$color_styles[$id] = $this->get_event_category_color_style(
-					$categories[0]->term_id,
-					$this->allday || $this->get_multiday()
-				);
-			}
+			return $color_styles[$categories[0]->term_id];
 		}
-		return $color_styles[$id];
+
+		return '';
 	}
 	
 	/**
@@ -51,7 +52,7 @@ class Ai1ec_View_Event_Renderer extends Ai1ec_Base {
 	 */
 	public function get_category_colors( Ai1ec_Event $event ) {
 		static $category_colors = array();
-		$id = $event->get( 'id' );
+		$id = $event->get( 'post_id' );
 		if ( ! isset( $category_colors[$id] ) ) {
 			$categories = wp_get_post_terms(
 				$id,

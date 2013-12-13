@@ -1,3 +1,4 @@
+{% autoescape false %}
 <div class="ai1ec-pagination btn-group">
 	{% for link in pagination_links %}
 		{% if link is iterable %}
@@ -11,3 +12,4 @@
 		{% endif %}
 	{% endfor %}
 </div><!--/.ai1ec-pagination-->
+{% endautoescape %}

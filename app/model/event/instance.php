@@ -3,6 +3,7 @@
 /**
  * Event instance management model.
  *
+ *
  * @author       Time.ly Network, Inc.
  * @since        2.0
  * @package      Ai1EC

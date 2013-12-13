@@ -38,7 +38,12 @@ function ai1ec_stop() {
 		echo ob_get_clean();
 	}
 }
-
+function ai1ec_dump( $var ) {
+	echo '<pre>';
+	var_dump( $var );
+	echo '</pre>';
+	exit;
+}
 /**
  * Indicate deprecated function.
  *

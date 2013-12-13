@@ -18,8 +18,6 @@ class Ai1ec_Theme_Loader {
 		'theme' => array(),
 	);
 
-	protected $_active;
-
 	/**
 	 * @var Ai1ec_Registry_Object The registry Object.
 	 */
@@ -153,9 +151,9 @@ class Ai1ec_Theme_Loader {
 			// TODO: Add cache support.
 			if ( AI1EC_DEBUG ) {
 				$this->_twig = new Twig_Environment( $loader, array( 'debug' => true ) );
-				$this->_twig->addExtension(new Twig_Extension_Debug());
+				$this->_twig->addExtension( new Twig_Extension_Debug() );
 			} else {
-				$this->_twig = new Twig_Environment( $loader );
+				$this->_twig = new Twig_Environment( $loader, array( 'cache' => AI1EC_TWIG_CACHE_PATH ) );
 			}
 			
 
@@ -164,8 +162,9 @@ class Ai1ec_Theme_Loader {
 			$filter = new Twig_SimpleFilter( '__', 'Ai1ec_I18n::__' );
 			
 			$this->_twig->addFilter( $filter );
-			// $this->_add_twig_functions();
+			
 			$extension = $this->_registry->get( 'twig.ai1ec-extension' );
+			$extension->set_registry( $this->_registry );
 			$this->_twig->addExtension( $extension );
 		}
 		return $this->_twig;

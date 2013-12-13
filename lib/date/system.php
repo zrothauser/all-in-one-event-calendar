@@ -51,4 +51,42 @@ class Ai1ec_Date_System extends Ai1ec_Base {
 		return $timezone;
 	}
 
+	/**
+	 * gmgetdate method
+	 *
+	 * Get date/time information in GMT
+	 *
+	 * @param int $timestamp Timestamp at which information shall be evaluated
+	 *
+	 * @return array Associative array of information related to the timestamp
+	 */
+	public function gmgetdate( $timestamp = NULL ) {
+		if ( NULL === $timestamp ) {
+			$timestamp = (int)$_SERVER['REQUEST_TIME'];
+		}
+		if ( NULL === ( $date = $this->_gmtdates->get( $timestamp ) ) ) {
+			$particles = explode(
+				',',
+				gmdate( 's,i,G,j,w,n,Y,z,l,F,U', $timestamp )
+			);
+			$date      = array_combine(
+				array(
+					'seconds',
+					'minutes',
+					'hours',
+					'mday',
+					'wday',
+					'mon',
+					'year',
+					'yday',
+					'weekday',
+					'month',
+					0
+				),
+				$particles
+			);
+			$this->_gmtdates->set( $timestamp, $date );
+		}
+		return $date;
+	}
 }

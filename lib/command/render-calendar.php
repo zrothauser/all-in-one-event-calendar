@@ -30,7 +30,6 @@ class Ai1ec_Command_Render_Calendar extends Ai1ec_Command {
 			if ( is_page( $page_id ) ) {
 				$this->_request->set_current_page( $page_id );
 				if ( ! post_password_required( $page_id ) ) {
-					fb('true');
 					return true;
 				}
 			}
@@ -52,7 +51,8 @@ class Ai1ec_Command_Render_Calendar extends Ai1ec_Command {
 	public function do_execute() {
 		// get the calendar html
 		$calendar = $this->_registry->get( 'view.calendar.page' );
-		
+		$css = $this->_registry->get( 'css.frontend' )->add_link_to_html_for_frontend();
+		$js = $this->_registry->get( 'controller.javascript' )->load_frontend_js( true );
 		return array( 'data' => $calendar->get_content( $this->_request ) );
 	}
 }

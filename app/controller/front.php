@@ -196,6 +196,8 @@ class Ai1ec_Front_Controller {
 		try {
 			// Initialize the registry object
 			$this->_initialize_registry( $ai1ec_loader );
+			// Load the css if needed
+			$this->_load_css_if_needed();
 			// Initialize the crons
 			$this->_install_crons();
 			// Register the activation hook
@@ -497,6 +499,16 @@ class Ai1ec_Front_Controller {
 		$this->_registry = new Ai1ec_Registry_Object( $ai1ec_loader );
 	}
 
+	protected function _load_css_if_needed() {
+		// ==================================
+		// = Add the hook to render the css =
+		// ==================================
+		if( isset( $_GET[Ai1ec_Css_Frontend::GET_VARIBALE_NAME] ) ) {
+			$css_controller = $this->_registry->get( 'css.frontend' );
+			$css_controller->render_css();
+			exit( 0 );
+		}
+	}
 	/**
 	 * Load the texdomain for the plugin.
 	 *

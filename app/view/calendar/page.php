@@ -50,7 +50,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			// Last try, let's see if an exact date is set in settings.
 			if ( false === $exact_date && $settings->get( 'exact_date' ) !== '' ) {
 				$exact_date = $this->return_gmtime_from_exact_date(
-					$settings->exact_date
+					$exact_date
 				);
 			}
 			$this->_exact_dates->set( $use_key, $exact_date );
@@ -128,6 +128,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		foreach ( $add_defaults as $query => $default ) {
 			if ( empty( $view_args[$query] ) ) {
 				$setting = $settings->get( 'default_tags_categories' );
+
 				$view_args[$query] = $setting[$default];
 			}
 		}
@@ -145,28 +146,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		// Find out which view of the calendar page was requested, and render it
 		// accordingly.
 		$view_args['action'] = $action;
-		switch( $action ) {
-			case 'posterboard':
-			case 'stream':
-			case 'agenda':
-				$view_args += $request->get_dict( array(
-				'page_offset',
-				'time_limit',
-				) );
-				if( false !== $exact_date ) {
-					$view_args['time_limit'] = $exact_date;
-				}
-				break;
-	
-			case 'month':
-			case 'oneday':
-			case 'week':
-				$view_args["{$action}_offset"] = $request->get( "{$action}_offset" );
-				if( false !== $exact_date ) {
-					$view_args['exact_date'] = $exact_date;
-				}
-				break;
-		}
+
 		$view_args['request'] = $request;
 		return $view_args;
 	}

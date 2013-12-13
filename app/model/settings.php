@@ -133,7 +133,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 		$default_tags_cat = array();
 		foreach ( $variables as $key => $value ) {
 			if ( 'default_categories' === $key ) {
-				$default_tags_cat['catgories'] = $value;
+				$default_tags_cat['categories'] = $value;
 				continue;
 			}
 			if ( 'default_tags' === $key ) {

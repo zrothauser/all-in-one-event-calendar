@@ -11,6 +11,12 @@
  */
 class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 
+	protected $_registry;
+	
+	public function set_registry( Ai1ec_Registry_Object $registry ) {
+		$this->_registry = $registry;
+	}
+
 	/* (non-PHPdoc)
 	 * @see Twig_Extension::getFunctions()
 	 */
@@ -19,10 +25,64 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 			'screen_icon' => new Twig_Function_Method( $this, 'screen_icon' ),
 			'wp_nonce_field' => new Twig_Function_Method( $this, 'wp_nonce_field' ),
 			'do_meta_boxes' => new Twig_Function_Method( $this, 'do_meta_boxes' ),
-
 		);
 	}
 
+	public function getFilters()
+	{
+		return array(
+			new Twig_SimpleFilter( 'truncate', array( $this, 'truncate' ) ),
+			new Twig_SimpleFilter( 'timespan', array( $this, 'timespan' ) ),
+			new Twig_SimpleFilter( 'avatar', array( $this, 'avatar' ) ),
+			new Twig_SimpleFilter( 'hour_to_timestamp', array( $this, 'hour_to_timestamp' ) ),
+			new Twig_SimpleFilter( 'weekday', array( $this, 'weekday' ) ),
+			new Twig_SimpleFilter( 'date_i18n', array( $this, 'date_i18n' ) ),
+		);
+	}
+
+	public function avatar(
+		Ai1ec_Event $event,
+		$fallback_order = null,
+		$classes = '',
+		$wrap_permalink = true
+	) {
+		return $this->_registry->get( 'view.event.avatar' )
+			->get_event_avatar( 
+				$event,
+				$fallback_order,
+				$classes,
+				$wrap_permalink
+			);
+	}
+	
+	public function hour_to_timestamp( $hour ) {
+		return gmmktime( $hour, 0 );
+	}
+	
+	public function weekday( $unix_timestamp ) {
+		return $this->_registry->get( 'date.time-helper' )
+			->date_i18n( 'l', $unix_timestamp, true );
+	}
+
+	public function date_i18n( $unix_timestamp, $format ) {
+		return $this->_registry->get( 'date.time-helper' )
+			->date_i18n( $format, $unix_timestamp, true );
+	}
+	
+	/**
+	 * Truncate a string after $length characthers
+	 * @param number $length
+	 * @param string $read_more
+	 * @return string
+	 */
+	public function truncate( $string, $length = 35, $read_more = '...' ) {
+		if ( function_exists( 'mb_strimwidth' ) ) {
+			return mb_strimwidth( $string, 0, $length, $read_more );
+		} else {
+			$read_more = strlen( $string ) > 35 ? $read_more : '';
+			return substr( $string, 0, 35 ) . $read_more;
+		}
+	}
 	/**
 	 * Displays a screen icon.
 	 *
@@ -34,6 +94,11 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	 */
 	public function screen_icon( $screen = '' ){
 		return screen_icon( $screen );
+	}
+
+	public function timespan( $event, $start_date_display = 'long' ) {
+		return $this->_registry->get( 'view.event.time' )
+			->get_timespan_html( $event, $start_date_display );
 	}
 
 	/**

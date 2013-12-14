@@ -31,11 +31,12 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 	 **/
 	public function orderby( $orderby, $wp_query ) {
 		global $typenow, $wpdb, $post;
+		$db = $this->_registry->get( 'dbi.dbi' );
 	
 		if( $typenow === 'ai1ec_event' ) {
 			$wp_query->query = wp_parse_args( $wp_query->query );
-			$table_name = $wpdb->prefix . 'ai1ec_events';
-			if( 'ai1ec_event_date' === @$wp_query->query['orderby'] ) {
+			$table_name = $db->get_table_name( 'ai1ec_events' );
+			if( isset( $wp_query->query['orderby'] ) && 'ai1ec_event_date' === @$wp_query->query['orderby'] ) {
 				$orderby = "(SELECT start FROM {$table_name} WHERE post_id =  $wpdb->posts.ID) " . $wp_query->get('order');
 			} else if( empty( $wp_query->query['orderby'] ) || $wp_query->query['orderby'] === 'menu_order title' ) {
 				$orderby = "(SELECT start FROM {$table_name} WHERE post_id =  $wpdb->posts.ID) " . 'desc';

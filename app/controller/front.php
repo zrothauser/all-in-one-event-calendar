@@ -355,6 +355,12 @@ class Ai1ec_Front_Controller {
 				10,
 				2
 			);
+			$dispatcher->register_action(
+				'manage_ai1ec_event_posts_custom_column',
+				array( 'view.admin.all-events', 'custom_columns' ),
+				10,
+				2
+			);
 			$dispatcher->register_filter(
 				'manage_ai1ec_event_posts_columns',
 				array( 'view.admin.all-events', 'change_columns' )

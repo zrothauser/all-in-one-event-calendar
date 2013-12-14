@@ -1,13 +1,23 @@
 <?php
+
+/**
+ * This class renders the html for the event avatar.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.View.Event
+ */
 class Ai1ec_View_Event_Avatar extends Ai1ec_Base {
-	
+
 	/**
 	 * Get HTML markup for the post's "avatar" image according conditional
 	 * fallback model.
 	 *
 	 * Accepts an ordered array of named avatar $fallbacks. Also accepts a string
 	 * of space-separated classes to add to the default classes.
-	 *
+	 * @param   Ai1ec_Event $event          The event to get the avatar for
 	 * @param   array|null  $fallback_order Order of fallback in searching for
 	 *                                      images, or null to use default
 	 * @param   string      $classes        A space-separated list of CSS classes

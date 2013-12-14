@@ -1,4 +1,14 @@
 <?php
+
+/**
+ * This class renders the html for the event ticket.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.View.Event
+ */
 class Ai1ec_View_Event_Ticket {
 
 	/**
@@ -25,8 +35,8 @@ class Ai1ec_View_Event_Ticket {
 			}
 		}
 		$output .= ( $long )
-		? __( 'Buy Tickets', AI1EC_PLUGIN_NAME )
-		: __( 'Tickets', AI1EC_PLUGIN_NAME );
+			? __( 'Buy Tickets', AI1EC_PLUGIN_NAME )
+			: __( 'Tickets', AI1EC_PLUGIN_NAME );
 		return $output;
 	}
 }

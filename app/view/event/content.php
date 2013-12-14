@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The Calendar Feeds page.
+ * This class process event content.
  *
  * @author     Time.ly Network Inc.
  * @since      2.0
@@ -9,7 +9,7 @@
  * @package    AI1EC
  * @subpackage AI1EC.View.Event
  */
-class Ai1ec_View_Evenet_Content extends Ai1ec_Base {
+class Ai1ec_View_Event_Content extends Ai1ec_Base {
 
 	/**
 	 * event_excerpt function

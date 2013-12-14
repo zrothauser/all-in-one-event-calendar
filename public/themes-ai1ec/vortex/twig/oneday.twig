@@ -1,5 +1,5 @@
-{% include 'navigation.twig' %}
 {% autoescape false %}
+{{ navigation }}
 <table class="ai1ec-oneday-view-original">
 	<thead>
 		<tr>
@@ -214,5 +214,6 @@
 		</tr>
 	</tbody>
 </table>
+<div class="pull-right">{{ pagination_links }}</div>
 {% endautoescape %}
-<div class="pull-right">{% include 'pagination.twig' %}</div>
+

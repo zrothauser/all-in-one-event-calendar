@@ -1,10 +1,26 @@
 <?php
+
+/**
+ * The concrete class for day view.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.View
+ */
 class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 	
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Calendar_View_Abstract::get_name()
+	 */
 	public function get_name() {
 		return 'oneday';
 	}
-	
+
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Calendar_View_Abstract::get_extra_arguments()
+	 */
 	public function get_extra_arguments( array $view_args, $exact_date ) {
 		$offset = $this->get_name() . '_offset';
 		$view_args[$offset] = $this->_request->get( $offset );
@@ -13,9 +29,18 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		}
 		return $view_args;
 	}
-	
-	public function get_content( array $view_args ) {
 
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Calendar_View_Abstract::get_description()
+	 */
+	public function get_description() {
+		return 'Day View';
+	}
+
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Calendar_View_Abstract::get_content()
+	 */
+	public function get_content( array $view_args ) {
 		$time_helper = $this->_registry->get( 'date.time-helper' );
 		$settings = $this->_registry->get( 'model.settings' );
 		$defaults = array(
@@ -52,17 +77,18 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		$pagination_links = $this->get_oneday_pagination_links( $args );
 		$loader = $this->_registry->get( 'theme.loader' );
 		$pagination_links = $loader->get_file(
-			'pagination.php',
-			array( 'links' => $pagination_links, 'data_type' => $args['data_type'] ),
+			'pagination.twig',
+			array( 'pagination_links' => $pagination_links, 'data_type' => $args['data_type'] ),
 			false
 		)->get_content();
+
 		$option = $this->_registry->get( 'model.option' );
 		$date_format = $option->get( 'date_format', 'l, M j, Y' );
 		$title = $time_helper->date_i18n(
 			$date_format, $local_date, true
 		);
 		$time_format = $option->get( 'time_format', 'g a' );
-		
+
 		// Calculate today marker's position.
 		$now = $time_helper->current_time();
 		$now = $time_helper->gmt_to_local( $now );
@@ -90,9 +116,10 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 
 		// Add navigation if requested.
 		$navigation = '';
+		$view_args['pagination_links'] = $pagination_links;
 		if ( true !== $args['no_navigation'] ) {
 			$navigation = $loader->get_file( 
-				'navigation.php',
+				'navigation.twig',
 				$view_args,
 				false
 			)->get_content();

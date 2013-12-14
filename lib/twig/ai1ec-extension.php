@@ -11,8 +11,16 @@
  */
 class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 
+	/**
+	 * @var Ai1ec_Registry_Object
+	 */
 	protected $_registry;
 	
+	/**
+	 * Injkects the registry object.
+	 * 
+	 * @param Ai1ec_Registry_Object $registry
+	 */
 	public function set_registry( Ai1ec_Registry_Object $registry ) {
 		$this->_registry = $registry;
 	}
@@ -28,8 +36,7 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 		);
 	}
 
-	public function getFilters()
-	{
+	public function getFilters() {
 		return array(
 			new Twig_SimpleFilter( 'truncate', array( $this, 'truncate' ) ),
 			new Twig_SimpleFilter( 'timespan', array( $this, 'timespan' ) ),
@@ -40,6 +47,22 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 		);
 	}
 
+	/**
+	 * Get HTML markup for the post's "avatar" image according conditional
+	 * fallback model.
+	 *
+	 * Accepts an ordered array of named avatar $fallbacks. Also accepts a string
+	 * of space-separated classes to add to the default classes.
+	 * @param   Ai1ec_Event $event          The event to get the avatar for
+	 * @param   array|null  $fallback_order Order of fallback in searching for
+	 *                                      images, or null to use default
+	 * @param   string      $classes        A space-separated list of CSS classes
+	 *                                      to apply to the outer <div> element.
+	 * @param   boolean     $wrap_permalink Whether to wrap the element in a link
+	 *                                      to the event details page.
+	 *
+	 * @return  string                   String of HTML if image is found
+	 */
 	public function avatar(
 		Ai1ec_Event $event,
 		$fallback_order = null,
@@ -55,20 +78,42 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 			);
 	}
 	
+	/**
+	 * Convert an hour to timestamp.
+	 * 
+	 * @param int $hour
+	 * 
+	 * @return number
+	 */
 	public function hour_to_timestamp( $hour ) {
 		return gmmktime( $hour, 0 );
 	}
 	
+	/**
+	 * Convert a timestamp to an int
+	 * 
+	 * @param int $unix_timestamp
+	 * 
+	 * @return string
+	 */
 	public function weekday( $unix_timestamp ) {
 		return $this->_registry->get( 'date.time-helper' )
 			->date_i18n( 'l', $unix_timestamp, true );
 	}
 
+	/**
+	 * Convert a timestamp to a string using the desired format
+	 * 
+	 * @param int $unix_timestamp
+	 * @param string $format
+	 * 
+	 * @return string
+	 */
 	public function date_i18n( $unix_timestamp, $format ) {
 		return $this->_registry->get( 'date.time-helper' )
 			->date_i18n( $format, $unix_timestamp, true );
 	}
-	
+
 	/**
 	 * Truncate a string after $length characthers
 	 * @param number $length
@@ -83,6 +128,7 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 			return substr( $string, 0, 35 ) . $read_more;
 		}
 	}
+
 	/**
 	 * Displays a screen icon.
 	 *

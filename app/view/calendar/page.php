@@ -1,16 +1,37 @@
 <?php
+
+/**
+ * The concrete class for the calendar page.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.View
+ */
 class Ai1ec_Calendar_Page extends Ai1ec_Base {
 
 	/**
 	 * @var Ai1ec_Memory_Utility Instance of memory to hold exact dates
 	 */
 	protected $_exact_dates = NULL;
+
 	
+	/**
+	 * Public constructor
+	 * 
+	 * @param Ai1ec_Registry_Object $registry The registry object
+	 */
 	public function __construct( Ai1ec_Registry_Object $registry ) {
 		parent::__construct( $registry );
 		$this->_exact_dates = $registry->get( 'cache.memory' );
 	}
 
+	/**
+	 * Get the content if the calendar page
+	 * 
+	 * @param Ai1ec_Request_Parser $request
+	 */
 	public function get_content( Ai1ec_Request_Parser $request ) {
 		// Are we loading a shortcode?
 		$shortcode       = $request->get( 'shortcode' );
@@ -28,7 +49,9 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 	/**
 	 * Get the exact date from request if available, or else from settings.
 	 *
-	 * @param Ai1ec_Abstract_Query settings@return boolean|int
+	 * @param Ai1ec_Abstract_Query settings
+	 * 
+	 * @return boolean|int
 	 */
 	private function get_exact_date( Ai1ec_Abstract_Query $request ) {
 		$settings = $this->_registry->get( 'model.settings' );
@@ -57,7 +80,6 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		}
 		return $exact_date;
 	}
-
 
 	/**
 	 * Decomposes an 'exact_date' parameter into month, day, year components based
@@ -103,6 +125,13 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		return $data_type;
 	}
 
+	/**
+	 * Get the parameters for the view from the request object
+	 * 
+	 * @param Ai1ec_Abstract_Query $request
+	 * 
+	 * @return array
+	 */
 	public function get_view_args_for_view( Ai1ec_Abstract_Query $request ) {
 		$settings = $this->_registry->get( 'model.settings' );
 		// Define arguments for specific calendar sub-view (month, agenda,

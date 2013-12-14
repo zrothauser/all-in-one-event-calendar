@@ -11,8 +11,16 @@
  */
 class Ai1ec_File_Png extends Ai1ec_File_Abstract {
 
+	/**
+	 * @var string The url of the png file
+	 */
 	protected $_url;
 
+	/**
+	 * Get the url
+	 * 
+	 * @return string
+	 */
 	public function get_url() {
 		return $this->_url;
 	}

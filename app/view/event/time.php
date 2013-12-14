@@ -1,4 +1,14 @@
 <?php
+
+/**
+ * This class renders the html for the event time.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.View.Event
+ */
 class Ai1ec_View_Event_Time extends Ai1ec_Base {
 	
 	/**
@@ -6,6 +16,11 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 	 */
 	protected $_time_helper;
 	
+	/**
+	 * Public constructor
+	 * 
+	 * @param Ai1ec_Registry_Object $registry
+	 */
 	public function __construct( Ai1ec_Registry_Object $registry ) {
 		parent::__construct( $registry );
 		$this->_time_helper = $this->_registry->get( 'date.time-helper' );
@@ -130,6 +145,13 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 		return apply_filters( 'ai1ec_get_timespan_html', $output, $this );
 	}
 	
+	/**
+	 * Get the short date
+	 * 
+	 * @param int $timestamp
+	 * 
+	 * @return string
+	 */
 	public function get_short_date( $timestamp ) {
 		return $this->_time_helper->date_i18n( 'M j', $timestamp , true );
 	}
@@ -147,7 +169,7 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 		$date_format = $this->_registry->get( 'model.option' )->get( 'date_format', 'l, M j, Y' );
 		return $this->_time_helper->date_i18n( $date_format, $timestamp, true );
 	}
-	
+
 	/**
 	 * get_short_time function
 	 *

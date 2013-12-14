@@ -1,4 +1,14 @@
 <?php
+
+/**
+ * This class renders the html for the event taxonomy.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.View.Event
+ */
 class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 	
 	/**

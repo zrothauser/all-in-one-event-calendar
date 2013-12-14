@@ -115,6 +115,8 @@ class Ai1ec_Event extends Ai1ec_Base {
 			$method = '_handle_property_construct_' . $property;
 			$value  = $this->{$method}( $value );
 		}
+			
+
 		$this->_entity->set( $property, $value );
 		return $this;
 	}
@@ -127,6 +129,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 * @return Ai1ec_Event Instance of self for chaining.
 	 */
 	public function initialize_from_array( array $data ) {
+		
 		// =======================================================
 		// = Assign each event field the value from the database =
 		// =======================================================

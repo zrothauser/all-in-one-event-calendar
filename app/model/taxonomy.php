@@ -1,4 +1,13 @@
 <?php
+
+/**
+ * Model used for storing/retrieving taxonomy.
+ *
+ * @author     Time.ly Network, Inc.
+ * @since      2.0
+ * @package    Ai1EC
+ * @subpackage Ai1EC.Html
+ */
 class Ai1ec_Taxonomy extends Ai1ec_Base {
 	
 	/**

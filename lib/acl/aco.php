@@ -11,6 +11,15 @@
  */
 class Ai1ec_Acl_Aco {
 
+	/**
+	 * Whether it's All event page or not.
+	 * 
+	 * @return boolean
+	 */
+	public function is_all_events_page() {
+		global $typenow;
+		return $typenow === 'ai1ec_event';
+	}
 
 	/**
 	 * Whether the current request is for a network or blog admin page

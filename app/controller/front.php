@@ -347,11 +347,25 @@ class Ai1ec_Front_Controller {
 			);
 			$dispatcher->register_action(
 				'add_meta_boxes',
-				array( 'view.add-new-event', 'event_meta_box_container' )
+				array( 'view.admin.add-new-event', 'event_meta_box_container' )
 			);
 			$dispatcher->register_action(
 				'save_post',
 				array( 'model.event.creating', 'save_post' ),
+				10,
+				2
+			);
+			$dispatcher->register_filter(
+				'manage_ai1ec_event_posts_columns',
+				array( 'view.admin.all-events', 'change_columns' )
+			);
+			$dispatcher->register_filter(
+				'manage_edit-ai1ec_event_sortable_columns',
+				array( 'view.admin.all-events', 'sortable_columns' )
+			);
+			$dispatcher->register_filter(
+				'posts_orderby',
+				array( 'view.admin.all-events', 'orderby' ),
 				10,
 				2
 			);

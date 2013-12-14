@@ -220,7 +220,7 @@ class Ai1ec_Front_Controller {
 	/**
 	 * Adds actions handled by the front controller.
 	 */
-	private function _add_front_controller_actions() {
+	protected function _add_front_controller_actions() {
 		// Initialize router. I use add_action as the dispatcher would just add
 		// overhead.
 		add_action( 
@@ -499,6 +499,10 @@ class Ai1ec_Front_Controller {
 		$this->_registry = new Ai1ec_Registry_Object( $ai1ec_loader );
 	}
 
+	/**
+	 * Loads the CSS for the plugin
+	 * 
+	 */
 	protected function _load_css_if_needed() {
 		// ==================================
 		// = Add the hook to render the css =

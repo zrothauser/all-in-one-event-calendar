@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Renderer of settings page checkbox option.
+ * This class handles generations of href for links.
  *
  * @author       Time.ly Network, Inc.
  * @instantiator Ai1ec_Factory_Html.create_href_helper_instance

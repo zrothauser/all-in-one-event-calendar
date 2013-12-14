@@ -31,6 +31,9 @@ class Ai1ec_Event extends Ai1ec_Base {
 		'end'         => -1,
 	);
 
+	/**
+	 * @var array Runtime properties
+	 */
 	protected $_runtime_props = array();
 
 	/**
@@ -88,15 +91,29 @@ class Ai1ec_Event extends Ai1ec_Base {
 		return $this->_entity->get( $property );
 	}
 
+	/**
+	 * Get properties generated at runtime
+	 * 
+	 * @param string $property
+	 * 
+	 * @return string
+	 */
 	public function get_runtime( $property ) {
 		return isset( $this->_runtime_props[$property] ) ?
 			$this->_runtime_props[$property] :
 			'';
 	}
-	
+
+	/**
+	 * Set properties generated at runtime
+	 * 
+	 * @param string $property
+	 * @param string $value
+	 */
 	public function set_runtime( $property, $value ) {
 		$this->_runtime_props[$property] = $value;
 	}
+
 	/**
 	 * Handle property initiation.
 	 *
@@ -115,8 +132,6 @@ class Ai1ec_Event extends Ai1ec_Base {
 			$method = '_handle_property_construct_' . $property;
 			$value  = $this->{$method}( $value );
 		}
-			
-
 		$this->_entity->set( $property, $value );
 		return $this;
 	}
@@ -468,6 +483,11 @@ class Ai1ec_Event extends Ai1ec_Base {
 		return $this->_is_multiday;
 	}
 	
+	/**
+	 * Get the duration of the event
+	 * 
+	 * @return number
+	 */
 	public function get_duration() {
 		static $duration;
 		if ( null === $duration ) {

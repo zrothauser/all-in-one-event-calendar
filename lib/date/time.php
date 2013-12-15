@@ -227,4 +227,15 @@ class Ai1ec_Date_Time {
 		return $this->format( 'c' );
 	}
 
+	/**
+	 * Format a string in the accordint to i18n rules
+	 *
+	 * @param string $format Desired format as accepted by {@see date}.
+	 * @param string $timezone Valid timezone identifier. Defaults to current.
+	 * @return string The formatted string
+	 */
+	public function format_i18n( $format, $timezone = null ) {
+		return $this->format( $format, $timezone );
+	}
+
 }

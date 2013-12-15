@@ -69,31 +69,34 @@ class Ai1ec_Theme_Loader {
 	 *
 	 * Get the requested file from the filesystem. The file is already parsed.
 	 *
-	 * @param string $filename
-	 * @param array $args
-	 * @param boolean $is_admin
+	 * @param string $filename        Name of file to load.
+	 * @param array  $args            Map of variables to use in file.
+	 * @param bool   $is_admin        Set to true for admin-side views.
+	 * @param bool   $throw_exception Set to true to throw exceptions on error.
+	 * @param array  $paths           List of paths to use instead of  default.
 	 *
-	 * @throws Ai1ec_Exception If File is not found or not possible to handle
+	 * @throws Ai1ec_Exception If File is not found or not possible to handle.
 	 *
 	 * @return Ai1ec_File_Abstract An instance of a file object with content parsed.
 	 */
 	public function get_file( 
-		$filename, 
-		$args            = array(), 
+		$filename,
+		$args            = array(),
 		$is_admin        = null,
-		$throw_exception = true 
+		$throw_exception = true,
+		array $paths     = null
 	) {
 		if ( null === $is_admin ) {
 			$is_admin = is_admin();
 		}
 		$dot_position = strrpos( $filename, '.' ) + 1;
-		$ext = substr( $filename, $dot_position );
-		$file = false;
+		$ext          = substr( $filename, $dot_position );
+		$file         = false;
 		switch ( $ext ) {
 			case 'less':
 			case 'css':
 				$filename = substr( $filename, 0, $dot_position - 1);
-				$file = $this->_registry->get(
+				$file     = $this->_registry->get(
 					'theme.file.less',
 					$filename,
 					$this->_paths['theme']
@@ -101,16 +104,20 @@ class Ai1ec_Theme_Loader {
 				break;
 			case 'png':
 				$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
-				$file = $this->_registry->get(
+				$file  = $this->_registry->get(
 					'theme.file.png',
 					$filename,
 					$paths
 				);
 				break;
 			case 'php':
-				$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
+				if ( null === $paths) {
+					$paths = $is_admin
+						? $this->_paths['admin']
+						: $this->_paths['theme'];
+				}
 				$args['is_legacy_theme'] = $this->_legacy_theme;
-				$file = $this->_registry->get(
+				$file                    = $this->_registry->get(
 					'theme.file.php',
 					$filename,
 					$paths,
@@ -118,13 +125,17 @@ class Ai1ec_Theme_Loader {
 				);
 				break;
 			case 'twig':
-				$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
+				if ( null === $paths) {
+					$paths = $is_admin
+						? $this->_paths['admin']
+						: $this->_paths['theme'];
+				}
 
 				if ( true === $this->_legacy_theme && ! $is_admin ) {
 					$filename = substr( $filename, 0, $dot_position - 1);
-					$file = $this->_get_legacy_file( 
-						$filename, 
-						$args, 
+					$file     = $this->_get_legacy_file(
+						$filename,
+						$args,
 						$this->_paths['theme']
 					);
 				} else {
@@ -142,7 +153,7 @@ class Ai1ec_Theme_Loader {
 				);
 				break;
 		}
-		
+
 		// here file is a concrete class otherwise the exception is thrown
 		if ( ! $file->process_file() && true === $throw_exception ) {
 			throw new Ai1ec_Exception(

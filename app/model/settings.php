@@ -36,13 +36,16 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 * @return Ai1ec_Settings Instance of self for chaining.
 	 */
 	public function register( $option, $value, $type, $renderer ) {
-		$this->_options[$option] = array(
-			'value'    => $value,
-			'type'     => $type,
-			'legacy'   => false,
-		);
-		if ( null !== $renderer ) {
-			$this->_options[$option]['renderer'] = $renderer;
+
+		if( !isset($this->_options[$option]) ){
+			$this->_options[$option] = array(
+				'value'    => $value,
+				'type'     => $type,
+				'legacy'   => false,
+			);
+			if ( null !== $renderer ) {
+				$this->_options[$option]['renderer'] = $renderer;
+			}
 		}
 		return $this;
 	}

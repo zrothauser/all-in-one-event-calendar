@@ -96,12 +96,22 @@ class Ai1ec_Theme_Loader {
 				break;
 			case 'twig':
 				$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
-				$file = $this->_registry->get(
-					'theme.file.twig',
-					$filename,
-					$args,
-					$this->_get_twig_instance( $paths )
-				);
+				$active_theme = $this->_registry->get( 'model.option' )
+					->get( 'ai1ec_template', AI1EC_DEFAULT_THEME_NAME );
+				if ( true === $active_theme['legacy'] ) {
+					$file = $this->_get_legacy_file( 
+						$filename, 
+						$args, 
+						$this->_paths['theme']
+					);
+				} else {
+					$file = $this->_registry->get(
+						'theme.file.twig',
+						$filename,
+						$args,
+						$this->_get_twig_instance( $paths )
+					);
+				}
 				break;
 			default:
 				throw new Ai1ec_Exception(
@@ -117,6 +127,29 @@ class Ai1ec_Theme_Loader {
 			);
 		}
 		return $file;
+	}
+
+	/**
+	 * Tries to load a php file from the theme. if not present, it falls back to twig
+	 * 
+	 * @param string $filename
+	 * @param array $args
+	 * @param array $paths
+	 * 
+	 * @return Ai1ec_File_Abstract
+	 */
+	protected function _get_legacy_file( $filename, array $args, array $paths ) {
+		$php_file = $filename . '.php';
+		$php_file = $this->get_file( $php_file, $args, $paths );
+		if ( false === $php_file->process_file() ) {
+			return $this->_registry->get(
+				'theme.file.twig',
+				$filename,
+				$args,
+				$this->_get_twig_instance( $paths )
+			);
+		}
+		return $php_file;
 	}
 
 	/**

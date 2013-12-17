@@ -28,6 +28,18 @@ class Ai1ec_Theme_Loader {
 	 * @var Twig_Environment Twig environment.
 	 */
 	protected $_twig;
+
+
+	/**
+	 * @var array the core calendar themes
+	 */
+	protected $_core_themes = array(
+		'vortex' => true,
+		'umbra' => true,
+		'gamma' => true,
+		'plana' => true,
+	);
+
 	
 	/**
 	 *
@@ -38,6 +50,7 @@ class Ai1ec_Theme_Loader {
 			Ai1ec_Registry_Object $registry
 		) {
 		$this->_registry = $registry;
+
 		$option = $this->_registry->get( 'model.option' );
 		$theme = $option->get( 'ai1ec_current_theme' );
 		$active_theme = $theme['stylesheet'];

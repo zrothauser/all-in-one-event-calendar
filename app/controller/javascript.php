@@ -186,7 +186,47 @@ class Ai1ec_Javascript_Controller {
 		$javascript = $require . $require_config . $tranlsation_module .
 		$config . $jquery . $page_js . $common_js . $ext_js;
 		$this->_echo_javascript( $javascript );
+	}
 
+	/**
+	 * Embed JIRA reporting routine.
+	 *
+	 * Currently limited to admin Dashboard.
+	 *
+	 * @return bool Success to add JavaScript.
+	 */
+	protected function _add_jira_reporter() {
+		if ( ! is_admin() ) {
+			return false;
+		}
+		if (
+			! isset( $_GET['page'] ) &&
+			! isset( $_REQUEST['post_type'] )
+		) {
+			return false;
+		}
+		if (
+			isset( $_GET['page'] ) &&
+			0 !== strncasecmp(
+				$_GET['page'],
+				AI1EC_PLUGIN_NAME,
+				strlen( AI1EC_PLUGIN_NAME )
+			)
+		) {
+			return false;
+		}
+		if (
+			isset( $_REQUEST['post_type'] ) &&
+			AI1EC_POST_TYPE !== $_REQUEST['post_type']
+		) {
+			return false;
+		}
+		return wp_enqueue_script(
+			'timely_jira_collector',
+			'https://jira.time.ly:8443/s/en_US-ekw80v-418945332/850/31/1.2.9/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?collectorId=7910ef3f',
+			array(),
+			'7910ef3f'
+		);
 	}
 
 	/**
@@ -230,6 +270,8 @@ class Ai1ec_Javascript_Controller {
 		}
 
 		$this->_add_link_to_render_js( $script_to_load, true );
+
+		$this->_add_jira_reporter();
 
 	}
 

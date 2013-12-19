@@ -29,11 +29,15 @@ class Ai1ec_Theme_Loader {
 	 */
 	protected $_twig;
 
+	/**
+	 * @var bool
+	 */
+	protected $_legacy_theme = false;
 
 	/**
 	 * @var array the core calendar themes
 	 */
-	protected $_core_themes = array(
+	static protected $_core_themes = array(
 		'vortex' => true,
 		'umbra' => true,
 		'gamma' => true,
@@ -50,10 +54,10 @@ class Ai1ec_Theme_Loader {
 			Ai1ec_Registry_Object $registry
 		) {
 		$this->_registry = $registry;
-
 		$option = $this->_registry->get( 'model.option' );
 		$theme = $option->get( 'ai1ec_current_theme' );
 		$active_theme = $theme['stylesheet'];
+		$this->_legacy_theme = $theme['legacy'];
 		$this->_paths['theme'][] = $theme['theme_dir'] . DIRECTORY_SEPARATOR;
 		if ( AI1EC_DEFAULT_THEME_NAME !== $active_theme ) {
 			$this->_paths['theme'][] = AI1EC_DEFAULT_THEME_PATH .  DIRECTORY_SEPARATOR;
@@ -109,9 +113,8 @@ class Ai1ec_Theme_Loader {
 				break;
 			case 'twig':
 				$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
-				$active_theme = $this->_registry->get( 'model.option' )
-					->get( 'ai1ec_template', AI1EC_DEFAULT_THEME_NAME );
-				if ( true === $active_theme['legacy'] ) {
+
+				if ( true === $this->_legacy_theme ) {
 					$file = $this->_get_legacy_file( 
 						$filename, 
 						$args, 
@@ -155,12 +158,19 @@ class Ai1ec_Theme_Loader {
 		$php_file = $filename . '.php';
 		$php_file = $this->get_file( $php_file, $args, $paths );
 		if ( false === $php_file->process_file() ) {
-			return $this->_registry->get(
+			$twig_file = $this->_registry->get(
 				'theme.file.twig',
 				$filename,
 				$args,
 				$this->_get_twig_instance( $paths )
 			);
+			// here file is a concrete class otherwise the exception is thrown
+			if ( ! $twig_file->process_file() ) {
+				throw new Ai1ec_Exception(
+					'The specified file "' . $filename . '" doesn\'t exist.'
+				);
+			}
+			return $twig_file;
 		}
 		return $php_file;
 	}

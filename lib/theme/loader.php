@@ -27,30 +27,22 @@ class Ai1ec_Theme_Loader {
 	 * @var Twig_Environment Twig environment.
 	 */
 	protected $_twig;
-
-	
-	/**
-	 * @var string active theme.
-	 */
-	protected $_active;
 	
 	/**
 	 *
 	 * @param $registry Ai1ec_Registry_Object
 	 *       	 The registry Object.
-	 * @param $active_theme string
-	 *       	 the currently active theme.
 	 */
 	public function __construct( 
-		Ai1ec_Registry_Object $registry, 
-		$active_theme = AI1EC_DEFAULT_THEME_NAME
+			Ai1ec_Registry_Object $registry
 		) {
 		$this->_registry = $registry;
-		$this->_active = $active_theme;
-		$this->_paths['theme'][] = AI1EC_DEFAULT_THEME_PATH .
-			$active_theme . DIRECTORY_SEPARATOR;
+		$option = $this->_registry->get( 'model.option' );
+		$theme = $option->get( 'ai1ec_current_theme' );
+		$active_theme = $theme['stylesheet'];
+		$this->_paths['theme'][] = $theme['theme_dir'] . DIRECTORY_SEPARATOR;
 		if ( AI1EC_DEFAULT_THEME_NAME !== $active_theme ) {
-			$this->_paths['theme'][] = AI1EC_DEFAULT_THEME_PATH . AI1EC_DEFAULT_THEME_NAME . DIRECTORY_SEPARATOR;
+			$this->_paths['theme'][] = AI1EC_DEFAULT_THEME_PATH .  DIRECTORY_SEPARATOR;
 		}
 	}
 

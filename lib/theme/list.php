@@ -3,18 +3,31 @@
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
-
+/**
+ * The front controller of the plugin.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ * @instantiator new
+ * @package    AI1EC
+ * @subpackage AI1EC.Controller
+ */
 class Ai1ec_Theme_List extends WP_List_Table {
 
 	/**
 	 * @var array List of search terms
 	 */
-	var $search = array();
+	public $search = array();
 
 	/**
 	 * @var array List of features
 	 */
-	var $features = array();
+	public $features = array();
+
+	/**
+	 * @var Ai1ec_Registry_Object
+	 */
+	protected $_registry;
 
 	/**
 	 * Constructor
@@ -37,9 +50,18 @@ class Ai1ec_Theme_List extends WP_List_Table {
 		}
 	}
 
+	/**
+	 * Get the available themes
+	 * 
+	 * @return array The available themese
+	 */
 	public function get_themes() {
-		return $this->_registry->get( 'theme.search' )
-			->filter_themes();
+		static $themes;
+		if ( ! isset( $themes ) ) {
+			$themes = $this->_registry->get( 'theme.search' )
+				->filter_themes();
+		}
+		return $themes;
 	}
 
 	/**
@@ -265,9 +287,11 @@ class Ai1ec_Theme_List extends WP_List_Table {
 				$template_dir   = $themes[$theme_name]['Template Dir'];
 				$parent_theme   = $themes[$theme_name]['Parent Theme'];
 				$theme_root     = $themes[$theme_name]['Theme Root'];
+				$theme_dir      = $themes[$theme_name]->get_stylesheet_directory();
+				$legacy         = ! is_dir( $theme_dir . '/twig' );
 				$theme_root_uri = esc_url( $themes[$theme_name]['Theme Root URI'] );
 				$preview_link   = esc_url(
-					Ai1ec_Meta::get_option( 'home' ) . '/'
+					$this->_registry->get( 'model.option' )->get( 'home' ) . '/'
 				);
 
 				if ( is_ssl() )
@@ -289,12 +313,17 @@ class Ai1ec_Theme_List extends WP_List_Table {
 				$preview_text   = esc_attr( sprintf( __( 'Preview of &#8220;%s&#8221;', AI1EC_PLUGIN_NAME ), $title ) );
 				$tags           = $themes[$theme_name]['Tags'];
 				$thickbox_class = 'thickbox thickbox-preview';
+				$legacy         = $legacy ? '1' : '0';
 				$activate_link  = wp_nonce_url(
 					admin_url( AI1EC_THEME_SELECTION_BASE_URL ) .
-					"&amp;action=activate&amp;ai1ec_template=" .
-					urlencode( $template ) .
+					"&amp;action=activate&amp;ai1ec_theme_dir=" .
+					urlencode( $theme_dir ) .
+					"&amp;ai1ec_legacy=" .
+					urlencode( $legacy ) .
 					"&amp;ai1ec_stylesheet=" .
-					urlencode( $stylesheet ),
+					urlencode( $stylesheet ) .
+					"&amp;ai1ec_theme_root=" .
+					urlencode( $theme_root ),
 					'switch-ai1ec_theme_' . $template
 				);
 				$activate_text  = esc_attr( sprintf( __( 'Activate &#8220;%s&#8221;', AI1EC_PLUGIN_NAME ), $title ) );
@@ -384,8 +413,7 @@ class Ai1ec_Theme_List extends WP_List_Table {
 	 */
 	function current_theme_info() {
 		$themes        = $this->get_themes();
-		$current_theme = self::get_current_ai1ec_theme();
-
+		$current_theme = $this->get_current_ai1ec_theme();
 		if ( ! $themes ) {
 			$ct       = new stdClass;
 			$ct->name = $current_theme;
@@ -394,7 +422,7 @@ class Ai1ec_Theme_List extends WP_List_Table {
 
 		if ( ! isset( $themes[$current_theme] ) ) {
 			delete_option( 'ai1ec_current_theme' );
-			$current_theme = self::get_current_ai1ec_theme();
+			$current_theme = $this->get_current_ai1ec_theme();
 		}
 
 		$ct                 = new stdClass;
@@ -425,32 +453,12 @@ class Ai1ec_Theme_List extends WP_List_Table {
 	 *
 	 * @return string
 	 */
-	static function get_current_ai1ec_theme() {
-		if ( $theme = Ai1ec_Meta::get_option( 'ai1ec_current_theme' ) ) {
-			return $theme;
-		}
-
-		$self_instance = new Ai1ec_Themes_List_Table();
-		$themes        = $self_instance->get_themes();
-		$current_theme = ucfirst( AI1EC_DEFAULT_THEME_NAME );
-
-		if ( $themes ) {
-			$theme_names = array_keys( $themes );
-			$current_template   = Ai1ec_Meta::get_option( 'ai1ec_template' );
-			$current_stylesheet = Ai1ec_Meta::get_option( 'ai1ec_stylesheet' );
-
-			foreach ( (array) $theme_names as $theme_name ) {
-				if ( $themes[$theme_name]['Stylesheet'] == $current_stylesheet &&
-						$themes[$theme_name]['Template'] == $current_template ) {
-					$current_theme = $themes[$theme_name]['Name'];
-					break;
-				}
-			}
-		}
-
-		update_option( 'ai1ec_current_theme', $current_theme );
-		return $current_theme;
+	public function get_current_ai1ec_theme() {
+		$option = $this->_registry->get( 'model.option' );
+		$theme = $option->get( 'ai1ec_current_theme', array() );
+		return $theme['stylesheet'];
 	}
+
 	/**
 	 * Retrieve list of WordPress theme features (aka theme tags)
 	 *
@@ -458,7 +466,7 @@ class Ai1ec_Theme_List extends WP_List_Table {
 	 *
 	 * @return array  Array of features keyed by category with translations keyed by slug.
 	 */
-	static function get_theme_feature_list() {
+	public function get_theme_feature_list() {
 		// Hard-coded list is used if api not accessible.
 		$features = array(
 				__('Colors') => array(
@@ -504,4 +512,3 @@ class Ai1ec_Theme_List extends WP_List_Table {
 	}
 
 }
-// END class

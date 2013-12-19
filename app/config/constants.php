@@ -122,6 +122,13 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		AI1EC_CACHE_PATH . DIRECTORY_SEPARATOR . 'twig' .
 			DIRECTORY_SEPARATOR
 		);
+
+	// ======================
+	// = Default theme name =
+	// ======================
+	if ( ! defined( 'AI1EC_DEFAULT_THEME_NAME' ) ) {
+		define(
+		'AI1EC_DEFAULT_THEME_NAME', 'vortex' );
 	}
 	// ================
 	// = THEME FOLDER =
@@ -133,23 +140,35 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// =======================
 	// = DEFAULT THEME PATH  =
 	// =======================
-	if ( ! defined( 'AI1EC_DEFAULT_THEME_PATH' ) ) {
+	if ( ! defined( 'AI1EC_DEFAULT_THEME_ROOT' ) ) {
 		define(
-			'AI1EC_DEFAULT_THEME_PATH',
+			'AI1EC_DEFAULT_THEME_ROOT',
 			AI1EC_PATH . DIRECTORY_SEPARATOR . 'public' .
-				DIRECTORY_SEPARATOR . AI1EC_THEME_FOLDER . DIRECTORY_SEPARATOR
+				DIRECTORY_SEPARATOR . AI1EC_THEME_FOLDER 
 		);
 	}
 
-	// ======================
-	// = Default theme name =
-	// ======================
-	if ( ! defined( 'AI1EC_DEFAULT_THEME_NAME' ) ) {
+	// =======================
+	// = DEFAULT THEME PATH  =
+	// =======================
+	if ( ! defined( 'AI1EC_DEFAULT_THEME_PATH' ) ) {
 		define(
-			'AI1EC_DEFAULT_THEME_NAME', 'vortex' );
+		'AI1EC_DEFAULT_THEME_PATH',
+		AI1EC_DEFAULT_THEME_ROOT . DIRECTORY_SEPARATOR . AI1EC_DEFAULT_THEME_NAME
+		);
 	}
 
+<<<<<<< HEAD
 	
+=======
+
+	// ===================
+	// = AI1EC Theme URL =
+	// ===================
+	if ( ! defined( 'AI1EC_THEMES_URL' ) ) {
+		define( 'AI1EC_THEMES_URL',         WP_CONTENT_URL . '/' . AI1EC_THEME_FOLDER );
+	}
+>>>>>>> AIOEC-1299 refactored things a little and added theme switching
 
 	// ==============
 	// = Plugin Url =
@@ -210,7 +229,12 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	if ( ! defined( 'AI1EC_THEME_OPTIONS_BASE_URL' ) ) {
 		define( 'AI1EC_THEME_OPTIONS_BASE_URL', AI1EC_ADMIN_BASE_URL . '&page=' . AI1EC_PLUGIN_NAME . '-edit-css' );
 	}
-
+	// =======================================================
+	// = THEME SELECTION PAGE BASE URL (wrap in admin_url()) =
+	// =======================================================
+	if ( ! defined( 'AI1EC_THEME_SELECTION_BASE_URL' ) ) {
+		define( 'AI1EC_THEME_SELECTION_BASE_URL', AI1EC_ADMIN_BASE_URL . '&page=' . AI1EC_PLUGIN_NAME . '-themes' );
+	}
 	// ==============
 	// = EXPORT URL =
 	// ==============

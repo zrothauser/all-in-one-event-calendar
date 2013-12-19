@@ -60,7 +60,7 @@
 	<br class="clear"/>
 
 	<div id="filter-box" style="<?php if ( empty($_REQUEST['filter']) ) echo 'display: none;'; ?>">
-	<?php $feature_list = Ai1ec_Themes_List_Table::get_theme_feature_list(); ?>
+	<?php $feature_list = $wp_list_table->get_theme_feature_list(); ?>
 		<div class="feature-filter">
 			<p class="install-help"><?php _e('Theme filters') ?></p>
 		<?php if ( !empty( $_REQUEST['filter'] ) ) : ?>

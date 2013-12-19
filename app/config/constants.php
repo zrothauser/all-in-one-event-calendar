@@ -237,16 +237,6 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		define( 'AI1EC_THEME_SELECTION_BASE_URL', AI1EC_ADMIN_BASE_URL . '&page=' . AI1EC_PLUGIN_NAME . '-themes' );
 	}
 
-
-	// ========================
-	// = AI1EC Theme location =
-	// ========================
-	if ( ! defined( 'AI1EC_THEMES_ROOT_PATH_LEGACY' ) ) {
-		define( 'AI1EC_THEMES_ROOT_PATH_LEGACY', WP_CONTENT_DIR . 
-			DIRECTORY_SEPARATOR . AI1EC_THEMES_FOLDER . DIRECTORY_SEPARATOR );
-	}
-
-
 	// ==============
 	// = EXPORT URL =
 	// ==============

@@ -4,13 +4,13 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
 /**
- * The front controller of the plugin.
+ * Extends WP_List_Table to list our calerndar themes.
  *
  * @author     Time.ly Network Inc.
  * @since      2.0
- * @instantiator new
+ *
  * @package    AI1EC
- * @subpackage AI1EC.Controller
+ * @subpackage AI1EC.Theme
  */
 class Ai1ec_Theme_List extends WP_List_Table {
 
@@ -316,7 +316,7 @@ class Ai1ec_Theme_List extends WP_List_Table {
 				$legacy         = $legacy ? '1' : '0';
 				$activate_link  = wp_nonce_url(
 					admin_url( AI1EC_THEME_SELECTION_BASE_URL ) .
-					"&amp;action=activate&amp;ai1ec_theme_dir=" .
+					"&amp;ai1ec_action=activate_theme&amp;ai1ec_theme_dir=" .
 					urlencode( $theme_dir ) .
 					"&amp;ai1ec_legacy=" .
 					urlencode( $legacy ) .
@@ -330,24 +330,7 @@ class Ai1ec_Theme_List extends WP_List_Table {
 				$actions        = array();
 				$actions[]      = '<a href="' . $activate_link .  '" class="activatelink" title="' . $activate_text . '">' .
 				                  __( 'Activate', AI1EC_PLUGIN_NAME ) . '</a>';
-				$actions[]      = '<a href="' . $preview_link . '" class="thickbox thickbox-preview" title="' .
-				                  esc_attr( sprintf( __( 'Preview &#8220;%s&#8221;', AI1EC_PLUGIN_NAME ), $theme_name ) ) . '">' .
-				                  __( 'Preview', AI1EC_PLUGIN_NAME ) . '</a>';
 
-				if( ! is_multisite() && current_user_can( 'delete_themes' ) ) {
-					$delete_link = wp_nonce_url(
-						admin_url( AI1EC_THEME_SELECTION_BASE_URL ) .
-						"&amp;action=delete&amp;ai1ec_template=$stylesheet", 'delete-ai1ec_theme_' . $stylesheet
-					);
-					$actions[] = '<a class="submitdelete deletion" href="' .
-					             $delete_link .
-					             '" onclick="' . "return confirm( '" .
-					             esc_js( sprintf(
-						             __( "You are about to delete this theme '%s'\n  'Cancel' to stop, 'OK' to delete.", AI1EC_PLUGIN_NAME ),
-						             $theme_name
-					             ) ) .
-					             "' );" . '">' . __( 'Delete', AI1EC_PLUGIN_NAME ) . '</a>';
-				}
 
 				$actions = apply_filters( 'theme_action_links', $actions, $themes[$theme_name] );
 

@@ -54,6 +54,11 @@ class Ai1ec_Command_Resolver {
 		);
 		$this->add_command(
 			$registry->get(
+				'command.change-theme', $request
+			)
+		);
+		$this->add_command(
+			$registry->get(
 				'command.save-settings', 
 				$request,
 				array(

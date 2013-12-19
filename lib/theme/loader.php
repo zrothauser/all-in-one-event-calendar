@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Loads files for admin and frontend.
  *

@@ -471,7 +471,7 @@ class Ai1ec_Front_Controller {
 			is_page( $page_id )
 		) {
 			foreach ( array( 'cat', 'tag' ) as $name ) {
-				$implosion = $name;//$this->_add_defaults( $name );
+				$implosion = $this->_add_defaults( $name );
 				if ( $implosion ) {
 					$this->request['ai1ec_' . $name . '_ids'] = $implosion;
 					$_REQUEST['ai1ec_' . $name . '_ids']      = $implosion;

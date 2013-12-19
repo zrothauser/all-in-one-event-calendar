@@ -1,26 +1,25 @@
 <?php
+
+/**
+ * The Theme selection page.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.View
+ */
 class Ai1ec_View_Admin_Theme_Switching extends Ai1ec_View_Admin_Abstract {
 	
+	/* (non-PHPdoc)
+	 * @see Ai1ec_View_Admin_Abstract::display_page()
+	 */
 	public function display_page() {
 		global $ct;
 		// defaults
-		$activated = false;
+		$activated = isset( $_GET['activated'] ) ? true : false;
 		$deleted   = false;
-		
-		// check if action is set
-		if( isset( $_GET['action'] ) && ! empty( $_GET['action'] ) ) {
-			// action can activate or delete a theme
-			switch( $_GET['action'] ) {
-				// activate theme
-				case 'activate':
-					$activated = $this->activate_theme();
-					break;
-					// delete theme
-				case 'delete':
-					$deleted = $this->delete_theme();
-					break;
-			}
-		}
+
 
 		$_list_table = $this->_registry->get( 'theme.list' );
 		$_list_table->prepare_items();
@@ -66,83 +65,9 @@ class Ai1ec_View_Admin_Theme_Switching extends Ai1ec_View_Admin_Abstract {
 		return true;
 	}
 
-	/**
-	 * delete_theme function
-	 *
-	 * @return bool
-	 **/
-	public function delete_theme() {
-		check_admin_referer( 'delete-ai1ec_theme_' . $_GET['ai1ec_template'] );
-		if( ! current_user_can( 'delete_themes' ) )
-			wp_die( __( 'Cheatin&#8217; uh?' ) );
-	
-		$this->remove_theme( $_GET['ai1ec_template'] );
-		return true;
-	}
-
-	/**
-	 * remove_theme function
-	 *
-	 * @return void
-	 **/
-	public function remove_theme( $template ) {
-		global $wp_filesystem;
-	
-		if ( empty($template) )
-			return false;
-	
-		ob_start();
-		$redirect = wp_nonce_url(
-			admin_url( AI1EC_THEME_SELECTION_BASE_URL ) .
-			"&amp;action=delete&amp;ai1ec_template=$template", 'delete-ai1ec_theme_' . $template
-		);
-		if ( false === ($credentials = request_filesystem_credentials($redirect)) ) {
-			$data = ob_get_contents();
-			ob_end_clean();
-			if ( ! empty($data) ){
-				include_once( ABSPATH . 'wp-admin/admin-header.php');
-				echo $data;
-				include( ABSPATH . 'wp-admin/admin-footer.php');
-				exit;
-			}
-			return;
-		}
-	
-		if ( ! WP_Filesystem($credentials) ) {
-			request_filesystem_credentials($redirect, '', true); // Failed to connect, Error and request again
-			$data = ob_get_contents();
-			ob_end_clean();
-			if ( ! empty($data) ) {
-				include_once( ABSPATH . 'wp-admin/admin-header.php');
-				echo $data;
-				include( ABSPATH . 'wp-admin/admin-footer.php');
-				exit;
-			}
-			return;
-		}
-	
-		if ( ! is_object($wp_filesystem) )
-			return new WP_Error('fs_unavailable', __('Could not access filesystem.'));
-	
-		if ( is_wp_error($wp_filesystem->errors) && $wp_filesystem->errors->get_error_code() )
-			return new WP_Error('fs_error', __('Filesystem error.'), $wp_filesystem->errors);
-	
-		// Get the base plugin folder
-		$themes_dir = $wp_filesystem->wp_content_dir() . AI1EC_THEMES_FOLDER . '/';
-		if ( empty($themes_dir) )
-			return new WP_Error('fs_no_themes_dir', __('Unable to locate WordPress theme directory.'));
-	
-		$themes_dir = trailingslashit( $themes_dir );
-		$theme_dir = trailingslashit( $themes_dir . $template );
-	
-		$deleted = $wp_filesystem->delete($theme_dir, true);
-	
-		if ( ! $deleted )
-			return new WP_Error('could_not_remove_theme', sprintf(__('Could not fully remove the theme %s.'), $template) );
-	
-		return true;
-	}
-
+	/* (non-PHPdoc)
+	 * @see Ai1ec_View_Admin_Abstract::add_page()
+	 */
 	public function add_page() {
 		global $submenu;
 		// ===============
@@ -165,6 +90,7 @@ class Ai1ec_View_Admin_Theme_Switching extends Ai1ec_View_Admin_Abstract {
 			);
 		}
 	}
+
 	public function handle_post() {
 	}
 }

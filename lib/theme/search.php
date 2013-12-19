@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * Serach calendar themes.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Theme
+ */
 class Ai1ec_Theme_Search extends Ai1ec_Base {
 
 	/**

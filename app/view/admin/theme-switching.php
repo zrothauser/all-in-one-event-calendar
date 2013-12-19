@@ -42,29 +42,6 @@ class Ai1ec_View_Admin_Theme_Switching extends Ai1ec_View_Admin_Abstract {
 		return $file->render();
 	}
 
-
-	/**
-	 * activate_theme function
-	 *
-	 * @return bool
-	 **/
-	public function activate_theme() {
-		check_admin_referer( 'switch-ai1ec_theme_' . $_GET['ai1ec_stylesheet'] );
-		// Invalidate the cached data so that the next request recompiles the css
-		$css_controller = $this->_registry->get( 'css.frontend' );
-		$css_controller->invalidate_cache( null, false );
-		update_option( 
-			'ai1ec_current_theme',
-			array( 
-				'theme_dir'  => $_GET['ai1ec_theme_dir'],
-				'theme_root' => $_GET['ai1ec_theme_root'],
-				'legacy'     => $_GET['ai1ec_legacy'],
-				'stylesheet' => $_GET['ai1ec_stylesheet'],
-			)
-		 );
-		return true;
-	}
-
 	/* (non-PHPdoc)
 	 * @see Ai1ec_View_Admin_Abstract::add_page()
 	 */

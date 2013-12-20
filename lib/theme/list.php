@@ -51,32 +51,6 @@ class Ai1ec_Theme_List extends WP_List_Table {
 	}
 
 	/**
-	 * Get the available themes
-	 * 
-	 * @return array The available themese
-	 */
-	public function get_themes() {
-		static $themes;
-		if ( ! isset( $themes ) ) {
-			$themes = $this->_registry->get( 'theme.search' )
-				->filter_themes();
-		}
-		return $themes;
-	}
-
-	/**
-	 * get_broken_themes method
-	 *
-	 * Convenient wrapper to `wp_get_themes( [errors:=true] )`
-	 * or `get_broken_themes`, to avoid WP version deprecation conflicts.
-	 *
-	 * @return array Map of broken themes
-	 */
-	public function get_broken_themes() {
-		return $this->get_themes( false, array( 'errors' => true ) );
-	}
-
-	/**
 	 * prepare_items function
 	 *
 	 * Prepares themes for display, applies search filters if available
@@ -93,37 +67,10 @@ class Ai1ec_Theme_List extends WP_List_Table {
 		// get available themes
 		$ct     = $this->current_theme_info();
 
-		// handles theme searching by keyword
-		if ( ! empty( $_REQUEST['s'] ) ) {
-			$search       = explode(
-				',',
-				strtolower( stripslashes( $_REQUEST['s'] ) )
-			);
-			$this->search = array_merge(
-				$this->search,
-				array_filter( array_map( 'trim', $search ) )
-			);
-			$this->search = array_unique( $this->search );
-		}
-
-		// handles theme search by features (tags, one column, widget etc)
-		if ( !empty( $_REQUEST['features'] ) ) {
-			$this->features = (array)$_REQUEST['features'];
-			$this->features = array_map( 'trim', $this->features );
-			$this->features = array_map(
-				'sanitize_title_with_dashes',
-				$this->features
-			);
-			$this->features = array_unique( $this->features );
-		}
-
 		$themes = $this->_registry->get( 'theme.search' )
-			->filter_themes(
-				$this->search,
-				$this->features
-			);
+			->filter_themes();
 
-		if( isset( $ct->name ) && isset( $themes[$ct->name] ) ) {
+		if ( isset( $ct->name ) && isset( $themes[$ct->name] ) ) {
 			unset( $themes[$ct->name] );
 		}
 
@@ -165,8 +112,9 @@ class Ai1ec_Theme_List extends WP_List_Table {
 	 * @return void
 	 */
 	public function tablenav( $which = 'top' ) {
-		if ( $this->get_pagination_arg( 'total_pages' ) <= 1 )
-			return;
+		if ( $this->get_pagination_arg( 'total_pages' ) <= 1 ) {
+			return '';
+		}
 		?>
 		<div class="tablenav themes <?php echo $which; ?>">
 			<?php $this->pagination( $which ); ?>
@@ -186,7 +134,7 @@ class Ai1ec_Theme_List extends WP_List_Table {
 	public function ajax_user_can() {
 		// Do not check edit_theme_options here.
 		// AJAX calls for available themes require switch_themes.
-		return current_user_can('switch_themes');
+		return current_user_can( 'switch_themes' );
 	}
 
 	/**
@@ -195,11 +143,6 @@ class Ai1ec_Theme_List extends WP_List_Table {
 	 * @return void
 	 **/
 	public function no_items() {
-		if ( $this->search || $this->features ) {
-			_e( 'No themes found.', AI1EC_PLUGIN_NAME );
-			return;
-		}
-
 		if ( is_multisite() ) {
 			if (
 				current_user_can( 'install_themes' ) &&
@@ -290,27 +233,6 @@ class Ai1ec_Theme_List extends WP_List_Table {
 				$theme_dir      = $themes[$theme_name]->get_stylesheet_directory();
 				$legacy         = ! is_dir( $theme_dir . '/twig' );
 				$theme_root_uri = esc_url( $themes[$theme_name]['Theme Root URI'] );
-				$preview_link   = esc_url(
-					$this->_registry->get( 'model.option' )->get( 'home' ) . '/'
-				);
-
-				if ( is_ssl() )
-					$preview_link = str_replace( 'http://', 'https://', $preview_link );
-
-				$preview_link = htmlspecialchars(
-					add_query_arg(
-						array(
-							'preview'          => 1,
-							'ai1ec_template'   => $template,
-							'ai1ec_stylesheet' => $stylesheet,
-							'preview_iframe'   => true,
-							'TB_iframe'        => 'true'
-						),
-						$preview_link
-					)
-				);
-
-				$preview_text   = esc_attr( sprintf( __( 'Preview of &#8220;%s&#8221;', AI1EC_PLUGIN_NAME ), $title ) );
 				$tags           = $themes[$theme_name]['Tags'];
 				$thickbox_class = 'thickbox thickbox-preview';
 				$legacy         = $legacy ? '1' : '0';
@@ -326,48 +248,62 @@ class Ai1ec_Theme_List extends WP_List_Table {
 					urlencode( $theme_root ),
 					'switch-ai1ec_theme_' . $template
 				);
-				$activate_text  = esc_attr( sprintf( __( 'Activate &#8220;%s&#8221;', AI1EC_PLUGIN_NAME ), $title ) );
+				$activate_text  = esc_attr(
+					sprintf(
+						Ai1ec_I18n::__( 'Activate &#8220;%s&#8221;' ),
+						$title
+					)
+				);
 				$actions        = array();
-				$actions[]      = '<a href="' . $activate_link .  '" class="activatelink" title="' . $activate_text . '">' .
-				                  __( 'Activate', AI1EC_PLUGIN_NAME ) . '</a>';
+				$actions[]      = '<a href="' . $activate_link .
+					'" class="activatelink" title="' . $activate_text . '">' .
+					Ai1ec_I18n::__( 'Activate' ) . '</a>';
 
-
-				$actions = apply_filters( 'theme_action_links', $actions, $themes[$theme_name] );
+				$actions = apply_filters(
+					'theme_action_links',
+					$actions,
+					$themes[$theme_name]
+				);
 
 				$actions = implode ( ' | ', $actions );
 			?>
-				<a href="<?php echo $preview_link; ?>" class="<?php echo $thickbox_class; ?> screenshot">
 				<?php if ( $screenshot ) : ?>
 					<img src="<?php echo $theme_root_uri . '/' . $stylesheet . '/' . $screenshot; ?>" alt="" />
 				<?php endif; ?>
-				</a>
 				<h3>
 			<?php
 				/* translators: 1: theme title, 2: theme version, 3: theme author */
-				printf( __( '%1$s %2$s by %3$s', AI1EC_PLUGIN_NAME ), $title, $version, $author ) ; ?></h3>
+				printf(
+					Ai1ec_I18n::__( '%1$s %2$s by %3$s' ),
+					$title,
+					$version,
+					$author
+				); ?></h3>
 				<p class="description"><?php echo $description; ?></p>
-				<span class='action-links'><?php echo $actions ?></span>
+				<span class='action-links'><?php echo $actions; ?></span>
 				<?php if ( current_user_can( 'edit_themes' ) && $parent_theme ) {
 					/* translators: 1: theme title, 2:  template dir, 3: stylesheet_dir, 4: theme title, 5: parent_theme */ ?>
 					<p>
 						<?php
 						printf(
-							__( 'The template files are located in <code>%2$s</code>. The stylesheet files are located in <code>%3$s</code>. ' .
-							    '<strong>%4$s</strong> uses templates from <strong>%5$s</strong>. Changes made to the templates will affect ' .
-							    'both themes.', AI1EC_PLUGIN_NAME
+							Ai1ec_I18n::__(
+								'The template files are located in <code>%2$s</code>. The stylesheet files are located in <code>%3$s</code>. <strong>%4$s</strong> uses templates from <strong>%5$s</strong>. Changes made to the templates will affect both themes.'
 							),
 							$title,
 							str_replace( WP_CONTENT_DIR, '', $template_dir ),
 							str_replace( WP_CONTENT_DIR, '', $stylesheet_dir ),
 							$title,
-							$parent_theme );
+							$parent_theme
+						);
 						?>
 					</p>
 			<?php } else { ?>
 				<p>
 					<?php
 					printf(
-						__( 'All of this theme&#8217;s files are located in <code>%2$s</code>.', AI1EC_PLUGIN_NAME ),
+						Ai1ec_I18n::__(
+							'All of this theme&#8217;s files are located in <code>%2$s</code>.'
+						),
 						$title,
 						str_replace( WP_CONTENT_DIR, '', $template_dir ),
 						str_replace( WP_CONTENT_DIR, '', $stylesheet_dir )
@@ -377,10 +313,9 @@ class Ai1ec_Theme_List extends WP_List_Table {
 			<?php } ?>
 			<?php if ( $tags ) : ?>
 				<p>
-					<?php _e( 'Tags:', AI1EC_PLUGIN_NAME ); ?> <?php echo join( ', ', $tags ); ?>
+				 <?php echo Ai1ec_I18n::__( 'Tags:' ); ?> <?php echo join( ', ', $tags ); ?>
 				</p>
 			<?php endif; ?>
-			<?php theme_update_available( $themes[$theme_name] ); ?>
 		<?php endif; // end if not empty theme_name ?>
 			</div>
 		<?php
@@ -395,7 +330,8 @@ class Ai1ec_Theme_List extends WP_List_Table {
 	 * @return unknown
 	 */
 	function current_theme_info() {
-		$themes        = $this->get_themes();
+		$themes        = $this->_registry->get( 'theme.search' )
+			->filter_themes();
 		$current_theme = $this->get_current_ai1ec_theme();
 		if ( ! $themes ) {
 			$ct       = new stdClass;
@@ -438,60 +374,8 @@ class Ai1ec_Theme_List extends WP_List_Table {
 	 */
 	public function get_current_ai1ec_theme() {
 		$option = $this->_registry->get( 'model.option' );
-		$theme = $option->get( 'ai1ec_current_theme', array() );
+		$theme  = $option->get( 'ai1ec_current_theme', array() );
 		return $theme['stylesheet'];
-	}
-
-	/**
-	 * Retrieve list of WordPress theme features (aka theme tags)
-	 *
-	 * @since 3.1.0
-	 *
-	 * @return array  Array of features keyed by category with translations keyed by slug.
-	 */
-	public function get_theme_feature_list() {
-		// Hard-coded list is used if api not accessible.
-		$features = array(
-				__('Colors') => array(
-					'black'   => __( 'Black' ),
-					'blue'    => __( 'Blue' ),
-					'brown'   => __( 'Brown' ),
-					'gray'    => __( 'Gray' ),
-					'green'   => __( 'Green' ),
-					'orange'  => __( 'Orange' ),
-					'pink'    => __( 'Pink' ),
-					'purple'  => __( 'Purple' ),
-					'red'     => __( 'Red' ),
-					'silver'  => __( 'Silver' ),
-					'tan'     => __( 'Tan' ),
-					'white'   => __( 'White' ),
-					'yellow'  => __( 'Yellow' ),
-					'dark'    => __( 'Dark' ),
-					'light'   => __( 'Light ')
-				),
-
-			__('Width') => array(
-				'fixed-width'    => __( 'Fixed Width' ),
-				'flexible-width' => __( 'Flexible Width' )
-			),
-
-			__( 'Features' ) => array(
-				'featured-images'       => __( 'Featured Images' ),
-				'front-page-post-form'  => __( 'Front Page Posting' ),
-				'full-width-template'   => __( 'Full Width Template' ),
-				'rtl-language-support'  => __( 'RTL Language Support' ),
-				'threaded-comments'     => __( 'Threaded Comments' ),
-				'translation-ready'     => __( 'Translation Ready' )
-			),
-
-			__( 'Subject' )  => array(
-				'holiday'       => __( 'Holiday' ),
-				'photoblogging' => __( 'Photoblogging' ),
-				'seasonal'      => __( 'Seasonal' )
-			)
-		);
-
-		return $features;
 	}
 
 }

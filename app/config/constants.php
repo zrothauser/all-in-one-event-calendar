@@ -128,8 +128,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// = Default theme name =
 	// ======================
 	if ( ! defined( 'AI1EC_DEFAULT_THEME_NAME' ) ) {
-		define(
-		'AI1EC_DEFAULT_THEME_NAME', 'vortex' );
+		define( 'AI1EC_DEFAULT_THEME_NAME', 'vortex' );
 	}
 	// ================
 	// = THEME FOLDER =
@@ -145,7 +144,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		define(
 			'AI1EC_DEFAULT_THEME_ROOT',
 			AI1EC_PATH . DIRECTORY_SEPARATOR . 'public' .
-				DIRECTORY_SEPARATOR . AI1EC_THEME_FOLDER 
+				DIRECTORY_SEPARATOR . AI1EC_THEME_FOLDER
 		);
 	}
 
@@ -154,8 +153,9 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// =======================
 	if ( ! defined( 'AI1EC_DEFAULT_THEME_PATH' ) ) {
 		define(
-		'AI1EC_DEFAULT_THEME_PATH',
-		AI1EC_DEFAULT_THEME_ROOT . DIRECTORY_SEPARATOR . AI1EC_DEFAULT_THEME_NAME
+			'AI1EC_DEFAULT_THEME_PATH',
+			AI1EC_DEFAULT_THEME_ROOT . DIRECTORY_SEPARATOR .
+				AI1EC_DEFAULT_THEME_NAME
 		);
 	}
 
@@ -163,7 +163,10 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// = AI1EC Theme URL =
 	// ===================
 	if ( ! defined( 'AI1EC_THEMES_URL' ) ) {
-		define( 'AI1EC_THEMES_URL',         WP_CONTENT_URL . '/' . AI1EC_THEME_FOLDER );
+		define(
+			'AI1EC_THEMES_URL',
+			WP_CONTENT_URL . '/' . AI1EC_THEME_FOLDER
+		);
 	}
 
 	// ==============
@@ -230,7 +233,10 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// = THEME SELECTION PAGE BASE URL (wrap in admin_url()) =
 	// =======================================================
 	if ( ! defined( 'AI1EC_THEME_SELECTION_BASE_URL' ) ) {
-		define( 'AI1EC_THEME_SELECTION_BASE_URL', AI1EC_ADMIN_BASE_URL . '&page=' . AI1EC_PLUGIN_NAME . '-themes' );
+		define(
+			'AI1EC_THEME_SELECTION_BASE_URL',
+			AI1EC_ADMIN_BASE_URL . '&page=' . AI1EC_PLUGIN_NAME . '-themes'
+		);
 	}
 
 	// ==============

@@ -20,25 +20,24 @@ class Ai1ec_View_Admin_Theme_Switching extends Ai1ec_View_Admin_Abstract {
 		$activated = isset( $_GET['activated'] ) ? true : false;
 		$deleted   = false;
 
-
 		$_list_table = $this->_registry->get( 'theme.list' );
 		$_list_table->prepare_items();
-		
+
 		$args = array(
 			'activated'     => $activated,
 			'deleted'       => $deleted,
 			'ct'            => $ct,
 			'wp_list_table' => $_list_table,
-			'page_title'    =>
-			__( 'All-in-One Event Calendar: Themes', AI1EC_PLUGIN_NAME ),
+			'page_title'    => Ai1ec_I18n::__(
+				'All-in-One Event Calendar: Themes'
+			),
 		);
-		
+
 		add_thickbox();
 		wp_enqueue_script( 'theme-preview' );
 		$loader = $this->_registry->get( 'theme.loader' );
-		
+
 		$file   = $loader->get_file( 'themes.php', $args, true );
-		
 		return $file->render();
 	}
 
@@ -52,8 +51,8 @@ class Ai1ec_View_Admin_Theme_Switching extends Ai1ec_View_Admin_Abstract {
 		// ===============
 		$themes_page = add_submenu_page(
 			AI1EC_ADMIN_BASE_URL,
-			__( 'Calendar Themes', AI1EC_PLUGIN_NAME ),
-			__( 'Calendar Themes', AI1EC_PLUGIN_NAME ),
+			Ai1ec_I18n::__( 'Calendar Themes' ),
+			Ai1ec_I18n::__( 'Calendar Themes' ),
 			'switch_ai1ec_themes',
 			AI1EC_PLUGIN_NAME . '-themes',
 			array( $this, 'display_page' )
@@ -61,7 +60,7 @@ class Ai1ec_View_Admin_Theme_Switching extends Ai1ec_View_Admin_Abstract {
 		if ( false !== $themes_page ) {
 			// Make copy of Themes page at its old location.
 			$submenu['themes.php'][] = array(
-				__( 'Calendar Themes', AI1EC_PLUGIN_NAME ),
+				Ai1ec_I18n::__( 'Calendar Themes' ),
 				'switch_ai1ec_themes',
 				AI1EC_THEME_SELECTION_BASE_URL,
 			);
@@ -70,6 +69,5 @@ class Ai1ec_View_Admin_Theme_Switching extends Ai1ec_View_Admin_Abstract {
 
 	public function handle_post() {
 	}
-}
 
-?>
+}

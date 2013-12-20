@@ -224,7 +224,7 @@ class Ai1ec_Front_Controller {
 	 */
 	protected function _add_default_theme_if_not_set() {
 		$option = $this->_registry->get( 'model.option' );
-		$theme = $option->get( 'ai1ec_current_theme', array() );
+		$theme  = $option->get( 'ai1ec_current_theme', array() );
 		if ( empty( $theme ) ) {
 			$option->set(
 				'ai1ec_current_theme',
@@ -232,11 +232,12 @@ class Ai1ec_Front_Controller {
 					'theme_dir'  => AI1EC_DEFAULT_THEME_PATH,
 					'theme_root' => AI1EC_DEFAULT_THEME_ROOT,
 					'stylesheet' => 'vortex',
-					'legacy'     => false
+					'legacy'     => false,
 				)
 			);
 		}
 	}
+
 	/**
 	 * Adds actions handled by the front controller.
 	 */

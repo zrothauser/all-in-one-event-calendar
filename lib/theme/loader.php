@@ -208,31 +208,23 @@ class Ai1ec_Theme_Loader {
 			unset( $loader_path );
 
 			// TODO: Add cache support.
+			$environment = array( 'cache' => AI1EC_TWIG_CACHE_PATH );
 			if ( AI1EC_DEBUG ) {
-				$this->_twig = new Twig_Environment( 
-					$loader, 
-					array( 
-						'debug'       => true,
-						'cache'       => AI1EC_TWIG_CACHE_PATH,
-						'auto_reload' => true,
-				 	)
+				$environment += array( 
+					'debug'       => true,
+					'auto_reload' => true,
 				);
-				$this->_twig->addExtension( new Twig_Extension_Debug() );
-			} else {
-				$this->_twig = new Twig_Environment( $loader, array( 'cache' => AI1EC_TWIG_CACHE_PATH ) );
 			}
-			
+			$this->_twig = new Twig_Environment( $loader, $environment );
+			if ( AI1EC_DEBUG ) {
+				$this->_twig->addExtension( new Twig_Extension_Debug() );
+			}
 
-
-			// Add translation filter.
-			$filter = new Twig_SimpleFilter( '__', 'Ai1ec_I18n::__' );
-			
-			$this->_twig->addFilter( $filter );
-			
 			$extension = $this->_registry->get( 'twig.ai1ec-extension' );
 			$extension->set_registry( $this->_registry );
 			$this->_twig->addExtension( $extension );
 		}
 		return $this->_twig;
 	}
+
 }

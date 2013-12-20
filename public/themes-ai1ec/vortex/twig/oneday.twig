@@ -3,7 +3,7 @@
 <table class="ai1ec-oneday-view-original">
 	<thead>
 		<tr>
-			{% for day in cell_array %}
+			{% for date, day in cell_array %}
 				<th class="ai1ec-weekday {% if day.today %}ai1ec-today{% endif %}">
 					{% if show_reveal_button %}
 						<div class="ai1ec-reveal-full-day">

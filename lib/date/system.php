@@ -1,9 +1,29 @@
 <?php
 
+/**
+ * Wrap library calls to date subsystem.
+ *
+ * Meant to increase performance and work around known bugs in environment.
+ *
+ * @author       Time.ly Network, Inc.
+ * @since        2.0
+ * @package      Ai1EC
+ * @subpackage   Ai1EC.Date
+ */
 class Ai1ec_Date_System extends Ai1ec_Base {
 
+	/**
+	 * @var array List of local time (key '0') and GMT time (key '1').
+	 */
 	protected $_current_time = array();
 
+	/**
+	 * Initiate current time list.
+	 *
+	 * @param Ai1ec_Registry_Object $registry
+	 *
+	 * @return void
+	 */
 	public function __construct( Ai1ec_Registry_Object $registry ) {
 		parent::__construct( $registry );
 		$gmt_time = ( version_compare( PHP_VERSION, '5.1.0' ) >= 0 )
@@ -26,6 +46,93 @@ class Ai1ec_Date_System extends Ai1ec_Base {
 	 */
 	public function current_time( $is_gmt = false ) {
 		return $this->_current_time[(int)( (bool)$is_gmt )];
+	}
+
+	/**
+	 * Returns the associative array of date patterns supported by the plugin.
+	 *
+	 * Currently the formats are:
+	 *   array(
+	 *     'def' => 'd/m/yyyy',
+	 *     'us'  => 'm/d/yyyy',
+	 *     'iso' => 'yyyy-m-d',
+	 *     'dot' => 'm.d.yyyy',
+	 *   );
+	 *
+	 * 'd' or 'dd' represent the day, 'm' or 'mm' represent the month, and 'yy'
+	 * or 'yyyy' represent the year.
+	 *
+	 * @return array List of supported date patterns.
+	 */
+	public function get_date_patterns() {
+		return array(
+			'def' => 'd/m/yyyy',
+			'us'  => 'm/d/yyyy',
+			'iso' => 'yyyy-m-d',
+			'dot' => 'm.d.yyyy',
+		);
+	}
+
+	/**
+	 * Get acceptable date format.
+	 *
+	 * Returns the date pattern (in the form 'd-m-yyyy', for example) associated
+	 * with the provided key, used by plugin settings. Simply a static map as
+	 * follows:
+	 *
+	 * @param string $key Key for the date format.
+	 *
+	 * @return string Associated date format pattern.
+	 */
+	public function get_date_pattern_by_key( $key = 'def' ) {
+		$patterns = $this->get_date_patterns();
+		if ( ! isset( $patterns[$key] ) ) {
+			return (string)current( $patterns );
+		}
+		return $patterns[$key];
+	}
+
+	/**
+	 * Format timestamp into URL safe, user selected representation.
+	 *
+	 * Returns a formatted date given a timestamp, based on the given date
+	 * format, with any '/' characters replaced with URL-friendly '-'
+	 * characters.
+	 *
+	 * @see Ai1ec_Date_System::get_date_patterns() for supported date formats.
+	 *
+	 * @param int    $timestamp UNIX timestamp representing a date.
+	 * @param string $pattern   Key of date pattern (@see
+	 *                          Ai1ec_Time_Utility::get_date_patterns()) to
+	 *                          format date with
+	 *
+	 * @return string Formatted date string.
+	 */
+	public function format_date_for_url( $timestamp, $pattern = 'def' ) {
+		$date = $this->format_date( $timestamp, $pattern );
+		$date = str_replace( '/', '-', $date );
+		return $date;
+	}
+
+	/**
+	 * Returns a formatted date given a timestamp, based on the given date format.
+	 *
+	 * @see  Ai1ec_Time_Utility::get_date_patterns() for supported date formats.
+	 *
+	 * @param  int $timestamp    UNIX timestamp representing a date (in GMT)
+	 * @param  string $pattern   Key of date pattern (@see
+	 *                           Ai1ec_Time_Utility::get_date_patterns()) to
+	 *                           format date with
+	 * @return string            Formatted date string
+	 */
+	public function format_date( $timestamp, $pattern = 'def' ) {
+		$pattern = $this->get_date_pattern_by_key( $pattern );
+		$pattern = str_replace(
+			array( 'dd', 'd', 'mm', 'm', 'yyyy', 'yy' ),
+			array( 'd',  'j', 'm',  'n', 'Y',    'y' ),
+			$pattern
+		);
+		return gmdate( $pattern, $timestamp );
 	}
 
 	/**

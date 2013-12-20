@@ -38,12 +38,24 @@ function ai1ec_stop() {
 		echo ob_get_clean();
 	}
 }
+
+/**
+ * Create `<pre>` wrapped variable dump.
+ *
+ * @param mixed $var Arbitrary value to dump.
+ *
+ * @return void
+ */
 function ai1ec_dump( $var ) {
+	if ( ! defined( 'AI1EC_DEBUG' ) || ! AI1EC_DEBUG ) {
+		return null;
+	}
 	echo '<pre>';
 	var_dump( $var );
 	echo '</pre>';
-	exit;
+	exit( 0 );
 }
+
 /**
  * Indicate deprecated function.
  *

@@ -16,16 +16,21 @@ class Ai1ec_View_Event_Color extends Ai1ec_Base {
 	 */
 	protected function _get_color( Ai1ec_Event $event, $type ) {
 			static $categories_cache = array(
-				'rgba' => array(),
+				'rgba'  => array(),
 				'faded' => array(),
 			);
 			$methods = array(
-				'rgba' => 'get_rgba_color',
-				'faded' => 'get_faded_color',
+				'rgba'  => 'get_event_category_rgba_color',
+				'faded' => 'get_event_category_faded_color',
 			);
-			$categories = wp_get_post_terms( $event->get( 'post_id' ), 'events_categories' );
+			$categories = wp_get_post_terms(
+				$event->get( 'post_id' ),
+				'events_categories'
+			);
 			if ( $categories && ! empty( $categories ) ) {
-				if ( ! isset( $categories_cache[$type][$categories[0]->term_id] ) ) {
+				if (
+					! isset( $categories_cache[$type][$categories[0]->term_id] )
+				) {
 					$method = $methods[$type];
 					$categories_cache[$type][$categories[0]->term_id] = $this
 						->$method( $categories[0]->term_id );

@@ -72,15 +72,14 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 	public function create_datepicker_link(
 		array $args, $initial_date = null
 	) {
-		$settings = $this->_registry->get( 'model.settings' );
-		$time_helper = $this->_registry->get( 'date.time-helper' );
-
+		$settings    = $this->_registry->get( 'model.settings' );
+		$date_system = $this->_registry->get( 'date.system' );
 	
-		$date_format_pattern = $time_helper->get_date_pattern_by_key(
+		$date_format_pattern = $date_system->get_date_pattern_by_key(
 			$settings->get( 'input_date_format' )
 		);
-	
-		if ( $initial_date == null ) {
+
+		if ( null === $initial_date ) {
 			// If exact_date argument was provided, use its value to initialize
 			// datepicker.
 			if ( isset( $args['exact_date'] ) &&
@@ -90,24 +89,21 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 			}
 			// Else default to today's date.
 			else {
-				$initial_date = $time_helper->gmt_to_local(
-					$time_helper->current_time()
-				);
+				$initial_date = $date_system->current_time();
 			}
 		}
 		// Convert initial date to formatted date if required.
 		if ( Ai1ec_Validation_Utility::is_valid_time_stamp( $initial_date ) ) {
-			$initial_date = $time_helper->format_date(
-				$time_helper->gmt_to_local( $initial_date ),
+			$initial_date = $date_system->format_date(
+				$initial_date,
 				$settings->get( 'input_date_format' )
 			);
 		}
 
-	
 		$href_args = array(
-			'action' => $args['action'],
-			'cat_ids' => $args['cat_ids'],
-			'tag_ids' => $args['tag_ids'],
+			'action'     => $args['action'],
+			'cat_ids'    => $args['cat_ids'],
+			'tag_ids'    => $args['tag_ids'],
 			'exact_date' => "__DATE__",
 		);
 		$data_href = $this->create_href_helper_instance( $href_args );

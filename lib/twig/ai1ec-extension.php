@@ -97,8 +97,8 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	 * @return string
 	 */
 	public function weekday( $unix_timestamp ) {
-		return $this->_registry->get( 'date.time-helper' )
-			->date_i18n( 'l', $unix_timestamp, true );
+		return $this->_registry->get( 'date.time', $unix_timestamp )
+			->format_i18n( 'l' );
 	}
 
 	/**
@@ -110,8 +110,8 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	 * @return string
 	 */
 	public function date_i18n( $unix_timestamp, $format ) {
-		return $this->_registry->get( 'date.time-helper' )
-			->date_i18n( $format, $unix_timestamp, true );
+		return $this->_registry->get( 'date.time', $unix_timestamp )
+			->format_i18n( $format );
 	}
 
 	/**

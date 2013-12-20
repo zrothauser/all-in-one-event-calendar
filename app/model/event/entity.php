@@ -61,7 +61,7 @@ class Ai1ec_Event_Entity extends Ai1ec_Base {
 			if ( $value instanceof Ai1ec_Date_Time ) {
 				$this->{$field} = $value;
 			} else {
-				$this->{$field}->set_time( $value );
+				$this->{$field}->set_date_time( $value );
 			}
 		} else {
 			$this->{$field} = $value;

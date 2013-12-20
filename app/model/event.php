@@ -32,6 +32,11 @@ class Ai1ec_Event extends Ai1ec_Base {
 	);
 
 	/**
+	 * @var array Runtime properties
+	 */
+	protected $_runtime_props = array();
+
+	/**
 	 * @var bool|null Boolean cache-definition indicating if event is multiday.
 	 */
 	protected $_is_multiday = null;
@@ -87,6 +92,29 @@ class Ai1ec_Event extends Ai1ec_Base {
 	}
 
 	/**
+	 * Get properties generated at runtime
+	 * 
+	 * @param string $property
+	 * 
+	 * @return string
+	 */
+	public function get_runtime( $property ) {
+		return isset( $this->_runtime_props[$property] ) ?
+			$this->_runtime_props[$property] :
+			'';
+	}
+
+	/**
+	 * Set properties generated at runtime
+	 * 
+	 * @param string $property
+	 * @param string $value
+	 */
+	public function set_runtime( $property, $value ) {
+		$this->_runtime_props[$property] = $value;
+	}
+
+	/**
 	 * Handle property initiation.
 	 *
 	 * Decides, how to extract value stored in permanent storage.
@@ -116,6 +144,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 * @return Ai1ec_Event Instance of self for chaining.
 	 */
 	public function initialize_from_array( array $data ) {
+		
 		// =======================================================
 		// = Assign each event field the value from the database =
 		// =======================================================
@@ -452,6 +481,19 @@ class Ai1ec_Event extends Ai1ec_Base {
 				$start->format( 'Y-m-d' ) !== $end->format( 'Y-m-d' );
 		}
 		return $this->_is_multiday;
+	}
+	
+	/**
+	 * Get the duration of the event
+	 * 
+	 * @return number
+	 */
+	public function get_duration() {
+		static $duration;
+		if ( null === $duration ) {
+			$duration = $this->get( 'end' )->format() - $this->get( 'start' )->format();
+		}
+		return $duration;
 	}
 
 	/**

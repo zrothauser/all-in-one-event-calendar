@@ -309,10 +309,12 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	 */
 	protected function _get_filter_sql( $filter ) {
 		$filter_join = $filter_where = array();
-
 		foreach ( $filter as $filter_type => $filter_ids ) {
 			$filter_object = null;
 			try {
+				if ( empty( $filter_ids ) ) {
+					$filter_ids = array();
+				}
 				$filter_object = $this->_registry->get(
 					'model.filter.' . $filter_type,
 					$filter_ids

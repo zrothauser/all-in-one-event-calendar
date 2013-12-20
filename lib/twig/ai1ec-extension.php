@@ -11,6 +11,20 @@
  */
 class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 
+	/**
+	 * @var Ai1ec_Registry_Object
+	 */
+	protected $_registry;
+	
+	/**
+	 * Injkects the registry object.
+	 * 
+	 * @param Ai1ec_Registry_Object $registry
+	 */
+	public function set_registry( Ai1ec_Registry_Object $registry ) {
+		$this->_registry = $registry;
+	}
+
 	/* (non-PHPdoc)
 	 * @see Twig_Extension::getFunctions()
 	 */
@@ -19,8 +33,100 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 			'screen_icon' => new Twig_Function_Method( $this, 'screen_icon' ),
 			'wp_nonce_field' => new Twig_Function_Method( $this, 'wp_nonce_field' ),
 			'do_meta_boxes' => new Twig_Function_Method( $this, 'do_meta_boxes' ),
-
 		);
+	}
+
+	public function getFilters() {
+		return array(
+			new Twig_SimpleFilter( 'truncate', array( $this, 'truncate' ) ),
+			new Twig_SimpleFilter( 'timespan', array( $this, 'timespan' ) ),
+			new Twig_SimpleFilter( 'avatar', array( $this, 'avatar' ) ),
+			new Twig_SimpleFilter( 'hour_to_timestamp', array( $this, 'hour_to_timestamp' ) ),
+			new Twig_SimpleFilter( 'weekday', array( $this, 'weekday' ) ),
+			new Twig_SimpleFilter( 'date_i18n', array( $this, 'date_i18n' ) ),
+		);
+	}
+
+	/**
+	 * Get HTML markup for the post's "avatar" image according conditional
+	 * fallback model.
+	 *
+	 * Accepts an ordered array of named avatar $fallbacks. Also accepts a string
+	 * of space-separated classes to add to the default classes.
+	 * @param   Ai1ec_Event $event          The event to get the avatar for
+	 * @param   array|null  $fallback_order Order of fallback in searching for
+	 *                                      images, or null to use default
+	 * @param   string      $classes        A space-separated list of CSS classes
+	 *                                      to apply to the outer <div> element.
+	 * @param   boolean     $wrap_permalink Whether to wrap the element in a link
+	 *                                      to the event details page.
+	 *
+	 * @return  string                   String of HTML if image is found
+	 */
+	public function avatar(
+		Ai1ec_Event $event,
+		$fallback_order = null,
+		$classes = '',
+		$wrap_permalink = true
+	) {
+		return $this->_registry->get( 'view.event.avatar' )
+			->get_event_avatar( 
+				$event,
+				$fallback_order,
+				$classes,
+				$wrap_permalink
+			);
+	}
+	
+	/**
+	 * Convert an hour to timestamp.
+	 * 
+	 * @param int $hour
+	 * 
+	 * @return number
+	 */
+	public function hour_to_timestamp( $hour ) {
+		return gmmktime( $hour, 0 );
+	}
+	
+	/**
+	 * Convert a timestamp to an int
+	 * 
+	 * @param int $unix_timestamp
+	 * 
+	 * @return string
+	 */
+	public function weekday( $unix_timestamp ) {
+		return $this->_registry->get( 'date.time', $unix_timestamp )
+			->format_i18n( 'l' );
+	}
+
+	/**
+	 * Convert a timestamp to a string using the desired format
+	 * 
+	 * @param int $unix_timestamp
+	 * @param string $format
+	 * 
+	 * @return string
+	 */
+	public function date_i18n( $unix_timestamp, $format ) {
+		return $this->_registry->get( 'date.time', $unix_timestamp )
+			->format_i18n( $format );
+	}
+
+	/**
+	 * Truncate a string after $length characthers
+	 * @param number $length
+	 * @param string $read_more
+	 * @return string
+	 */
+	public function truncate( $string, $length = 35, $read_more = '...' ) {
+		if ( function_exists( 'mb_strimwidth' ) ) {
+			return mb_strimwidth( $string, 0, $length, $read_more );
+		} else {
+			$read_more = strlen( $string ) > 35 ? $read_more : '';
+			return substr( $string, 0, 35 ) . $read_more;
+		}
 	}
 
 	/**
@@ -34,6 +140,11 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	 */
 	public function screen_icon( $screen = '' ){
 		return screen_icon( $screen );
+	}
+
+	public function timespan( $event, $start_date_display = 'long' ) {
+		return $this->_registry->get( 'view.event.time' )
+			->get_timespan_html( $event, $start_date_display );
 	}
 
 	/**

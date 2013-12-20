@@ -72,6 +72,7 @@ class Ai1ec_Javascript_Controller {
 	 */
 	private $_template_link_helper;
 
+	protected $_frontend_scripts_loaded;
 	/**
 	 * Public constructor.
 	 *
@@ -133,13 +134,13 @@ class Ai1ec_Javascript_Controller {
 			$page_to_load === self::LOAD_ONLY_FRONTEND_SCRIPTS
 		) {
 			if ( $page_to_load === self::LOAD_ONLY_FRONTEND_SCRIPTS &&
-				true === self::$frontend_scripts_loaded
+				true === $this->_frontend_scripts_loaded
 			) {
 				return;
 			}
-			if ( false === self::$frontend_scripts_loaded ) {
+			if ( false === $this->_frontend_scripts_loaded ) {
 				$common_js = file_get_contents( $js_path . 'pages/common_frontend.js' );
-				self::$frontend_scripts_loaded = true;
+				$this->_frontend_scripts_loaded = true;
 			}
 		}
 		// create the config object for require js

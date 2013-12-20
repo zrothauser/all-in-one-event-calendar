@@ -36,7 +36,7 @@ class Ai1ec_Date_Time {
 		$timezone = 'UTC'
 	) {
 		$this->_registry = $registry;
-		$this->set_time( $time, $timezone );
+		$this->set_date_time( $time, $timezone );
 	}
 
 	/**
@@ -56,6 +56,23 @@ class Ai1ec_Date_Time {
 		}
 		$this->change_timezone( $timezone );
 		return $this->_date_time->format( $format );
+	}
+
+	/**
+	 * Format date time to i18n representation.
+	 *
+	 * @param string $format   Target I18n format.
+	 * @param string $timezone Valid timezone identifier. Defaults to current.
+	 *
+	 * @return string Formatted time.
+	 */
+	public function format_i18n( $format, $timezone = null ) {
+		static $i18n = null;
+		if ( null === $i18n ) {
+			$i18n = $this->_registry->get( 'date.time-i18n' );
+		}
+		$timestamp = $this->format( 'U', $timezone );
+		return $i18n->format( $format, $timestamp, true );
 	}
 
 	/**
@@ -124,6 +141,37 @@ class Ai1ec_Date_Time {
 	}
 
 	/**
+	 * Adjust only time fragment of entity.
+	 *
+	 * @param int $hour   Hour of the time.
+	 * @param int $minute Minute of the time. 
+	 * @param int $second Second of the time.
+	 *
+	 * @return Ai1ec_Date_Time Instance of self for chaining.
+	 */
+	public function set_time( $hour, $minute = 0, $second = 0 ) {
+		$this->_date_time->setTime( $hour, $minute, $second );
+		return $this;
+	}
+
+	/**
+	 * Adjust day part of date time entity.
+	 *
+	 * @param int $quantifier Day adjustment quantifier.
+	 *
+	 * @return Ai1ec_Date_Time Instance of self for chaining.
+	 */
+	public function adjust_day( $quantifier ) {
+		$quantifier = (int)$quantifier;
+		if ( $quantifier > 0 && '+' !== $quantifier{0} ) {
+			$quantifier = '+' . $quantifier;
+		}
+		$modifier = $quantifier . ' day';
+		$this->_date_time->modify( $modifier );
+		return $this;
+	}
+
+	/**
 	 * Change/initiate stored date time entity.
 	 *
 	 * NOTICE: time specifiers falling in range 0..2048 will be treated
@@ -135,7 +183,11 @@ class Ai1ec_Date_Time {
 	 *
 	 * @return Ai1ec_Date Instance of self for chaining.
 	 */
-	public function set_time( $time = 'now', $timezone = 'UTC' ) {
+	public function set_date_time( $time = 'now', $timezone = 'UTC' ) {
+		if ( $time instanceof self ) {
+			$this->_date_time = clone $time->_date_time;
+			return $this;
+		}
 		$this->assert_utc_timezone();
 		$date_time_tz = null;
 		if ( $time > 0 && ( $time >> 10 ) > 2 ) {

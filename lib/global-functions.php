@@ -40,6 +40,23 @@ function ai1ec_stop() {
 }
 
 /**
+ * Create `<pre>` wrapped variable dump.
+ *
+ * @param mixed $var Arbitrary value to dump.
+ *
+ * @return void
+ */
+function ai1ec_dump( $var ) {
+	if ( ! defined( 'AI1EC_DEBUG' ) || ! AI1EC_DEBUG ) {
+		return null;
+	}
+	echo '<pre>';
+	var_dump( $var );
+	echo '</pre>';
+	exit( 0 );
+}
+
+/**
  * Indicate deprecated function.
  *
  * @param string $function Name of called function.

@@ -30,4 +30,64 @@ class Ai1ec_Meta_User extends Ai1ec_Meta {
 		return $this->get( $user_id, $meta_key, $default );
 	}
 
+	/**
+	 * user_selected_tz method
+	 *
+	 * Get/set user selected (preferred) timezone.
+	 * If only {@see $user_id} is provided - method acts as getter.
+	 * Otherwise it acts as setter.
+	 *
+	 * @param int    $user_id      ID of user whose timezone is being checked/changed
+	 * @param string $new_value    New timezone string value to set user preferrence
+	 * @param bool   $force_update Set to true to force value update instead of add
+	 *
+	 * @return mixed Return value depends on activity:
+	 *     - [getter] string User preferred timezone name (might be empty string)
+	 *     - [setter] bool   Success of preferrence change
+	 */
+	public function user_selected_tz(
+		$user_id,
+		$new_value    = NULL,
+		$force_update = false
+	) {
+		$meta_key  = 'ai1ec_timezone';
+		$user_id   = (int)$user_id;
+		$old_value = $this->get(
+			$user_id,
+			$meta_key,
+			NULL,
+			true
+		);
+		if ( NULL !== $new_value ) {
+			if ( ! in_array( $new_value, timezone_identifiers_list() ) ) {
+				return false;
+			}
+			$success = false;
+			if ( true === $force_update || ! empty( $old_value ) ) {
+				$success = update_user_meta(
+					$user_id,
+					$meta_key,
+					$new_value,
+					$old_value
+				);
+			} else {
+				$success = add_user_meta(
+					$user_id,
+					$meta_key,
+					$new_value,
+					true
+				);
+				if ( false === $success ) {
+					return $this->user_selected_tz(
+						$user_id,
+						$new_value,
+						true
+					);
+				}
+			}
+			return $success;
+		}
+		return $old_value;
+	}
+
 }

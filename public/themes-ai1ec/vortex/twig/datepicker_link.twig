@@ -1,0 +1,9 @@
+<a 
+	class="ai1ec-minical-trigger btn"
+	{% for attribute, value in attributes %}
+		{{ attribute }}="{{ value }}"
+	{% endfor %}
+	{{ data_type }}
+	>
+	<img src="{{ icon_url }}" class="ai1ec-icon-datepicker" />
+</a>

@@ -30,7 +30,6 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 	 ) {
 		parent::__construct( $registry );
 		$app = $registry->get( 'bootstrap.registry.application' );
-
 		$this->page = $app->get( 'calendar_base_page' );
 		$this->pretty_permalinks_enabled = $app->get( 'pretty_permalinks' );
 	}
@@ -44,7 +43,7 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 	 * @return Ai1ec_Href_Helper
 	 */
 	public function create_href_helper_instance( array $args, $type = 'normal' ) {
-		$href = new Ai1ec_Href_Helper( $args, $this->$page );
+		$href = new Ai1ec_Html_Element_Href( $args, $this->page );
 		$href->set_pretty_permalinks_enabled( $this->pretty_permalinks_enabled );
 		switch ( $type ) {
 			case 'category':
@@ -60,6 +59,71 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 				break;
 		}
 		return $href;
+	}
+
+	/**
+	 * Create the html element used as the UI control for the datepicker button.
+	 * The href must keep only active filters.
+	 *
+	 * @param array           $args         Populated args for the view
+	 * @param int|string|null $initial_date The datepicker's initially set date
+	 * @return Ai1ec_Generic_Html_Tag
+	 */
+	public function create_datepicker_link(
+		array $args, $initial_date = null
+	) {
+		$settings    = $this->_registry->get( 'model.settings' );
+		$date_system = $this->_registry->get( 'date.system' );
+	
+		$date_format_pattern = $date_system->get_date_pattern_by_key(
+			$settings->get( 'input_date_format' )
+		);
+
+		if ( null === $initial_date ) {
+			// If exact_date argument was provided, use its value to initialize
+			// datepicker.
+			if ( isset( $args['exact_date'] ) &&
+				$args['exact_date'] !== false &&
+				$args['exact_date'] !== null ) {
+				$initial_date = $args['exact_date'];
+			}
+			// Else default to today's date.
+			else {
+				$initial_date = $date_system->current_time();
+			}
+		}
+		// Convert initial date to formatted date if required.
+		if ( Ai1ec_Validation_Utility::is_valid_time_stamp( $initial_date ) ) {
+			$initial_date = $date_system->format_date(
+				$initial_date,
+				$settings->get( 'input_date_format' )
+			);
+		}
+
+		$href_args = array(
+			'action'     => $args['action'],
+			'cat_ids'    => $args['cat_ids'],
+			'tag_ids'    => $args['tag_ids'],
+			'exact_date' => "__DATE__",
+		);
+		$data_href = $this->create_href_helper_instance( $href_args );
+
+		$attributes = array(
+			'data-date' => $initial_date,
+			'data-date-format' => $date_format_pattern,
+			'data-date-weekstart' => $settings->get( 'week_start_day' ),
+			'href' => '#',
+			'data-href' => $data_href->generate_href(),
+		);
+		$loader = $this->_registry->get( 'theme.loader' );
+		$file = $loader->get_file( 'date-icon.png' );
+		$args = array(
+			'attributes' => $attributes,
+			'data_type'  => $args['data_type'],
+			'icon_url'   => $file->get_content(),
+		);
+
+		return $loader->get_file( 'datepicker_link.twig', $args )->get_content();
 	}
 
 	/**

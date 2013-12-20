@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The abstract class for a page.
+ * The abstract class for a admin page.
  *
  * @author     Time.ly Network Inc.
  * @since      2.0

@@ -135,7 +135,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 			$preview = "&preview=1&nocache={$now}&ai1ec_stylesheet=" . $_GET['ai1ec_stylesheet'];
 		}
 		$url = $this->get_css_url() . $preview;
-		wp_enqueue_script( 'ai1ec_style', $url );
+		wp_enqueue_style( 'ai1ec_style', $url );
 	}
 
 	/**

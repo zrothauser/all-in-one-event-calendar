@@ -41,7 +41,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 				'object' => null
 			),
 			'action' => 
-				'?controller=front&action=ai1ec_save_settings&plugin=' . AI1EC_PLUGIN_NAME
+				admin_url( '?controller=front&action=ai1ec_save_settings&plugin=' . AI1EC_PLUGIN_NAME )
 			,
 			'submit' => array(
 				'id'    => 'ai1ec_save_settings',

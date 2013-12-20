@@ -14,22 +14,22 @@ class Ai1ec_Front_Controller {
 	/**
 	 * @var Ai1ec_Registry_Object The Object registry.
 	 */
-	private $_registry;
+	protected $_registry;
 
 	/**
 	 * @var bool Whether the domain has alredy been loaded or not.
 	 */
-	private $_domain_loaded = false;
+	protected $_domain_loaded = false;
 
 	/**
 	 * @var string The pagebase used by Ai1ec_Href_Helper.
 	 */
-	private $_pagebase_for_href;
+	protected $_pagebase_for_href;
 
 	/**
 	 * @var Ai1ec_Request_Parser Instance of the request pa
 	 */
-	private $_request;
+	protected $_request;
 
 	/**
 	 * Initialize the controller.
@@ -189,13 +189,15 @@ class Ai1ec_Front_Controller {
 	 *
 	 * @return void Method does not return
 	 */
-	private function _init( $ai1ec_loader ) {
+	protected function _init( $ai1ec_loader ) {
 		$exception = null;
 		// Load the textdomain
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 		try {
 			// Initialize the registry object
 			$this->_initialize_registry( $ai1ec_loader );
+			// Load the css if needed
+			$this->_load_css_if_needed();
 			// Initialize the crons
 			$this->_install_crons();
 			// Register the activation hook
@@ -218,7 +220,7 @@ class Ai1ec_Front_Controller {
 	/**
 	 * Adds actions handled by the front controller.
 	 */
-	private function _add_front_controller_actions() {
+	protected function _add_front_controller_actions() {
 		// Initialize router. I use add_action as the dispatcher would just add
 		// overhead.
 		add_action( 
@@ -240,7 +242,7 @@ class Ai1ec_Front_Controller {
 	 *
 	 * @return void
 	 */
-	private function _initialize_dispatcher() {
+	protected function _initialize_dispatcher() {
 		$dispatcher = $this->_registry->get( 'event.dispatcher' );
 		$dispatcher->register_action(
 			'init',
@@ -345,7 +347,7 @@ class Ai1ec_Front_Controller {
 			);
 			$dispatcher->register_action(
 				'add_meta_boxes',
-				array( 'view.add-new-event', 'event_meta_box_container' )
+				array( 'view.admin.add-new-event', 'event_meta_box_container' )
 			);
 			$dispatcher->register_action(
 				'save_post',
@@ -353,9 +355,76 @@ class Ai1ec_Front_Controller {
 				10,
 				2
 			);
+			$dispatcher->register_action(
+				'manage_ai1ec_event_posts_custom_column',
+				array( 'view.admin.all-events', 'custom_columns' ),
+				10,
+				2
+			);
+			$dispatcher->register_filter(
+				'manage_ai1ec_event_posts_columns',
+				array( 'view.admin.all-events', 'change_columns' )
+			);
+			$dispatcher->register_filter(
+				'manage_edit-ai1ec_event_sortable_columns',
+				array( 'view.admin.all-events', 'sortable_columns' )
+			);
+			$dispatcher->register_filter(
+				'posts_orderby',
+				array( 'view.admin.all-events', 'orderby' ),
+				10,
+				2
+			);
 
 		}
 
+	}
+
+	/**
+	 * _add_defaults method
+	 *
+	 * Add (merge) default options to given query variable.
+	 *
+	 * @param string settingsquery variable to ammend
+	 *
+	 * @return string|NULL Modified variable values or NULL on failure
+	 *
+	 * @global    Ai1ec_Settings $ai1ec_settings Instance of settings object
+	 *                                           to pull data from
+	 * @staticvar array          $mapper         Mapping of query names to
+	 *                                           default in settings
+	 */
+	protected function _add_defaults( $name ) {
+		$settings = $this->_registry->get( 'model.settings' );
+		static $mapper = array(
+			'cat' => 'categories',
+			'tag' => 'tags',
+		);
+		$rq_name = 'ai1ec_' . $name . '_ids';
+		if (
+			! isset( $mapper[$name] ) ||
+			! array_key_exists( $rq_name, $this->_request )
+		) {
+			return NULL;
+		}
+		$options  = explode( ',', $this->_request[$rq_name] );
+		$property = 'default_' . $mapper[$name];
+		$options  = array_merge(
+			$options,
+			$settings->get( $property )
+		);
+		$filtered = array();
+		foreach ( $options as $item ) { // avoid array_filter + is_numeric
+			$item = (int)$item;
+			if ( $item > 0 ) {
+				$filtered[] = $item;
+			}
+		}
+		unset( $options );
+		if ( empty( $filtered ) ) {
+			return NULL;
+		}
+		return implode( ',', $filtered );
 	}
 
 	/**
@@ -366,7 +435,7 @@ class Ai1ec_Front_Controller {
 	 *
 	 * @return void
 	 **/
-	private function _process_request() {
+	protected function _process_request() {
 		$settings       = $this->_registry->get( 'model.settings' );
 		$this->_request = $this->_registry->get( 'http.request.parser' );
 		$aco            = $this->_registry->get( 'acl.aco' );
@@ -393,7 +462,7 @@ class Ai1ec_Front_Controller {
 	 *
 	 * @return void
 	 */
-	private function _install_crons() {
+	protected function _install_crons() {
 		$scheduling = $this->_registry->get( 'scheduling.utility', $this->_registry );
 		$allow      = $this->_registry->get( 'model.settings', $this->_registry )
 				->get( 'allow_statistics' );
@@ -431,7 +500,7 @@ class Ai1ec_Front_Controller {
 	 *
 	 * @return void
 	 */
-	private function _register_activation_hook() {
+	protected function _register_activation_hook() {
 		// register_activation_hook
 		register_activation_hook(
 			AI1EC_PLUGIN_NAME . '/' . AI1EC_PLUGIN_NAME . '.php',
@@ -446,10 +515,24 @@ class Ai1ec_Front_Controller {
 	 *
 	 * @return void Method does not return
 	 */
-	private function _initialize_registry( $ai1ec_loader ) {
+	protected function _initialize_registry( $ai1ec_loader ) {
 		$this->_registry = new Ai1ec_Registry_Object( $ai1ec_loader );
 	}
 
+	/**
+	 * Loads the CSS for the plugin
+	 * 
+	 */
+	protected function _load_css_if_needed() {
+		// ==================================
+		// = Add the hook to render the css =
+		// ==================================
+		if( isset( $_GET[Ai1ec_Css_Frontend::GET_VARIBALE_NAME] ) ) {
+			$css_controller = $this->_registry->get( 'css.frontend' );
+			$css_controller->render_css();
+			exit( 0 );
+		}
+	}
 	/**
 	 * Load the texdomain for the plugin.
 	 *
@@ -474,7 +557,7 @@ class Ai1ec_Front_Controller {
 	 *
 	 * @return void
 	 */
-	private function _initialize_schema() {
+	protected function _initialize_schema() {
 		$option = $this->_registry->get( 'model.option' );
 		// If existing DB version is not consistent with current plugin's version,
 		// or does not exist, then create/update table structure using dbDelta().

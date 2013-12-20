@@ -52,7 +52,6 @@ class Ai1ec_Theme_Loader {
 		if ( AI1EC_DEFAULT_THEME_NAME !== $active_theme ) {
 			$this->_paths['theme'][] = AI1EC_DEFAULT_THEME_PATH . AI1EC_DEFAULT_THEME_NAME . DIRECTORY_SEPARATOR;
 		}
-	
 	}
 
 	/**
@@ -84,6 +83,14 @@ class Ai1ec_Theme_Loader {
 					$filename,
 					$this->_paths['theme']
 				 );
+				break;
+			case 'png':
+				$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
+				$file = $this->_registry->get(
+					'theme.file.png',
+					$filename,
+					$paths
+				);
 				break;
 			case 'php':
 				$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
@@ -144,9 +151,9 @@ class Ai1ec_Theme_Loader {
 			// TODO: Add cache support.
 			if ( AI1EC_DEBUG ) {
 				$this->_twig = new Twig_Environment( $loader, array( 'debug' => true ) );
-				$this->_twig->addExtension(new Twig_Extension_Debug());
+				$this->_twig->addExtension( new Twig_Extension_Debug() );
 			} else {
-				$this->_twig = new Twig_Environment( $loader );
+				$this->_twig = new Twig_Environment( $loader, array( 'cache' => AI1EC_TWIG_CACHE_PATH ) );
 			}
 			
 
@@ -155,8 +162,9 @@ class Ai1ec_Theme_Loader {
 			$filter = new Twig_SimpleFilter( '__', 'Ai1ec_I18n::__' );
 			
 			$this->_twig->addFilter( $filter );
-			// $this->_add_twig_functions();
+			
 			$extension = $this->_registry->get( 'twig.ai1ec-extension' );
+			$extension->set_registry( $this->_registry );
 			$this->_twig->addExtension( $extension );
 		}
 		return $this->_twig;

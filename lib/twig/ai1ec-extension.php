@@ -30,20 +30,21 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	 */
 	public function getFunctions() {
 		return array(
-			'screen_icon' => new Twig_Function_Method( $this, 'screen_icon' ),
+			'screen_icon'    => new Twig_Function_Method( $this, 'screen_icon' ),
 			'wp_nonce_field' => new Twig_Function_Method( $this, 'wp_nonce_field' ),
-			'do_meta_boxes' => new Twig_Function_Method( $this, 'do_meta_boxes' ),
+			'do_meta_boxes'  => new Twig_Function_Method( $this, 'do_meta_boxes' ),
+			new Twig_SimpleFilter( '__', 'Ai1ec_I18n::__' ),
 		);
 	}
 
 	public function getFilters() {
 		return array(
-			new Twig_SimpleFilter( 'truncate', array( $this, 'truncate' ) ),
-			new Twig_SimpleFilter( 'timespan', array( $this, 'timespan' ) ),
-			new Twig_SimpleFilter( 'avatar', array( $this, 'avatar' ) ),
+			new Twig_SimpleFilter( 'truncate',          array( $this, 'truncate' ) ),
+			new Twig_SimpleFilter( 'timespan',          array( $this, 'timespan' ) ),
+			new Twig_SimpleFilter( 'avatar',            array( $this, 'avatar' ) ),
 			new Twig_SimpleFilter( 'hour_to_timestamp', array( $this, 'hour_to_timestamp' ) ),
-			new Twig_SimpleFilter( 'weekday', array( $this, 'weekday' ) ),
-			new Twig_SimpleFilter( 'date_i18n', array( $this, 'date_i18n' ) ),
+			new Twig_SimpleFilter( 'weekday',           array( $this, 'weekday' ) ),
+			new Twig_SimpleFilter( 'date_i18n',         array( $this, 'date_i18n' ) ),
 		);
 	}
 
@@ -199,4 +200,5 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	public function getName() {
 		return 'ai1ec';
 	}
+
 }

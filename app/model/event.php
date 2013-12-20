@@ -434,7 +434,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 		if ( NULL === $_blog_url ) {
 			$_blog_url = bloginfo( 'url' );
 		}
-		return $this->post_id . '@' . $_blog_url;
+		return $this->get( 'post_id' ) . '@' . $_blog_url;
 	}
 
 	/**

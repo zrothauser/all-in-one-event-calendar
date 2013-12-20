@@ -202,6 +202,8 @@ class Ai1ec_Front_Controller {
 			$this->_install_crons();
 			// Register the activation hook
 			$this->_initialize_schema();
+			// set the default theme if not set
+			$this->_add_default_theme_if_not_set();
 		} catch ( Ai1ec_Constants_Not_Set_Exception $e ) {
 			// This is blocking, throw it and disable the plugin
 			$exception = $e;
@@ -217,6 +219,25 @@ class Ai1ec_Front_Controller {
 		}
 	}
 	
+	/**
+	 * Set the default theme if no theme is set.
+	 */
+	protected function _add_default_theme_if_not_set() {
+		$option = $this->_registry->get( 'model.option' );
+		$theme  = $option->get( 'ai1ec_current_theme', array() );
+		if ( empty( $theme ) ) {
+			$option->set(
+				'ai1ec_current_theme',
+				array(
+					'theme_dir'  => AI1EC_DEFAULT_THEME_PATH,
+					'theme_root' => AI1EC_DEFAULT_THEME_ROOT,
+					'stylesheet' => 'vortex',
+					'legacy'     => false,
+				)
+			);
+		}
+	}
+
 	/**
 	 * Adds actions handled by the front controller.
 	 */
@@ -235,6 +256,7 @@ class Ai1ec_Front_Controller {
 		}
 		add_action( $action, array( $this, 'route_request' ) );
 	}
+
 	/**
 	 * Initialize the dispatcher.
 	 *
@@ -302,6 +324,10 @@ class Ai1ec_Front_Controller {
 			$dispatcher->register_action(
 				'admin_menu',
 				array( 'view.admin.theme-options', 'add_page' )
+			);
+			$dispatcher->register_action(
+				'admin_menu',
+				array( 'view.admin.theme-switching', 'add_page' )
 			);
 			$dispatcher->register_action(
 				'admin_menu',

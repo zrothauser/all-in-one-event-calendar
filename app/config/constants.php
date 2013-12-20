@@ -122,6 +122,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		AI1EC_CACHE_PATH . DIRECTORY_SEPARATOR . 'twig' .
 			DIRECTORY_SEPARATOR
 		);
+	}
 
 	// ======================
 	// = Default theme name =
@@ -158,17 +159,12 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		);
 	}
 
-<<<<<<< HEAD
-	
-=======
-
 	// ===================
 	// = AI1EC Theme URL =
 	// ===================
 	if ( ! defined( 'AI1EC_THEMES_URL' ) ) {
 		define( 'AI1EC_THEMES_URL',         WP_CONTENT_URL . '/' . AI1EC_THEME_FOLDER );
 	}
->>>>>>> AIOEC-1299 refactored things a little and added theme switching
 
 	// ==============
 	// = Plugin Url =

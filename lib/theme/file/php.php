@@ -37,6 +37,10 @@ class Ai1ec_File_Php extends Ai1ec_File_Abstract {
 	 * @see Ai1ec_File_Abstract::locate_file()
 	 */
 	public function process_file() {
+		// if the file was already processed just return.
+		if ( isset( $this->_content ) ) {
+			return true;
+		}
 		$files_to_check = array();
 		foreach ( array_values( $this->_paths ) as $path ) {
 			$files_to_check[] = $path . $this->_name;

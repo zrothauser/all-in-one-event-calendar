@@ -118,9 +118,8 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// ==============
 	if ( ! defined( 'AI1EC_TWIG_CACHE_PATH' ) ) {
 		define(
-		'AI1EC_TWIG_CACHE_PATH',
-		AI1EC_CACHE_PATH . DIRECTORY_SEPARATOR . 'twig' .
-			DIRECTORY_SEPARATOR
+			'AI1EC_TWIG_CACHE_PATH',
+			AI1EC_CACHE_PATH . 'twig' . DIRECTORY_SEPARATOR
 		);
 	}
 
@@ -236,6 +235,16 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		define(
 			'AI1EC_THEME_SELECTION_BASE_URL',
 			AI1EC_ADMIN_BASE_URL . '&page=' . AI1EC_PLUGIN_NAME . '-themes'
+		);
+	}
+
+	// =================================================
+	// = Ai1EC SETTINGS BASE URL (wrap in admin_url()) =
+	// =================================================
+	if ( ! defined( 'AI1EC_SETTINGS_BASE_URL' ) ) {
+		define(
+			'AI1EC_SETTINGS_BASE_URL',
+			AI1EC_ADMIN_BASE_URL . '&page=' . AI1EC_PLUGIN_NAME . '-settings'
 		);
 	}
 

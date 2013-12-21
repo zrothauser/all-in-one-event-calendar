@@ -53,14 +53,23 @@ class Ai1ec_Css_Admin  extends Ai1ec_Base {
 			return $this->process_enqueue( $enqueuables[$hook_suffix] );
 		}
 
-		$aco = $this->_registry->get( 'acl.aco' );
+		$aco        = $this->_registry->get( 'acl.aco' );
 		$post_pages = array( 'post.php' => true, 'post-new.php' => true );
 		if (
-			! isset( $post_pages[$hook_suffix] ) ||
-			! $aco->are_we_editing_our_post()
+			! $settings->is_event_platform_active() && (
+				! isset( $post_pages[$hook_suffix] ) ||
+				! $aco->are_we_editing_our_post()
+			)
 		) {
 			return null;
 		}
+
+		if ( $settings->is_event_platform_active() ) {
+			return $this->process_enqueue(
+				$enqueuables[$settings->get( 'settings_page' )]
+			);
+		}
+
 		return $this->process_enqueue(
 			array(
 				array( 'style', 'bootstrap.min.css', ),

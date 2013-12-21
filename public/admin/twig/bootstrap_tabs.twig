@@ -1,4 +1,4 @@
-<div class="tabbable {{ class }}">
+<div class="tabbable {% if class is defined %}{{ class }}{% endif %}">
 	<ul class="nav nav-tabs">
 	{% for id, data in tabs %}
 		{% if data.items is defined %}

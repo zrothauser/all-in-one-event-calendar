@@ -12,9 +12,11 @@
 		{% for option in options %}
 			<option
 				value="{{ option.value }}"
-			{% for attribute, value in option.args %}
-				{{ attribute }}="{{ value }}"
-			{% endfor %}
+			{% if option.args is defined %}
+				{% for attribute, value in option.args %}
+					{{ attribute }}="{{ value }}"
+				{% endfor %}
+			{% endif %}
 			>{{ option.text }}</option>
 		{% endfor %}
 		</select>

@@ -376,7 +376,9 @@ class Ai1ec_Javascript_Controller {
 			),
 			'now'                            => $this->_registry->get( 'date.system' )
 				->current_time(),
-			'strict_mode'                    => $settings->get( 'event_platform_strict' ),
+			'strict_mode'                    => $settings->get(
+				'event_platform_strict'
+			),
 			'size_less_variable_not_ok'      => Ai1ec_I18n::__( 
 				'The value you have entered is not a valid CSS length.'
 			),

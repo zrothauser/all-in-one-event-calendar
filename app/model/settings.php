@@ -87,6 +87,24 @@ class Ai1ec_Settings extends Ai1ec_App {
 	}
 
 	/**
+	 * Check if platform mode is activated.
+	 *
+	 * @return bool Activity status.
+	 */
+	public function is_event_platform_active() {
+		if ( defined( 'AI1EC_EVENT_PLATFORM' ) && AI1EC_EVENT_PLATFORM ) {
+			return true;
+		}
+		if (
+			isset( $this->_options['event_platform'] ) &&
+			$this->_options['event_platform']
+		) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Set new value for previously initialized option.
 	 *
 	 * @param string $option Name of option to update.

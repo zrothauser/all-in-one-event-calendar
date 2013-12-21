@@ -24,7 +24,7 @@ class Ai1ec_Platform_Controller extends Ai1ec_Base {
 			$ai1ec_settings->set(
 				'calendar_page_id',
 				$this->_registry->get( 'model.settings.calendar-page' )
-					->create_calendar_page( Ai1ec_I18n::__( 'Calendar' ) );
+					->create_calendar_page( Ai1ec_I18n::__( 'Calendar' ) )
 			);
 		}
 

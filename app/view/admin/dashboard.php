@@ -193,6 +193,11 @@ class Ai1ec_View_Admin_Dashboard extends Ai1ec_Base {
 			return;
 		}
 
+		// Remove "WordPress News"
+		remove_meta_box( 'dashboard_primary',   'dashboard', 'core' );
+		// Remove "Activity"
+		remove_meta_box( 'dashboard_activity',  'dashboard', 'core' );
+
 		// Replace "Right Now" widget with our own.
 		remove_meta_box( 'dashboard_right_now', 'dashboard', 'normal' );
 		add_meta_box(

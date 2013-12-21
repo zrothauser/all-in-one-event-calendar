@@ -109,6 +109,7 @@ class Ai1ec_Theme_Loader {
 				break;
 			case 'php':
 				$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
+				$args['is_legacy_theme'] = $this->_legacy_theme;
 				$file = $this->_registry->get(
 					'theme.file.php',
 					$filename,
@@ -119,7 +120,7 @@ class Ai1ec_Theme_Loader {
 			case 'twig':
 				$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
 
-				if ( true === $this->_legacy_theme ) {
+				if ( true === $this->_legacy_theme && ! $is_admin ) {
 					$filename = substr( $filename, 0, $dot_position - 1);
 					$file = $this->_get_legacy_file( 
 						$filename, 

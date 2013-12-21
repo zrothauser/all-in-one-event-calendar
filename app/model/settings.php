@@ -97,7 +97,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 		}
 		if (
 			isset( $this->_options['event_platform'] ) &&
-			$this->_options['event_platform']
+			$this->get( 'event_platform' )
 		) {
 			return true;
 		}

@@ -144,7 +144,13 @@ class Ai1ec_Exception_Handler {
 			}
 			return false;
 		}
-		$errstr .= ' (' . $errfile . ':' . $errline . ')';
+		$errstr .= ' (';
+		if ( 0 === strpos( $errfile, AI1EC_PATH ) ) {
+			$errstr .= substr( $errfile, strlen( AI1EC_PATH ) );
+		} else {
+			$errstr .= $errfile;
+		}
+		$errstr .= ':' . $errline . ')';
 		throw new Ai1ec_Error_Exception(
 			$errstr,
 			$errno,

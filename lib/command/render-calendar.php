@@ -34,6 +34,14 @@ class Ai1ec_Command_Render_Calendar extends Ai1ec_Command {
 				}
 			}
 		}
+		$settings = $this->_registry->get( 'model.settings' );
+		if (
+			$settings->is_event_platform_active() &&
+			is_home() &&
+			! post_password_required( $calendar_page_id )
+		) {
+			return true;
+		}
 		return false;
 	}
 

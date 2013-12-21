@@ -312,7 +312,47 @@ class Ai1ec_Front_Controller {
 			array( 'view.event.content', 'event_excerpt_noautop' ),
 			11
 		);
+
+		// Modify role permissions.
+		$dispatcher->register_action(
+			'ai1ec_upgrade',
+			array( 'acl.platform', 'modify_roles' )
+		);
+
+		$ai1ec_settings = $this->_registry->get( 'model.settings' );
+		if ( $ai1ec_settings->is_event_platform_active() ) {
+			// Check Ai1ec & WordPress settings.
+			$dispatcher->register_action(
+				'init',
+				array( 'controller.platform', 'check_settings' )
+			);
+
+			// Modify meta boxes on admin dashboard for Calendar Administrators.
+			$dispatcher->register_action(
+				'admin_init',
+				array( 'view.admin.dashboard', 'platform_dashboard' )
+			);
+
+			// Add option to general settings page.
+			$dispatcher->register_action(
+				'ai1ec_general_settings_before',
+				array( 'view.admin.dashboard', 'platform_general_settings_before' )
+			);
+
+			// Save general settings page.
+			$dispatcher->register_action(
+				'ai1ec_save_settings',
+				array( 'controller.platform', 'ai1ec_save_settings' ),
+				10,
+				2
+			);
+		}
+		
 		if ( is_admin() ) {
+			$dispatcher->register_action(
+				'right_now_content_table_end',
+				array( 'view.admin.dashboard', 'right_now_content_table_end' )
+			);
 			$dispatcher->register_action(
 				'admin_enqueue_scripts',
 				array( 'css.admin', 'admin_enqueue_scripts' )
@@ -553,10 +593,9 @@ class Ai1ec_Front_Controller {
 		// ==================================
 		// = Add the hook to render the css =
 		// ==================================
-		if( isset( $_GET[Ai1ec_Css_Frontend::GET_VARIBALE_NAME] ) ) {
+		if ( isset( $_GET[Ai1ec_Css_Frontend::GET_VARIBALE_NAME] ) ) {
 			$css_controller = $this->_registry->get( 'css.frontend' );
-			$css_controller->render_css();
-			exit( 0 );
+			return $css_controller->render_css();
 		}
 	}
 	/**

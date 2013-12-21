@@ -1,0 +1,28 @@
+<div class="timely">
+	<div class="hero-unit">
+		<h1>{{ 'Welcome'|__ }}</h1>
+		<p>{{ 'to the All-in-One Event Calendar by %s'|__|format('<a href="http://time.ly/" target="_blank">Timely</a>')|raw }}</p>
+	</div>
+
+	<div class="clearfix">
+		<div class="row-fluid">
+			{% for task in tasks %}
+				<div class="span6">
+					<p>
+						<a class="btn {% if task.link_class is defined %}{{ task.link_class }}{% endif %}"
+						   href="{{ task.url|e('html_attr') }}">
+							<i class="{{ task.icon }}"></i>&nbsp;&nbsp;{{ task.title|e }}
+						</a>
+					</p>
+					<strong>{{ task.help|e }}</strong>
+				</div>
+				{% if ( 1 == loop.index0 % 2 ) %}
+					</div>
+					<hr />
+					<div class="row-fluid">
+				{% endif %}
+			{% endfor %}
+		</div>
+		
+	</div>
+</div>

@@ -1,0 +1,105 @@
+{% autoescape false %}
+<div class="table table_content">
+    <p class="sub">{{ sub_label }}</p>
+        <table>
+            <tr class="first">
+                {{ right_now_content_table_end }}
+            </tr>
+        </table>
+</div>
+
+<div class="table table_discussion">
+    <p class="sub">{{ discussion_label }}</p>
+    <table>
+        
+        <tr class="first">
+            {% if user_can %}
+                <td class="b b-comments">
+                    <a href="edit-comments.php">
+                        <span class="total-count">{{ total_comments }}</span>
+                    </a>
+                </td>
+                <td class="last t comments">
+                    <a href="edit-comments.php">
+                        {{ total_comments_label }}
+                    </a>
+                </td>
+            {% else %}
+                <td class="b b-comments"><span class="total-count">{{ total_comments }}</span></td>
+                <td class="last t comments">{{ total_comments_label }}</td>
+            {% endif %}
+        </tr>
+        <tr>
+            {% if user_can %}                
+                <td class="b b_approved">
+                    <a href="edit-comments.php?comment_status=approved">
+                        <span class="approved-count">{{ approved_comments }}</span>
+                    </a>
+                </td>
+                <td class="last t">
+                    <a class="approved" href="edit-comments.php?comment_status=approved">
+                        {{ approved_comments_label }}
+                    </a>
+                </td>
+            {% else %}
+                <td class="b b_approved"><span class="approved-count">{{ approved_comments }}</span></td>
+                <td class="last t">{{ approved_comments_label }}</td>
+            {% endif %}
+        </tr>
+        <tr>
+            {% if user_can %}
+                <td class="b b-waiting">
+                    <a href="edit-comments.php?comment_status=moderated">
+                        <span class="pending-count">{{ moderated_comments }}</span>
+                    </a>
+                </td>
+                <td class="last t">
+                    <a class="waiting" href="edit-comments.php?comment_status=moderated">
+                        {{ moderated_comments_label }}
+                    </a>
+                </td>
+            {% else %}
+                <td class="b b-waiting"><span class="pending-count">{{ moderated_comments }}</span></td>
+                <td class="last t">{{ moderated_comments_label }}</td>
+            {% endif %}
+        </tr>
+        <tr>
+            {% if user_can %}
+                <td class="b b-spam">            
+                    <a href="edit-comments.php?comment_status=spam">
+                        <span class="spam-count">{{ spam_comments }}</span>
+                    </a>
+                </td>
+                <td class="last t">
+                    <a class="spam" href="edit-comments.php?comment_status=spam">
+                        {{ spam_comments_label }}
+                    </a>
+                </td>       
+            {% else %}
+                <td class="b b-spam"><span class="spam-count">{{ spam_comments }}</span></td>
+                <td class="last t"> {{ spam_comments_label }}</td>
+            {% endif %}
+        </tr>
+
+        {{ right_now_table_end }}
+        
+        {{ right_now_discussion_table_end }}
+        
+    </table>
+</div>
+
+<div class="versions">
+
+    {% if title and content %}
+        <p><a href="options-privacy.php" title="{{ title }}">{{ content }}</a></p>
+    {% endif %}
+
+    <span id="wp-version-message">{{ message }}</span>
+
+    <br class="clear" />
+</div>
+
+{{ ai1ec_rightnow_end }}
+
+{{ activity_box_end }}
+{% endautoescape %}

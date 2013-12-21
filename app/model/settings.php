@@ -6,7 +6,7 @@
  * @author     Time.ly Network, Inc.
  * @since      2.0
  * @package    Ai1EC
- * @subpackage Ai1EC.Html
+ * @subpackage Ai1EC.Model
  */
 class Ai1ec_Settings extends Ai1ec_App {
 
@@ -84,6 +84,21 @@ class Ai1ec_Settings extends Ai1ec_App {
 			return $default;
 		}
 		return $this->_options[$option]['value'];
+	}
+
+	/**
+	 * Check if platform mode is activated.
+	 *
+	 * @return bool Activity status.
+	 */
+	public function is_event_platform_active() {
+		if ( defined( 'AI1EC_EVENT_PLATFORM' ) && AI1EC_EVENT_PLATFORM ) {
+			return true;
+		}
+		if ( $this->get( 'event_platform', false ) ) {
+			return true;
+		}
+		return false;
 	}
 
 	/**

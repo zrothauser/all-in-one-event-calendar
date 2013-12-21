@@ -44,7 +44,6 @@ class Ai1ec_Theme_Loader {
 		'plana' => true,
 	);
 
-	
 	/**
 	 *
 	 * @param $registry Ai1ec_Registry_Object
@@ -52,15 +51,16 @@ class Ai1ec_Theme_Loader {
 	 */
 	public function __construct( 
 			Ai1ec_Registry_Object $registry
-		) {
-		$this->_registry = $registry;
-		$option = $this->_registry->get( 'model.option' );
-		$theme = $option->get( 'ai1ec_current_theme' );
-		$active_theme = $theme['stylesheet'];
-		$this->_legacy_theme = (bool)$theme['legacy'];
+	) {
+		$this->_registry         = $registry;
+		$option                  = $this->_registry->get( 'model.option' );
+		$theme                   = $option->get( 'ai1ec_current_theme' );
+		$active_theme            = $theme['stylesheet'];
+		$this->_legacy_theme     = (bool)$theme['legacy'];
 		$this->_paths['theme'][] = $theme['theme_dir'] . DIRECTORY_SEPARATOR;
 		if ( AI1EC_DEFAULT_THEME_NAME !== $active_theme ) {
-			$this->_paths['theme'][] = AI1EC_DEFAULT_THEME_PATH .  DIRECTORY_SEPARATOR;
+			$this->_paths['theme'][] = AI1EC_DEFAULT_THEME_PATH .
+				DIRECTORY_SEPARATOR;
 		}
 	}
 
@@ -79,8 +79,8 @@ class Ai1ec_Theme_Loader {
 	 */
 	public function get_file( 
 		$filename, 
-		$args = array(), 
-		$is_admin = null,
+		$args            = array(), 
+		$is_admin        = null,
 		$throw_exception = true 
 	) {
 		if ( null === $is_admin ) {
@@ -209,11 +209,15 @@ class Ai1ec_Theme_Loader {
 			unset( $loader_path );
 
 			// TODO: Add cache support.
-			$environment = array( 'cache' => AI1EC_TWIG_CACHE_PATH );
+			$environment = array(
+				'cache'            => AI1EC_TWIG_CACHE_PATH,
+				'strict_variables' => true, // undefined causes exception
+				'optimizations'    => -1,   // all
+			);
 			if ( AI1EC_DEBUG ) {
 				$environment += array( 
-					'debug'       => true,
-					'auto_reload' => true,
+					'debug'       => true, // produce node structure
+					'auto_reload' => true, // listen for changes
 				);
 			}
 			$this->_twig = new Twig_Environment( $loader, $environment );

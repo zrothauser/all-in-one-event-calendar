@@ -144,6 +144,7 @@ class Ai1ec_Exception_Handler {
 			}
 			return false;
 		}
+		$errstr .= ' (' . $errfile . ':' . $errline . ')';
 		throw new Ai1ec_Error_Exception(
 			$errstr,
 			$errno,

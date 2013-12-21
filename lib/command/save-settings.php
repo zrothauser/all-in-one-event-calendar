@@ -95,25 +95,12 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 	 * Creates the calendar page if a string is passed.
 	 * 
 	 * @param int|string $calendar_page
-	 * 
+	 *
 	 * @return int
 	 */
 	protected function _handle_saving_calendar_page_id( $calendar_page ) {
-		if ( ! is_numeric( $calendar_page ) &&
-			preg_match( '#^__auto_page:(.*?)$#', $calendar_page, $matches ) 
-		) {
-			return wp_insert_post(
-				array(
-					'post_title'     => $matches[1],
-					'post_type'      => 'page',
-					'post_status'    => 'publish',
-					'comment_status' => 'closed'
-				)
-			);
-		} else {
-			return (int)$calendar_page;
-		}
+		return $this->_registry->get( 'model.settings.calendar-page' )
+			->parse_user_selection( $calendar_page );
 	}
-}
 
-?>
+}

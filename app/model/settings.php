@@ -6,7 +6,7 @@
  * @author     Time.ly Network, Inc.
  * @since      2.0
  * @package    Ai1EC
- * @subpackage Ai1EC.Html
+ * @subpackage Ai1EC.Model
  */
 class Ai1ec_Settings extends Ai1ec_App {
 

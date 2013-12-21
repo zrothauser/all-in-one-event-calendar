@@ -23,7 +23,8 @@ class Ai1ec_Platform_Controller extends Ai1ec_Base {
 			// Auto-create the page.
 			$ai1ec_settings->set(
 				'calendar_page_id',
-				$ai1ec_settings->auto_add_page( Ai1ec_I18n::__( 'Calendar' ) )
+				$this->_registry->get( 'model.settings.calendar-page' )
+					->create_calendar_page( Ai1ec_I18n::__( 'Calendar' ) );
 			);
 		}
 

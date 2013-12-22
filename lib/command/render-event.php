@@ -23,6 +23,7 @@ class Ai1ec_Command_Render_Event extends Ai1ec_Command_Render_Calendar {
 	 * @see Ai1ec_Command::do_execute()
 	 */
 	public function do_execute() {
+		throw new Ai1ec_Exception( 'Single event view is not implemented.' );
 		// get the event html
 	}
 }

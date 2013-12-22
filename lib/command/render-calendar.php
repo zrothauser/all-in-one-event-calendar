@@ -50,7 +50,9 @@ class Ai1ec_Command_Render_Calendar extends Ai1ec_Command {
 		if ( false === $type ) {
 			$type = 'html';
 		}
-		$this->_render_strategy = $this->_registry->get( 'http.response.render.strategy.' . $type );
+		$this->_render_strategy = $this->_registry->get(
+			'http.response.render.strategy.' . $type
+		);
 	}
 
 	/* (non-PHPdoc)
@@ -59,8 +61,12 @@ class Ai1ec_Command_Render_Calendar extends Ai1ec_Command {
 	public function do_execute() {
 		// get the calendar html
 		$calendar = $this->_registry->get( 'view.calendar.page' );
-		$css = $this->_registry->get( 'css.frontend' )->add_link_to_html_for_frontend();
-		$js = $this->_registry->get( 'controller.javascript' )->load_frontend_js( true );
-		return array( 'data' => $calendar->get_content( $this->_request ) );
+		$css      = $this->_registry->get( 'css.frontend' )
+			->add_link_to_html_for_frontend();
+		$js       = $this->_registry->get( 'controller.javascript' )
+			->load_frontend_js( true );
+		return array(
+			'data' => $calendar->get_content( $this->_request )
+		);
 	}
 }

@@ -120,7 +120,7 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 		$args = array(
 			'attributes' => $attributes,
 			'data_type'  => $args['data_type'],
-			'icon_url'   => $file->get_content(),
+			'icon_url'   => $file->get_url(),
 		);
 
 		return $loader->get_file( 'datepicker_link.twig', $args )->get_content();

@@ -54,7 +54,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			$view_args
 		);
 
-		$tags            = $taxonomy->get_html_for_taxonomy(
+		$tags = $taxonomy->get_html_for_taxonomy(
 			$view_args,
 			true
 		);
@@ -68,15 +68,17 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		$views_dropdown =
 			$this->get_html_for_views_dropdown( $dropdown_args );
 		$subscribe_buttons =
-			$ai1ec_calendar_helper->get_html_for_subscribe_buttons( $view_args );
+			$this->get_html_for_subscribe_buttons( $view_args );
+
 		if (
-			( $view_args['no_navigation'] || $type !== 'standard' ) &&
+			( $view_args['no_navigation'] || $type !== 'html' ) &&
 			'true' !== $shortcode
 		) {
 			$args_for_filter = $view_args;
-			$are_filters_set = Ai1ec_Router::is_at_least_one_filter_set_in_request( $view_args );
+			$router = $this->_registry->get( 'routing.router' );
+			$are_filters_set = $router->is_at_least_one_filter_set_in_request( $view_args );
 			// send data both for json and jsonp as shortcodes are jsonp
-			$content = array(
+			return array(
 				'html'               => $view,
 				'categories'         => $categories,
 				'tags'               => $tags,
@@ -86,34 +88,86 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			);
 		
 		} else {
-			// Determine whether to display "Post your event" button on front-end.
-			$contribution_buttons =
-			$ai1ec_calendar_helper->get_html_for_contribution_buttons();
 		
 		
 			// Define new arguments for overall calendar view
-			$page_args = array(
-				'current_view'                 => $action,
+			$filter_args = array(
 				'views_dropdown'               => $views_dropdown,
-				'view'                         => $view,
-				'contribution_buttons'         => $contribution_buttons,
 				'categories'                   => $categories,
 				'tags'                         => $tags,
-				'subscribe_buttons'            => $subscribe_buttons,
-				'data_type'                    => $view_args['data_type'],
-
 			);
-			$calendar = $this->_registry->get( 'theme.loader' )
-				->get_file( 'calendar.twig', $args, false );
-			$content = $ai1ec_view_helper->get_theme_view( 'calendar.php', $page_args );
-			$args_for_filter = $page_args;
+			$loader = $this->_registry->get( 'theme.loader' );
+			$filter_menu = $loader->get_file( 'filter-menu.twig', $filter_args, false );
+			$calendar_args = array(
+				'version'     => AI1EC_VERSION,
+				'filter_menu' => $filter_menu,
+				'view'        => $view,
+				'subscribe_buttons'  => $subscribe_buttons,
+			);
+			$calendar = $loader->get_file( 'calendar.twig', $calendar_args, false );
+			return $calendar->get_content();
 		}
 
 
-		return $calendar->get_content();
+		
 	}
 
+	/**
+	 * get_html_for_subscribe_buttons method
+	 *
+	 * Render the HTML for the `subscribe' buttons
+	 *
+	 * @param array $view_args Args to pass
+	 *
+	 * @return string Rendered HTML to include in output
+	 */
+	public function get_html_for_subscribe_buttons( array $view_args ) {
+		global $ai1ec_view_helper, $ai1ec_localization_helper;
+		$args = array(
+			'url_args'    => '',
+			'is_filtered' => false,
+			'export_url'  => AI1EC_EXPORT_URL,
+		);
+		if ( ! empty( $view_args['cat_ids'] ) ) {
+			$args['url_args'] .= '&ai1ec_cat_ids=' .
+				implode( ',', $view_args['cat_ids'] );
+			$args['is_filtered'] = true;
+		}
+		if ( ! empty( $view_args['tag_ids'] ) ) {
+			$args['url_args']  .= '&ai1ec_tag_ids=' .
+				implode( ',', $view_args['tag_ids'] );
+			$args['is_filtered'] = true;
+		}
+		if ( ! empty( $view_args['post_ids'] ) ) {
+			$args['url_args']  .= '&ai1ec_post_ids=' .
+				implode( ',', $view_args['post_ids'] );
+			$args['is_filtered'] = true;
+		}
+		$localization = $this->_registry->get( 'p28n.wpml' );
+		if (
+			NULL !== ( $use_lang = $localization->get_language() )
+		) {
+			$args['url_args'] .= '&lang=' . $use_lang;
+		}
+		$subscribe = $this->_registry->get( 'theme.loader' )
+			->get_file( 'subscribe-buttons.twig', $args, false );
+		return $subscribe->get_content();
+	}
 
+	/**
+	 * This function generates the html for the view dropdowns
+	 *
+	 * @param array $view_args
+	 */
+	protected function get_html_for_views_dropdown( $dropdown_args ) {
+		$available_views = array( 'oneday' );
+		$args = array(
+			'available_views'         => $available_views,
+		);
+		$views_dropdown = $this->_registry->get( 'theme.loader' )
+			->get_file( 'views_dropdown.twig', $args, false );
+		return $views_dropdown->get_content();
+	}
 
 	/**
 	 * Get the exact date from request if available, or else from settings.

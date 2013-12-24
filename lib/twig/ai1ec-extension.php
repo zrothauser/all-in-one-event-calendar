@@ -43,6 +43,7 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 			new Twig_SimpleFilter( 'avatar',            array( $this, 'avatar' ) ),
 			new Twig_SimpleFilter( 'hour_to_timestamp', array( $this, 'hour_to_timestamp' ) ),
 			new Twig_SimpleFilter( 'weekday',           array( $this, 'weekday' ) ),
+			new Twig_SimpleFilter( 'theme_img_url',     array( $this, 'theme_img_url' ) ),
 			new Twig_SimpleFilter( 'date_i18n',         array( $this, 'date_i18n' ) ),
 			new Twig_SimpleFilter( '__',                'Ai1ec_I18n::__' ),
 		);
@@ -100,6 +101,17 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	public function weekday( $unix_timestamp ) {
 		return $this->_registry->get( 'date.time', $unix_timestamp )
 			->format_i18n( 'l' );
+	}
+
+	/**
+	 * Convert a timestamp to an int
+	 *
+	 * @param int $unix_timestamp
+	 *
+	 * @return string
+	 */
+	public function theme_img_url( $unix_timestamp ) {
+		// not implemented yet
 	}
 
 	/**

@@ -44,7 +44,7 @@ class Ai1ec_Router extends Ai1ec_Base {
 	 * @return boolean
 	 */
 	public function is_at_least_one_filter_set_in_request( array $view_args ) {
-		if( null === self::$at_least_one_filter_set_in_request ) {
+		if( null === $this->at_least_one_filter_set_in_request ) {
 			$filter_set = false;
 			$ai1ec_settings = $this->_registry->get( 'model.settings' );
 			// check if something in the filters is set
@@ -58,9 +58,9 @@ class Ai1ec_Router extends Ai1ec_Base {
 			if( $ai1ec_settings->get( 'default_calendar_view' ) !== $view_args['action'] ) {
 				$filter_set = true;
 			}
-			self::$at_least_one_filter_set_in_request = $filter_set;
+			$this->at_least_one_filter_set_in_request = $filter_set;
 		}
-		return self::$at_least_one_filter_set_in_request;
+		return $this->at_least_one_filter_set_in_request;
 	}
 
 	/**

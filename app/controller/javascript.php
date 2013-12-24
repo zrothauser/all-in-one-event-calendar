@@ -126,7 +126,7 @@ class Ai1ec_Javascript_Controller {
 		$js_path = AI1EC_ADMIN_THEME_JS_PATH . DIRECTORY_SEPARATOR;
 		$common_js = '';
 		$page_to_load = $_GET[self::LOAD_JS_PARAMETER];
-		fb($page_to_load);
+
 		if ( $_GET[self::IS_BACKEND_PARAMETER] === self::TRUE_PARAM ) {
 			$common_js = file_get_contents( $js_path . 'pages/common_backend.js' );
 		} else if (

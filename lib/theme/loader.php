@@ -226,11 +226,12 @@ class Ai1ec_Theme_Loader {
 			);
 			if ( AI1EC_DEBUG ) {
 				$environment += array( 
-					'debug'       => true, // produce node structure
-					'auto_reload' => true, // listen for changes
+					'debug' => true, // produce node structure
 				);
+				// auto_reload never well
+				$environment['cache'] = false;
 			}
-			fb($environment);
+
 			$this->_twig = new Twig_Environment( $loader, $environment );
 			if ( AI1EC_DEBUG ) {
 				$this->_twig->addExtension( new Twig_Extension_Debug() );

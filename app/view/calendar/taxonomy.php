@@ -47,7 +47,7 @@ class Ai1ec_View_Calendar_Taxonomy extends Ai1ec_Base {
 	
 		foreach( $terms as &$term ) {
 			$href = $this->_registry->get( 'html.element.href', $view_args, $type );
-			$href->set_term_id( $tag->term_id );
+			$href->set_term_id( $term->term_id );
 			$term->href = $href->generate_href();
 			if ( false === $tag ) {
 				$taxonomy = $this->_registry->get( 'view.event.taxonomy' );

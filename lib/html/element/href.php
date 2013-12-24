@@ -81,6 +81,7 @@ class Ai1ec_Html_Element_Href {
 		$this->args = $args;
 		$this->calendar_page = $calendar;
 	}
+
 	/**
 	 * @param boolean $is_category
 	 */
@@ -209,4 +210,6 @@ class Ai1ec_Html_Element_Href {
 	public static function get_param_delimiter_char( $url ) {
 		return strpos( $url, '?' ) === false ? '?' : '&';
 	}
+
+
 }

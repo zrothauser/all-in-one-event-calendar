@@ -44,6 +44,7 @@ define(
 		require(
 			[ 'external_libs/webfont' ],
 			function() {
+				console.log( 'in' );
 				WebFont.load(data);
 			} );
 	};
@@ -53,6 +54,7 @@ define(
 	 */
 	var start = function() {
 		load_fonts();
+		console.log( 'second' );
 		domReady( function() {
 			attach_event_handlers_frontend();
 		} );

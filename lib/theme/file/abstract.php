@@ -62,7 +62,10 @@ abstract class Ai1ec_File_Abstract extends Ai1ec_Base {
 	/**
 	 * @return mixed the parsed content of the file.
 	 */
-	public function get_content() {
+	public function get_content( $mute_output = false ) {
+		if ( true === $mute_output ) {
+			return '';
+		}
 		return $this->_content;
 	}
 
@@ -70,6 +73,6 @@ abstract class Ai1ec_File_Abstract extends Ai1ec_Base {
 	 * Just in case you want to echo the object.
 	 */
 	public function __toString() {
-		$this->get_content();
+		$this->render();
 	}
 }

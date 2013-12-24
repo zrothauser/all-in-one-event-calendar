@@ -62,10 +62,11 @@ class Ai1ec_Request_Parser extends Ai1ec_Abstract_Query {
 	 * Initiate default filters for arguments parser
 	 */
 	public function __construct(
+		Ai1ec_Registry_Object $registry,
 		array $argv     = null,
 		$default_action = null
 	) {
-		parent::__construct( $argv );
+		parent::__construct( $registry, $argv );
 		$action_list = array(
 			'posterboard',
 			'stream',

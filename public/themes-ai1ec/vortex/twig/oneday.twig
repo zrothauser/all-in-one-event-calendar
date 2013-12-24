@@ -34,7 +34,7 @@
 								ai1ec-event-id-{{ event.get( 'post_id' ) }}
 								ai1ec-event-instance-id-{{ event.get( 'instance_id' ) }}
 								ai1ec-allday
-								{% if event.multiday %}ai1ec-multiday{% endif %}"
+								{% if event.is_multiday()) %}ai1ec-multiday{% endif %}"
 							>
 							<div class="ai1ec-event"
 								style="{{ event.get_runtime( 'color_style' )|e('html_attr') }}">

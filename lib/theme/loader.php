@@ -222,7 +222,6 @@ class Ai1ec_Theme_Loader {
 			// TODO: Add cache support.
 			$environment = array(
 				'cache'            => AI1EC_TWIG_CACHE_PATH,
-				'strict_variables' => true, // undefined causes exception
 				'optimizations'    => -1,   // all
 			);
 			if ( AI1EC_DEBUG ) {
@@ -231,6 +230,7 @@ class Ai1ec_Theme_Loader {
 					'auto_reload' => true, // listen for changes
 				);
 			}
+			fb($environment);
 			$this->_twig = new Twig_Environment( $loader, $environment );
 			if ( AI1EC_DEBUG ) {
 				$this->_twig->addExtension( new Twig_Extension_Debug() );

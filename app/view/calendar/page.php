@@ -43,8 +43,77 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		$exact_date = $this->get_exact_date( $request );
 		$view = $this->_registry->get( 'view.calendar.view.oneday', $request );
 		$view_args = $view->get_extra_arguments( $view_args, $exact_date );
-		return $view->get_content( $view_args );
+		$view = $view->get_content( $view_args );
+		$args = array(
+			'view' => $view,
+			'version' => AI1EC_VERSION,
+			'subscribe_buttons' => '',
+		);
+		$taxonomy = $this->_registry->get( 'view.calendar.taxonomy' );
+		$categories = $taxonomy->get_html_for_taxonomy(
+			$view_args
+		);
+
+		$tags            = $taxonomy->get_html_for_taxonomy(
+			$view_args,
+			true
+		);
+		$dropdown_args = $view_args;
+		if (
+			isset( $dropdown_args['time_limit'] ) &&
+			false !== $exact_date
+		) {
+			$dropdown_args['exact_date'] = $exact_date;
+		}
+		$views_dropdown =
+			$this->get_html_for_views_dropdown( $dropdown_args );
+		$subscribe_buttons =
+			$ai1ec_calendar_helper->get_html_for_subscribe_buttons( $view_args );
+		if (
+			( $view_args['no_navigation'] || $type !== 'standard' ) &&
+			'true' !== $shortcode
+		) {
+			$args_for_filter = $view_args;
+			$are_filters_set = Ai1ec_Router::is_at_least_one_filter_set_in_request( $view_args );
+			// send data both for json and jsonp as shortcodes are jsonp
+			$content = array(
+				'html'               => $view,
+				'categories'         => $categories,
+				'tags'               => $tags,
+				'views_dropdown'     => $views_dropdown,
+				'subscribe_buttons'  => $subscribe_buttons,
+				'are_filters_set'    => $are_filters_set,
+			);
+		
+		} else {
+			// Determine whether to display "Post your event" button on front-end.
+			$contribution_buttons =
+			$ai1ec_calendar_helper->get_html_for_contribution_buttons();
+		
+		
+			// Define new arguments for overall calendar view
+			$page_args = array(
+				'current_view'                 => $action,
+				'views_dropdown'               => $views_dropdown,
+				'view'                         => $view,
+				'contribution_buttons'         => $contribution_buttons,
+				'categories'                   => $categories,
+				'tags'                         => $tags,
+				'subscribe_buttons'            => $subscribe_buttons,
+				'data_type'                    => $view_args['data_type'],
+
+			);
+			$calendar = $this->_registry->get( 'theme.loader' )
+				->get_file( 'calendar.twig', $args, false );
+			$content = $ai1ec_view_helper->get_theme_view( 'calendar.php', $page_args );
+			$args_for_filter = $page_args;
+		}
+
+
+		return $calendar->get_content();
 	}
+
+
 
 	/**
 	 * Get the exact date from request if available, or else from settings.

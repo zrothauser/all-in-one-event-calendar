@@ -81,6 +81,14 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		define( 'AI1EC_UPDATES_URL', 'http://api.time.ly/plugin/pro/latest' );
 	}
 
+
+	// ==============
+	// = Plugin Url =
+	// ==============
+	if ( ! defined( 'AI1EC_URL' ) ) {
+		define( 'AI1EC_URL', $ai1ec_base_url );
+	}
+
 	// ===============
 	// = VENDOR PATH =
 	// ===============
@@ -164,16 +172,10 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	if ( ! defined( 'AI1EC_THEMES_URL' ) ) {
 		define(
 			'AI1EC_THEMES_URL',
-			WP_CONTENT_URL . '/' . AI1EC_THEME_FOLDER
+			AI1EC_URL . '/public/' . AI1EC_THEME_FOLDER
 		);
 	}
 
-	// ==============
-	// = Plugin Url =
-	// ==============
-	if ( ! defined( 'AI1EC_URL' ) ) {
-		define( 'AI1EC_URL', $ai1ec_base_url );
-	}
 
 	// ===================
 	// = AI1EC Theme URL =

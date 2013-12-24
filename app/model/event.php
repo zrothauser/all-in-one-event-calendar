@@ -99,6 +99,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 * @return string
 	 */
 	public function get_runtime( $property ) {
+		
 		return isset( $this->_runtime_props[$property] ) ?
 			$this->_runtime_props[$property] :
 			'';

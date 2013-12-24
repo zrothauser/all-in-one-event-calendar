@@ -340,9 +340,10 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		$event->set_runtime( 
 			'instance_permalink',
 			get_permalink(
-				$event->get( 'post_id' ) . $event->get( 'instance_id' )
-			) 
+				$event->get( 'post_id' )
+			) . '?instance_id=' . $event->get( 'instance_id' )
 		);
+
 		$event->set_runtime(
 			'multiday',
 			$event->get( '_orig' )->is_multiday()

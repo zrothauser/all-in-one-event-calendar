@@ -60,6 +60,8 @@ abstract class Ai1ec_File_Abstract extends Ai1ec_Base {
 
 
 	/**
+	 * @param bool $mute_output used for compatibility reason with old code.
+	 * 
 	 * @return mixed the parsed content of the file.
 	 */
 	public function get_content( $mute_output = false ) {

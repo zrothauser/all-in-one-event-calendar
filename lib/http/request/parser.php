@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Concrete request parsing class.
  *

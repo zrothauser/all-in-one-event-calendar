@@ -3,11 +3,11 @@
 /**
  * Query adapter interface
  *
- * @author     Justas Butkus <justas@butkus.lt>
- * @since      2012.07.20
+ * @author     Time.ly Network Inc.
+ * @since      2.0
  *
- * @package    AllInOneCalendar
- * @subpackage AllInOneCalendar.Lib.Adapter
+ * @package    AI1EC
+ * @subpackage AI1EC.Http.Request
  */
 interface Ai1ec_Adapter_Query_Interface {
 

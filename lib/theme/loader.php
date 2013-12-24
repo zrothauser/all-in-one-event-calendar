@@ -228,7 +228,7 @@ class Ai1ec_Theme_Loader {
 				$environment += array( 
 					'debug' => true, // produce node structure
 				);
-				// auto_reload never well
+				// auto_reload never worked well
 				$environment['cache'] = false;
 			}
 

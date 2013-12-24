@@ -3,11 +3,11 @@
 /**
  * Wordpress query adapter
  *
- * @author     Justas Butkus <justas@butkus.lt>
- * @since      2012.07.20
+ * @author     Time.ly Network Inc.
+ * @since      2.0
  *
- * @package    AllInOneCalendar
- * @subpackage AllInOneCalendar.Lib.Adapter
+ * @package    AI1EC
+ * @subpackage AI1EC.Http.Request
  */
 class Ai1ec_Adapter_Query_Wordpress implements Ai1ec_Adapter_Query_Interface
 {

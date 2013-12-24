@@ -1,4 +1,14 @@
 <?php
+
+/**
+ * The class that handles html generation for taxonomies.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.View
+ */
 class Ai1ec_View_Calendar_Taxonomy extends Ai1ec_Base {
 	
 	/**
@@ -21,11 +31,12 @@ class Ai1ec_View_Calendar_Taxonomy extends Ai1ec_Base {
 	}
 	
 	/**
-	 * Generates the HTML for a tag selector.
+	 * Generates the HTML for a taxonomy selector.
 	 *
-	 * @param array $view_args        Arguments to the parent view
+	 * @param array $view_args Arguments to the parent view
+	 * @param bool  $tag       whether it's tags or categories.
 	 *
-	 * @return string                 Markup for categories selector
+	 * @return string          Markup for categories selector
 	 */
 	public function get_html_for_taxonomy( $view_args, $tag = false ) {
 		$taxonomy_name      = 'events_categories';

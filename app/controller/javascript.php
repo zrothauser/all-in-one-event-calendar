@@ -72,6 +72,9 @@ class Ai1ec_Javascript_Controller {
 	 */
 	private $_template_link_helper;
 
+	/**
+	 * @var bool
+	 */
 	protected $_frontend_scripts_loaded = false;
 
 	/**

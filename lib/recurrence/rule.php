@@ -142,6 +142,25 @@ class Ai1ec_Recurrence_Rule extends Ai1ec_Base {
 		return $result_rule;
 	}
 
+	/**
+	 * Return given exception dates as text.
+	 *
+	 * @param  array   $exception_dates Dates to translate
+	 *
+	 * @return string
+	 */
+	public function exdate_to_text( $exception_dates ) {
+		$dates_to_add = array();
+		foreach ( explode( ',', $exception_dates ) as $_exdate ) {
+			// convert to timestamp
+			$_exdate = strtotime( $_exdate );
+			$date_format = $this->_registry->get( 'model.option' )->get( 'date_format', 'l, M j, Y' );
+			$dates_to_add[] = $this->_registry->get( 'date.time', $_exdate )
+			->format_i18n( $date_format );
+		}
+		// append dates to the string and return it;
+		return implode( ', ', $dates_to_add );
+	}
 
 	/**
 	 * when using BYday you need an array of arrays.
@@ -421,4 +440,6 @@ class Ai1ec_Recurrence_Rule extends Ai1ec_Base {
 			$txt .= ', ' . Ai1ec_I18n::__( 'forever' );
 		}
 	}
+	
+
 }

@@ -120,11 +120,11 @@ class Ai1ec_View_Event_Location extends Ai1ec_Base {
 	 *
 	 * Returns the URL to the Google Map for the given event object.
 	 *
-	 * @param Ai1ec_Event &$event  The event object to display a map for
+	 * @param Ai1ec_Event $event  The event object to display a map for
 	 *
 	 * @return string
 	 **/
-	public function get_gmap_url( Ai1ec_Event& $event ) {
+	public function get_gmap_url( Ai1ec_Event $event ) {
 		$loc = $this->_registry->get( 'p28n.wpml' );
 		$location = $this->get_latlng( $event );
 		if ( $location ) {

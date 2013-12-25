@@ -1,5 +1,23 @@
 <?php
+
+/**
+ * This class renders the html for the single event page.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.View.Event
+ */
 class Ai1ec_View_Event_Single extends Ai1ec_Base {
+
+	/**
+	 * Renders the html of the page and returns it.
+	 * 
+	 * @param Ai1ec_Event $event
+	 * 
+	 * @return string the html of the page
+	 */
 	public function get_content( Ai1ec_Event $event ) {
 		$settings = $this->_registry->get( 'model.settings' );
 		$rrule = $this->_registry->get( 'recurrence.rule' );
@@ -37,7 +55,7 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 		) {
 			$args['edit_instance_url'] = admin_url(
 				'post.php?post=' . $event->post_id .
-				'&action=edit&instance=' . $event->instance_id
+				'&action=edit&instance=' . $event->get( 'instance_id' )
 			);
 			$args['edit_instance_text'] = sprintf(
 				__( 'Edit this occurrence (%s)', AI1EC_PLUGIN_NAME ),
@@ -48,13 +66,27 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 		return $loader->get_file( 'event-single.twig', $args, false )->get_content();
 	}
 	
-	public function get_footer( $event ) {
+	/**
+	 * @param Ai1ec_Event $event
+	 * 
+	 * @return The html of the footer
+	 */
+	public function get_footer( Ai1ec_Event $event ) {
 		$loader = $this->_registry->get( 'theme.loader' );
 		$args = array(
 			'event' => $event,
 		);
 		return $loader->get_file( 'event-single-footer.twig', $args, false )->get_content();
 	}
+
+	
+	/**
+	 * Get the html for the exclude dates and exception rules.
+	 * 
+	 * @param Ai1ec_Event $event
+	 * @param Ai1ec_Recurrence_Rule $rrule
+	 * @return string
+	 */
 	protected function _get_exclude_html( Ai1ec_Event $event, Ai1ec_Recurrence_Rule $rrule ) {
 		$excludes = array();
 		$exception_rules = $event->get( 'exception_rules' );

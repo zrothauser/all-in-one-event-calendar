@@ -1,4 +1,14 @@
 <?php
+
+/**
+ * The get repeat box snippet.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.View
+ */
 class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 	/**
 	 * get_repeat_box function

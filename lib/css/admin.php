@@ -55,13 +55,18 @@ class Ai1ec_Css_Admin  extends Ai1ec_Base {
 
 		$aco        = $this->_registry->get( 'acl.aco' );
 		$post_pages = array( 'post.php' => true, 'post-new.php' => true );
+
 		if (
-			! $settings->is_event_platform_active() && (
-				! isset( $post_pages[$hook_suffix] ) ||
-				! $aco->are_we_editing_our_post()
-			)
+			isset( $post_pages[$hook_suffix] ) ||
+			$aco->are_we_editing_our_post()
 		) {
-			return null;
+			return $this->process_enqueue(
+				array(
+					array( 'style', 'bootstrap.min.css', ),
+					array( 'style', 'add_new_event.css', ),
+					array( 'style', 'datepicker.css', ),
+				)
+			);
 		}
 
 		if ( $settings->is_event_platform_active() ) {
@@ -70,13 +75,14 @@ class Ai1ec_Css_Admin  extends Ai1ec_Base {
 			);
 		}
 
-		return $this->process_enqueue(
-			array(
-				array( 'style', 'bootstrap.min.css', ),
-				array( 'style', 'add_new_event.css', ),
-				array( 'style', 'datepicker.css', ),
-			)
-		);
+		
+
+		if ( $settings->is_event_platform_active() ) {
+			return $this->process_enqueue(
+				$enqueuables[$settings->get( 'settings_page' )]
+			);
+		}
+
 	}
 
 	/**

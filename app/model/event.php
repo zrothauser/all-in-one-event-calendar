@@ -70,7 +70,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 */
 	public function __get( $name ) {
 		trigger_error(
-			'Directly accessing Ai1ec_Event attributes is deprecated',
+			'Directly accessing Ai1ec_Event attributes is deprecated. You tried to access ' . $name,
 			E_USER_WARNING
 		);
 		$method = 'get_' . $name;

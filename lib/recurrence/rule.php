@@ -101,22 +101,6 @@ class Ai1ec_Recurrence_Rule extends Ai1ec_Base {
 	}
 
 	/**
-	 * when using BYday you need an array of arrays.
-	 * This function create valid arrays that keep into account the presence
-	 * of a week number beofre the day
-	 *
-	 * @param string $val
-	 * @return array
-	 */
-	protected function create_byday_array( $val ) {
-		$week = substr( $val, 0, 1 );
-		if ( is_numeric( $week ) ) {
-			return array( $week, 'DAY' => substr( $val, 1 ) );
-		}
-		return array( 'DAY' => $val );
-	}
-
-	/**
 	 * _merge_exrule method
 	 *
 	 * Merge RRULE values to EXRULE, to ensure, that it matches the according
@@ -156,5 +140,285 @@ class Ai1ec_Recurrence_Rule extends Ai1ec_Base {
 		}
 		$result_rule = implode( ';', $result_rule );
 		return $result_rule;
+	}
+
+
+	/**
+	 * when using BYday you need an array of arrays.
+	 * This function create valid arrays that keep into account the presence
+	 * of a week number beofre the day
+	 *
+	 * @param string $val
+	 * @return array
+	 */
+	protected function create_byday_array( $val ) {
+		$week = substr( $val, 0, 1 );
+		if ( is_numeric( $week ) ) {
+			return array( $week, 'DAY' => substr( $val, 1 ) );
+		}
+		return array( 'DAY' => $val );
+	}
+
+	/**
+	 * _get_sentence_by function
+	 *
+	 * @internal
+	 *
+	 * @return void
+	 **/
+	protected function _get_sentence_by( &$txt, $freq, $rc ) {
+		global $wp_locale;
+	
+		switch( $freq ) {
+			case 'weekly':
+				if( $rc->getByDay() ) {
+					if( count( $rc->getByDay() ) > 1 ) {
+						// if there are more than 3 days
+						// use days's abbr
+						if( count( $rc->getByDay() ) > 2 ) {
+							$_days = '';
+							foreach( $rc->getByDay() as $d ) {
+								$day = $this->get_weekday_by_id( $d, true );
+								$_days .= ' ' . $wp_locale->weekday_abbrev[$wp_locale->weekday[$day]] . ',';
+							}
+							// remove the last ' and'
+							$_days = substr( $_days, 0, -1 );
+							$txt .= ' ' . Ai1ec_I18n::_x( 'on', 'Recurrence editor - weekly tab' ) . $_days;
+						} else {
+							$_days = '';
+							foreach( $rc->getByDay() as $d ) {
+								$day = $this->get_weekday_by_id( $d, true );
+								$_days .= ' ' . $wp_locale->weekday[$day] . ' ' . Ai1ec_I18n::__( 'and' );
+							}
+							// remove the last ' and'
+							$_days = substr( $_days, 0, -4 );
+							$txt .= ' ' . Ai1ec_I18n::_x( 'on', 'Recurrence editor - weekly tab' ) . $_days;
+						}
+					} else {
+						$_days = '';
+						foreach( $rc->getByDay() as $d ) {
+							$day = $this->get_weekday_by_id( $d, true );
+							$_days .= ' ' . $wp_locale->weekday[$day];
+						}
+						$txt .= ' ' . Ai1ec_I18n::_x( 'on', 'Recurrence editor - weekly tab' ) . $_days;
+					}
+				}
+				break;
+			case 'monthly':
+				if( $rc->getByMonthDay() ) {
+					// if there are more than 2 days
+					if( count( $rc->getByMonthDay() ) > 2 ) {
+						$_days = '';
+						foreach( $rc->getByMonthDay() as $m_day ) {
+							$_days .= ' ' . $this->_ordinal( $m_day ) . ',';
+						}
+						$_days = substr( $_days, 0, -1 );
+						$txt .= ' ' . Ai1ec_I18n::_x( 'on', 'Recurrence editor - monthly tab' ) . $_days . ' ' . Ai1ec_I18n::__( 'of the month' );
+					} else if( count( $rc->getByMonthDay() ) > 1 ) {
+						$_days = '';
+						foreach( $rc->getByMonthDay() as $m_day ) {
+							$_days .= ' ' . $this->_ordinal( $m_day ) . ' ' . Ai1ec_I18n::__( 'and' );
+						}
+						$_days = substr( $_days, 0, -4 );
+						$txt .= ' ' . Ai1ec_I18n::_x( 'on', 'Recurrence editor - monthly tab' ) . $_days . ' ' . Ai1ec_I18n::__( 'of the month' );
+					} else {
+						$_days = '';
+						foreach( $rc->getByMonthDay() as $m_day ) {
+							$_days .= ' ' . $this->_ordinal( $m_day );
+						}
+						$txt .= ' ' . Ai1ec_I18n::_x( 'on', 'Recurrence editor - monthly tab' ) . $_days . ' ' . Ai1ec_I18n::__( 'of the month' );
+					}
+				} elseif( $rc->getByDay() ) {
+					$_days = '';
+					foreach( $rc->getByDay() as $d ) {
+						if ( ! preg_match( '|^((-?)\d+)([A-Z]{2})$|', $d, $matches ) ) {
+							continue;
+						}
+						$_dnum  = $matches[1];
+						$_day   = $matches[3];
+						if ( '-' === $matches[2] ) {
+							$dnum = ' ' . Ai1ec_I18n::__( 'last' );
+						} else {
+							$dnum   = ' ' . $this->_registry->get(
+								'date.time',
+								strtotime( $_dnum . '-01-1998 12:00:00' )
+							)->format_i18n( 'jS' );
+						}
+						$day    = $this->get_weekday_by_id( $_day, true );
+						$_days .= ' ' . $wp_locale->weekday[$day];
+					}
+					$txt .= ' ' . Ai1ec_I18n::_x( 'on', 'Recurrence editor - monthly tab' ) . $dnum . $_days;
+				}
+				break;
+			case 'yearly':
+				if( $rc->getByMonth() ) {
+					// if there are more than 2 months
+					if( count( $rc->getByMonth() ) > 2  ) {
+						$_months = '';
+						foreach( $rc->getByMonth() as $_m ) {
+							$_m = $_m < 10 ? 0 . $_m : $_m;
+							$_months .= ' ' . $wp_locale->month_abbrev[$wp_locale->month[$_m]] . ',';
+						}
+						$_months = substr( $_months, 0, -1 );
+						$txt .= ' ' . Ai1ec_I18n::_x( 'on', 'Recurrence editor - yearly tab' ) . $_months;
+					} else if( count( $rc->getByMonth() ) > 1 ) {
+						$_months = '';
+						foreach( $rc->getByMonth() as $_m ) {
+							$_m = $_m < 10 ? 0 . $_m : $_m;
+							$_months .= ' ' . $wp_locale->month[$_m] . ' ' . Ai1ec_I18n::__( 'and' );
+						}
+						$_months = substr( $_months, 0, -4 );
+						$txt .= ' ' . Ai1ec_I18n::_x( 'on', 'Recurrence editor - yearly tab' ) . $_months;
+					} else {
+						$_months = '';
+						foreach( $rc->getByMonth() as $_m ) {
+							$_m = $_m < 10 ? 0 . $_m : $_m;
+							$_months .= ' ' . $wp_locale->month[$_m];
+						}
+						$txt .= ' ' . Ai1ec_I18n::_x( 'on', 'Recurrence editor - yearly tab' ) . $_months;
+					}
+				}
+				break;
+		}
+	}
+	
+	/**
+	 * _ordinal function
+	 *
+	 * @internal
+	 *
+	 * @return void
+	 **/
+	protected function _ordinal( $cdnl ) {
+		$locale = explode( '_', get_locale() );
+	
+		if( isset( $locale[0] ) && $locale[0] != 'en' )
+			return $cdnl;
+	
+		$test_c = abs($cdnl) % 10;
+		$ext = ( ( abs( $cdnl ) % 100 < 21 && abs( $cdnl ) % 100 > 4 ) ? 'th'
+			: ( ( $test_c < 4 ) ? ( $test_c < 3 ) ? ( $test_c < 2 ) ? ( $test_c < 1 )
+				? 'th' : 'st' : 'nd' : 'rd' : 'th' ) );
+		return $cdnl.$ext;
+	}
+	
+	/**
+	 * Returns the textual representation of the given recurrence frequency and
+	 * interval, with result stored in $txt.
+	 *
+	 * @internal
+	 *
+	 * @return void
+	 */
+	protected function _get_interval( &$txt, $freq, $interval ) {
+		switch ( $freq ) {
+			case 'daily':
+				// check if interval is set
+				if ( ! $interval || $interval == 1 ) {
+					$txt = Ai1ec_I18n::__( 'Daily' );
+				} else {
+					if ( $interval == 2 ) {
+						$txt = Ai1ec_I18n::__( 'Every other day' );
+					} else {
+						$txt = sprintf(
+							Ai1ec_I18n::__( 'Every %d days' ),
+							$interval
+						);
+					}
+				}
+				break;
+			case 'weekly':
+				// check if interval is set
+				if ( ! $interval || $interval == 1 ) {
+					$txt = Ai1ec_I18n::__( 'Weekly' );
+				} else {
+					if ( $interval == 2 ) {
+						$txt = Ai1ec_I18n::__( 'Every other week' );
+					} else {
+						$txt = sprintf(
+							Ai1ec_I18n::__( 'Every %d weeks' ),
+							$interval
+						);
+					}
+				}
+				break;
+			case 'monthly':
+				// check if interval is set
+				if ( ! $interval || $interval == 1 ) {
+					$txt = Ai1ec_I18n::__( 'Monthly' );
+				} else {
+					if ( $interval == 2 ) {
+						$txt = Ai1ec_I18n::__( 'Every other month' );
+					} else {
+						$txt = sprintf(
+							Ai1ec_I18n::__( 'Every %d months' ),
+							$interval
+						);
+					}
+				}
+				break;
+			case 'yearly':
+				// check if interval is set
+				if ( ! $interval || $interval == 1 ) {
+					$txt = Ai1ec_I18n::__( 'Yearly' );
+				} else {
+					if ( $interval == 2 ) {
+						$txt = Ai1ec_I18n::__( 'Every other year' );
+					} else {
+						$txt = sprintf(
+							Ai1ec_I18n::__( 'Every %d years' ),
+							$interval
+						);
+					}
+				}
+				break;
+		}
+	}
+
+	/**
+	 * get_weekday_by_id function
+	 *
+	 * Returns weekday name in English
+	 *
+	 * @param int $day_id Day ID
+	 *
+	 * @return string
+	 **/
+	protected function get_weekday_by_id( $day_id, $by_value = false ) {
+		return $this->_registry->get( 'view.admin.get-repeat-box' )
+		->get_weekday_by_id( $day_id, $by_value );
+	}
+
+	/**
+	 * _ending_sentence function
+	 *
+	 * Ends rrule to text sentence
+	 *
+	 * @internal
+	 *
+	 * @return void
+	 **/
+	protected function _ending_sentence( &$txt, &$rc ) {
+		if ( $until = $rc->getUntil() ) {
+			if ( ! is_int( $until ) ) {
+				$until = strtotime( $until );
+			}
+			$txt .= ' ' . sprintf(
+				Ai1ec_I18n::__( 'until %s' ),
+				$this->_registry->get(
+					'date.time',
+					$until
+				)->format_i18n( 
+					$this->_registry->get( 'model.option')->get( 'date_format' )
+				)
+			);
+		} else if ( $count = $rc->getCount() ) {
+			$txt .= ' ' . sprintf(
+				Ai1ec_I18n::__( 'for %d occurrences' ),
+				$count
+			);
+		} else {
+			$txt .= ', ' . Ai1ec_I18n::__( 'forever' );
+		}
 	}
 }

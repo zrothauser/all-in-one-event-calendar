@@ -349,6 +349,16 @@ class Ai1ec_Front_Controller {
 		}
 		
 		if ( is_admin() ) {
+			// get the repeat box
+			$dispatcher->register_action(
+				'wp_ajax_ai1ec_get_repeat_box',
+				array( 'view.admin.get-repeat-box', 'get_repeat_box' )
+			);
+			// save rrurle and convert it to text
+			$dispatcher->register_action(
+				'wp_ajax_ai1ec_rrule_to_text',
+				array( 'view.admin.get-repeat-box', 'convert_rrule_to_text' )
+			);
 			$dispatcher->register_action(
 				'right_now_content_table_end',
 				array( 'view.admin.dashboard', 'right_now_content_table_end' )

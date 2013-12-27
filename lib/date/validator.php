@@ -46,7 +46,7 @@ class Ai1ec_Validation_Utility {
 		$date, $pattern = 'def'
 	) {
 		// Convert pattern to regex.
-		$pattern = Ai1ec_Time_Utility::get_date_pattern_by_key( $pattern );
+		$pattern = self::get_date_pattern_by_key( $pattern );
 		$pattern = preg_quote( $pattern, '/' );
 		$pattern = str_replace(
 			array( 'dd',           'd',              'mm',           'm',              'yyyy',         'yy' ),
@@ -81,5 +81,42 @@ class Ai1ec_Validation_Utility {
 			( is_int( $timestamp ) || ( string ) ( int ) $timestamp === $timestamp )
 			&& ( $timestamp <= PHP_INT_MAX )
 			&& ( $timestamp >= ~ PHP_INT_MAX );
+	}
+	
+	/**
+	 * Returns the associative array of date patterns supported by the plugin,
+	 * currently:
+	 *   array(
+	 *     'def' => 'd/m/yyyy',
+	 *     'us'  => 'm/d/yyyy',
+	 *     'iso' => 'yyyy-m-d',
+	 *     'dot' => 'm.d.yyyy',
+	 *   );
+	 *
+	 * 'd' or 'dd' represent the day, 'm' or 'mm' represent the month, and 'yy'
+	 * or 'yyyy' represent the year.
+	 *
+	 * @return array Supported date patterns
+	 */
+	static public function get_date_patterns() {
+		return array(
+			'def' => 'd/m/yyyy',
+			'us'  => 'm/d/yyyy',
+			'iso' => 'yyyy-m-d',
+			'dot' => 'm.d.yyyy',
+		);
+	}
+	
+	/**
+	 * Returns the date pattern (in the form 'd-m-yyyy', for example) associated
+	 * with the provided key, used by plugin settings. Simply a static map as
+	 * follows:
+	 *
+	 * @param  string $key Key for the date format
+	 * @return string      Associated date format pattern
+	 */
+	static public function get_date_pattern_by_key( $key = 'def' ) {
+		$patterns = self::get_date_patterns();
+		return $patterns[$key];
 	}
 }

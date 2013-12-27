@@ -82,6 +82,7 @@ class Ai1ec_Request_Parser extends Ai1ec_Abstract_Query {
 		if ( ! in_array( $default_action, $action_list ) ) {
 			$default_action = current( $action_list );
 		}
+		$default_action = 'oneday';
 		$this->add_rule(
 			'action',
 			false,

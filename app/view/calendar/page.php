@@ -50,11 +50,11 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			'subscribe_buttons' => '',
 		);
 		$taxonomy = $this->_registry->get( 'view.calendar.taxonomy' );
-		$categories = $taxonomy->get_html_for_taxonomy(
+		$categories = $taxonomy->get_html_for_categories(
 			$view_args
 		);
 
-		$tags = $taxonomy->get_html_for_taxonomy(
+		$tags = $taxonomy->get_html_for_tags(
 			$view_args,
 			true
 		);
@@ -255,7 +255,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 	 * 
 	 * @return array
 	 */
-	public function get_view_args_for_view( Ai1ec_Abstract_Query $request ) {
+	protected function get_view_args_for_view( Ai1ec_Abstract_Query $request ) {
 		$settings = $this->_registry->get( 'model.settings' );
 		// Define arguments for specific calendar sub-view (month, agenda,
 		// posterboard, etc.)
@@ -286,6 +286,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		}
 	
 		$type = $request->get( 'request_type' );
+		$view_args['request_type'] = $type;
 		$view_args['data_type'] = $this->return_data_type_for_request_type(
 			$type
 		);

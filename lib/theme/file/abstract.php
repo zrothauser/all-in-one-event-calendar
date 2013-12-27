@@ -75,6 +75,6 @@ abstract class Ai1ec_File_Abstract extends Ai1ec_Base {
 	 * Just in case you want to echo the object.
 	 */
 	public function __toString() {
-		$this->render();
+		return $this->_content;
 	}
 }

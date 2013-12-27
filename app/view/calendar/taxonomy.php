@@ -29,7 +29,25 @@ class Ai1ec_View_Calendar_Taxonomy extends Ai1ec_Base {
 		$href = $this->_registry->get( 'html.element.href', $args );
 		return $href->generate_href();
 	}
-	
+
+	/**
+	 * Creates the html for tags filter
+	 * 
+	 * @param array $view_args
+	 */
+	public function get_html_for_tags( array $view_args ) {
+		return $this->_get_html_for_taxonomy( $view_args, true );
+	}
+
+	/**
+	 * Creates the html for categories filter
+	 * 
+	 * @param array $view_args
+	 */
+	public function get_html_for_categories( array $view_args ) {
+		return $this->_get_html_for_taxonomy( $view_args );
+	}
+
 	/**
 	 * Generates the HTML for a taxonomy selector.
 	 *
@@ -38,7 +56,7 @@ class Ai1ec_View_Calendar_Taxonomy extends Ai1ec_Base {
 	 *
 	 * @return string          Markup for categories selector
 	 */
-	public function get_html_for_taxonomy( $view_args, $tag = false ) {
+	protected function _get_html_for_taxonomy( $view_args, $tag = false ) {
 		$taxonomy_name      = 'events_categories';
 		$type               = 'category';
 		$type_for_filter    = 'cat_ids';

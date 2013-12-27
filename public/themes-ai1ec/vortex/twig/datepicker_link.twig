@@ -3,7 +3,9 @@
 	{% for attribute, value in attributes %}
 		{{ attribute }}="{{ value }}"
 	{% endfor %}
+	{% autoescape false %}
 	{{ data_type }}
+	{% endautoescape %}
 	>
 	<img src="{{ icon_url }}" class="ai1ec-icon-datepicker" />
 </a>

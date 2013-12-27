@@ -286,7 +286,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		}
 	
 		$type = $request->get( 'request_type' );
-		$view_args['request_type'] = $type;
+
 		$view_args['data_type'] = $this->return_data_type_for_request_type(
 			$type
 		);

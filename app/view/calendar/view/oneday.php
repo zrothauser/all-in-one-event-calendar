@@ -341,7 +341,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			'instance_permalink',
 			get_permalink(
 				$event->get( 'post_id' )
-			) . '?instance_id=' . $event->get( 'instance_id' )
+			) . '&instance_id=' . $event->get( 'instance_id' )
 		);
 
 		$event->set_runtime(

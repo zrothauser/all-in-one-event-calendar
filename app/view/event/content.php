@@ -98,9 +98,14 @@ class Ai1ec_View_Event_Content extends Ai1ec_Base {
 		global $ai1ec_calendar_controller;
 		$class = '';
 		$data_type = '';
-		$href = $this->_registry->get( 'html.element.href', array() );
+		$href = '';
+		if( isset( $_GET['ai1ec_calendar_url'] ) ) {
+			$href = $_GET['ai1ec_calendar_url'];
+		} else {
+			$href = $this->_registry->get( 'html.element.href', array() );
+			$href = $href->generate_href();
+		}
 		$text = __( 'Back to Calendar', AI1EC_PLUGIN_NAME );
-		$href = $href->generate_href();
 		$html = <<<HTML
 <a class="ai1ec-calendar-link btn btn-small pull-right $class"
 	 href="$href"

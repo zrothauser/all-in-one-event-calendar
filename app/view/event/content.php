@@ -99,8 +99,9 @@ class Ai1ec_View_Event_Content extends Ai1ec_Base {
 		$class = '';
 		$data_type = '';
 		$href = '';
-		if( isset( $_GET['ai1ec_calendar_url'] ) ) {
-			$href = $_GET['ai1ec_calendar_url'];
+		if( isset( $_COOKIE['ai1ec_calendar_url'] ) ) {
+			$href = json_decode( stripslashes( $_COOKIE['ai1ec_calendar_url'] ) );
+			setcookie( 'ai1ec_calendar_url', '', time() - 3600 );
 		} else {
 			$href = $this->_registry->get( 'html.element.href', array() );
 			$href = $href->generate_href();

@@ -16,7 +16,8 @@ define(
 		"external_libs/jquery.debouncedresize",
 		"external_libs/bootstrap_transition",
 		"libs/modal_helper",
-		"external_libs/jquery.scrollTo"
+		"external_libs/jquery.scrollTo",
+		'external_libs/jquery_cookie',
 	],
 	function( $, domReady, load_views, print, agenda_view, posterboard_view,
 		month_view, submit_ics_modal, ai1ec_calendar, ai1ec_config, common_frontend,
@@ -311,9 +312,9 @@ define(
 		
 		$( document ).on( 'click', '#ai1ec-calendar-view .ai1ec-load-event', function( e ) {
 			e.preventDefault();
-			var href = this.href;
-			href += '&ai1ec_calendar_url=' + escape( document.URL );
-			window.location.href = href;
+			$.cookie.raw = false;
+			$.cookie( 'ai1ec_calendar_url', document.URL );
+			window.location.href = this.href;
 		} );
 
 	};

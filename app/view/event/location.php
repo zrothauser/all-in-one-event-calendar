@@ -77,7 +77,7 @@ class Ai1ec_View_Event_Location extends Ai1ec_Base {
 	 **/
 	function get_map_view( $event ) {
 		$settings = $this->_registry->get( 'model.settings' );
-		$loader = $this->_registry->get( 'model.settings' );
+		$loader = $this->_registry->get( 'theme.loader' );
 		if( ! $event->get( 'show_map' ) ) {
 			return '';
 		}
@@ -134,7 +134,7 @@ class Ai1ec_View_Event_Location extends Ai1ec_Base {
 			$location = $event->get( 'address' );
 		}
 	
-		$lang = $loc->get_lang();
+		$lang = $loc->get_language();
 	
 		return 'https://www.google.com/maps?f=q&hl=' . $lang .
 		'&source=embed&q=' . urlencode( $location );

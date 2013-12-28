@@ -86,14 +86,14 @@
 	</div>
 	{% endif %}
 
+	{% autoescape false %}
 	{% if contact is not empty %}
 		<div class="ai1ec-contact">
 			<div class="ai1ec-label">{{ 'Contact:'|__ }}</div>
 			<div class="ai1ec-field-value">{{ contact }}</div>
 		</div>
 	{% endif %}
-
-	{% autoescape false %}
+		
 	{% if categories is not empty %}
 		<div class="ai1ec-categories">
 			<div class="ai1ec-label ai1ec-hidden-narrow-phone" title="{{ 'Categories'|__ }}">

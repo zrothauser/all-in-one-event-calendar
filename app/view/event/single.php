@@ -28,7 +28,7 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 		
 		$subscribe_url = AI1EC_EXPORT_URL . '&ai1ec_post_ids=' . $event->get( 'post_id' );
 		$subscribe_url = str_replace( 'webcal://', 'http://', $subscribe_url );
-		$event->set_runtime( 'ticket_url_label', $ticket->get_tickets_url_label( $event, false ) );
+		$event->set_runtime( 'tickets_url_label', $ticket->get_tickets_url_label( $event, false ) );
 		$event->set_runtime( 'content_img_url', $content->get_content_img_url( $event ) );
 		$args = array(
 			'event'                   => $event,
@@ -54,12 +54,12 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			current_user_can( 'edit_ai1ec_events' )
 		) {
 			$args['edit_instance_url'] = admin_url(
-				'post.php?post=' . $event->post_id .
+				'post.php?post=' . $event->get( 'post_id' ) .
 				'&action=edit&instance=' . $event->get( 'instance_id' )
 			);
 			$args['edit_instance_text'] = sprintf(
 				__( 'Edit this occurrence (%s)', AI1EC_PLUGIN_NAME ),
-				$event->get_short_start_date()
+				$event->get( 'start' )->format_i18n( 'M j' )
 			);
 		}
 		$loader = $this->_registry->get( 'theme.loader' );

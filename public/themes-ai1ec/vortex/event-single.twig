@@ -1,7 +1,7 @@
 <div class="timely ai1ec-single-event
-	ai1ec-event-id-{{ event.post_id }}
-	{% if event.multiday %}ai1ec-multiday{% endif %}
-	{% if event.allday %}ai1ec-allday{% endif %}">
+	ai1ec-event-id-{{ event.get( 'post_id' ) }}
+	{% if event.is_multiday %}ai1ec-multiday{% endif %}
+	{% if event.is_allday %}ai1ec-allday{% endif %}">
 
 <a name="ai1ec-event"></a>
 
@@ -11,7 +11,7 @@
 
 	<div class="ai1ec-time">
 		<div class="ai1ec-label">{{ 'When:'|__ }}</div>
-		<div class="ai1ec-field-value">{{ event.timespan_html }}</div>
+		<div class="ai1ec-field-value">{{ event.get_runtime( 'timespan_html' ) }}</div>
 	</div>
 
 	{% if recurrence %}
@@ -44,12 +44,12 @@
 		<div class="ai1ec-map pull-right">{{ map }}</div>
 	{% endif %}
 
-	{% if show_subscribe_buttons or event.ticket_url is not empty %}
+	{% if show_subscribe_buttons or event.get( 'ticket_url' ) is not empty %}
 		<div class="ai1ec-actions pull-right btn-group">
-			{% if event.ticket_url is not empty %}
-				<a href="{{ event.ticket_url|e('html_attr') }}" target="_blank"
+			{% if event.get( 'ticket_url' ) is not empty %}
+				<a href="{{ event.get( 'ticket_url' )|e('html_attr') }}" target="_blank"
 					class="ai1ec-tickets btn btn-small btn-primary"
-					>{{ event.tickets_url_label }}</a>
+					>{{ event.get( 'tickets_url_label' ) }}</a>
 			{% endif %}
 			{% if show_subscribe_buttons %}
 				<a class="btn btn-small ai1ec-subscribe"
@@ -83,11 +83,11 @@
 		</div>
 	{% endif %}
 
-	{% if event.cost is not empty or event.is_free %}
+	{% if event.get( 'cost' ) is not empty or event.is_free %}
 	<div class="ai1ec-cost">
 		<div class="ai1ec-label">{{ 'Cost:'|__ }}</div>
 		<div class="ai1ec-field-value">
-			{{ event.is_free ? 'Free'|__ : event.cost }}
+			{{ event.is_free ? 'Free'|__ : event.get( 'cost' ) }}
 		</div>
 	</div>
 	{% endif %}
@@ -127,7 +127,7 @@
 
 </div>
 
-{% if event.content_img_url is empty %}
+{% if event.get_runtime( 'content_img_url' ) is empty %}
   {{ event|avatar( ['post_thumbnail', 'location_avatar', 'category_avatar'], 'timely alignleft', false ) }}
 {% endif %}
 

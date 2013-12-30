@@ -75,12 +75,14 @@
 								{{ event.get( '_orig' )|timespan( 'short' ) }}
 							</div>
 
-							{{ event|avatar( [
-								'post_thumbnail',
-								'content_img',
-								'location_avatar',
-								'category_avatar'
-							] ) }}
+							{% autoescape false %}
+								{{ event|avatar( [
+									'post_thumbnail',
+									'content_img',
+									'location_avatar',
+									'category_avatar'
+								] ) }}
+							{% endautoescape %}
 
 							{% if not event.get_runtime( 'post_excerpt' ) is empty %}
 								<div class="ai1ec-popup-excerpt">{{ event.get_runtime( 'post_excerpt' )|e }}</div>
@@ -196,12 +198,14 @@
 								{{ event.get( '_orig' )|timespan( 'short' ) }}
 							</div>
 
+							{% autoescape false %}
 							{{ event|avatar( [
 								'post_thumbnail',
 								'content_img',
 								'location_avatar',
 								'category_avatar'
 							] ) }}
+							{% endautoescape %}
 
 							{% if not event.get_runtime( 'post_excerpt' ) is empty %}
 								<div class="ai1ec-popup-excerpt">{{ event.get_runtime( 'post_excerpt' )|e }}</div>

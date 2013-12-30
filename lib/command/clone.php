@@ -177,25 +177,30 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 			$post->post_title,
 			$edit_event_url
 		);
-		$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 'updated' );
-		$this->_duplicate_post_copy_post_taxonomies( $new_post_id , $post );
-		$this->_duplicate_post_copy_attachments( $new_post_id, $post );
-		$this->_duplicate_post_copy_post_meta_info( $new_post_id, $post );
+		$notification->store(
+			$message,
+			array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
+			'updated'
+		);
+		$this->_duplicate_post_copy_post_taxonomies( $new_post_id, $post );
+		$this->_duplicate_post_copy_attachments(     $new_post_id, $post );
+		$this->_duplicate_post_copy_post_meta_info(  $new_post_id, $post );
 
 		if ( $this->_registry->get( 'acl.aco' )->is_our_post_type( $post ) ) {
 			try {
 				$old_event          = $this->_registry->get( 'model.event', $post->ID );
-				$old_event->post_id = $new_post_id;
-				unset( $old_event->post );
+				$old_event->set( 'post_id', $new_post_id );
+				$old_event->set( 'post',    null );
 				$old_event->save();
 			} catch ( Ai1ec_Event_Not_Found_Exception $exception ) {
 				/* ignore */
 			}
 		}
-	
-		delete_post_meta( $new_post_id, '_dp_original' );
-		add_post_meta(    $new_post_id, '_dp_original', $post->ID );
-	
+
+		$meta_post = $this->_registry->get( 'model.meta-post' );
+		$meta_post->delete( $new_post_id, '_dp_original' );
+		$meta_post->add(    $new_post_id, '_dp_original', $post->ID );
+
 		// If the copy gets immediately published, we have to set a proper slug.
 		if (
 			$new_post_status == 'publish' ||

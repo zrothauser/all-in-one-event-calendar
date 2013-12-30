@@ -40,7 +40,7 @@ class Ai1ec_View_Event_Avatar extends Ai1ec_Base {
 			return '';
 		}
 	
-		$url = esc_attr( $url );
+		$url     = esc_attr( $url );
 		$classes = esc_attr( $classes );
 	
 		// Set the alt tag (helpful for SEO).

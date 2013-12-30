@@ -337,12 +337,16 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 	}
 
 	protected function _add_runtime_properties( Ai1ec_Event $event ) {
-		$event->set_runtime( 
-			'instance_permalink',
-			get_permalink(
-				$event->get( 'post_id' ) . $event->get( 'instance_id' )
-			) 
+		$instance_permalink = get_permalink(
+			$event->get( 'post_id' )
 		);
+		$instance_permalink = add_query_arg(
+			'instance_id',
+			$event->get( 'instance_id' ),
+			$instance_permalink
+		);
+		$event->set_runtime( 'instance_permalink', $instance_permalink );
+
 		$event->set_runtime(
 			'multiday',
 			$event->get( '_orig' )->is_multiday()

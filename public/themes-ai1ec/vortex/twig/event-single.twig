@@ -1,17 +1,18 @@
 <div class="timely ai1ec-single-event
 	ai1ec-event-id-{{ event.get( 'post_id' ) }}
-	{% if event.is_multiday %}ai1ec-multiday{% endif %}
-	{% if event.is_allday %}ai1ec-allday{% endif %}">
+	{% if event.is_multiday() %}ai1ec-multiday{% endif %}
+	{% if event.is_allday() %}ai1ec-allday{% endif %}">
 
 <a name="ai1ec-event"></a>
 
 <div class="ai1ec-event-details clearfix">
 
+	{% autoescape false %}
 	<div class="clearfix">{{ back_to_calendar }}</div>
-
+	{% endautoescape %}
 	<div class="ai1ec-time">
 		<div class="ai1ec-label">{{ 'When:'|__ }}</div>
-		<div class="ai1ec-field-value">{{ event.get_runtime( 'timespan_html' ) }}</div>
+		<div class="ai1ec-field-value">{{ event|timespan }}</div>
 	</div>
 
 	{% if recurrence %}
@@ -41,7 +42,9 @@
 
 
 	{% if map is not empty %}
+	{% autoescape false %}
 		<div class="ai1ec-map pull-right">{{ map }}</div>
+	{% endautoescape %}
 	{% endif %}
 
 	{% if show_subscribe_buttons or event.get( 'ticket_url' ) is not empty %}
@@ -49,7 +52,7 @@
 			{% if event.get( 'ticket_url' ) is not empty %}
 				<a href="{{ event.get( 'ticket_url' )|e('html_attr') }}" target="_blank"
 					class="ai1ec-tickets btn btn-small btn-primary"
-					>{{ event.get( 'tickets_url_label' ) }}</a>
+					>{{ event.get_runtime( 'tickets_url_label' ) }}</a>
 			{% endif %}
 			{% if show_subscribe_buttons %}
 				<a class="btn btn-small ai1ec-subscribe"
@@ -63,15 +66,6 @@
 					<i class="icon-google-plus icon-large"></i>
 					{{ 'Add to Google'|__ }}
 				</a>
-				{% if show_email_subscribe %}
-					<a class="btn btn-small ai1ec-subscribe-mail"
-						href="#ai1ec_subscribe_email_modal"
-						data-toggle="ai1ec_modal"
-						title="{{ 'Get mail notifications for this event'|__ }}">
-						<i class="icon-envelope icon-large"></i>
-						{{ 'Email notification'|__ }}
-					</a>
-				{% endif %}
 			{% endif %}
 		</div>
 	{% endif %}
@@ -83,22 +77,23 @@
 		</div>
 	{% endif %}
 
-	{% if event.get( 'cost' ) is not empty or event.is_free %}
+	{% if event.get( 'cost' ) is not empty or event.is_free() %}
 	<div class="ai1ec-cost">
 		<div class="ai1ec-label">{{ 'Cost:'|__ }}</div>
 		<div class="ai1ec-field-value">
-			{{ event.is_free ? 'Free'|__ : event.get( 'cost' ) }}
+			{{ event.is_free() ? 'Free'|__ : event.get( 'cost' ) }}
 		</div>
 	</div>
 	{% endif %}
 
+	{% autoescape false %}
 	{% if contact is not empty %}
 		<div class="ai1ec-contact">
 			<div class="ai1ec-label">{{ 'Contact:'|__ }}</div>
 			<div class="ai1ec-field-value">{{ contact }}</div>
 		</div>
 	{% endif %}
-
+		
 	{% if categories is not empty %}
 		<div class="ai1ec-categories">
 			<div class="ai1ec-label ai1ec-hidden-narrow-phone" title="{{ 'Categories'|__ }}">
@@ -124,6 +119,7 @@
 			<div class="ai1ec-field-value">{{ tags }}</div>
 		</div>
 	{% endif %}
+	{% endautoescape %}
 
 </div>
 

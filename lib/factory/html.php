@@ -31,7 +31,7 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 		parent::__construct( $registry );
 		$app = $registry->get( 'bootstrap.registry.application' );
 		$this->page = $app->get( 'calendar_base_page' );
-		$this->pretty_permalinks_enabled = $app->get( 'pretty_permalinks' );
+		$this->pretty_permalinks_enabled = $app->get( 'permalinks_enabled' );
 	}
 
 	/**
@@ -117,11 +117,13 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 		);
 		$loader = $this->_registry->get( 'theme.loader' );
 		$file = $loader->get_file( 'date-icon.png' );
+
 		$args = array(
 			'attributes' => $attributes,
 			'data_type'  => $args['data_type'],
-			'icon_url'   => $file->get_content(),
+			'icon_url'   => $file->get_url(),
 		);
+		
 
 		return $loader->get_file( 'datepicker_link.twig', $args )->get_content();
 	}

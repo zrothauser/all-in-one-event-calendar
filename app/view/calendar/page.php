@@ -43,7 +43,130 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		$exact_date = $this->get_exact_date( $request );
 		$view = $this->_registry->get( 'view.calendar.view.oneday', $request );
 		$view_args = $view->get_extra_arguments( $view_args, $exact_date );
-		return $view->get_content( $view_args );
+		$view = $view->get_content( $view_args );
+		$args = array(
+			'view' => $view,
+			'version' => AI1EC_VERSION,
+			'subscribe_buttons' => '',
+		);
+		$taxonomy = $this->_registry->get( 'view.calendar.taxonomy' );
+		$categories = $taxonomy->get_html_for_categories(
+			$view_args
+		);
+
+		$tags = $taxonomy->get_html_for_tags(
+			$view_args,
+			true
+		);
+		$dropdown_args = $view_args;
+		if (
+			isset( $dropdown_args['time_limit'] ) &&
+			false !== $exact_date
+		) {
+			$dropdown_args['exact_date'] = $exact_date;
+		}
+		$views_dropdown =
+			$this->get_html_for_views_dropdown( $dropdown_args );
+		$subscribe_buttons =
+			$this->get_html_for_subscribe_buttons( $view_args );
+
+		if (
+			( $view_args['no_navigation'] || $type !== 'html' ) &&
+			'true' !== $shortcode
+		) {
+			$args_for_filter = $view_args;
+			$router = $this->_registry->get( 'routing.router' );
+			$are_filters_set = $router->is_at_least_one_filter_set_in_request( $view_args );
+			// send data both for json and jsonp as shortcodes are jsonp
+			return array(
+				'html'               => $view,
+				'categories'         => $categories,
+				'tags'               => $tags,
+				'views_dropdown'     => $views_dropdown,
+				'subscribe_buttons'  => $subscribe_buttons,
+				'are_filters_set'    => $are_filters_set,
+			);
+		
+		} else {
+		
+		
+			// Define new arguments for overall calendar view
+			$filter_args = array(
+				'views_dropdown'               => $views_dropdown,
+				'categories'                   => $categories,
+				'tags'                         => $tags,
+			);
+			$loader = $this->_registry->get( 'theme.loader' );
+			$filter_menu = $loader->get_file( 'filter-menu.twig', $filter_args, false );
+			$calendar_args = array(
+				'version'     => AI1EC_VERSION,
+				'filter_menu' => $filter_menu,
+				'view'        => $view,
+				'subscribe_buttons'  => $subscribe_buttons,
+			);
+			$calendar = $loader->get_file( 'calendar.twig', $calendar_args, false );
+			return $calendar->get_content();
+		}
+
+
+		
+	}
+
+	/**
+	 * get_html_for_subscribe_buttons method
+	 *
+	 * Render the HTML for the `subscribe' buttons
+	 *
+	 * @param array $view_args Args to pass
+	 *
+	 * @return string Rendered HTML to include in output
+	 */
+	public function get_html_for_subscribe_buttons( array $view_args ) {
+		global $ai1ec_view_helper, $ai1ec_localization_helper;
+		$args = array(
+			'url_args'    => '',
+			'is_filtered' => false,
+			'export_url'  => AI1EC_EXPORT_URL,
+		);
+		if ( ! empty( $view_args['cat_ids'] ) ) {
+			$args['url_args'] .= '&ai1ec_cat_ids=' .
+				implode( ',', $view_args['cat_ids'] );
+			$args['is_filtered'] = true;
+		}
+		if ( ! empty( $view_args['tag_ids'] ) ) {
+			$args['url_args']  .= '&ai1ec_tag_ids=' .
+				implode( ',', $view_args['tag_ids'] );
+			$args['is_filtered'] = true;
+		}
+		if ( ! empty( $view_args['post_ids'] ) ) {
+			$args['url_args']  .= '&ai1ec_post_ids=' .
+				implode( ',', $view_args['post_ids'] );
+			$args['is_filtered'] = true;
+		}
+		$localization = $this->_registry->get( 'p28n.wpml' );
+		if (
+			NULL !== ( $use_lang = $localization->get_language() )
+		) {
+			$args['url_args'] .= '&lang=' . $use_lang;
+		}
+		$subscribe = $this->_registry->get( 'theme.loader' )
+			->get_file( 'subscribe-buttons.twig', $args, false );
+		return $subscribe->get_content();
+	}
+
+	/**
+	 * This function generates the html for the view dropdowns
+	 *
+	 * @param array $view_args
+	 */
+	protected function get_html_for_views_dropdown( $dropdown_args ) {
+		$available_views = array( 'oneday' );
+		$args = array(
+			'available_views'         => $available_views,
+		);
+		$views_dropdown = $this->_registry->get( 'theme.loader' )
+			->get_file( 'views_dropdown.twig', $args, false );
+		return $views_dropdown->get_content();
 	}
 
 	/**
@@ -132,7 +255,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 	 * 
 	 * @return array
 	 */
-	public function get_view_args_for_view( Ai1ec_Abstract_Query $request ) {
+	protected function get_view_args_for_view( Ai1ec_Abstract_Query $request ) {
 		$settings = $this->_registry->get( 'model.settings' );
 		// Define arguments for specific calendar sub-view (month, agenda,
 		// posterboard, etc.)
@@ -163,6 +286,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		}
 	
 		$type = $request->get( 'request_type' );
+
 		$view_args['data_type'] = $this->return_data_type_for_request_type(
 			$type
 		);

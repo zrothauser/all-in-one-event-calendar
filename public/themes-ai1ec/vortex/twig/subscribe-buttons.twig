@@ -3,7 +3,7 @@
 		href="{{ export_url ~ url_args }}"
 		title="{{ 'Subscribe to this calendar in your personal calendar (iCal, Outlook, etc.)'|__ }}" >
 		<i class="icon-plus"></i>
-		{% if is_filtered }} %}
+		{% if is_filtered %}
 			{{ 'Subscribe to filtered calendar'|__ }}
 		{% else %}
 			{{ 'Subscribe'|__ }}
@@ -11,7 +11,7 @@
 	</a>
 	<a class="btn ai1ec-subscribe-google ai1ec-tooltip-trigger" target="_blank"
 		data-placement="bottom"
-		href="http://www.google.com/calendar/render?cid={{ ( export_url|replace( {'webcal://', 'http://'} ) ~ url_args )|url_encode }}"
+		href="http://www.google.com/calendar/render?cid={{ ( export_url|replace( ['webcal://', 'http://'] ) ~ url_args )|url_encode }}"
 		title="{{ 'Subscribe to this calendar in your Google Calendar'|__ }}" >
 		<i class="icon-google-plus icon-large"></i>
 		{{ 'Add to Google'|__ }}

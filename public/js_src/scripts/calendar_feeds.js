@@ -3,7 +3,6 @@ define(
 		'jquery_timely',
 		'domReady',
 		'scripts/calendar_feeds/ics/ics_event_handlers',
-
 		"libs/select2_multiselect_helper",
 		"libs/tags_select",
 		'libs/utils',

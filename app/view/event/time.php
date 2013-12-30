@@ -36,7 +36,7 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 		if ( 'hidden' === $start_date_display && $event->is_allday() ) {
 			$start_date_display = 'short';
 		}
-	
+
 		// Localize time.
 		$start      = $this->_registry->get(
 			'date.time',
@@ -46,7 +46,7 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 			'date.time',
 			$event->get( 'end' )->format()
 		);
-	
+
 		// All-day events need to have their end time shifted by 1 second less
 		// to land on the correct day.
 		$end_offset = 0;
@@ -60,11 +60,12 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 		}
 
 		// Get timestamps of start & end dates without time component.
-		$start->set_time( 0, 0, 0 );
-		$end->set_time( 0, 0, 0 );
-
-		$start_ts = $start->format();
-		$end_ts   = $end->format();
+		$start_ts = $this->_registry->get( 'date.time', $start )
+			->set_time( 0, 0, 0 )
+			->format();
+		$end_ts = $this->_registry->get( 'date.time', $end )
+			->set_time( 0, 0, 0 )
+			->format();
 
 		$output = '';
 
@@ -80,25 +81,23 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 			default:
 				$start_date_display = 'long';
 		}
-	
+
 		// Output start time for non-all-day events.
 		if ( ! $event->is_allday() ) {
 			if ( 'hidden' !== $start_date_display ) {
 				$output .= apply_filters(
 					'ai1ec_get_timespan_html_time_separator',
-					_x( ' @ ', 'Event time separator', AI1EC_PLUGIN_NAME )
+					Ai1ec_I18n::_x( ' @ ', 'Event time separator' )
 				);
 			}
 			$output .= $this->get_short_time( $start );
 		}
-	
-		$instant = $event->is_instant();
-	
+
 		// Find out if we need to output the end time/date. Do not output it for
 		// instantaneous events and all-day events lasting only one day.
 		if (
 			! (
-				$instant ||
+				$event->is_instant() ||
 				( $event->is_allday() && $start_ts === $end_ts )
 			)
 		) {
@@ -125,12 +124,12 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 						Ai1ec_I18n::_x( ' @ ', 'Event time separator' )
 					);
 				}
-				$output .= $this->get_short_date( $end );
+				$output .= $this->get_short_time( $end );
 			}
 		}
 
 		$output = esc_html( $output );
-	
+
 		// Add all-day label.
 		if ( $event->is_allday() ) {
 			$output .= apply_filters(

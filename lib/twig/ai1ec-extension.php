@@ -43,6 +43,7 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 			new Twig_SimpleFilter( 'avatar',            array( $this, 'avatar' ) ),
 			new Twig_SimpleFilter( 'hour_to_timestamp', array( $this, 'hour_to_timestamp' ) ),
 			new Twig_SimpleFilter( 'weekday',           array( $this, 'weekday' ) ),
+			new Twig_SimpleFilter( 'theme_img_url',     array( $this, 'theme_img_url' ) ),
 			new Twig_SimpleFilter( 'date_i18n',         array( $this, 'date_i18n' ) ),
 			new Twig_SimpleFilter( '__',                'Ai1ec_I18n::__' ),
 		);
@@ -103,6 +104,17 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	}
 
 	/**
+	 * Convert a timestamp to an int
+	 *
+	 * @param int $unix_timestamp
+	 *
+	 * @return string
+	 */
+	public function theme_img_url( $unix_timestamp ) {
+		// not implemented yet
+	}
+
+	/**
 	 * Convert a timestamp to a string using the desired format
 	 * 
 	 * @param int $unix_timestamp
@@ -143,7 +155,15 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 		return screen_icon( $screen );
 	}
 
-	public function timespan( $event, $start_date_display = 'long' ) {
+	/**
+	 * Generate a timespan HTML block for an event.
+	 *
+	 * @param Ai1ec_Event $event              Event to generate timespan for.
+	 * @param string      $start_date_display Start date display format.
+	 *
+	 * @return string Rendered HTML timespan block.
+	 */
+	public function timespan( Ai1ec_Event $event, $start_date_display = 'long' ) {
 		return $this->_registry->get( 'view.event.time' )
 			->get_timespan_html( $event, $start_date_display );
 	}

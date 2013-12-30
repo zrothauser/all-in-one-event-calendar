@@ -197,6 +197,7 @@ define(
 					data: query,
 					method : 'get',
 					success: function( data ) {
+
 						// Do required cleanup of existing view.
 						destroy_view();
 

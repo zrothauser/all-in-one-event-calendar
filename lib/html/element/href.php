@@ -81,6 +81,7 @@ class Ai1ec_Html_Element_Href {
 		$this->args = $args;
 		$this->calendar_page = $calendar;
 	}
+
 	/**
 	 * @param boolean $is_category
 	 */
@@ -117,7 +118,8 @@ class Ai1ec_Html_Element_Href {
 				if( is_array( $this->args[$key] ) ) {
 					$value = implode( ',', $this->args[$key] );
 				}
-				$to_implode[$key] = $key . Ai1ec_Uri::DIRECTION_SEPARATOR . $value;
+				$to_implode[$key] = $key . Ai1ec_Uri::DIRECTION_SEPARATOR .
+					$value;
 			}
 		}
 		if( $this->is_category || $this->is_tag || $this->is_author ) {
@@ -127,19 +129,19 @@ class Ai1ec_Html_Element_Href {
 		}
 		if( $this->pretty_permalinks_enabled ) {
 			$href .= implode( '/', $to_implode );
-			if( ! empty( $href ) ) {
+			if ( ! empty( $href ) ) {
 				$href .=  '/';
 			}
 		} else {
-			$href .= self::get_param_delimiter_char( $this->calendar_page );
-			$href .= 'ai1ec=' . implode( '|', $to_implode );
+			$argv = implode( '|', $to_implode );
+			if ( isset( $argv{1} ) ) {
+				$href = add_query_arg( 'ai1ec', $argv, $href );
+			}
 		}
 		$full_url = $this->calendar_page . $href;
-		// persiste the lang parameter if present
-		if( isset( $_REQUEST['lang'] ) ) {
-			$lang = 'lang=' . $_REQUEST['lang'];
-			$separator = ( false === strpos(  $full_url, '?') ) ? '?' : '&';
-			$full_url .= $separator . $lang;
+		// persist the `lang` parameter if present
+		if ( isset( $_REQUEST['lang'] ) ) {
+			$full_url = add_query_arg( 'lang', $_REQUEST['lang'], $full_url );
 		}
 		return $full_url;
 	}
@@ -209,4 +211,5 @@ class Ai1ec_Html_Element_Href {
 	public static function get_param_delimiter_char( $url ) {
 		return strpos( $url, '?' ) === false ? '?' : '&';
 	}
+
 }

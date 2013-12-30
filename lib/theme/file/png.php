@@ -36,7 +36,7 @@ class Ai1ec_File_Png extends Ai1ec_File_Abstract {
 		foreach ( $files_to_check as $path => $file ) {
 			if ( file_exists( $file ) ) {
 				$exploded = explode( DIRECTORY_SEPARATOR, $path );
-				$this->_url = AI1EC_DEFAULT_THEME_URL . end( $exploded ) . '/' . $this->_name;
+				$this->_url = AI1EC_DEFAULT_THEME_URL . end( $exploded ) . 'img/' . $this->_name;
 				$this->_content = $file;
 				return true;
 			}

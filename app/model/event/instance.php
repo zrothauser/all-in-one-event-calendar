@@ -91,7 +91,7 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
             $enddate          = iCalUtilityFunctions::_timestamp2date( $tif, 6 );
             $exclude_dates    = array();
             $recurrence_dates = array();
-            if ( $event->exception_rules ) {
+            if ( $event->get( 'exception_rules' ) ) {
                 // creat an array for the rules
                 $exception_rules = $recurrence_parser
 					->build_recurrence_rules_array(

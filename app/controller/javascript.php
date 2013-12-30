@@ -72,7 +72,11 @@ class Ai1ec_Javascript_Controller {
 	 */
 	private $_template_link_helper;
 
-	protected $_frontend_scripts_loaded;
+	/**
+	 * @var bool
+	 */
+	protected $_frontend_scripts_loaded = false;
+
 	/**
 	 * Public constructor.
 	 *

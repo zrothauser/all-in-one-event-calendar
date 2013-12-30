@@ -119,12 +119,12 @@
 			<div class="ai1ec-field-value">{{ tags }}</div>
 		</div>
 	{% endif %}
-	{% endautoescape %}
+	
 
 </div>
 
 {% if event.get_runtime( 'content_img_url' ) is empty %}
   {{ event|avatar( ['post_thumbnail', 'location_avatar', 'category_avatar'], 'timely alignleft', false ) }}
 {% endif %}
-
+{% endautoescape %}
 </div>

@@ -150,8 +150,9 @@ class Ai1ec_View_Event_Avatar extends Ai1ec_Base {
 	/**
 	 * Simple regex-parse of post_content for matches of <img src="foo" />; if
 	 * one is found, return its URL.
-	 *
-	 * @param   null       $size           (width, height) array of returned image
+	 * 
+	 * @param   Ai1ec_Event $event
+	 * @param   null        $size           (width, height) array of returned image
 	 *
 	 * @return  string|null
 	 */

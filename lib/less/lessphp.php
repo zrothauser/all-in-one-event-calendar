@@ -141,6 +141,8 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 			// Set the import dir for the file. This is important as
 			// dependencies will be resolved correctly
 			$this->lessc->importDir = dirname( $file_to_parse->get_name() );
+			$variables['imgdir'] = '~"' . $this->default_theme_url . "/img\"";
+			$variables['imgdir_default'] = '~"' . $this->default_theme_url . "/img\"";
 
 			try {
 				$this->parsed_css .= $this->lessc->parse(

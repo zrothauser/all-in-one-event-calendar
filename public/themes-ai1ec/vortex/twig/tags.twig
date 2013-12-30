@@ -1,0 +1,35 @@
+<li class="dropdown ai1ec-tag-filter
+	{% if selected_cat_ids is not empty %}active{% endif %}">
+	<a class="dropdown-toggle" data-toggle="dropdown">
+		<i class="icon-tags"></i>
+		<span class="ai1ec-clear-filter ai1ec-tooltip-trigger"
+			data-href="{{ clear_filter }}"
+			{{ data_type|raw }}
+			title="{{ 'Clear tag filter'|__ }}">
+			<i class="icon-remove-sign"></i>
+		</span>
+		{{ 'Tags'|__ }}
+		<span class="caret"></span>
+	</a>
+	<div class="dropdown-menu">
+		{% for term in tags %}
+			<span data-term="{{ term.term_id }}"
+				{% if term.term_id in selected_tag_ids %}class="active"{% endif %}>
+				{% if term.description is not empty %}
+					title="{{ term.description|e('html_attr') }}"
+				{% endif %}
+				>
+				<a class="ai1ec-load-view ai1ec-tag"
+					{{ data_type|raw }}
+					{% if term.count > 1 %}
+						style="font-weight: bold;"
+					{% else %}
+						style="font-size: 11px;"
+					{% endif %}
+					href="{{ term.href }}">
+					{{ term.name }} ({{ term.count }})
+				</a>
+			</span>
+		{% endfor %}
+	</div>
+</li>

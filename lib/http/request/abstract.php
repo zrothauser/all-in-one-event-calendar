@@ -8,7 +8,7 @@
  * @package    AI1EC
  * @subpackage AI1EC.Http.Request
  */
-abstract class Ai1ec_Abstract_Query implements arrayaccess {
+abstract class Ai1ec_Abstract_Query extends Ai1ec_Base implements arrayaccess {
 	/**
 	 * @var array Request array to parse
 	 */
@@ -43,7 +43,8 @@ abstract class Ai1ec_Abstract_Query implements arrayaccess {
 	 *
 	 * @return void Constructor does not return
 	 */
-	public function __construct( array $argv = NULL ) {
+	public function __construct( Ai1ec_Registry_Object $registry, array $argv = NULL ) {
+		parent::__construct( $registry );
 		if ( NULL === $argv ) {
 			$request_uri = explode( '?', $_SERVER['REQUEST_URI'] );
 			$request_uri = urldecode( $request_uri[0] );
@@ -146,13 +147,15 @@ abstract class Ai1ec_Abstract_Query implements arrayaccess {
 	public function is_empty_request() {
 		return empty( $this->_request );
 	}
+
 	protected function _get_var( $name, $prefix = '' ) {
 		$name     = $this->_name_without_prefix( $name );
 		$use_name = $prefix . $name;
 		if ( isset( $this->_request[$use_name] ) ) {
 			return $this->_request[$use_name];
 		}
-		$result = Ai1ec_Adapter::query_manager( )->variable( $use_name );
+		$result = $this->_registry->get( 'http.request.wordpress-adapter' )
+			->variable( $use_name );
 		if ( null === $result || false === $result ) {
 			$defined_prefix = $this->_get_prefix( );
 			if ( '' === $prefix && $defined_prefix !== $prefix ) {

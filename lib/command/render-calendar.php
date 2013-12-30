@@ -27,6 +27,7 @@ class Ai1ec_Command_Render_Calendar extends Ai1ec_Command {
 				$calendar_page_id
 		);
 		foreach ( $page_ids_to_match as $page_id ) {
+
 			if ( is_page( $page_id ) ) {
 				$this->_request->set_current_page( $page_id );
 				if ( ! post_password_required( $page_id ) ) {
@@ -45,11 +46,11 @@ class Ai1ec_Command_Render_Calendar extends Ai1ec_Command {
 		return false;
 	}
 
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Command::set_render_strategy()
+	 */
 	public function set_render_strategy( Ai1ec_Request_Parser $request ) {
-		$type = $request->get( 'request_type' );
-		if ( false === $type ) {
-			$type = 'html';
-		}
+		$type = $request->get( 'request_type', 'html' );
 		$this->_render_strategy = $this->_registry->get(
 			'http.response.render.strategy.' . $type
 		);
@@ -66,7 +67,12 @@ class Ai1ec_Command_Render_Calendar extends Ai1ec_Command {
 		$js       = $this->_registry->get( 'controller.javascript' )
 			->load_frontend_js( true );
 		return array(
-			'data' => $calendar->get_content( $this->_request )
+			'data'     => $calendar->get_content( $this->_request ),
+			'callback' => Ai1ec_Request_Parser::get_param(
+				'callback',
+				null
+			),
 		);
 	}
+
 }

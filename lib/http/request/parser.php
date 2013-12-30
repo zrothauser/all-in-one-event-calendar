@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Concrete request parsing class.
  *
@@ -40,10 +41,12 @@ class Ai1ec_Request_Parser extends Ai1ec_Abstract_Query {
 	 * @return mixed
 	 **/
 	static public function get_param( $param, $default='' ) {
-		if( isset( $_POST[$param] ) )
+		if ( isset( $_POST[$param] ) ) {
 			return $_POST[$param];
-		if( isset( $_GET[$param] ) )
+		}
+		if ( isset( $_GET[$param] ) ) {
 			return $_GET[$param];
+		}
 		return $default;
 	}
 
@@ -62,10 +65,11 @@ class Ai1ec_Request_Parser extends Ai1ec_Abstract_Query {
 	 * Initiate default filters for arguments parser
 	 */
 	public function __construct(
+		Ai1ec_Registry_Object $registry,
 		array $argv     = null,
 		$default_action = null
 	) {
-		parent::__construct( $argv );
+		parent::__construct( $registry, $argv );
 		$action_list = array(
 			'posterboard',
 			'stream',
@@ -80,6 +84,7 @@ class Ai1ec_Request_Parser extends Ai1ec_Abstract_Query {
 		if ( ! in_array( $default_action, $action_list ) ) {
 			$default_action = current( $action_list );
 		}
+		$default_action = 'oneday';
 		$this->add_rule(
 			'action',
 			false,
@@ -103,7 +108,7 @@ class Ai1ec_Request_Parser extends Ai1ec_Abstract_Query {
 		// This is the format of the request. For now it's html but if we implement templates it could be json
 		$this->add_rule( 'request_format',false, 'string', 'html', false );
 		// The callback function for jsonp calls
-		$this->add_rule( 'callback'      ,false, 'string', false, false );
+		$this->add_rule( 'callback',      false, 'string', null, false );
 		// Whether to include navigation controls
 		$this->add_rule( 'no_navigation' ,false, 'string', false, false );
 		$this->add_rule( 'applying_filters' ,false, 'string', false, false );

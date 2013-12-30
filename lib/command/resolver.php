@@ -84,6 +84,7 @@ class Ai1ec_Command_Resolver {
 				'command.clone', $request
 			)
 		);
+		$request->parse();
 		$this->_registry = $registry;
 		$this->_request  = $request;
 	}

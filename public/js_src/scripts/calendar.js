@@ -16,7 +16,8 @@ define(
 		"external_libs/jquery.debouncedresize",
 		"external_libs/bootstrap_transition",
 		"libs/modal_helper",
-		"external_libs/jquery.scrollTo"
+		"external_libs/jquery.scrollTo",
+		'external_libs/jquery_cookie',
 	],
 	function( $, domReady, load_views, print, agenda_view, posterboard_view,
 		month_view, submit_ics_modal, ai1ec_calendar, ai1ec_config, common_frontend,
@@ -308,6 +309,13 @@ define(
 
 		// Bind to statechange event.
 		History.Adapter.bind( window, 'statechange', load_views.handle_state_change );
+		
+		$( document ).on( 'click', '#ai1ec-calendar-view .ai1ec-load-event', function( e ) {
+			e.preventDefault();
+			$.cookie.raw = false;
+			$.cookie( 'ai1ec_calendar_url', document.URL );
+			window.location.href = this.href;
+		} );
 
 	};
 

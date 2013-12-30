@@ -25,5 +25,24 @@ class Ai1ec_Command_Render_Event extends Ai1ec_Command_Render_Calendar {
 	public function do_execute() {
 		throw new Ai1ec_Exception( 'Single event view is not implemented.' );
 		// get the event html
+		$event = $this->_registry->get( 'model.event', get_the_ID() );
+		$event_page = null;
+		$footer_html = '';
+		if( is_single() ) {
+			$event_page = $this->_registry->get( 'view.event.single' );
+			$footer_html = $event_page->get_footer( $event );
+		} else {
+			// still to implement
+		}
+		$css = $this->_registry->get( 'css.frontend' )->add_link_to_html_for_frontend();
+		$js = $this->_registry->get( 'controller.javascript' )->load_frontend_js( false );
+		$to_return = array(
+			'data'     => $event_page->get_content( $event ),
+			'is_event' => true,
+		);
+		if ( ! empty( $footer_html ) ) {
+			$to_return['footer'] = $event_page->get_footer( $event );
+		}
+		return $to_return;
 	}
 }

@@ -15,7 +15,7 @@ class Ai1ec_Router extends Ai1ec_Base {
 	/**
 	 * @var boolean
 	 */
-	private static $at_least_one_filter_set_in_request;
+	private $at_least_one_filter_set_in_request;
 
 	/**
 	 * @var string Calendar base url
@@ -43,10 +43,10 @@ class Ai1ec_Router extends Ai1ec_Base {
 	 * @param array $view_args
 	 * @return boolean
 	 */
-	static public function is_at_least_one_filter_set_in_request( array $view_args ) {
-		if( null === self::$at_least_one_filter_set_in_request ) {
+	public function is_at_least_one_filter_set_in_request( array $view_args ) {
+		if( null === $this->at_least_one_filter_set_in_request ) {
 			$filter_set = false;
-			$ai1ec_settings = Ai1ec_Settings::get_instance();
+			$ai1ec_settings = $this->_registry->get( 'model.settings' );
 			// check if something in the filters is set
 			foreach ( Ai1ec_Cookie_Utility::$types as $type ) {
 				if( ! empty( $view_args[$type] ) ) {
@@ -55,12 +55,12 @@ class Ai1ec_Router extends Ai1ec_Base {
 				}
 			}
 			// check if the default view is set
-			if( $ai1ec_settings-> default_calendar_view !== $view_args['action'] ) {
+			if( $ai1ec_settings->get( 'default_calendar_view' ) !== $view_args['action'] ) {
 				$filter_set = true;
 			}
-			self::$at_least_one_filter_set_in_request = $filter_set;
+			$this->at_least_one_filter_set_in_request = $filter_set;
 		}
-		return self::$at_least_one_filter_set_in_request;
+		return $this->at_least_one_filter_set_in_request;
 	}
 
 	/**

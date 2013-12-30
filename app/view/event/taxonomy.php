@@ -114,4 +114,92 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 	
 		return $sqrs;
 	}
+	
+	/**
+	 * Categories as HTML, either as blocks or inline.
+	 *
+	 * @param   string $format      Return 'blocks' or 'inline' formatted result
+	 * @return  string              String of HTML for category blocks
+	 */
+	public function get_categories_html( Ai1ec_Event $event, $format = 'blocks' ) {
+		$categories = wp_get_post_terms(
+			$event->get( 'post_id' ),
+			'events_categories'
+		);
+		foreach ( $categories as &$category ) {
+			$href = $this->_registry->get( 
+				'html.element.href',
+				array( 'cat_ids' => $category->term_id )
+			);
+
+			$class = '';
+			$data_type = '';
+
+			$title = '';
+			if ( $category->description ) {
+				$title = 'title="' .
+					esc_attr( $category->description ) . '" ';
+			}
+
+			$html = '';
+			$class .= ' ai1ec-category';
+			$color_style = '';
+			if ( $format === 'inline' ) {
+				$taxonomy = $this->_registry->get( 'model.taxonomy' );
+				$color_style = $taxonomy->get_category_color(
+					$category->term_id
+				);
+				if ( $color_style !== '' ) {
+					$color_style = 'style="color: ' . $color_style . ';" ';
+				}
+				$class .= '-inline';
+			}
+
+			$html .= '<a ' . $data_type . ' class="' . $class .
+			' ai1ec-term-id-' . $category->term_id . '" ' .
+			$title . $color_style . 'href="' . $href->generate_href() . '">';
+
+			if ( $format === 'blocks' ) {
+				$html .= $this->get_category_color_square(
+					$category->term_id
+				) . ' ';
+			}
+			else {
+				$html .=
+				'<i ' . $color_style . 'class="icon-folder-open"></i>';
+			}
+
+			$html .= esc_html( $category->name ) . '</a>';
+			$category = $html;
+		}
+		return join( ' ', $categories );
+	}
+	
+	/**
+	 * Tags as HTML
+	 */
+	public function get_tags_html( Ai1ec_Event $event ) {
+		$tags = wp_get_post_terms(
+			$event->get( 'post_id' ),
+			'events_tags'
+		);
+		foreach ( $tags as &$tag ) {
+			$href = $this->_registry->get( 
+				'html.element.href',
+				array( 'tag_ids' => $tag->term_id )
+			);
+			$class = '';
+			$data_type = '';
+			$title = '';
+			if ( $tag->description ) {
+				$title = 'title="' . esc_attr( $tag->description ) . '" ';
+			}
+			$tag = '<a ' . $data_type . ' class="ai1ec-tag ' . $class .
+			' ai1ec-term-id-' . $tag->term_id . '" ' . $title .
+			'href="' . $href->generate_href() . '">' .
+			'<i class="icon-tag"></i>' . esc_html( $tag->name ) . '</a>';
+		}
+		return join( ' ', $tags );
+
+	}
 }

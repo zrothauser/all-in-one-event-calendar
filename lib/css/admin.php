@@ -69,20 +69,6 @@ class Ai1ec_Css_Admin  extends Ai1ec_Base {
 			);
 		}
 
-		if ( $settings->is_event_platform_active() ) {
-			return $this->process_enqueue(
-				$enqueuables[$settings->get( 'settings_page' )]
-			);
-		}
-
-		
-
-		if ( $settings->is_event_platform_active() ) {
-			return $this->process_enqueue(
-				$enqueuables[$settings->get( 'settings_page' )]
-			);
-		}
-
 	}
 
 	/**

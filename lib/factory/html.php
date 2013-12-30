@@ -152,13 +152,13 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 		$options_to_add = array();
 		foreach ( $options as $term ) {
 			$option_arguments = array();
-			$color            = false;
+			$color = false;
+			$event_helper = $this->_registry->get( 'event.helper' );
 			if( $args['type'] === 'category' ) {
-				$color = $this->_registry->get( 'model.taxonomy' )
-					->get_category_color( $term->term_id );
+				$color = $event_helper->get_category_color( $term->term_id );
 			}
 			if ( $color ) {
-				$option_arguments['data-color'] = $color;
+				$option_arguments["data-color"] = $color;
 			}
 			if( null !== $view_args ) {
 				// create the href for ajax loading

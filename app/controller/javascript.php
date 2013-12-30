@@ -375,8 +375,6 @@ class Ai1ec_Javascript_Controller {
 		$ajax_url        = admin_url( 'admin-ajax.php' );
 		force_ssl_admin( $force_ssl_admin );
 
-		$settings        = $this->_registry->get( 'model.settings' );
-
 		$data = array(
 			// ICS feed error messages
 			'duplicate_feed_message'         => esc_html(
@@ -390,9 +388,6 @@ class Ai1ec_Javascript_Controller {
 			),
 			'now'                            => $this->_registry->get( 'date.system' )
 				->current_time(),
-			'strict_mode'                    => $settings->get(
-				'event_platform_strict'
-			),
 			'size_less_variable_not_ok'      => Ai1ec_I18n::__( 
 				'The value you have entered is not a valid CSS length.'
 			),

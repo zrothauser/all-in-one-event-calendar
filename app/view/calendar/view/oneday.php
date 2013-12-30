@@ -94,8 +94,6 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 
 		$is_ticket_button_enabled = false;
 		$show_reveal_button       = false;
-		$time_format              = $this->_registry->get( 'model.option' )
-			->get( 'time_format', Ai1ec_I18n::__( 'g a' ) );
 
 		$view_args = array(
 			'title'                    => $title,
@@ -111,7 +109,6 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			'data_type_events'         => '',
 			'is_ticket_button_enabled' => $is_ticket_button_enabled,
 			'show_reveal_button'       => $show_reveal_button,
-			'time_format'              => $time_format,
 		);
 
 		// Add navigation if requested.

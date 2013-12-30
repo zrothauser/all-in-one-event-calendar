@@ -44,6 +44,7 @@ class Ai1ec_Theme_Loader {
 		'plana' => true,
 	);
 
+	
 	/**
 	 *
 	 * @param $registry Ai1ec_Registry_Object
@@ -51,16 +52,15 @@ class Ai1ec_Theme_Loader {
 	 */
 	public function __construct( 
 			Ai1ec_Registry_Object $registry
-	) {
-		$this->_registry         = $registry;
-		$option                  = $this->_registry->get( 'model.option' );
-		$theme                   = $option->get( 'ai1ec_current_theme' );
-		$active_theme            = $theme['stylesheet'];
-		$this->_legacy_theme     = (bool)$theme['legacy'];
+		) {
+		$this->_registry = $registry;
+		$option = $this->_registry->get( 'model.option' );
+		$theme = $option->get( 'ai1ec_current_theme' );
+		$active_theme = $theme['stylesheet'];
+		$this->_legacy_theme = (bool)$theme['legacy'];
 		$this->_paths['theme'][] = $theme['theme_dir'] . DIRECTORY_SEPARATOR;
 		if ( AI1EC_DEFAULT_THEME_NAME !== $active_theme ) {
-			$this->_paths['theme'][] = AI1EC_DEFAULT_THEME_PATH .
-				DIRECTORY_SEPARATOR;
+			$this->_paths['theme'][] = AI1EC_DEFAULT_THEME_PATH .  DIRECTORY_SEPARATOR;
 		}
 	}
 

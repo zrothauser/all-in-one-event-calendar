@@ -4,7 +4,4 @@
 	{% endautoescape %}
 </label>
 {% from 'form-elements/select.twig' import select %}
-{% if name is not defined %}
-  {% set name = id %}
-{% endif %}
 {{ select( id, name, attributes, options ) }}

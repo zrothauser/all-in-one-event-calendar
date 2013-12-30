@@ -13,9 +13,9 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 	 * @return array Updated columns array
 	 */
 	public function change_columns( array $columns = array() ) {
-		$columns['author']           = Ai1ec_I18n::__( 'Author' );
-		$columns['date']             = Ai1ec_I18n::__( 'Post Date' );
-		$columns['ai1ec_event_date'] = Ai1ec_I18n::__( 'Event date/time' );
+		$columns['author']           = __( 'Author',          AI1EC_PLUGIN_NAME );
+		$columns['date']             = __( 'Post Date',       AI1EC_PLUGIN_NAME );
+		$columns['ai1ec_event_date'] = __( 'Event date/time', AI1EC_PLUGIN_NAME );
 		return $columns;
 	}
 

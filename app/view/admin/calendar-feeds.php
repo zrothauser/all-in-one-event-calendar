@@ -27,8 +27,8 @@ class Ai1ec_View_Calendar_Feeds extends Ai1ec_View_Admin_Abstract {
 		// =======================
 		$calendar_feeds = add_submenu_page(
 			AI1EC_ADMIN_BASE_URL,
-			Ai1ec_I18n::__( 'Calendar Feeds' ),
-			Ai1ec_I18n::__( 'Calendar Feeds' ),
+			__( 'Calendar Feeds', AI1EC_PLUGIN_NAME ),
+			__( 'Calendar Feeds', AI1EC_PLUGIN_NAME ),
 			'manage_ai1ec_feeds',
 			AI1EC_PLUGIN_NAME . '-feeds',
 			array( $this, 'display_page' )

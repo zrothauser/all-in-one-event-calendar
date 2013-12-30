@@ -2,9 +2,9 @@
 <div class="clearfix">
 	<h2 class="ai1ec-calendar-title">{{ title|e }}</h2>
 	<div class="ai1ec-title-buttons btn-toolbar pull-right">
-		{% if before_pagination is defined %}{{ before_pagination }}{% endif %}
+		{{ before_pagination }}
 		{{ pagination_links }}
-		{% if after_pagination is defined %}{{ after_pagination }}{% endif %}
+		{{ after_pagination }}
 	</div>
 </div>
 {% endautoescape %}

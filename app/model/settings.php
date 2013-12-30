@@ -6,7 +6,7 @@
  * @author     Time.ly Network, Inc.
  * @since      2.0
  * @package    Ai1EC
- * @subpackage Ai1EC.Model
+ * @subpackage Ai1EC.Html
  */
 class Ai1ec_Settings extends Ai1ec_App {
 
@@ -87,21 +87,6 @@ class Ai1ec_Settings extends Ai1ec_App {
 			return $default;
 		}
 		return $this->_options[$option]['value'];
-	}
-
-	/**
-	 * Check if platform mode is activated.
-	 *
-	 * @return bool Activity status.
-	 */
-	public function is_event_platform_active() {
-		if ( defined( 'AI1EC_EVENT_PLATFORM' ) && AI1EC_EVENT_PLATFORM ) {
-			return true;
-		}
-		if ( $this->get( 'event_platform', false ) ) {
-			return true;
-		}
-		return false;
 	}
 
 	/**
@@ -567,33 +552,6 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'item'  => 'advanced',
 					'label' => Ai1ec_I18n::__(
 						'Disable <strong>gzip</strong> compression. Use this option if calendar is non-responsive. Read <a href="http://support.time.ly/disable-gzip-compression/">more about</a> the issue.'
-					),
-				),
-				'default'  => false,
-			),
-			'event_platform' => array(
-				'type' => 'bool',
-				'renderer' => array(
-					'class' => 'checkbox',
-					'tab'   => 'advanced',
-					'item'  => 'advanced',
-					'label' => Ai1ec_I18n::__(
-						' Turn this blog into an <strong>events-only platform</strong>'
-					),
-				),
-				'default'  => false,
-			),
-			'event_platform_strict' => array(
-				'type' => 'bool',
-				'renderer' => array(
-					'class' => 'checkbox',
-					'tab'   => 'advanced',
-					'item'  => 'advanced',
-					'label' => Ai1ec_I18n::__(
-						'<strong>Strict</strong> event platform mode'
-					),
-					'help'  => Ai1ec_I18n::__(
-						'Prevents plugins from adding menu items unrelated to calendar/media/user management'
 					),
 				),
 				'default'  => false,

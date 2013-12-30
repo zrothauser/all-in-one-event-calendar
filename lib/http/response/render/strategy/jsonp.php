@@ -17,7 +17,7 @@ class Ai1ec_Render_Strategy_Jsonp extends Ai1ec_Http_Response_Render_Strategy {
 		$this->_dump_buffers();
 		header( 'HTTP/1.1 200 OK' );
 		header( 'Content-Type: application/json; charset=UTF-8' );
-		$data = Ai1ec_Http_Response_Helper::utf8( $params['data'] );
+		$data   = Ai1ec_Http_Response_Helper::utf8( $params['data'] );
 		$output = json_encode( $data );
 		if ( ! empty( $params['callback'] ) ) {
 			$output = $params['callback'] . '(' . $output . ')';
@@ -25,4 +25,5 @@ class Ai1ec_Render_Strategy_Jsonp extends Ai1ec_Http_Response_Render_Strategy {
 		echo $output;
 		return Ai1ec_Http_Response_Helper::stop( 0 );
 	}
+
 }

@@ -155,7 +155,15 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 		return screen_icon( $screen );
 	}
 
-	public function timespan( $event, $start_date_display = 'long' ) {
+	/**
+	 * Generate a timespan HTML block for an event.
+	 *
+	 * @param Ai1ec_Event $event              Event to generate timespan for.
+	 * @param string      $start_date_display Start date display format.
+	 *
+	 * @return string Rendered HTML timespan block.
+	 */
+	public function timespan( Ai1ec_Event $event, $start_date_display = 'long' ) {
 		return $this->_registry->get( 'view.event.time' )
 			->get_timespan_html( $event, $start_date_display );
 	}

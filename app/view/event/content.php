@@ -96,17 +96,19 @@ class Ai1ec_View_Event_Content extends Ai1ec_Base {
 	 */
 	public function get_back_to_calendar_button_html() {
 		global $ai1ec_calendar_controller;
-		$class = '';
+		$class     = '';
 		$data_type = '';
-		$href = '';
-		if( isset( $_COOKIE['ai1ec_calendar_url'] ) ) {
-			$href = json_decode( stripslashes( $_COOKIE['ai1ec_calendar_url'] ) );
+		$href      = '';
+		if ( isset( $_COOKIE['ai1ec_calendar_url'] ) ) {
+			$href = json_decode(
+				stripslashes( $_COOKIE['ai1ec_calendar_url'] )
+			);
 			setcookie( 'ai1ec_calendar_url', '', time() - 3600 );
 		} else {
 			$href = $this->_registry->get( 'html.element.href', array() );
 			$href = $href->generate_href();
 		}
-		$text = __( 'Back to Calendar', AI1EC_PLUGIN_NAME );
+		$text = Ai1ec_I18n::__( 'Back to Calendar' );
 		$html = <<<HTML
 <a class="ai1ec-calendar-link btn btn-small pull-right $class"
 	 href="$href"
@@ -116,7 +118,7 @@ class Ai1ec_View_Event_Content extends Ai1ec_Base {
 HTML;
 		return apply_filters( 'ai1ec_get_back_to_calendar_html', $html, $href );
 	}
-	
+
 	/**
 	 * Simple regex-parse of post_content for matches of <img src="foo" />; if
 	 * one is found, return its URL.

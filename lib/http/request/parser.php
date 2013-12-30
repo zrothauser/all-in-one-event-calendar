@@ -41,10 +41,12 @@ class Ai1ec_Request_Parser extends Ai1ec_Abstract_Query {
 	 * @return mixed
 	 **/
 	static public function get_param( $param, $default='' ) {
-		if( isset( $_POST[$param] ) )
+		if ( isset( $_POST[$param] ) ) {
 			return $_POST[$param];
-		if( isset( $_GET[$param] ) )
+		}
+		if ( isset( $_GET[$param] ) ) {
 			return $_GET[$param];
+		}
 		return $default;
 	}
 
@@ -106,7 +108,7 @@ class Ai1ec_Request_Parser extends Ai1ec_Abstract_Query {
 		// This is the format of the request. For now it's html but if we implement templates it could be json
 		$this->add_rule( 'request_format',false, 'string', 'html', false );
 		// The callback function for jsonp calls
-		$this->add_rule( 'callback'      ,false, 'string', false, false );
+		$this->add_rule( 'callback',      false, 'string', null, false );
 		// Whether to include navigation controls
 		$this->add_rule( 'no_navigation' ,false, 'string', false, false );
 		$this->add_rule( 'applying_filters' ,false, 'string', false, false );

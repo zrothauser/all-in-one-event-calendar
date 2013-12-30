@@ -120,30 +120,40 @@ class Ai1ec_Javascript_Controller {
 			$this->_add_link_to_render_js( $page, false );
 		}
 	}
+
 	/**
 	 * Render the javascript for the appropriate page.
 	 *
 	 * @return void
 	 */
 	public function render_js() {
-		$js_path = AI1EC_ADMIN_THEME_JS_PATH . DIRECTORY_SEPARATOR;
-		$common_js = '';
+		$js_path      = AI1EC_ADMIN_THEME_JS_PATH . DIRECTORY_SEPARATOR;
+		$common_js    = '';
+		if ( ! isset( $_GET[self::LOAD_JS_PARAMETER] ) ) {
+			return null;
+		}
 		$page_to_load = $_GET[self::LOAD_JS_PARAMETER];
 
-		if ( $_GET[self::IS_BACKEND_PARAMETER] === self::TRUE_PARAM ) {
+		if (
+			isset( $_GET[self::IS_BACKEND_PARAMETER] ) &&
+			$_GET[self::IS_BACKEND_PARAMETER] === self::TRUE_PARAM
+		) {
 			$common_js = file_get_contents( $js_path . 'pages/common_backend.js' );
 		} else if (
 			$page_to_load === self::EVENT_PAGE_JS ||
 			$page_to_load === self::CALENDAR_PAGE_JS ||
 			$page_to_load === self::LOAD_ONLY_FRONTEND_SCRIPTS
 		) {
-			if ( $page_to_load === self::LOAD_ONLY_FRONTEND_SCRIPTS &&
+			if (
+				$page_to_load === self::LOAD_ONLY_FRONTEND_SCRIPTS &&
 				true === $this->_frontend_scripts_loaded
 			) {
 				return;
 			}
 			if ( false === $this->_frontend_scripts_loaded ) {
-				$common_js = file_get_contents( $js_path . 'pages/common_frontend.js' );
+				$common_js = file_get_contents(
+					$js_path . 'pages/common_frontend.js'
+				);
 				$this->_frontend_scripts_loaded = true;
 			}
 		}

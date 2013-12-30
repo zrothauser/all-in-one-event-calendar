@@ -554,7 +554,7 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 
 		$e   = & $calendar->newComponent( 'vevent' );
 		$uid = '';
-		if ( $event->ical_uid ) {
+		if ( $event->get( 'ical_uid' ) ) {
 			$uid = addcslashes( $event->get( 'ical_uid' ), "\\;,\n" );
 		} else {
 			$uid = sprintf( $this->get_uid_format(), $event->get( 'post_id' ) );

@@ -413,6 +413,11 @@ class Ai1ec_Front_Controller {
 				2
 			);
 
+		} else {
+			$dispatcher->register_shortcode(
+				'ai1ec',
+				array( 'view.calendar.shortcode', 'shortcode' )
+			);
 		}
 
 	}

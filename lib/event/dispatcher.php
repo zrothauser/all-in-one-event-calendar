@@ -27,6 +27,10 @@ class Ai1ec_Event_Dispatcher extends Ai1ec_Base {
 		$priority      = 10,
 		$accepted_args = 1
 	) {
+		if ( $entity instanceof Ai1ec_Event_Callback_Shortcode ) {
+			add_shortcode( $hook, array( $entity, 'run' ) );
+			return $this;
+		}
 		$wp_method = 'add_action';
 		if ( $entity instanceof Ai1ec_Event_Callback_Filter ) {
 			$wp_method = 'add_filter';
@@ -54,9 +58,9 @@ class Ai1ec_Event_Dispatcher extends Ai1ec_Base {
 	protected function _register(
 		$hook,
 		array $method,
+		$type,
 		$priority      = 10,
-		$accepted_args = 1,
-		$type
+		$accepted_args = 1
 	) {
 		$action = $this->_registry->get(
 			'event.callback.' . $type,
@@ -90,9 +94,9 @@ class Ai1ec_Event_Dispatcher extends Ai1ec_Base {
 		$this->_register(
 			$hook,
 			$method,
+			'filter',
 			$priority,
-			$accepted_args,
-			'filter'
+			$accepted_args
 		);
 	}
 
@@ -115,9 +119,30 @@ class Ai1ec_Event_Dispatcher extends Ai1ec_Base {
 		$this->_register(
 			$hook,
 			$method,
+			'action',
 			$priority,
-			$accepted_args,
-			'action'
+			$accepted_args
+		);
+	}
+	
+	/**
+	 * Register an action.
+	 *
+	 * @param string  $hook          Name of the event hook.
+	 * @param array   $method        Method to call.
+	 * @param integer $priority      Priorify of the event hook execution.
+	 * @param integer $accepted_args Number of accepted method parameters.
+	 *
+	 * @return void
+	 */
+	public function register_shortcode(
+		$shortcode,
+		array $method
+	) {
+		$this->_register(
+			$shortcode,
+			$method,
+			'shortcode'
 		);
 	}
 }

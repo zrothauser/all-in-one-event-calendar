@@ -104,6 +104,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				'view'        => $view,
 				'subscribe_buttons'  => $subscribe_buttons,
 			);
+			
 			$calendar = $loader->get_file( 'calendar.twig', $calendar_args, false );
 			return $calendar->get_content();
 		}

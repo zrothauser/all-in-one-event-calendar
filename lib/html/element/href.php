@@ -133,10 +133,8 @@ class Ai1ec_Html_Element_Href {
 				$href .=  '/';
 			}
 		} else {
-			$argv = implode( '|', $to_implode );
-			if ( isset( $argv{1} ) ) {
-				$href = add_query_arg( 'ai1ec', $argv, $href );
-			}
+			$href .= $this->get_param_delimiter_char( $this->calendar_page );
+			$href .= 'ai1ec=' . implode( '|', $to_implode );
 		}
 		$full_url = $this->calendar_page . $href;
 		// persist the `lang` parameter if present

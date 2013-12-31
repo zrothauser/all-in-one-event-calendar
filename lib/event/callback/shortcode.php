@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Event Callback Filter creation.
+ * Event Callback Shortcode creation.
  *
  * @author     Time.ly Network Inc.
  * @since      2.0

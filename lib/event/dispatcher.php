@@ -126,12 +126,10 @@ class Ai1ec_Event_Dispatcher extends Ai1ec_Base {
 	}
 	
 	/**
-	 * Register an action.
+	 * Register a shortcode.
 	 *
-	 * @param string  $hook          Name of the event hook.
+	 * @param string  $shortcode     Name of the shortcode tag.
 	 * @param array   $method        Method to call.
-	 * @param integer $priority      Priorify of the event hook execution.
-	 * @param integer $accepted_args Number of accepted method parameters.
 	 *
 	 * @return void
 	 */

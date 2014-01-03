@@ -75,7 +75,7 @@ class Ai1ec_View_Event_Location extends Ai1ec_Base {
 	 *
 	 * @return void
 	 **/
-	function get_map_view( $event ) {
+	function get_map_view( Ai1ec_Event $event ) {
 		$settings = $this->_registry->get( 'model.settings' );
 		$loader = $this->_registry->get( 'theme.loader' );
 		if( ! $event->get( 'show_map' ) ) {

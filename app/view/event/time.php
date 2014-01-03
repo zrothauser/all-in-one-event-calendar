@@ -141,7 +141,29 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 		}
 		return apply_filters( 'ai1ec_get_timespan_html', $output, $this );
 	}
-	
+
+	/**
+	 * Get the html for the exclude dates and exception rules.
+	 *
+	 * @param Ai1ec_Event $event
+	 * @param Ai1ec_Recurrence_Rule $rrule
+	 * @return string
+	 */
+	public function get_exclude_html( Ai1ec_Event $event, Ai1ec_Recurrence_Rule $rrule ) {
+		$excludes = array();
+		$exception_rules = $event->get( 'exception_rules' );
+		$exception_dates = $event->get( 'exception_dates' );
+		if ( $exception_rules ) {
+			$excludes[] =
+			$rrule->rrule_to_text( $exception_rules );
+		}
+		if ( $exception_dates ) {
+			$excludes[] =
+			$rrule->exdate_to_text( $exception_dates );
+		}
+		return implode( __( ', and ', AI1EC_PLUGIN_NAME ), $excludes );
+	}
+
 	/**
 	 * Get the short date
 	 * 
@@ -149,8 +171,8 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 	 * 
 	 * @return string
 	 */
-	public function get_short_date( Ai1ec_Date_Time $time ) {
-		return $time->format_i18n( 'M j' );
+	public function get_short_date( Ai1ec_Date_Time $time, $adjust = 0 ) {
+		return $time->format_i18n( 'M j', null, $adjust );
 	}
 
 	/**
@@ -161,12 +183,12 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 	 *
 	 * @return string
 	 */
-	public function get_long_date( Ai1ec_Date_Time $time ) {
+	public function get_long_date( Ai1ec_Date_Time $time, $adjust = 0 ) {
 		$date_format = $this->_registry->get( 'model.option' )->get(
 			'date_format',
 			'l, M j, Y'
 		);
-		return $time->format_i18n( $date_format );
+		return $time->format_i18n( $date_format, null, $adjust );
 	}
 
 	/**
@@ -179,12 +201,12 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 	 *
 	 * @return string
 	 */
-	public function get_short_time( Ai1ec_Date_Time $time ) {
+	public function get_short_time( Ai1ec_Date_Time $time, $adjust = 0 ) {
 		$time_format = $this->_registry->get( 'model.option' )->get(
 			'time_format',
 			'g:i a'
 		);
-		return $time->format_i18n( $time_format );
+		return $time->format_i18n( $time_format, null, $adjust );
 	}
 
 }

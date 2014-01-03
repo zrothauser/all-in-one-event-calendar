@@ -78,14 +78,8 @@ class Ai1ec_Date_Time {
 	 *
 	 * @return string Formatted time.
 	 */
-	public function format_i18n( $format, $timezone = null ) {
+	public function format_i18n( $format, $timezone = null, $adjust = 0 ) {
 		return $this->format( $format, $timezone );
-		static $i18n = null;
-		if ( null === $i18n ) {
-			$i18n = $this->_registry->get( 'date.time-i18n' );
-		}
-		$timestamp = $this->format( 'U', $timezone );
-		return $i18n->format( $format, $timestamp, true );
 	}
 
 	/**

@@ -35,6 +35,13 @@ class Ai1ec_Theme_Loader {
 	protected $_legacy_theme = false;
 
 	/**
+	 * @return boolean
+	 */
+	public function is_legacy_theme() {
+		return $this->_legacy_theme;
+	}
+
+	/**
 	 * @var array the core calendar themes
 	 */
 	static protected $_core_themes = array(
@@ -44,7 +51,6 @@ class Ai1ec_Theme_Loader {
 		'plana' => true,
 	);
 
-	
 	/**
 	 *
 	 * @param $registry Ai1ec_Registry_Object

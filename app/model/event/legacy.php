@@ -79,9 +79,7 @@ class Ai1ec_Event_Legacy extends Ai1ec_Event {
 	}
 
 	/**
-	 * Overload access to former fields to diagnose problems early.
-	 *
-	 * @TODO: remove this before 2.0/Core-beta.
+	 * Handles legacy property setters.
 	 *
 	 * @param string $property Name of property being set.
 	 * @param mixed  $value    Value attempted to set.
@@ -98,8 +96,6 @@ class Ai1ec_Event_Legacy extends Ai1ec_Event {
 	 * @param string $name Property name
 	 *
 	 * @return mixed Property value
-	 *
-	 * @throws E_USER_WARNING Always, because this method is deprecated and will be removed
 	 */
 	public function __get( $name ) {
 		$method = 'get_' . $name;

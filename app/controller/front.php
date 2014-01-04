@@ -108,7 +108,7 @@ class Ai1ec_Front_Controller {
 			! $cal_page ||
 			$cal_page < 1
 		) { // Routing may not be affected in any way if no calendar page exists.
-			return NULL;
+			return null;
 		}
 		$router              = $this->_registry->get( 'routing.router' );
 		$localization_helper = $this->_registry->get( 'p28n.wpml' );
@@ -127,6 +127,10 @@ class Ai1ec_Front_Controller {
 			}
 		}
 		$template_link_helper = $this->_registry->get( 'template.link.helper' );
+
+		if ( ! get_post( $cal_page ) ) {
+			return null;
+		}
 
 		$page_base = $template_link_helper->get_page_link(
 			$cal_page
@@ -627,6 +631,7 @@ class Ai1ec_Front_Controller {
 					post_id bigint(20) NOT NULL,
 					start int(10) UNSIGNED NOT NULL,
 					end int(10) UNSIGNED,
+					timezone_name varchar(50),
 					allday tinyint(1) NOT NULL,
 					instant_event tinyint(1) NOT NULL DEFAULT 0,
 					recurrence_rules longtext,

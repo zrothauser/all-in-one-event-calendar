@@ -141,12 +141,7 @@ class Ai1ec_Date_System extends Ai1ec_Base {
 	 * @return string GMT offset expression
 	 */
 	public function get_gmt_offset_expr() {
-		$current = $this->_registry->get(
-			'date.time',
-			'now',
-			$this->_registry->get( 'date.timezone' )->get_default_timezone()
-		);
-		$timezone = $current->get_gmt_offset();
+		$timezone = $this->get_gmt_offset();
 		$offset_h = (int)( $timezone / 60 );
 		$offset_m = absint( $timezone - $offset_h * 60 );
 		$timezone = sprintf(
@@ -156,6 +151,20 @@ class Ai1ec_Date_System extends Ai1ec_Base {
 		);
 
 		return $timezone;
+	}
+
+	/**
+	 * Get current GMT offset in seconds.
+	 *
+	 * @return int Offset from GMT in seconds.
+	 */
+	public function get_gmt_offset() {
+		$current = $this->_registry->get(
+			'date.time',
+			'now',
+			$this->_registry->get( 'date.timezone' )->get_default_timezone()
+		);
+		return $current->get_gmt_offset();
 	}
 
 	/**

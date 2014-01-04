@@ -16,11 +16,19 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 	 */
 	public function import( array $arguments ) {
 		$cal = $this->_registry->get('vcalendar');
-		if( $cal->parse( $arguments['source'] ) ) {
-			$count = $this->_add_vcalendar_events_to_db(
-				$cal,
-				$arguments
-			);
+		if ( $cal->parse( $arguments['source'] ) ) {
+			$count = 0;
+			try {
+				$count = $this->_add_vcalendar_events_to_db(
+					$cal,
+					$arguments
+				);
+			} catch ( Ai1ec_Parse_Exception $exception ) {
+				throw new Ai1ec_Parse_Exception(
+					'Processing "' . $arguments['source'] .
+					'" experienced error: ' . $exception->getMessage()
+				);
+			}
 			return $count;
 		}
 		throw new Ai1ec_Parse_Exception( 'The passed string is not a valid ics feed' );
@@ -138,7 +146,7 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 			// = Start & end times =
 			// =====================
 			$start = $e->getProperty( 'dtstart', 1, true );
-			$end   = $e->getProperty( 'dtend', 1, true );
+			$end   = $e->getProperty( 'dtend',   1, true );
 			// For cases where a "VEVENT" calendar component
 			// specifies a "DTSTART" property with a DATE value type but none
 			// of "DTEND" nor "DURATION" property, the event duration is taken to
@@ -214,21 +222,20 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 			}
 			// Event is all-day if no time components are defined
 			$allday = $this->_is_timeless( $start['value'] ) &&
-			$this->_is_timeless( $end['value'] );
+				$this->_is_timeless( $end['value'] );
 			// Also check the proprietary MS all-day field.
 			$ms_allday = $e->getProperty( 'X-MICROSOFT-CDO-ALLDAYEVENT' );
 			if ( ! empty( $ms_allday ) && $ms_allday[1] == 'TRUE' ) {
 				$allday = true;
 			}
 
-			$start = $this->_time_array_to_timestamp( $start, $timezone );
-			$end   = $this->_time_array_to_timestamp( $end,   $timezone );
+			$start = $this->_time_array_to_datetime( $start, $timezone );
+			$end   = $this->_time_array_to_datetime( $end,   $timezone );
 
 			if ( false === $start || false === $end ) {
-				trigger_error(
+				throw new Ai1ec_Parse_Exception(
 					'Failed to parse one or more dates given timezone "' .
-					var_export( $timezone, true ) . '".',
-					E_USER_WARNING
+					var_export( $timezone, true ) . '"'
 				);
 				continue;
 			}
@@ -237,8 +244,8 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 			// invalid end time (happens sometimes with poorly implemented iCalendar
 			// exports, such as in The Event Calendar), so set end time to 1 day
 			// after start time.
-			if ( $allday && $start === $end ) {
-				$end += 24 * 60 * 60;
+			if ( $allday && $start->format() === $end->format() ) {
+				$end->adjust_day( +1 );
 			}
 
 			$data += compact( 'start', 'end', 'allday' );
@@ -448,7 +455,7 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 					! empty( $recurrence )
 				);
 
-			if ( NULL === $matching_event_id ) {
+			if ( null === $matching_event_id ) {
 				// =================================================
 				// = Event was not found, so store it and the post =
 				// =================================================
@@ -491,22 +498,7 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 	 *
 	 * @return int UNIX timestamp
 	 **/
-	protected function _time_array_to_timestamp( array $time, $def_timezone ) {
-		$parseable = sprintf(
-				'%4d-%02d-%02d',
-				$time['value']['year'],
-				$time['value']['month'],
-				$time['value']['day']
-		);
-		if ( isset( $time['value']['hour'] ) ) {
-			$parseable .= sprintf(
-					' %02d:%02d:%02d',
-					$time['value']['hour'],
-					$time['value']['min'],
-					$time['value']['sec']
-			);
-		}
-
+	protected function _time_array_to_datetime( array $time, $def_timezone ) {
 		$timezone = '';
 		if ( isset( $time['params']['TZID'] ) ) {
 			$timezone = $time['params']['TZID'];
@@ -520,16 +512,32 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 			$timezone = $def_timezone;
 		}
 
+		$date_time = $this->_registry->get( 'date.time' );
+
 		if ( ! empty( $timezone ) ) {
-			$parser = $this->_registry->get( 'parser.timezone' );
+			$parser   = $this->_registry->get( 'date.timezone' );
 			$timezone = $parser->get_name( $timezone );
 			if ( false === $timezone ) {
 				return false;
 			}
-			$parseable .= ' ' . $timezone;
+			$date_time->set_timezone( $timezone );
 		}
 
-		return strtotime( $parseable );
+		$date_time->set_date(
+			$time['value']['year'],
+			$time['value']['month'],
+			$time['value']['day']
+		);
+
+		if ( isset( $time['value']['hour'] ) ) {
+			$date_time->set_time(
+				$time['value']['hour'],
+				$time['value']['min'],
+				$time['value']['sec']
+			);
+		}
+
+		return $date_time;
 	}
 
 	/**

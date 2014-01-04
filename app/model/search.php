@@ -203,7 +203,12 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 				AND start           = %d ' .
 			( $has_recurrence ? 'AND NOT ' : 'AND ' ) .
 			' ( recurrence_rules IS NULL OR recurrence_rules = \'\' )';
-		$args = array( $feed, $uid, $start );
+		$args = array( $feed, $uid );
+		if ( $start instanceof Ai1ec_Date_Time ) {
+			$args[] = $start->format();
+		} else {
+			$args[] = (int)$start;
+		}
 		if ( null !== $exclude_post_id ) {
 			$query .= ' AND post_id <> %d';
 			$args[] = $exclude_post_id;

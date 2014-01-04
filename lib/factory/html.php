@@ -210,15 +210,15 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 			}
 		}
 		$select2_args = array(
-			'multiple' => 'multiple',
+			'multiple'         => 'multiple',
 			'data-placeholder' => $args['placeholder'],
-			'class' => 'ai1ec-select2-multiselect-selector span12'
+			'class'            => 'ai1ec-select2-multiselect-selector span12'
 		);
 		$container_class = false;
-		if( isset( $args['type'] ) ) {
+		if ( isset( $args['type'] ) ) {
 			$container_class = 'ai1ec-' . $args['type'] . '-filter';
 		}
-		$loader =$this->_registry->get( 'theme.loader' );
+		$loader  = $this->_registry->get( 'theme.loader' );
 		$select2 = $loader->get_file(
 			'select2_multiselect.twig',
 			array(
@@ -232,7 +232,6 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 		);
 		return $select2;
 	}
-
 
 	/**
 	 * Creates a select2 input.

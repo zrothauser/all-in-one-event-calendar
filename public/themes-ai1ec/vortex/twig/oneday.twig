@@ -104,7 +104,7 @@
 						<div class="ai1ec-hour-marker
 							{% if hour >= 8 and hour < 18 %}ai1ec-business-hour{% endif %}"
 							style="top: {{ hour * 60 }}px;">
-							<div>{{ hour|hour_to_timestamp|date_i18n( time_format )|e }}</div>
+							<div>{{ hour|hour_to_datetime|date_i18n( time_format )|e }}</div>
 						</div>
 						{% for quarter in 1..3 %}
 							<div class="ai1ec-quarter-marker"

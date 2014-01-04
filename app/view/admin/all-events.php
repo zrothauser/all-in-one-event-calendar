@@ -55,17 +55,15 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 	 * @return void
 	 **/
 	public function custom_columns( $column, $post_id ) {
-		switch( $column ) {
-			case 'ai1ec_event_date':
-				try {
-					$event = $this->_registry->get( 'model.event', $post_id );
-					$time = $this->_registry->get( 'view.event.time' );
-					echo $time->get_timespan_html( $event );
-				} catch( Exception $e ) {
-					// event wasn't found, output empty string
-					echo "";
-				}
-				break;
+		if ( 'ai1ec_event_date' === $column ) {
+			try {
+				$event = $this->_registry->get( 'model.event', $post_id );
+				$time  = $this->_registry->get( 'view.event.time' );
+				echo $time->get_timespan_html( $event );
+			} catch( Exception $e ) {
+				// event wasn't found, output empty string
+				echo '';
+			}
 		}
 	}
 	

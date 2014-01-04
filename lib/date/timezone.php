@@ -19,6 +19,7 @@ class Ai1ec_Date_Timezone extends Ai1ec_Base {
 	 * @var array Map of timezone names and their Olson TZ counterparts.
 	 */
 	protected $_zones           = array(
+		'+00:00'                           => 'UTC',
 		'Z'                                => 'UTC',
 		'AUS Central Standard Time'        => 'Australia/Darwin',
 		'AUS Eastern Standard Time'        => 'Australia/Sydney',
@@ -455,6 +456,9 @@ class Ai1ec_Date_Timezone extends Ai1ec_Base {
 	 * @throws Ai1ec_Date_Timezone_Exception If an error occurs.
 	 */
 	public function get( $timezone ) {
+		if ( 'sys.default' === $timezone ) {
+			$timezone = $this->get_default_timezone();
+		}
 		$name = $this->get_name( $timezone );
 		if ( ! $name ) {
 			throw new Ai1ec_Date_Timezone_Exception(

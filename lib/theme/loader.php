@@ -180,8 +180,8 @@ class Ai1ec_Theme_Loader {
 	 */
 	protected function _get_legacy_file( $filename, array $args, array $paths ) {
 		$php_file = $filename . '.php';
-		$php_file = $this->get_file( $php_file, $args, $paths, false );
-
+		$php_file = $this->get_file( $php_file, $args, false, false, $paths );
+		
 		if ( false === $php_file->process_file() ) {
 			$twig_file = $this->_registry->get(
 				'theme.file.twig',

@@ -136,56 +136,63 @@ class Ai1ec_Factory_Html extends Ai1ec_Base {
 	 * @param array $view_args The args used in the front end.
 	 *
 	 * @return Ai1ec_File_Twig
+	 *
+	 * @staticvar $cached_flips    Maps of taxonomy identifiers.
+	 * @staticvar $checkable_types Map of types and taxonomy identifiers.
 	 */
 	public function create_select2_multiselect(
 		array $args,
 		array $options,
 		array $view_args = null
 	) {
-		// if no data is present and we are in the frontend, return a blank element.
-		if( empty( $options ) && null !== $view_args ) {
+		// if no data is present and we are in the frontend, return a blank
+		// element.
+		if ( empty( $options ) && null !== $view_args ) {
 			return $this->_registry->get( 'html.element.legacy.blank' );
 		}
-		static $cached_flips = array();
+		static $cached_flips    = array();
 
-		$use_id = isset( $args['use_id'] );
+		static $checkable_types = array(
+			'category' => 'cat_ids',
+			'tag'      => 'tag_ids',
+			'author'   => 'auth_ids',
+		);
+
+		$use_id         = isset( $args['use_id'] );
 		$options_to_add = array();
 		foreach ( $options as $term ) {
 			$option_arguments = array();
-			$color = false;
-			$event_helper = $this->_registry->get( 'event.helper' );
-			if( $args['type'] === 'category' ) {
-				$color = $event_helper->get_category_color( $term->term_id );
+			$color            = false;
+			if ( $args['type'] === 'category' ) {
+				$color = $this->_registry->get( 'model.taxonomy' )
+					->get_category_color( $term->term_id );
 			}
 			if ( $color ) {
-				$option_arguments["data-color"] = $color;
+				$option_arguments['data-color'] = $color;
 			}
-			if( null !== $view_args ) {
+			if ( null !== $view_args ) {
 				// create the href for ajax loading
-				$href = $this->create_href_helper_instance( $view_args, $args['type'] );
+				$href = $this->create_href_helper_instance(
+					$view_args,
+					$args['type']
+				);
 				$href->set_term_id( $term->term_id );
-				$option_arguments["data-href"] = $href->generate_href();
+				$option_arguments['data-href'] = $href->generate_href();
 				// check if the option is selected
 				$type_to_check = '';
 				// first let's check the correct type
-				switch ( $args['type'] ) {
-					case 'category':
-						$type_to_check = 'cat_ids';
-						break;
-					case 'tag':
-						$type_to_check = 'tag_ids';
-						break;
-					case 'author':
-						$type_to_check = 'auth_ids';
-						break;
+				if ( isset( $checkable_types[$args['type']] ) ) {
+					$type_to_check = $checkable_types[$args['type']];
 				}
 				// let's flip the array. Just once for performance sake,
 				// the categories doesn't change in the same request
-				if( ! isset( $cached_flips[$type_to_check] ) ) {
-					$cached_flips[$type_to_check] = array_flip( $view_args[$type_to_check] );
+				if ( ! isset( $cached_flips[$type_to_check] ) ) {
+					$cached_flips[$type_to_check] = array_flip(
+						$view_args[$type_to_check]
+					);
 				}
-				if( isset( $cached_flips[$type_to_check][$term->term_id] ) ) {
-					$option_arguments["selected"] = 'selected';
+				if ( isset( $cached_flips[$type_to_check][$term->term_id] ) ) {
+					$option_arguments['selected'] = 'selected';
 				}
 			}
 			if ( true === $use_id ) {

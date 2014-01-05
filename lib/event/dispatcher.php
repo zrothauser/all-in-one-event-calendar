@@ -54,9 +54,9 @@ class Ai1ec_Event_Dispatcher extends Ai1ec_Base {
 	protected function _register(
 		$hook,
 		array $method,
+		$type,
 		$priority      = 10,
-		$accepted_args = 1,
-		$type
+		$accepted_args = 1
 	) {
 		$action = $this->_registry->get(
 			'event.callback.' . $type,
@@ -90,9 +90,9 @@ class Ai1ec_Event_Dispatcher extends Ai1ec_Base {
 		$this->_register(
 			$hook,
 			$method,
+			'filter',
 			$priority,
-			$accepted_args,
-			'filter'
+			$accepted_args
 		);
 	}
 
@@ -115,9 +115,31 @@ class Ai1ec_Event_Dispatcher extends Ai1ec_Base {
 		$this->_register(
 			$hook,
 			$method,
+			'action',
 			$priority,
-			$accepted_args,
-			'action'
+			$accepted_args
 		);
 	}
+
+	/**
+	 * Register a shortcode.
+	 *
+	 * @param string $shortcode Name of the shortcode tag.
+	 * @param array  $method    Method to call.
+	 *
+	 * @return void
+	 */
+	public function register_shortcode(
+		$shortcode,
+		array $method
+	) {
+		$entity = $this->_registry->get(
+			'event.callback.shortcode',
+			$method[0],
+			$method[1]
+		);
+		add_shortcode( $shortcode, array( $entity, 'run' ) );
+		return $this;
+	}
+
 }

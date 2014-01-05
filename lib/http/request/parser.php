@@ -3,11 +3,11 @@
 /**
  * Concrete request parsing class.
  *
- * @author     Time.ly Network Inc.
- * @since      2.0
- *
- * @package    AI1EC
- * @subpackage AI1EC.Http.Request
+ * @author       Time.ly Network Inc.
+ * @since        2.0
+ * @instantiator new
+ * @package      AI1EC
+ * @subpackage   AI1EC.Http.Request
  */
 class Ai1ec_Request_Parser extends Ai1ec_Abstract_Query {
 

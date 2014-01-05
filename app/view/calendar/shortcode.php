@@ -11,8 +11,6 @@
 class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 	
 	/**
-	 * shortcode method
-	 *
 	 * Generate replacement content for [ai1ec] shortcode.
 	 *
 	 * @param array	 $atts	  Attributes provided on shortcode
@@ -22,18 +20,20 @@ class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 	 * @staticvar $call_count Used to restrict to single calendar per page
 	 *
 	 * @return string Replacement for shortcode entry
-	 **/
+	 */
 	public function shortcode( $atts, $content = '', $tag = 'ai1ec' ) {
 		static $call_count = 0;
-		
-		
-		$view_names = array( 'oneday' );
-	
+
 		++$call_count;
 		if ( $call_count > 1 ) { // not implemented
 			return false; // so far process only first request
 		}
-		$view = 'oneday';
+
+		$view_names = array(
+			'oneday' => true,
+		);
+
+		$view       = 'oneday';
 		$categories = $tags = $post_ids = array();
 		if ( isset( $atts['view'] ) ) {
 			if ( 'ly' === substr( $atts['view'], -2 ) ) {
@@ -44,7 +44,7 @@ class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 			}
 			$view = $atts['view'];
 		}
-	
+
 		$mappings = array(
 			'cat_name' => 'categories',
 			'cat_id'   => 'categories',
@@ -97,18 +97,24 @@ class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 			'ai1ec_post_ids' => implode( ',', $post_ids ),
 			'action'         => $view,
 			'request_type'   => 'jsonp',
-			'shortcode'      => 'true'
+			'shortcode'      => 'true',
 		);
-		if( isset( $atts['exact_date'] ) ) {
+		if ( isset( $atts['exact_date'] ) ) {
 			$query['exact_date'] = $atts['exact_date'];
 		}
-		$request = $this->_registry->get( 'http.request.parser', $query, 'oneday' );
+		$request = $this->_registry->get(
+			'http.request.parser',
+			$query,
+			'oneday'
+		);
 		$request->parse();
-		$page_content = $this->_registry->get( 'view.calendar.page' )->get_content( $request );
+		$page_content = $this->_registry->get( 'view.calendar.page' )
+			->get_content( $request );
 		$css      = $this->_registry->get( 'css.frontend' )
 						->add_link_to_html_for_frontend();
 		$js       = $this->_registry->get( 'controller.javascript' )
 						->load_frontend_js( true );
 		return $page_content;
 	}
+
 }

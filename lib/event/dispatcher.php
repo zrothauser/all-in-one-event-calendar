@@ -27,10 +27,6 @@ class Ai1ec_Event_Dispatcher extends Ai1ec_Base {
 		$priority      = 10,
 		$accepted_args = 1
 	) {
-		if ( $entity instanceof Ai1ec_Event_Callback_Shortcode ) {
-			add_shortcode( $hook, array( $entity, 'run' ) );
-			return $this;
-		}
 		$wp_method = 'add_action';
 		if ( $entity instanceof Ai1ec_Event_Callback_Filter ) {
 			$wp_method = 'add_filter';
@@ -124,12 +120,12 @@ class Ai1ec_Event_Dispatcher extends Ai1ec_Base {
 			$accepted_args
 		);
 	}
-	
+
 	/**
 	 * Register a shortcode.
 	 *
-	 * @param string  $shortcode     Name of the shortcode tag.
-	 * @param array   $method        Method to call.
+	 * @param string $shortcode Name of the shortcode tag.
+	 * @param array  $method    Method to call.
 	 *
 	 * @return void
 	 */
@@ -137,10 +133,13 @@ class Ai1ec_Event_Dispatcher extends Ai1ec_Base {
 		$shortcode,
 		array $method
 	) {
-		$this->_register(
-			$shortcode,
-			$method,
-			'shortcode'
+		$entity = $this->_registry->get(
+			'event.callback.shortcode',
+			$method[0],
+			$method[1]
 		);
+		add_shortcode( $shortcode, array( $entity, 'run' ) );
+		return $this;
 	}
+
 }

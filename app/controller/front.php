@@ -604,97 +604,107 @@ class Ai1ec_Front_Controller {
 	 * @return void
 	 */
 	protected function _initialize_schema() {
-		$option = $this->_registry->get( 'model.option' );
+		$option     = $this->_registry->get( 'model.option' );
+		$schema_sql = $this->get_current_db_schema();
+		$version    = sha1( $schema_sql );
 		// If existing DB version is not consistent with current plugin's version,
 		// or does not exist, then create/update table structure using dbDelta().
-		if ( $option->get( 'ai1ec_db_version' ) != AI1EC_DB_VERSION ) {
+		if ( $option->get( 'ai1ec_db_version' ) != $version ) {
 
-			$applicator = $this->_registry->get( 'database.applicator' );
+			$this->_registry->get( 'database.applicator' )
+				->remove_instance_duplicates();
 
-
-			$applicator->remove_instance_duplicates();
-
-			$structures = array();
 			$schema     = $this->_registry->get( 'database.schema' );
-			if ( ! $schema->upgrade( AI1EC_DB_VERSION ) ) {
+			if ( ! $schema->upgrade( 200 /* past 1.x point */ ) ) {
 				throw new Ai1ec_Database_Schema_Exception(
 					'Failed to perform schema upgrade'
 				);
 			}
 			unset( $schema );
-			$dbi = $this->_registry->get( 'dbi.dbi' );
-			// =======================
-			// = Create table events =
-			// =======================
-			$table_name = $dbi->get_table_name( 'ai1ec_events' );
-			$sql = "CREATE TABLE $table_name (
-					post_id bigint(20) NOT NULL,
-					start int(10) UNSIGNED NOT NULL,
-					end int(10) UNSIGNED,
-					timezone_name varchar(50),
-					allday tinyint(1) NOT NULL,
-					instant_event tinyint(1) NOT NULL DEFAULT 0,
-					recurrence_rules longtext,
-					exception_rules longtext,
-					recurrence_dates longtext,
-					exception_dates longtext,
-					venue varchar(255),
-					country varchar(255),
-					address varchar(255),
-					city varchar(255),
-					province varchar(255),
-					postal_code varchar(32),
-					show_map tinyint(1),
-					contact_name varchar(255),
-					contact_phone varchar(32),
-					contact_email varchar(128),
-					contact_url varchar(255),
-					cost varchar(255),
-					ticket_url varchar(255),
-					ical_feed_url varchar(255),
-					ical_source_url varchar(255),
-					ical_organizer varchar(255),
-					ical_contact varchar(255),
-					ical_uid varchar(255),
-					show_coordinates tinyint(1),
-					latitude decimal(20,15),
-					longitude decimal(20,15),
-					facebook_eid bigint(20),
-					facebook_user bigint(20),
-					facebook_status varchar(1) NOT NULL DEFAULT '',
-					force_regenerate tinyint(1) NOT NULL DEFAULT 0,
-					PRIMARY KEY  (post_id),
-					KEY feed_source (ical_feed_url)
-					) CHARACTER SET utf8;";
 
-			// ==========================
-			// = Create table instances =
-			// ==========================
-			$table_name = $dbi->get_table_name( 'ai1ec_event_instances' );
-			$sql .= "CREATE TABLE $table_name (
-					id bigint(20) NOT NULL AUTO_INCREMENT,
-					post_id bigint(20) NOT NULL,
-					start int(10) UNSIGNED NOT NULL,
-					end int(10) UNSIGNED NOT NULL,
-					PRIMARY KEY  (id),
-					UNIQUE KEY evt_instance (post_id,start)
-					) CHARACTER SET utf8;";
-
-			// ================================
-			// = Create table category colors =
-			// ================================
-			$table_name = $dbi->get_table_name( 'ai1ec_event_category_colors' );
-			$sql .= "CREATE TABLE $table_name (
-				term_id bigint(20) NOT NULL,
-				term_color varchar(255) NOT NULL,
-				PRIMARY KEY  (term_id)
-				) CHARACTER SET utf8;";
-			if ( $this->_registry->get( 'database.helper' )->apply_delta( $sql ) ) {
-				$option->set( 'ai1ec_db_version', AI1EC_DB_VERSION );
+			if ( $this->_registry->get( 'database.helper' )->apply_delta( $schema_sql ) ) {
+				$option->set( 'ai1ec_db_version', $version );
 			} else {
 				throw new Ai1ec_Database_Update_Exception();
 			}
 		}
+	}
+
+	/**
+	 * Get current database schema as a multi SQL statement.
+	 *
+	 * @return string Multiline SQL statement.
+	 */
+	public function get_current_db_schema() {
+		$dbi = $this->_registry->get( 'dbi.dbi' );
+		// =======================
+		// = Create table events =
+		// =======================
+		$table_name = $dbi->get_table_name( 'ai1ec_events' );
+		$sql = "CREATE TABLE $table_name (
+				post_id bigint(20) NOT NULL,
+				start int(10) UNSIGNED NOT NULL,
+				end int(10) UNSIGNED,
+				timezone_name varchar(50),
+				allday tinyint(1) NOT NULL,
+				instant_event tinyint(1) NOT NULL DEFAULT 0,
+				recurrence_rules longtext,
+				exception_rules longtext,
+				recurrence_dates longtext,
+				exception_dates longtext,
+				venue varchar(255),
+				country varchar(255),
+				address varchar(255),
+				city varchar(255),
+				province varchar(255),
+				postal_code varchar(32),
+				show_map tinyint(1),
+				contact_name varchar(255),
+				contact_phone varchar(32),
+				contact_email varchar(128),
+				contact_url varchar(255),
+				cost varchar(255),
+				ticket_url varchar(255),
+				ical_feed_url varchar(255),
+				ical_source_url varchar(255),
+				ical_organizer varchar(255),
+				ical_contact varchar(255),
+				ical_uid varchar(255),
+				show_coordinates tinyint(1),
+				latitude decimal(20,15),
+				longitude decimal(20,15),
+				facebook_eid bigint(20),
+				facebook_user bigint(20),
+				facebook_status varchar(1) NOT NULL DEFAULT '',
+				force_regenerate tinyint(1) NOT NULL DEFAULT 0,
+				PRIMARY KEY  (post_id),
+				KEY feed_source (ical_feed_url)
+				) CHARACTER SET utf8;";
+
+		// ==========================
+		// = Create table instances =
+		// ==========================
+		$table_name = $dbi->get_table_name( 'ai1ec_event_instances' );
+		$sql .= "CREATE TABLE $table_name (
+				id bigint(20) NOT NULL AUTO_INCREMENT,
+				post_id bigint(20) NOT NULL,
+				start int(10) UNSIGNED NOT NULL,
+				end int(10) UNSIGNED NOT NULL,
+				PRIMARY KEY  (id),
+				UNIQUE KEY evt_instance (post_id,start)
+				) CHARACTER SET utf8;";
+
+		// ================================
+		// = Create table category colors =
+		// ================================
+		$table_name = $dbi->get_table_name( 'ai1ec_event_category_colors' );
+		$sql .= "CREATE TABLE $table_name (
+			term_id bigint(20) NOT NULL,
+			term_color varchar(255) NOT NULL,
+			PRIMARY KEY  (term_id)
+			) CHARACTER SET utf8;";
+
+		return $sql;
 	}
 
 }

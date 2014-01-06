@@ -26,7 +26,7 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 			} catch ( Ai1ec_Parse_Exception $exception ) {
 				throw new Ai1ec_Parse_Exception(
 					'Processing "' . $arguments['source'] .
-					'" experienced error: ' . $exception->getMessage()
+					'" triggered error: ' . $exception->getMessage()
 				);
 			}
 			return $count;

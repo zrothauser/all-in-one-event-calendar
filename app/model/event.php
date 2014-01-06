@@ -736,10 +736,10 @@ class Ai1ec_Event extends Ai1ec_Base {
 	) {
 		if ( empty( $timezone_name ) ) {
 			$timezone_name = $this->get( 'start' )->get_timezone();
-		}
-		if ( empty( $timezone_name ) ) {
-			$timezone_name = $this->_registry->get( 'date.timezone' )
-				->get_default_timezone();
+			if ( empty( $timezone_name ) ) {
+				$timezone_name = $this->_registry->get( 'date.timezone' )
+					->get_default_timezone();
+			}
 		}
 		return $timezone_name;
 	}

@@ -28,7 +28,7 @@ class Ai1ec_Database_Schema {
 	 */
 	public function __construct( Ai1ec_Registry_Object $registry ) {
 		$this->_db       = $registry->get( 'dbi.dbi' );
-		$this->_database = $registry->get( 'database.helper' );
+		$this->_ai1ec_db = $registry->get( 'database.helper' );
 	}
 
 	/**
@@ -40,10 +40,12 @@ class Ai1ec_Database_Schema {
 	 * @param int $target_ver Target version, to upgrade to
 	 *
 	 * @return bool Success
+	 *
+	 * @throws Ai1ec_Database_Schema_Exception If table modification fails.
 	 */
 	public function upgrade( $target_ver = NULL ) {
-		if ( NULL === $target_ver ) {
-			$target_ver = AI1EC_DB_VERSION;
+		if ( null === $target_ver ) {
+			$target_ver = 200;
 		}
 		$target_ver  = (int)$target_ver;
 		$curr_class  = get_class( $this );
@@ -62,15 +64,11 @@ class Ai1ec_Database_Schema {
 				continue;
 			}
 			$since       = (int)$matches[1];
-			try {
-				if (
-					$since <= $target_ver &&
-					! $this->{$name}()
-				) {
-					return false;
-				}
-			} catch ( Ai1ec_Database_Schema_Exception $exception ) {
-				pr( (string)$exception );
+			$excpt       = null;
+			if (
+				$since <= $target_ver &&
+				! $this->{$name}()
+			) {
 				return false;
 			}
 		}

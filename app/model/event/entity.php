@@ -58,15 +58,28 @@ class Ai1ec_Event_Entity extends Ai1ec_Base {
 		}
 		$field = '_' . $name;
 		if ( isset( $time_fields[$name] ) ) {
-			if ( $value instanceof Ai1ec_Date_Time ) {
-				$this->{$field} = $value;
-			} else {
-				$this->{$field}->set_date_time( $value );
-			}
+			// object of Ai1ec_Date_Time type is now handled in it itself
+			$this->{$field}->set_date_time( $value );
 		} else {
 			$this->{$field} = $value;
 		}
+		if ( 'timezone_name' === $name && ! empty( $value ) ) {
+			$this->_start->set_timezone( $value );
+			$this->_end  ->set_timezone( $value );
+		}
 		return $this;
+	}
+
+	/**
+	 * Set preferred timezone to datetime fields.
+	 *
+	 * @param DateTimeZone $timezone Preferred timezone instance.
+	 *
+	 * @return void
+	 */
+	public function set_preferred_timezone( DateTimeZone $timezone ) {
+		$this->_start->set_preferred_timezone( $timezone );
+		$this->_end  ->set_preferred_timezone( $timezone );
 	}
 
 	/**
@@ -122,6 +135,11 @@ class Ai1ec_Event_Entity extends Ai1ec_Base {
 	 * @var Ai1ec_Date_Time End date-time specifier
 	 */
 	private $_end;
+
+	/**
+	 * @var string Name of timezone to use for event times.
+	 */
+	private $_timezone_name;
 
 	/**
 	 * @var bool Whether this copy of the event was broken up for rendering and

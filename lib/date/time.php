@@ -22,6 +22,11 @@ class Ai1ec_Date_Time {
 	protected $_date_time = null;
 
 	/**
+	 * @var string Olsen name of preferred timezone to use if none is requested.
+	 */
+	protected $_preferred_timezone = null;
+
+	/**
 	 * Initialize local date entity.
 	 *
 	 * @param Ai1ec_Registry_Object $registry Objects registry instance.
@@ -42,6 +47,10 @@ class Ai1ec_Date_Time {
 	/**
 	 * Return formatted date in desired timezone.
 	 *
+	 * NOTICE: consider optimizing by storing multiple copies of `DateTime` for
+	 * each requested timezone, or some of them, as of now timezone is changed
+	 * back and forth every time when formatting is called for.
+	 *
 	 * @param string $format   Desired format as accepted by {@see date}.
 	 * @param string $timezone Valid timezone identifier. Defaults to current.
 	 *
@@ -50,12 +59,15 @@ class Ai1ec_Date_Time {
 	 * @throws Ai1ec_Date_Timezone_Exception If timezone is not recognized.
 	 */
 	public function format( $format = 'U', $timezone = null ) {
-		if ( null === $timezone ) {
-			$timezone = $this->_registry->get( 'date.timezone' )
-				->get_default_timezone();
+		if ( 'U' === $format ) { // performance cut
+			return $this->_date_time->format( 'U' );
 		}
-		$this->change_timezone( $timezone );
-		return $this->_date_time->format( $format );
+		$timezone  = $this->get_default_format_timezone( $timezone );
+		$last_tz   = $this->get_timezone();
+		$this->set_timezone( $timezone );
+		$formatted = $this->_date_time->format( $format );
+		$this->set_timezone( $last_tz );
+		return $formatted;
 	}
 
 	/**
@@ -67,21 +79,13 @@ class Ai1ec_Date_Time {
 	 * @return string Formatted time.
 	 */
 	public function format_i18n( $format, $timezone = null ) {
+		return $this->format( $format, $timezone );
 		static $i18n = null;
 		if ( null === $i18n ) {
 			$i18n = $this->_registry->get( 'date.time-i18n' );
 		}
 		$timestamp = $this->format( 'U', $timezone );
 		return $i18n->format( $format, $timestamp, true );
-	}
-
-	/**
-	 * Offset from GMT in minutes.
-	 *
-	 * @return int Signed integer - offset.
-	 */
-	public function get_gmt_offset() {
-		return $this->_date_time->getOffset() / 60;
 	}
 
 	/**
@@ -96,6 +100,49 @@ class Ai1ec_Date_Time {
 	}
 
 	/**
+	 * Get timezone to use when format doesn't have one.
+	 *
+	 * Precedence:
+	 *     1. Timezone supplied for formatting;
+	 *     2. Objects preferred timezone;
+	 *     3. Default systems timezone.
+	 *
+	 * @var string $timezone Requested formatting timezone.
+	 *
+	 * @return string Olsen timezone name to use.
+	 */
+	public function get_default_format_timezone( $timezone = null ) {
+		if ( null !== $timezone ) {
+			return $timezone;
+		}
+		if ( null !== $this->_preferred_timezone ) {
+			return $this->_preferred_timezone;
+		}
+		return $this->_registry->get( 'date.timezone' )
+			->get_default_timezone();
+	}
+
+	/**
+	 * Offset from GMT in minutes.
+	 *
+	 * @return int Signed integer - offset.
+	 */
+	public function get_gmt_offset() {
+		return $this->_date_time->getOffset() / 60;
+	}
+
+	/**
+	 * Set preferred timezone to use when format is called without any.
+	 *
+	 * @param DateTimeZone $timezone Preferred timezone instance.
+	 *
+	 * @return void
+	 */
+	public function set_preferred_timezone( DateTimeZone $timezone ) {
+		$this->_preferred_timezone = $timezone->getName();
+	}
+
+	/**
 	 * Change timezone of stored entity.
 	 *
 	 * @param string $timezone Valid timezone identifier.
@@ -104,11 +151,24 @@ class Ai1ec_Date_Time {
 	 *
 	 * @throws Ai1ec_Date_Timezone_Exception If timezone is not recognized.
 	 */
-	public function change_timezone( $timezone = 'UTC' ) {
+	public function set_timezone( $timezone = 'UTC' ) {
 		$date_time_tz = $this->_registry->get( 'date.timezone' )
 			->get( $timezone );
 		$this->_date_time->setTimezone( $date_time_tz );
 		return $this;
+	}
+
+	/**
+	 * Get timezone associated with current object.
+	 *
+	 * @return string|null Valid PHP timezone string or null on error.
+	 */
+	public function get_timezone() {
+		$timezone = $this->_date_time->getTimezone();
+		if ( false === $timezone ) {
+			return null;
+		}
+		return $timezone->getName();
 	}
 
 	/**
@@ -122,7 +182,7 @@ class Ai1ec_Date_Time {
 	 *
 	 * @return int Number of seconds between two dates.
 	 */
-	public function diff_sec( Ai1ec_Date_Time $comparable ) {
+	public function diff_sec( Ai1ec_Date_Time $comparable, $timezone = null ) {
 		if ( version_compare( PHP_VERSION, '5.3.0' ) < 0 ) {
 			$difference = $this->_date_time->format( 'U' ) -
 				$comparable->_date_time->format( 'U' );
@@ -138,6 +198,20 @@ class Ai1ec_Date_Time {
 			$difference->i    * 60    +
 			$difference->s
 		);
+	}
+
+	/**
+	 * Adjust only date fragment of entity.
+	 *
+	 * @param int $year  Year of the date.
+	 * @param int $month Month of the date.
+	 * @param int $day   Day of the date.
+	 *
+	 * @return Ai1ec_Date_Time Instance of self for chaining.
+	 */
+	public function set_date( $year, $month, $day ) {
+		$this->_date_time->setDate( $year, $month, $day );
+		return $this;
 	}
 
 	/**

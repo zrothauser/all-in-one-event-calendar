@@ -139,9 +139,12 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 			$end_time = $start_time + 1800;
 		}
 
+		$timezone_name = $this->_registry->get( 'date.timezone' )
+			->get_default_timezone();
 		$event->set( 'post_id',          $post_id );
 		$event->set( 'start',            $start_time );
 		$event->set( 'end',              $end_time );
+		$event->set( 'timezone_name',    $timezone_name );
 		$event->set( 'allday',           $all_day );
 		$event->set( 'instant_event',    $instant_event );
 		$event->set( 'venue',            $venue );

@@ -41,7 +41,7 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 			new Twig_SimpleFilter( 'truncate',          array( $this, 'truncate' ) ),
 			new Twig_SimpleFilter( 'timespan',          array( $this, 'timespan' ) ),
 			new Twig_SimpleFilter( 'avatar',            array( $this, 'avatar' ) ),
-			new Twig_SimpleFilter( 'hour_to_timestamp', array( $this, 'hour_to_timestamp' ) ),
+			new Twig_SimpleFilter( 'hour_to_datetime',  array( $this, 'hour_to_datetime' ) ),
 			new Twig_SimpleFilter( 'weekday',           array( $this, 'weekday' ) ),
 			new Twig_SimpleFilter( 'theme_img_url',     array( $this, 'theme_img_url' ) ),
 			new Twig_SimpleFilter( 'date_i18n',         array( $this, 'date_i18n' ) ),
@@ -85,10 +85,11 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	 * 
 	 * @param int $hour
 	 * 
-	 * @return number
+	 * @return Ai1ec_Date_Time
 	 */
-	public function hour_to_timestamp( $hour ) {
-		return gmmktime( $hour, 0 );
+	public function hour_to_datetime( $hour ) {
+		return $this->_registry->get( 'date.time', 'now', 'sys.default' )
+			->set_time( $hour, 0, 0 );
 	}
 	
 	/**

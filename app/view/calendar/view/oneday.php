@@ -95,6 +95,9 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		$is_ticket_button_enabled = false;
 		$show_reveal_button       = false;
 
+		$time_format              = $this->_registry->get( 'model.option' )
+			->get( 'time_format', Ai1ec_I18n::__( 'g a' ) );
+
 		$view_args = array(
 			'title'                    => $title,
 			'type'                     => 'oneday',
@@ -109,6 +112,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			'data_type_events'         => '',
 			'is_ticket_button_enabled' => $is_ticket_button_enabled,
 			'show_reveal_button'       => $show_reveal_button,
+			'time_format'              => $time_format,
 		);
 
 		// Add navigation if requested.
@@ -222,9 +226,11 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		$search      = $this->_registry->get( 'model.search' );
 		$date_system = $this->_registry->get( 'date.system' );
 
-		$loc_start_time = $this->_registry->get( 'date.time', $start_time )
+		$loc_start_time = $this->_registry
+			->get( 'date.time', $start_time, 'sys.default' )
 			->set_time( 0, 0, 0 );
-		$loc_end_time   = $this->_registry->get( 'date.time', $start_time )
+		$loc_end_time   = $this->_registry
+			->get( 'date.time', $start_time, 'sys.default' )
 			->adjust_day( +1 )
 			->set_time( 0, 0, 0 );
 
@@ -292,7 +298,11 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 				$top + ( $evt->get_duration() / 60 ),
 				1440
 			);
-	
+			$gmt_offset = $this->_registry->get( 'date.system' )
+				->get_gmt_offset();
+			$top       += $gmt_offset;
+			$bottom    += $gmt_offset;
+
 			// While there's more than one event in the stack and this event's
 			// top position is beyond the last event's bottom, pop the stack
 			while ( count( $evt_stack ) > 1 && $top >= end( $evt_stack ) ) {

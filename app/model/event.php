@@ -24,11 +24,12 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 *            [-1] - only `get` (for storage) operations require care.
 	 */
 	protected $_swizzable = array(
-		'contact_url' => 0,
-		'cost'        => 0,
-		'ticket_url'  => 0,
-		'start'       => -1,
-		'end'         => -1,
+		'contact_url'   => 0,
+		'cost'          => 0,
+		'ticket_url'    => 0,
+		'start'         => -1,
+		'end'           => -1,
+		'timezone_name' => -1,
 	);
 
 	/**
@@ -193,6 +194,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 		$left_join  = '';
 		$select_sql = '
 			e.post_id,
+			e.timezone_name,
 			e.recurrence_rules,
 			e.exception_rules,
 			e.allday,
@@ -309,6 +311,16 @@ class Ai1ec_Event extends Ai1ec_Base {
 				'Argument to constructor must be integer, array or null' .
 				', not ' . var_export( $data, true )
 			);
+		}
+
+		if ( $this->is_allday() ) {
+			try {
+				$timezone = $this->_registry->get( 'date.timezone' )
+					->get( $this->get( 'timezone_name' ) );
+				$this->_entity->set_preferred_timezone( $timezone );
+			} catch ( Exception $excpt ) {
+				//  ignore
+			}
 		}
 	}
 
@@ -492,7 +504,8 @@ class Ai1ec_Event extends Ai1ec_Base {
 	public function get_duration() {
 		static $duration;
 		if ( null === $duration ) {
-			$duration = $this->get( 'end' )->format() - $this->get( 'start' )->format();
+			$duration = $this->get( 'end' )->format() -
+				$this->get( 'start' )->format();
 		}
 		return $duration;
 	}
@@ -593,38 +606,51 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 * @return array List of format flags to use in integrations with DBI.
 	 */
 	public function prepare_store_format( array $entity ) {
+		// ===============================================================
+		// ====== Sample implementation to follow method signature: ======
+		// ===============================================================
+		// static $format = array(
+		// 	'post_id'       => '%d',
+		// 	'start'         => '%d',
+		// 	'end'           => '%d',
+		// 	'timezone_name' => '%s',
+		// 	// other keys to follow...
+		// );
+		// return array_values( array_intersect_key( $format, $entity ) );
+		// ===============================================================
 		$format = array(
-			'%d',
-			'%d',
-			'%d',
-			'%d',
-			'%d',
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-			'%d',
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-			'%d',
-			'%f',
-			'%f',
-			'%s',
-			'%s',
-			'%s',
+			'%d',  // post_id
+			'%d',  // start
+			'%d',  // end
+			'%s',  // timezone_name
+			'%d',  // allday
+			'%d',  // instant_event
+			'%s',  // recurrence_rules
+			'%s',  // exception_rules
+			'%s',  // recurrence_dates
+			'%s',  // exception_dates
+			'%s',  // venue
+			'%s',  // country
+			'%s',  // address
+			'%s',  // city
+			'%s',  // province
+			'%s',  // postal_code
+			'%d',  // show_map
+			'%s',  // contact_name
+			'%s',  // contact_phone
+			'%s',  // contact_email
+			'%s',  // contact_url
+			'%s',  // cost
+			'%s',  // ticket_url
+			'%s',  // ical_feed_url
+			'%s',  // ical_source_url
+			'%s',  // ical_uid
+			'%d',  // show_coordinates
+			'%f',  // latitude
+			'%f',  // longitude
+			'%s',  // facebook_eid
+			'%s',  // facebook_user
+			'%s',  // facebook_status
 		);
 		return $format;
 	}
@@ -641,6 +667,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 			'post_id'          => $this->storage_format( 'post_id' ),
 			'start'            => $this->storage_format( 'start' ),
 			'end'              => $this->storage_format( 'end' ),
+			'timezone_name'    => $this->storage_format( 'timezone_name' ),
 			'allday'           => $this->storage_format( 'allday' ),
 			'instant_event'    => $this->storage_format( 'instant_event' ),
 			'recurrence_rules' => $this->storage_format( 'recurrence_rules' ),
@@ -690,6 +717,31 @@ class Ai1ec_Event extends Ai1ec_Base {
 			$value = $this->{ '_handle_property_destruct_' . $field }( $value );
 		}
 		return $value;
+	}
+
+	/**
+	 * Decode timezone to use for event.
+	 *
+	 * Following algorythm is used to detect a value:
+	 *     - take value provided in input;
+	 *     - if empty - take value associated with start time;
+	 *     - if empty - take current environment timezone.
+	 *
+	 * @param string $timezone_name Timezone provided in input.
+	 *
+	 * @return string Timezone name to use for event in future.
+	 */
+	protected function _handle_property_destruct_timezone_name(
+		$timezone_name
+	) {
+		if ( empty( $timezone_name ) ) {
+			$timezone_name = $this->get( 'start' )->get_timezone();
+			if ( empty( $timezone_name ) ) {
+				$timezone_name = $this->_registry->get( 'date.timezone' )
+					->get_default_timezone();
+			}
+		}
+		return $timezone_name;
 	}
 
 	/**

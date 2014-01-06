@@ -43,13 +43,6 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		define( 'AI1EC_VERSION', '2.0.0-beta1/r0105' );
 	}
 
-	// ====================
-	// = Database Version =
-	// ====================
-	if ( ! defined( 'AI1EC_DB_VERSION' ) ) {
-		define( 'AI1EC_DB_VERSION', AI1EC_VERSION );
-	}
-
 	// =================
 	// = Language Path =
 	// =================

@@ -26,7 +26,7 @@ class Ai1ec_Loader {
 	/**
 	 * @var array Map of files to be included
 	 */
-	protected $_paths          = null;
+	protected $_paths          = array();
 
 	/**
 	 * @var bool Set to true when internal state is changed
@@ -64,7 +64,7 @@ class Ai1ec_Loader {
 	 */
 	public function load( $class ) {
 		if ( isset( $this->_paths[$class] ) ) {
-				$this->include_file( $this->_paths[$class]['f'] );
+			$this->include_file( $this->_paths[$class]['f'] );
 		}
 		return $this;
 	}
@@ -100,11 +100,59 @@ class Ai1ec_Loader {
 	 *
 	 * @return array Map of classes and corresponding file entites
 	 */
-	public function collect_classes() {
-		$names = $this->_locate_all_files( $this->_base_path );
+	public function collect_classes( $path = null, $folder_name = AI1EC_PLUGIN_NAME ) {
+		// extension inject theit own base path
+		$path = null === $path ? $this->_base_path : $path;
+		$names = $this->_locate_all_files( $path, $folder_name );
 		$names = $this->_process_reflections( $names );
-		$this->_cache( $names );
+		$this->_cache( $path, $names );
+		$this->_paths = array_merge( $this->_paths, $names );
 		return $names;
+	}
+
+	/**
+	 * Read/write cached classes map.
+	 *
+	 * If no entries are provided - acts as cache reader.
+	 *
+	 * @param array $entries Entries to write [optional=NULL]
+	 *
+	 * @return bool|array False on failure, true on success in writer
+	 *		 mode, cached entry in reader mode on success
+	 */
+	protected function _cache( $path, array $entries = NULL ) {
+		$cache_file = $path . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR .
+			'bootstrap' . DIRECTORY_SEPARATOR . 'loader-map.php';
+		if ( $entries ) {
+			if (
+				is_file( $cache_file ) &&
+				! is_writable( $cache_file ) ||
+				! is_writable( dirname( $cache_file ) )
+			) {
+				return false;
+			}
+			ksort( $entries, SORT_STRING );
+			$content = array(
+				'0registered' => $this->_registered,
+				'1class_map'  => $entries,
+			);
+			$content = var_export( $content, true );
+			$content = $this->_sanitize_paths( $content );
+			$content = '<?php return ' . $content . ';';
+			$this->_modified = false;
+			if (
+				false === file_put_contents( $cache_file, $content, LOCK_EX )
+			) { // LOCK_EX is not supported on all hosts (streams)
+				return (bool)file_put_contents( $cache_file, $content );
+			}
+			return true;
+		}
+		if ( ! is_file( $cache_file ) ) {
+			return false;
+		}
+		$cached = ( require $cache_file );
+		$this->_registered[$cache_file] = true;
+		return $cached['1class_map'];
 	}
 
 	/**
@@ -167,7 +215,7 @@ class Ai1ec_Loader {
 	 * @return array The classmap with instantiator.
 	 */
 	protected function _process_reflections( array $names ) {
-		$this->_paths = $names;
+		$this->_paths = array_merge( $this->_paths, $names );
 		spl_autoload_register( array( $this, 'load' ) );
 		foreach ( $names as $classname => &$data ) {
 			$class = new ReflectionClass( $data['c'] );
@@ -195,6 +243,7 @@ class Ai1ec_Loader {
 		}
 		return $instantiator;
 	}
+
 	/**
 	 * _locate_all_files method
 	 *
@@ -205,7 +254,7 @@ class Ai1ec_Loader {
 	 *
 	 * @return array Map of classes and corresponding files
 	 */
-	protected function _locate_all_files( $path ) {
+	protected function _locate_all_files( $path, $folder_name ) {
 		$class_list = array();
 		$directory	= opendir( $path );
 		while ( false !== ( $entry = readdir( $directory ) ) ) {
@@ -216,9 +265,9 @@ class Ai1ec_Loader {
 			$base_path  = substr( $local_path, strlen( $this->_base_path ) );
 
 			if ( is_dir( $local_path ) ) {
-				$class_list += $this->_locate_all_files( $local_path );
+				$class_list += $this->_locate_all_files( $local_path, $folder_name );
 			} else {
-				$class_list += $this->_extract_classes( $local_path );
+				$class_list += $this->_extract_classes( $local_path, $folder_name );
 			}
 		}
 		closedir( $directory );
@@ -236,7 +285,7 @@ class Ai1ec_Loader {
 	 *
 	 * @return array List of classes in file
 	 */
-	protected function _extract_classes( $file ) {
+	protected function _extract_classes( $file, $folder_name ) {
 			$class_list = array();
 			if ( '.php' === strrchr( $file, '.' ) ) {
 				$tokens = token_get_all( file_get_contents( $file ) );
@@ -249,7 +298,8 @@ class Ai1ec_Loader {
 					) {
 						$names = $this->_generate_loader_names(
 							$tokens[$i][1],
-							$file
+							$file,
+							$folder_name
 						);
 						foreach ( $names as $name ) {
 							$class_list[$name] = array(
@@ -262,51 +312,6 @@ class Ai1ec_Loader {
 				}
 			}
 			return $class_list;
-	}
-
-	/**
-	 * Read/write cached classes map.
-	 *
-	 * If no entries are provided - acts as cache reader.
-	 *
-	 * @param array $entries Entries to write [optional=NULL]
-	 *
-	 * @return bool|array False on failure, true on success in writer
-	 *		 mode, cached entry in reader mode on success
-	 */
-	protected function _cache( array $entries = NULL ) {
-		$cache_file = dirname( __FILE__ ) . DIRECTORY_SEPARATOR .
-			basename( __FILE__, '.php' ) . '-map.php';
-		if ( $entries ) {
-			if (
-				is_file( $cache_file ) &&
-				! is_writable( $cache_file ) ||
-				! is_writable( dirname( $cache_file ) )
-			) {
-				return false;
-			}
-			ksort( $entries, SORT_STRING );
-			$content = array(
-				'0registered' => $this->_registered,
-				'1class_map'  => $entries,
-			);
-			$content = var_export( $content, true );
-			$content = $this->_sanitize_paths( $content );
-			$content = '<?php return ' . $content . ';';
-			$this->_modified = false;
-			if (
-				false === file_put_contents( $cache_file, $content, LOCK_EX )
-			) { // LOCK_EX is not supported on all hosts (streams)
-				return (bool)file_put_contents( $cache_file, $content );
-			}
-			return true;
-		}
-		if ( ! is_file( $cache_file ) ) {
-			return false;
-		}
-		$cached = ( require $cache_file );
-		$this->_registered = $cached['0registered'];
-		return $cached['1class_map'];
 	}
 
 	/**
@@ -353,15 +358,16 @@ class Ai1ec_Loader {
      *
      * @return array An array of strings with the availables names.
      */
-	protected function _generate_loader_names( $class, $file ) {
+	protected function _generate_loader_names( $class, $file, $folder_name ) {
 		$names = array( $class );
 		// Remove the extension.
 		$file = substr( $file, 0, strrpos( $file , '.') );
+		$offset = strlen( $folder_name ) + 6;
 		// Get just the meaningful data.
 		$file = substr( $file, strrpos(
 				$file,
-				DIRECTORY_SEPARATOR . AI1EC_PLUGIN_NAME . DIRECTORY_SEPARATOR
-			) + 31
+				DIRECTORY_SEPARATOR . $folder_name . DIRECTORY_SEPARATOR
+			) + $offset
 		);
 		$names[] = str_replace( DIRECTORY_SEPARATOR, '.', $file );
 		return $names;
@@ -412,14 +418,10 @@ class Ai1ec_Loader {
 			return false;
 		}
 		$entries = ( require $file );
-		foreach ( $entries as $class_name => $file_path ) {
-			$this->_paths[$class_name] = array(
-				'c' => $class_name,
-				'f' => $file_path,
-			);
+		foreach ( $entries['1class_map'] as $class_name => $properties ) {
+			$this->_paths[$class_name] = $properties;
 		}
 		$this->_registered[$file] = true;
-		$this->_modified          = true;
 		return true;
 	}
 
@@ -437,7 +439,7 @@ class Ai1ec_Loader {
 		$this->_base_path = $base_path;
 		$this->_prefix = explode( '_', __CLASS__ );
 		$this->_prefix = $this->_prefix[0];
-		$class_map = $this->_cache();
+		$class_map = $this->_cache( $base_path );
 		if (
 			! is_array( $class_map ) ||
 			defined( 'AI1EC_DEBUG' ) && AI1EC_DEBUG

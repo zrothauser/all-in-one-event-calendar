@@ -24,6 +24,15 @@ class Ai1ec_Registry_Object implements Ai1ec_Registry {
 	private $_loader  = null;
 
 	/**
+	 * Get the loader ( used by extensions )
+	 * 
+	 * @return Ai1ec_Loader
+	 */
+	public function get_loader() {
+		return $this->_loader;
+	}
+
+	/**
 	 * Get class instance.
 	 *
 	 * Return an instance for the requested key, this method has an internal

@@ -149,8 +149,11 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 	 * @param Ai1ec_Recurrence_Rule $rrule
 	 * @return string
 	 */
-	public function get_exclude_html( Ai1ec_Event $event, Ai1ec_Recurrence_Rule $rrule ) {
-		$excludes = array();
+	public function get_exclude_html(
+		Ai1ec_Event $event,
+		Ai1ec_Recurrence_Rule $rrule
+	) {
+		$excludes        = array();
 		$exception_rules = $event->get( 'exception_rules' );
 		$exception_dates = $event->get( 'exception_dates' );
 		if ( $exception_rules ) {
@@ -161,7 +164,7 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 			$excludes[] =
 			$rrule->exdate_to_text( $exception_dates );
 		}
-		return implode( __( ', and ', AI1EC_PLUGIN_NAME ), $excludes );
+		return implode( Ai1ec_I18n::__( ', and ' ), $excludes );
 	}
 
 	/**

@@ -9,19 +9,19 @@
  * @subpackage   Ai1EC.Date
  */
 class Ai1ec_Time_Utility {
-	
+
 	/**
 	 * @var Ai1ec_Registry_Object
 	 */
 	static protected $_registry;
-	
+
 	/**
 	 * @param Ai1ec_Registry_Object $registry
 	 */
 	static public function set_registry( Ai1ec_Registry_Object $registry ) {
 		self::$_registry = $registry;
 	}
-	
+
 	/**
 	 * Legacy function needed for theme compatibility
 	 * 
@@ -34,11 +34,11 @@ class Ai1ec_Time_Utility {
 		$timestamp = false,
 		$is_gmt    = true
 	) {
-		$timezone = $is_gmt ? 
+		$timezone = ( $is_gmt ) ? 
 			true :
 			self::$_registry->get( 'model.option' )->get( 'timezone_string' ); 
-		$time = self::$_registry->get( 'date.time', $timestamp, $timezone );
-		return $time->format_i18n( $format );
+		return self::$_registry->get( 'date.time', $timestamp, $timezone )
+			->format_i18n( $format );
 	}
 
 }

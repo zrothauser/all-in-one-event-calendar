@@ -14,10 +14,10 @@ class Ai1ec_Factory_Event extends Ai1ec_Base {
 	 * @var bool whether the theme is legacy
 	 */
 	protected $_legacy;
-	
+
 	/**
 	 * Public constructor
-	 * 
+	 *
 	 * @param Ai1ec_Registry_Object $registry
 	 */
 	public function __construct( Ai1ec_Registry_Object $registry ) {
@@ -33,7 +33,11 @@ class Ai1ec_Factory_Event extends Ai1ec_Base {
 	 * 
 	 * @return Ai1ec_Event
 	 */
-	public function create_event_instance( Ai1ec_Registry_Object $registry, $data = null, $instance = false ) {
+	public function create_event_instance(
+		Ai1ec_Registry_Object $registry,
+		$data     = null,
+		$instance = false
+	) {
 		if ( true === $this->_legacy ) {
 			return new Ai1ec_Event_Legacy(
 				$registry,
@@ -47,5 +51,5 @@ class Ai1ec_Factory_Event extends Ai1ec_Base {
 			$instance
 		);
 	}
-	
+
 }

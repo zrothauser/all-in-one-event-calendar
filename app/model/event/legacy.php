@@ -38,10 +38,17 @@ class Ai1ec_Event_Legacy extends Ai1ec_Event {
 		'get_post_excerpt'                 => 'content',
 	);
 
-
 	public function get_long_end_date( $adjust = 0 ) {
 		$time = $this->_registry->get( 'view.event.time' );
-		return $time->get_long_date( $this->get( 'end' ), $adjust );
+		$end  = $this->_registry->get( 'date.time', $this->get( 'end' ) );
+		if ( ! empty( $adjust ) ) {
+			$end->set_time(
+				$end->format( 'H' ),
+				$end->format( 'i' ),
+				$adjust
+			);
+		}
+		return $time->get_long_date( $end );
 	}
 
 	public function get_long_start_date() {
@@ -60,7 +67,13 @@ class Ai1ec_Event_Legacy extends Ai1ec_Event {
 
 	public function get_short_end_date() {
 		$time = $this->_registry->get( 'view.event.time' );
-		return $time->get_short_date( $this->get( 'end' ), -1 );
+		$end  = $this->_registry->get( 'date.time', $this->get( 'end' ) );
+		$end->set_time(
+			$end->format( 'H' ),
+			$end->format( 'i' ),
+			-1
+		);
+		return $time->get_short_date( $end );
 	}
 
 	public function get_short_end_time() {
@@ -89,7 +102,7 @@ class Ai1ec_Event_Legacy extends Ai1ec_Event {
 	public function __set( $property, $value ) {
 		return $this->set( $property, $value );
 	}
-	
+
 	/**
 	 * Handle property accessors.
 	 *
@@ -106,13 +119,21 @@ class Ai1ec_Event_Legacy extends Ai1ec_Event {
 	}
 
 	/**
-	 * Handle legacy methods calls
-	 * 
-	 * @param string $method
-	 * @param array $arguments
+	 * Handle legacy methods calls.
+	 *
+	 * @param string $method    Legacy method name.
+	 * @param array  $arguments Arguments passed to method.
+	 *
 	 * @return mixed
+	 *
+	 * @throws Ai1ec_Invalid_Argument_Exception If there is no method handler.
 	 */
 	public function __call( $method, $arguments ) {
+		if ( ! isset( self::$_classes[$method] ) ) {
+			throw new Ai1ec_Invalid_Argument_Exception(
+				'Requested method \'' . $method . '\' is unknown'
+			);
+		}
 		array_unshift( $arguments, $this );
 		$class = 'view.event.' . self::$_classes[$method];
 		return $this->_registry->dispatch(
@@ -121,4 +142,5 @@ class Ai1ec_Event_Legacy extends Ai1ec_Event {
 			$arguments
 		);
 	}
+
 }

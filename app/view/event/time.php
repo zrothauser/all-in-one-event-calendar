@@ -171,33 +171,18 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 	 * 
 	 * @return string
 	 */
-	public function get_short_date( Ai1ec_Date_Time $time, $adjust = 0 ) {
-		if ( ! empty( $adjust ) ) {
-			$time->set_time(
-				$time->format( 'H' ),
-				$time->format( 'i' ),
-				$adjust
-			);
-		}
+	public function get_short_date( Ai1ec_Date_Time $time ) {
 		return $time->format_i18n( 'M j' );
 	}
 
 	/**
-	 * Format a long-length date for use in other views (e.g., single event);
-	 * this is also converted to the local timezone if desired.
+	 * Format a long-length date for use in other views (e.g., single event).
 	 *
-	 * @param Ai1ec_Date_Time $time
+	 * @param Ai1ec_Date_Time $time   Object to format.
 	 *
-	 * @return string
+	 * @return string Formatted date time [default: `l, M j, Y`].
 	 */
-	public function get_long_date( Ai1ec_Date_Time $time, $adjust = 0 ) {
-		if ( ! empty( $adjust ) ) {
-			$time->set_time(
-				$time->format( 'H' ),
-				$time->format( 'i' ),
-				$adjust
-			);
-		}
+	public function get_long_date( Ai1ec_Date_Time $time ) {
 		$date_format = $this->_registry->get( 'model.option' )->get(
 			'date_format',
 			'l, M j, Y'
@@ -206,21 +191,18 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 	}
 
 	/**
-	 * get_short_time function
+	 * Format a short-form time for use in compressed (e.g. month) views.
 	 *
-	 * Format a short-form time for use in compressed (e.g. month) views;
-	 * this is also converted to the local timezone.
+	 * @param Ai1ec_Date_Time $time   Object to format.
 	 *
-	 * @param Ai1ec_Date_Time $time
-	 *
-	 * @return string
+	 * @return string Formatted date time [default: `g:i a`].
 	 */
-	public function get_short_time( Ai1ec_Date_Time $time, $adjust = 0 ) {
+	public function get_short_time( Ai1ec_Date_Time $time ) {
 		$time_format = $this->_registry->get( 'model.option' )->get(
 			'time_format',
 			'g:i a'
 		);
-		return $time->format_i18n( $time_format, null, $adjust );
+		return $time->format_i18n( $time_format );
 	}
 
 }

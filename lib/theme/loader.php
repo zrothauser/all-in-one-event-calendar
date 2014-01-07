@@ -250,4 +250,16 @@ class Ai1ec_Theme_Loader {
 		return $this->_twig;
 	}
 
+	/**
+	 * Register paths to the Twig loader
+	 *
+	 * @param $paths array array of available paths to register
+	 */
+	public function add_paths( $paths ){
+		$loader = $this->_twig->getLoader();
+		foreach( $paths as $path ){
+			$loader->addPath( $path );
+		}
+	}
+
 }

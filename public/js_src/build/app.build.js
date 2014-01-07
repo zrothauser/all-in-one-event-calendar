@@ -32,6 +32,18 @@
 			},
 			{
 				name: "pages/common_frontend"
+			},
+			{
+				name: "scripts/calendar"
+			},
+			{
+				name: "scripts/common_scripts/frontend/common_frontend"
+			},
+			{
+				name: "scripts/calendar/event"
+			},
+			{
+				name: "domReady"
 			}
 	],
 	namespace: 'timely', // Set the namespace.

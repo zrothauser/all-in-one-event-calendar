@@ -163,7 +163,7 @@ class Ai1ec_Javascript_Controller {
 		$require = file_get_contents( $js_path . 'require.js' );
 
 		// get jquery
-		$jquery = $this->_get_jquery_version_based_on_browser(
+		$jquery = $this->get_jquery_version_based_on_browser(
 				$_SERVER['HTTP_USER_AGENT']
 		);
 		// load the script for the page
@@ -176,19 +176,19 @@ class Ai1ec_Javascript_Controller {
 		}
 
 
-		$translation = $this->_get_frontend_translation_data();
+		$translation = $this->get_frontend_translation_data();
 		$permalink = $this->_template_link_helper
 			->get_permalink( $this->_settings->get( 'calendar_page_id' ) );
 
 		$translation['calendar_url'] = $permalink;
 
-		$tranlsation_module = $this->_create_require_js_module(
+		$tranlsation_module = $this->create_require_js_module(
 				self::FRONTEND_CONFIG_MODULE,
 				$translation
 		);
-		$config = $this->_create_require_js_module(
+		$config = $this->create_require_js_module(
 				'ai1ec_config',
-				$this->_get_translation_data()
+				$this->get_translation_data()
 		);
 		// let extensions add their files.
 		$extension_files = array();
@@ -201,6 +201,19 @@ class Ai1ec_Javascript_Controller {
 		$javascript = $require . $require_config . $tranlsation_module .
 		$config . $jquery . $page_js . $common_js . $ext_js;
 		$this->_echo_javascript( $javascript );
+	}
+
+
+	/**
+	 * Get a compiled javascript file ( used by extensions )
+	 * 
+	 * @param string $name
+	 * 
+	 * @return string
+	 */
+	public function get_module( $name ) {
+		$js_path = AI1EC_ADMIN_THEME_JS_PATH . DIRECTORY_SEPARATOR;
+		return file_get_contents( $js_path . $name );
 	}
 
 	/**
@@ -297,7 +310,7 @@ class Ai1ec_Javascript_Controller {
 	 *
 	 * @return string
 	 */
-	private function _get_jquery_version_based_on_browser( $user_agent ) {
+	public function get_jquery_version_based_on_browser( $user_agent ) {
 		$js_path = AI1EC_ADMIN_THEME_JS_PATH . DIRECTORY_SEPARATOR;
 		$jquery = 'jquery_timely20.js';
 		preg_match( '/MSIE (.*?);/', $user_agent, $matches );
@@ -310,6 +323,96 @@ class Ai1ec_Javascript_Controller {
 			}
 		}
 		return file_get_contents( $js_path . $jquery );
+	}
+
+	/**
+	 * Creates a requirejs module that can be used for translations
+	 *
+	 * @param string $object_name
+	 * @param array $data
+	 *
+	 * @return string
+	 */
+	public function create_require_js_module( $object_name, array $data ) {
+		foreach ( (array) $data as $key => $value ) {
+			if ( ! is_scalar( $value ) )
+				continue;
+			$data[$key] = html_entity_decode( (string) $value, ENT_QUOTES, 'UTF-8');
+		}
+		$json_data = json_encode( $data );
+		$prefix = self::REQUIRE_NAMESPACE;
+		$script = "$prefix.define( '$object_name', $json_data );";
+	
+		return $script;
+	}
+	
+	/**
+	 * Create the array needed for translation and passing other settings to JS.
+	 *
+	 * @return $data array the dynamic data array
+	 */
+	public function get_translation_data() {
+	
+		$force_ssl_admin = force_ssl_admin();
+		if ( $force_ssl_admin && ! is_ssl() ) {
+			force_ssl_admin( false );
+		}
+		$ajax_url        = admin_url( 'admin-ajax.php' );
+		force_ssl_admin( $force_ssl_admin );
+	
+		$data = array(
+			// ICS feed error messages
+			'duplicate_feed_message'         => esc_html(
+				Ai1ec_I18n::__( 'This feed is already being imported.' )
+			),
+			'invalid_url_message'            => esc_html(
+				Ai1ec_I18n::__( 'Please enter a valid iCalendar URL.' )
+			),
+			'invalid_email_message'          => esc_html(
+				Ai1ec_I18n::__( 'Please enter a valid e-mail address.' )
+			),
+			'now'                            => $this->_registry->get( 'date.system' )
+			->current_time(),
+			'size_less_variable_not_ok'      => Ai1ec_I18n::__(
+				'The value you have entered is not a valid CSS length.'
+			),
+			'confirm_reset_theme'            => Ai1ec_I18n::__(
+				'Are you sure you want to reset your theme options to their default values?'
+			),
+		);
+		return $data;
+	}
+
+	/**
+	 * Get the array with translated data for the frontend
+	 *
+	 * @return array
+	 */
+	public function get_frontend_translation_data() {
+		$data = array(
+			'export_url' => AI1EC_EXPORT_URL,
+		);
+	
+		// Replace desired CSS selector with calendar, if selector has been set
+		$calendar_selector = $this->_settings->get( 'calendar_css_selector' );
+		if( $calendar_selector ) {
+			$page             = get_post(
+				$this->_settings->get( 'calendar_post_id ' )
+			);
+			$data['selector'] = $calendar_selector;
+			$data['title']    = $page->post_title;
+		}
+		$data['fonts'] = array();
+		$fonts_dir = AI1EC_DEFAULT_THEME_URL . 'font_css/';
+		$data['fonts'][] = array(
+			'name' => 'League Gothic',
+			'url'  => $fonts_dir . 'font-league-gothic.css',
+		);
+		$data['fonts'][] = array(
+			'name' => 'fontawesome',
+			'url'  => $fonts_dir . 'font-awesome.css',
+		);
+		return $data;
 	}
 
 	/**
@@ -338,95 +441,6 @@ class Ai1ec_Javascript_Controller {
 			$http_encoder->sendAll();
 		}
 		Ai1ec_Http_Response_Helper::stop( 0 );
-	}
-
-	/**
-	 * Creates a requirejs module that can be used for translations
-	 *
-	 * @param string $object_name
-	 * @param array $data
-	 *
-	 * @return string
-	 */
-	private function _create_require_js_module( $object_name, array $data ) {
-		foreach ( (array) $data as $key => $value ) {
-			if ( ! is_scalar( $value ) )
-				continue;
-			$data[$key] = html_entity_decode( (string) $value, ENT_QUOTES, 'UTF-8');
-		}
-		$json_data = json_encode( $data );
-		$prefix = self::REQUIRE_NAMESPACE;
-		$script = "$prefix.define( '$object_name', $json_data );";
-
-		return $script;
-	}
-
-	/**
-	 * Create the array needed for translation and passing other settings to JS.
-	 *
-	 * @return $data array the dynamic data array
-	 */
-	private function _get_translation_data() {
-
-		$force_ssl_admin = force_ssl_admin();
-		if ( $force_ssl_admin && ! is_ssl() ) {
-			force_ssl_admin( false );
-		}
-		$ajax_url        = admin_url( 'admin-ajax.php' );
-		force_ssl_admin( $force_ssl_admin );
-
-		$data = array(
-			// ICS feed error messages
-			'duplicate_feed_message'         => esc_html(
-				Ai1ec_I18n::__( 'This feed is already being imported.' )
-			),
-			'invalid_url_message'            => esc_html(
-				Ai1ec_I18n::__( 'Please enter a valid iCalendar URL.' )
-			),
-			'invalid_email_message'          => esc_html(
-				Ai1ec_I18n::__( 'Please enter a valid e-mail address.' )
-			),
-			'now'                            => $this->_registry->get( 'date.system' )
-				->current_time(),
-			'size_less_variable_not_ok'      => Ai1ec_I18n::__( 
-				'The value you have entered is not a valid CSS length.'
-			),
-			'confirm_reset_theme'            => Ai1ec_I18n::__( 
-				'Are you sure you want to reset your theme options to their default values?'
-			),
-		);
-		return $data;
-	}
-	/**
-	 * Get the array with translated data for the frontend
-	 *
-	 * @return array
-	 */
-	private function _get_frontend_translation_data() {
-		$data = array(
-			'export_url' => AI1EC_EXPORT_URL,
-		);
-
-		// Replace desired CSS selector with calendar, if selector has been set
-		$calendar_selector = $this->_settings->get( 'calendar_css_selector' );
-		if( $calendar_selector ) {
-			$page             = get_post(
-				$this->_settings->get( 'calendar_post_id ' )
-			);
-			$data['selector'] = $calendar_selector;
-			$data['title']    = $page->post_title;
-		}
-		$data['fonts'] = array();
-		$fonts_dir = AI1EC_DEFAULT_THEME_URL . 'font_css/';
-		$data['fonts'][] = array(
-			'name' => 'League Gothic',
-			'url'  => $fonts_dir . 'font-league-gothic.css',
-		);
-		$data['fonts'][] = array(
-			'name' => 'fontawesome',
-			'url'  => $fonts_dir . 'font-awesome.css',
-		);
-		return $data;
 	}
 
 	/**

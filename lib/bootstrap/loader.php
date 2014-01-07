@@ -359,12 +359,11 @@ class Ai1ec_Loader {
      * @return array An array of strings with the availables names.
      */
 	protected function _generate_loader_names( $class, $file, $folder_name ) {
-		static $offset_project = null; /* length of prefix, here 'Ai1ec_' */
-		if ( null === $offset_project ) {
-			$offset_project = strlen(
-				basename( get_class( $this ), 'Loader' )
-			);
-		}
+		// offset is 6 becaus we have a url which is something like 
+		// var/www/wp-content/plugins/$folder_name/app/class-name.php
+		// strrpos targets the / which precede $folder_name so we have to add 1 for that
+		// and 5 for /lib/ or /app/ part which we strip away. 
+		$offset_project = 6; 
 		$names  = array( $class );
 		// Remove the extension.
 		$file   = substr( $file, 0, strrpos( $file , '.') );

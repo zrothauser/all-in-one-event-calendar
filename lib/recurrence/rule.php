@@ -153,10 +153,11 @@ class Ai1ec_Recurrence_Rule extends Ai1ec_Base {
 		$dates_to_add = array();
 		foreach ( explode( ',', $exception_dates ) as $_exdate ) {
 			// convert to timestamp
-			$_exdate = strtotime( $_exdate );
-			$date_format = $this->_registry->get( 'model.option' )->get( 'date_format', 'l, M j, Y' );
+			$_exdate        = strtotime( $_exdate );
+			$date_format    = $this->_registry->get( 'model.option' )
+				->get( 'date_format', 'l, M j, Y' );
 			$dates_to_add[] = $this->_registry->get( 'date.time', $_exdate )
-			->format_i18n( $date_format );
+				->format_i18n( $date_format );
 		}
 		// append dates to the string and return it;
 		return implode( ', ', $dates_to_add );

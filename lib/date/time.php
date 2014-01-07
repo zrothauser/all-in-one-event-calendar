@@ -78,7 +78,7 @@ class Ai1ec_Date_Time {
 	 *
 	 * @return string Formatted time.
 	 */
-	public function format_i18n( $format, $timezone = null, $adjust = 0 ) {
+	public function format_i18n( $format, $timezone = null ) {
 		return $this->format( $format, $timezone );
 	}
 

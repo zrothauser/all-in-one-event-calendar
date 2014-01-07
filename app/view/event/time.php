@@ -172,7 +172,14 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 	 * @return string
 	 */
 	public function get_short_date( Ai1ec_Date_Time $time, $adjust = 0 ) {
-		return $time->format_i18n( 'M j', null, $adjust );
+		if ( ! empty( $adjust ) ) {
+			$time->set_time(
+				$time->format( 'H' ),
+				$time->format( 'i' ),
+				$adjust
+			);
+		}
+		return $time->format_i18n( 'M j' );
 	}
 
 	/**
@@ -184,11 +191,18 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 	 * @return string
 	 */
 	public function get_long_date( Ai1ec_Date_Time $time, $adjust = 0 ) {
+		if ( ! empty( $adjust ) ) {
+			$time->set_time(
+				$time->format( 'H' ),
+				$time->format( 'i' ),
+				$adjust
+			);
+		}
 		$date_format = $this->_registry->get( 'model.option' )->get(
 			'date_format',
 			'l, M j, Y'
 		);
-		return $time->format_i18n( $date_format, null, $adjust );
+		return $time->format_i18n( $date_format );
 	}
 
 	/**

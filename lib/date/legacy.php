@@ -40,4 +40,5 @@ class Ai1ec_Time_Utility {
 		$time = self::$_registry->get( 'date.time', $timestamp, $timezone );
 		return $time->format_i18n( $format );
 	}
+
 }

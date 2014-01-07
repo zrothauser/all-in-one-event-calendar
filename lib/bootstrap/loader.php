@@ -102,7 +102,7 @@ class Ai1ec_Loader {
 	 */
 	public function collect_classes( $path = null, $folder_name = AI1EC_PLUGIN_NAME ) {
 		// extension inject theit own base path
-		$path = null === $path ? $this->_base_path : $path;
+		$path  = ( null === $path ) ? $this->_base_path : $path;
 		$names = $this->_locate_all_files( $path, $folder_name );
 		$names = $this->_process_reflections( $names );
 		$this->_cache( $path, $names );
@@ -115,12 +115,12 @@ class Ai1ec_Loader {
 	 *
 	 * If no entries are provided - acts as cache reader.
 	 *
-	 * @param array $entries Entries to write [optional=NULL]
+	 * @param array $entries Entries to write [optional=null]
 	 *
 	 * @return bool|array False on failure, true on success in writer
 	 *		 mode, cached entry in reader mode on success
 	 */
-	protected function _cache( $path, array $entries = NULL ) {
+	protected function _cache( $path, array $entries = null ) {
 		$cache_file = $path . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR .
 			'bootstrap' . DIRECTORY_SEPARATOR . 'loader-map.php';
 		if ( $entries ) {
@@ -359,15 +359,23 @@ class Ai1ec_Loader {
      * @return array An array of strings with the availables names.
      */
 	protected function _generate_loader_names( $class, $file, $folder_name ) {
-		$names = array( $class );
+		static $offset_project = null; /* length of prefix, here 'Ai1ec_' */
+		if ( null === $offset_project ) {
+			$offset_project = strlen(
+				basename( get_class( $this ), 'Loader' )
+			);
+		}
+		$names  = array( $class );
 		// Remove the extension.
-		$file = substr( $file, 0, strrpos( $file , '.') );
-		$offset = strlen( $folder_name ) + 6;
+		$file   = substr( $file, 0, strrpos( $file , '.') );
+		$offset = strlen( $folder_name ) + $offset_project;
 		// Get just the meaningful data.
-		$file = substr( $file, strrpos(
+		$file   = substr(
+			$file,
+			$offset + strrpos(
 				$file,
 				DIRECTORY_SEPARATOR . $folder_name . DIRECTORY_SEPARATOR
-			) + $offset
+			)
 		);
 		$names[] = str_replace( DIRECTORY_SEPARATOR, '.', $file );
 		return $names;

@@ -18,16 +18,10 @@
 				{% if term.description is not empty %}
 					title="{{ term.description|e('html_attr') }}"
 				{% endif %}
-				>
 				<a class="ai1ec-load-view ai1ec-tag"
 					{{ data_type|raw }}
-					{% if term.count > 1 %}
-						style="font-weight: bold;"
-					{% else %}
-						style="font-size: 11px;"
-					{% endif %}
 					href="{{ term.href }}">
-					{{ term.name }} ({{ term.count }})
+					{{ term.name }}
 				</a>
 			</span>
 		{% endfor %}

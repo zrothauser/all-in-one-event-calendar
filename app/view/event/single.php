@@ -38,6 +38,9 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			'content_img_url',
 			$content->get_content_img_url( $event )
 		);
+
+		$extra_buttons = apply_filters("ai1ec_rendering_single_event_actions", "");
+
 		$args = array(
 			'event'                   => $event,
 			'recurrence'              => $rrule->rrule_to_text( $event->get( 'recurrence_rules' ) ),
@@ -53,6 +56,7 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			'edit_instance_text'      => null,
 			'google_url'              => 'http://www.google.com/calendar/render?cid=' . urlencode( $subscribe_url ),
 			'show_subscribe_buttons'  => ! $settings->get( 'turn_off_subscription_buttons' ),
+			'extra_buttons'           => $extra_buttons
 		);
 		if (
 			! empty( $args['recurrence'] ) &&

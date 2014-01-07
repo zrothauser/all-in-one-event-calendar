@@ -20,31 +20,37 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 	 */
 	public function get_content( Ai1ec_Event $event ) {
 		$settings = $this->_registry->get( 'model.settings' );
-		$rrule = $this->_registry->get( 'recurrence.rule' );
+		$rrule    = $this->_registry->get( 'recurrence.rule' );
 		$taxonomy = $this->_registry->get( 'view.event.taxonomy' );
 		$location = $this->_registry->get( 'view.event.location' );
-		$ticket = $this->_registry->get( 'view.event.ticket' );
-		$content = $this->_registry->get( 'view.event.content' );
+		$ticket   = $this->_registry->get( 'view.event.ticket' );
+		$content  = $this->_registry->get( 'view.event.content' );
+		$time     = $this->_registry->get( 'view.event.time' );
 		
-		$subscribe_url = AI1EC_EXPORT_URL . '&ai1ec_post_ids=' . $event->get( 'post_id' );
+		$subscribe_url = AI1EC_EXPORT_URL . '&ai1ec_post_ids=' .
+			$event->get( 'post_id' );
 		$subscribe_url = str_replace( 'webcal://', 'http://', $subscribe_url );
-		$event->set_runtime( 'tickets_url_label', $ticket->get_tickets_url_label( $event, false ) );
-		$event->set_runtime( 'content_img_url', $content->get_content_img_url( $event ) );
+		$event->set_runtime(
+			'tickets_url_label',
+			$ticket->get_tickets_url_label( $event, false )
+		);
+		$event->set_runtime(
+			'content_img_url',
+			$content->get_content_img_url( $event )
+		);
 		$args = array(
 			'event'                   => $event,
 			'recurrence'              => $rrule->rrule_to_text( $event->get( 'recurrence_rules' ) ),
-			'exclude'                 => $this->_get_exclude_html( $event, $rrule ),
+			'exclude'                 => $time->get_exclude_html( $event, $rrule ),
 			'categories'              => $taxonomy->get_categories_html( $event ),
 			'tags'                    => $taxonomy->get_tags_html( $event ),
-			'location'                => nl2br(
-				 $location->get_location( $event )
-			),
+			'location'                => nl2br( $location->get_location( $event ) ),
 			'map'                     => $location->get_map_view( $event ),
 			'contact'                 => $ticket->get_contact_html( $event ),
 			'back_to_calendar'        => $content->get_back_to_calendar_button_html(),
 			'subscribe_url'           => $subscribe_url,
-			'edit_instance_url'       => NULL,
-			'edit_instance_text'      => NULL,
+			'edit_instance_url'       => null,
+			'edit_instance_text'      => null,
 			'google_url'              => 'http://www.google.com/calendar/render?cid=' . urlencode( $subscribe_url ),
 			'show_subscribe_buttons'  => ! $settings->get( 'turn_off_subscription_buttons' ),
 		);
@@ -58,14 +64,15 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 				'&action=edit&instance=' . $event->get( 'instance_id' )
 			);
 			$args['edit_instance_text'] = sprintf(
-				__( 'Edit this occurrence (%s)', AI1EC_PLUGIN_NAME ),
+				Ai1ec_I18n::__( 'Edit this occurrence (%s)' ),
 				$event->get( 'start' )->format_i18n( 'M j' )
 			);
 		}
 		$loader = $this->_registry->get( 'theme.loader' );
-		return $loader->get_file( 'event-single.twig', $args, false )->get_content();
+		return $loader->get_file( 'event-single.twig', $args, false )
+			->get_content();
 	}
-	
+
 	/**
 	 * @param Ai1ec_Event $event
 	 * 
@@ -73,33 +80,11 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 	 */
 	public function get_footer( Ai1ec_Event $event ) {
 		$loader = $this->_registry->get( 'theme.loader' );
-		$args = array(
+		$args   = array(
 			'event' => $event,
 		);
-		return $loader->get_file( 'event-single-footer.twig', $args, false )->get_content();
-	}
-
-	
-	/**
-	 * Get the html for the exclude dates and exception rules.
-	 * 
-	 * @param Ai1ec_Event $event
-	 * @param Ai1ec_Recurrence_Rule $rrule
-	 * @return string
-	 */
-	protected function _get_exclude_html( Ai1ec_Event $event, Ai1ec_Recurrence_Rule $rrule ) {
-		$excludes = array();
-		$exception_rules = $event->get( 'exception_rules' );
-		$exception_dates = $event->get( 'exception_dates' );
-		if ( $exception_rules ) {
-			$excludes[] =
-				$rrule->rrule_to_text( $exception_rules );
-		}
-		if ( $exception_dates ) {
-			$excludes[] =
-				$rrule->exdate_to_text( $exception_dates );
-		}
-		return implode( __( ', and ', AI1EC_PLUGIN_NAME ), $excludes );
+		return $loader->get_file( 'event-single-footer.twig', $args, false )
+			->get_content();
 	}
 
 }

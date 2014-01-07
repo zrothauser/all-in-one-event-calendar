@@ -21,7 +21,7 @@ class Ai1ec_View_Event_Post {
 	 *
 	 * @return string The excerpt.
 	 */
-	public function trim_excerpt( $event, $length = 35, $more = '[...]' ) {
+	public function trim_excerpt( Ai1ec_Event $event, $length = 35, $more = '[...]' ) {
 		$raw_excerpt    = $event->get( 'post' )->post_content;
 	
 		$text           = preg_replace(

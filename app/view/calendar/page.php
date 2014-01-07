@@ -88,21 +88,29 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			);
 		
 		} else {
-		
+			$loader = $this->_registry->get( 'theme.loader' );
+			$empty = $loader->get_file( 'empty.twig', array(), false );
 		
 			// Define new arguments for overall calendar view
 			$filter_args = array(
 				'views_dropdown'               => $views_dropdown,
 				'categories'                   => $categories,
 				'tags'                         => $tags,
+				'contribution_buttons'         => apply_filters( 'ai1ec_contribution_buttons', '' ),
+				'show_dropdowns'               => apply_filters( 'ai1ec_show_dropdowns', true ),
+				'show_select2'                 => apply_filters( 'ai1ec_show_select2', false ),
+				'span_for_select2'             => apply_filters( 'ai1ec_span_for_select2', '' ),
+				'authors'                      => apply_filters( 'ai1ec_authors', '' ),
+				'save_view_btngroup'           => apply_filters( 'ai1ec_save_view_btngroup', $empty ),
 			);
-			$loader = $this->_registry->get( 'theme.loader' );
+			
 			$filter_menu = $loader->get_file( 'filter-menu.twig', $filter_args, false );
 			$calendar_args = array(
 				'version'     => AI1EC_VERSION,
 				'filter_menu' => $filter_menu,
 				'view'        => $view,
 				'subscribe_buttons'  => $subscribe_buttons,
+				'disable_standard_filter_menu' => apply_filters( 'ai1ec_disable_standard_filter_menu', false ),
 			);
 			
 			$calendar = $loader->get_file( 'calendar.twig', $calendar_args, false );

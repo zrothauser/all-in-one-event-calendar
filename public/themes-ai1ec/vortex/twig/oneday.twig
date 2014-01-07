@@ -137,7 +137,7 @@
 								height: {{ day_array.height }}px;
 								left: {{ day_array.indent * 16 + 54 }}px;
 								{{ event.get_runtime( 'color_style' ) }}
-								{% if event.faded_color %}
+								{% if event.get_runtime( 'faded_color' ) %}
 									{% set rgba1 = event.get_runtime( 'rgba_color ')|format( '0.05' ) %}
 									{% set rgba3 = event.get_runtime( 'rgba_color ')|format( '0.3' ) %}
 									border: 1px solid {{ event.get_runtime( 'faded_color ') }};

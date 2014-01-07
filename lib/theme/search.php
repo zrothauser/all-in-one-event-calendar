@@ -147,8 +147,7 @@ class Ai1ec_Theme_Search extends Ai1ec_Base {
 		if ( null === $theme_list ) {
 			$theme_list = $this->get_themes();
 		}
-
-
+		
 		foreach ( $theme_list as $key => $theme ) {
 			if (
 				( ! $broken && false !== $theme->errors() ) ||

@@ -563,6 +563,7 @@ class Ai1ec_Front_Controller {
 	 */
 	protected function _initialize_registry( $ai1ec_loader ) {
 		$this->_registry = new Ai1ec_Registry_Object( $ai1ec_loader );
+		Ai1ec_Time_Utility::set_registry( $this->_registry );
 	}
 
 	/**

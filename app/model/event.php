@@ -5,7 +5,7 @@
  *
  * @author       Time.ly Network, Inc.
  * @since        2.0
- * @instantiator new
+ * @instantiator Ai1ec_Factory_Event.create_event_instance
  * @package      Ai1EC
  * @subpackage   Ai1EC.Model
  */
@@ -41,45 +41,6 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 * @var bool|null Boolean cache-definition indicating if event is multiday.
 	 */
 	protected $_is_multiday = null;
-
-	/**
-	 * Overload access to former fields to diagnose problems early.
-	 *
-	 * @TODO: remove this before 2.0/Core-beta.
-	 *
-	 * @param string $property Name of property being set.
-	 * @param mixed  $value    Value attempted to set.
-	 *
-	 * @return Ai1ec_Event Instance of self for chaining.
-	 */
-	public function __set( $property, $value ) {
-		trigger_error(
-			'Directly accessing Ai1ec_Event attributes is deprecated',
-			E_USER_WARNING
-		);
-		return $this->set( $property, $value );
-	}
-
-	/**
-	 * Handle property accessors.
-	 *
-	 * @param string $name Property name
-	 *
-	 * @return mixed Property value
-	 *
-	 * @throws E_USER_WARNING Always, because this method is deprecated and will be removed
-	 */
-	public function __get( $name ) {
-		trigger_error(
-			'Directly accessing Ai1ec_Event attributes is deprecated. You tried to access ' . $name,
-			E_USER_WARNING
-		);
-		$method = 'get_' . $name;
-		if ( method_exists( $this, $name ) ) {
-			return $this->{$method}();
-		}
-		return $this->get( $name );
-	}
 
 	/**
 	 * Wrapper to get property value.
@@ -299,7 +260,6 @@ class Ai1ec_Event extends Ai1ec_Base {
 	) {
 		parent::__construct( $registry );
 		$this->_entity = $this->_registry->get( 'model.event.entity' );
-
 		if ( null === $data ) {
 			return; // empty object
 		} else if ( is_numeric( $data ) ) {

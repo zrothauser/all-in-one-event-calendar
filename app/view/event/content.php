@@ -11,6 +11,70 @@
  */
 class Ai1ec_View_Event_Content extends Ai1ec_Base {
 
+	/**
+	 * Render event excerpt header.
+	 *
+	 * @param Ai1ec_Event $event Event to render excerpt for.
+	 *
+	 * @return void Content is not returned, just rendered.
+	 */
+	public function excerpt_view( Ai1ec_Event $event ) {
+		$location = $this->_registry->get( 'view.event.location' );
+		$location = esc_html(
+            str_replace(
+				"\n",
+				', ',
+				rtrim( $location->get_location( $event ) )
+			)
+		);
+        $args = array(
+            'event'    => $event,
+            'location' => $location,
+		);
+		$loader = $this->_registry->get( 'theme.loader' );
+		echo $loader->get_file(
+				'event-excerpt.twig',
+				$args,
+				true
+		)->get_content();
+	}
+
+	/**
+	 * Format events excerpt view.
+	 *
+	 * @param string $text Content to excerpt.
+	 *
+	 * @return string Formatted event excerpt.
+	 */
+	public function event_excerpt( $text ) {
+		if ( ! $this->_registry->get( 'acl.aco' )->is_our_post_type() ) {
+			return $text;
+		}
+        $event = $this->_registry->get( 'model.event', get_the_ID() );
+        $post  = $this->_registry->get( 'view.event.post' );
+		$ob    = $this->_registry->get( 'compatibility.ob' );
+        $ob->start();
+		$this->excerpt_view( $event );
+        // Re-apply any filters to the post content that normally would have
+        // been applied if it weren't for our interference (below).
+		echo shortcode_unautop( wpautop( $post->trim_excerpt( $event ) ) );
+        return $ob->get_clean();
+	}
+
+	/**
+	 * Avoid re-adding `wpautop` for Ai1EC instances.
+	 *
+	 * @param string $content Processed content.
+	 *
+	 * @return string Paragraphs enclosed text.
+	 */
+	public function event_excerpt_noautop( $content ) {
+		if ( ! $this->_registry->get( 'acl.aco' )->is_our_post_type() ) {
+			return wpautop( $content );
+		}
+		return $content;
+	}
+
 	public function get_post_excerpt( Ai1ec_Event $event ) {
 		$content = strip_tags(
 			strip_shortcodes(
@@ -25,7 +89,7 @@ class Ai1ec_View_Event_Content extends Ai1ec_Base {
 			)
 		);
 		$content = preg_replace( '/\s+/', ' ', $content );
-		$words = explode( ' ', $content );
+		$words   = explode( ' ', $content );
 		if ( count( $words ) > 25 ) {
 			return implode(
 				' ',
@@ -34,6 +98,7 @@ class Ai1ec_View_Event_Content extends Ai1ec_Base {
 		}
 		return $content;
 	}
+
 	/**
 	 * Generate the html for the "Back to calendar" button for this event.
 	 *
@@ -104,4 +169,5 @@ HTML;
 	
 		return $url;
 	}
+
 }

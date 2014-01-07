@@ -52,8 +52,11 @@ class Ai1ec_File_Php extends Ai1ec_File_Abstract {
 					// it's the user variables file for now.
 					// We must handle the fact that it might be legacy.
 					if ( true === $this->_args['is_legacy_theme'] ) {
-						require $file;
-						$this->_content = $less_user_variables;
+						$content = ( require $file );
+						if ( isset( $less_user_variables ) ) {
+							$content = $less_user_variables;
+						}
+						$this->_content = $content;
 					} else {
 						$this->_content = require $file;
 					}

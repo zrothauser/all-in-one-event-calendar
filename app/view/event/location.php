@@ -31,13 +31,15 @@ class Ai1ec_View_Event_Location extends Ai1ec_Base {
 	*/
 	public function get_location( Ai1ec_Event $event ) {
 		$location = '';
-		if ( $event->get( 'venue ') ) {
-			$location .= $event->get( 'venue ') . "\n";
+		$venue    = $event->get( 'venue ');
+		if ( $venue ) {
+			$location .= $venue . "\n";
 		}
-		if ( $event->get( 'address' ) ) {
-			$bits = explode( ',', $event->get( 'address ') );
+		$address = $event->get( 'address' );
+		if ( $address ) {
+			$bits = explode( ',', $address );
 			$bits = array_map( 'trim', $bits );
-	
+
 			// If more than three comma-separated values, treat first value as
 			// the street address, last value as the country, and everything
 			// in the middle as the city, state, etc.

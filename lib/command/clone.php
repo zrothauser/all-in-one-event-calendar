@@ -272,7 +272,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 				'post_mime_type' => $att->post_mime_type,
 				'post_parent'    => $new_id,
 				'post_password'  => $att->post_password,
-				'post_status'    => $this->get_new_post_status(
+				'post_status'    => $this->_get_new_post_status(
 					$att->post_status
 				),
 				'post_title'     => $att->post_title,

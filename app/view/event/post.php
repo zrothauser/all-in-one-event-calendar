@@ -27,7 +27,7 @@ class Ai1ec_View_Event_Post {
 		$text           = preg_replace(
 			'#<\s*script[^>]*>.+<\s*/\s*script\s*>#x',
 			'',
-			$event->get( 'post' )->post_content
+			apply_filters( 'the_content', $event->get( 'post' )->post_content )
 		);
 		$text           = strip_shortcodes( $text );
 		$text           = str_replace( ']]>', ']]&gt;', $text );
@@ -50,4 +50,5 @@ class Ai1ec_View_Event_Post {
 		}
 		return apply_filters( 'wp_trim_excerpt', $text, $raw_excerpt );
 	}
+
 }

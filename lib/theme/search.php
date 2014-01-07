@@ -78,7 +78,13 @@ class Ai1ec_Theme_Search extends Ai1ec_Base {
 		);
 
 		$theme_dirs = apply_filters( 'ai1ec_register_theme', $theme_dirs );
-		return $theme_dirs;
+		$selected   = array();
+		foreach ( $theme_dirs as $directory ) {
+			if ( is_dir( $directory ) ) {
+				$selected[] = $directory;
+			}
+		}
+		return $selected;
 	}
 
 	/**

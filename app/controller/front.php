@@ -448,10 +448,7 @@ class Ai1ec_Front_Controller {
 			}
 			<?php if ( version_compare( $wp_version, '3.8', '<' ) ) : ?>
 				#menu-posts-ai1ec_event > .menu-icon-post > div.wp-menu-image {
-					background: none !important;
-				}
-				#menu-posts-ai1ec_event > .menu-icon-post > div.wp-menu-image:before {
-					background-image: url('<?php echo AI1EC_ADMIN_THEME_IMG_URL; ?>/timely-admin-menu.png');
+					background-image: url('<?php echo AI1EC_ADMIN_THEME_IMG_URL; ?>/timely-admin-menu.png') !important;
 				}
 			<?php else : ?>
 				#menu-posts-ai1ec_event > .menu-icon-post > div.wp-menu-image:before {

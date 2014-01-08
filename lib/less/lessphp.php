@@ -106,12 +106,16 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 			if( ! $variables ) {
 				$variables = $this->get_less_variable_data_from_config_file();
 			}
+			// inject extension variables
+			$variables = apply_filter( 'ai1ec_less_variables', $variables );
 		}
 		// convert the variables to key / value
 		$variables = $this->convert_less_variables_for_parsing( $variables );
 		// Load the variable.less file to use
 		$this->load_less_variables_from_file();
 		$loader = $this->_registry->get( 'theme.loader' );
+		// extension add files.
+		$this->files = apply_filters( 'ai1ec_less_files', $this->files );
 		foreach ( $this->files as $file ) {
 			$file_to_parse = null;
 			try {

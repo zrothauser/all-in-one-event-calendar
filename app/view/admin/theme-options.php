@@ -138,12 +138,6 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 			'calendar' => array(
 				'name' => Ai1ec_I18n::__( 'Calendar general' ),
 			),
-			'posterboard' => array(
-				'name' => Ai1ec_I18n::__( 'Posterboard view' ),
-			),
-			'stream' => array(
-				'name' => Ai1ec_I18n::__( 'Stream view' ),
-			),
 			'month' => array(
 				'name' => Ai1ec_I18n::__( 'Month/week/day view' ),
 			),
@@ -152,6 +146,7 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 			),
 		);
 
+		$tabs = apply_filters( 'ai1ec_less_variables_tabs', $tabs );
 
 		$less_variables  = $this->_registry
 			->get( 'less.lessphp' )->get_saved_variables();

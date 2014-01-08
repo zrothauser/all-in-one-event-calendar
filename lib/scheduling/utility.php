@@ -92,14 +92,25 @@ class Ai1ec_Scheduling_Utility {
 	 * @return bool Success
 	 */
 	public function reschedule( $hook, $freq, $version = '0' ) {
-		$freq     = trim( $freq );
-		$existing = $this->get_details( $hook );
-		if (
-			NULL === $existing ||
-			$existing['freq'] !== $freq ||
-			! isset( $existing['version'] ) ||
-			(string)$existing['version'] !== (string)$version
-		) {
+		$freq       = trim( $freq );
+		$existing   = $this->get_details( $hook );
+		$reschedule = false;
+		if ( null === $existing ) {
+			$reschedule = true;
+		} else {
+			// unify frequencies to avoid unnecessary rescheduling
+			$curr_freq = $this->_parse_freq( $existing['freq'] )->to_string();
+			$new_freq  = $this->_parse_freq( $freq )->to_string();
+			if (
+				0 !== strcmp( $curr_freq, $new_freq ) ||
+				! isset( $existing['version'] ) ||
+				(string)$existing['version'] !== (string)$version
+			) {
+				$reschedule = true;
+			}
+			unset( $curr_freq, $new_freq );
+		}
+		if ( $reschedule ) {
 			return $this->schedule( $hook, $freq, 0, $version );
 		}
 		return true;
@@ -300,7 +311,7 @@ class Ai1ec_Scheduling_Utility {
 	 */
 	public function get_valid_freq_details( $hook, $input ) {
 		$freq = $this->_parse_freq( $input );
-		if ( ! $freq ) {
+		if ( 0 === $freq->to_seconds() ) { // input was empty/parseable to empty
 			$defaults = $this->get_default_schedules();
 			if ( isset( $defaults[$hook] ) ) {
 				$freq = $this->_parse_freq( $defaults[$hook] );

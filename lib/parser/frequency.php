@@ -3,10 +3,11 @@
 /**
  * Frequency parser.
  *
- * @author     Time.ly Network, Inc.
- * @since      2.0
- * @package    Ai1EC
- * @subpackage Ai1EC.Parser
+ * @author       Time.ly Network, Inc.
+ * @since        2.0
+ * @instantiator new
+ * @package      Ai1EC
+ * @subpackage   Ai1EC.Parser
  */
 class Ai1ec_Frequency_Utility {
 

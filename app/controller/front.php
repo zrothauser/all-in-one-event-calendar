@@ -317,8 +317,6 @@ class Ai1ec_Front_Controller {
 			11
 		);
 
-		add_action( 'admin_head', array( $this, 'admin_head' ) );
-
 		if ( is_admin() ) {
 			// get the repeat box
 			$dispatcher->register_action(
@@ -418,6 +416,7 @@ class Ai1ec_Front_Controller {
 				10,
 				2
 			);
+			add_action( 'admin_head', array( $this, 'admin_head' ) );
 
 		} else { // ! is_admin()
 			$dispatcher->register_shortcode(
@@ -428,42 +427,19 @@ class Ai1ec_Front_Controller {
 
 	}
 
-
 	/**
 	 * Outputs menu icon between head tags
 	 */
 	public function admin_head() {
 		global $wp_version;
-		?>
-		<style type="text/css" media="all">
-			@font-face {
-				font-family: 'Timely Icons';
-				src:url('<?php echo AI1EC_ADMIN_THEME_FONT_URL; ?>timely-icons.eot');
-				src:url('<?php echo AI1EC_ADMIN_THEME_FONT_URL; ?>timely-icons.eot?#iefix') format('embedded-opentype'),
-					url('<?php echo AI1EC_ADMIN_THEME_FONT_URL; ?>timely-icons.svg#Timely-Icons') format('svg'),
-					url('<?php echo AI1EC_ADMIN_THEME_FONT_URL; ?>timely-icons.woff') format('woff'),
-					url('<?php echo AI1EC_ADMIN_THEME_FONT_URL; ?>timely-icons.ttf') format('truetype');
-				font-weight: normal;
-				font-style: normal;
-			}
-			<?php if ( version_compare( $wp_version, '3.8', '<' ) ) : ?>
-				#menu-posts-ai1ec_event > .menu-icon-post > div.wp-menu-image {
-					background-image: url('<?php echo AI1EC_ADMIN_THEME_IMG_URL; ?>/timely-admin-menu.png') !important;
-				}
-			<?php else : ?>
-				#menu-posts-ai1ec_event > .menu-icon-post > div.wp-menu-image:before {
-					content: '\21' !important;
-					display: inline-block !important;
-					font-family: 'Timely Icons' !important;
-					font-style: normal !important;
-					font-weight: normal !important;
-					speak: none !important;
-					vertical-align: baseline !important;
-					line-height: 16px !important;
-				}
-			<?php endif; ?>
-		</style>
-		<?php
+		$argv = array(
+			'before_font_icons'    => version_compare( $wp_version, '3.8', '<' ),
+			'admin_theme_img_url'  => AI1EC_ADMIN_THEME_IMG_URL,
+			'admin_theme_font_url' => AI1EC_ADMIN_THEME_FONT_URL,
+		);
+		$this->_registry->get( 'theme.loader' )
+			->get_file( 'timely-menu-icon.twig', $argv, true )
+			->render();
 	}
 
 	/**
@@ -614,12 +590,13 @@ class Ai1ec_Front_Controller {
 		// ==================================
 		// = Add the hook to render the css =
 		// ==================================
-		if( isset( $_GET[Ai1ec_Css_Frontend::GET_VARIBALE_NAME] ) ) {
+		if ( isset( $_GET[Ai1ec_Css_Frontend::GET_VARIBALE_NAME] ) ) {
 			$css_controller = $this->_registry->get( 'css.frontend' );
 			$css_controller->render_css();
 			exit( 0 );
 		}
 	}
+
 	/**
 	 * Load the texdomain for the plugin.
 	 *

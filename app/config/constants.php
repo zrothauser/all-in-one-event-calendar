@@ -186,6 +186,13 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	}
 
 	// =================
+	// = Admin Font URL =
+	// =================
+	if ( ! defined( 'AI1EC_ADMIN_THEME_FONT_URL' ) ) {
+		define( 'AI1EC_ADMIN_THEME_FONT_URL', AI1EC_URL .'/public/admin/font/' );
+	}
+
+	// =================
 	// = Admin Js  URL =
 	// =================
 	if ( ! defined( 'AI1EC_ADMIN_THEME_JS_URL' ) ) {
@@ -216,7 +223,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		define( 'AI1EC_ADMIN_BASE_URL', 'edit.php?post_type=' . AI1EC_POST_TYPE );
 	}
 
-	
+
 	// =====================================================
 	// = THEME OPTIONS PAGE BASE URL (wrap in admin_url()) =
 	// =====================================================
@@ -327,7 +334,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	if ( ! defined( 'AI1EC_DEFAULT_THEME_URL' ) ) {
 		define( 'AI1EC_DEFAULT_THEME_URL',  AI1EC_THEMES_URL . '/' . AI1EC_DEFAULT_THEME_NAME . '/' );
 	}
-	
+
 	// ===================
 	// = CSS Folder name =
 	// ===================

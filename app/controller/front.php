@@ -222,7 +222,7 @@ class Ai1ec_Front_Controller {
 			throw $exception;
 		}
 	}
-	
+
 	/**
 	 * Set the default theme if no theme is set.
 	 */
@@ -248,10 +248,10 @@ class Ai1ec_Front_Controller {
 	protected function _add_front_controller_actions() {
 		// Initialize router. I use add_action as the dispatcher would just add
 		// overhead.
-		add_action( 
-			'init', 
-			array( $this, 'initialize_router' ), 
-			PHP_INT_MAX - 1 
+		add_action(
+			'init',
+			array( $this, 'initialize_router' ),
+			PHP_INT_MAX - 1
 		);
 		// Route the request.
 		$action = 'template_redirect';
@@ -416,6 +416,7 @@ class Ai1ec_Front_Controller {
 				10,
 				2
 			);
+			add_action( 'admin_head', array( $this, 'admin_head' ) );
 
 		} else { // ! is_admin()
 			$dispatcher->register_shortcode(
@@ -424,6 +425,21 @@ class Ai1ec_Front_Controller {
 			);
 		}
 
+	}
+
+	/**
+	 * Outputs menu icon between head tags
+	 */
+	public function admin_head() {
+		global $wp_version;
+		$argv = array(
+			'before_font_icons'    => version_compare( $wp_version, '3.8', '<' ),
+			'admin_theme_img_url'  => AI1EC_ADMIN_THEME_IMG_URL,
+			'admin_theme_font_url' => AI1EC_ADMIN_THEME_FONT_URL,
+		);
+		$this->_registry->get( 'theme.loader' )
+			->get_file( 'timely-menu-icon.twig', $argv, true )
+			->render();
 	}
 
 	/**
@@ -568,18 +584,19 @@ class Ai1ec_Front_Controller {
 
 	/**
 	 * Loads the CSS for the plugin
-	 * 
+	 *
 	 */
 	protected function _load_css_if_needed() {
 		// ==================================
 		// = Add the hook to render the css =
 		// ==================================
-		if( isset( $_GET[Ai1ec_Css_Frontend::GET_VARIBALE_NAME] ) ) {
+		if ( isset( $_GET[Ai1ec_Css_Frontend::GET_VARIBALE_NAME] ) ) {
 			$css_controller = $this->_registry->get( 'css.frontend' );
 			$css_controller->render_css();
 			exit( 0 );
 		}
 	}
+
 	/**
 	 * Load the texdomain for the plugin.
 	 *

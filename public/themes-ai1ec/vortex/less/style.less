@@ -9,25 +9,60 @@
 // ======================
 // = Variables & mixins =
 // ======================
-// Based on Bootstrap. Modify variables.less for custom colors, font-sizes, etc.
-// We do not import variables.less as it's handled server-side.
+// Begin with Bootstrap and custom mixins.
 @import "bootstrap/mixins.less";
-@import "bootstrap/mixins-custom.less";
+@import "mixins-custom.less";
 
-// ========================
-// = Unnamespaced inludes =
-// ========================
-
-@import "bootstrap/component-animations.less";
-
-// These files have proper namespacing done inside them.
+// =========
+// = Fonts =
+// =========
 @import "fonts/font-awesome.less";
-@import "modals.less";
-@import "tooltip.less";
-@import "popovers.less";
 
-// Select2 is well-namespaced already, and will be difficult to style if styles
-// are forced inside .timely namespace.
+// =============
+// = Bootstrap =
+// =============
+
+// Ai1EC is based on Twitter Bootstrap. Whenever Bootstrap is upgraded, its
+// .less files are preprocessed by the included script (bootstrap-prepare.sh),
+// which adds 'ai1ec-' to all Bootstrap-defined classes. Still, some Bootstrap
+// .less files broadly reference HTML elements, and need to be surrounded by the
+// .timely namespace so as not to inflict undesirable styling upon non-Ai1EC
+// portions of the markup.
+
+// Reset
+.timely {	@import "bootstrap/normalize.less"; }
+.timely { @import "bootstrap/print.less"; }
+
+// Core CSS
+.timely { @import "bootstrap/scaffolding.less"; }
+.timely { @import "bootstrap/type.less"; }
+          @import "bootstrap/grid.less";
+.timely { @import "bootstrap/forms.less"; }
+          @import "bootstrap/buttons.less";
+
+// Components
+          @import "bootstrap/component-animations.less";
+					@import "bootstrap/dropdowns.less";
+					@import "bootstrap/button-groups.less";
+					@import "bootstrap/navs.less";
+					@import "bootstrap/thumbnails.less";
+					@import "bootstrap/alerts.less";
+					@import "bootstrap/wells.less";
+					@import "bootstrap/close.less";
+
+// Components w/ JavaScript
+          @import "bootstrap/modals.less";
+					@import "bootstrap/tooltip.less";
+					@import "bootstrap/popovers.less";
+
+// Utility classes
+          @import "bootstrap/utilities.less";
+
+// ===========
+// = Select2 =
+// ===========
+//
+// Select2 is well-namespaced already by its class name definitions.
 @import "select2.less";
 
 // =====================================
@@ -197,34 +232,14 @@
 	}
 }
 
-// Namespace what we can.
+// Namespace Bootstrap components for which ".ai1ec-" is inadequate.
 .timely {
 	// =======================
 	// = Namespaced includes =
 	// =======================
 
-	// CSS Reset
-	@import "bootstrap/reset.less";
-
-	// Page structure, base CSS & components.
-	@import "bootstrap/scaffolding.less";
-	@import "bootstrap/grid.less";
-	@import "bootstrap/type.less";
-	@import "bootstrap/forms.less";
-	@import "bootstrap/fileupload.less";
-	@import "bootstrap/dropdowns.less";
-	@import "bootstrap/close.less";
-	@import "bootstrap/buttons.less";
-	@import "bootstrap/button-groups.less";
-	@import "bootstrap/alerts.less";
-	@import "bootstrap/navs.less";
-	@import "bootstrap/wells.less";
-	@import "bootstrap/thumbnails.less";
-
-	// Utility classes.
-	@import "bootstrap/utilities.less";
-
 	// Other namespaced includes.
+	@import "fileupload.less";
 	@import "datepicker.less";
 	@import "timepicker.less";
 

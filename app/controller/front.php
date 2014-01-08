@@ -222,7 +222,7 @@ class Ai1ec_Front_Controller {
 			throw $exception;
 		}
 	}
-	
+
 	/**
 	 * Set the default theme if no theme is set.
 	 */
@@ -248,10 +248,10 @@ class Ai1ec_Front_Controller {
 	protected function _add_front_controller_actions() {
 		// Initialize router. I use add_action as the dispatcher would just add
 		// overhead.
-		add_action( 
-			'init', 
-			array( $this, 'initialize_router' ), 
-			PHP_INT_MAX - 1 
+		add_action(
+			'init',
+			array( $this, 'initialize_router' ),
+			PHP_INT_MAX - 1
 		);
 		// Route the request.
 		$action = 'template_redirect';
@@ -316,6 +316,8 @@ class Ai1ec_Front_Controller {
 			array( 'view.event.content', 'event_excerpt_noautop' ),
 			11
 		);
+
+		add_action( 'admin_head', array( $this, 'admin_head' ) );
 
 		if ( is_admin() ) {
 			// get the repeat box
@@ -424,6 +426,47 @@ class Ai1ec_Front_Controller {
 			);
 		}
 
+	}
+
+
+	/**
+	 * Outputs menu icon between head tags
+	 */
+	public function admin_head() {
+		global $wp_version;
+		?>
+		<style type="text/css" media="all">
+			@font-face {
+				font-family: 'Timely Icons';
+				src:url('<?php echo AI1EC_ADMIN_THEME_FONT_URL; ?>timely-icons.eot');
+				src:url('<?php echo AI1EC_ADMIN_THEME_FONT_URL; ?>timely-icons.eot?#iefix') format('embedded-opentype'),
+					url('<?php echo AI1EC_ADMIN_THEME_FONT_URL; ?>timely-icons.svg#Timely-Icons') format('svg'),
+					url('<?php echo AI1EC_ADMIN_THEME_FONT_URL; ?>timely-icons.woff') format('woff'),
+					url('<?php echo AI1EC_ADMIN_THEME_FONT_URL; ?>timely-icons.ttf') format('truetype');
+				font-weight: normal;
+				font-style: normal;
+			}
+			<?php if ( version_compare( $wp_version, '3.8', '<' ) ) : ?>
+				#menu-posts-ai1ec_event > .menu-icon-post > div.wp-menu-image {
+					background: none !important;
+				}
+				#menu-posts-ai1ec_event > .menu-icon-post > div.wp-menu-image:before {
+					background-image: url('<?php echo AI1EC_ADMIN_THEME_IMG_URL; ?>/timely-admin-menu.png');
+				}
+			<?php else : ?>
+				#menu-posts-ai1ec_event > .menu-icon-post > div.wp-menu-image:before {
+					content: '\21' !important;
+					display: inline-block !important;
+					font-family: 'Timely Icons' !important;
+					font-style: normal !important;
+					font-weight: normal !important;
+					speak: none !important;
+					vertical-align: baseline !important;
+					line-height: 16px !important;
+				}
+			<?php endif; ?>
+		</style>
+		<?php
 	}
 
 	/**
@@ -568,7 +611,7 @@ class Ai1ec_Front_Controller {
 
 	/**
 	 * Loads the CSS for the plugin
-	 * 
+	 *
 	 */
 	protected function _load_css_if_needed() {
 		// ==================================

@@ -77,7 +77,7 @@
 	{% autoescape false %}
 		<div class="ai1ec-location">
 			<div class="ai1ec-label">{{ 'Where:'|__ }}</div>
-			<div class="ai1ec-field-value">{{ location }}</div>
+			<div class="ai1ec-field-value">{{ location |raw }}</div>
 		</div>
 	{% endautoescape %}
 	{% endif %}

@@ -31,7 +31,7 @@ class Ai1ec_View_Event_Location extends Ai1ec_Base {
 	*/
 	public function get_location( Ai1ec_Event $event ) {
 		$location = '';
-		$venue    = $event->get( 'venue ');
+		$venue    = $event->get( 'venue' );
 		if ( $venue ) {
 			$location .= $venue . "\n";
 		}

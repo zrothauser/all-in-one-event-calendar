@@ -416,6 +416,10 @@ class Ai1ec_Front_Controller {
 				10,
 				2
 			);
+			$dispatcher->register_filter(
+				'post_updated_messages',
+				array( 'view.event.post', 'post_updated_messages' )
+			);
 			add_action( 'admin_head', array( $this, 'admin_head' ) );
 
 		} else { // ! is_admin()

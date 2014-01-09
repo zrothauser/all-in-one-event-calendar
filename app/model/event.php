@@ -55,13 +55,13 @@ class Ai1ec_Event extends Ai1ec_Base {
 
 	/**
 	 * Get properties generated at runtime
-	 * 
+	 *
 	 * @param string $property
-	 * 
+	 *
 	 * @return string
 	 */
 	public function get_runtime( $property ) {
-		
+
 		return isset( $this->_runtime_props[$property] ) ?
 			$this->_runtime_props[$property] :
 			'';
@@ -69,7 +69,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 
 	/**
 	 * Set properties generated at runtime
-	 * 
+	 *
 	 * @param string $property
 	 * @param string $value
 	 */
@@ -107,7 +107,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 * @return Ai1ec_Event Instance of self for chaining.
 	 */
 	public function initialize_from_array( array $data ) {
-		
+
 		// =======================================================
 		// = Assign each event field the value from the database =
 		// =======================================================
@@ -455,10 +455,10 @@ class Ai1ec_Event extends Ai1ec_Base {
 		}
 		return $this->_is_multiday;
 	}
-	
+
 	/**
 	 * Get the duration of the event
-	 * 
+	 *
 	 * @return number
 	 */
 	public function get_duration() {

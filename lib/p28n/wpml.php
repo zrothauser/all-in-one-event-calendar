@@ -192,29 +192,21 @@ class Ai1ec_Localization_Helper {
 	 * @return string|null Effective language or NULL if none detected
 	 **/
 	public function get_language() {
-		global $sitepress, $q_config;
-		$language = NULL;
-		if ( $this->is_wpml_active() ) {
-			$language = $sitepress->get_current_language();
-		}
-		if (
-			NULL === $language &&
-			defined( 'QTRANS_INIT' ) &&
-			isset( $q_config ) &&
-			is_array( $q_config ) &&
-			isset( $q_config['language'] )
-		) {
-			$language = $q_config['language'];
-		}
-		if (
-			NULL !== $language && (
-				! isset( $language{1} ) ||
-				isset( $language{3} )
-			)
-		) {
-			$language = NULL;
-		}
-		return $language;
+		// in legacy they were the same function. i keep this as maybe it's called somehwere.
+		return $this->get_default_language();
+	}
+
+	/**
+	 * get_lang function
+	 *
+	 * Returns the ISO-639 part of the configured locale. The default
+	 * language is English (en).
+	 *
+	 * @return string
+	 **/
+	public function get_lang() {
+		$locale = explode( '_', get_locale() );
+		return ( isset( $locale[0] ) && $locale[0] != '' ) ? $locale[0] : 'en';
 	}
 
 	/**

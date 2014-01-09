@@ -384,13 +384,29 @@ class Ai1ec_Javascript_Controller {
 				Ai1ec_I18n::__( 'Please enter a valid e-mail address.' )
 			),
 			'now'                            => $this->_registry->get( 'date.system' )
-			->current_time(),
+				->current_time(),
 			'size_less_variable_not_ok'      => Ai1ec_I18n::__(
 				'The value you have entered is not a valid CSS length.'
 			),
 			'confirm_reset_theme'            => Ai1ec_I18n::__(
 				'Are you sure you want to reset your theme options to their default values?'
 			),
+			'error_message_not_valid_lat'    => Ai1ec_I18n::__( 
+				'Please enter a valid latitude. A valid latitude is comprised between +90 and -90.'
+			),
+			'error_message_not_valid_long'   => Ai1ec_I18n::__( 
+				'Please enter a valid longitude. A valid longitude is comprised between +180 and -180.'
+			),
+			'error_message_not_entered_lat'  => Ai1ec_I18n::__( 
+				'When the "Input coordinates" checkbox is checked, "Latitude" is a required field.'
+			),
+			'error_message_not_entered_long' => Ai1ec_I18n::__( 
+				'When the "Input coordinates" checkbox is checked, "Longitude" is a required field.'
+			),
+			'url_not_valid'                  => Ai1ec_I18n::__( 
+				'The URL you have entered seems to be invalid. Please remember that URLs must start with either "http://" or "https://".'
+			),
+			'language'                       => $this->_registry->get( 'p28n.wpml' )->get_lang(),
 		);
 		return $data;
 	}

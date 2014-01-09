@@ -71,10 +71,12 @@
 	{% endif %}
 
 	{% if location is not empty %}
+	{% autoescape false %}
 		<div class="ai1ec-location">
 			<div class="ai1ec-label">{{ 'Where:'|__ }}</div>
 			<div class="ai1ec-field-value">{{ location }}</div>
 		</div>
+	{% endautoescape %}
 	{% endif %}
 
 	{% if event.get( 'cost' ) is not empty or event.is_free() %}

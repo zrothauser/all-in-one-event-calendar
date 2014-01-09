@@ -6,9 +6,9 @@
  * This class is responsible for loading all the requested class of the
  * system
  *
- * @author		 Time.ly Network, Inc.
- * @since			 2.0
- * @package		 Ai1EC
+ * @author     Time.ly Network, Inc.
+ * @since      2.0
+ * @package    Ai1EC
  * @subpackage Ai1EC.Loader
  */
 class Ai1ec_Loader {
@@ -121,8 +121,7 @@ class Ai1ec_Loader {
 	 *		 mode, cached entry in reader mode on success
 	 */
 	protected function _cache( $path, array $entries = null ) {
-		$cache_file = $path . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR .
-			'bootstrap' . DIRECTORY_SEPARATOR . 'loader-map.php';
+		$cache_file = $this->_get_cache_file_path( $path );
 		if ( $entries ) {
 			if (
 				is_file( $cache_file ) &&
@@ -406,6 +405,17 @@ class Ai1ec_Loader {
 	}
 
 	/**
+	 * Convenience wrapper to detect internal extension file path.
+	 *
+	 * @param string $path Absolute path to extension base directory.
+	 *
+	 * @return bool Success loading extension classes.
+	 */
+	public function register_extension_map( $path ) {
+		return $this->register_map( $this->_get_cache_file_path( $path ) );
+	}
+
+	/**
 	 * Register external class map to use in loading sequence
 	 *
 	 * @param string $file Path to class map
@@ -462,6 +472,18 @@ class Ai1ec_Loader {
 			$class_map = $this->collect_classes();
 		}
 		$this->_paths = $class_map;
+	}
+
+	/**
+	 * Method to get cache file path given path to plugin.
+	 *
+	 * @param string $path Path to plugin directory.
+	 *
+	 * @return string Absolute path to loader cache file.
+	 */
+	protected function _get_cache_file_path( $path ) {
+		return $path . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR .
+			'bootstrap' . DIRECTORY_SEPARATOR . 'loader-map.php';
 	}
 
 }

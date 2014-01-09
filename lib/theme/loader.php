@@ -59,15 +59,78 @@ class Ai1ec_Theme_Loader {
 	public function __construct( 
 			Ai1ec_Registry_Object $registry
 		) {
-		$this->_registry = $registry;
-		$option = $this->_registry->get( 'model.option' );
-		$theme = $option->get( 'ai1ec_current_theme' );
-		$active_theme = $theme['stylesheet'];
-		$this->_legacy_theme = (bool)$theme['legacy'];
-		$this->_paths['theme'][] = $theme['theme_dir'] . DIRECTORY_SEPARATOR;
+		$this->_registry         = $registry;
+		$option                  = $this->_registry->get( 'model.option' );
+		$theme                   = $option->get( 'ai1ec_current_theme' );
+		$active_theme            = $theme['stylesheet'];
+		$this->_legacy_theme     = (bool)$theme['legacy'];
+		$this->add_path_theme( $theme['theme_dir'] . DIRECTORY_SEPARATOR );
 		if ( AI1EC_DEFAULT_THEME_NAME !== $active_theme ) {
-			$this->_paths['theme'][] = AI1EC_DEFAULT_THEME_PATH .  DIRECTORY_SEPARATOR;
+			$this->add_path_theme(
+				AI1EC_DEFAULT_THEME_PATH . DIRECTORY_SEPARATOR
+			);
 		}
+	}
+
+	/**
+	 * Add theme loading path.
+	 *
+	 * @param string $path   Absolute path to the template files directory.
+	 * @param string $target Name of path purpose, i.e. 'admin' or 'theme'.
+	 *
+	 * @return bool Success.
+	 */
+	public function add_path( $path, $target ) {
+		if ( ! isset( $this->_paths[$target] ) ) {
+			return false;
+		}
+		$this->_paths[$target][] = $path;
+		return true;
+	}
+
+	/**
+	 * Add admin templates files path.
+	 *
+	 * @param string $path Path to admin template files.
+	 *
+	 * @return bool Success.
+	 */
+	public function add_path_admin( $path ) {
+		return $this->add_path( $path, 'admin' );
+	}
+
+	/**
+	 * Add theme templates files path.
+	 *
+	 * @param string $path Path to theme template files.
+	 *
+	 * @return bool Success.
+	 */
+	public function add_path_theme( $path ) {
+		return $this->add_path( $path, 'theme' );
+	}
+
+	/**
+	 * Extension registration hook to automatically add file paths.
+	 *
+	 * NOTICE: extensions are expected to exactly replicate Core directories
+	 * structure. If different extension is to be developed at some point in
+	 * time - this will have to be changed.
+	 *
+	 * @param string $path Absolute path to extensions directory.
+	 *
+	 * @return Ai1ec_Theme_Loader Instance of self for chaining.
+	 */
+	public function register_extension( $path ) {
+		$this->add_path_admin(
+			$path . 'public' . DIRECTORY_SEPARATOR . 'admin' .
+			DIRECTORY_SEPARATOR
+		);
+		$this->add_path_theme(
+			$path . 'public' . DIRECTORY_SEPARATOR . 'themes' .
+			DIRECTORY_SEPARATOR . AI1EC_DEFAULT_THEME_NAME . DIRECTORY_SEPARATOR
+		);
+		return $this;
 	}
 
 	/**

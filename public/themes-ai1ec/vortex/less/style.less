@@ -36,27 +36,27 @@
 // Core CSS
 .timely { @import "bootstrap/scaffolding.less"; }
 .timely { @import "bootstrap/type.less"; }
-          @import "bootstrap/grid.less";
+@import "bootstrap/grid.less";
 .timely { @import "bootstrap/forms.less"; }
-          @import "bootstrap/buttons.less";
+@import "bootstrap/buttons.less";
 
 // Components
-          @import "bootstrap/component-animations.less";
-					@import "bootstrap/dropdowns.less";
-					@import "bootstrap/button-groups.less";
-					@import "bootstrap/navs.less";
-					@import "bootstrap/thumbnails.less";
-					@import "bootstrap/alerts.less";
-					@import "bootstrap/wells.less";
-					@import "bootstrap/close.less";
+@import "bootstrap/component-animations.less";
+@import "bootstrap/dropdowns.less";
+@import "bootstrap/button-groups.less";
+@import "bootstrap/navs.less";
+@import "bootstrap/thumbnails.less";
+@import "bootstrap/alerts.less";
+@import "bootstrap/wells.less";
+@import "bootstrap/close.less";
 
 // Components w/ JavaScript
-          @import "bootstrap/modals.less";
-					@import "bootstrap/tooltip.less";
-					@import "bootstrap/popovers.less";
+@import "bootstrap/modals.less";
+@import "bootstrap/tooltip.less";
+@import "bootstrap/popovers.less";
 
 // Utility classes
-          @import "bootstrap/utilities.less";
+@import "bootstrap/utilities.less";
 
 // ===========
 // = Select2 =
@@ -64,6 +64,9 @@
 //
 // Select2 is well-namespaced already by its class name definitions.
 @import "select2.less";
+@import "fileupload.less";
+@import "datepicker.less";
+@import "timepicker.less";
 
 // =====================================
 // = Unnamespaced includes - overrides =
@@ -78,8 +81,8 @@
 	background-color: @inputBackground;
 	background-image: none;
 	border-color: @inputBorder;
-	.border-radius( @inputBorderRadius );
-	.box-shadow( inset 0 1px 1px rgba(0,0,0,0.075) );
+	.ai1ec-border-radius( @inputBorderRadius );
+	.ai1ec-box-shadow( inset 0 1px 1px rgba(0,0,0,0.075) );
   .select2-dropdown-open& {
     border-bottom-color: #fff;
     border-radius: @inputBorderRadius @inputBorderRadius 0 0;
@@ -200,8 +203,8 @@
 	img {
 		background: none;
 		border: none;
-		.border-radius( 0 );
-		.box-shadow( none );
+		.ai1ec-border-radius( 0 );
+		.ai1ec-box-shadow( none );
 		max-width: none;
 		margin: 0;
 		padding: 0;
@@ -232,21 +235,10 @@
 	}
 }
 
-// Namespace Bootstrap components for which ".ai1ec-" is inadequate.
+// ========================
+// = Namespaced overrides =
+// ========================
 .timely {
-	// =======================
-	// = Namespaced includes =
-	// =======================
-
-	// Other namespaced includes.
-	@import "fileupload.less";
-	@import "datepicker.less";
-	@import "timepicker.less";
-
-	// ===================================
-	// = Namespaced includes - overrides =
-	// ===================================
-
 	// ================
 	// = Extra Resets =
 	// ================
@@ -267,15 +259,15 @@
 	// ===============================
 	// = Button & dropdown overrides =
 	// ===============================
-	.btn {
+	/*.ai1ec-btn {
 		color: @btnTextColor;
 		text-shadow: @btnTextShadow;
-		.buttonBackground( @btnBackground, @btnBackgroundHighlight );
+		.ai1ec-buttonBackground( @btnBackground, @btnBackgroundHighlight );
 		border: 1px solid @btnBorder;
 		*border: 0; // Remove the border to prevent IE7's black border on input:focus
 		border-bottom-color: darken(@btnBorder, 10%);
-		.box-shadow( @btnShadow );
-		.box-sizing( content-box );
+		.ai1ec-box-shadow( @btnShadow );
+		.ai1ec-box-sizing( content-box );
 		&:hover {
 			color: @btnTextHover;
 		}
@@ -326,46 +318,46 @@
 	}
 	.btn-inverse {
 		.buttonBackground(@btnInverseBackground, @btnInverseBackgroundHighlight);
-	}
+	}*/
 
 	// Position toolbar buttons properly.
-	.btn-toolbar {
+	.ai1ec-btn-toolbar {
 		margin: 0;
 	}
-	.btn-group {
+	.ai1ec-btn-group {
 		margin-bottom: 6px;
 		vertical-align: bottom;
-		> .btn {
+		> .ai1ec-btn {
 			max-height: 16px;
 		}
-		> .btn-primary {
+		> .ai1ec-btn-primary {
 			z-index: 3;
 		}
 		// Until we upgrade Bootstrap, must manually apply these styles to override
 		// any applied by themes based on more recent Bootstrap.
-		> .btn,
-		> .dropdown-menu,
-		> .popover {
+		> .ai1ec-btn,
+		> .ai1ec-dropdown-menu,
+		> .ai1ec-popover {
 			font-size: @baseFontSize; // redeclare as part 2 of font-size inline-block hack
 		}
-		&.pull-right + &.pull-right {
+		&.ai1ec-pull-right + &.ai1ec-pull-right {
 			margin-left: 0;
 			margin-right: 5px;
 		}
 		// Reset fonts for other sizes
-		> .btn-mini {
+		> .ai1ec-btn-mini {
 			font-size: @baseFontSize - 2px;
 		}
-		> .btn-small {
+		> .ai1ec-btn-small {
 			font-size: @fontSizeSmall;
 		}
-		> .btn-large {
+		> .ai1ec-btn-large {
 			font-size: @baseFontSize + 2px;
 		}
 	}
 
 	// Position and colorize navigation properly.
-	.nav {
+	.ai1ec-nav {
 		margin: 0 0 @baseLineHeight !important;
 		list-style: none !important;
 		padding: 0 !important;
@@ -375,20 +367,20 @@
 			padding: 0 !important;
 		}
 	}
-	.nav-pills > li > a {
+	.ai1ec-nav-pills > li > a {
 		margin-top: 0;
 		margin-bottom: 0;
 		padding: 8px 9px 7px;
-	}
-	.nav > li > a:hover,
-	.nav-pills > .active > a,
-	.nav > .dropdown:hover > a,
-	.nav-pills > .active > a:hover,
-	.nav > .dropdown.active > a:hover,
-	.nav-tabs .open .dropdown-toggle,
-	.nav-pills .open .dropdown-toggle,
-	.nav > li.dropdown.open.active > a:hover {
-		#gradient > .vertical( fade( @bodyBackground, 0% ), fade( @bodyBackground, 50% ) );
+	}/*
+	.ai1ec-nav > li > a:hover,
+	.ai1ec-nav-pills > .ai1ec-active > a,
+	.ai1ec-nav > .ai1ec-dropdown:hover > a,
+	.ai1ec-nav-pills > .ai1ec-active > a:hover,
+	.ai1ec-nav > .ai1ec-dropdown.ai1ec-active > a:hover,
+	.ai1ec-nav-tabs .ai1ec-open .ai1ec-dropdown-toggle,
+	.ai1ec-nav-pills .ai1ec-open .ai1ec-dropdown-toggle,
+	.ai1ec-nav > li.ai1ec-dropdown.ai1ec-open.ai1ec-active > a:hover {
+		#gradient > .ai1ec-vertical( fade( @bodyBackground, 0% ), fade( @bodyBackground, 50% ) );
 		filter: none\9; // IE8 doesn't support translucent gradients
 		.listItemActive( ~", inset 0 2px 1px " fade( @textColor, 10% ) );
 	}
@@ -436,12 +428,12 @@
 		// !important required until we upgrade Bootstrap.
 		background: @dropdownLinkBackgroundHover !important;
 		color: @dropdownLinkColorHover;
-	}
+	}*/
 
 	// ==========
 	// = Modals =
 	// ==========
-	.ai1ec-modal {
+	/*.ai1ec-modal {
 		min-height: 250px;
 		margin-left: -250px;
 		width: 500px;
@@ -473,7 +465,7 @@
 			color: @textColor;
 			.opacity( 60 );
 		}
-	}
+	}*/
 
 	// =========
 	// = Forms =
@@ -499,15 +491,15 @@
 	input[type="tel"],
 	input[type="color"],
 	input[type="file"],
-	.uneditable-input {
+	.ai1ec-uneditable-input {
 		color: @inputText;
-		.placeholder( @placeholderText );
+		.ai1ec-placeholder( @placeholderText );
 		&:focus {
 			border-color: @inputBorderFocus;
-			.box-shadow( 0 0 8px @inputBorderFocus );
+			.ai1ec-box-shadow( 0 0 8px @inputBorderFocus );
 		}
 	}
-	.placeholder {
+	.ai1ec-placeholder {
 		color: @placeholderText;
 	}
 	input[disabled],
@@ -526,14 +518,14 @@
 		border-color: @inputBorder;
 	}
 	.select2-container input[type="text"]:focus {
-		.box-shadow( none );
+		.ai1ec-box-shadow( none );
 	}
 
 	input.ai1ec-datepicker[readonly],
 	input.ai1ec-timepicker[readonly] {
 		cursor: pointer;
 	}
-	.datepicker {
+	.ai1ec-datepicker {
 		@datepickerFontSize: @baseFontSize * 0.85;
 		font-size: @datepickerFontSize;
 		padding: @datepickerFontSize * 0.5;
@@ -572,31 +564,31 @@
 			}
 		}
 		td {
-			&.day:hover {
+			&.ai1ec-day:hover {
 				background-color: @dropdownLinkBackgroundHover;
 			}
-			&.old,
-			&.new {
+			&.ai1ec-old,
+			&.ai1ec-new {
 				color: mix( @textColor, @bodyBackground, 60% );
 			}
-			&.disabled,
-			&.disabled:hover {
+			&.ai1ec-disabled,
+			&.ai1ec-disabled:hover {
 				background: none;
 				color: mix( @textColor, @bodyBackground, 30% );
 			}
-			&.today,
-			&.today:hover,
-			&.today.disabled,
-			&.today.disabled:hover {
-				.buttonBackground( @todayColor, @todayColor );
-				.box-shadow( inset 0 0 2px mix( @todayColor, @textColor, 50% ) );
+			&.ai1ec-today,
+			&.ai1ec-today:hover,
+			&.ai1ec-today.ai1ec-disabled,
+			&.ai1ec-today.ai1ec-disabled:hover {
+				.ai1ec-buttonBackground( @todayColor, @todayColor );
+				.ai1ec-box-shadow( inset 0 0 2px mix( @todayColor, @textColor, 50% ) );
 			}
-			&.active,
-			&.active:hover,
-			&.active.disabled,
-			&.active.disabled:hover {
-				.buttonBackground( @dropdownLinkBackgroundHover, @dropdownLinkBackgroundHover );
-				.box-shadow( none );
+			&.ai1ec-active,
+			&.ai1ec-active:hover,
+			&.ai1ec-active.ai1ec-disabled,
+			&.ai1ec-active.ai1ec-disabled:hover {
+				.ai1ec-buttonBackground( @dropdownLinkBackgroundHover, @dropdownLinkBackgroundHover );
+				.ai1ec-box-shadow( none );
 				color: @dropdownLinkColor;
 				text-shadow: none;
 			}
@@ -604,35 +596,35 @@
 				&:hover {
 					background-color: @dropdownLinkBackgroundHover;
 				}
-				&.old {
+				&.ai1ec-old {
 					color: mix( @textColor, @bodyBackground, 60% );
 				}
-				&.disabled,
-				&.disabled:hover {
+				&.ai1ec-disabled,
+				&.ai1ec-disabled:hover {
 					background: none;
 					color: mix( @textColor, @bodyBackground, 30% );
 				}
-				&.active,
-				&.active:hover,
-				&.active.disabled,
-				&.active.disabled:hover {
-					.buttonBackground( @dropdownLinkBackgroundHover, @dropdownLinkBackgroundHover );
-					.box-shadow( none );
+				&.ai1ec-active,
+				&.ai1ec-active:hover,
+				&.ai1ec-active.ai1ec-disabled,
+				&.ai1ec-active.ai1ec-disabled:hover {
+					.ai1ec-buttonBackground( @dropdownLinkBackgroundHover, @dropdownLinkBackgroundHover );
+					.ai1ec-box-shadow( none );
 					color: @dropdownLinkColor;
 					text-shadow: none;
 				}
 			}
 		}
 	}
-	.bootstrap-timepicker table td {
+	.ai1ec-bootstrap-timepicker table td {
 		height: auto;
 		a:hover {
 			background-color: @dropdownLinkBackgroundHover;
 			border: none;
 		}
 	}
-	.datepicker,
-	.bootstrap-timepicker.dropdown-menu {
+	.ai1ec-datepicker,
+	.ai1ec-bootstrap-timepicker.ai1ec-dropdown-menu {
 		&:before {
 			border-bottom-color: @dropdownBorder;
 		}
@@ -640,7 +632,7 @@
 			border-bottom-color: @dropdownBackground;
 		}
 	}
-	.bootstrap-timepicker-widget.dropdown-menu.ai1ec-alignment-right {
+	.ai1ec-bootstrap-timepicker-widget.ai1ec-dropdown-menu.ai1ec-alignment-right {
 		left: auto;
 		right: 0;
 		&:before {
@@ -652,7 +644,7 @@
 			right: 10px;
 		}
 	}
-	.collapse.in.ai1ec-timepicker-visible {
+	.ai1ec-collapse.ai1ec-in.ai1ec-timepicker-visible {
 		overflow: visible;
 	}
 
@@ -660,7 +652,7 @@
 	a {
 		[class^="icon-"],
 		[class*=" icon-"] {
-			&.hide {
+			&.ai1ec-hide {
 				display: none;
 			}
 		}
@@ -670,13 +662,21 @@
 // =======================================================================
 // = Modal open status tracking (adapted from earlier ver. of Bootstrap) =
 // =======================================================================
-// Recalculate z-index where appropriate
+// Recalculate z-index where appropriate.
 .ai1ec-modal-open {
 	overflow: hidden;
-	.dropdown-menu {  z-index: @zindexDropdown + @zindexModal !important; }
-	.dropdown.open { *z-index: @zindexDropdown + @zindexModal !important; }
-	.popover       {  z-index: @zindexPopover  + @zindexModal !important; }
-	.tooltip       {  z-index: @zindexTooltip  + @zindexModal !important; }
+	.ai1ec-dropdown-menu {
+		z-index: @zindexDropdown + @zindexModal !important;
+	}
+	.ai1ec-dropdown.ai1ec-open {
+		*z-index: @zindexDropdown + @zindexModal !important;
+	}
+	.ai1ec-popover {
+		z-index: @zindexPopover  + @zindexModal !important;
+	}
+	.ai1ec-tooltip {
+		z-index: @zindexTooltip  + @zindexModal !important;
+	}
 }
 
 // ======================================
@@ -705,7 +705,7 @@
 		background-position: center 150px;
 	}
 	.ai1ec-modal > & {
-		.border-radius( 5px );
+		.ai1ec-border-radius( 5px );
 	}
 }
 
@@ -723,7 +723,7 @@
 				color: @linkColorHover;
 			}
 		}
-		.btn {
+		.ai1ec-btn {
 			color: @btnTextColor;
 			&:hover {
 				color: @btnTextHover;
@@ -748,18 +748,18 @@
 .ai1ec-allday-badge {
 	color: @eventStubAllDayText;
 	background: @eventDefaultColor;
-	.border-radius(0.9em);
-	.box-shadow( @shadow );
+	.ai1ec-border-radius(0.9em);
+	.ai1ec-box-shadow( @shadow );
 	display: inline-block;
 	font-size: 0.85em;
 	font-weight: normal;
-	#gradient > .vertical-three-colors(
+	#gradient > .ai1ec-vertical-three-colors(
 		@alldayBadgeGradientTop,
 		@alldayBadgeGradientMiddle, 50%,
 		@alldayBadgeGradientBottom
 	);
 	margin: 0 0 1px;
-	.opacity( 90 );
+	.ai1ec-opacity( 90 );
 	padding: 0 0.7em 0.05em;
 	@shadow: inset 0 1px 0 @alldayBadgeHighlight, 0 2px 2px @alldayBadgeShadow;
 	vertical-align: middle;
@@ -787,8 +787,8 @@
 // = Categories =
 // ==============
 .ai1ec-category {
-	.border-radius( 4px );
-	.box-shadow( inset 0 0 1px fade( @dropdownLinkColorHover, 50% ) );
+	.ai1ec-border-radius( 4px );
+	.ai1ec-box-shadow( inset 0 0 1px fade( @dropdownLinkColorHover, 50% ) );
 	cursor: pointer;
 	display: inline-block;
 	font-size: 0.9em;
@@ -798,11 +798,11 @@
 	text-shadow: 0 1px 0 @textEmboss;
 	text-transform: uppercase;
 	white-space: nowrap;
-	.listItem();
+	.ai1ec-listItem();
 }
 .ai1ec-category:hover,
-.active > .ai1ec-category {
-	.listItemActive();
+.ai1ec-active > .ai1ec-category {
+	.ai1ec-listItemActive();
 }
 
 // Category colors.
@@ -815,16 +815,16 @@
 	width: 6px;
 }
 .ai1ec-color-swatch {
-	.border-radius( 4px );
+	.ai1ec-border-radius( 4px );
 	border-color: rgba(0,0,0,0.5);
-	.opacity( 80 );
+	.ai1ec-opacity( 80 );
 }
 
 // ========
 // = Tags =
 // ========
 .ai1ec-tag {
-	.border-radius( 4px );
+	.ai1ec-border-radius( 4px );
 	color: @linkColor;
 	cursor: pointer;
 	display: inline-block !important;
@@ -837,8 +837,8 @@
 	}
 }
 .ai1ec-tag:hover,
-.active > .ai1ec-tag {
-	.listItemActive();
+.ai1ec-active > .ai1ec-tag {
+	.ai1ec-listItemActive();
 }
 
 // =================
@@ -859,14 +859,19 @@
 	.ai1ec-date-title {
 		border: 1px solid mix( @textColor, @agendaDateTitleBackground, 30% );
 		border-top: none;
-		.border-radius( 5px );
-		.box-shadow( 0 2px 2px rgba(0,0,0,0.08) );
-		.box-sizing( border-box );
+		.ai1ec-border-radius( 5px );
+		.ai1ec-box-shadow( 0 2px 2px rgba(0,0,0,0.08) );
+		.ai1ec-box-sizing( border-box );
 		color: mix( @textColor, @agendaDateTitleBackground, 85% );
 		float: left;
 		font-weight: bold !important;
-		#gradient > .vertical-three-colors(@agendaDateTitleBackground, @agendaDateTitleBackground, 1em, mix(@agendaDateTitleBackground, @textColor, 88%) );
-		filter: none\9; // IE8 doesn't understand how to render this gradient for some reason
+		#gradient > .ai1ec-vertical-three-colors(
+			@agendaDateTitleBackground,
+			@agendaDateTitleBackground,
+			1em,
+			mix(@agendaDateTitleBackground, @textColor, 88%)
+		);
+		filter: none\9; // IE8 doesn't get how to do this gradient for some reason
 		line-height: 1.2em;
 		margin: @baseFontSize / 2 0.75em;
 		overflow: hidden;
@@ -879,7 +884,7 @@
 	}
 	.ai1ec-month {
 		background: @agendaDateTitleBorder;
-		.border-radius( 4px 4px 0 0 );
+		.ai1ec-border-radius( 4px 4px 0 0 );
 		color: @agendaDateTitleBackground;
 		font-size: 0.8em;
 		letter-spacing: 0.2em;
@@ -897,17 +902,27 @@
 	}
 	.ai1ec-year {
 		background-color: mix( @textColor, @agendaDateTitleBackground, 13% );
-		.box-shadow( inset 0 3px 3px fade( #000, 8% ) );
+		.ai1ec-box-shadow( inset 0 3px 3px fade( #000, 8% ) );
 		font-size: 0.7em;
 		letter-spacing: 0.2em;
 		padding: 0 0.2em;
 	}
 	.ai1ec-date {
 		border-top: 1px solid darken(@agendaDateBackground, 5%);
-		#gradient > .vertical-three-colors-replace(@agendaDateBackground, @agendaDateBackground, 1em, @bodyBackground);
+		#gradient > .ai1ec-vertical-three-colors-replace(
+			@agendaDateBackground,
+			@agendaDateBackground,
+			1em,
+			@bodyBackground
+		);
 		&.ai1ec-today {
 			border-top: 1px solid darken(@agendaTodayBackground, 5%);
-			#gradient > .vertical-three-colors-replace(@agendaTodayBackground, @agendaTodayBackground, 1em, @bodyBackground);
+			#gradient > .ai1ec-vertical-three-colors-replace(
+				@agendaTodayBackground,
+				@agendaTodayBackground,
+				1em,
+				@bodyBackground
+			);
 		}
 	}
 }
@@ -936,7 +951,7 @@
 			display: block;
 			background: @eventBackground;
 			border: 1px solid @eventBorder;
-			.border-radius( 0.4em) ;
+			.ai1ec-border-radius( 0.4em) ;
 			padding: 0.2em 0.4em;
 			&:hover {
 				border-color: @eventBorderHover;
@@ -957,7 +972,7 @@
 
 // Event popovers appended to body tag.
 
-.popover.ai1ec-popup {
+.ai1ec-popover.ai1ec-popup {
 	line-height: @baseLineHeight;
 	text-align: left;
 
@@ -966,63 +981,63 @@
 	background: none;
 	background-clip: inherit;
 	border: none;
-	.border-radius( 0 );
-	.box-shadow( none );
+	.ai1ec-border-radius( 0 );
+	.ai1ec-box-shadow( none );
 	width: auto;
 
-	&.fade {
+	&.ai1ec-fade {
 		opacity: 0;
-		.transition(all .15s ease-in-out);
-		&.in {
+		.ai1ec-transition(all .15s ease-in-out);
+		&.ai1ec-in {
 			opacity: 1;
-			.transition(opacity .15s ease-in-out);
+			.ai1ec-transition(opacity .15s ease-in-out);
 		}
 	}
 	@ai1ecArrowSize: 10px;
-	&.top    { margin-top:  0; }
-	&.right  { margin-left: 0; }
-	&.bottom { margin-top:  0; }
-	&.left   { margin-left: 0; }
+	&.ai1ec-top    { margin-top:  0; }
+	&.ai1ec-right  { margin-left: 0; }
+	&.ai1ec-bottom { margin-top:  0; }
+	&.ai1ec-left   { margin-left: 0; }
 
-	.arrow {
+	.ai1ec-arrow {
 		z-index: 1;
 	}
-	&.top .arrow {
-		#timelyPopoverArrow  > .top( @ai1ecArrowSize, @eventBorder );
+	&.ai1ec-top .ai1ec-arrow {
+		#timelyPopoverArrow  > .ai1ec-top( @ai1ecArrowSize, @eventBorder );
 		&:after {
-			#timelyPopoverArrow  > #outlinedArrow .top( 10px, 2px, @eventBackground );
+			#timelyPopoverArrow  > #outlinedArrow .ai1ec-top( 10px, 2px, @eventBackground );
 		}
 	}
-	&.left .arrow {
-		#timelyPopoverArrow  > .left( @ai1ecArrowSize, @eventBorder );
+	&.ai1ec-left .ai1ec-arrow {
+		#timelyPopoverArrow  > .ai1ec-left( @ai1ecArrowSize, @eventBorder );
 		&:after {
-			#timelyPopoverArrow  > #outlinedArrow .left( 10px, 2px, @eventBackground );
+			#timelyPopoverArrow  > #outlinedArrow .ai1ec-left( 10px, 2px, @eventBackground );
 		}
 	}
-	&.bottom .arrow {
-		#timelyPopoverArrow  > .bottom( @ai1ecArrowSize, @eventBorder );
+	&.ai1ec-bottom .ai1ec-arrow {
+		#timelyPopoverArrow  > .ai1ec-bottom( @ai1ecArrowSize, @eventBorder );
 		&:after {
-			#timelyPopoverArrow  > #outlinedArrow .bottom( 10px, 2px, @eventBackground );
+			#timelyPopoverArrow  > #outlinedArrow .ai1ec-bottom( 10px, 2px, @eventBackground );
 		}
 	}
-	&.right .arrow {
-		#timelyPopoverArrow  > .right( @ai1ecArrowSize, @eventBorder );
+	&.ai1ec-right .ai1ec-arrow {
+		#timelyPopoverArrow  > .ai1ec-right( @ai1ecArrowSize, @eventBorder );
 		&:after {
-			#timelyPopoverArrow  > #outlinedArrow .right( 10px, 2px, @eventBackground );
+			#timelyPopoverArrow  > #outlinedArrow .ai1ec-right( 10px, 2px, @eventBackground );
 		}
 	}
 
-	.popover-inner {
+	.ai1ec-popover-inner {
 		background: @eventBorder;
-		.border-radius( 5px );
-		.box-shadow( 0 3px 10px rgba(0,0,0,0.3) );
+		.ai1ec-border-radius( 5px );
+		.ai1ec-box-shadow( 0 3px 10px rgba(0,0,0,0.3) );
 		padding: 1px;
 		position: relative;
 		width: 170px;
 	}
-	.popover-content {
+	.ai1ec-popover-content {
 		background: @eventBackground;
-		.border-radius( 4px );
+		.ai1ec-border-radius( 4px );
 		color: @eventText;
 		font-size: @baseFontSize;
 		font-weight: normal;
@@ -1061,12 +1076,12 @@
 		}
 	}
 
-	&.left.ai1ec-popup-in-oneday-view {
+	&.ai1ec-left.ai1ec-popup-in-oneday-view {
 		margin-left: 49px;
 	}
 }
 
-.popover-title.ai1ec-popup-title {
+.ai1ec-popover-title.ai1ec-popup-title {
 	font-size: @baseFontSize * 0.95;
 	font-weight: bold;
 	line-height: @baseLineHeight;
@@ -1100,7 +1115,7 @@
 		float: left;
 		margin-right: 5px;
 	}
-	.dropdown-menu {
+	.ai1ec-dropdown-menu {
 		display: block;
 		width: 275px;
 		li {
@@ -1137,10 +1152,10 @@
 		display: none !important;
 	}
 	.timely {
-		.btn {
+		.ai1ec-btn {
 			font-size: 11px;
 		}
-		.btn-large {
+		.ai1ec-btn-large {
 			font-size: 15px;
 		}
 	}
@@ -1157,7 +1172,7 @@
 			width: auto;
 			margin: 0;
 		}
-		.ai1ec-modal.fade.in {
+		.ai1ec-modal.ai1ec-fade.ai1ec-in {
 			top: 3%;
 		}
 		.ai1ec-modal-body {

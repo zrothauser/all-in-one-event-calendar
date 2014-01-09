@@ -94,9 +94,6 @@ class Ai1ec_Javascript_Controller {
 		$this->_scripts_helper       = $registry->get( 'script.helper' );
 	}
 
-	public function compile() {
-		
-	}
 	/**
 	 * Load javascript files for frontend pages.
 	 *

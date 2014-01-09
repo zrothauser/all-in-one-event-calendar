@@ -421,6 +421,10 @@ class Ai1ec_Front_Controller {
 				array( 'view.event.post', 'post_updated_messages' )
 			);
 			add_action( 'admin_head', array( $this, 'admin_head' ) );
+			$dispatcher->register_action(
+				'plugin_action_links_' . AI1EC_PLUGIN_BASENAME,
+				array( 'view.admin.nav', 'plugin_action_links' )
+			);
 
 		} else { // ! is_admin()
 			$dispatcher->register_shortcode(

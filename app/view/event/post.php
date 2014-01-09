@@ -9,7 +9,7 @@
  * @package    AI1EC
  * @subpackage AI1EC.View.Event
  */
-class Ai1ec_View_Event_Post {
+class Ai1ec_View_Event_Post extends Ai1ec_Base {
 
 	/**
 	 * Add event-specific messages to be used when one is modified in dashboard.

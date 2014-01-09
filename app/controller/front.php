@@ -418,7 +418,7 @@ class Ai1ec_Front_Controller {
 			);
 			$dispatcher->register_filter(
 				'post_updated_messages',
-				array( 'model.event', 'post_updated_messages' )
+				array( 'view.event.post', 'post_updated_messages' )
 			);
 			add_action( 'admin_head', array( $this, 'admin_head' ) );
 

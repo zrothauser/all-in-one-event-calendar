@@ -680,39 +680,6 @@ class Ai1ec_Event extends Ai1ec_Base {
 	}
 
 	/**
-	 * Filter success messages returned by WordPress when an event post is updated/saved.
-	 *
-	 * @param  array $messages List of messages
-	 * @return array
-	 */
-	public function post_updated_messages( $messages ) {
-		global $post, $post_ID;
-
-		$messages[AI1EC_POST_TYPE] = array(
-			0 => '', // Unused. Messages start at index 1.
-			1 => sprintf( __( 'Event updated. <a href="%s">View event</a>', AI1EC_PLUGIN_NAME ), esc_url( get_permalink( $post_ID ) ) ),
-			2 => __( 'Custom field updated.', AI1EC_PLUGIN_NAME ),
-			3 => __( 'Custom field deleted.', AI1EC_PLUGIN_NAME ),
-			4 => __( 'Event updated.', AI1EC_PLUGIN_NAME ),
-			/* translators: %s: date and time of the revision */
-			5 => isset( $_GET['revision'] ) ? sprintf( __( 'Event restored to revision from %s', AI1EC_PLUGIN_NAME ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-			6 => sprintf( __( 'Event published. <a href="%s">View event</a>', AI1EC_PLUGIN_NAME ), esc_url( get_permalink($post_ID) ) ),
-			7 => __( 'Event saved.' ),
-			8 => sprintf( __( 'Event submitted. <a target="_blank" href="%s">Preview event</a>', AI1EC_PLUGIN_NAME ), esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) ),
-			9 => sprintf( __( 'Event scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview event</a>', AI1EC_PLUGIN_NAME ),
-				// translators: Publish box date format, see http://php.net/date
-				Ai1ec_Time_Utility::date_i18n(
-					__( 'M j, Y @ G:i', AI1EC_PLUGIN_NAME ),
-					strtotime( $post->post_date )
-				),
-				esc_url( get_permalink($post_ID) ) ),
-			10 => sprintf( __( 'Event draft updated. <a target="_blank" href="%s">Preview event</a>', AI1EC_PLUGIN_NAME ), esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) ),
-		);
-
-		return $messages;
-	}
-
-	/**
 	 * Decode timezone to use for event.
 	 *
 	 * Following algorythm is used to detect a value:

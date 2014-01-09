@@ -10,6 +10,58 @@
  * @subpackage AI1EC.View.Event
  */
 class Ai1ec_View_Event_Post {
+
+	/**
+	 * Add event-specific messages to be used when one is modified in dashboard.
+	 *
+	 * @wp_hook post_updated_messages
+	 *
+	 * @param  array $messages List of messages.
+	 *
+	 * @return array Modified list of messages.
+	 */
+	public function post_updated_messages( $messages ) {
+		global $post, $post_ID;
+
+		$messages[AI1EC_POST_TYPE] = array(
+			0 => '', // Unused. Messages start at index 1.
+			1 => sprintf(
+				Ai1ec_I18n::__( 'Event updated. <a href="%s">View event</a>' ),
+				esc_url( get_permalink( $post_ID ) )
+			),
+			2 => Ai1ec_I18n::__( 'Custom field updated.' ),
+			3 => Ai1ec_I18n::__( 'Custom field deleted.' ),
+			4 => Ai1ec_I18n::__( 'Event updated.' ),
+			/* translators: %s: date and time of the revision */
+			5 => isset( $_GET['revision'] )
+				? sprintf(
+					Ai1ec_I18n::__( 'Event restored to revision from %s' ),
+					wp_post_revision_title( (int) $_GET['revision'], false )
+				)
+				: false,
+			6 => sprintf(
+				Ai1ec_I18n::__( 'Event published. <a href="%s">View event</a>' ),
+				esc_url( get_permalink($post_ID) )
+			),
+			7 => Ai1ec_I18n::__( 'Event saved.' ),
+			8 => sprintf(
+				Ai1ec_I18n::__( 'Event submitted. <a target="_blank" href="%s">Preview event</a>' ),
+				esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) )
+			),
+			9 => sprintf(
+				Ai1ec_I18n::__( 'Event scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview event</a>' ),
+				// translators: Publish box date format, see http://php.net/date
+				$this->_registry->get( 'date.time', $post->post_date )->format_i18n( Ai1ec_I18n::__( 'M j, Y @ G:i' ) ),
+				esc_url( get_permalink($post_ID) )
+			),
+			10 => sprintf(
+				Ai1ec_I18n::__( 'Event draft updated. <a target="_blank" href="%s">Preview event</a>' ),
+				esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) )
+			),
+		);
+
+		return $messages;
+	}
 	
 	/**
 	 * Generates an excerpt from the given content string.

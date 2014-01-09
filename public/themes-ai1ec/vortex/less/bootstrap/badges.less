@@ -4,7 +4,7 @@
 
 
 // Base classes
-.badge {
+.ai1ec-badge {
   display: inline-block;
   min-width: 10px;
   padding: 3px 7px;
@@ -24,14 +24,14 @@
   }
 
   // Quick fix for badges in buttons
-  .btn & {
+  .ai1ec-btn & {
     position: relative;
     top: -1px;
   }
 }
 
 // Hover state, but only for links
-a.badge {
+a.ai1ec-badge {
   &:hover,
   &:focus {
     color: @badge-link-hover-color;
@@ -41,11 +41,11 @@ a.badge {
 }
 
 // Account for counters in navs
-a.list-group-item.active > .badge,
-.nav-pills > .active > a > .badge {
+a.ai1ec-list-group-item.ai1ec-active > .ai1ec-badge,
+.ai1ec-nav-pills > .ai1ec-active > a > .ai1ec-badge {
   color: @badge-active-color;
   background-color: @badge-active-bg;
 }
-.nav-pills > li > a > .badge {
+.ai1ec-nav-pills > li > a > .ai1ec-badge {
   margin-left: 3px;
 }

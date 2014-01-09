@@ -8,7 +8,7 @@
 *,
 *:before,
 *:after {
-  .box-sizing(border-box);
+  .ai1ec-box-sizing(border-box);
 }
 
 
@@ -51,7 +51,7 @@ a {
   }
 
   &:focus {
-    .tab-focus();
+    .ai1ec-tab-focus();
   }
 }
 
@@ -63,32 +63,32 @@ img {
 }
 
 // Responsive images (ensure images don't scale beyond their parents)
-.img-responsive {
-  .img-responsive();
+.ai1ec-img-responsive {
+  .ai1ec-img-responsive();
 }
 
 // Rounded corners
-.img-rounded {
+.ai1ec-img-rounded {
   border-radius: @border-radius-large;
 }
 
 // Image thumbnails
 //
-// Heads up! This is mixin-ed into thumbnails.less for `.thumbnail`.
-.img-thumbnail {
+// Heads up! This is mixin-ed into thumbnails.less for `.ai1ec-thumbnail`.
+.ai1ec-img-thumbnail {
   padding: @thumbnail-padding;
   line-height: @line-height-base;
   background-color: @thumbnail-bg;
   border: 1px solid @thumbnail-border;
   border-radius: @thumbnail-border-radius;
-  .transition(all .2s ease-in-out);
+  .ai1ec-transition(all .2s ease-in-out);
 
   // Keep them at most 100% wide
-  .img-responsive(inline-block);
+  .ai1ec-img-responsive(inline-block);
 }
 
 // Perfect circle
-.img-circle {
+.ai1ec-img-circle {
   border-radius: 50%; // set radius in percents
 }
 
@@ -105,9 +105,9 @@ hr {
 
 // Only display content to screen readers
 //
-// See: http://a11yproject.com/posts/how-to-hide-content/
+// See: http://a11yproject.ai1ec-com/posts/how-to-hide-content/
 
-.sr-only {
+.ai1ec-sr-only {
   position: absolute;
   width: 1px;
   height: 1px;

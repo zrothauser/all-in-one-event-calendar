@@ -14,7 +14,7 @@ th {
 
 // Baseline styles
 
-.table {
+.ai1ec-table {
   width: 100%;
   margin-bottom: @line-height-computed;
   // Cells
@@ -53,7 +53,7 @@ th {
   }
 
   // Nesting
-  .table {
+  .ai1ec-table {
     background-color: @body-bg;
   }
 }
@@ -61,7 +61,7 @@ th {
 
 // Condensed table w/ half padding
 
-.table-condensed {
+.ai1ec-table-condensed {
   > thead,
   > tbody,
   > tfoot {
@@ -79,7 +79,7 @@ th {
 //
 // Add borders all around the table and between all the columns.
 
-.table-bordered {
+.ai1ec-table-bordered {
   border: 1px solid @table-border-color;
   > thead,
   > tbody,
@@ -104,7 +104,7 @@ th {
 //
 // Default zebra-stripe styles (alternating gray and transparent backgrounds)
 
-.table-striped {
+.ai1ec-table-striped {
   > tbody > tr:nth-child(odd) {
     > td,
     > th {
@@ -118,7 +118,7 @@ th {
 //
 // Placed here since it has to come after the potential zebra striping
 
-.table-hover {
+.ai1ec-table-hover {
   > tbody > tr:hover {
     > td,
     > th {
@@ -133,7 +133,7 @@ th {
 // Reset default table behavior
 
 table col[class*="col-"] {
-  position: static; // Prevent border hiding in Firefox and IE9/10 (see https://github.com/twbs/bootstrap/issues/11623)
+  position: static; // Prevent border hiding in Firefox and IE9/10 (see https://github.ai1ec-com/twbs/bootstrap/issues/11623)
   float: none;
   display: table-column;
 }
@@ -150,24 +150,24 @@ table {
 
 // Table backgrounds
 //
-// Exact selectors below required to override `.table-striped` and prevent
+// Exact selectors below required to override `.ai1ec-table-striped` and prevent
 // inheritance to nested tables.
 
 // Generate the contextual variants
-.table-row-variant(active; @table-bg-active);
-.table-row-variant(success; @state-success-bg);
-.table-row-variant(danger; @state-danger-bg);
-.table-row-variant(warning; @state-warning-bg);
+.ai1ec-table-row-variant(active; @table-bg-active);
+.ai1ec-table-row-variant(success; @state-success-bg);
+.ai1ec-table-row-variant(danger; @state-danger-bg);
+.ai1ec-table-row-variant(warning; @state-warning-bg);
 
 
 // Responsive tables
 //
-// Wrap your tables in `.table-responsive` and we'll make them mobile friendly
+// Wrap your tables in `.ai1ec-table-responsive` and we'll make them mobile friendly
 // by enabling horizontal scrolling. Only applies <768px. Everything above that
 // will display normally.
 
 @media (max-width: @screen-xs-max) {
-  .table-responsive {
+  .ai1ec-table-responsive {
     width: 100%;
     margin-bottom: (@line-height-computed * 0.75);
     overflow-y: hidden;
@@ -177,7 +177,7 @@ table {
     -webkit-overflow-scrolling: touch;
 
     // Tighten up spacing
-    > .table {
+    > .ai1ec-table {
       margin-bottom: 0;
 
       // Ensure the content doesn't wrap
@@ -194,7 +194,7 @@ table {
     }
 
     // Special overrides for the bordered tables
-    > .table-bordered {
+    > .ai1ec-table-bordered {
       border: 0;
 
       // Nuke the appropriate borders so that the parent can handle them

@@ -407,6 +407,7 @@ class Ai1ec_Javascript_Controller {
 				'The URL you have entered seems to be invalid. Please remember that URLs must start with either "http://" or "https://".'
 			),
 			'language'                       => $this->_registry->get( 'p28n.wpml' )->get_lang(),
+			'ajax_url'                       => $ajax_url,
 		);
 		return $data;
 	}

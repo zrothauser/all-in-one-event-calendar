@@ -33,6 +33,33 @@ class Ai1ec_Registry_Object implements Ai1ec_Registry {
 	}
 
 	/**
+	 * Method prepares environment for easier extension integration.
+	 *
+	 * NOTICE: only extensions, that follow internal guideliness for
+	 * files and methods organization must call this hook.
+	 *
+	 * Absolute path to extensions directory is autodetected, if not
+	 * provided, appending plugins name to path to plugins dir.
+	 *
+	 * @param string $name Name of the extension.
+	 * @param string $path Absolute path to extension directory.
+	 *
+	 * @return Ai1ec_Registry_Object Instance of self for chaining.
+	 */
+	public function extension_acknowledge( $name, $path = null ) {
+		if ( null === $path ) {
+			$path = AI1EC_EXTENSIONS_BASEDIR . $name;
+		}
+		if ( AI1EC_DEBUG ) {
+			$this->_loader->collect_classes( $path, $name );
+		}
+		$this->get( 'theme.loader' )->register_extension( $path );
+		$this->_loader->register_extension_map( $path );
+		do_action( 'ai1ec_extension_loaded', $path, $name );
+		return $this;
+	}
+
+	/**
 	 * Get class instance.
 	 *
 	 * Return an instance for the requested key, this method has an internal

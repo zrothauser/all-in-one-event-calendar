@@ -136,7 +136,7 @@ class Ai1ec_Loader {
 				'1class_map'  => $entries,
 			);
 			$content = var_export( $content, true );
-			$content = $this->_sanitize_paths( $content );
+			$content = $this->_sanitize_paths( $content, $path );
 			$content = '<?php return ' . $content . ';';
 			$this->_modified = false;
 			if (
@@ -320,20 +320,35 @@ class Ai1ec_Loader {
 	 * Make sure, that constants and absolute paths are used independently
 	 * of system used, thus making file cross-platform generatable.
 	 *
-	 * @param string $content Output to be written to cache file
+	 * @param string $content   Output to be written to cache file.
+	 * @param string $base_path Base path to use if not default.
 	 *
 	 * @return string Modified content, with paths replaced
 	 */
-	protected function _sanitize_paths( $content ) {
+	protected function _sanitize_paths(
+		$content,
+		$base_path  = null
+	) {
 		$local_ds   = '/';
 		$ai1ec_path = $this->_base_path;
+		$const_name = 'AI1EC_PATH';
+		if ( null !== $base_path ) {
+			$ai1ec_path = $base_path;
+			$const_name = implode( array_map(
+				function( $name ) {
+					return strtoupper( $name{0} );
+				},
+				explode( '-', basename( $base_path ) )
+			) ) . '_PATH';
+			$const_name = str_replace( 'AIOEC', 'AI1EC', $const_name );
+		}
 		if ( '\\' === DIRECTORY_SEPARATOR ) {
 			$local_ds   = '\\\\';
 			$ai1ec_path = str_replace( '\\', '\\\\', $ai1ec_path );
 		}
 		$content = str_replace(
 			'\'' . $ai1ec_path . $local_ds,
-			'AI1EC_PATH . DIRECTORY_SEPARATOR . \'',
+			$const_name . ' . DIRECTORY_SEPARATOR . \'',
 			$content
 		);
 		$content = str_replace(
@@ -358,24 +373,28 @@ class Ai1ec_Loader {
      * @return array An array of strings with the availables names.
      */
 	protected function _generate_loader_names( $class, $file, $folder_name ) {
-		// offset is 6 becaus we have a url which is something like 
-		// var/www/wp-content/plugins/$folder_name/app/class-name.php
-		// strrpos targets the / which precede $folder_name so we have to add 1 for that
-		// and 5 for /lib/ or /app/ part which we strip away. 
-		$offset_project = 6; 
 		$names  = array( $class );
 		// Remove the extension.
-		$file   = substr( $file, 0, strrpos( $file , '.') );
-		$offset = strlen( $folder_name ) + $offset_project;
+		$file   = substr( $file, 0, strrpos( $file , '.' ) );
+		$file   = strtr( $file, array( '//' => '/' ) );
 		// Get just the meaningful data.
+		$relative_path_position = strrpos( // offset of base directory
+			$file,
+			DIRECTORY_SEPARATOR . $folder_name . DIRECTORY_SEPARATOR
+		);
 		$file   = substr(
 			$file,
-			$offset + strrpos(
+			strpos( // cut to app|lib|vendor|...
 				$file,
-				DIRECTORY_SEPARATOR . $folder_name . DIRECTORY_SEPARATOR
+				DIRECTORY_SEPARATOR,
+				$relative_path_position + strlen( $folder_name ) + 2
 			)
 		);
-		$names[] = str_replace( DIRECTORY_SEPARATOR, '.', $file );
+		$names[] = str_replace(
+			DIRECTORY_SEPARATOR,
+			'.',
+			trim( $file, DIRECTORY_SEPARATOR )
+		);
 		return $names;
 	}
 

@@ -112,6 +112,8 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		// Load the variable.less file to use
 		$this->load_less_variables_from_file();
 		$loader = $this->_registry->get( 'theme.loader' );
+		// extension add files.
+		$this->files = apply_filters( 'ai1ec_less_files', $this->files );
 		foreach ( $this->files as $file ) {
 			$file_to_parse = null;
 			try {
@@ -222,7 +224,9 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		$file = $loader->get_file( 'less/user_variables.php', array(), false );
 
 		// This variable is locate in the required file
-		return $file->get_content();
+		$variables = $file->get_content();
+		// inject extension variables
+		return apply_filters( 'ai1ec_less_variables', $variables );
 	}
 
 
@@ -265,6 +269,7 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		if ( ! $variables ) {
 			return $this->get_less_variable_data_from_config_file();
 		}
+		// i don't store the description in the db so i need to get it.
 		$variables_with_description = $this->get_less_variable_data_from_config_file();
 
 		// Add the description at runtime so that it can get the translation

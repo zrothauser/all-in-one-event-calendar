@@ -35,11 +35,13 @@ class Ai1ec_Command_Save_Theme_Options extends Ai1ec_Command_Save_Abstract {
 					$variables[$variable_name]['value'] = $_POST[$variable_name];
 				}
 			}
+			do_action( 'ai1ec_save_less_variables' );
 		}
 		// Handle reset of theme variables.
 		if ( isset( $_POST[Ai1ec_View_Theme_Options::RESET_ID] ) ) {
 			$lessphp = $this->_registry->get( 'less.lessphp' );
 			$variables = $lessphp->get_less_variable_data_from_config_file();
+			do_action( 'ai1ec_reset_less_variables' );
 		}
 		$css = $this->_registry->get( 'css.frontend' );
 		$css->update_variables_and_compile_css(

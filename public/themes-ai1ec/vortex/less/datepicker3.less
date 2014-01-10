@@ -4,11 +4,11 @@
  * Copyright 2012 Stefan Petre
  * Improvements by Andrew Rowls
  * Licensed under the Apache License v2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.ai1ec-apache.ai1ec-org/licenses/LICENSE-2.0
  *
  */
 
-.datepicker {
+.ai1ec-datepicker {
 	padding: 4px;
 	border-radius: 4px;
 	&-inline {
@@ -43,18 +43,18 @@
 			border-top:    0;
 			position: absolute;
 		}
-		&.datepicker-orient-left:before   { left: 6px; }
-		&.datepicker-orient-left:after    { left: 7px; }
-		&.datepicker-orient-right:before  { right: 6px; }
-		&.datepicker-orient-right:after   { right: 7px; }
-		&.datepicker-orient-top:before    { top: -7px; }
-		&.datepicker-orient-top:after     { top: -6px; }
-		&.datepicker-orient-bottom:before {
+		&.ai1ec-datepicker-orient-left:before   { left: 6px; }
+		&.ai1ec-datepicker-orient-left:after    { left: 7px; }
+		&.ai1ec-datepicker-orient-right:before  { right: 6px; }
+		&.ai1ec-datepicker-orient-right:after   { right: 7px; }
+		&.ai1ec-datepicker-orient-top:before    { top: -7px; }
+		&.ai1ec-datepicker-orient-top:after     { top: -6px; }
+		&.ai1ec-datepicker-orient-bottom:before {
 			bottom: -7px;
 			border-bottom: 0;
 			border-top:    7px solid #999;
 		}
-		&.datepicker-orient-bottom:after {
+		&.ai1ec-datepicker-orient-bottom:after {
 			bottom: -6px;
 			border-bottom: 0;
 			border-top:    6px solid #fff;
@@ -63,13 +63,13 @@
 	>div {
 		display: none;
 	}
-	&.days div.datepicker-days {
+	&.ai1ec-days div.ai1ec-datepicker-days {
 		display: block;
 	}
-	&.months div.datepicker-months {
+	&.ai1ec-months div.ai1ec-datepicker-months {
 		display: block;
 	}
-	&.years div.datepicker-years {
+	&.ai1ec-years div.ai1ec-datepicker-years {
 		display: block;
 	}
 	table{
@@ -93,67 +93,67 @@
 	}
 	// Inline display inside a table presents some problems with
 	// border and background colors.
-	.table-striped & table tr {
+	.ai1ec-table-striped & table tr {
 		td, th {
 			background-color:transparent;
 		}
 	}
 	table tr td {
-		&.day:hover, &.day.focused {
+		&.ai1ec-day:hover, &.ai1ec-day.ai1ec-focused {
 			background: @gray-lighter;
 			cursor: pointer;
 		}
-		&.old,
-		&.new {
+		&.ai1ec-old,
+		&.ai1ec-new {
 			color: @btn-link-disabled-color;
 		}
-		&.disabled,
-		&.disabled:hover {
+		&.ai1ec-disabled,
+		&.ai1ec-disabled:hover {
 			background: none;
 			color: @btn-link-disabled-color;
 			cursor: default;
 		}
-		&.today,
-		&.today:hover,
-		&.today.disabled,
-		&.today.disabled:hover {
+		&.ai1ec-today,
+		&.ai1ec-today:hover,
+		&.ai1ec-today.ai1ec-disabled,
+		&.ai1ec-today.ai1ec-disabled:hover {
 			@today-bg: lighten(orange, 30%);
-			.button-variant(#000, @today-bg, darken(@today-bg, 20%));
+			.ai1ec-button-variant(#000, @today-bg, darken(@today-bg, 20%));
 		}
-		&.today:hover:hover { // Thank bootstrap 2.0 for this selector...
+		&.ai1ec-today:hover:hover { // Thank bootstrap 2.0 for this selector...
 			// TODO: Bump min BS to 2.1, use @textColor in buttonBackground above
 			color: #000;
 		}
-		&.today.active:hover {
+		&.ai1ec-today.ai1ec-active:hover {
 			color: #fff;
 		}
-		&.range,
-		&.range:hover,
-		&.range.disabled,
-		&.range.disabled:hover {
+		&.ai1ec-range,
+		&.ai1ec-range:hover,
+		&.ai1ec-range.ai1ec-disabled,
+		&.ai1ec-range.ai1ec-disabled:hover {
 			background:@gray-lighter;
 			border-radius: 0;
 		}
-		&.range.today,
-		&.range.today:hover,
-		&.range.today.disabled,
-		&.range.today.disabled:hover {
+		&.ai1ec-range.ai1ec-today,
+		&.ai1ec-range.ai1ec-today:hover,
+		&.ai1ec-range.ai1ec-today.ai1ec-disabled,
+		&.ai1ec-range.ai1ec-today.ai1ec-disabled:hover {
 			@today-bg: mix(orange, @gray-lighter, 50%);
-			.button-variant(#000, @today-bg, darken(@today-bg, 20%));
+			.ai1ec-button-variant(#000, @today-bg, darken(@today-bg, 20%));
 			border-radius: 0;
 		}
-		&.selected,
-		&.selected:hover,
-		&.selected.disabled,
-		&.selected.disabled:hover {
-			.button-variant(#fff, @gray-light, @gray);
+		&.ai1ec-selected,
+		&.ai1ec-selected:hover,
+		&.ai1ec-selected.ai1ec-disabled,
+		&.ai1ec-selected.ai1ec-disabled:hover {
+			.ai1ec-button-variant(#fff, @gray-light, @gray);
 			text-shadow: 0 -1px 0 rgba(0,0,0,.25);
 		}
-		&.active,
-		&.active:hover,
-		&.active.disabled,
-		&.active.disabled:hover {
-			.button-variant(@btn-primary-color, @btn-primary-bg, @btn-primary-border);
+		&.ai1ec-active,
+		&.ai1ec-active:hover,
+		&.ai1ec-active.ai1ec-disabled,
+		&.ai1ec-active.ai1ec-disabled:hover {
+			.ai1ec-button-variant(@btn-primary-color, @btn-primary-bg, @btn-primary-border);
 			text-shadow: 0 -1px 0 rgba(0,0,0,.25);
 		}
 		span {
@@ -168,27 +168,27 @@
 			&:hover {
 				background: @gray-lighter;
 			}
-			&.disabled,
-			&.disabled:hover {
+			&.ai1ec-disabled,
+			&.ai1ec-disabled:hover {
 				background: none;
 				color: @btn-link-disabled-color;
 				cursor: default;
 			}
-			&.active,
-			&.active:hover,
-			&.active.disabled,
-			&.active.disabled:hover {
-				.button-variant(@btn-primary-color, @btn-primary-bg, @btn-primary-border);
+			&.ai1ec-active,
+			&.ai1ec-active:hover,
+			&.ai1ec-active.ai1ec-disabled,
+			&.ai1ec-active.ai1ec-disabled:hover {
+				.ai1ec-button-variant(@btn-primary-color, @btn-primary-bg, @btn-primary-border);
 				text-shadow: 0 -1px 0 rgba(0,0,0,.25);
 			}
-			&.old,
-			&.new {
+			&.ai1ec-old,
+			&.ai1ec-new {
 				color: @btn-link-disabled-color;
 			}
 		}
 	}
 
-	th.datepicker-switch {
+	th.ai1ec-datepicker-switch {
 		width: 145px;
 	}
 
@@ -199,32 +199,32 @@
 			background: @gray-lighter;
 		}
 	}
-	/*.dow {
+	/*.ai1ec-dow {
 		border-top: 1px solid #ddd !important;
 	}*/
 
 	// Basic styling for calendar-week cells
-	.cw {
+	.ai1ec-cw {
 		font-size: 10px;
 		width: 12px;
 		padding: 0 2px 0 5px;
 		vertical-align: middle;
 	}
-	thead tr:first-child th.cw {
+	thead tr:first-child th.ai1ec-cw {
 		cursor: default;
 		background-color: transparent;
 	}
 }
-.input-group {
-	&.date {
-		.input-group-addon i {
+.ai1ec-input-group {
+	&.ai1ec-date {
+		.ai1ec-input-group-addon i {
 			cursor: pointer;
 			width: 16px;
 			height: 16px;
 		}
 	}
 }
-.input-daterange {
+.ai1ec-input-daterange {
 	input {
 		text-align:center;
 	}
@@ -234,7 +234,7 @@
 	input:last-child {
 		border-radius: 0 3px 3px 0;
 	}
-	.input-group-addon {
+	.ai1ec-input-group-addon {
 		width: auto;
 		min-width: 16px;
 		padding: 4px 5px;

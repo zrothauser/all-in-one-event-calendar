@@ -39,7 +39,11 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			$content->get_content_img_url( $event )
 		);
 
-		$extra_buttons = apply_filters("ai1ec_rendering_single_event_actions", "", $event );
+		$extra_buttons = apply_filters(
+			'ai1ec_rendering_single_event_actions',
+			'',
+			$event
+		);
 
 		$args = array(
 			'event'                   => $event,

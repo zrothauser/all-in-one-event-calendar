@@ -68,9 +68,9 @@
 @import "datepicker.less";
 @import "timepicker.less";
 
-// =====================================
-// = Unnamespaced includes - overrides =
-// =====================================
+// ===============================
+// = Modal and Select2 overrides =
+// ===============================
 .ai1ec-modal-backdrop {
 	background-color: @bodyBackground;
 }
@@ -846,7 +846,7 @@
 // =================
 
 .ai1ec-event-avatar {
-	.timelyAvatar( natural );
+	.ai1ec-avatar( natural );
 }
 
 // ======================
@@ -1151,32 +1151,30 @@
 	.ai1ec-hidden-narrow-phone {
 		display: none !important;
 	}
-	.timely {
-		.ai1ec-btn {
-			font-size: 11px;
-		}
-		.ai1ec-btn-large {
-			font-size: 15px;
-		}
+	.ai1ec-btn {
+		font-size: 11px;
+	}
+	.ai1ec-btn-large {
+		font-size: 15px;
 	}
 }
 
+/*
 // Devices that are too narrow to display modals properly.
 @media (max-width: 500px ) {
-	.timely {
-		.ai1ec-modal {
-			position: fixed;
-			top: 3%;
-			right: 3%;
-			left: 3%;
-			width: auto;
-			margin: 0;
-		}
-		.ai1ec-modal.ai1ec-fade.ai1ec-in {
-			top: 3%;
-		}
-		.ai1ec-modal-body {
-			max-height: 222px;
-		}
+	.ai1ec-modal {
+		position: fixed;
+		top: 3%;
+		right: 3%;
+		left: 3%;
+		width: auto;
+		margin: 0;
+	}
+	.ai1ec-modal.ai1ec-fade.ai1ec-in {
+		top: 3%;
+	}
+	.ai1ec-modal-body {
+		max-height: 222px;
 	}
 }
+*/

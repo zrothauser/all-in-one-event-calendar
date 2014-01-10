@@ -29,15 +29,15 @@
 .ai1ec-calendar-toolbar {
 	// (Below lines copied from .buttonBackground() mixin.)
 	// gradientBar will set the background to a pleasing blend of these, to support IE<=9
-	.gradientBar(@toolbarBg, @toolbarBgHighlight);
+	/* #gradient > .ai1ec-vertical(@toolbarBg, @toolbarBgHighlight); */
 	*background-color: @toolbarBgHighlight; /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-	.reset-filter();
+	/* .ai1ec-reset-filter(); */
 	// (Below lines copied from .timely .btn in style.less.)
-	text-shadow: @btnTextShadow;
+	/*text-shadow: @btnTextShadow;
 	border: 1px solid @toolbarBorder;
 	*border: 0; // Remove the border to prevent IE7's black border on input:focus
 	border-bottom-color: darken(@toolbarBorder, 10%);
-	.box-shadow( 0 1px 2px rgba(0,0,0,0.15) );
+	.box-shadow( 0 1px 2px rgba(0,0,0,0.15) );*/
 
 	.border-radius( 6px );
 	padding: 4px 8px;
@@ -50,13 +50,13 @@
 	}
 }
 // Trigger display of dropdown menus on hover on desktop devices only.
-.no-touch .ai1ec-calendar-toolbar .dropdown:hover > .dropdown-menu {
+.no-touch .ai1ec-calendar-toolbar .ai1ec-dropdown:hover > .ai1ec-dropdown-menu {
 	display: block;
 }
 
 // Views dropdown.
 .ai1ec-views-dropdown {
-	.dropdown-menu a {
+	.ai1ec-dropdown-menu a {
 		line-height: 20px;
 	}
 	a img {
@@ -77,11 +77,11 @@
 		height: 7px;
 		width: 7px;
 	}
-	.dropdown-menu {
+	.ai1ec-dropdown-menu {
 		padding: 1px 2px;
 	}
 }
-.ai1ec-tag-filter .dropdown-menu {
+.ai1ec-tag-filter .ai1ec-dropdown-menu {
 	max-height: 250px;
 	min-width: 200px;
 	overflow: auto;
@@ -100,7 +100,7 @@
 	cursor: pointer;
 	display: none !important;
 }
-.dropdown.active > .dropdown-toggle {
+.ai1ec-dropdown.ai1ec-active > .ai1ec-dropdown-toggle {
 	> i {
 		display: none !important;
 	}
@@ -115,7 +115,7 @@
 	padding-right: 6px;
 }
 .ai1ec-icon-datepicker {
-	.opacity( 75 );
+	.ai1ec-opacity( 75 );
 	filter: none\9; // IE8 renders semi-opaque PNGs terribly
 	display: inline-block;
 	height: 18px;
@@ -135,7 +135,7 @@ h2.ai1ec-calendar-title {
 // Overhead Nav Buttons
 .ai1ec-pagination {
 	margin-left: 5px;
-	> .btn {
+	> .ai1ec-btn {
 		font-size: @baseFontSize * 0.85 !important;
 		height: 16px;
 		padding: 4px 9px;
@@ -341,7 +341,7 @@ table.ai1ec-oneday-view-original {
 		font-weight: normal !important;
 		background: @tableLabelBackground;
 		float: left;
-		.border-radius( 3px );
+		.ai1ec-border-radius( 3px );
 	}
 	.ai1ec-allday-label {
 		margin-top: 1px;
@@ -352,23 +352,23 @@ table.ai1ec-oneday-view-original {
 	}
 	.ai1ec-now-marker {
 		border-top: 2px solid @dayViewNowMarkerColor;
-		.box-shadow( inset 0 1px 1px rgba(0, 0, 0, 0.35) );
+		.ai1ec-box-shadow( inset 0 1px 1px rgba(0, 0, 0, 0.35) );
 		height: 4px;
 		text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
 		z-index: 2;
 		div {
 			background-color: @dayViewNowMarkerColor;
-			.border-radius( 0 0 3px 3px );
-			.box-shadow( 0 1px 1px rgba(0, 0, 0, 0.35) );
+			.ai1ec-border-radius( 0 0 3px 3px );
+			.ai1ec-box-shadow( 0 1px 1px rgba(0, 0, 0, 0.35) );
 			color: @white;
-			.opacity( 0 );
+			.ai1ec-opacity( 0 );
 			font-size: 11px;
 			float: left;
 			padding: 1px 4px;
-			.transition( opacity 0.1s );
+			.ai1ec-transition( opacity 0.1s );
 		}
 		&:hover div {
-			.opacity( 100 );
+			.ai1ec-opacity( 100 );
 		}
 	}
 }
@@ -381,10 +381,10 @@ table.ai1ec-oneday-view-original {
 		border: none;
 		display: block;
 		font-size: 12px;
-		.opacity( 85 );
+		.ai1ec-opacity( 85 );
 		&:hover,
 		&.ai1ec-hover {
-			.opacity( 100 );
+			.ai1ec-opacity( 100 );
 		}
 	}
 	.ai1ec-event {
@@ -407,7 +407,7 @@ table.ai1ec-oneday-view-original {
 	}
 	.ai1ec-allday .ai1ec-event,
 	.ai1ec-multiday .ai1ec-event {
-		.border-radius( 3px );
+		.ai1ec-border-radius( 3px );
 		background-color: @eventDefaultColor;
 		color: @eventStubAllDayText;
 		text-shadow: 0 1px 1px @eventStubAllDayTextShadow;
@@ -432,9 +432,9 @@ table.ai1ec-oneday-view-original {
 		background-image: -o-linear-gradient( top, mix( @eventDefaultColor, @eventBackground, 5% ), mix( @eventDefaultColor, @eventBackground, 30% ) 120px );
 		background-image: linear-gradient( top, mix( @eventDefaultColor, @eventBackground, 5% ), mix( @eventDefaultColor, @eventBackground, 30% ) 120px );
 		border: 1px solid mix( @eventDefaultColor, @eventBackground, 50% );
-		.border-radius( 3px );
-		.box-shadow( 1px 2px 4px rgba(0,0,0,0.15) );
-		.box-sizing( border-box );
+		.ai1ec-border-radius( 3px );
+		.ai1ec-box-shadow( 1px 2px 4px rgba(0,0,0,0.15) );
+		.ai1ec-box-sizing( border-box );
 		line-height: 15px;
 		margin: 0 -1px;
 		min-height: 34px;
@@ -502,7 +502,7 @@ table.ai1ec-oneday-view-original {
 	}
 	.ai1ec-multiday-bar {
 		background: @eventDefaultColor;
-		.border-radius(3px);
+		.ai1ec-border-radius(3px);
 		height: 15px;
 		left: 0;
 		position: absolute;
@@ -533,8 +533,8 @@ table.ai1ec-oneday-view-original {
 	a.ai1ec-scroll-up,
 	a.ai1ec-scroll-down {
 		border: 1px solid @tableBorder;
-		.border-radius(0.2em);
-		.box-sizing(border-box);
+		.ai1ec-border-radius(0.2em);
+		.ai1ec-box-sizing(border-box);
 		display: block;
 		left: 50%;
 		height: 16px;
@@ -549,7 +549,7 @@ table.ai1ec-oneday-view-original {
 		&.ai1ec-disabled {
 			border: none;
 			cursor: default;
-			.opacity(20);
+			.ai1ec-opacity(20);
 			padding: 1px; // To compensate for height lost by invisible border.
 			&:hover {
 				background-color: transparent;
@@ -586,7 +586,7 @@ table.ai1ec-oneday-view-original {
 		line-height: 1em;
 		font-size: 7px;
 		text-shadow: none;
-		.opacity( 50 );
+		.ai1ec-opacity( 50 );
 	}
 	.ai1ec-start-truncator {
 		top: -1px;
@@ -615,7 +615,7 @@ table.ai1ec-oneday-view-original {
 		font-size: 14px;
 		font-weight: bold;
 		color: mix( @textColor, @agendaDateTitleBackground, 40% );
-		.transition( color 0.1s );
+		.ai1ec-transition( color 0.1s );
 		// Only show '+' icon by default.
 		.icon-minus-sign {
 			display: none;
@@ -630,11 +630,11 @@ table.ai1ec-oneday-view-original {
 		margin: @baseFontSize / 2 0;
 		background: @eventBackground;
 		border: 1px solid @eventBorder;
-		.border-radius( 0.5em );
-		.transition( border-color 0.1s );
+		.ai1ec-border-radius( 0.5em );
+		.ai1ec-transition( border-color 0.1s );
 		&.ai1ec-expanded {
 			border-color: @eventBorderHover;
-			.box-shadow( 0 2px 4px mix(@textColor, @agendaDateTitleBackground, 15%) );
+			.ai1ec-box-shadow( 0 2px 4px mix(@textColor, @agendaDateTitleBackground, 15%) );
 			// Show - icon when expanded, hide + sign.
 			.ai1ec-event-toggle {
 				.icon-minus-sign {
@@ -656,16 +656,16 @@ table.ai1ec-oneday-view-original {
 			font-weight: bold;
 			font-size: 10.5pt;
 			margin: 0 0 0.4em;
-			.transition( color 0.1s );
+			.ai1ec-transition( color 0.1s );
 		}
 		.ai1ec-event-time {
 			font-size: 9pt;
 			font-weight: bold;
-			.opacity( 80 );
+			.ai1ec-opacity( 80 );
 		}
 		.post-edit-link {
-			.opacity( 0 );
-			.transition( opacity 0.1s );
+			.ai1ec-opacity( 0 );
+			.ai1ec-transition( opacity 0.1s );
 		}
 		&:hover {
 			border-color: @eventBorderHover;
@@ -673,7 +673,7 @@ table.ai1ec-oneday-view-original {
 				color: @eventDefaultColorHover;
 			}
 			.post-edit-link {
-				.opacity( 100 );
+				.ai1ec-opacity( 100 );
 			}
 		}
 	}
@@ -780,7 +780,7 @@ table.ai1ec-oneday-view-original {
 	.timely .ai1ec-subscribe,
 	.timely .ai1ec-subscribe-google,
 	.ai1ec-agenda-view .ai1ec-event-expand,
-	.btn-toolbar,
+	.ai1ec-btn-toolbar,
 	.ai1ec-pagination,
 	.ai1ec-calendar-toolbar,
 	.ai1ec-read-more,

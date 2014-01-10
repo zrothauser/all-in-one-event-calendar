@@ -127,7 +127,7 @@ class Ai1ec_Theme_Loader {
 			DIRECTORY_SEPARATOR
 		);
 		$this->add_path_theme(
-			$path . 'public' . DIRECTORY_SEPARATOR . 'themes' .
+			$path . 'public' . DIRECTORY_SEPARATOR . 'themes-ai1ec' .
 			DIRECTORY_SEPARATOR . AI1EC_DEFAULT_THEME_NAME . DIRECTORY_SEPARATOR
 		);
 		return $this;

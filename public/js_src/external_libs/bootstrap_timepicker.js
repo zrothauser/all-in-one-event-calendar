@@ -43,8 +43,8 @@ define( ["jquery_timely"],
     constructor: Timepicker,
     _init: function() {
       var self = this;
-      if (this.showWidgetOnAddonClick && (this.$element.parent().hasClass('input-group'))) {
-        this.$element.parent('.input-group').find('.input-group-addon').on({
+      if (this.showWidgetOnAddonClick && (this.$element.parent().hasClass('ai1ec-input-group'))) {
+        this.$element.parent('.ai1ec-input-group').find('.ai1ec-input-group-addon').on({
           'click.timepicker': $.proxy(this.showWidget, this)
         });
         this.$element.on({
@@ -246,76 +246,76 @@ define( ["jquery_timely"],
         templateContent;
 
       if (this.showInputs) {
-        hourTemplate = '<input type="text" class="bootstrap-timepicker-hour" maxlength="2"/>';
-        minuteTemplate = '<input type="text" class="bootstrap-timepicker-minute" maxlength="2"/>';
-        secondTemplate = '<input type="text" class="bootstrap-timepicker-second" maxlength="2"/>';
-        meridianTemplate = '<input type="text" class="bootstrap-timepicker-meridian" maxlength="2"/>';
+        hourTemplate = '<input type="text" class="ai1ec-bootstrap-timepicker-hour" maxlength="2"/>';
+        minuteTemplate = '<input type="text" class="ai1ec-bootstrap-timepicker-minute" maxlength="2"/>';
+        secondTemplate = '<input type="text" class="ai1ec-bootstrap-timepicker-second" maxlength="2"/>';
+        meridianTemplate = '<input type="text" class="ai1ec-bootstrap-timepicker-meridian" maxlength="2"/>';
       } else {
-        hourTemplate = '<span class="bootstrap-timepicker-hour"></span>';
-        minuteTemplate = '<span class="bootstrap-timepicker-minute"></span>';
-        secondTemplate = '<span class="bootstrap-timepicker-second"></span>';
-        meridianTemplate = '<span class="bootstrap-timepicker-meridian"></span>';
+        hourTemplate = '<span class="ai1ec-bootstrap-timepicker-hour"></span>';
+        minuteTemplate = '<span class="ai1ec-bootstrap-timepicker-minute"></span>';
+        secondTemplate = '<span class="ai1ec-bootstrap-timepicker-second"></span>';
+        meridianTemplate = '<span class="ai1ec-bootstrap-timepicker-meridian"></span>';
       }
 
       templateContent = '<table>'+
          '<tr>'+
-           '<td><a href="#" data-action="incrementHour"><i class="fa fa-chevron-circle-up"></i></a></td>'+
-           '<td class="separator">&nbsp;</td>'+
-           '<td><a href="#" data-action="incrementMinute"><i class="fa fa-chevron-circle-up"></i></a></td>'+
+           '<td><a href="#" data-action="incrementHour"><i class="ai1ec-fa ai1ec-fa-chevron-circle-up"></i></a></td>'+
+           '<td class="ai1ec-separator">&nbsp;</td>'+
+           '<td><a href="#" data-action="incrementMinute"><i class="ai1ec-fa ai1ec-fa-chevron-circle-up"></i></a></td>'+
            (this.showSeconds ?
-             '<td class="separator">&nbsp;</td>'+
-             '<td><a href="#" data-action="incrementSecond"><i class="fa fa-chevron-circle-up"></i></a></td>'
+             '<td class="ai1ec-separator">&nbsp;</td>'+
+             '<td><a href="#" data-action="incrementSecond"><i class="ai1ec-fa ai1ec-fa-chevron-circle-up"></i></a></td>'
            : '') +
            (this.showMeridian ?
-             '<td class="separator">&nbsp;</td>'+
-             '<td class="meridian-column"><a href="#" data-action="toggleMeridian"><i class="fa fa-chevron-circle-up"></i></a></td>'
+             '<td class="ai1ec-separator">&nbsp;</td>'+
+             '<td class="ai1ec-meridian-column"><a href="#" data-action="toggleMeridian"><i class="ai1ec-fa ai1ec-fa-chevron-circle-up"></i></a></td>'
            : '') +
          '</tr>'+
          '<tr>'+
            '<td>'+ hourTemplate +'</td> '+
-           '<td class="separator">:</td>'+
+           '<td class="ai1ec-separator">:</td>'+
            '<td>'+ minuteTemplate +'</td> '+
            (this.showSeconds ?
-            '<td class="separator">:</td>'+
+            '<td class="ai1ec-separator">:</td>'+
             '<td>'+ secondTemplate +'</td>'
            : '') +
            (this.showMeridian ?
-            '<td class="separator">&nbsp;</td>'+
+            '<td class="ai1ec-separator">&nbsp;</td>'+
             '<td>'+ meridianTemplate +'</td>'
            : '') +
          '</tr>'+
          '<tr>'+
-           '<td><a href="#" data-action="decrementHour"><i class="fa fa-chevron-circle-down"></i></a></td>'+
-           '<td class="separator"></td>'+
-           '<td><a href="#" data-action="decrementMinute"><i class="fa fa-chevron-circle-down"></i></a></td>'+
+           '<td><a href="#" data-action="decrementHour"><i class="ai1ec-fa ai1ec-fa-chevron-circle-down"></i></a></td>'+
+           '<td class="ai1ec-separator"></td>'+
+           '<td><a href="#" data-action="decrementMinute"><i class="ai1ec-fa ai1ec-fa-chevron-circle-down"></i></a></td>'+
            (this.showSeconds ?
-            '<td class="separator">&nbsp;</td>'+
-            '<td><a href="#" data-action="decrementSecond"><i class="fa fa-chevron-circle-down"></i></a></td>'
+            '<td class="ai1ec-separator">&nbsp;</td>'+
+            '<td><a href="#" data-action="decrementSecond"><i class="ai1ec-fa ai1ec-fa-chevron-circle-down"></i></a></td>'
            : '') +
            (this.showMeridian ?
-            '<td class="separator">&nbsp;</td>'+
-            '<td><a href="#" data-action="toggleMeridian"><i class="fa fa-chevron-circle-down"></i></a></td>'
+            '<td class="ai1ec-separator">&nbsp;</td>'+
+            '<td><a href="#" data-action="toggleMeridian"><i class="ai1ec-fa ai1ec-fa-chevron-circle-down"></i></a></td>'
            : '') +
          '</tr>'+
        '</table>';
 
       switch(this.template) {
       case 'modal':
-        template = '<div class="bootstrap-timepicker-widget modal fade in" data-backdrop="'+ (this.modalBackdrop ? 'true' : 'false') +'"><div class="modal-dialog"><div class="modal-content">'+
-          '<div class="modal-header">'+
-            '<a href="#" class="close" data-dismiss="modal">×</a>'+
+        template = '<div class="ai1ec-bootstrap-timepicker-widget ai1ec-modal ai1ec-fade ai1ec-in" data-backdrop="'+ (this.modalBackdrop ? 'true' : 'false') +'"><div class="ai1ec-modal-dialog"><div class="ai1ec-modal-content">'+
+          '<div class="ai1ec-modal-header">'+
+            '<a href="#" class="ai1ec-close" data-dismiss="modal">×</a>'+
             '<h3>Pick a Time</h3>'+
           '</div>'+
-          '<div class="modal-body">'+
+          '<div class="ai1ec-modal-body">'+
             templateContent +
           '</div>'+
-          '<div class="modal-footer">'+
-            '<a href="#" class="btn btn-primary" data-dismiss="modal">OK</a>'+
+          '<div class="ai1ec-modal-footer">'+
+            '<a href="#" class="ai1ec-btn ai1ec-btn-primary" data-dismiss="modal">OK</a>'+
           '</div>'+
         '</div></div></div>';
         break;
       case 'dropdown':
-        template = '<div class="bootstrap-timepicker-widget dropdown-menu">'+ templateContent +'</div>';
+        template = '<div class="ai1ec-bootstrap-timepicker-widget ai1ec-dropdown-menu">'+ templateContent +'</div>';
         break;
       }
 
@@ -349,7 +349,7 @@ define( ["jquery_timely"],
       if (this.template === 'modal' && this.$widget.modal) {
         this.$widget.modal('hide');
       } else {
-        this.$widget.removeClass('open');
+        this.$widget.removeClass('ai1ec-open');
       }
 
       $(document).off('mousedown.timepicker, touchend.timepicker');
@@ -624,17 +624,17 @@ define( ["jquery_timely"],
       var width = this.component ? this.component.outerWidth(true) : this.$element.outerWidth(false);
       var left = offset.left, top = offset.top;
 
-      this.$widget.removeClass('timepicker-orient-top timepicker-orient-bottom timepicker-orient-right timepicker-orient-left');
+      this.$widget.removeClass('ai1ec-timepicker-orient-top ai1ec-timepicker-orient-bottom ai1ec-timepicker-orient-right ai1ec-timepicker-orient-left');
 
       if (this.orientation.x !== 'auto') {
-        this.picker.addClass('datepicker-orient-' + this.orientation.x);
+        this.picker.addClass('ai1ec-datepicker-orient-' + this.orientation.x);
         if (this.orientation.x === 'right') {
           left -= widgetWidth - width;
         }
       } else{
         // auto x orientation is best-placement: if it crosses a window edge, fudge it sideways
         // Default to left
-        this.$widget.addClass('timepicker-orient-left');
+        this.$widget.addClass('ai1ec-timepicker-orient-left');
         if (offset.left < 0) {
           left -= offset.left - visualPadding;
         } else if (offset.left + widgetWidth > windowWidth) {
@@ -652,7 +652,7 @@ define( ["jquery_timely"],
           yorient = 'bottom';
         }
       }
-      this.$widget.addClass('timepicker-orient-' + yorient);
+      this.$widget.addClass('ai1ec-timepicker-orient-' + yorient);
       if (yorient === 'top'){
         top += height;
       } else{
@@ -667,7 +667,7 @@ define( ["jquery_timely"],
     },
 
     remove: function() {
-      $('document').off('.timepicker');
+      $('document').off('.ai1ec-timepicker');
       if (this.$widget) {
         this.$widget.remove();
       }
@@ -946,24 +946,24 @@ define( ["jquery_timely"],
           second = this.second.toString().length === 1 ? '0' + this.second : this.second;
 
       if (this.showInputs) {
-        this.$widget.find('input.bootstrap-timepicker-hour').val(hour);
-        this.$widget.find('input.bootstrap-timepicker-minute').val(minute);
+        this.$widget.find('input.ai1ec-bootstrap-timepicker-hour').val(hour);
+        this.$widget.find('input.ai1ec-bootstrap-timepicker-minute').val(minute);
 
         if (this.showSeconds) {
-          this.$widget.find('input.bootstrap-timepicker-second').val(second);
+          this.$widget.find('input.ai1ec-bootstrap-timepicker-second').val(second);
         }
         if (this.showMeridian) {
-          this.$widget.find('input.bootstrap-timepicker-meridian').val(this.meridian);
+          this.$widget.find('input.ai1ec-bootstrap-timepicker-meridian').val(this.meridian);
         }
       } else {
-        this.$widget.find('span.bootstrap-timepicker-hour').text(hour);
-        this.$widget.find('span.bootstrap-timepicker-minute').text(minute);
+        this.$widget.find('span.ai1ec-bootstrap-timepicker-hour').text(hour);
+        this.$widget.find('span.ai1ec-bootstrap-timepicker-minute').text(minute);
 
         if (this.showSeconds) {
-          this.$widget.find('span.bootstrap-timepicker-second').text(second);
+          this.$widget.find('span.ai1ec-bootstrap-timepicker-second').text(second);
         }
         if (this.showMeridian) {
-          this.$widget.find('span.bootstrap-timepicker-meridian').text(this.meridian);
+          this.$widget.find('span.ai1ec-bootstrap-timepicker-meridian').text(this.meridian);
         }
       }
     },
@@ -973,10 +973,10 @@ define( ["jquery_timely"],
         return;
       }
 
-      var t = this.$widget.find('input.bootstrap-timepicker-hour').val() + ':' +
-              this.$widget.find('input.bootstrap-timepicker-minute').val() +
-              (this.showSeconds ? ':' + this.$widget.find('input.bootstrap-timepicker-second').val() : '') +
-              (this.showMeridian ? this.$widget.find('input.bootstrap-timepicker-meridian').val() : '')
+      var t = this.$widget.find('input.ai1ec-bootstrap-timepicker-hour').val() + ':' +
+              this.$widget.find('input.ai1ec-bootstrap-timepicker-minute').val() +
+              (this.showSeconds ? ':' + this.$widget.find('input.ai1ec-bootstrap-timepicker-second').val() : '') +
+              (this.showMeridian ? this.$widget.find('input.ai1ec-bootstrap-timepicker-meridian').val() : '')
       ;
 
       this.setTime(t, true);
@@ -1098,5 +1098,5 @@ define( ["jquery_timely"],
 
   $.fn.timepicker.Constructor = Timepicker;
 
-      })($, window, document);
+  })($, window, document);
 } );

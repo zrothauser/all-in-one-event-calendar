@@ -51,6 +51,9 @@ class Ai1ec_Compatibility_OutputBuffer {
 		$chunk_size      = 0,
 		$flags           = null
 	) {
+		if ( 'ob_gzhandler' === $output_callback && $this->is_zlib_active() ) {
+			$output_callback = null; // do not compress again
+		}
 		if ( null === $flags ) {
 			if ( defined( 'PHP_OUTPUT_HANDLER_STDFLAGS' ) ) {
 				$flags = PHP_OUTPUT_HANDLER_STDFLAGS;
@@ -59,6 +62,19 @@ class Ai1ec_Compatibility_OutputBuffer {
 			}
 		}
 		return ob_start( $output_callback, $chunk_size, $flags );
+	}
+
+	/**
+	 * Check if zlib compression is activated.
+	 *
+	 * @return bool Activation status.
+	 */
+	public function is_zlib_active() {
+		$zlib = ini_get( 'zlib.output_compression' );
+		if ( 'off' !== strtolower( $zlib ) && ! empty( $zlib ) ) {
+			return true;
+		}
+		return false;
 	}
 
 	/**

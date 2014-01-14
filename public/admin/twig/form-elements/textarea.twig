@@ -1,0 +1,12 @@
+{% macro textarea( id, name='', value = '', attributes = [] ) %}
+	{% if name == '' %}
+		{% set id = name %}
+	{% endif %}
+        <textarea
+                name="{{ name }}" 
+                id="{{ id }}"
+		{% for attribute, value in attributes %}
+			{{ attribute }}="{{ value }}"
+		{% endfor %}
+                        >{{ value }}</textarea>
+{% endmacro %}

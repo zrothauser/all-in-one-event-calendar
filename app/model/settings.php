@@ -34,24 +34,15 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 * Register new option to be used.
 	 *
 	 * @param string $option   Name of option.
-	 * @param mixed  $value    The value.
+	 * @param mixed  $value    The value
 	 * @param string $type     Option type to be used for validation.
 	 * @param string $renderer Name of class to render the option.
 	 *
 	 * @return Ai1ec_Settings Instance of self for chaining.
 	 */
-	public function register(
-		$option,
-		$value,
-		$type,
-		$renderer,
-		$version = '2.0a'
-	) {
-		if (
-			! isset( $this->_options[$option] ) ||
-			! isset( $this->_options[$option]['version'] ) ||
-			(string)$this->_options[$option]['version'] !== (string)$version
-		) {
+	public function register( $option, $value, $type, $renderer ) {
+
+		if( ! isset( $this->_options[$option] ) ){
 			$this->_options[$option] = array(
 				'value'    => ( isset( $this->_options[$option] ) )
 					? $this->_options[$option]['value']
@@ -131,6 +122,8 @@ class Ai1ec_Settings extends Ai1ec_App {
 				$this->_options[$option]['value'] = $value;
 				$this->_updated                   = true;
 			}
+		} else if ( 'edit_robots_txt' === $option) {
+			$this->_registry->get( 'robots.helper' )->write( $value );
 		} else if (
 			(string)$value !== (string)$this->_options[$option]['value']
 		) {
@@ -287,6 +280,10 @@ class Ai1ec_Settings extends Ai1ec_App {
 		$this->_set_standard_values();
 		$values         = $this->_registry->get( 'model.option' )
 			->get( self::WP_OPTION_KEY, array() );
+
+		// Get robots txt
+		$values['edit_robots_txt']['value'] =
+				$this->_registry->get( 'robots.helper' )->read();
 
 		$this->_updated = false;
 		$test_value = is_array( $values ) ? current( $values ) : false;
@@ -662,6 +659,24 @@ class Ai1ec_Settings extends Ai1ec_App {
 					),
 				),
 				'default'  => false,
+			),
+			'edit_robots_txt' => array(
+				'type' => 'string',
+				'renderer' => array(
+					'class' => 'textarea',
+					'tab'   => 'advanced',
+					'item'  => 'advanced',
+					'label' => Ai1ec_I18n::__( 'Edit <strong>robots.txt</strong> in this WordPress' ),
+					'type'  => 'normal',
+					'rows'  => 6,
+					'help'  => Ai1ec_I18n::__(
+						'The Robot Exclusion Standard, also known as the Robots Exclusion Protocol or
+						<a href="http://en.wikipedia.org/wiki/Robots.txt" target="_blank">robots.txt</a>
+						protocol, is a convention to advising cooperating web crawlers and other web robots
+						about accessing all or part of a website which is otherwise publicly viewable.'
+					),
+				),
+				'default'  => '',
 			),
 		);
 	}

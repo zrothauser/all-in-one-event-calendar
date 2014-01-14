@@ -85,15 +85,16 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 			$etag !== stripslashes( $_SERVER['HTTP_IF_NONE_MATCH'] )
 		) {
 			// compress data if possible
+			$compatibility_ob = $this->_registry->get( 'compatibility.ob' );
 			if ( Ai1ec_Http_Response_Helper::client_use_gzip() ) {
-				ob_start( 'ob_gzhandler' );
+				$compatibility_ob->start( 'ob_gzhandler' );
 				header( 'Content-Encoding: gzip' );
 			} else {
-				ob_start();
+				$compatibility_ob->start();
 			}
 			$content = $this->get_compiled_css();
 			echo $content;
-			ob_end_flush();
+			$compatibility_ob->end_flush();
 		} else {
 			// Not modified!
 			status_header( 304 );

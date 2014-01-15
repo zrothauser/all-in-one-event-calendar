@@ -316,6 +316,12 @@ class Ai1ec_Front_Controller {
 			array( 'view.event.content', 'event_excerpt_noautop' ),
 			11
 		);
+		$dispatcher->register_filter(
+			'robots_txt',
+			array( 'robots.helper', 'rules' ),
+			10,
+			2
+		);
 
 		// Category colors
 		$dispatcher->register_action(
@@ -453,14 +459,16 @@ class Ai1ec_Front_Controller {
 				'plugin_action_links_' . AI1EC_PLUGIN_BASENAME,
 				array( 'view.admin.nav', 'plugin_action_links' )
 			);
-
+			$dispatcher->register_action(
+				'shutdown',
+				array( 'robots.helper', 'install' )
+			);
 		} else { // ! is_admin()
 			$dispatcher->register_shortcode(
 				'ai1ec',
 				array( 'view.calendar.shortcode', 'shortcode' )
 			);
 		}
-
 	}
 
 	/**

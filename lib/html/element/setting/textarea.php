@@ -40,6 +40,16 @@ class Ai1ec_Html_Setting_Textarea extends Ai1ec_Html_Element_Settings {
 			$input_args['rows'] = $this->_args['renderer']['rows'];
 		}
 
+		// Set textarea disabled
+		if ( ! empty( $this->_args['renderer']['disabled'] ) ) {
+			$input_args['disabled'] = $this->_args['renderer']['disabled'];
+		}
+
+		// Set textarea readonly
+		if ( ! empty( $this->_args['renderer']['readonly'] ) ) {
+			$input_args['readonly'] = $this->_args['renderer']['readonly'];
+		}
+
 		$args = array(
 			'id'         => $this->_args['id'],
 			'label'      => $this->_args['renderer']['label'],

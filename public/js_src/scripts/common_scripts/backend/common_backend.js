@@ -6,19 +6,28 @@ define(
 		"ai1ec_config",
 		"scripts/common_scripts/backend/common_event_handlers",
 		"external_libs/Placeholders",
-		"external_libs/bootstrap_tooltip",
-		"external_libs/bootstrap_popover",
-		"libs/modal_helper"
+		"external_libs/bootstrap/tooltip",
+		"external_libs/bootstrap/popover",
+		"external_libs/bootstrap/modal"
 	],
+
 	function( $, domReady, ai1ec_config, event_handlers ) {
+
 	"use strict"; // jshint ;_;
 
 	var add_export_to_facebook = function() {
-		// When we have select the "Show only events that can be exported to facebook" filter and when there are rows in the table
-		if( $( '#ai1ec-facebook-filter option[value=exportable]:selected' ).length > 0 && $( 'table.wp-list-table tr.no-items' ).length === 0 && ai1ec_config.facebook_logged_in === "1" ) {
+		// When we have select the "Show only events that can be exported to
+		// facebook" filter and when there are rows in the table
+		if (
+			$( '#ai1ec-facebook-filter option[value=exportable]:selected' ).length > 0 &&
+			$( 'table.wp-list-table tr.no-items' ).length === 0 &&
+			ai1ec_config.facebook_logged_in === "1"
+		) {
 			// Add the bulk action to the selects
-			$( '<option>' ).val( 'export-facebook' ).text( "Export to facebook" ).appendTo( "select[name='action']" );
-			$( '<option>' ).val( 'export-facebook' ).text( "Export to facebook" ).appendTo( "select[name='action2']" );
+			$( '<option>' ).val( 'export-facebook' ).text( "Export to facebook" )
+				.appendTo( "select[name='action']" );
+			$( '<option>' ).val( 'export-facebook' ).text( "Export to facebook" )
+				.appendTo( "select[name='action2']" );
 		}
 	};
 
@@ -62,8 +71,13 @@ define(
 					$( '#page_on_front' ).attr( 'disabled', 'disabled' );
 				};
 				disable_front_page_option();
-				$( '#front-static-pages input:radio' ).change( disable_front_page_option );
-				$( '#page_on_front' ).after( '<span class="description">' + ai1ec_config.page_on_front_description + '</span>' );
+				$( '#front-static-pages input:radio' )
+					.change( disable_front_page_option );
+				$( '#page_on_front' ).after(
+					'<span class="description">' +
+					ai1ec_config.page_on_front_description +
+					'</span>'
+				);
 			}
 			// In strict mode, aggressively remove elements from the admin interface.
 			if( ai1ec_config.strict_mode === "1" ) {
@@ -71,8 +85,10 @@ define(
 					.not( '#ai1ec-calendar-tasks, #dashboard_right_now' )
 					.remove();
 				$( '#adminmenu > li' )
-					.not( '.wp-menu-separator, #menu-dashboard, #menu-posts-ai1ec_event, #menu-media, #menu-appearance, #menu-users, #menu-settings' )
-					.remove();
+					.not(
+						'.wp-menu-separator, #menu-dashboard, #menu-posts-ai1ec_event, ' +
+						'#menu-media, #menu-appearance, #menu-users, #menu-settings'
+					).remove();
 				$( '#menu-appearance > .wp-submenu li, #menu-settings > .wp-submenu li' )
 					.not( ':has(a[href*="all-in-one-event-calendar"])' )
 					.remove();
@@ -116,11 +132,16 @@ define(
 
 	var attach_event_handlers_backend = function() {
 		$( document )
-			.on( 'click', '.ai1ec-facebook-cron-dismiss-notification',  event_handlers.dismiss_plugins_messages_handler )
-			.on( 'click', '.ai1ec-dismiss-notification', event_handlers.dismiss_notification_handler )
-			.on( 'click', '.ai1ec-dismiss-intro-video', event_handlers.dismiss_intro_video_handler )
-			.on( 'click', '.ai1ec-dismiss-license-warning', event_handlers.dismiss_license_warning_handler )
-			.on( 'click', '.ai1ec-limit-by-cat, .ai1ec-limit-by-tag, .ai1ec-limit-by-event', event_handlers.handle_multiselect_containers_widget_page );
+			.on( 'click', '.ai1ec-facebook-cron-dismiss-notification',
+				event_handlers.dismiss_plugins_messages_handler )
+			.on( 'click', '.ai1ec-dismiss-notification',
+				event_handlers.dismiss_notification_handler )
+			.on( 'click', '.ai1ec-dismiss-intro-video',
+				event_handlers.dismiss_intro_video_handler )
+			.on( 'click', '.ai1ec-dismiss-license-warning',
+				event_handlers.dismiss_license_warning_handler )
+			.on( 'click', '.ai1ec-limit-by-cat, .ai1ec-limit-by-tag, .ai1ec-limit-by-event',
+				event_handlers.handle_multiselect_containers_widget_page );
 	};
 
 	/**

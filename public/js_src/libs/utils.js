@@ -1,13 +1,17 @@
 define(
-		[
-		 "jquery_timely",
-		 "external_libs/bootstrap_tab"
-		 ],
-		 function( $ ) {
+	[
+		"jquery_timely",
+		"external_libs/bootstrap/tab"
+	],
+	function( $ ) {
+
 	"use strict"; // jshint ;_;
+
 	var AI1EC_UTILS = function() {
-			// We just return an object. This is useful if we ever need to define some private variables.
+			// We just return an object. This is useful if we ever need to define some
+			// private variables.
 			return {
+
 				/**
 				 * check if a number is float
 				 *
@@ -18,6 +22,7 @@ define(
 				"is_float": function( n ) {
 					return ! isNaN( parseFloat( n ) );
 				},
+
 				/**
 				 * check if the value is a valid coordinate
 				 *
@@ -28,16 +33,20 @@ define(
 				 * @return boolean true if the value is a valid coordinate
 				 */
 				"is_valid_coordinate": function( n, is_latitude ) {
-					// Longitude is valid between +180 and -180 while Latitude is valid between +90 an -90
+					// Longitude is valid between +180 and -180 while Latitude is valid
+					// between +90 an -90
 					var max_value = is_latitude ? 90 : 180;
 					return this.is_float( n ) && Math.abs( n ) < max_value;
 				},
+
 				/**
-				 * Converts all the commas to dots so that the value can be used as a float
+				 * Converts all the commas to dots so that the value can be used as a
+				 * float
 				 */
 				"convert_comma_to_dot": function( value ) {
 					return value.replace( ',', '.' );
 				},
+
 				/**
 				 * Check if a field has a value.
 				 *
@@ -49,14 +58,16 @@ define(
 					var selector = '#' + id;
 					var $field = $( selector );
 					var has_value = false;
-					// Check if the field was found. If it's not found we treat it as having no value.
+					// Check if the field was found. If it's not found we treat it as
+					// having no value.
 					if( $field.length === 1 ) {
 						has_value = $.trim( $field.val() ) !== '';
 					}
 					return has_value;
 				},
+
 				/**
-				 * Create a twitter bootstrap aler
+				 * Create a twitter bootstrap alert
 				 *
 				 * @param text the text of the message
 				 *
@@ -68,11 +79,11 @@ define(
 				"make_alert": function( text, type, hide_close_button ) {
 					var alert_class = '';
 					switch (type) {
-						case 'error'  : alert_class = 'alert alert-error';
+						case 'error'  : alert_class = 'ai1ec-alert ai1ec-alert-danger';
 							break;
-						case 'success': alert_class = 'alert alert-success';
+						case 'success': alert_class = 'ai1ec-alert ai1ec-alert-success';
 							break;
-						default: alert_class = 'alert';
+						default: alert_class = 'ai1ec-alert';
 							break;
 					}
 					// Create the alert
@@ -83,8 +94,8 @@ define(
 					if ( ! hide_close_button ) {
 						// Create the close button
 						var $close = $( '<a />', {
-							"class"        : "close",
-							"data-dismiss" : "alert",
+							"class"        : "ai1ec-close",
+							"data-dismiss" : "ai1ec-alert",
 							"href"         : "#",
 							"text"         : "x"
 						} );
@@ -93,8 +104,11 @@ define(
 					}
 					return $alert;
 				},
+
 				/**
-				 * Define the ajax url. If undefined we hardcode a value. This is needed for testing purpose only because in the testing environment the variable ajaxurl is undefined.
+				 * Define the ajax url. If undefined we hardcode a value. This is needed
+				 * for testing purpose only because in the testing environment the
+				 * variable ajaxurl is undefined.
 				 */
 				"get_ajax_url": function() {
 					if( typeof window.ajaxurl === "undefined" ) {
@@ -103,6 +117,7 @@ define(
 						return window.ajaxurl;
 					}
 				},
+
 				/**
 				 * isUrl checks to see if the passed parameter is a valid url
 				 * and returns true on access and false on failure
@@ -115,6 +130,7 @@ define(
 					var regexp = /(http|https|webcal):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
 					return regexp.test(s);
 				},
+
 				/**
 				 * isValidEmail checks if the mail passed is valid.
 				 *
@@ -125,22 +141,24 @@ define(
 					var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 					return re.test( email );
 				},
+
 				/**
 				 * activates the passed tab or the first one if no tab is passed.
-				 * 
+				 *
 				 * @param active_tab
 				 * @returns
 				 */
 				activate_saved_tab_on_page_load : function( active_tab ) {
 					if ( null === active_tab || undefined === active_tab ){
 						// Activate the first tab
-						$( 'ul.nav-tabs a:first' ).tab( 'show' );
+						$( 'ul.ai1ec-nav-tabs a:first' ).tab( 'show' );
 					} else {
 						// Activate the correct tab
-						$( 'ul.nav-tabs a[href=' + active_tab + ']' ).tab( 'show' );
+						$( 'ul.ai1ec-nav-tabs a[href=' + active_tab + ']' ).tab( 'show' );
 					}
 				}
 			};
 	}();
+
 	return AI1EC_UTILS;
 } );

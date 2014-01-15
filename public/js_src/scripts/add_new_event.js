@@ -14,7 +14,7 @@ define(
 		'external_libs/jquery.tools',
 		'external_libs/jquery.blockui',
 		'external_libs/ai1ec_datepicker',
-		'external_libs/bootstrap_collapse'
+		'external_libs/bootstrap/collapse'
 	],
 	function (
 		$,
@@ -74,8 +74,8 @@ define(
 				_month = _month.charAt(0) === '0' ? ( '0' + ( parseInt( _month.charAt( 1 ), 10 ) - 1 ) ) : ( parseInt( _month, 10 ) - 1 );
 
 				dp_date.push( new Date( _year, _month, _day ) );
-				_span_html.push( 
-					calendrical_functions.formatDate( 
+				_span_html.push(
+					calendrical_functions.formatDate(
 						new Date( _year, _month, _day ),
 						ai1ec_config.date_format,
 						true
@@ -125,10 +125,10 @@ define(
 	 * behaviour when open.
 	 */
 	var init_collapsibles = function() {
-		$( '.accordion-body' ).on( 'hide', function() {
+		$( '.ai1ec-accordion-body' ).on( 'hide', function() {
 			$( this ).removeClass( 'ai1ec-overflow-visible' );
 		} );
-		$( '.accordion-body' ).on( 'shown', function() {
+		$( '.ai1ec-accordion-body' ).on( 'shown', function() {
 			var $el = $( this );
 			window.setTimeout(
 				function() { $el.addClass( 'ai1ec-overflow-visible' ); },

@@ -15,7 +15,7 @@ define(
 		"external_libs/jquery.tablescroller",
 		"external_libs/jquery.scrollTo",
 		"external_libs/bootstrap_datepicker",
-		"external_libs/bootstrap_alert",
+		"external_libs/bootstrap/alert",
 		"external_libs/jquery_cookie"
 	],
 	function(
@@ -30,11 +30,13 @@ define(
 		common_frontend,
 		select2_multiselect_helper
 	) {
+
 	"use strict"; // jshint ;_;
+
 	$.cookie.json = true;
 	var save_filter_view_cookie = 'ai1ec_saved_filter';
 	// the initial value is determined by the visibility of the save view button
-	var are_filters_set = ! $( '#save_filtered_views' ).hasClass( 'hide' );
+	var are_filters_set = ! $( '#save_filtered_views' ).hasClass( 'ai1ec-hide' );
 
 	/**
 	 * function initialize_view
@@ -45,7 +47,8 @@ define(
 	var initialize_view = function() {
 
 		// Get the dropdown menu link of the active view.
-		var $selected_view = $('#ai1ec-view-dropdown .dropdown-menu .active a');
+		var $selected_view =
+			$('#ai1ec-view-dropdown .ai1ec-dropdown-menu .ai1ec-active a');
 
 		var hours =
 			ai1ec_config.week_view_ends_at - ai1ec_config.week_view_starts_at;
@@ -64,9 +67,14 @@ define(
 
 		if( $( '.ai1ec-week-view' ).length || $( '.ai1ec-oneday-view' ).length ) {
 			// If no active event, then in week view, scroll down to 6am.
-			$( '.ai1ec-oneday-view .tablescroll_wrapper, .ai1ec-week-view .tablescroll_wrapper' )
-				.scrollTo( '.ai1ec-hour-marker:eq(' + ai1ec_config.week_view_starts_at + ')' );
-			$( '.ai1ec-hour-marker:eq(' + ai1ec_config.week_view_starts_at + ')' ).addClass( 'ai1ec-first-visible' );
+			$(
+				'.ai1ec-oneday-view .tablescroll_wrapper, ' +
+				'.ai1ec-week-view .tablescroll_wrapper'
+			).scrollTo(
+				'.ai1ec-hour-marker:eq(' + ai1ec_config.week_view_starts_at + ')'
+			);
+			$( '.ai1ec-hour-marker:eq(' + ai1ec_config.week_view_starts_at + ')' )
+				.addClass( 'ai1ec-first-visible' );
 		}
 
 		// If in month view, extend multiday events.
@@ -86,30 +94,33 @@ define(
 		// Destroy any datepicker before loading new view.
 		var dp = $( '.ai1ec-minical-trigger' ).data( 'datepicker' );
 		if ( typeof dp !== 'undefined' ) {
-			dp.picker.parent( '.timely' ).remove();
+			dp.picker.remove();
 		}
 		// Destroy any visible tooltips or popovers.
-		$( '.tooltip.in, .ai1ec-popup' ).remove();
+		$( '.ai1ec-tooltip.ai1ec-in, .ai1ec-popup' ).remove();
 	};
 
 	var get_cal_state = function() {
 		// Otherwise we need to get the state from the dropdowns.
 		var cat_ids = [], tag_ids = [], auth_ids = [], action;
-		$( '.ai1ec-category-filter .dropdown-menu .active' ).each( function() {
-			cat_ids.push( $( this ).data( 'term' ) );
-		} );
-		$( '.ai1ec-tag-filter .dropdown-menu .active' ).each( function() {
-			tag_ids.push( $( this ).data( 'term' ) );
-		} );
-		$( '.ai1ec-author-filter .dropdown-menu .active' ).each( function() {
-			auth_ids.push( $( this ).data( 'term' ) );
-		} );
+		$( '.ai1ec-category-filter .ai1ec-dropdown-menu .ai1ec-active' )
+			.each( function() {
+				cat_ids.push( $( this ).data( 'term' ) );
+			} );
+		$( '.ai1ec-tag-filter .ai1ec-dropdown-menu .ai1ec-active' )
+			.each( function() {
+				tag_ids.push( $( this ).data( 'term' ) );
+			} );
+		$( '.ai1ec-author-filter .ai1ec-dropdown-menu .ai1ec-active' )
+			.each( function() {
+				auth_ids.push( $( this ).data( 'term' ) );
+			} );
 		var cal_state = {};
 		cal_state.cat_ids  = cat_ids;
 		cal_state.tag_ids  = tag_ids;
 		cal_state.auth_ids = auth_ids;
-		action =
-			$( '.ai1ec-views-dropdown .dropdown-menu .active' ).data( 'action' );
+		action = $( '.ai1ec-views-dropdown .ai1ec-dropdown-menu .ai1ec-active' )
+			.data( 'action' );
 		cal_state.action = action;
 		return cal_state;
 	};
@@ -136,7 +147,7 @@ define(
 		}
 		$.cookie( save_filter_view_cookie, cookie, { path: '/', expires: 365 } );
 		$( '#save_filtered_views' )
-			.addClass( 'active' )
+			.addClass( 'ai1ec-active' )
 			.attr( 'data-original-title', ai1ec_config.clear_saved_filter_text );
 		var $alert =
 			utils.make_alert( ai1ec_config.save_filter_text_ok, 'success' );
@@ -159,12 +170,12 @@ define(
 		}
 		$.cookie( save_filter_view_cookie, cookie, { path : '/', expires : 365 } );
 		$( '#save_filtered_views' )
-			.removeClass( 'active' )
+			.removeClass( 'ai1ec-active' )
 			.attr( 'data-original-title', ai1ec_config.reset_saved_filter_text );
 		// we keep the variable that tells us if some filters are set updated on every call.
 		// so if no filters are applied, just hide the button
 		if( ! are_filters_set ) {
-			$( '#save_filtered_views' ).addClass( 'hide' );
+			$( '#save_filtered_views' ).addClass( 'ai1ec-hide' );
 		}
 		var $alert =
 			utils.make_alert( ai1ec_config.remove_filter_text_ok, 'success' );
@@ -228,7 +239,8 @@ define(
 						}
 						// And the "Save filtered view"
 						if( typeof data.save_view_btngroup === 'string' ) {
-							$( '#save_filtered_views' ).closest( '.btn-group' ).replaceWith( data.save_view_btngroup );
+							$( '#save_filtered_views' ).closest( '.ai1ec-btn-group' )
+								.replaceWith( data.save_view_btngroup );
 						}
 						are_filters_set = data.are_filters_set;
 
@@ -280,9 +292,9 @@ define(
 			load_view( url, 'jsonp' );
 		}
 	};
+
 	// Handle loading the correct view when clicking on a link
 	var handle_click_on_link_to_load_view = function( e ) {
-
 		var $el = $( this );
 		e.preventDefault();
 
@@ -305,23 +317,18 @@ define(
 			$el.datepicker( {
 					todayBtn: 'linked',
 					todayHighlight: true,
-					templateOverrides: 'headTemplate contTemplate',
 					headTemplate:
-						'<thead><tr class="datepicker-btn-group">' +
-							'<th class="prev"><div class="dp-btn"><i class="icon-arrow-left"/></div></th>' +
-							'<th colspan="5" class="switch"><div class="dp-btn"></div></th>' +
-							'<th class="next"><div class="dp-btn"><i class="icon-arrow-right"/></div></th>' +
-						'</tr></thead>',
-					contTemplate: '<tbody><tr><td colspan="7" class="grid-picker"></td></tr></tbody>'
+						'<thead><tr class="ai1ec-datepicker-btn-group">' +
+							'<th class="ai1ec-prev"><i class="icon-arrow-left"></i></th>' +
+							'<th colspan="5" class="ai1ec-datepicker-switch"></th>' +
+							'<th class="ai1ec-next"><i class="icon-arrow-right"></i></th>' +
+						'</tr></thead>'
 				} );
 
 			// Extend Datepicker behaviour without modifying the plugin.
 			var dp = $el.data( 'datepicker' );
-			// Wrap datepicker in div.timely to avoid polluting global namespace, and
-			// flag as right-aligned.
-			dp.picker
-				.wrapAll( '<div class="timely" />' )
-				.addClass( 'ai1ec-right-aligned' );
+			// Flag datepicker as right-aligned.
+			dp.picker.addClass( 'ai1ec-right-aligned' );
 			// Replace the place() method so that it is right-aligned to trigger.
 			var place_orig = dp.place;
 			dp.place = function() {

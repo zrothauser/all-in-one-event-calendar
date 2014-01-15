@@ -7,11 +7,19 @@ define(
 		"libs/tags_select",
 		'libs/utils',
 		'external_libs/jquery_cookie',
-		'external_libs/bootstrap_tab',
-		'external_libs/bootstrap_alert',
-		"libs/modal_helper"
+		'external_libs/bootstrap/tab',
+		'external_libs/bootstrap/alert',
+		'external_libs/bootstrap/modal'
 	],
-	function( $, domReady, ics_event_handlers, select2_multiselect_helper, tags_select, utils ) {
+	function(
+		$,
+		domReady,
+		ics_event_handlers,
+		select2_multiselect_helper,
+		tags_select,
+		utils
+	) {
+
 	"use strict"; // jshint ;_;
 
 	/**
@@ -22,6 +30,7 @@ define(
 		select2_multiselect_helper.refresh( $ics_container );
 		tags_select.refresh( $ics_container );
 	};
+
 	// Function that handles setting the cookie when the tab is clicked
 	var handle_set_tab_cookie = function( e ) {
 		var active = $( this ).attr( 'href' );
@@ -39,10 +48,10 @@ define(
 		select2_multiselect_helper.init( $file_upload_container );
 		tags_select.init( $file_upload_container );
 		// Save the active tab in a cookie on click.
-		$( 'ul.nav-tabs a' ).on( 'click', handle_set_tab_cookie );
+		$( 'ul.ai1ec-nav-tabs a' ).on( 'click', handle_set_tab_cookie );
 		// Reinitialize Select2 widgets when displayed (required for placement of
 		// placeholders).
-		$( 'ul.nav-tabs a' ).on( 'shown', refresh_select2 );
+		$( 'ul.ai1ec-nav-tabs a' ).on( 'shown', refresh_select2 );
 
 		// ============================ICS EVENT HANDLERs=======================
 		$( document ).on( 'click', '#ai1ec_add_new_ics', ics_event_handlers.add_new_ics_event_handler );
@@ -55,8 +64,6 @@ define(
 
 		$( document ).on( 'click', '.ai1ec_update_ics', ics_event_handlers.update_ics_handler );
 	};
-	
-
 
 	var start = function() {
 		domReady( function(){

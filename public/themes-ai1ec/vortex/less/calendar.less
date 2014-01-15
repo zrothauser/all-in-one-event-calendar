@@ -39,7 +39,7 @@
 	border-bottom-color: darken(@toolbarBorder, 10%);
 	.box-shadow( 0 1px 2px rgba(0,0,0,0.15) );*/
 
-	.border-radius( 6px );
+	border-radius: 6px;
 	padding: 4px 8px;
 	margin-bottom: 8px;
 	.nav {
@@ -115,7 +115,7 @@
 	padding-right: 6px;
 }
 .ai1ec-icon-datepicker {
-	.ai1ec-opacity( 75 );
+	.ai1ec-opacity( 0.75 );
 	filter: none\9; // IE8 renders semi-opaque PNGs terribly
 	display: inline-block;
 	height: 18px;
@@ -341,7 +341,7 @@ table.ai1ec-oneday-view-original {
 		font-weight: normal !important;
 		background: @tableLabelBackground;
 		float: left;
-		.ai1ec-border-radius( 3px );
+		border-radius: 3px;
 	}
 	.ai1ec-allday-label {
 		margin-top: 1px;
@@ -358,7 +358,7 @@ table.ai1ec-oneday-view-original {
 		z-index: 2;
 		div {
 			background-color: @dayViewNowMarkerColor;
-			.ai1ec-border-radius( 0 0 3px 3px );
+			border-radius: 0 0 3px 3px;
 			.ai1ec-box-shadow( 0 1px 1px rgba(0, 0, 0, 0.35) );
 			color: @white;
 			.ai1ec-opacity( 0 );
@@ -368,7 +368,7 @@ table.ai1ec-oneday-view-original {
 			.ai1ec-transition( opacity 0.1s );
 		}
 		&:hover div {
-			.ai1ec-opacity( 100 );
+			.ai1ec-opacity( 1 );
 		}
 	}
 }
@@ -381,10 +381,10 @@ table.ai1ec-oneday-view-original {
 		border: none;
 		display: block;
 		font-size: 12px;
-		.ai1ec-opacity( 85 );
+		.ai1ec-opacity( 0.85 );
 		&:hover,
 		&.ai1ec-hover {
-			.ai1ec-opacity( 100 );
+			.ai1ec-opacity( 1 );
 		}
 	}
 	.ai1ec-event {
@@ -407,7 +407,7 @@ table.ai1ec-oneday-view-original {
 	}
 	.ai1ec-allday .ai1ec-event,
 	.ai1ec-multiday .ai1ec-event {
-		.ai1ec-border-radius( 3px );
+		border-radius: 3px;
 		background-color: @eventDefaultColor;
 		color: @eventStubAllDayText;
 		text-shadow: 0 1px 1px @eventStubAllDayTextShadow;
@@ -432,7 +432,7 @@ table.ai1ec-oneday-view-original {
 		background-image: -o-linear-gradient( top, mix( @eventDefaultColor, @eventBackground, 5% ), mix( @eventDefaultColor, @eventBackground, 30% ) 120px );
 		background-image: linear-gradient( top, mix( @eventDefaultColor, @eventBackground, 5% ), mix( @eventDefaultColor, @eventBackground, 30% ) 120px );
 		border: 1px solid mix( @eventDefaultColor, @eventBackground, 50% );
-		.ai1ec-border-radius( 3px );
+		border-radius: 3px;
 		.ai1ec-box-shadow( 1px 2px 4px rgba(0,0,0,0.15) );
 		.ai1ec-box-sizing( border-box );
 		line-height: 15px;
@@ -502,7 +502,7 @@ table.ai1ec-oneday-view-original {
 	}
 	.ai1ec-multiday-bar {
 		background: @eventDefaultColor;
-		.ai1ec-border-radius(3px);
+		border-radius: 3px;
 		height: 15px;
 		left: 0;
 		position: absolute;
@@ -533,7 +533,7 @@ table.ai1ec-oneday-view-original {
 	a.ai1ec-scroll-up,
 	a.ai1ec-scroll-down {
 		border: 1px solid @tableBorder;
-		.ai1ec-border-radius(0.2em);
+		border-radius: 0.2em;
 		.ai1ec-box-sizing(border-box);
 		display: block;
 		left: 50%;
@@ -549,7 +549,7 @@ table.ai1ec-oneday-view-original {
 		&.ai1ec-disabled {
 			border: none;
 			cursor: default;
-			.ai1ec-opacity(20);
+			.ai1ec-opacity( 0.2 );
 			padding: 1px; // To compensate for height lost by invisible border.
 			&:hover {
 				background-color: transparent;
@@ -567,18 +567,10 @@ table.ai1ec-oneday-view-original {
 	.ai1ec-start-truncated {
 		border-top-left-radius: 0;
 		border-top-right-radius: 0;
-		-moz-border-radius-topleft: 0;
-		-moz-border-radius-topright: 0;
-		-webkit-border-top-left-radius: 0;
-		-webkit-border-top-right-radius: 0;
 	}
 	.ai1ec-end-truncated {
 		border-bottom-left-radius: 0;
 		border-bottom-right-radius: 0;
-		-moz-border-radius-bottomleft: 0;
-		-moz-border-radius-bottomright: 0;
-		-webkit-border-bottom-left-radius: 0;
-		-webkit-border-bottom-right-radius: 0;
 	}
 	.ai1ec-start-truncator,
 	.ai1ec-end-truncator {
@@ -586,7 +578,7 @@ table.ai1ec-oneday-view-original {
 		line-height: 1em;
 		font-size: 7px;
 		text-shadow: none;
-		.ai1ec-opacity( 50 );
+		.ai1ec-opacity( 0.5 );
 	}
 	.ai1ec-start-truncator {
 		top: -1px;
@@ -630,7 +622,7 @@ table.ai1ec-oneday-view-original {
 		margin: @baseFontSize / 2 0;
 		background: @eventBackground;
 		border: 1px solid @eventBorder;
-		.ai1ec-border-radius( 0.5em );
+		border-radius: 0.5em;
 		.ai1ec-transition( border-color 0.1s );
 		&.ai1ec-expanded {
 			border-color: @eventBorderHover;
@@ -661,7 +653,7 @@ table.ai1ec-oneday-view-original {
 		.ai1ec-event-time {
 			font-size: 9pt;
 			font-weight: bold;
-			.ai1ec-opacity( 80 );
+			.ai1ec-opacity( 0.8 );
 		}
 		.post-edit-link {
 			.ai1ec-opacity( 0 );
@@ -673,7 +665,7 @@ table.ai1ec-oneday-view-original {
 				color: @eventDefaultColorHover;
 			}
 			.post-edit-link {
-				.ai1ec-opacity( 100 );
+				.ai1ec-opacity( 1 );
 			}
 		}
 	}

@@ -426,11 +426,12 @@ class Ai1ec_Javascript_Controller {
 		$calendar_selector = $this->_settings->get( 'calendar_css_selector' );
 		if( $calendar_selector ) {
 			$page             = get_post(
-				$this->_settings->get( 'calendar_post_id ' )
+				$this->_settings->get( 'calendar_page_id' )
 			);
 			$data['selector'] = $calendar_selector;
 			$data['title']    = $page->post_title;
 		}
+		
 		$data['fonts'] = array();
 		$fonts_dir = AI1EC_DEFAULT_THEME_URL . 'font_css/';
 		$data['fonts'][] = array(

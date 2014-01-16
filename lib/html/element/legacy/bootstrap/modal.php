@@ -3,10 +3,11 @@
 /**
  * A class that renders bootstrap modals.
  *
- * @author     Time.ly Network, Inc.
- * @since      2.0
- * @package    Ai1EC
- * @subpackage Ai1EC.Html
+ * @instantiator new
+ * @author       Time.ly Network, Inc.
+ * @since        2.0
+ * @package      Ai1EC
+ * @subpackage   Ai1EC.Html
  */
 class Ai1ec_Bootstrap_Modal extends Ai1ec_Html_Element {
 

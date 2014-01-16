@@ -211,6 +211,7 @@ abstract class Ai1ec_Connector_Plugin extends Ai1ec_Base {
 				}
 			}
 		}
+		$settings->set( 'plugins_options', $plugins_options );
 		if ( $not_from_setting_page === TRUE ) {
 			$settings->persist( );
 		} else {

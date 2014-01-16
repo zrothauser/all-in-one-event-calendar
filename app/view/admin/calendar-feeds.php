@@ -78,6 +78,7 @@ class Ai1ec_View_Calendar_Feeds extends Ai1ec_View_Admin_Abstract {
 		foreach ( $feeds as $feed ) {
 			$calendar_feeds->add_plugin( $feed );
 		}
+		$calendar_feeds->handle_feeds_page_post();
 		$loader = $this->_registry->get( 'theme.loader' );
 		$file = $loader->get_file(
 			'box_feeds.php',

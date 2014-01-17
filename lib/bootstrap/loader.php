@@ -314,6 +314,17 @@ class Ai1ec_Loader {
 	}
 
 	/**
+	 * Generate path name abbreviation.
+	 *
+	 * @param string $name Path name particle.
+	 *
+	 * @return string Abbreviated path name.
+	 */
+	public function path_name_shortening( $name ) {
+		return strtoupper( $name{0} );
+	}
+
+	/**
 	 * _sanitize_paths method
 	 *
 	 * Sanitize paths before writing to cache file.
@@ -335,9 +346,7 @@ class Ai1ec_Loader {
 		if ( null !== $base_path ) {
 			$ai1ec_path = $base_path;
 			$const_name = implode( array_map(
-				function( $name ) {
-					return strtoupper( $name{0} );
-				},
+				array( $this, 'path_name_shortening' ),
 				explode( '-', basename( $base_path ) )
 			) ) . '_PATH';
 			$const_name = str_replace( 'AIOEC', 'AI1EC', $const_name );

@@ -494,7 +494,11 @@ class Ai1ec_Loader {
 				// not resolved at this time.
 				throw new Ai1ec_Exception(
 					'Generated class map is invalid: ' .
-					var_export( $class_map, true )
+					var_export( $class_map, true ) .
+					'. Please delete lib/bootstrap/loader-map.php (if it exists), make ' .
+					'sure lib/bootstrap/ is writable by the web server, and enable ' .
+					'debug mode by setting AI1EC_DEBUG to true (then back to false ' .
+					'when done).'
 				);
 			}
 			$class_map = $this->collect_classes();

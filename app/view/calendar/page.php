@@ -41,7 +41,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		$type       = $request->get( 'request_type' );
 		
 		$exact_date = $this->get_exact_date( $request );
-		$view = $this->_registry->get( 'view.calendar.view.oneday', $request );
+		$view = $this->_registry->get( 'view.calendar.view.' . $action, $request );
 		$view_args = $view->get_extra_arguments( $view_args, $exact_date );
 		$view = $view->get_content( $view_args );
 		$args = array(

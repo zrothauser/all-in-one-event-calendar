@@ -71,12 +71,10 @@ class Ai1ec_Request_Parser extends Ai1ec_Abstract_Query {
 	) {
 		parent::__construct( $registry, $argv );
 		$action_list = array(
-			'posterboard',
-			'stream',
-			'month',
-			'oneday',
 			'week',
+			'oneday',
 			'agenda',
+			'month',
 		);
 		foreach ( $action_list as $action ) {
 			$action_list[] = 'ai1ec_' . $action;
@@ -84,7 +82,7 @@ class Ai1ec_Request_Parser extends Ai1ec_Abstract_Query {
 		if ( ! in_array( $default_action, $action_list ) ) {
 			$default_action = current( $action_list );
 		}
-		$default_action = 'oneday';
+
 		$this->add_rule(
 			'action',
 			false,

@@ -76,6 +76,11 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 		);
 	}
 
+	/**
+	 * Handle saving enabled_views.
+	 * 
+	 * @return array
+	 */
 	protected function _handle_saving_enabled_views() {
 		$settings = $this->_registry->get( 'model.settings' );
 		$enabled_views = $settings->get( 'enabled_views' );

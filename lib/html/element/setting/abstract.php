@@ -20,6 +20,7 @@ abstract class Ai1ec_Html_Element_Settings extends Ai1ec_Base
 	 * @var array Map of arbitrary arguments passed to an element.
 	 */
 	protected $_args = array();
+
 	/**
 	 * Constructor accepts system as injectable and requests HTML helper.
 	 *

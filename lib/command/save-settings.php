@@ -23,6 +23,7 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 				isset( $_POST['default_categories'] ) ) {
 			$_POST['default_tags_categories'] = true;
 		}
+		$_POST['enabled_views'] = true;
 		foreach ( $options as $name => $data ) {
 			if ( isset( $_POST[$name] ) ) {
 				$value = null;
@@ -73,6 +74,16 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 				'updated' => 1
 			)
 		);
+	}
+
+	protected function _handle_saving_enabled_views() {
+		$settings = $this->_registry->get( 'model.settings' );
+		$enabled_views = $settings->get( 'enabled_views' );
+		foreach( $enabled_views as $view => &$options ) {
+			$options['enabled'] = isset( $_POST['view_' . $view . '_enabled'] ) ? true : false;
+			$options['default'] = $_POST['default_calendar_view'] === $view ? true : false;
+		}
+		return $enabled_views;
 	}
 
 	/**

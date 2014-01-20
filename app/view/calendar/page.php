@@ -131,7 +131,6 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 	 * @return string Rendered HTML to include in output
 	 */
 	public function get_html_for_subscribe_buttons( array $view_args ) {
-		global $ai1ec_view_helper, $ai1ec_localization_helper;
 		$args = array(
 			'url_args'    => '',
 			'is_filtered' => false,
@@ -168,11 +167,42 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 	 *
 	 * @param array $view_args
 	 */
-	protected function get_html_for_views_dropdown( $dropdown_args ) {
-		$available_views = array( 'oneday' );
+	protected function get_html_for_views_dropdown( array $view_args ) {
+		$settings = $this->_registry->get( 'model.settings' );
+		$available_views = array();
+		$enabled_views = $settings->get( 'enabled_views' );
+		$view_names = array();
+		foreach( $enabled_views as $key => $val ) {
+			$view_names[$key] = $val['longname'];
+			$view_enabled = 'view_' . $key . '_enabled';
+			$values = array();
+			$options = $view_args;
+			if( $enabled_views[$key]['enabled'] === true ) {
+				if( $key === 'posterboard' || $key === 'agenda' || $key === 'stream' ) {
+					if( isset( $options['exact_date'] ) && ! isset( $options['time_limit'] ) ) {
+						$options['time_limit'] = $options['exact_date'];
+					}
+					unset( $options['exact_date'] );
+				} else {
+					unset( $options['time_limit'] );
+				}
+				unset( $options['month_offset'] );
+				unset( $options['week_offset'] );
+				unset( $options['oneday_offset'] );
+				$options['action'] = $key;
+				$values['desc'] = $val['longname'];
+				$href = $this->_registry->get( 'html.element.href', $options );
+				$values['href'] = $href->generate_href();
+				$available_views[$key] = $values;
+			}
+		};
 		$args = array(
+			'view_names'              => $view_names,
 			'available_views'         => $available_views,
+			'current_view'            => $view_args['action'],
+			'data_type'               => $view_args['data_type'],
 		);
+
 		$views_dropdown = $this->_registry->get( 'theme.loader' )
 			->get_file( 'views_dropdown.twig', $args, false );
 		return $views_dropdown->get_content();

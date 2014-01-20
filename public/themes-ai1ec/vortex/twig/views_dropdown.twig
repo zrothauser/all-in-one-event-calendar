@@ -7,7 +7,7 @@
 		<span class="caret"></span>
 	</a>
 	<div class="dropdown-menu">
-		{% for key in available_views %}
+		{% for key, args in available_views %}
 			<div class="{% if key == current_view %}active{% endif %}"
 				data-action="{{ key }}">
 				<a id="ai1ec-view-{{ key }}"

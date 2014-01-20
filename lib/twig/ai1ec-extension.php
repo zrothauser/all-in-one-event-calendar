@@ -111,8 +111,9 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	 *
 	 * @return string
 	 */
-	public function theme_img_url( $unix_timestamp ) {
-		// not implemented yet
+	public function theme_img_url( $image ) {
+		$loader = $this->_registry->get( 'theme.loader' );
+		return $loader->get_file( $image, array(), false )->get_url();
 	}
 
 	/**

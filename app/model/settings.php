@@ -667,7 +667,8 @@ class Ai1ec_Settings extends Ai1ec_App {
 						'The Robot Exclusion Standard, also known as the Robots Exclusion Protocol or
 						<a href="http://en.wikipedia.org/wiki/Robots.txt" target="_blank">robots.txt</a>
 						protocol, is a convention to advising cooperating web crawlers and other web robots
-						about accessing all or part of a website which is otherwise publicly viewable.'
+						about accessing all or part of a website which is otherwise publicly viewable.
+						You can change it manually by editing robots.txt in your root WordPress directory'
 					),
 				),
 				'default'  => '',

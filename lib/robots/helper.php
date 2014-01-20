@@ -12,6 +12,16 @@
 class Ai1ec_Robots_Helper extends Ai1ec_Base {
 
 	public function install() {
+		global $wp_filesystem;
+
+		$option = $this->_registry->get( 'model.option' );
+		$settings = $this->_registry->get( 'model.settings' );
+		
+		if ( $option->get( 'robots_txt' ) !== null &&
+				$option->get( 'robots_page_id' ) == $settings->get( 'calendar_page_id' ) ) {
+			return;
+		}
+
 		$robots_txt    = ABSPATH . 'robots.txt';
 		$is_updated    = false;
 		$current_rules = null;
@@ -27,7 +37,6 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 			request_filesystem_credentials( $url, '', true, false, null );
 		}
 
-		global $wp_filesystem;
 		if ( $wp_filesystem->exists( $robots_txt )
 				&& $wp_filesystem->is_readable( $robots_txt )
 					&& $wp_filesystem->is_writable( $robots_txt ) ) {
@@ -41,11 +50,19 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 				$custom_rules,
 				FS_CHMOD_FILE
 			);
+
+			if ( $is_updated ) {
+				$option->set( 'robots_txt', true );
+			}
+		} else {
+			$option->set( 'robots_txt', false );
 		}
 
+		// Update Robots Page ID
+		$option->set( 'robots_page_id', $settings->get( 'calendar_page_id' ) );
+
 		// Update settings textarea
-		$this->_registry->get( 'model.settings' )
-						->set( 'edit_robots_txt', $custom_rules );
+		$settings->set( 'edit_robots_txt', $custom_rules );
 	}
 
 	public function rules( $output, $public ) {

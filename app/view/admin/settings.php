@@ -179,20 +179,20 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 			// if a tab has more than one item.
 			if ( isset( $tab['items'] ) ) {
 				// if no item is active, nothing is shown
-				if ( empty( $tab['items_active'] ) ) {
+				$matching = array_intersect_key( $tabs, $tab['items'] );
+				if ( empty( $matching ) ) {
 					continue;
 				}
 				// if only one item is active, do not use the dropdown
-				if ( count( $tab['items_active'] ) === 1 ) {
-					
+				if ( count( $matching ) === 1 ) {
 					$name = key($tab['items_active']);
 					$tab['name'] = $tab['items'][$name];
 					unset ( $tab['items'] );
 				} else {
 					// check active items for the dropdown
-					foreach ( $tab['items'] as &$item ) {
-						if ( ! isset( $tab['items_active'][$item] ) ) {
-							unset( $item );
+					foreach ( $tab['items'] as $key => $item ) {
+						if ( ! isset( $tabs[$key] ) ) {
+							unset( $tab['items'][$key] );
 						}
 					}
 				}

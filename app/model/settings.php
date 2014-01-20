@@ -29,19 +29,31 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 * Register new option to be used.
 	 *
 	 * @param string $option   Name of option.
-	 * @param mixed $value     The value
+	 * @param mixed  $value    The value.
 	 * @param string $type     Option type to be used for validation.
 	 * @param string $renderer Name of class to render the option.
 	 *
 	 * @return Ai1ec_Settings Instance of self for chaining.
 	 */
-	public function register( $option, $value, $type, $renderer ) {
-
-		if( !isset($this->_options[$option]) ){
+	public function register(
+		$option,
+		$value,
+		$type,
+		$renderer,
+		$version = '2.0a'
+	) {
+		if (
+			! isset( $this->_options[$option] ) ||
+			! isset( $this->_options[$option]['version'] ) ||
+			(string)$this->_options[$option]['version'] !== (string)$version
+		) {
 			$this->_options[$option] = array(
-				'value'    => $value,
+				'value'    => ( isset( $this->_options[$option] ) )
+					? $this->_options[$option]['value']
+					: $value,
 				'type'     => $type,
 				'legacy'   => false,
+				'version'  => $version,
 			);
 			if ( null !== $renderer ) {
 				$this->_options[$option]['renderer'] = $renderer;

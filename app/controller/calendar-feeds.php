@@ -1,17 +1,29 @@
 <?php
+
+/**
+ * Feeds (import and export streams) mediator.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Controller
+ */
 class Ai1ec_Controller_Calendar_Feeds extends Ai1ec_Base {
 
 	/**
-	 * Holds the instances of the plugins
-	 *
-	 * @var array
-	 **/
+	 * @var array Holds the instances of registered plugins.
+	 */
 	protected $_plugins = array();
 
 	/**
-	 * add plugin to the internal Array. This assure us that the plugins extends our base abstract class.
+	 * Add plugin to the internal array.
 	 *
-	 * @param Ai1ec_Connector_Plugin $plugin
+	 * This assure us that the plugins extends our base abstract class.
+	 *
+	 * @param Ai1ec_Connector_Plugin $plugin Plugin to add.
+	 *
+	 * @return void
 	 */
 	public function add_plugin( Ai1ec_Connector_Plugin $plugin ) {
 		$plugin->initialize_settings_if_not_set();
@@ -68,4 +80,5 @@ class Ai1ec_Controller_Calendar_Feeds extends Ai1ec_Base {
 			$plugin->render_tab_content();
 		}
 	}
+
 }

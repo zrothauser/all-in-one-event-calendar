@@ -123,11 +123,11 @@ class Ai1ec_Theme_Loader {
 	 */
 	public function register_extension( $path ) {
 		$this->add_path_admin(
-			$path . 'public' . DIRECTORY_SEPARATOR . 'admin' .
+			$path . DIRECTORY_SEPARATOR .'public' . DIRECTORY_SEPARATOR . 'admin' .
 			DIRECTORY_SEPARATOR
 		);
 		$this->add_path_theme(
-			$path . 'public' . DIRECTORY_SEPARATOR . 'themes-ai1ec' .
+			$path . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'themes-ai1ec' .
 			DIRECTORY_SEPARATOR . AI1EC_DEFAULT_THEME_NAME . DIRECTORY_SEPARATOR
 		);
 		return $this;
@@ -199,7 +199,6 @@ class Ai1ec_Theme_Loader {
 						? $this->_paths['admin']
 						: $this->_paths['theme'];
 				}
-
 				if ( true === $this->_legacy_theme && ! $is_admin ) {
 					$filename = substr( $filename, 0, $dot_position - 1);
 					$file     = $this->_get_legacy_file(

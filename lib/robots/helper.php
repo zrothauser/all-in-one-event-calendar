@@ -55,18 +55,24 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 			explode( PHP_EOL, $output )
 		);
 
+		// Get calendar page URI
+		$calendar_page_id = $this->_registry->get( 'model.settings' )
+											->get( 'calendar_page_id' );
+		$page_base = get_page_uri( $calendar_page_id );
+
 		// Custom rules
-		$custom_rules = array(
-			"User-agent: *",
-			"Disallow: /wp-admin/",
-			"Disallow: /wp-includes/",
-			"Disallow: /calendar/action~posterboard/",
-			"Disallow: /calendar/action~agenda/",
-			"Disallow: /calendar/action~oneday/",
-			"Disallow: /calendar/action~month/",
-			"Disallow: /calendar/action~week/",
-			"Disallow: /calendar/action~stream/",
-		);
+		$custom_rules = array();
+		if ( $page_base ) {
+			$custom_rules += array(
+				"User-agent: *",
+				"Disallow: /$page_base/action~posterboard/",
+				"Disallow: /$page_base/action~agenda/",
+				"Disallow: /$page_base/action~oneday/",
+				"Disallow: /$page_base/action~month/",
+				"Disallow: /$page_base/action~week/",
+				"Disallow: /$page_base/action~stream/",
+			);
+		}
 
 		return implode(
 			PHP_EOL,

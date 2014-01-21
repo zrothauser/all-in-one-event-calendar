@@ -85,7 +85,7 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 		$settings = $this->_registry->get( 'model.settings' );
 		$enabled_views = $settings->get( 'enabled_views' );
 		foreach( $enabled_views as $view => &$options ) {
-			$options['enabled'] = isset( $_POST['view_' . $view . '_enabled'] ) ? true : false;
+			$options['enabled'] = isset( $_POST['view_' . $view . '_enabled'] );
 			$options['default'] = $_POST['default_calendar_view'] === $view;
 		}
 		return $enabled_views;

@@ -79,7 +79,11 @@ class Ai1ec_Date_Time {
 	 * @return string Formatted time.
 	 */
 	public function format_i18n( $format, $timezone = null ) {
-		return $this->format( $format, $timezone );
+		$parser    = $this->_registry->get( 'parser.date' );
+		$parsed    = $parser->get_format( $format );
+		$inflected = $this->format( $parsed, $timezone );
+		$formatted = $parser->squeeze( $inflected );
+		return $formatted;
 	}
 
 	/**

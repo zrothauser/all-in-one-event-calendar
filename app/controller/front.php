@@ -317,6 +317,25 @@ class Ai1ec_Front_Controller {
 			11
 		);
 
+		// Category colors
+		$dispatcher->register_action(
+			'events_categories_add_form_fields',
+			array( 'model.taxonomy', 'events_categories_add_form_fields' )
+		);
+		$dispatcher->register_action(
+			'events_categories_edit_form_fields',
+			array( 'model.taxonomy', 'events_categories_edit_form_fields' )
+		);
+		$dispatcher->register_action(
+			'created_events_categories',
+			array( 'model.taxonomy', 'created_events_categories' )
+		);
+		$dispatcher->register_action(
+			'edited_events_categories',
+			array( 'model.taxonomy', 'edited_events_categories' )
+		);
+
+
 		if ( is_admin() ) {
 			// get the repeat box
 			$dispatcher->register_action(

@@ -150,8 +150,9 @@ class Ai1ec_Date_Time {
 	 * @throws Ai1ec_Date_Timezone_Exception If timezone is not recognized.
 	 */
 	public function set_timezone( $timezone = 'UTC' ) {
-		$date_time_tz = $this->_registry->get( 'date.timezone' )
-			->get( $timezone );
+		$date_time_tz = ( $timezone instanceof DateTimeZone )
+			? $timezone
+			: $this->_registry->get( 'date.timezone' )->get( $timezone );
 		$this->_date_time->setTimezone( $date_time_tz );
 		return $this;
 	}
@@ -258,20 +259,24 @@ class Ai1ec_Date_Time {
 	public function set_date_time( $time = 'now', $timezone = 'UTC' ) {
 		if ( $time instanceof self ) {
 			$this->_date_time = clone $time->_date_time;
+			if ( $timezone ) {
+				$this->set_timezone( $timezone );
+			}
 			return $this;
 		}
 		$this->assert_utc_timezone();
-		$date_time_tz = null;
-		if ( $time > 0 && ( $time >> 10 ) > 2 ) {
-			$time = '@' . $time; // treat as UNIX timestamp
-		} else {
-			$date_time_tz = $this->_registry->get( 'date.timezone' )
+		$date_time_tz = $this->_registry->get( 'date.timezone' )
 				->get( $timezone );
+		$reset_tz     = false;
+		if ( $time > 0 && ( $time >> 10 ) > 2 ) {
+			$time     = '@' . $time; // treat as UNIX timestamp
+			$reset_tz = true; // store intended TZ
 		}
 		// PHP <= 5.3.5 compatible
-		$this->_date_time = ( null === $date_time_tz )
-			? new DateTime( $time )
-			: new DateTime( $time, $date_time_tz );
+		$this->_date_time = new DateTime( $time, $date_time_tz );
+		if ( $reset_tz ) {
+			$this->set_timezone( $date_time_tz );
+		}
 		return $this;
 	}
 

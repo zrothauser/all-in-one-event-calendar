@@ -110,7 +110,7 @@ class Ai1ec_Parser_Date {
 		if ( isset( $token{0} ) && $this->_localize_indicator === $token{0} ) {
 			$format = $token{1};
 			$value  = substr( $token, 2 );
-			$token = $this->localize( $format, $value );
+			$token  = $this->localize( $format, $value );
 		}
 		return $token;
 	}
@@ -133,14 +133,14 @@ class Ai1ec_Parser_Date {
 		}
 		switch ( $format ) {
 			case 'M':
-				return $wp_locale->get_weekday_abbrev(
-					$wp_locale->get_weekday( $value )
+				return $wp_locale->get_month_abbrev(
+					$wp_locale->get_month( $value )
 				);
 				break;
 
 			case 'D':
-				return $wp_locale->get_month_abbrev(
-					$wp_locale->get_month( $value )
+				return $wp_locale->get_weekday_abbrev(
+					$wp_locale->get_weekday( $value )
 				);
 				break;
 

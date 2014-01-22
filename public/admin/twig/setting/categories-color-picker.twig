@@ -1,4 +1,4 @@
-{% if categories is defined %}
+{% if edit %}
     <tr class="form-field">
         <th scope="row" valign="top">
             <label for="tag-color">
@@ -7,7 +7,7 @@
         </th>
         <td>
             <div id="tag-color">
-                <div id="tag-color-background" {{ style }}></div>
+                <div id="tag-color-background" {{ style | raw }}></div>
             </div>
             <input type="hidden" name="tag-color-value" id="tag-color-value" value="{{ color }}" />
             <p class="description">{{ description }}.</p>

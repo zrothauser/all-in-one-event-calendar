@@ -114,10 +114,11 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 	
 		return $sqrs;
 	}
-	
+
 	/**
 	 * Categories as HTML, either as blocks or inline.
 	 *
+	 * @param Ai1ec_Event $event
 	 * @param   string $format      Return 'blocks' or 'inline' formatted result
 	 * @return  string              String of HTML for category blocks
 	 */
@@ -201,5 +202,213 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 		}
 		return join( ' ', $tags );
 
+	}
+
+	/**
+	 * Add category form
+	 *
+	 * @return void
+	 **/
+	public function events_categories_add_form_fields() {
+
+		$args  = array(
+			'color'       => '',
+			'style'       => '',
+			'label'       => __( 'Category Color', AI1EC_PLUGIN_NAME ),
+			'description' => __(
+				'Events in this category will be identified by this color',
+				AI1EC_PLUGIN_NAME ),
+			'edit'        => false
+		);
+
+		$loader = $this->_registry->get( 'theme.loader' );
+		$file   = $loader->get_file(
+			'setting/categories-color-picker.twig',
+			$args,
+			true
+		);
+
+		echo( $file->get_content() );
+	}
+
+	/**
+	 * Edit category form
+	 *
+	 * @param $term
+	 * @return void
+	 */
+	function events_categories_edit_form_fields( $term ) {
+
+		$db         = $this->_registry->get( 'dbi.dbi' );
+		$table_name = $db->get_table_name( 'ai1ec_event_category_colors' );
+		$color      = $db->get_var(
+			$db->prepare(
+				"SELECT term_color FROM {$table_name} WHERE term_id = %d ",
+				$term->term_id )
+		);
+
+		$style = '';
+		$clr   = '';
+
+		if( ! is_null( $color ) && ! empty( $color ) ) {
+			$style = 'style="background-color: ' . $color . '"';
+			$clr   = $color;
+		}
+
+		$args = array(
+			'style'       => $style,
+			'color'       => $clr,
+			'label'       => __( 'Category Color', AI1EC_PLUGIN_NAME ),
+			'description' => __(
+				'Events in this category will be identified by this color',
+				AI1EC_PLUGIN_NAME ),
+			'edit'        => true,
+		);
+
+		$loader = $this->_registry->get( 'theme.loader' );
+		$file   = $loader->get_file(
+			'setting/categories-color-picker.twig',
+			$args,
+			true
+		);
+
+		echo( $file->get_content() );
+	}
+
+	/**
+	 * Hook to process event categories creation
+	 *
+	 * @param $term_id
+	 * @return void Method does not return
+	 */
+	function created_events_categories( $term_id ) {
+		$this->edited_events_categories( $term_id );
+	}
+
+	/**
+	 * edited_events_categories method
+	 *
+	 * A callback method, triggered when `event_categories' are being edited
+	 *
+	 * @param int $term_id ID of term (category) being edited
+	 *
+	 * @return void Method does not return
+	 */
+	function edited_events_categories( $term_id ) {
+
+		$db              = $this->_registry->get( 'dbi.dbi' );
+
+		$tag_color_value = '';
+		if (
+			isset( $_POST['tag-color-value'] ) &&
+			! empty( $_POST['tag-color-value'] )
+		) {
+			$tag_color_value = $_POST['tag-color-value'];
+		}
+
+		$table_name = $db->get_table_name( 'ai1ec_event_category_colors' );
+		$term       = $db->get_row( $db->prepare(
+			'SELECT term_id, term_color' .
+			' FROM ' . $table_name .
+			' WHERE term_id = %d',
+			$term_id
+		) );
+
+		if ( NULL === $term ) { // term does not exist, create it
+			$db->insert(
+				$table_name,
+				array(
+					'term_id'    => $term_id,
+					'term_color' => $tag_color_value,
+				),
+				array(
+					'%d',
+					'%s',
+				)
+			);
+		} else { // term exist, update it
+			if ( NULL === $tag_color_value ) {
+				$tag_color_value = $term->term_color;
+			}
+			$db->update(
+				$table_name,
+				array( 'term_color' => $tag_color_value ),
+				array( 'term_id'    => $term_id ),
+				array( '%s' ),
+				array( '%d' )
+			);
+		}
+	}
+
+
+	/**
+	 * Inserts Color element at index 2 of columns array
+	 *
+	 * @param array $columns Array with event_category columns
+	 *
+	 * @return array Array with event_category columns where Color is inserted
+	 * at index 2
+	 */
+	public function manage_event_categories_columns( $columns ) {
+
+		$this->_registry->get( 'css.admin' )
+			->process_enqueue( array(
+				array( 'style', 'admin.css' )
+			) );
+
+		$ret = array_splice( $columns, 0, 3 ) + // get only first element
+			// insert at index 2
+			array( 'cat_color' => __( 'Color', AI1EC_PLUGIN_NAME ) ) +
+			// insert at index 3
+			array( 'cat_image' => __( 'Image', AI1EC_PLUGIN_NAME ) ) +
+			// insert rest of elements at the back
+			array_splice( $columns, 0, count( $columns ) );
+
+		return $ret;
+	}
+
+	/**
+	 * Returns the color or image of the event category
+	 * that will be displayed on event category lists page in the backend
+	 *
+	 * @param $not_set
+	 * @param $column_name
+	 * @param $term_id
+	 * @internal param array $columns Array with event_category columns
+	 *
+	 * @return array Array with event_category columns where Color is inserted
+	 * at index 2
+	 */
+	public function manage_events_categories_custom_column(
+		$not_set,
+		$column_name,
+		$term_id
+	) {
+
+		switch ( $column_name ) {
+			case 'cat_color':
+				return $this->get_category_color_square( $term_id );
+			case 'cat_image':
+				/*// get ai1ec_image_field_id from meta
+				$cat_img_meta = $ai1ec_tax_meta_class->get_tax_meta(
+					$term_id,
+					'ai1ec_image_field_id',
+					'events_categories'
+				);
+				// do we have a match?
+				if ( isset( $cat_img_meta['id'] ) ) {
+					$attributes = wp_get_attachment_image_src(
+						$cat_img_meta['id'],
+						'thumbnail'
+					);
+					if ( $attributes ) {
+						$url = array_shift( $attributes );
+						// return the image with height set to 50 pixels
+						// which is the height of the row
+						return '<img src="' . $url . '" alt="cat_image" height="50" />';
+					}
+				}*/
+				return '';
+		}
 	}
 }

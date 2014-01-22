@@ -320,21 +320,30 @@ class Ai1ec_Front_Controller {
 		// Category colors
 		$dispatcher->register_action(
 			'events_categories_add_form_fields',
-			array( 'model.taxonomy', 'events_categories_add_form_fields' )
+			array( 'view.event.taxonomy', 'events_categories_add_form_fields' )
 		);
 		$dispatcher->register_action(
 			'events_categories_edit_form_fields',
-			array( 'model.taxonomy', 'events_categories_edit_form_fields' )
+			array( 'view.event.taxonomy', 'events_categories_edit_form_fields' )
 		);
 		$dispatcher->register_action(
 			'created_events_categories',
-			array( 'model.taxonomy', 'created_events_categories' )
+			array( 'view.event.taxonomy', 'created_events_categories' )
 		);
 		$dispatcher->register_action(
 			'edited_events_categories',
-			array( 'model.taxonomy', 'edited_events_categories' )
+			array( 'view.event.taxonomy', 'edited_events_categories' )
 		);
-
+		$dispatcher->register_action(
+			'manage_edit-events_categories_columns',
+			array( 'view.event.taxonomy', 'manage_event_categories_columns' )
+		);
+		$dispatcher->register_action(
+			'manage_events_categories_custom_column',
+			array( 'view.event.taxonomy', 'manage_events_categories_custom_column' ),
+			10,
+			3
+		);
 
 		if ( is_admin() ) {
 			// get the repeat box

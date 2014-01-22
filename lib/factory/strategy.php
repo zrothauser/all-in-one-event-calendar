@@ -28,14 +28,14 @@ class Ai1ec_Factory_Strategy extends Ai1ec_Base {
 		$engine = NULL;
 		$name   = '';
 		if ( true !== $skip_small_bits && Ai1ec_Cache_Strategy_Apc::is_available() ) {
-			$engine = new Ai1ec_Cache_Strategy_Apc();
+			$engine = $this->_registry->get( 'cache.strategy.apc' );
 		} else if (
 			NULL !== $cache_directory &&
 			$this->_is_cache_dir_writable( $cache_directory )
 		) {
 			$engine = $this->_registry->get( 'cache.strategy.file', $cache_directory );
 		} else if ( true !== $skip_small_bits ) {
-			$engine = $this->_registry->get( 
+			$engine = $this->_registry->get(
 				'cache.strategy.db',
 				$this->_registry->get( 'model.option' )
 			);
@@ -44,7 +44,7 @@ class Ai1ec_Factory_Strategy extends Ai1ec_Base {
 		}
 		return $engine;
 	}
-	
+
 	/**
 	 * create_persistence_context method
 	 *

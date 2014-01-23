@@ -52,3 +52,8 @@ div.theme-success {
 	filter:alpha(opacity=80);
 	border-color:rgba(0,0,0,0.5);
 }
+
+/* Category image */
+.at-upload_image_button{
+    width: auto !important;
+}

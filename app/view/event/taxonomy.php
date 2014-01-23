@@ -211,6 +211,9 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 	 **/
 	public function events_categories_add_form_fields() {
 
+		$loader = $this->_registry->get( 'theme.loader' );
+
+		// Category color
 		$args  = array(
 			'color'       => '',
 			'style'       => '',
@@ -221,9 +224,23 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 			'edit'        => false
 		);
 
-		$loader = $this->_registry->get( 'theme.loader' );
 		$file   = $loader->get_file(
 			'setting/categories-color-picker.twig',
+			$args,
+			true
+		);
+
+		echo( $file->get_content() );
+
+		// Category image
+		$args  = array(
+			'section_name' => __( 'Category Image', AI1EC_PLUGIN_NAME ),
+			'label' => __( 'Add Image', AI1EC_PLUGIN_NAME),
+			'description' => __( 'Assign an optional image to the category. Recommended size: square, minimum 400&times;400 pixels.', AI1EC_PLUGIN_NAME )
+		);
+
+		$file   = $loader->get_file(
+			'setting/categories-image.twig',
 			$args,
 			true
 		);

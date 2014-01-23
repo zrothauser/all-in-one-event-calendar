@@ -183,9 +183,6 @@ class Ai1ec_Event extends Ai1ec_Base {
 			e.longitude,
 			e.latitude,
 			e.show_coordinates,
-			e.facebook_eid,
-			e.facebook_status,
-			e.facebook_user,
 			GROUP_CONCAT( ttc.term_id ) AS categories,
 			GROUP_CONCAT( ttt.term_id ) AS tags
 		';
@@ -608,9 +605,6 @@ class Ai1ec_Event extends Ai1ec_Base {
 			'%d',  // show_coordinates
 			'%f',  // latitude
 			'%f',  // longitude
-			'%s',  // facebook_eid
-			'%s',  // facebook_user
-			'%s',  // facebook_status
 		);
 		return $format;
 	}
@@ -653,9 +647,6 @@ class Ai1ec_Event extends Ai1ec_Base {
 			'show_coordinates' => $this->storage_format( 'show_coordinates' ),
 			'latitude'         => $this->storage_format( 'latitude',  '' ),
 			'longitude'        => $this->storage_format( 'longitude', '' ),
-			'facebook_eid'     => $this->storage_format( 'facebook_eid',  0 ),
-			'facebook_user'    => $this->storage_format( 'facebook_user', 0 ),
-			'facebook_status'  => $this->storage_format( 'facebook_status' ),
 		);
 		return $entity;
 	}

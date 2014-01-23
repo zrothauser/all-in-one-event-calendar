@@ -322,24 +322,5 @@ class Ai1ec_Event_Entity extends Ai1ec_Base {
 	 */
 	private $_feed;
 
-	// ================================
-	// = Facebook-specific properties =
-	// ================================
-
-	/**
-	 * @var bigint Facebook event ID
-	 */
-	private $_facebook_eid;
-
-	/**
-	 * @var bigint Related Facebook user
-	 */
-	private $_facebook_user;
-
-	/**
-	 * @var char Facebook status
-	 */
-	private $_facebook_status;
-
 
 }

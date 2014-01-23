@@ -699,9 +699,6 @@ class Ai1ec_Front_Controller {
 				show_coordinates tinyint(1),
 				latitude decimal(20,15),
 				longitude decimal(20,15),
-				facebook_eid bigint(20),
-				facebook_user bigint(20),
-				facebook_status varchar(1) NOT NULL DEFAULT '',
 				force_regenerate tinyint(1) NOT NULL DEFAULT 0,
 				PRIMARY KEY  (post_id),
 				KEY feed_source (ical_feed_url)

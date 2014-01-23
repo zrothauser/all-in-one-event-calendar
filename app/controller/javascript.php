@@ -43,6 +43,12 @@ class Ai1ec_Javascript_Controller {
 	// the javascript file for calendar page
 	const CALENDAR_PAGE_JS = 'calendar.js';
 
+	// the file for the calendar feedsa page
+	const CALENDAR_FEEDS_PAGE = 'calendar_feeds.js';
+
+	/**
+	 * @var Ai1ec_Registry_Object
+	 */
 	private $_registry;
 
 	/**
@@ -286,7 +292,7 @@ class Ai1ec_Javascript_Controller {
 		$script_to_load = FALSE;
 		if ( $this->are_we_on_calendar_feeds_page() === TRUE ) {
 			// Load script for the importer plugins
-			$script_to_load = 'calendar_feeds.js';
+			$script_to_load = self::CALENDAR_FEEDS_PAGE;
 		}
 		// Start the scripts for the event category page
 		if ( $this->_are_we_editing_event_categories() === TRUE ) {

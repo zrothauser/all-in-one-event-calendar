@@ -168,7 +168,11 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 		$event->set( 'longitude',        trim( $longitude ) );
 		$event->set( 'latitude',         trim( $latitude ) );
 
+		// let other extensions save their fields.
+		do_action( 'ai1ec_save_post', $event );
+
 		$event->save( ! $is_new );
+
 
 		// LABEL:magicquotes
 		// restore `magic` WordPress quotes to maintain compatibility

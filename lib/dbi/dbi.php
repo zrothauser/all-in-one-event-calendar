@@ -358,6 +358,9 @@ class Ai1ec_Dbi {
 	 * @return void
 	 */
 	public function shutdown() {
+		if ( defined( 'DOING_AJAX' ) ) {
+			return false;
+		}
 		if ( ! $this->_log_enabled ) {
 			return false;
 		}

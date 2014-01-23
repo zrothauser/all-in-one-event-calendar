@@ -748,10 +748,11 @@ class Ai1ec_Front_Controller {
 		// ================================
 		// = Create table category colors =
 		// ================================
-		$table_name = $dbi->get_table_name( 'ai1ec_event_category_colors' );
+		$table_name = $dbi->get_table_name( 'ai1ec_event_category_meta' );
 		$sql .= "CREATE TABLE $table_name (
 			term_id bigint(20) NOT NULL,
 			term_color varchar(255) NOT NULL,
+			term_image varchar(255) NOT NULL,
 			PRIMARY KEY  (term_id)
 			) CHARACTER SET utf8;";
 

@@ -192,7 +192,11 @@ class Ai1ec_Javascript_Controller {
 		);
 		// let extensions add their files.
 		$extension_files = array();
-		$extension_files = apply_filters( 'ai1ec_render_js', $extension_files );
+		$extension_files = apply_filters(
+			'ai1ec_render_js',
+			$extension_files,
+			$page_to_load
+		);
 		$ext_js = '';
 		foreach ( $extension_files as $file ) {
 			$ext_js .= file_get_contents( $file );
@@ -497,7 +501,7 @@ JSC;
 	 *
 	 * @return boolean TRUE if we are in the calendar feeds page FALSE otherwise
 	 */
-	private function are_we_on_calendar_feeds_page() {
+	public function are_we_on_calendar_feeds_page() {
 		$path_details = pathinfo( $_SERVER["SCRIPT_NAME"] );
 		$post_type = isset( $_GET['post_type'] ) ? $_GET['post_type'] : FALSE;
 		$page = isset( $_GET['page'] ) ? $_GET['page'] : FALSE;

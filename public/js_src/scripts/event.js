@@ -43,8 +43,9 @@ define(
 			ai1ec_config.ajax_url,
 			data,
 			function( data ) {
+				if( typeof( data) === 'string' ) data = JSON.parse( data );
 				var alert = utils.make_alert( data.message, data.type );
-				$modal = $( '#ai1ec_subscribe_email_modal' );
+				var $modal = $( '#ai1ec_subscribe_email_modal' );
 				$( '.alerts', $modal ).append( alert );
 				if( data.type === 'success' ) {
 					var saved_cookie = $.cookie( cookie_name );
@@ -65,7 +66,7 @@ define(
 		);
 	};
 	var attach_event_handlers = function() {
-		$modal = $( '#ai1ec_subscribe_email_modal' );
+		var $modal = $( '#ai1ec_subscribe_email_modal' );
 		// handle showing the maps when clicking on the placeholder
 		$( '.ai1ec-gmap-placeholder:first' ).click( gmaps_helper.handle_show_map_when_clicking_on_placeholder );
 		$modal

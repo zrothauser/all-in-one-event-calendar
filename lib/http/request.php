@@ -23,6 +23,25 @@ class Ai1ec_Http_Request {
 	}
 
 	/**
+	 * Check if we are processing AJAX request.
+	 *
+	 * @return bool True if it's an AJAX request.
+	 */
+	public function is_ajax() {
+		if ( defined( 'DOING_AJAX' ) ) {
+			return true;
+		}
+		if (
+			isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) &&
+			'XMLHttpRequest' === $_SERVER['HTTP_X_REQUESTED_WITH']
+		) {
+			return true;
+		}
+		return false;
+
+	}
+
+	/**
 	 * Check if client accepts gzip and we should compress content
 	 *
 	 * Plugin settings, client preferences and server capabilities are

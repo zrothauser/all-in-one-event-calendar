@@ -1,17 +1,17 @@
 <?php
 
 /**
-* Wrapper for WPDB (WordPress DB Class)
-*
-* Thic class wrap the access to WordPress DB class ($wpdb) and
-* allows us to abstract from the WordPress code and to expand it
-* with convenience method specific for ai1ec
-*
-* @author     Time.ly Network, Inc.
-* @since      2.0
-* @package    Ai1EC
-* @subpackage Ai1EC.Dbi
-*/
+ * Wrapper for WPDB (WordPress DB Class)
+ *
+ * Thic class wrap the access to WordPress DB class ($wpdb) and
+ * allows us to abstract from the WordPress code and to expand it
+ * with convenience method specific for ai1ec
+ *
+ * @author     Time.ly Network, Inc.
+ * @since      2.0
+ * @package    Ai1EC
+ * @subpackage Ai1EC.Dbi
+ */
 class Ai1ec_Dbi {
 
 	/**
@@ -55,14 +55,7 @@ class Ai1ec_Dbi {
 		$this->_registry->get( 'controller.shutdown' )->register(
 			array( $this, 'shutdown' )
 		);
-		if (
-			AI1EC_DEBUG && (
-				! isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) ||
-				'XMLHttpRequest' !== $_SERVER['HTTP_X_REQUESTED_WITH']
-			)
-		) {
-			$this->_log_enabled = true;
-		}
+		$this->auto_debug();
 	}
 
 	/**
@@ -72,6 +65,22 @@ class Ai1ec_Dbi {
 	 */
 	public function disable_debug() {
 		$this->_log_enabled = false;
+	}
+
+	/**
+	 * Automatically change debug flag.
+	 *
+	 * @return void
+	 */
+	public function auto_debug() {
+		if (
+			AI1EC_DEBUG &&
+			! $this->_registry->get( 'http.request' )->is_ajax()
+		) {
+			$this->_log_enabled = true;
+		} else {
+			$this->disable_debug();
+		}
 	}
 
 	/**
@@ -358,9 +367,7 @@ class Ai1ec_Dbi {
 	 * @return void
 	 */
 	public function shutdown() {
-		if ( defined( 'DOING_AJAX' ) ) {
-			return false;
-		}
+		$this->auto_debug();
 		if ( ! $this->_log_enabled ) {
 			return false;
 		}

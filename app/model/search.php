@@ -172,6 +172,175 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	}
 
 	/**
+	 * get_events_relative_to function
+	 *
+	 * Return all events starting after the given reference time, limiting the
+	 * result set to a maximum of $limit items, offset by $page_offset. A
+	 * negative $page_offset can be provided, which will return events *before*
+	 * the reference time, as expected.
+	 *
+	 * @param int $time           limit to events starting after this (local) UNIX time
+	 * @param int $limit          return a maximum of this number of items
+	 * @param int $page_offset    offset the result set by $limit times this number
+	 * @param array $filter       Array of filters for the events returned.
+	 *                            ['cat_ids']   => non-associatative array of category IDs
+	 *                            ['tag_ids']   => non-associatative array of tag IDs
+	 *                            ['post_ids']  => non-associatative array of post IDs
+	 *                            ['auth_ids']  => non-associatative array of author IDs
+	 * @param int $last_day       Last day (time), that was displayed.
+	 *                            NOTE FROM NICOLA: be careful, if you want a query with events
+	 *                            that have a start date which is greater than today, pass 0 as
+	 *                            this parameter. If you pass false ( or pass nothing ) you end up with a query
+	 *                            with events that finish before today. I don't know the rationale
+	 *                            behind this but that's how it works
+	 *
+	 * @return array              five-element array:
+	 *                              ['events'] an array of matching event objects
+	 *                              ['prev'] true if more previous events
+	 *                              ['next'] true if more next events
+	 *                              ['date_first'] UNIX timestamp (date part) of first event
+	 *                              ['date_last'] UNIX timestamp (date part) of last event
+	 */
+	function get_events_relative_to(
+		$time,
+		$limit       = 0,
+		$page_offset = 0,
+		$filter      = array(),
+		$last_day    = false
+	) {
+		$db = $this->_dbi;
+		$localization_helper = $this->_registry->get( 'p28n.wpml' );
+		$settings = $this->_registry->get( 'model.settings' );
+	
+	
+		// Even if there ARE more than 5 times the limit results - we shall not
+		// try to fetch and display these, as it would crash system
+		$upper_boundary = $limit;
+		if (
+			$settings->get( 'agenda_include_entire_last_day' ) &&
+		( false !== $last_day )
+		) {
+			$upper_boundary *= 5;
+		}
+	
+		// Convert timestamp to GMT time
+		$time = $this->_registry->get( 'date.time' )->format_to_gmt();
+		// Get post status Where snippet and associated SQL arguments
+		$where_parameters  = $this->_get_post_status_sql();
+		$post_status_where = $where_parameters['post_status_where'];
+	
+		// Get the Join (filter_join) and Where (filter_where) statements based
+		// on $filter elements specified
+		$filter = $this->_get_filter_sql( $filter );
+	
+		// Query arguments
+		$args = array( $time );
+	
+		if( $page_offset >= 0 ) {
+			$first_record = $page_offset * $limit;
+		} else {
+			$first_record = ( -$page_offset - 1 ) * $limit;
+		}
+	
+;
+	
+		$wpml_join_particle  = $localization_helper
+			->get_wpml_table_join( 'p.ID' );
+	
+		$wpml_where_particle = $localization_helper
+			->get_wpml_table_where();
+	
+		$filter_date_clause = ( $page_offset >= 0 )
+			? 'i.end >= %d '
+			: 'i.start < %d ';
+		$order_direction    = ( $page_offset >= 0 ) ? 'ASC' : 'DESC';
+		if ( false !== $last_day ) {
+			if ( 0 == $last_day ) {
+				$last_day = (int)$_SERVER['REQUEST_TIME'];
+			}
+			$filter_date_clause = ' i.end ';
+			if ( $page_offset < 0 ) {
+				$filter_date_clause .= '<';
+				$order_direction     = 'DESC';
+			} else {
+				$filter_date_clause .= '>';
+				$order_direction     = 'ASC';
+			}
+			$filter_date_clause .= ' %d ';
+			$args[0]             = $last_day;
+			$first_record        = 0;
+		}
+	
+		$query = $db->prepare(
+			'SELECT DISTINCT SQL_CALC_FOUND_ROWS p.*, e.post_id, i.id AS instance_id, ' .
+			'i.start AS start, ' .
+			'i.end AS end, ' .
+			'e.allday AS event_allday, ' .
+			'e.recurrence_rules, e.exception_rules, e.ticket_url, e.instant_event, e.recurrence_dates, e.exception_dates, ' .
+			'e.venue, e.country, e.address, e.city, e.province, e.postal_code, ' .
+			'e.show_map, e.contact_name, e.contact_phone, e.contact_email, e.cost, ' .
+			'e.ical_feed_url, e.ical_source_url, e.ical_organizer, e.ical_contact, e.ical_uid ' .
+			'FROM ' . $db->prefix . 'ai1ec_events e ' .
+			'INNER JOIN ' . $db->posts . ' p ON e.post_id = p.ID ' .
+			$wpml_join_particle .
+			'INNER JOIN ' . $db->prefix . 'ai1ec_event_instances i ON e.post_id = i.post_id ' .
+			$filter['filter_join'] .
+			"WHERE post_type = '" . AI1EC_POST_TYPE . "' " .
+			'AND ' . $filter_date_clause .
+			$wpml_where_particle .
+			$filter['filter_where'] .
+			$post_status_where .
+			// Reverse order when viewing negative pages, to get correct set of
+			// records. Then reverse results later to order them properly.
+			'ORDER BY i.start ' . $order_direction .
+			', post_title ' . $order_direction .
+			' LIMIT ' . $first_record . ', ' . $upper_boundary,
+			$args
+		);
+		$events = $db->get_results( $query, ARRAY_A );
+	
+		// Limit the number of records to convert to data-object
+		$events = $this->_limit_result_set(
+			$events,
+			$limit,
+			( false !== $last_day )
+		);
+	
+		// Reorder records if in negative page offset
+		if( $page_offset < 0 ) {
+			$events = array_reverse( $events );
+		}
+	
+		$date_first = $date_last = NULL;
+	
+		foreach ( $events as &$event ) {
+			$event['start']  = $event['start'];
+			$event['end']    = $event['end'];
+			$event['allday'] = $this->_is_all_day( $event );
+			if ( NULL === $date_first ) {
+				$date_first = $event['start'];
+			}
+			$date_last = $event['start'];
+			$event     = new Ai1ec_Event( $event );
+		}
+
+		$next = false;
+		$prev = false;
+		// if there are enough events to display a page, presume that there might be more.
+		if ( count( $events ) === $limit ) {
+			$next = true;
+			$prev = true;
+		}
+		return array(
+			'events'     => $events,
+			'prev'       => $prev,
+			'next'       => $next,
+			'date_first' => $date_first,
+			'date_last'  => $date_last,
+		);
+	}
+
+	/**
 	 * Get ID of event in database, matching imported one.
 	 *
 	 * Return event ID by iCalendar UID, feed url, start time and whether the

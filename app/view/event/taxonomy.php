@@ -96,19 +96,19 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 
 
 	/**
-	 * get_category_image_square function
+	 * Returns the HTML markup for the category image square.
 	 *
-	 * Returns the HTML markup for the category image square of the given Event
-	 * Category term ID.
+	 * @param int $term_id The term ID of event category.
 	 *
-	 * @param int $term_id The term ID of event category
-	 * @return string
-	 **/
+	 * @return string HTML snippet to use for category image.
+	 */
 	public function get_category_image_square( $term_id ) {
-		$taxonomy = $this->_registry->get( 'model.taxonomy' );
-		$image = $taxonomy->get_category_image( $term_id );
-		if ( NULL !== $image && ! empty( $image ) ) {
-			return '<img src="' . $image . '" alt="" class="ai1ec_category_small_image_preview" />';
+		$image = $this->_registry->get( 'model.taxonomy' )
+			->get_category_image( $term_id );
+		if ( null !== $image ) {
+			return '<img src="' . $image . '" alt="' .
+				Ai1ec_I18n::__( 'Category image' ) .
+				'" class="ai1ec_category_small_image_preview" />';
 		}
 		return '';
 	}
@@ -192,7 +192,7 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 			$html .= esc_html( $category->name ) . '</a>';
 			$category = $html;
 		}
-		return join( ' ', $categories );
+		return implode( ' ', $categories );
 	}
 	
 	/**
@@ -219,7 +219,7 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 			'href="' . $href->generate_href() . '">' .
 			'<i class="icon-tag"></i>' . esc_html( $tag->name ) . '</a>';
 		}
-		return join( ' ', $tags );
+		return implode( ' ', $tags );
 
 	}
 
@@ -278,21 +278,14 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 	 */
 	function events_categories_edit_form_fields( $term ) {
 
-		$db         = $this->_registry->get( 'dbi.dbi' );
-		$table_name = $db->get_table_name( 'ai1ec_event_category_meta' );
-		$fields     = $db->get_results(
-			$db->prepare(
-				"SELECT term_color, term_image FROM {$table_name} WHERE term_id = %d ",
-				$term->term_id )
-		);
-
-		$color      = $fields[0]->term_color;
-		$image      = $fields[0]->term_image;
+		$taxonomy = $this->_registry->get( 'model.taxonomy' );
+		$color    = $taxonomy->get_category_color( $term->term_id );
+		$image    = $taxonomy->get_category_image( $term->term_id );
 
 		$style = '';
 		$clr   = '';
 
-		if( ! is_null( $color ) && ! empty( $color ) ) {
+		if ( null !== $color ) {
 			$style = 'style="background-color: ' . $color . '"';
 			$clr   = $color;
 		}
@@ -300,25 +293,23 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 		$args = array(
 			'style'       => $style,
 			'color'       => $clr,
-			'label'       => __( 'Category Color', AI1EC_PLUGIN_NAME ),
-			'description' => __(
-				'Events in this category will be identified by this color',
-				AI1EC_PLUGIN_NAME ),
+			'label'       => Ai1ec_I18n::__( 'Category Color' ),
+			'description' => Ai1ec_I18n::__(
+				'Events in this category will be identified by this color'
+			),
 			'edit'        => true,
 		);
 
 		$loader = $this->_registry->get( 'theme.loader' );
-		$file   = $loader->get_file(
+		$loader->get_file(
 			'setting/categories-color-picker.twig',
 			$args,
 			true
-		);
-
-		echo( $file->get_content() );
+		)->render();
 
 		$style = 'style="display:none"';
 
-		if( ! is_null( $image ) && ! empty( $image ) ) {
+		if ( null !== $image ) {
 			$style = '';
 		}
 
@@ -326,20 +317,17 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 		$args  = array(
 			'image_src'    => $image,
 			'image_style'  => $style,
-			'section_name' => __( 'Category Image', AI1EC_PLUGIN_NAME ),
-			'label'        => __( 'Add Image', AI1EC_PLUGIN_NAME),
-			'description'  => __( 'Assign an optional image to the category. Recommended size: square, minimum 400&times;400 pixels.', AI1EC_PLUGIN_NAME ),
+			'section_name' => Ai1ec_I18n::__( 'Category Image' ),
+			'label'        => Ai1ec_I18n::__( 'Add Image' ),
+			'description'  => Ai1ec_I18n::__( 'Assign an optional image to the category. Recommended size: square, minimum 400&times;400 pixels.' ),
 			'edit'         => true,
 		);
 
-		$file   = $loader->get_file(
+		$loader->get_file(
 			'setting/categories-image.twig',
 			$args,
 			true
-		);
-
-		echo( $file->get_content() );
-
+		)->render();
 	}
 
 	/**
@@ -362,29 +350,19 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 	 * @return void Method does not return
 	 */
 	function edited_events_categories( $term_id ) {
-
-		$db              = $this->_registry->get( 'dbi.dbi' );
-
 		$tag_color_value = '';
-		if (
-			isset( $_POST['tag-color-value'] ) &&
-			! empty( $_POST['tag-color-value'] )
-		) {
-			$tag_color_value = $_POST['tag-color-value'];
+		if ( ! empty( $_POST['tag-color-value'] ) ) {
+			$tag_color_value = (string)$_POST['tag-color-value'];
 		}
-
 		$tag_image_value = '';
-		if (
-			isset( $_POST['ai1ec_category_image_url'] ) &&
-			! empty( $_POST['ai1ec_category_image_url'] )
-		) {
-			$tag_image_value = $_POST['ai1ec_category_image_url'];
+		if ( ! empty( $_POST['ai1ec_category_image_url'] ) ) {
+			$tag_image_value = (string)$_POST['ai1ec_category_image_url'];
 		}
 
+		$db         = $this->_registry->get( 'dbi.dbi' );
 		$table_name = $db->get_table_name( 'ai1ec_event_category_meta' );
 		$term       = $db->get_row( $db->prepare(
-			'SELECT term_id' .
-			' FROM ' . $table_name .
+			'SELECT term_id FROM ' . $table_name .
 			' WHERE term_id = %d',
 			$term_id
 		) );
@@ -404,14 +382,12 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 				)
 			);
 		} else { // term exist, update it
-			if ( NULL === $tag_color_value ) {
-				$tag_color_value = $term->term_color;
-			}
 			$db->update(
 				$table_name,
 				array(
 					'term_color' => $tag_color_value,
-					'term_image' => $tag_image_value ),
+					'term_image' => $tag_image_value
+				),
 				array( 'term_id' => $term_id ),
 				array( '%s', '%s' ),
 				array( '%d' )
@@ -429,23 +405,18 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 	 * at index 2
 	 */
 	public function manage_event_categories_columns( $columns ) {
-
 		wp_enqueue_media();
-
 		$this->_registry->get( 'css.admin' )
 			->process_enqueue( array(
 				array( 'style', 'admin.css' )
 			) );
-
-		$ret = array_splice( $columns, 0, 3 ) + // get only first element
+		return array_splice( $columns, 0, 3 ) + // get only first element
 			// insert at index 2
 			array( 'cat_color' => __( 'Color', AI1EC_PLUGIN_NAME ) ) +
 			// insert at index 3
 			array( 'cat_image' => __( 'Image', AI1EC_PLUGIN_NAME ) ) +
 			// insert rest of elements at the back
-			array_splice( $columns, 0, count( $columns ) );
-
-		return $ret;
+			array_splice( $columns, 0 );
 	}
 
 	/**
@@ -473,4 +444,5 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 				return $this->get_category_image_square( $term_id );
 		}
 	}
+
 }

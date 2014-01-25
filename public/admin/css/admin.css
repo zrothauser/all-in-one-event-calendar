@@ -52,3 +52,18 @@ div.theme-success {
 	filter:alpha(opacity=80);
 	border-color:rgba(0,0,0,0.5);
 }
+
+/* Category image */
+.at-upload_image_button{
+    width: auto !important;
+}
+#ai1ec_category_imag_preview{
+    max-width: 200px;
+    max-height: 200px;
+    display:block;
+    margin-bottom: 5px;
+}
+.ai1ec_category_small_image_preview{
+    max-width: 50px;
+    max-height: 50px;
+}

@@ -34,14 +34,13 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 	}
 	
 	/**
-	 * get_event_category_color_style function
-	 *
 	 * Returns the style attribute assigning the category color style to an event.
 	 *
 	 * @param int  $term_id Term ID of event category
 	 * @param bool $allday  Whether the event is all-day
+	 *
 	 * @return string
-	 **/
+	 */
 	public function get_event_category_color_style(
 		$term_id,
 		$allday = false
@@ -74,18 +73,16 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 	}
 	
 	/**
-	 * get_category_color_square function
-	 *
-	 * Returns the HTML markup for the category color square of the given Event
-	 * Category term ID.
+	 * Returns the HTML markup for the category color square.
 	 *
 	 * @param int $term_id The term ID of event category
+	 *
 	 * @return string
-	 **/
+	 */
 	public function get_category_color_square( $term_id ) {
 		$taxonomy = $this->_registry->get( 'model.taxonomy' );
 		$color = $taxonomy->get_category_color( $term_id );
-		if ( NULL !== $color && ! empty( $color ) ) {
+		if ( null !== $color ) {
 			$cat = get_term( $term_id, 'events_categories' );
 			return '<span class="ai1ec-color-swatch ai1ec-tooltip-trigger" ' .
 				'style="background:' . $color . '" title="' .
@@ -95,31 +92,48 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 	}
 
 	/**
-	 * get_event_category_colors function
+	 * Returns the HTML markup for the category image square.
 	 *
+	 * @param int $term_id The term ID of event category.
+	 *
+	 * @return string HTML snippet to use for category image.
+	 */
+	public function get_category_image_square( $term_id ) {
+		$image = $this->_registry->get( 'model.taxonomy' )
+			->get_category_image( $term_id );
+		if ( null !== $image ) {
+			return '<img src="' . $image . '" alt="' .
+				Ai1ec_I18n::__( 'Category image' ) .
+				'" class="ai1ec_category_small_image_preview" />';
+		}
+		return '';
+	}
+
+	/**
 	 * Returns category color squares for the list of Event Category objects.
 	 *
 	 * @param array $cats The Event Category objects as returned by get_terms()
+	 *
 	 * @return string
-	 **/
+	 */
 	public function get_event_category_colors( $cats ) {
 		$sqrs = '';
-	
 		foreach ( $cats as $cat ) {
 			$tmp = $this->get_category_color_square( $cat->term_id );
 			if ( ! empty( $tmp ) ) {
 				$sqrs .= $tmp;
 			}
 		}
-	
 		return $sqrs;
 	}
-	
+
 	/**
 	 * Categories as HTML, either as blocks or inline.
 	 *
-	 * @param   string $format      Return 'blocks' or 'inline' formatted result
-	 * @return  string              String of HTML for category blocks
+	 * @param Ai1ec_Event $event  Rendered Event.
+	 * @param string      $format Return 'blocks' or 'inline' formatted result.
+	 *
+	 * @return string String of HTML for category blocks.
 	 */
 	public function get_categories_html( Ai1ec_Event $event, $format = 'blocks' ) {
 		$categories = wp_get_post_terms(
@@ -132,17 +146,15 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 				array( 'cat_ids' => $category->term_id )
 			);
 
-			$class = '';
-			$data_type = '';
-
+			$class = $data_type = '';
 			$title = '';
 			if ( $category->description ) {
 				$title = 'title="' .
 					esc_attr( $category->description ) . '" ';
 			}
 
-			$html = '';
-			$class .= ' ai1ec-category';
+			$html        = '';
+			$class      .= ' ai1ec-category';
 			$color_style = '';
 			if ( $format === 'inline' ) {
 				$taxonomy = $this->_registry->get( 'model.taxonomy' );
@@ -163,8 +175,7 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 				$html .= $this->get_category_color_square(
 					$category->term_id
 				) . ' ';
-			}
-			else {
+			} else {
 				$html .=
 				'<i ' . $color_style . 'class="icon-folder-open"></i>';
 			}
@@ -172,7 +183,7 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 			$html .= esc_html( $category->name ) . '</a>';
 			$category = $html;
 		}
-		return join( ' ', $categories );
+		return implode( ' ', $categories );
 	}
 	
 	/**
@@ -199,7 +210,7 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 			'href="' . $href->generate_href() . '">' .
 			'<i class="icon-tag"></i>' . esc_html( $tag->name ) . '</a>';
 		}
-		return join( ' ', $tags );
-
+		return implode( ' ', $tags );
 	}
+
 }

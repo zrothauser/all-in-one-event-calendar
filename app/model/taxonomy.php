@@ -9,34 +9,71 @@
  * @subpackage Ai1EC.Html
  */
 class Ai1ec_Taxonomy extends Ai1ec_Base {
-	
+
 	/**
-	 * get_category_color function
+	 * Re-fetch category entries map from database.
 	 *
-	 * Returns the color of the Event Category having the given term ID.
-	 *
-	 * @param int dbm_id The ID of the Event Category
-	 *
-	 * @return string Color to use
-	 *
-	 * @staticvar Ai1ec_Memory_Utility $colors Cached entries instance
+	 * @return array Map of category entries.
 	 */
-	public function get_category_color( $term_id ) {
-		static $colors = NULL;
-		if ( ! isset( $colors ) ) {
-			$colors = $this->_registry->get( 'cache.memory' );
+	public function fetch_category_map() {
+		$category_map = array();
+		$records      = (array)$this->_registry->get( 'dbi.dbi' )->select(
+			'ai1ec_event_category_meta',
+			array( 'term_id', 'term_image', 'term_color' )
+		);
+		foreach ( $records as $row ) {
+			$image = $color = null;
+			if ( $row->term_image ) {
+				$image = $row->term_image;
+			}
+			if ( $row->term_color ) {
+				$color = $row->term_color;
+			}
+			$category_map[(int)$row->term_id] = compact( 'image', 'color' );
+		}
+		return $category_map;
+	}
+
+	/**
+	 * Get cached category description field.
+	 *
+	 * @param int    $term_id Category ID.
+	 * @param string $field   Name of field, one of 'image', 'color'.
+	 *
+	 * @return string|null Field value or null if entry is not found.
+	 */
+	public function get_category_field( $term_id, $field ) {
+		static $category_meta = null;
+		if ( null === $category_meta ) {
+			$category_meta = $this->fetch_category_map();
 		}
 		$term_id = (int)$term_id;
-		if ( NULL === ( $color = $colors->get( $term_id ) ) ) {
-			$db = $this->_registry->get( 'dbi.dbi' );
-	
-			$color = (string)$db->get_var(
-				'SELECT term_color FROM ' . $db->get_table_name( 'ai1ec_event_category_colors' ) .
-				' WHERE term_id = ' .
-				$term_id
-			);
-			$colors->set( $term_id, $color );
+		if ( ! isset( $category_meta[$term_id] ) ) {
+			return null;
 		}
-		return $color;
+		return $category_meta[$term_id][$field];
 	}
+	
+	/**
+	 * Returns the color of the Event Category having the given term ID.
+	 *
+	 * @param int $term_id The ID of the Event Category.
+	 *
+	 * @return string|null Color to use
+	 */
+	public function get_category_color( $term_id ) {
+		return $this->get_category_field( $term_id, 'color' );
+	}
+
+	/**
+	 * Returns the image of the Event Category having the given term ID.
+	 *
+	 * @param int $term_id The ID of the Event Category.
+	 *
+	 * @return string|null Image url to use.
+	 */
+	public function get_category_image( $term_id ) {
+		return $this->get_category_field( $term_id, 'image' );
+	}
+
 }

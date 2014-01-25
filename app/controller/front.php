@@ -317,6 +317,34 @@ class Ai1ec_Front_Controller {
 			11
 		);
 
+		// Category colors
+		$dispatcher->register_action(
+			'events_categories_add_form_fields',
+			array( 'view.admin.event-category', 'events_categories_add_form_fields' )
+		);
+		$dispatcher->register_action(
+			'events_categories_edit_form_fields',
+			array( 'view.admin.event-category', 'events_categories_edit_form_fields' )
+		);
+		$dispatcher->register_action(
+			'created_events_categories',
+			array( 'view.admin.event-category', 'created_events_categories' )
+		);
+		$dispatcher->register_action(
+			'edited_events_categories',
+			array( 'view.admin.event-category', 'edited_events_categories' )
+		);
+		$dispatcher->register_action(
+			'manage_edit-events_categories_columns',
+			array( 'view.admin.event-category', 'manage_event_categories_columns' )
+		);
+		$dispatcher->register_action(
+			'manage_events_categories_custom_column',
+			array( 'view.admin.event-category', 'manage_events_categories_custom_column' ),
+			10,
+			3
+		);
+
 		if ( is_admin() ) {
 			// get the repeat box
 			$dispatcher->register_action(
@@ -720,10 +748,11 @@ class Ai1ec_Front_Controller {
 		// ================================
 		// = Create table category colors =
 		// ================================
-		$table_name = $dbi->get_table_name( 'ai1ec_event_category_colors' );
+		$table_name = $dbi->get_table_name( 'ai1ec_event_category_meta' );
 		$sql .= "CREATE TABLE $table_name (
 			term_id bigint(20) NOT NULL,
 			term_color varchar(255) NOT NULL,
+			term_image varchar(255) NOT NULL,
 			PRIMARY KEY  (term_id)
 			) CHARACTER SET utf8;";
 

@@ -393,6 +393,7 @@ class Ai1ec_Javascript_Controller {
 			'invalid_email_message'          => esc_html(
 				Ai1ec_I18n::__( 'Please enter a valid e-mail address.' )
 			),
+			'choose_image_message'           => Ai1ec_I18n::__( 'Choose Image' ),
 			'now'                            => $this->_registry->get( 'date.system' )
 				->current_time(),
 			'size_less_variable_not_ok'      => Ai1ec_I18n::__(

@@ -34,6 +34,7 @@ class Ai1ec_View_Calendar_Taxonomy extends Ai1ec_Base {
 	 * Creates the html for tags filter
 	 * 
 	 * @param array $view_args
+	 * @return string
 	 */
 	public function get_html_for_tags( array $view_args ) {
 		return $this->_get_html_for_taxonomy( $view_args, true );
@@ -43,6 +44,7 @@ class Ai1ec_View_Calendar_Taxonomy extends Ai1ec_Base {
 	 * Creates the html for categories filter
 	 * 
 	 * @param array $view_args
+	 * @return string
 	 */
 	public function get_html_for_categories( array $view_args ) {
 		return $this->_get_html_for_taxonomy( $view_args );

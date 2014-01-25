@@ -320,27 +320,27 @@ class Ai1ec_Front_Controller {
 		// Category colors
 		$dispatcher->register_action(
 			'events_categories_add_form_fields',
-			array( 'view.event.taxonomy', 'events_categories_add_form_fields' )
+			array( 'view.admin.event-category', 'events_categories_add_form_fields' )
 		);
 		$dispatcher->register_action(
 			'events_categories_edit_form_fields',
-			array( 'view.event.taxonomy', 'events_categories_edit_form_fields' )
+			array( 'view.admin.event-category', 'events_categories_edit_form_fields' )
 		);
 		$dispatcher->register_action(
 			'created_events_categories',
-			array( 'view.event.taxonomy', 'created_events_categories' )
+			array( 'view.admin.event-category', 'created_events_categories' )
 		);
 		$dispatcher->register_action(
 			'edited_events_categories',
-			array( 'view.event.taxonomy', 'edited_events_categories' )
+			array( 'view.admin.event-category', 'edited_events_categories' )
 		);
 		$dispatcher->register_action(
 			'manage_edit-events_categories_columns',
-			array( 'view.event.taxonomy', 'manage_event_categories_columns' )
+			array( 'view.admin.event-category', 'manage_event_categories_columns' )
 		);
 		$dispatcher->register_action(
 			'manage_events_categories_custom_column',
-			array( 'view.event.taxonomy', 'manage_events_categories_custom_column' ),
+			array( 'view.admin.event-category', 'manage_events_categories_custom_column' ),
 			10,
 			3
 		);

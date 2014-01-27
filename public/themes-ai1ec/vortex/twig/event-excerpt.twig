@@ -1,7 +1,7 @@
 <div class="timely ai1ec-excerpt">
 	<div class="ai1ec-time">
 		<strong>{{ 'When:' | __ }}</strong>
-		{{ event.get( '_orig' ) | timespan }}
+		{{ event | timespan }}
 	</div>
 	{% if location is not empty %}
 		<div class="ai1ec-location">

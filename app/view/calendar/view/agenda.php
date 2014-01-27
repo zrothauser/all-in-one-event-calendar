@@ -22,7 +22,6 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 	 * @see Ai1ec_Calendar_View_Abstract::get_name()
 	*/
 	public function get_content( array $view_args ) {
-		fb($view_args);
 		$type = $this->get_name();
 		$time = $this->_registry->get( 'date.system' );
 		// Get localized time

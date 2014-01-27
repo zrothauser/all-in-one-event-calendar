@@ -43,6 +43,9 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 			new Twig_SimpleFilter( 'avatar',            array( $this, 'avatar' ) ),
 			new Twig_SimpleFilter( 'hour_to_datetime',  array( $this, 'hour_to_datetime' ) ),
 			new Twig_SimpleFilter( 'weekday',           array( $this, 'weekday' ) ),
+			new Twig_SimpleFilter( 'day',               array( $this, 'day' ) ),
+			new Twig_SimpleFilter( 'month',             array( $this, 'month' ) ),
+			new Twig_SimpleFilter( 'year',              array( $this, 'year' ) ),
 			new Twig_SimpleFilter( 'theme_img_url',     array( $this, 'theme_img_url' ) ),
 			new Twig_SimpleFilter( 'date_i18n',         array( $this, 'date_i18n' ) ),
 			new Twig_SimpleFilter( '__',                'Ai1ec_I18n::__' ),
@@ -93,7 +96,7 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	}
 	
 	/**
-	 * Convert a timestamp to an int
+	 * Get the name of the weekday
 	 * 
 	 * @param int $unix_timestamp
 	 * 
@@ -104,6 +107,42 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 			->format_i18n( 'l' );
 	}
 
+	/**
+	 * Get the name of the day
+	 * 
+	 * @param int $unix_timestamp
+	 * 
+	 * @return string
+	 */
+	public function day( $unix_timestamp ) {
+		return $this->_registry->get( 'date.time', $unix_timestamp )
+			->format_i18n( 'j' );
+	}
+
+	/**
+	 * Get the name of the month
+	 *
+	 * @param int $unix_timestamp
+	 *
+	 * @return string
+	 */
+	public function month( $unix_timestamp ) {
+		return $this->_registry->get( 'date.time', $unix_timestamp )
+			->format_i18n( 'M' );
+	}
+
+	/**
+	 * Get the name of the year
+	 *
+	 * @param int $unix_timestamp
+	 *
+	 * @return string
+	 */
+	public function year( $unix_timestamp ) {
+		return $this->_registry->get( 'date.time', $unix_timestamp )
+			->format_i18n( 'M' );
+	}
+	
 	/**
 	 * Convert a timestamp to an int
 	 *

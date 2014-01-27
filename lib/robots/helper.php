@@ -11,6 +11,11 @@
  */
 class Ai1ec_Robots_Helper extends Ai1ec_Base {
 
+	/**
+	 * Install robotx.txt into current Wordpress instance
+	 *
+	 * @return void
+	 */
 	public function install() {
 		$option   = $this->_registry->get( 'model.option' );
 		$settings = $this->_registry->get( 'model.settings' );		
@@ -70,6 +75,13 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 		$settings->set( 'edit_robots_txt', $custom_rules );
 	}
 
+	/**
+	 * Get default robots rules for the calendar
+	 *
+	 * @param  array  $output Current robots rules
+	 * @param  string $public Public flag
+	 * @return array
+	 */
 	public function rules( $output, $public ) {
 		// Current rules
 		$current_rules = array_map(

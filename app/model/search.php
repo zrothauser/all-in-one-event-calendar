@@ -232,9 +232,10 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		// Get the Join (filter_join) and Where (filter_where) statements based
 		// on $filter elements specified
 		$filter = $this->_get_filter_sql( $filter );
-	
+		
 		// Query arguments
 		$args = array( $time );
+		$args = array_merge( $args, $where_parameters['args'] );
 	
 		if( $page_offset >= 0 ) {
 			$first_record = $page_offset * $limit;
@@ -269,10 +270,10 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 			$filter_date_clause .= ' %d ';
 			$args[0]             = $last_day;
 			$first_record        = 0;
-		}
-	
+		} 
+
 		$query = $db->prepare(
-			'SELECT DISTINCT SQL_CALC_FOUND_ROWS p.*, e.post_id, i.id AS instance_id, ' .
+			'SELECT DISTINCT p.*, e.post_id, i.id AS instance_id, ' .
 			'i.start AS start, ' .
 			'i.end AS end, ' .
 			'e.allday AS event_allday, ' .
@@ -280,10 +281,10 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 			'e.venue, e.country, e.address, e.city, e.province, e.postal_code, ' .
 			'e.show_map, e.contact_name, e.contact_phone, e.contact_email, e.cost, ' .
 			'e.ical_feed_url, e.ical_source_url, e.ical_organizer, e.ical_contact, e.ical_uid ' .
-			'FROM ' . $db->prefix . 'ai1ec_events e ' .
-			'INNER JOIN ' . $db->posts . ' p ON e.post_id = p.ID ' .
+			'FROM ' . $this->_dbi->get_table_name( 'ai1ec_events' ) . ' e ' .
+			'INNER JOIN ' . $this->_dbi->get_table_name( 'posts' ) . ' p ON e.post_id = p.ID ' .
 			$wpml_join_particle .
-			'INNER JOIN ' . $db->prefix . 'ai1ec_event_instances i ON e.post_id = i.post_id ' .
+			'INNER JOIN ' . $this->_dbi->get_table_name( 'ai1ec_event_instances' ) . ' i ON e.post_id = i.post_id ' .
 			$filter['filter_join'] .
 			"WHERE post_type = '" . AI1EC_POST_TYPE . "' " .
 			'AND ' . $filter_date_clause .
@@ -321,7 +322,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 				$date_first = $event['start'];
 			}
 			$date_last = $event['start'];
-			$event     = new Ai1ec_Event( $event );
+			$event     = $this->_registry->get( 'model.event', $event );
 		}
 
 		$next = false;
@@ -407,6 +408,46 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		}
 
 		return ( 86400 === $event['end'] - $event['start'] );
+	}
+
+	/**
+	 * _limit_result_set function
+	 *
+	 * Slice given number of events from list, with exception when all
+	 * events from last day shall be included.
+	 *
+	 * @param array $events   List of events to slice
+	 * @param int   $limit    Number of events to slice-off
+	 * @param bool  $last_day Set to true to include all events from last day ignoring {$limit}
+	 *
+	 * @return array Sliced events list
+	 */
+	protected function _limit_result_set(
+		array $events,
+		$limit,
+		$last_day
+	) {
+		$limited_events     = array();
+		$start_day_previous = 0;
+		foreach ( $events as $event ) {
+			$start_day = date(
+				'Y-m-d',
+				$event['start']
+			);
+			--$limit; // $limit = $limit - 1;
+			if ( $limit < 0 ) {
+				if ( true === $last_day ) {
+					if ( $start_day != $start_day_previous ) {
+						break;
+					}
+				} else {
+					break;
+				}
+			}
+			$limited_events[]   = $event;
+			$start_day_previous = $start_day;
+		}
+		return $limited_events;
 	}
 
 	/**

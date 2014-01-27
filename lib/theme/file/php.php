@@ -73,4 +73,14 @@ class Ai1ec_File_Php extends Ai1ec_File_Abstract {
 		}
 		return false;
 	}
+	
+	/**
+	 * Legacy function to keep conpatibility with 1.x themes.
+	 * 
+	 * @param string $file
+	 */
+	public function get_theme_img_url( $file ) {
+		return $this->_registry->get( 'theme.loader' )
+			->get_file( $file, array(), false )->get_url();
+	}
 }

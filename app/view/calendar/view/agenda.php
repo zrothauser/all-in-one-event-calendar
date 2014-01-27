@@ -22,6 +22,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 	 * @see Ai1ec_Calendar_View_Abstract::get_name()
 	*/
 	public function get_content( array $view_args ) {
+		fb($view_args);
 		$type = $this->get_name();
 		$time = $this->_registry->get( 'date.system' );
 		// Get localized time
@@ -73,8 +74,8 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		// Generate title of view based on date range month & year.
 		$range_start = $results['date_first'] ? $results['date_first'] : $timestamp;
 		$range_end   = $results['date_last']  ? $results['date_last'] : $timestamp;
-		$range_start = $this->_registry->get( 'date.time', $range_start )->format();
-		$range_end   = $this->_registry->get( 'date.time', $range_end )->format();
+		$range_start = $this->_registry->get( 'date.time', $range_start );
+		$range_end   = $this->_registry->get( 'date.time', $range_end );
 		$start_year  = $range_start->format_i18n( 'Y' );
 		$end_year    = $range_end->format_i18n( 'Y' );
 		$start_month = $range_start->format_i18n( 'F' );
@@ -87,7 +88,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$title_date_range = "$start_month $start_year – $end_month $end_year";
 		}
 		$is_ticket_button_enabled = apply_filters( 'ai1ec_'. $type . '_ticket_button', false );
-		$view_args = array(
+		$args = array(
 			'title'                     => $title_date_range,
 			'dates'                     => $dates,
 			'type'                      => $type,
@@ -103,23 +104,23 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			'is_ticket_button_enabled'  => $is_ticket_button_enabled,
 		);
 		if( $settings->get( 'ajaxify_events_in_web_widget' ) ) {
-			$view_args['data_type_events'] = $view_args['data_type'];
+			$args['data_type_events'] = $view_args['data_type'];
 		}
 		// Add extra buttons to Agenda view if events were returned.
 		if ( $type === 'agenda' && $dates ) {
-			$view_args['before_pagination'] =
-				$loader->get_file( 'agenda-buttons.twig', $view_args )->get_content();
+			$args['before_pagination'] =
+				$loader->get_file( 'agenda-buttons.twig', $args, false )->get_content();
 		}
 		$navigation = '';
 		if ( true !== $view_args['no_navigation'] ) {
 			$navigation = $loader->get_file(
 				'navigation.twig',
-				$view_args,
+				$args,
 				false
 			)->get_content();
 		}
-		$view_args['navigation'] = $navigation;
-		$file = $loader->get_file( 'oneday.twig', $view_args, false );
+		$args['navigation'] = $navigation;
+		$file = $loader->get_file( 'agenda.twig', $args, false );
 		
 		
 		return apply_filters(
@@ -235,10 +236,9 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		$events,
 		Ai1ec_Abstract_Query $query = null
 	) {
-		global $ai1ec_events_helper, $ai1ec_settings;
-	
 		$dates = array();
 		$time = $this->_registry->get( 'date.system' );
+		$settings = $this->_registry->get( 'model.settings' );
 		// Classify each event into a date/allday category
 		foreach( $events as $event ) {
 			if ( ! empty( $query ) ) {
@@ -249,7 +249,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$timestamp = gmmktime( 0, 0, 0, $date['mon'], $date['mday'], $date['year'] );
 			$exact_date = $time->format_date_for_url(
 				$timestamp,
-				$ai1ec_settings->input_date_format
+				$settings->get( 'input_date_format' )
 			);
 			$href_for_date = $this->_create_link_for_day_view( $exact_date );
 			// Ensure all-day & non all-day categories are created in correct order.

@@ -12,6 +12,13 @@
 class Ai1ec_Event_Legacy extends Ai1ec_Event {
 
 	/**
+	 * The current request object
+	 *
+	 * @var Ai1ec_Abstract_Query
+	 */
+	protected $request;
+
+	/**
 	 * @var array map of method => class for legacy code.
 	 */
 	protected static $_classes = array(
@@ -91,6 +98,9 @@ class Ai1ec_Event_Legacy extends Ai1ec_Event {
 		return $time->get_short_time( $this->get( 'start' ) );
 	}
 
+	public function set_request( $request ) {
+		$this->request = $request;
+	}
 	/**
 	 * Handles legacy property setters.
 	 *

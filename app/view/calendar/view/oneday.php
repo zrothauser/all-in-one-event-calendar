@@ -46,7 +46,8 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		);
 		$args = wp_parse_args( $view_args, $defaults );
 
-		$local_date = $this->_registry->get( 'date.time', $args['exact_date'] )
+		$local_date = $this->_registry
+			->get( 'date.time', $args['exact_date'], 'sys.default' )
 			->adjust_day( 0 + $args['oneday_offset'] )
 			->set_time( 0, 0, 0 );
 		
@@ -153,7 +154,8 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		// ================
 		// = Previous day =
 		// ================
-		$local_date = $this->_registry->get( 'date.time', $args['exact_date'] )
+		$local_date = $this->_registry
+			->get( 'date.time', $args['exact_date'], 'sys.default' )
 			->adjust_day( $args['oneday_offset'] - 1 )
 			->set_time( 0, 0, 0 );
 		$args['exact_date'] = $local_date->format();

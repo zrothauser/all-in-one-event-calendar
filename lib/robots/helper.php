@@ -12,18 +12,19 @@
 class Ai1ec_Robots_Helper extends Ai1ec_Base {
 
 	public function install() {
-		global $wp_filesystem;
-
-		$option = $this->_registry->get( 'model.option' );
-		$settings = $this->_registry->get( 'model.settings' );
+		$option   = $this->_registry->get( 'model.option' );
+		$settings = $this->_registry->get( 'model.settings' );		
+		$robots   = $option->get( 'ai1ec_robots_txt' );
 		
-		if ( $option->get( 'robots_txt' ) !== null &&
-				$option->get( 'robots_page_id' ) == $settings->get( 'calendar_page_id' ) ) {
+		if ( isset( $robots['page_id'] ) && 
+				isset( $robots['is_installed'] ) &&
+					$robots['page_id'] == $settings->get( 'calendar_page_id' ) ) {
 			return;
 		}
 
-		$robots_txt    = ABSPATH . 'robots.txt';
-		$is_updated    = false;
+		$robots_file   = ABSPATH . 'robots.txt';
+		$robots_txt    = array();		
+		$is_installed  = false;
 		$current_rules = null;
 		$custom_rules  = null;
 
@@ -37,29 +38,33 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 			request_filesystem_credentials( $url, '', true, false, null );
 		}
 
-		if ( $wp_filesystem->exists( $robots_txt )
-				&& $wp_filesystem->is_readable( $robots_txt )
-					&& $wp_filesystem->is_writable( $robots_txt ) ) {
+		global $wp_filesystem;		
+		if ( $wp_filesystem->exists( $robots_file )
+				&& $wp_filesystem->is_readable( $robots_file )
+					&& $wp_filesystem->is_writable( $robots_file ) ) {
 			// Get current robots txt content
-			$current_rules = $wp_filesystem->get_contents( $robots_txt );
+			$current_rules = $wp_filesystem->get_contents( $robots_file );
 
 			// Update robots.txt
 			$custom_rules = $this->rules( $current_rules, null );
-			$is_updated = $wp_filesystem->put_contents(
-				$robots_txt,
+			$is_installed = $wp_filesystem->put_contents(
+				$robots_file,
 				$custom_rules,
 				FS_CHMOD_FILE
 			);
 
-			if ( $is_updated ) {
-				$option->set( 'robots_txt', true );
+			if ( $is_installed ) {
+				$robots_txt['is_installed'] = true;
 			}
 		} else {
-			$option->set( 'robots_txt', false );
+			$robots_txt['is_installed'] = false;
 		}
 
-		// Update Robots Page ID
-		$option->set( 'robots_page_id', $settings->get( 'calendar_page_id' ) );
+		// Set Page ID
+		$robots_txt['page_id'] = $settings->get( 'calendar_page_id' );
+		
+		// Update Robots Txt
+		$option->set( 'ai1ec_robots_txt', $robots_txt );
 
 		// Update settings textarea
 		$settings->set( 'edit_robots_txt', $custom_rules );

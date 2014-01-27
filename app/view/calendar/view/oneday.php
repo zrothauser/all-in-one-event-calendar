@@ -31,13 +31,6 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 	}
 
 	/* (non-PHPdoc)
-	 * @see Ai1ec_Calendar_View_Abstract::get_description()
-	 */
-	public function get_description() {
-		return 'Day View';
-	}
-
-	/* (non-PHPdoc)
 	 * @see Ai1ec_Calendar_View_Abstract::get_content()
 	 */
 	public function get_content( array $view_args ) {

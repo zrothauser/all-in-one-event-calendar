@@ -7,11 +7,11 @@
 		<span class="caret"></span>
 	</a>
 	<div class="dropdown-menu">
-		{% for key in available_views %}
+		{% for key, args in available_views %}
 			<div class="{% if key == current_view %}active{% endif %}"
 				data-action="{{ key }}">
 				<a id="ai1ec-view-{{ key }}"
-					{{ data_type }}
+					{{ data_type|raw }}
 					class="ai1ec-load-view {{ key }}"
 					href="{{ available_views[key].href }}">
 					<img src="{{ ( key ~ '-view.png' )|theme_img_url }}"

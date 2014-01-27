@@ -33,14 +33,6 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	 * @return string The machine name of the view.
 	 */
 	abstract public function get_name();
-
-	/**
-	 * Get the long name of the view
-	 * 
-	 * @return string the long name of the view
-	 */
-	abstract public function get_description();
-	
 	
 	/**
 	 * Get extra arguments specific for the view

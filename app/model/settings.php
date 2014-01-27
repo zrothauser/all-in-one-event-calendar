@@ -198,6 +198,37 @@ class Ai1ec_Settings extends Ai1ec_App {
 	}
 
 	/**
+	 * Add a view if not set.
+	 * 
+	 * @param array $view
+	 */
+	public function add_view( array $view ) {
+		$enabled_views = $this->get( 'enabled_views' );
+		if ( isset( $enabled_views[$view['name']] ) ) {
+			return;
+		}
+		$enabled_views[$view['name']] = array(
+			'enabled' => $view['enabled'],
+			'default' => $view['default'],
+			'longname' => $view['longname'],
+		);
+		$this->set( 'enabled_views', $enabled_views );
+	}
+
+	/**
+	 * Remove a view.
+	 * 
+	 * @param string $view
+	 */
+	public function remove_view( $view ) {
+		$enabled_views = $this->get( 'enabled_views' );
+		if ( isset( $enabled_views[$view] ) ) {
+			unset( $enabled_views[$view] );
+			$this->set( 'enabled_views', $enabled_views );
+		}
+	}
+
+	/**
 	 * Check object state and update it's database representation as needed.
 	 *
 	 * @return void Destructor does not return.
@@ -281,6 +312,36 @@ class Ai1ec_Settings extends Ai1ec_App {
 				),
 				'default'  => $this->_registry->get( 'model.option' )->get(
 					'start_of_week'
+				),
+			),
+			'enabled_views' => array(
+				'type' => 'array',
+				'renderer' => array(
+					'class' => 'enabled-views',
+					'tab'   => 'viewing-events',
+					'label' => Ai1ec_I18n::__( 'Available views' ),
+				),
+				'default'  => array(
+					'agenda' => array(
+						'enabled' => true,
+						'default' => true,
+						'longname' => Ai1ec_I18n::__( 'Agenda' ),
+					),
+					'oneday' => array(
+						'enabled' => true,
+						'default' => false,
+						'longname' => Ai1ec_I18n::__( 'Day' ),
+					),
+					'month' => array(
+						'enabled' => true,
+						'default' => false,
+						'longname' => Ai1ec_I18n::__( 'Month' ),
+					),
+					'week' => array(
+						'enabled' => true,
+						'default' => false,
+						'longname' => Ai1ec_I18n::__( 'Week' ),
+					),
 				),
 			),
 			'default_tags_categories' => array(

@@ -86,8 +86,8 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			->get_short_time( $now );
 		$now      = $now->diff_sec( $midnight );
 
-		$is_ticket_button_enabled = false;
-		$show_reveal_button       = false;
+		$is_ticket_button_enabled = apply_filters( 'ai1ec_oneday_ticket_button', false );
+		$show_reveal_button       = apply_filters( 'ai1ec_oneday_reveal_button', false );
 		$time_format = $this->_registry->get( 'model.option' )->get(
 			'time_format',
 			__( 'g a', AI1EC_PLUGIN_NAME )

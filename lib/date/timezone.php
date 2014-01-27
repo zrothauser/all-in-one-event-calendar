@@ -456,6 +456,7 @@ class Ai1ec_Date_Timezone extends Ai1ec_Base {
 	 * @throws Ai1ec_Date_Timezone_Exception If an error occurs.
 	 */
 	public function get( $timezone ) {
+		fb($timezone);
 		if ( 'sys.default' === $timezone ) {
 			$timezone = $this->get_default_timezone();
 		}

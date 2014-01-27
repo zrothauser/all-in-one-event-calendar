@@ -35,7 +35,7 @@ class Ai1ec_Time_Utility {
 		$is_gmt    = true
 	) {
 		$timezone = ( $is_gmt ) ? 
-			true :
+			'UTC' :
 			self::$_registry->get( 'model.option' )->get( 'timezone_string' ); 
 		return self::$_registry->get( 'date.time', $timestamp, $timezone )
 			->format_i18n( $format );

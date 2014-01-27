@@ -3,14 +3,14 @@
 		<span>{{ 'When:' | __ }}</span>
 		<b>{{ timespan }}</b>
 	</div>
-	{% if location | length > 0 %}
+	{% if location is not empty %}
 		<div>
 			<span>{{ 'Where:' | __ }}</span>
 			<b>{{ location }}</b>
 		</div>
 	{% endif %}
 </div>
-{% if description | length > 0 %}
+{% if description is not empty %}
 	<div>
 		{{ description }}
 	</div>

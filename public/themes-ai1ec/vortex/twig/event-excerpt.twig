@@ -1,9 +1,9 @@
 <div class="timely ai1ec-excerpt">
 	<div class="ai1ec-time">
 		<strong>{{ 'When:' | __ }}</strong>
-		{{ event.get_timespan_html() }}
+		{{ event.get( '_orig' ) | timespan( 'short' ) }}
 	</div>
-	{% if location | length > 0 %}
+	{% if location is not empty %}
 		<div class="ai1ec-location">
 			<strong>{{ 'Where:' | __ }}</strong>
 			{{ location }}

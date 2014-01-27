@@ -2,8 +2,8 @@
 	<a class="dropdown-toggle" data-toggle="dropdown">
 		<i class="icon-user"></i>
 		<span class="ai1ec-clear-filter ai1ec-tooltip-trigger"
-			data-href="{{ clear_filter }}"
-			{{ data_type }}
+			data-href="{{ clear_filter | e('html_attr') }}"
+			{{ data_type | raw }}
 			title="{{ 'Clear author filter' | __ }}">
 
 			<i class="icon-remove-sign"></i>
@@ -23,13 +23,13 @@
 				{% endif %} >
 
 				<a class="ai1ec-load-view ai1ec-author"
-					{% if author.displa_name | length > 0 %}
+					{% if author.display_name is not empty %}
 						title="{{ author.display_name | e }}"
 					{% endif %}
-					{{ data_type }}
+					{{ data_type | raw }}
 					href="{{ author.href }}" >
 
-					{{ author.display_name | e('html') }}
+					{{ author.display_name }}
 				</a>
 			</div>
 		{% endfor %}

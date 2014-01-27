@@ -1,11 +1,11 @@
 <div class="timely ai1ec-multi-event
 	ai1ec-event-id-{{ event.post_id }}
-	{% if event.get_multiday() %}'ai1ec-multiday'{% endif %}
-	{% if event.allday %}'ai1ec-allday'{% endif %} ">
+	{% if event.get_multiday() %}ai1ec-multiday{% endif %}
+	{% if event.allday %}ai1ec-allday{% endif %} ">
 
 	<div class="ai1ec-event-details clearfix">
 
-		{% if event.ticket_url is not empty or event.show_map is not empty %}
+		{% if event.ticket_url is not empty or event.show_map %}
 			<div class="btn-group pull-right">
 				{% if event.ticket_url is not empty }}
 					<a href="{{ event.ticket_url | e('html_attr') }}" target="_blank"

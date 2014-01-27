@@ -24,10 +24,10 @@
 
 				<a class="ai1ec-load-view ai1ec-author"
 					{% if author.display_name is not empty %}
-						title="{{ author.display_name | e }}"
+						title="{{ author.display_name | e('html_attr') }}"
 					{% endif %}
 					{{ data_type | raw }}
-					href="{{ author.href }}" >
+					href="{{ author.href | e('html_attr') }}" >
 
 					{{ author.display_name }}
 				</a>

@@ -1,0 +1,37 @@
+<li class="dropdown ai1ec-author-filter {{ active_class }}">
+	<a class="dropdown-toggle" data-toggle="dropdown">
+		<i class="icon-user"></i>
+		<span class="ai1ec-clear-filter ai1ec-tooltip-trigger"
+			data-href="{{ clear_filter }}"
+			{{ data_type }}
+			title="{{ 'Clear author filter' | __ }}">
+
+			<i class="icon-remove-sign"></i>
+		</span>
+
+		{{ 'Authors' | __ }}
+
+		<span class="caret"></span>
+
+	</a>
+
+	<div class="dropdown-menu">
+		{% for author in authors %}
+			<div data-term="{{ author.user_id }}"
+				{% if author.user_id in selected_auth_ids %}
+					class="active"
+				{% endif %} >
+
+				<a class="ai1ec-load-view ai1ec-author"
+					{% if author.displa_name | length > 0 %}
+						title="{{ author.display_name | e }}"
+					{% endif %}
+					{{ data_type }}
+					href="{{ author.href }}" >
+
+					{{ author.display_name | e('html') }}
+				</a>
+			</div>
+		{% endfor %}
+	</div>
+</li>

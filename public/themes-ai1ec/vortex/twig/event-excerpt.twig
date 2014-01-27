@@ -1,0 +1,12 @@
+<div class="timely ai1ec-excerpt">
+	<div class="ai1ec-time">
+		<strong>{{ 'When:' | __ }}</strong>
+		{{ event.get_timespan_html() }}
+	</div>
+	{% if location | length > 0 %}
+		<div class="ai1ec-location">
+			<strong>{{ 'Where:' | __ }}</strong>
+			{{ location }}
+		</div>
+	{% endif %}
+</div>

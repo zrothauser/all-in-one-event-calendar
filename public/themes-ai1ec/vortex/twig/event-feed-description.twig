@@ -1,0 +1,17 @@
+<div>
+	<div>
+		<span>{{ 'When:' | __ }}</span>
+		<b>{{ timespan }}</b>
+	</div>
+	{% if location | length > 0 %}
+		<div>
+			<span>{{ 'Where:' | __ }}</span>
+			<b>{{ location }}</b>
+		</div>
+	{% endif %}
+</div>
+{% if description | length > 0 %}
+	<div>
+		{{ description }}
+	</div>
+{% endif %}

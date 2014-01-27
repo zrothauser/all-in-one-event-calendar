@@ -1,0 +1,19 @@
+{% autoescape false %}
+	<div>
+		<div>
+			<span>{{ 'When:' | __ }}</span>
+			<b>{{ timespan }}</b>
+		</div>
+		{% if location is not empty %}
+			<div>
+				<span>{{ 'Where:' | __ }}</span>
+				<b>{{ location }}</b>
+			</div>
+		{% endif %}
+	</div>
+	{% if description is not empty %}
+		<div>
+			{{ description }}
+		</div>
+	{% endif %}
+{% endautoescape %}

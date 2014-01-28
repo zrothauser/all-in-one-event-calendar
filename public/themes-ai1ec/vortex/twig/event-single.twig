@@ -9,35 +9,11 @@
 
 	<div class="clearfix">{{ back_to_calendar | raw }}</div>
 	<div class="ai1ec-time">
-		<div class="ai1ec-label">{{ 'When:'|__ }}</div>
+		<div class="ai1ec-label">{{ 'When:' | __ }}</div>
 		<div class="ai1ec-field-value">{{ event | timespan | raw }}</div>
 	</div>
 
-	{% if recurrence is not empty %}
-		<div class="ai1ec-recurrence">
-			<div class="ai1ec-label">
-				<i class="icon-repeat"></i>
-				{{ 'Repeats:'|__ }}
-			</div>
-			<div class="ai1ec-field-value">
-				{% if edit_instance_url is not empty %}
-					<a class="ai1ec-edit-instance-link pull-right"
-						href="{{ edit_instance_url }}">
-						<i class="icon-pencil"></i>
-						{{ edit_instance_text }}
-					</a>
-				{% endif %}
-				{{ recurrence|capitalize }}
-				{% if exclude is not empty %}
-					<div class="ai1ec-exclude">
-						{{ 'Excluding:'|__ }}
-						{{ exclude }}
-					</div>
-				{% endif %}
-			</div>
-		</div>
-	{% endif %}
-
+	{% include 'recurrence.twig' %}
 
 	{% if map is not empty %}
 		<div class="ai1ec-map pull-right">{{ map | raw }}</div>
@@ -46,21 +22,21 @@
 	{% if show_subscribe_buttons or event.get( 'ticket_url' ) is not empty %}
 		<div class="ai1ec-actions pull-right btn-group">
 			{% if event.get( 'ticket_url' ) is not empty %}
-				<a href="{{ event.get( 'ticket_url' )|e('html_attr') }}" target="_blank"
+				<a href="{{ event.get( 'ticket_url' ) | e('html_attr') }}" target="_blank"
 					class="ai1ec-tickets btn btn-small btn-primary"
 					>{{ event.get_runtime( 'tickets_url_label' ) }}</a>
 			{% endif %}
 			{% if show_subscribe_buttons %}
 				<a class="btn btn-small ai1ec-subscribe"
 					href="{{ subscribe_url | e('html_attr') }}"
-					title="{{ 'Add this event to your favourite calendar program (iCal, Outlook, etc.)'|__ }}" >
+					title="{{ 'Add this event to your favourite calendar program (iCal, Outlook, etc.)' | __ }}" >
 					<i class="icon-plus"></i>
-					{{ 'Add to Calendar'|__ }}</a>
+					{{ 'Add to Calendar' | __ }}</a>
 				<a class="btn btn-small ai1ec-subscribe-google" target="_blank"
 					href="{{ google_url | e('html_attr') }}"
-					title="{{ 'Add this event to your Google Calendar'|__ }}">
+					title="{{ 'Add this event to your Google Calendar' | __ }}">
 					<i class="icon-google-plus icon-large"></i>
-					{{ 'Add to Google'|__ }}
+					{{ 'Add to Google' | __ }}
 				</a>
 			{% endif %}
 			{% if extra_buttons %}
@@ -71,23 +47,23 @@
 
 	{% if location is not empty %}
 		<div class="ai1ec-location">
-			<div class="ai1ec-label">{{ 'Where:'|__ }}</div>
+			<div class="ai1ec-label">{{ 'Where:' | __ }}</div>
 			<div class="ai1ec-field-value">{{ location | raw }}</div>
 		</div>
 	{% endif %}
 
 	{% if event.get( 'cost' ) is not empty or event.is_free %}
 		<div class="ai1ec-cost">
-			<div class="ai1ec-label">{{ 'Cost:'|__ }}</div>
+			<div class="ai1ec-label">{{ 'Cost:' | __ }}</div>
 			<div class="ai1ec-field-value">
-				{{ event.is_free ? 'Free'|__ : event.get( 'cost' ) }}
+				{{ event.is_free ? 'Free' | __ : event.get( 'cost' ) }}
 			</div>
 		</div>
 	{% endif %}
 
 	{% if contact is not empty %}
 		<div class="ai1ec-contact">
-			<div class="ai1ec-label">{{ 'Contact:'|__ }}</div>
+			<div class="ai1ec-label">{{ 'Contact:' | __ }}</div>
 			<div class="ai1ec-field-value">{{ contact | raw }}</div>
 		</div>
 	{% endif %}
@@ -95,12 +71,12 @@
 	{% if categories is not empty %}
 		<div class="ai1ec-categories">
 			<div class="ai1ec-label ai1ec-hidden-narrow-phone"
-				title="{{ 'Categories'|__ }}">
+				title="{{ 'Categories' | __ }}">
 				<i class="icon-folder-open icon-large"></i>
 			</div>
 			<div class="ai1ec-label ai1ec-visible-narrow-phone">
 				<i class="icon-folder-open"></i>
-				{{ 'Categories:'|__ }}
+				{{ 'Categories:' | __ }}
 			</div>
 			<div class="ai1ec-field-value">{{ categories | raw }}</div>
 		</div>
@@ -109,12 +85,12 @@
 	{% if tags is not empty %}
 		<div class="ai1ec-tags">
 			<div class="ai1ec-label ai1ec-hidden-narrow-phone"
-				title="{{ 'Tags'|__ }}">
+				title="{{ 'Tags' | __ }}">
 				<i class="icon-tags icon-large"></i>
 			</div>
 			<div class="ai1ec-label ai1ec-visible-narrow-phone">
 				<i class="icon-tags"></i>
-				{{ 'Tags:'|__ }}
+				{{ 'Tags:' | __ }}
 			</div>
 			<div class="ai1ec-field-value">{{ tags | raw }}</div>
 		</div>
@@ -123,7 +99,7 @@
 </div>
 
 {% if event.get_runtime( 'content_img_url' ) is empty %}
-	{{ event|avatar( [
+	{{ event | avatar( [
 		'post_thumbnail',
 		'location_avatar',
 		'category_avatar'

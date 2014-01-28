@@ -4,11 +4,11 @@
 		<i class="icon-tags"></i>
 		<span class="ai1ec-clear-filter ai1ec-tooltip-trigger"
 			data-href="{{ clear_filter }}"
-			{{ data_type|raw }}
-			title="{{ 'Clear tag filter'|__ }}">
+			{{ data_type | raw }}
+			title="{{ 'Clear tag filter' | __ }}">
 			<i class="icon-remove-sign"></i>
 		</span>
-		{{ 'Tags'|__ }}
+		{{ 'Tags' | __ }}
 		<span class="caret"></span>
 	</a>
 	<div class="dropdown-menu">
@@ -16,11 +16,11 @@
 			<span data-term="{{ term.term_id }}"
 				{% if term.term_id in selected_tag_ids %}class="active"{% endif %}>
 				{% if term.description is not empty %}
-					title="{{ term.description|e('html_attr') }}"
+					title="{{ term.description | e('html_attr') }}"
 				{% endif %}
 				<a class="ai1ec-load-view ai1ec-tag"
-					{{ data_type|raw }}
-					href="{{ term.href }}">
+					{{ data_type | raw }}
+					href="{{ term.href | e('html_attr') }}">
 					{{ term.name }}
 				</a>
 			</span>

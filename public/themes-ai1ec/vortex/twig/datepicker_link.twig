@@ -1,11 +1,10 @@
-<a 
+<a
 	class="ai1ec-minical-trigger btn"
 	{% for attribute, value in attributes %}
 		{{ attribute }}="{{ value }}"
 	{% endfor %}
-	{% autoescape false %}
-	{{ data_type }}
-	{% endautoescape %}
+	{{ data_type | raw }}
 	>
-	<img src="{{ icon_url }}" class="ai1ec-icon-datepicker" alt="{{ "Choose a date using calendar"|__ }}" />
+	<img src="{{ icon_url | e('html_attr') }}" class="ai1ec-icon-datepicker"
+    alt="{{ "Choose a date using calendar" | __ }}" />
 </a>

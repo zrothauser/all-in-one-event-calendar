@@ -1,0 +1,37 @@
+{% if event.get_runtime( 'category_colors' ) %}
+	<div class="ai1ec-color-swatches">{{ event.get_runtime( 'category_colors' ) }}</div>
+{% endif %}
+
+<span class="ai1ec-popup-title popover-title">
+	<a href="{{event.get_runtime( 'instance_permalink' ) | e('html_attr') }}"
+			>{{ event.get_runtime( 'filtered_title' ) | truncate | e }}</a>
+				{% if show_location_in_title and not ( event.get( 'venue' ) is empty ) %}
+					<span class="ai1ec-event-location"
+							>{{ '@ %s' | __ | format( event.get( 'venue' ) ) | e }}</span>
+				{% endif %}
+				{% if is_ticket_button_enabled and not ( event.get( 'ticket_url' ) is empty ) %}
+					<a class="pull-right btn btn-primary btn-mini ai1ec-buy-tickets"
+					   target="_blank" href="{{ event.get( 'ticket_url' ) }}"
+							>{{ event.get_runtime( 'ticket_url_label' ) }}</a>
+				{% endif %}
+</span><!--/.span.ai1ec-popup-title-->
+
+{{ edit_post_link( '<i class="icon-pencil"></i> ' . __( 'Edit', AI1EC_PLUGIN_NAME ), event.get('post_id') ) }}
+
+<div class="ai1ec-event-time">
+	{{ event.get( '_orig' ) | timespan( 'short' ) }}
+</div>
+
+{% autoescape false %}
+	{{ event|avatar( [
+		'post_thumbnail',
+		'content_img',
+		'location_avatar',
+		'category_avatar'
+	] ) }}
+{% endautoescape %}
+
+{% if not event.get_runtime( 'post_excerpt' ) is empty %}
+	<div class="ai1ec-popup-excerpt">{{ event.get_runtime( 'post_excerpt' )|e }}</div>
+{% endif %}
+

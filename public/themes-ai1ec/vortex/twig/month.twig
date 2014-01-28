@@ -1,0 +1,112 @@
+{% autoescape false %}
+	{{ navigation }}
+	<table class="ai1ec-month-view ai1ec-popover-boundary">
+		<thead>
+		<tr>
+			{% for weekday in weekdays %}
+				<th class="ai1ec-weekday">{{ weekday }}</th>
+			{% endfor %}
+		</tr>
+		</thead>
+		<tbody>
+			{% for week in cell_array %}
+				<tr class="ai1ec-week">
+					{% for day in week %}
+						{% if day['date'] is not empty %}
+							<td {% if day['today'] is not empty %}
+								class="ai1ec-today"
+								{% endif %} >
+								{#
+									TODO: This div should not be needed, but with multi-day
+									event bars it is required until a better method of arranging
+									events is contrived:
+								#}
+								{% if week['added_stretcher'] is empty %}
+									<div class="ai1ec-day-stretcher"></div>
+									{% set week['added_stretcher'] = true %}
+								{% endif %}
+	
+								<div class="ai1ec-day">
+									<div class="ai1ec-date">
+										<a class="ai1ec-load-view" {{ data_type }} href="{{ day['date_link'] }}">{{ day['date'] }}</a>
+									</div>
+	
+									{% for event in day['events'] %}
+										<a href="{{ event.get_runtime( 'instance_permalink' ) | e('html_attr') }}"
+											{{ data_type_events }}
+											{% if event.get_multiday() %}
+												data-end-day="{{ event.get_multiday_end_day() | e('html_attr') }}"
+												data-start-truncated="{% if event.start_truncated %}true{% else %}false{% endif %}"
+												data-end-truncated="{% if event.end_truncated %}true{% else %}false{% endif %}"
+											{% endif %}
+											data-instance-id="{{ event.get( 'instance_id' ) | e('html_attr') }}"
+											class="ai1ec-event-container ai1ec-load-event ai1ec-popup-trigger
+											ai1ec-event-id-{{ event.get( 'post_id' ) | e('html_attr') }}
+											ai1ec-event-instance-id-{{ event.get( 'instance_id' ) | e('html_attr') }}
+											{% if event.allday %}ai1ec-allday{% endif %}
+											{% if event.get_multiday() %}ai1ec-multiday{% endif %}" >
+	
+											<div class="ai1ec-event"
+												 style="{{ event.get_color_style() | e('html_attr') }}">
+												<span class="ai1ec-event-title">
+													{{ event.get_runtime( 'filtered_title' ) | e }}
+												</span>
+												{% if event.allday %}
+													<span class="ai1ec-event-time">
+														{{ event.get_runtime( 'short_start_time' ) | e }}
+													</span>
+												{% endif %}
+											</div>
+										</a>
+	
+										<div class="ai1ec-popup hide">
+											{% if event.get_runtime( 'category_colors' ) %}
+												<div class="ai1ec-color-swatches">{{ event.get_runtime( 'category_colors' ) }}</div>
+											{% endif %}
+	
+											<span class="ai1ec-popup-title popover-title">
+												<a href="{{event.get_runtime( 'instance_permalink' ) | e('html_attr') }}"
+														>{{ event.get_runtime( 'filtered_title' ) | truncate | e }}</a>
+															{% if show_location_in_title and not ( event.get( 'venue' ) is empty ) %}
+																<span class="ai1ec-event-location"
+																		>{{ '@ %s' | __ | format( event.get( 'venue' ) ) | e }}</span>
+															{% endif %}
+															{% if is_ticket_button_enabled and not ( event.get( 'ticket_url' ) is empty ) %}
+																<a class="pull-right btn btn-primary btn-mini ai1ec-buy-tickets"
+																   target="_blank" href="{{ event.get( 'ticket_url' ) }}"
+																		>{{ event.get_runtime( 'ticket_url_label' ) }}</a>
+															{% endif %}
+											</span><!--/.span.ai1ec-popup-title-->
+	
+											{{ edit_post_link( '<i class="icon-pencil"></i> ' . __( 'Edit', AI1EC_PLUGIN_NAME ), event.get('post_id') ) }}
+	
+											<div class="ai1ec-event-time">
+												{{ event.get( '_orig' ) | timespan( 'short' ) }}
+											</div>
+	
+											{% autoescape false %}
+												{{ event|avatar( [
+													'post_thumbnail',
+													'content_img',
+													'location_avatar',
+													'category_avatar'
+												] ) }}
+											{% endautoescape %}
+	
+											{% if not event.get_runtime( 'post_excerpt' ) is empty %}
+												<div class="ai1ec-popup-excerpt">{{ event.get_runtime( 'post_excerpt' )|e }}</div>
+											{% endif %}
+	
+										</div><!-- .ai1ec-popup.hide -->
+									{% endfor %}
+								</div><!--/.ai1ec-day-->
+							</td>
+						{% else %}
+							<td class="ai1ec-empty"></td>
+						{% endif %}
+					{% endfor %}
+				</tr><!--/tr.ai1ec-week-->
+			{% endfor %}
+		</tbody>
+	</table>
+{% endautoescape %}

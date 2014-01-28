@@ -97,6 +97,10 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 		$tabs = array(
 			'viewing-events' => array(
 				'name' => Ai1ec_I18n::__( 'Viewing Events' ),
+				'items' => array(
+					'viewing-events'  => Ai1ec_I18n::__( 'Viewing Events' ),
+					'embeddded-views' => Ai1ec_I18n::__( 'Embedded Views' ),
+				),
 			),
 			'editing-events' => array(
 				'name' => Ai1ec_I18n::__( 'Adding/Editing Events' ),
@@ -116,6 +120,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 		$tabs            = apply_filters( 'ai1ec_add_setting_tabs', $tabs );
 		$settings        = $this->_registry->get( 'model.settings' );
 		$plugin_settings = $settings->get_options();
+		fb($plugin_settings);
 		$tabs            = $this->_get_tabs_to_show( $plugin_settings, $tabs );
 		$loader          = $this->_registry->get( 'theme.loader' );
 		$args            = array(
@@ -140,11 +145,14 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 		foreach ( $plugin_settings as $id => $setting ) {
 			// if the setting is shown
 			if ( isset ( $setting['renderer'] ) ) {
+				$tab_to_use = isset( $setting['renderer']['item'] ) ? 
+					$setting['renderer']['item'] :
+					$setting['renderer']['tab'];
 				// check if it's the first one
 				if (
-					! isset ( $tabs[$setting['renderer']['tab']]['elements'] )
+					! isset ( $tabs[$tab_to_use]['elements'] )
 				) {
-					$tabs[$setting['renderer']['tab']]['elements'] = array();
+					$tabs[$tab_to_use]['elements'] = array();
 				}
 				// get the renderer
 				$renderer_name = $setting['renderer']['class'];
@@ -156,13 +164,15 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 						$setting
 					);
 				} catch ( Ai1ec_Bootstrap_Exception $exception ) {
+					ai1ec_dump($exception);
+					die();
 					$renderer = $this->_registry->get(
 						'html.element.setting.input',
 						$setting
 					);
 				}
 				// render the settings
-				$tabs[$setting['renderer']['tab']]['elements'][] = array(
+				$tabs[$tab_to_use]['elements'][] = array(
 					'html' => $renderer->render()
 				);
 				// if the settings has an item tab, set the item as active.
@@ -179,20 +189,19 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 			// if a tab has more than one item.
 			if ( isset( $tab['items'] ) ) {
 				// if no item is active, nothing is shown
-				$matching = array_intersect_key( $tabs, $tab['items'] );
-				if ( empty( $matching ) ) {
+				if ( empty( $tab['items_active'] ) ) {
 					continue;
 				}
 				// if only one item is active, do not use the dropdown
-				if ( count( $matching ) === 1 ) {
+				if ( count( $tab['items_active'] ) === 1 ) {
 					$name = key($tab['items_active']);
 					$tab['name'] = $tab['items'][$name];
 					unset ( $tab['items'] );
 				} else {
 					// check active items for the dropdown
-					foreach ( $tab['items'] as $key => $item ) {
-						if ( ! isset( $tabs[$key] ) ) {
-							unset( $tab['items'][$key] );
+					foreach ( $tab['items'] as &$item ) {
+						if ( ! isset( $tab['items_active'][$item] ) ) {
+							unset( $item );
 						}
 					}
 				}

@@ -18,23 +18,14 @@ class Ai1ec_Html_Setting_Html extends Ai1ec_Html_Element_Settings {
 		$file   = $this->_args['id'] . '.twig';
 		$method = 'get_' . $this->_args['id'] . '_args';
 		$args   = array();
+		fb($method);
+		fb(method_exists( $this, $method ));
 		if ( method_exists( $this, $method ) ) {
 			$args = $this->{$method}();
 		}
 		$loader = $this->_registry->get( 'theme.loader' );
 		$file   = $loader->get_file( 'setting/' . $file, $args, true );
 		return parent::render( $file->get_content() );
-	}
-
-	/**
-	 * Gets the arguments for the embedding.twig page.
-	 * 
-	 * @return array 
-	 */
-	protected function get_embedding_args() {
-		return array(
-			'siteurl' => site_url( '/?ai1ec_super_widget' ),
-		);
 	}
 
 }

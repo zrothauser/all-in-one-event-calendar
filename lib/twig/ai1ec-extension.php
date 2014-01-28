@@ -142,7 +142,7 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 		return $this->_registry->get( 'date.time', $unix_timestamp )
 			->format_i18n( 'M' );
 	}
-	
+
 	/**
 	 * Convert a timestamp to an int
 	 *

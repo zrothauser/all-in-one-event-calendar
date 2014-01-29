@@ -99,7 +99,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 				'name' => Ai1ec_I18n::__( 'Viewing Events' ),
 				'items' => array(
 					'viewing-events'  => Ai1ec_I18n::__( 'Viewing Events' ),
-					'embeddded-views' => Ai1ec_I18n::__( 'Embedded Views' ),
+					'embedded-views' => Ai1ec_I18n::__( 'Embedded Views' ),
 				),
 			),
 			'editing-events' => array(
@@ -120,7 +120,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 		$tabs            = apply_filters( 'ai1ec_add_setting_tabs', $tabs );
 		$settings        = $this->_registry->get( 'model.settings' );
 		$plugin_settings = $settings->get_options();
-		fb($plugin_settings);
+
 		$tabs            = $this->_get_tabs_to_show( $plugin_settings, $tabs );
 		$loader          = $this->_registry->get( 'theme.loader' );
 		$args            = array(
@@ -164,8 +164,6 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 						$setting
 					);
 				} catch ( Ai1ec_Bootstrap_Exception $exception ) {
-					ai1ec_dump($exception);
-					die();
 					$renderer = $this->_registry->get(
 						'html.element.setting.input',
 						$setting

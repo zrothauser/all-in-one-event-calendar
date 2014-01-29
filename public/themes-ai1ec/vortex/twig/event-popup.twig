@@ -16,7 +16,10 @@
 				{% endif %}
 </span><!--/.span.ai1ec-popup-title-->
 
-{{ edit_post_link( '<i class="icon-pencil"></i> ' . __( 'Edit', AI1EC_PLUGIN_NAME ), event.get('post_id') ) }}
+<a class="post-edit-link"
+	href="{{ event.get_runtime( 'edit_post_link' ) | e('html_attr') }}">
+	<i class="icon-pencil"></i> {{ 'Edit' | __ }}
+</a>
 
 <div class="ai1ec-event-time">
 	{{ event.get( '_orig' ) | timespan( 'short' ) }}

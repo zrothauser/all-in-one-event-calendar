@@ -43,7 +43,7 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 					
 					switch ( $data['type'] ) {
 						case 'bool';
-							$value = isset( $_POST[$name] );
+							$value = true;
 							break;
 						case 'int';
 							$value = (int)$_POST[$name];

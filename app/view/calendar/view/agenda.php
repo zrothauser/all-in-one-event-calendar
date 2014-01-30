@@ -119,7 +119,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			)->get_content();
 		}
 		$args['navigation'] = $navigation;
-		$file = $loader->get_file( 'agenda.twig', $args, false );
+		$file = $loader->get_file( $type . '.twig', $args, false );
 		
 		
 		return apply_filters(

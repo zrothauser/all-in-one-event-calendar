@@ -6,7 +6,8 @@
 	<thead>
 		<tr>
 			{% for date, day in cell_array %}
-				<th class="ai1ec-weekday {% if day.today %}ai1ec-today{% endif %}">
+				<th class="ai1ec-weekday
+					{% if day.today is not empty %}ai1ec-today{% endif %}">
 
 					{# Display Reveal button in last cell only #}
 					{% if show_reveal_button and loop.last %}
@@ -33,7 +34,7 @@
 		<tr>
 			{% for day in cell_array %}
 				<td class="ai1ec-allday-events
-					{% if day.today %}ai1ec-today{% endif %}">
+					{% if day.today is not empty %}ai1ec-today{% endif %}">
 
 					{% if loop.first %}
 						<div class="ai1ec-allday-label">{{ 'All-day' | __ }}</div>
@@ -76,7 +77,7 @@
 	<tbody>
 		<tr class="ai1ec-{% block name %}{% endblock name %}">
 			{% for day in cell_array %}
-				<td {% if day.today %}class="ai1ec-today"{% endif %}>
+				<td {% if day.today is not empty %}class="ai1ec-today"{% endif %}>
 
 					{% if loop.first %}
 						<div class="ai1ec-grid-container">
@@ -93,10 +94,10 @@
 										style="top: {{ hour * 60 + quarter * 15 }}px;"></div>
 								{% endfor %}
 							{% endfor %}
-							{% if day.today %}
+							{% if day.today is not empty %}
 								<div class="ai1ec-now-marker" style="top: {{ now_top }}px;">
 									<div>
-										{{ 'Now:'|__ }} {{ now_text }}
+										{{ 'Now:' | __ }} {{ now_text }}
 									</div>
 								</div>
 							{% endif %}

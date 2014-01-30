@@ -14,7 +14,7 @@
 				{% for day in week %}
 
 					{% if day.date is not empty %}
-						<td {% if day.today %}class="ai1ec-today"{% endif %}>
+						<td {% if day.today is not empty %}class="ai1ec-today"{% endif %}>
 							{#
 								TODO: This div should not be needed, but with multi-day
 								event bars it is required until a better method of arranging

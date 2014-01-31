@@ -42,7 +42,14 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	 *
 	 * @return array The view arguments with the extra parameters added.
 	 */
-	abstract public function get_extra_arguments( array $view_args, $exact_date );
+	public function get_extra_arguments( array $view_args, $exact_date ) {
+		$offset = $this->get_name() . '_offset';
+		$view_args[$offset] = $this->_request->get( $offset );
+		if( false !== $exact_date ) {
+			$view_args['exact_date'] = $exact_date;
+		}
+		return $view_args;
+	}
 
 	/**
 	 * Get extra arguments specific for the view's template

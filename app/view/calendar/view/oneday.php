@@ -19,18 +19,6 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 	}
 
 	/* (non-PHPdoc)
-	 * @see Ai1ec_Calendar_View_Abstract::get_extra_arguments()
-	 */
-	public function get_extra_arguments( array $view_args, $exact_date ) {
-		$offset = $this->get_name() . '_offset';
-		$view_args[$offset] = $this->_request->get( $offset );
-		if( false !== $exact_date ) {
-			$view_args['exact_date'] = $exact_date;
-		}
-		return $view_args;
-	}
-
-	/* (non-PHPdoc)
 	 * @see Ai1ec_Calendar_View_Abstract::get_content()
 	 */
 	public function get_content( array $view_args ) {

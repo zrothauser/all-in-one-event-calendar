@@ -235,12 +235,19 @@ class Ai1ec_Date_Time {
 	 * @return Ai1ec_Date_Time Instance of self for chaining.
 	 */
 	public function adjust_day( $quantifier ) {
-		$quantifier = (int)$quantifier;
-		if ( $quantifier > 0 && '+' !== $quantifier{0} ) {
-			$quantifier = '+' . $quantifier;
-		}
-		$modifier = $quantifier . ' day';
-		$this->_date_time->modify( $modifier );
+		$this->_adjust( $quantifier, 'day' );
+		return $this;
+	}
+
+	/**
+	 * Adjust day part of date time entity.
+	 *
+	 * @param int $quantifier Day adjustment quantifier.
+	 *
+	 * @return Ai1ec_Date_Time Instance of self for chaining.
+	 */
+	public function adjust_month( $quantifier ) {
+		$this->_adjust( $quantifier, 'month' );
 		return $this;
 	}
 
@@ -304,4 +311,12 @@ class Ai1ec_Date_Time {
 		return $this->format( 'c' );
 	}
 
+	protected function _adjust( $quantifier, $longname ) {
+		$quantifier = (int)$quantifier;
+		if ( $quantifier > 0 && '+' !== $quantifier{0} ) {
+			$quantifier = '+' . $quantifier;
+		}
+		$modifier = $quantifier . ' ' . $longname;
+		$this->_date_time->modify( $modifier );
+	}
 }

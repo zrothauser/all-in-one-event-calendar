@@ -1,10 +1,8 @@
-{% autoescape false %}
 <div class="clearfix">
-	<h2 class="ai1ec-calendar-title">{{ title|e }}</h2>
+	<h2 class="ai1ec-calendar-title">{{ title }}</h2>
 	<div class="ai1ec-title-buttons btn-toolbar pull-right">
-		{{ before_pagination }}
-		{{ pagination_links }}
-		{{ after_pagination }}
+		{{ before_pagination | raw }}
+		{{ pagination_links | raw }}
+		{{ after_pagination | raw }}
 	</div>
 </div>
-{% endautoescape %}

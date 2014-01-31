@@ -275,8 +275,8 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		$href = $this->_registry->get(
 			'html.element.href',
 			array(
-				"action" => "oneday",
-				"exact_date" => $exact_date,
+				'action' => 'oneday',
+				'exact_date' => $exact_date,
 			)
 		);
 		return $href->generate_href();

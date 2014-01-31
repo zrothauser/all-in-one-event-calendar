@@ -208,7 +208,6 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		$filter      = array(),
 		$last_day    = false
 	) {
-		$db = $this->_dbi;
 		$localization_helper = $this->_registry->get( 'p28n.wpml' );
 		$settings = $this->_registry->get( 'model.settings' );
 	
@@ -257,7 +256,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		$order_direction    = ( $page_offset >= 0 ) ? 'ASC' : 'DESC';
 		if ( false !== $last_day ) {
 			if ( 0 == $last_day ) {
-				$last_day = (int)$_SERVER['REQUEST_TIME'];
+				$last_day = $this->_registry->get( 'date.system' )->current_time();
 			}
 			$filter_date_clause = ' i.end ';
 			if ( $page_offset < 0 ) {
@@ -272,7 +271,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 			$first_record        = 0;
 		} 
 
-		$query = $db->prepare(
+		$query = $this->_dbi->prepare(
 			'SELECT DISTINCT p.*, e.post_id, i.id AS instance_id, ' .
 			'i.start AS start, ' .
 			'i.end AS end, ' .
@@ -298,7 +297,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 			' LIMIT ' . $first_record . ', ' . $upper_boundary,
 			$args
 		);
-		$events = $db->get_results( $query, ARRAY_A );
+		$events = $this->_dbi->get_results( $query, ARRAY_A );
 	
 		// Limit the number of records to convert to data-object
 		$events = $this->_limit_result_set(
@@ -315,8 +314,6 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		$date_first = $date_last = NULL;
 	
 		foreach ( $events as &$event ) {
-			$event['start']  = $event['start'];
-			$event['end']    = $event['end'];
 			$event['allday'] = $this->_is_all_day( $event );
 			if ( NULL === $date_first ) {
 				$date_first = $event['start'];

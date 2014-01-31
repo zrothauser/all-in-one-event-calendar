@@ -240,12 +240,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		$settings = $this->_registry->get( 'model.settings' );
 		// Classify each event into a date/allday category
 		foreach( $events as $event ) {
-			if ( ! empty( $query ) ) {
-				$event->set_request( $query );
-			}
-			$date = $event->get( 'start' )->format();
-			$date = $time->gmgetdate( $date );
-			$timestamp = gmmktime( 0, 0, 0, $date['mon'], $date['mday'], $date['year'] );
+			$timestamp = $event->get( 'start' )->set_time( 0, 0, 0 )->format();
 			$exact_date = $time->format_date_for_url(
 				$timestamp,
 				$settings->get( 'input_date_format' )
@@ -258,19 +253,17 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 					'notallday' => array(),
 				);
 			}
+			$this->_add_runtime_properties( $event );
 			// Add the event.
 			$category = $event->is_allday() ? 'allday' : 'notallday';
 			$dates[$timestamp]['events'][$category][] = $event;
 			$dates[$timestamp]['href'] = $href_for_date;
 		}
 		// Flag today
-		$today = $time->current_time();
-		$today = $time->gmgetdate( $today );
-		$today = gmmktime( 0, 0, 0, $today['mon'], $today['mday'], $today['year'] );
+		$today = $this->_registry->get( 'date.time' )->set_time( 0, 0, 0 )->format();
 		if( isset( $dates[$today] ) ) {
 			$dates[$today]['today'] = true;
 		}
-	
 		return $dates;
 	}
 	

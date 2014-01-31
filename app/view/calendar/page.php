@@ -41,9 +41,9 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		$type       = $request->get( 'request_type' );
 
 		$exact_date = $this->get_exact_date( $request );
-		$view = $this->_registry->get( 'view.calendar.view.' . $action, $request );
-		$view_args = $view->get_extra_arguments( $view_args, $exact_date );
-		$view = $view->get_content( $view_args );
+		$view_obj = $this->_registry->get( 'view.calendar.view.' . $action, $request );
+		$view_args = $view_obj->get_extra_arguments( $view_args, $exact_date );
+		$view = $view_obj->get_content( $view_args );
 		$args = array(
 			'view' => $view,
 			'version' => AI1EC_VERSION,
@@ -66,7 +66,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			$dropdown_args['exact_date'] = $exact_date;
 		}
 		$views_dropdown =
-			$this->get_html_for_views_dropdown( $dropdown_args, $view );
+			$this->get_html_for_views_dropdown( $dropdown_args, $view_obj );
 		$subscribe_buttons =
 			$this->get_html_for_subscribe_buttons( $view_args );
 

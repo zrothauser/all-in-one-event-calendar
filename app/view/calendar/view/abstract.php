@@ -51,7 +51,9 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	 *
 	 * @return array The template arguments with the extra parameters added.
 	 */
-	abstract public function get_extra_template_arguments( array $args );
+	public function get_extra_template_arguments( array $args ) {
+		return $args;
+	}
 
 	/**
 	 * Render the view and return the content

@@ -62,9 +62,9 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		$this->lessc = $this->_registry->get( 'lessc' );;
 		$this->default_theme_url = $this->sanitize_default_theme_url( $default_theme_url );
 		$this->parsed_css = '';
-		$this->files = array( 
-			'style.less', 
-			'event.less', 
+		$this->files = array(
+			'style.less',
+			'event.less',
 			'calendar.less',
 			'override.less',
 			'../style.less',
@@ -143,8 +143,10 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 			// Set the import dir for the file. This is important as
 			// dependencies will be resolved correctly
 			$this->lessc->importDir = dirname( $file_to_parse->get_name() );
-			$variables['imgdir'] = '~"' . $this->default_theme_url . "/img\"";
-			$variables['imgdir_default'] = '~"' . $this->default_theme_url . "/img\"";
+			// *** TODO: ***
+			// $variables['thisdir'] = '~"' . URL_of_directory_containing_this_.less_file  . '"';
+			$variables['imgdir'] = '~"' . $this->default_theme_url . '/img"';
+			$variables['imgdir_default'] = '~"' . $this->default_theme_url . '/img"';
 
 			try {
 				$this->parsed_css .= $this->lessc->parse(

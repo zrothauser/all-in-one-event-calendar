@@ -4,7 +4,7 @@
 			<a class="{{ link.class }} ai1ec-load-view btn" {{ data_type | raw }}
 				href="{{ link.href | e('html_attr') }}"
 				{% if not link.enabled %}disabled="disabled"{% endif %}>
-				{{ link.text }}
+				{{ link.text | raw }}
 			</a>
 		{% else %}
 			{{ link | raw }}

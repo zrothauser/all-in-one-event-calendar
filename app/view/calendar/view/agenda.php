@@ -19,7 +19,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 	}
 
 	/* (non-PHPdoc)
-	 * @see Ai1ec_Calendar_View_Abstract::get_name()
+	 * @see Ai1ec_Calendar_View_Abstract::get_content()
 	*/
 	public function get_content( array $view_args ) {
 		$type = $this->get_name();
@@ -132,8 +132,8 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 	}
 
 	/* (non-PHPdoc)
-	 * @see Ai1ec_Calendar_View_Abstract::get_name()
-	*/
+	 * @see Ai1ec_Calendar_View_Abstract::get_extra_arguments()
+	 */
 	public function get_extra_arguments( array $view_args, $exact_date ) {
 		$view_args += $this->_request->get_dict( array(
 			'page_offset',
@@ -143,12 +143,6 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$view_args['time_limit'] = $exact_date;
 		}
 		return $view_args;
-	}
-
-	/* (non-PHPdoc)
-	 * @see Ai1ec_Calendar_View_Abstract::get_name()
-	*/
-	public function get_description() {
 	}
 
 	/**

@@ -3,11 +3,13 @@
 	<div class="input-append">
 {% endif %}
 {% from 'form-elements/input.twig' import input %}
+{% spaceless %}
 {{ input( id, id, value, 'text', input_args ) }}
 {% if append is defined %}
-	<span class="add-on">{{ append }}</span>
-	</div>
+  <span class="add-on">{{ append }}</span>
+</div>
 {% endif %}
+{% endspaceless %}
 {% if help is defined %}
 <span class="help-block">
 	{% autoescape false %}

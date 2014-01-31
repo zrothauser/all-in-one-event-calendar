@@ -21,7 +21,7 @@ class Ai1ec_Less_Variable_Font extends Ai1ec_Less_Variable {
 	 */
 	const CUSTOM_FONT_ID_SUFFIX = '_custom';
 
-	
+
 	/**
 	 * @var string True if using a custom value
 	 */
@@ -54,7 +54,6 @@ class Ai1ec_Less_Variable_Font extends Ai1ec_Less_Variable {
 		'Times New Roman'     => '"Times New Roman", Times, serif',
 		'Trebuchet Ms'        => '"Trebuchet MS", "Lucida Grande", sans-serif',
 		'Verdana'             => 'Verdana, Geneva, sans-serif',
-
 	);
 
 	/**
@@ -63,13 +62,18 @@ class Ai1ec_Less_Variable_Font extends Ai1ec_Less_Variable {
 	 */
 	public function __construct( Ai1ec_Registry_Object $registry, array $params ) {
 		$this->fonts[__( "Custom...", AI1EC_PLUGIN_NAME )] = self::CUSTOM_FONT;
-		if( ! in_array( $this->value, $this->fonts ) ) {
+
+		// Allow extensions to add options to the font list.
+		$this->fonts = apply_filters( 'ai1ec_font_options', $this->fonts );
+
+		if ( ! in_array( $this->value, $this->fonts ) ) {
 			$this->use_custom_value = true;
 			$this->custom_value = $this->value;
 			$this->value = self::CUSTOM_FONT;
 		}
 		parent::__construct( $registry, $params );
 	}
+
 	/**
 	 * (non-PHPdoc)
 	 * add the fonts
@@ -77,7 +81,7 @@ class Ai1ec_Less_Variable_Font extends Ai1ec_Less_Variable {
 	 */
 	public function _get_options() {
 		$options = array();
-		foreach( $this->fonts as $text => $key ) {
+		foreach ( $this->fonts as $text => $key ) {
 			$option = array(
 				'text' => $text,
 				'value' => $key,
@@ -115,10 +119,10 @@ class Ai1ec_Less_Variable_Font extends Ai1ec_Less_Variable {
 				),
 				'options' => $this->_get_options(),
 			)
-			
+
 		);
 
-		if( $this->value !== self::CUSTOM_FONT ) {
+		if ( $this->value !== self::CUSTOM_FONT ) {
 			$args['input']['args']['class'] = 'ai1ec-custom-font hide';
 		} else {
 			$args['input']['value'] = $this->custom_value;

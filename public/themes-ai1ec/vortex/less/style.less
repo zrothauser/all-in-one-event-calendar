@@ -21,6 +21,7 @@
 @import "bootstrap/component-animations.less";
 
 // These files have proper namespacing done inside them.
+@import "fonts/font-awesome.less"
 @import "modals.less";
 @import "tooltip.less";
 @import "popovers.less";
@@ -101,27 +102,6 @@
 	.ai1ec-color-swatch-empty {
 		width: 7px;
 		height: 7px;
-	}
-}
-// Fight FOUT by hiding .timely container(s) while loading fonts.
-.ai1ec-posterboard-view {
-	background-image: url('@{imgdir}/ajax-loader.gif');
-	background-repeat: no-repeat;
-	background-position: center 50px;
-	min-height: 100px;
-	> * {
-		.opacity( 0 );
-		.transition( opacity 0.2s );
-		visibility: hidden;
-	}
-}
-.wf-leaguegothic-n4-active .ai1ec-posterboard-view,
-.wf-inactive .ai1ec-posterboard-view {
-	background-image: none;
-	min-height: @baseLineHeight;
-	> * {
-		.opacity( 100 );
-		visibility: visible;
 	}
 }
 

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: All-in-One Event Calendar by Time.ly
  * Plugin URI: http://time.ly/
- * Description: A calendar system with posterboard, stream, month, week, day, agenda views, upcoming events widget, color-coded categories, recurrence, and import/export of .ics feeds.
+ * Description: A calendar system with month, week, day, agenda views, upcoming events widget, color-coded categories, recurrence, and import/export of .ics feeds.
  * Author: Time.ly Network Inc.
  * Author URI: http://time.ly/
  * Version: 2.0.0-beta1/r020321

@@ -73,7 +73,7 @@ define( function() {
 		keys  = Object.keys( hash );
 		query = {
 			ai1ec  : {},
-			action : 'posterboard'
+			action : 'month'
 		};
 		for ( argc = 0; argc < keys.length; argc++ ) {
 			if ( 'ai1ec' === keys[argc] ) {

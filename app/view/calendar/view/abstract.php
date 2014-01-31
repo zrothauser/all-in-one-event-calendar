@@ -10,15 +10,15 @@
  * @subpackage AI1EC.View
  */
 abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
-	
+
 	/**
 	 * @var Ai1ec_Request_Parser The request object
 	 */
 	protected $_request;
-	
+
 	/**
 	 * Public constructor
-	 * 
+	 *
 	 * @param Ai1ec_Registry_Object $registry
 	 * @param Ai1ec_Request_Parser $request
 	 */
@@ -29,34 +29,42 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 
 	/**
 	 * Get the machine name for the view
-	 * 
+	 *
 	 * @return string The machine name of the view.
 	 */
 	abstract public function get_name();
-	
+
 	/**
 	 * Get extra arguments specific for the view
-	 * 
+	 *
 	 * @param array $view_args
 	 * @param int|bool $exact_date the exact date used to display the view.
-	 * 
-	 * @return array The view arguments with the extra parameters added.\
+	 *
+	 * @return array The view arguments with the extra parameters added.
 	 */
 	abstract public function get_extra_arguments( array $view_args, $exact_date );
 
-	
+	/**
+	 * Get extra arguments specific for the view's template
+	 *
+	 * @param array $args
+	 *
+	 * @return array The template arguments with the extra parameters added.
+	 */
+	abstract public function get_extra_template_arguments( array $args );
+
 	/**
 	 * Render the view and return the content
-	 * 
+	 *
 	 * @param array $view_args
-	 * 
+	 *
 	 * @return string the html of the view
 	 */
 	abstract public function get_content( array $view_args );
-	
+
 	/**
 	 * Adds runtime properties to the event.
-	 * 
+	 *
 	 * @param Ai1ec_Event $event
 	 */
 	protected function _add_runtime_properties( Ai1ec_Event $event ) {
@@ -70,12 +78,12 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 		);
 		$event->set_runtime( 'instance_permalink', $instance_permalink );
 
-	
+
 		$event->set_runtime(
 			'filtered_title',
 			apply_filters( 'the_title', $event->get( 'post' )->post_title, $event->get( 'post_id' ) )
 		);
-	
+
 		$taxonomy = $this->_registry->get( 'view.event.taxonomy' );
 		$ticket   = $this->_registry->get( 'view.event.ticket' );
 		$event->set_runtime(
@@ -97,13 +105,13 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 		);
 		$this->_add_view_specific_runtime_properties( $event );
 	}
-	
+
 	/**
 	 * If some views have specific runtime properties they must extend this method
-	 * 
+	 *
 	 * @param Ai1ec_Event $event
 	 */
 	protected function _add_view_specific_runtime_properties( Ai1ec_Event $event ) {
-		
+
 	}
 }

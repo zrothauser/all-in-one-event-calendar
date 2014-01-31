@@ -26,7 +26,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		$time = $this->_registry->get( 'date.system' );
 		// Get localized time
 		$timestamp = $time->current_time();
-		
+
 		// Get events, then classify into date array
 		$per_page_setting = $type . '_events_per_page';
 		$search = $this->_registry->get( 'model.search' );
@@ -47,7 +47,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$results['events'],
 			$view_args['request']
 		);
-		
+
 		// Create pagination links.
 		$pagination_links = '';
 		$loader  = $this->_registry->get( 'theme.loader' );
@@ -60,7 +60,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 				$results['date_first'],
 				$results['date_last']
 			);
-			
+
 			$pagination_links = $loader->get_file(
 				'pagination.twig',
 				array(
@@ -91,7 +91,6 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			'title'                     => $title_date_range,
 			'dates'                     => $dates,
 			'type'                      => $type,
-			'tile_min_width'            => $settings->get( 'posterboard_tile_min_width' ),
 			'show_year_in_agenda_dates' => $settings->get( 'show_year_in_agenda_dates' ),
 			'expanded'                  => $settings->get( 'agenda_events_expanded' ),
 			'show_location_in_title'    => $settings->get( 'show_location_in_title' ),
@@ -119,9 +118,12 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			)->get_content();
 		}
 		$args['navigation'] = $navigation;
+
+		// Allow child views to modify arguments passed to template.
+		$args = $this->get_extra_template_arguments( $args );
+
 		$file = $loader->get_file( $type . '.twig', $args, false );
-		
-		
+
 		return apply_filters(
 			'ai1ec_get_' . $type . '_view',
 			$file->get_content(),
@@ -149,10 +151,9 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 	public function get_description() {
 	}
 
-	
 	/**
 	 * Returns an associative array of two links for any agenda-like view of the
-	 * calendar (posterboard, agenda, etc.):
+	 * calendar:
 	 *    previous page (if previous events exist),
 	 *    next page (if next events exist).
 	 * Each element is an associative array containing the link's enabled status
@@ -175,9 +176,9 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		$date_first = null,
 		$date_last  = null
 	) {
-	
+
 		$links = array();
-	
+
 		$args['page_offset'] = -1;
 		$args['time_limit']  = $date_first - 1;
 		$href = $this->_registry->get(
@@ -190,14 +191,14 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			'href'    => $href->generate_href(),
 			'enabled' => $prev,
 		);
-	
+
 		// Minical datepicker.
 		$factory = $this->_registry->get( 'factory.html' );
 		$links[] = $factory->create_datepicker_link(
 			$args,
 			$date_first
 		);
-		
+
 		$args['page_offset'] = 1;
 		$args['time_limit']  = $date_last + 1;
 		$href = $this->_registry->get(
@@ -210,7 +211,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			'href'    => $href->generate_href(),
 			'enabled' => $next,
 		);
-	
+
 		return $links;
 	}
 
@@ -266,7 +267,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		}
 		return $dates;
 	}
-	
+
 	/**
 	 *
 	 * @param string $exact_date

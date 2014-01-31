@@ -1,9 +1,8 @@
 define(
 	[
-		"jquery_timely",
-		"scripts/calendar/posterboard_view"
+		"jquery_timely"
 	],
-	function( $, posterboard_view ) {
+	function( $ ) {
 	"use strict"; // jshint ;_;
 
 	/**
@@ -137,24 +136,12 @@ define(
 		}
 	};
 
-	/**
-	 * Handler for web font loader. Do any required actions when web fonts are
-	 * loaded.
-	 */
-	var handle_fonts_loaded = function( e ) {
-		posterboard_view.resize_masonry();
-		if ( $( 'html' ).is( '#ie8' ) ) {
-			//$( '[class^="icon-"]' ).css( 'zoom', '1' );
-		}
-	};
-
 	return {
 		handle_popover_over        : handle_popover_over,
 		handle_popover_out         : handle_popover_out,
 		handle_popover_self_out    : handle_popover_self_out,
 		handle_tooltip_over        : handle_tooltip_over,
 		handle_tooltip_out         : handle_tooltip_out,
-		handle_tooltip_self_out    : handle_tooltip_self_out,
-		handle_fonts_loaded        : handle_fonts_loaded
+		handle_tooltip_self_out    : handle_tooltip_self_out
 	};
 } );

@@ -25,34 +25,9 @@ define(
 	};
 
 	/**
-	 * Load the fonts and trigger actions to happen when fonts have loaded.
-	 */
-	var load_fonts = function() {
-		var families = [];
-		var url = [];
-		$.each( ai1ec_calendar.fonts, function() {
-			families.push( this.name );
-			url.push( this.url );
-		} );
-		var data = {
-			active: event_handlers.handle_fonts_loaded,
-			custom : {
-				families : families,
-				urls : url
-			}
-		};
-		require(
-			[ 'external_libs/webfont' ],
-			function() {
-				WebFont.load(data);
-			} );
-	};
-
-	/**
 	 * Initialize page.
 	 */
 	var start = function() {
-		load_fonts();
 		domReady( function() {
 			attach_event_handlers_frontend();
 		} );

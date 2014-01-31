@@ -3,7 +3,6 @@ define(
 	[
 		"jquery_timely",
 		"scripts/calendar/print",
-		"scripts/calendar/posterboard_view",
 		"scripts/calendar/agenda_view",
 		"scripts/calendar/month_view",
 		"libs/frontend_utils",
@@ -22,7 +21,6 @@ define(
 	function(
 		$,
 		print_functions,
-		posterboard_view,
 		agenda_view,
 		month_view,
 		frontend_utils,
@@ -76,10 +74,8 @@ define(
 			month_view.extend_multiday_events();
 		}
 
-		// If in posterboard view, initialize masonry.
-		if ( $( '.ai1ec-posterboard-view' ).length ) {
-			posterboard_view.resize_masonry();
-		}
+		// Execute any registered hooks from extensions.
+		$( '#ai1ec-calendar-view-container' ).trigger( 'initialize_view.ai1ec' );
 	};
 
 	/**
@@ -135,7 +131,7 @@ define(
 		if ( ai1ec_config.is_calendar_page ) {
 			cookie['calendar_page'] = cal_state;
 		} else {
-			
+
 			cookie[state.url] = cal_state;
 		}
 		$.cookie( save_filter_view_cookie, cookie, { path: '/', expires: 365 } );
@@ -364,7 +360,7 @@ define(
 
 	/**
 	 * Load the correct view from a select2 filter.
-	 * 
+	 *
 	 */
 	var load_view_from_select2_filter = function( e ) {
 		var new_state;

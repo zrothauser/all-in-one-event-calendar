@@ -37,8 +37,7 @@ class Ai1ec_Http_Request {
 		) {
 			return true;
 		}
-		return false;
-
+		return apply_filters( 'ai1ec_is_ajax', false );
 	}
 
 	/**

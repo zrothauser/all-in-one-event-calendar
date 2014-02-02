@@ -168,11 +168,11 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 	 * @param array $view_args
 	 */
 	protected function get_html_for_views_dropdown( array $view_args ) {
-		$settings = $this->_registry->get( 'model.settings' );
+		$settings        = $this->_registry->get( 'model.settings' );
 		$available_views = array();
-		$enabled_views = $settings->get( 'enabled_views' );
-		$view_names = array();
-		foreach( $enabled_views as $key => $val ) {
+		$enabled_views   = (array)$settings->get( 'enabled_views', array() );
+		$view_names      = array();
+		foreach ( $enabled_views as $key => $val ) {
 			$view_names[$key] = $val['longname'];
 			$view_enabled = 'view_' . $key . '_enabled';
 			$values = array();

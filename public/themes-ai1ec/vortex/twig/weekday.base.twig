@@ -2,7 +2,12 @@
 
 {{ navigation | raw }}
 
-<table class="ai1ec-{% block name %}{% endblock name %}-view-original">
+{% set ai1ec_block_name %}
+	{% block name %}
+	{% endblock %}
+{% endset %}
+
+<table class="ai1ec-{{ ai1ec_block_name }}-view-original">
 	<thead>
 		<tr>
 			{% for date, day in cell_array %}
@@ -75,7 +80,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr class="ai1ec-{% block name %}{% endblock name %}">
+		<tr class="ai1ec-{{ ai1ec_block_name }}">
 			{% for day in cell_array %}
 				<td {% if day.today is not empty %}class="ai1ec-today"{% endif %}>
 

@@ -37,6 +37,12 @@ class Ai1ec_Http_Request {
 		) {
 			return true;
 		}
+		if (
+			isset( $_GET['ai1ec_doing_ajax'] ) &&
+			'true' === $_GET['ai1ec_doing_ajax']
+		) {
+			return true;
+		}
 		return apply_filters( 'ai1ec_is_ajax', false );
 	}
 

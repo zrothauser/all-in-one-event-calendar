@@ -15,10 +15,10 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	 * @var Ai1ec_Registry_Object
 	 */
 	protected $_registry;
-	
+
 	/**
 	 * Injkects the registry object.
-	 * 
+	 *
 	 * @param Ai1ec_Registry_Object $registry
 	 */
 	public function set_registry( Ai1ec_Registry_Object $registry ) {
@@ -75,43 +75,43 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 		$wrap_permalink = true
 	) {
 		return $this->_registry->get( 'view.event.avatar' )
-			->get_event_avatar( 
+			->get_event_avatar(
 				$event,
 				$fallback_order,
 				$classes,
 				$wrap_permalink
 			);
 	}
-	
+
 	/**
 	 * Convert an hour to timestamp.
-	 * 
+	 *
 	 * @param int $hour
-	 * 
+	 *
 	 * @return Ai1ec_Date_Time
 	 */
 	public function hour_to_datetime( $hour ) {
 		return $this->_registry->get( 'date.time', 'now', 'sys.default' )
 			->set_time( $hour, 0, 0 );
 	}
-	
+
 	/**
 	 * Get the name of the weekday
-	 * 
+	 *
 	 * @param int $unix_timestamp
-	 * 
+	 *
 	 * @return string
 	 */
 	public function weekday( $unix_timestamp ) {
 		return $this->_registry->get( 'date.time', $unix_timestamp )
-			->format_i18n( 'l' );
+			->format_i18n( 'D' );
 	}
 
 	/**
 	 * Get the name of the day
-	 * 
+	 *
 	 * @param int $unix_timestamp
-	 * 
+	 *
 	 * @return string
 	 */
 	public function day( $unix_timestamp ) {
@@ -157,10 +157,10 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 
 	/**
 	 * Convert a timestamp to a string using the desired format
-	 * 
+	 *
 	 * @param int $unix_timestamp
 	 * @param string $format
-	 * 
+	 *
 	 * @return string
 	 */
 	public function date_i18n( $unix_timestamp, $format ) {

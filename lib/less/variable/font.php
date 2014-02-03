@@ -101,7 +101,6 @@ class Ai1ec_Less_Variable_Font extends Ai1ec_Less_Variable {
 	 * @see Ai1ec_Less_Variable::render()
 	 */
 	public function render() {
-		fb($this->value);
 		$args = array(
 			'label' => $this->description,
 			'id'    => $this->id,

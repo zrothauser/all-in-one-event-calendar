@@ -79,8 +79,14 @@ class Ai1ec_Request_Parser extends Ai1ec_Abstract_Query {
 		foreach ( $action_list as $action ) {
 			$action_list[] = 'ai1ec_' . $action;
 		}
-		if ( ! in_array( $default_action, $action_list ) ) {
-			$default_action = current( $action_list );
+
+		if ( null === $default_action ) {
+			$enabled_views = $this->_registry->get( 'model.settings' )->get( 'enabled_views' );
+			foreach ( $enabled_views as $name => $param ) {
+				if ( true === $param['default'] ) {
+					$default_action = $name;
+				}
+			}
 		}
 
 		$this->add_rule(

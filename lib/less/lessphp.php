@@ -132,7 +132,8 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		// TODO: Make it work if the theme is installed anywhere. Requires more
 		// information to be provided by the $theme object.
 		$theme_url    = AI1EC_THEMES_URL . '/' . $theme['stylesheet'];
-
+		$this->lessc->addImportDir( $theme['theme_dir'] . DIRECTORY_SEPARATOR . 'less' );
+		$import_dirs = array();
 		foreach ( $this->files as $file ) {
 			$file_to_parse = null;
 			try {
@@ -157,28 +158,29 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 
 			// We prepend the unparsed variables.less file we got earlier.
 			// We do this as we do not import that anymore in the less files.
-			$css_to_parse = $this->unparsed_variable_file . $file_to_parse->get_content();
+			$this->unparsed_variable_file .= $file_to_parse->get_content();
 
 			// Set the import directories for the file. Includes current directory of
 			// file as well as theme directory in core. This is important for
 			// dependencies to be resolved correctly.
-			$this->lessc->setImportDir( array(
-				dirname( $file_to_parse->get_name() ),
-				$theme['theme_dir'] . DIRECTORY_SEPARATOR . 'less',
-			) );
-			$variables['fontdir'] = '~"' . $theme_url . '/font"';
-			$variables['fontdir_default'] = '~"' . $this->default_theme_url . '/font"';
-			$variables['imgdir'] = '~"' . $theme_url . '/img"';
-			$variables['imgdir_default'] = '~"' . $this->default_theme_url . '/img"';
-
-			try {
-				$this->parsed_css .= $this->lessc->parse(
-					$css_to_parse,
-					$variables
-				);
-			} catch ( Exception $e ) {
-				throw $e;
+			$dir = dirname( $file_to_parse->get_name() );
+			if( ! isset( $import_dirs[$dir] ) ) {
+				$import_dirs[$dir] = true;
+				$this->lessc->addImportDir( $dir );
 			}
+		}
+		$variables['fontdir'] = '~"' . $theme_url . '/font"';
+		$variables['fontdir_default'] = '~"' . $this->default_theme_url . '/font"';
+		$variables['imgdir'] = '~"' . $theme_url . '/img"';
+		$variables['imgdir_default'] = '~"' . $this->default_theme_url . '/img"';
+		
+		try {
+			$this->parsed_css .= $this->lessc->parse(
+				$this->unparsed_variable_file,
+				$variables
+			);
+		} catch ( Exception $e ) {
+			throw $e;
 		}
 		return $this->parsed_css;
 	}

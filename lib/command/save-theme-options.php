@@ -18,6 +18,7 @@ class Ai1ec_Command_Save_Theme_Options extends Ai1ec_Command_Save_Abstract {
 		$variables = array();
 		// Handle updating of variables
 		if ( isset( $_POST[Ai1ec_View_Theme_Options::SUBMIT_ID] ) ) {
+			$_POST = stripslashes_deep( $_POST );
 			$variables = $this->_registry->get( 'model.option')->get(
 				Ai1ec_Less_Lessphp::DB_KEY_FOR_LESS_VARIABLES
 			);
@@ -36,7 +37,7 @@ class Ai1ec_Command_Save_Theme_Options extends Ai1ec_Command_Save_Abstract {
 					$variables[$variable_name]['value'] = $_POST[$variable_name];
 				}
 			}
-			do_action( 'ai1ec_save_less_variables' );
+			$_POST = add_magic_quotes( $_POST );
 		}
 		// Handle reset of theme variables.
 		if ( isset( $_POST[Ai1ec_View_Theme_Options::RESET_ID] ) ) {
@@ -45,6 +46,7 @@ class Ai1ec_Command_Save_Theme_Options extends Ai1ec_Command_Save_Abstract {
 			do_action( 'ai1ec_reset_less_variables' );
 		}
 		$css = $this->_registry->get( 'css.frontend' );
+
 		$css->update_variables_and_compile_css(
 			$variables,
 			isset(

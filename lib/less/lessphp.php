@@ -105,6 +105,9 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 			// this happen when the user switched the theme and triggered a new parse.
 			if ( ! $variables ) {
 				$variables = $this->get_less_variable_data_from_config_file();
+			} else {
+				// inject extension variables
+				$variables = apply_filters( 'ai1ec_less_variables', $variables );
 			}
 		}
 		// convert the variables to key / value
@@ -114,6 +117,7 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		$loader = $this->_registry->get( 'theme.loader' );
 		// extension add files.
 		$this->files = apply_filters( 'ai1ec_less_files', $this->files );
+
 		foreach ( $this->files as $file ) {
 			$file_to_parse = null;
 			try {
@@ -227,7 +231,8 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		// This variable is locate in the required file
 		$variables = $file->get_content();
 		// inject extension variables
-		return apply_filters( 'ai1ec_less_variables', $variables );
+		$variables = apply_filters( 'ai1ec_less_variables', $variables );
+		return $variables;
 	}
 
 
@@ -266,9 +271,11 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		$variables = $this->_registry->get( 'model.option' )->get(
 			self::DB_KEY_FOR_LESS_VARIABLES
 		);
-
 		if ( ! $variables ) {
-			return $this->get_less_variable_data_from_config_file();
+			$variables = $this->get_less_variable_data_from_config_file();
+		} else {
+			// inject extension variables
+			$variables = apply_filters( 'ai1ec_less_variables', $variables );
 		}
 		// i don't store the description in the db so i need to get it.
 		$variables_with_description = $this->get_less_variable_data_from_config_file();

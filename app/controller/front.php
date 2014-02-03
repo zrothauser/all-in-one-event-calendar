@@ -45,7 +45,7 @@ class Ai1ec_Front_Controller {
 		$this->_registry->get( 'less.lessphp' )->initialize_less_variables_if_not_set();
 		$this->_registry->get( 'controller.shutdown' )
 			->register( 'ai1ec_stop' );
-		add_action( 'plugins_loaded', array( $this, 'register_extensions' ) );
+		add_action( 'plugins_loaded', array( $this, 'register_extensions' ), 1 );
 	}
 
 	/**
@@ -627,9 +627,10 @@ class Ai1ec_Front_Controller {
 		// = Add the hook to render the css =
 		// ==================================
 		if ( isset( $_GET[Ai1ec_Css_Frontend::GET_VARIBALE_NAME] ) ) {
+			// we need to wait for the extension to be registered if the css
+			// needs to be compiled. Will find a better way when compiling css.
 			$css_controller = $this->_registry->get( 'css.frontend' );
-			$css_controller->render_css();
-			exit( 0 );
+			add_action( 'plugins_loaded', array( $css_controller, 'render_css' ), 2 );
 		}
 	}
 

@@ -21,6 +21,7 @@ class Ai1ec_Command_Save_Theme_Options extends Ai1ec_Command_Save_Abstract {
 			$variables = $this->_registry->get( 'model.option')->get(
 				Ai1ec_Less_Lessphp::DB_KEY_FOR_LESS_VARIABLES
 			);
+			$variables = apply_filters( 'ai1ec_less_variables', $variables );
 			foreach ( $variables as $variable_name => $variable_params ) {
 				if ( isset( $_POST[$variable_name] ) ) {
 					// Avoid problems for those who are foolish enough to leave php.ini

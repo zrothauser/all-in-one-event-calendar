@@ -18,10 +18,15 @@ class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 	public function render( $output = '' ) {
 		$options = $this->_args['renderer']['options'];
 		if ( ! is_array( $options ) ) {
-			if ( $options instanceof Ai1ec_Event_Callback_Filter ) {
-				$options = $options->run( $this->_args['value'] );
-			} else {
+			$callback = explode( ':', $options );
+			if ( ! isset( $callback[1] ) ) {
 				$options = $this->{$options}();
+			} else {
+				$options = $this->_registry->dispatch(
+					$callback[0],
+					$callback[1],
+					$this->_args['value']
+				);
 			}
 		} else {
 			foreach ( $options as &$option ) {

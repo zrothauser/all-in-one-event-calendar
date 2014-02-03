@@ -97,13 +97,13 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 	 */
 	public function parse_less_files( array $variables = null ) {
 		// If no variables are passed i get them from the db
-		if( null === $variables ) {
+		if ( null === $variables ) {
 			$variables = $this->_registry->get( 'model.option' )->get(
 				self::DB_KEY_FOR_LESS_VARIABLES
 			);
 			// If they are not set in the db, get them from file.
 			// this happen when the user switched the theme and triggered a new parse.
-			if( ! $variables ) {
+			if ( ! $variables ) {
 				$variables = $this->get_less_variable_data_from_config_file();
 			}
 		}
@@ -121,17 +121,17 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 				$file_to_parse = $loader->get_file( $file );
 
 			} catch ( Ai1ec_Exception $e ) {
-				// We let child themes ovverride properties of vortex.
+				// We let child themes override styles of Vortex.
 				// So there is no fallback for override and we can continue.
-				if( $file !== 'override.less' ) {
+				if ( $file !== 'override.less' ) {
 					throw $e;
 				} else {
-					// it's override, skip it.
+					// It's an override, skip it.
 					continue;
 				}
 			}
-			// if the file is a css file, no need to parse it, just serve it as usual.
-			if( substr_compare( $file_to_parse->get_name(), '.css', -strlen( '.css' ), strlen( '.css' ) ) === 0 ) {
+			// If the file is a CSS file, no need to parse it, just serve it as usual.
+			if ( substr_compare( $file_to_parse->get_name(), '.css', -strlen( '.css' ), strlen( '.css' ) ) === 0 ) {
 				$this->parsed_css .= $file_to_parse->get_content();
 				continue;
 			}
@@ -141,10 +141,9 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 			$css_to_parse = $this->unparsed_variable_file . $file_to_parse->get_content();
 
 			// Set the import dir for the file. This is important as
-			// dependencies will be resolved correctly
+			// dependencies will be resolved correctly.
 			$this->lessc->importDir = dirname( $file_to_parse->get_name() );
-			// *** TODO: ***
-			// $variables['thisdir'] = '~"' . URL_of_directory_containing_this_.less_file  . '"';
+			$variables['thisdir'] = '~"' . dirname( $file_to_parse->get_url() ) . '"';
 			$variables['imgdir'] = '~"' . $this->default_theme_url . '/img"';
 			$variables['imgdir_default'] = '~"' . $this->default_theme_url . '/img"';
 

@@ -5,7 +5,6 @@ define(
 		"scripts/calendar/load_views",
 		"scripts/calendar/print",
 		"scripts/calendar/agenda_view",
-		"scripts/calendar/posterboard_view",
 		"scripts/calendar/month_view",
 		"scripts/calendar/submit_ics_modal",
 		"ai1ec_calendar",
@@ -13,13 +12,12 @@ define(
 		"scripts/common_scripts/frontend/common_frontend",
 		"libs/utils",
 		"libs/select2_multiselect_helper",
-		"external_libs/jquery.debouncedresize",
 		"external_libs/bootstrap_transition",
 		"libs/modal_helper",
 		"external_libs/jquery.scrollTo",
 		'external_libs/jquery_cookie',
 	],
-	function( $, domReady, load_views, print, agenda_view, posterboard_view,
+	function( $, domReady, load_views, print, agenda_view,
 		month_view, submit_ics_modal, ai1ec_calendar, ai1ec_config, common_frontend,
 		AI1EC_UTILS, select2_multiselect_helper ) {
 	"use strict"; // jshint ;_;
@@ -234,14 +232,6 @@ define(
 		$( document ).on( 'click', '#ai1ec-agenda-expand-all', agenda_view.expand_all );
 		$( document ).on( 'click', '#ai1ec-agenda-collapse-all', agenda_view.collapse_all );
 
-		// =======================================
-		// = Posterboard view masonry.js events  =
-		// =======================================
-		// Trigger resize events no faster than 250 ms.
-		$.event.special.debouncedresize.threshold = 400;
-		// Trigger masonry update on window resize
-		$( window ).on( 'debouncedresize', posterboard_view.resize_masonry );
-
 		// =============
 		// = All views =
 		// =============
@@ -309,7 +299,7 @@ define(
 
 		// Bind to statechange event.
 		History.Adapter.bind( window, 'statechange', load_views.handle_state_change );
-		
+
 		$( document ).on( 'click', '#ai1ec-calendar-view .ai1ec-load-event', function( e ) {
 			e.preventDefault();
 			$.cookie.raw = false;
@@ -321,8 +311,8 @@ define(
 
 	var initialize_select2 = function() {
 		select2_multiselect_helper.init( $( '.ai1ec-select2-filters' ) );
-		$( document ).on( 
-			'change', 
+		$( document ).on(
+			'change',
 			'.ai1ec-select2-multiselect-selector',
 			load_views.load_view_from_select2_filter
 		);

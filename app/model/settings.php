@@ -64,7 +64,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 
 	/**
 	 * Gets the options.
-	 * 
+	 *
 	 * @return array:
 	 */
 	public function get_options() {
@@ -199,7 +199,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 
 	/**
 	 * Add a view if not set.
-	 * 
+	 *
 	 * @param array $view
 	 */
 	public function add_view( array $view ) {
@@ -217,7 +217,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 
 	/**
 	 * Remove a view.
-	 * 
+	 *
 	 * @param string $view
 	 */
 	public function remove_view( $view ) {
@@ -265,7 +265,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 
 	/**
 	 * Set the standard values for the options of the core plugin.
-	 * 
+	 *
 	 */
 	protected function _set_standard_values() {
 		$this->_standard_options = array(
@@ -298,6 +298,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'renderer' => array(
 					'class' => 'calendar-page-selector',
 					'tab'   => 'viewing-events',
+					'item'  => 'viewing-events',
 					'label' => Ai1ec_I18n::__( 'Calendar page' )
 				),
 				'default'  => false,
@@ -307,6 +308,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'renderer' => array(
 					'class'   => 'select',
 					'tab'     => 'viewing-events',
+					'item'    => 'viewing-events',
 					'label'   => Ai1ec_I18n::__( 'Week starts on' ),
 					'options' => 'get_weekdays',
 				),
@@ -319,6 +321,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'renderer' => array(
 					'class' => 'enabled-views',
 					'tab'   => 'viewing-events',
+					'item'  => 'viewing-events',
 					'label' => Ai1ec_I18n::__( 'Available views' ),
 				),
 				'default'  => array(
@@ -349,8 +352,9 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'renderer' => array(
 					'class' => 'tags-categories',
 					'tab'   => 'viewing-events',
+					'item'  => 'viewing-events',
 					'label' => Ai1ec_I18n::__( 'Preselected calendar filters' ),
-					'help'  => Ai1ec_I18n::__( 
+					'help'  => Ai1ec_I18n::__(
 						'To clear, hold ⌘/<abbr class="initialism">CTRL</abbr> and click selection.'
 					)
 				),
@@ -364,40 +368,18 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'renderer' => array(
 					'class' => 'input',
 					'tab'   => 'viewing-events',
+					'item'  => 'viewing-events',
 					'label' => Ai1ec_I18n::__( 'Default calendar start date (optional)' ),
 					'type'  => 'date',
 				),
 				'default'  => '',
-			),
-			'posterboard_tile_min_width' => array(
-				'type' => 'int',
-				'renderer' => array(
-					'class'     => 'input',
-					'tab'       => 'viewing-events',
-					'label'     => Ai1ec_I18n::__( 'Posterboard tile minimum width' ),
-					'append'    => 'px',
-					'type'      => 'append',
-					'validator' => 'numeric'
-				),
-				'default'  => 240,
-			),
-			'posterboard_events_per_page' => array(
-				'type' => 'int',
-				'renderer' => array(
-					'class'     => 'input',
-					'tab'       => 'viewing-events',
-					'label'     => Ai1ec_I18n::__( 'Posterboard pages show at most' ),
-					'append'    => 'events',
-					'type'      => 'append',
-					'validator' => 'numeric',
-				),
-				'default'  => 30,
 			),
 			'agenda_events_per_page' => array(
 				'type' => 'int',
 				'renderer' => array(
 					'class'     => 'input',
 					'tab'       => 'viewing-events',
+					'item'      => 'viewing-events',
 					'label'     => Ai1ec_I18n::__( 'Agenda pages show at most' ),
 					'type'      => 'append',
 					'append'    => 'events',
@@ -410,11 +392,12 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'renderer' => array(
 					'class' => 'checkbox',
 					'tab'   => 'viewing-events',
+					'item'  => 'viewing-events',
 					'label' => Ai1ec_I18n::__(
 						'In <span class="ai1ec-tooltip-toggle"
 						data-original-title="These include Agenda view,
-						 Posterboard view, and the Upcoming Events widget.">
-						 Agenda-like views</span>, <strong>include all events
+						the Upcoming Events widget, and some extended views.">
+						Agenda-like views</span>, <strong>include all events
 						from last day shown</strong>'
 					)
 				),
@@ -425,6 +408,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'renderer' => array(
 					'class' => 'checkbox',
 					'tab'   => 'viewing-events',
+					'item'  => 'viewing-events',
 					'label' => Ai1ec_I18n::__(
 						'Keep all events <strong>expanded</strong> in Agenda view'
 					)
@@ -436,8 +420,9 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'renderer' => array(
 					'class' => 'checkbox',
 					'tab'   => 'viewing-events',
+					'item'  => 'viewing-events',
 					'label' => Ai1ec_I18n::__(
-						'<strong>Show year</strong> in Posterboard, Agenda and widget view date label'
+						'<strong>Show year</strong> in calendar date labels'
 					)
 				),
 				'default'  => false,
@@ -447,6 +432,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'renderer' => array(
 					'class' => 'checkbox',
 					'tab'   => 'viewing-events',
+					'item'  => 'viewing-events',
 					'label' => Ai1ec_I18n::__(
 						'<strong>Show location in event titles</strong> in calendar views'
 					)
@@ -458,6 +444,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'renderer' => array(
 					'class' => 'checkbox',
 					'tab'   => 'viewing-events',
+					'item'  => 'viewing-events',
 					'label' => Ai1ec_I18n::__(
 						'<strong>Exclude</strong> events from search results'
 					)
@@ -469,6 +456,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'renderer' => array(
 					'class' => 'checkbox',
 					'tab'   => 'viewing-events',
+					'item'  => 'viewing-events',
 					'label' => Ai1ec_I18n::__(
 						'Hide <strong>Subscribe</strong>/<strong>Add to Calendar</strong> buttons in calendar and single event views '
 					)
@@ -480,6 +468,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'renderer' => array(
 					'class' => 'checkbox',
 					'tab'   => 'viewing-events',
+					'item'  => 'viewing-events',
 					'label' => Ai1ec_I18n::__(
 						' Hide <strong>Google Maps</strong> until clicked'
 					)
@@ -491,6 +480,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'renderer' => array(
 					'class' => 'html',
 					'tab'   => 'viewing-events',
+					'item'  => 'embedded-views',
 				),
 				'default'  => null,
 			),
@@ -503,7 +493,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 						'Input dates in this format'
 					),
 					'options' => array(
-						array( 
+						array(
 							'text' => Ai1ec_I18n::__( 'Default (d/m/yyyy)' ),
 							'value' => 'def'
 					 	),
@@ -515,7 +505,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 							'text' => Ai1ec_I18n::__( 'ISO 8601 (yyyy-m-d)' ),
 							'value' => 'iso'
 						),
-						array( 
+						array(
 							'text' => Ai1ec_I18n::__( 'Dotted (m.d.yyyy)' ),
 							'value' => 'dot'
 					 	),
@@ -590,13 +580,13 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'label' => Ai1ec_I18n::__( 'Move calendar into this DOM element' ),
 					'type'  => 'normal',
 					'help'  => Ai1ec_I18n::__(
-						'Optional. Use this JavaScript-based shortcut to place the 
-						calendar a DOM element other than the usual page content container 
+						'Optional. Use this JavaScript-based shortcut to place the
+						calendar a DOM element other than the usual page content container
 						if you are unable to create an appropriate page template
-						 for the calendar page. To use, enter a 
+						 for the calendar page. To use, enter a
 						<a target="_blank" href="http://api.jquery.com/category/selectors/">
-						jQuery selector</a> that evaluates to a single DOM element. 
-						Any existing markup found within the target will be replaced 
+						jQuery selector</a> that evaluates to a single DOM element.
+						Any existing markup found within the target will be replaced
 						by the calendar.'
 					),
 				),
@@ -634,7 +624,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 
 	/**
 	 * Register the standard setting values.
-	 * 
+	 *
 	 */
 	protected function _register_standard_values() {
 		foreach ( $this->_standard_options as $key => $option ) {

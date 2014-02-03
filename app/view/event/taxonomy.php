@@ -128,6 +128,85 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 	}
 
 	/**
+	 * Style attribute for event bg color
+	 */
+	public function get_category_bg_color( Ai1ec_Event $event ) {
+		$category_bg_color = null;
+		$categories = wp_get_post_terms(
+			$event->get( 'post_id' ),
+			'events_categories'
+		);
+		if ( $categories && ! empty( $categories ) ) {
+			$category_bg_color = $this
+				->get_event_category_bg_color(
+				$categories[0]->term_id,
+				$event->is_allday() || $event->is_multiday()
+			);
+		}
+		
+		return $category_bg_color;
+	}
+
+	/**
+	 * Style attribute for event bg color
+	 */
+	public function get_category_text_color( Ai1ec_Event $event ) {
+		$category_text_color = null;
+		$categories = wp_get_post_terms(
+			$event->get( 'post_id' ),
+			'events_categories'
+		);
+		if ( $categories && ! empty( $categories ) ) {
+			$category_text_color = $this
+			->get_event_category_text_color(
+				$categories[0]->term_id,
+				$event->is_allday() || $event->is_multiday()
+			);
+		}
+
+		return $category_text_color;
+	}
+
+	/**
+	 * get_event_text_color function
+	 *
+	 * Returns the style attribute assigning the category color style to an event.
+	 *
+	 * @param int $term_id The Event Category's term ID
+	 * @param bool $allday Whether the event is all-day
+	 * @return string
+	 **/
+	public function get_event_category_text_color( $term_id ) {
+		$taxonomy = $this->_registry->get( 'model.taxonomy' );
+		$color = $taxonomy->get_category_color(
+			$term_id
+		);
+		if( ! is_null( $color ) && ! empty( $color ) ) {
+			return 'style="color: ' . $color . ';"';
+		}
+		return '';
+	}
+
+	/**
+	 * get_event_category_bg_color function
+	 *
+	 * Returns the style attribute assigning the category color style to an event.
+	 *
+	 * @param int $term_id The Event Category's term ID
+	 * @param bool $allday Whether the event is all-day
+	 * @return string
+	 **/
+	public function get_event_category_bg_color( $term_id ) {
+		$taxonomy = $this->_registry->get( 'model.taxonomy' );
+		$color = $taxonomy->get_category_color(
+			$term_id
+		);
+		if ( ! is_null( $color ) && ! empty( $color ) ) {
+			return 'style="background-color: ' . $color . ';"';
+		}
+		return '';
+	}
+	/**
 	 * Categories as HTML, either as blocks or inline.
 	 *
 	 * @param Ai1ec_Event $event  Rendered Event.

@@ -18,6 +18,11 @@ class Ai1ec_Date_System extends Ai1ec_Base {
 	protected $_current_time = array();
 
 	/**
+	 * @var Ai1ec_Cache_Memory
+	 */
+	protected $_gmtdates;
+
+	/**
 	 * Initiate current time list.
 	 *
 	 * @param Ai1ec_Registry_Object $registry
@@ -33,6 +38,7 @@ class Ai1ec_Date_System extends Ai1ec_Base {
 			(int)$_SERVER['REQUEST_TIME'],
 			$gmt_time,
 		);
+		$this->_gmtdates = $registry->get( 'cache.memory' );
 	}
 
 	/**

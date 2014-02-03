@@ -216,9 +216,9 @@ class Ai1ec_Javascript_Controller {
 
 	/**
 	 * Get a compiled javascript file ( used by extensions )
-	 * 
+	 *
 	 * @param string $name
-	 * 
+	 *
 	 * @return string
 	 */
 	public function get_module( $name ) {
@@ -364,24 +364,24 @@ class Ai1ec_Javascript_Controller {
 		$json_data = json_encode( $data );
 		$prefix = self::REQUIRE_NAMESPACE;
 		$script = "$prefix.define( '$object_name', $json_data );";
-	
+
 		return $script;
 	}
-	
+
 	/**
 	 * Create the array needed for translation and passing other settings to JS.
 	 *
 	 * @return $data array the dynamic data array
 	 */
 	public function get_translation_data() {
-	
+
 		$force_ssl_admin = force_ssl_admin();
 		if ( $force_ssl_admin && ! is_ssl() ) {
 			force_ssl_admin( false );
 		}
 		$ajax_url        = admin_url( 'admin-ajax.php' );
 		force_ssl_admin( $force_ssl_admin );
-	
+
 		$data = array(
 			// ICS feed error messages
 			'duplicate_feed_message'         => esc_html(
@@ -402,19 +402,19 @@ class Ai1ec_Javascript_Controller {
 			'confirm_reset_theme'            => Ai1ec_I18n::__(
 				'Are you sure you want to reset your theme options to their default values?'
 			),
-			'error_message_not_valid_lat'    => Ai1ec_I18n::__( 
+			'error_message_not_valid_lat'    => Ai1ec_I18n::__(
 				'Please enter a valid latitude. A valid latitude is comprised between +90 and -90.'
 			),
-			'error_message_not_valid_long'   => Ai1ec_I18n::__( 
+			'error_message_not_valid_long'   => Ai1ec_I18n::__(
 				'Please enter a valid longitude. A valid longitude is comprised between +180 and -180.'
 			),
-			'error_message_not_entered_lat'  => Ai1ec_I18n::__( 
+			'error_message_not_entered_lat'  => Ai1ec_I18n::__(
 				'When the "Input coordinates" checkbox is checked, "Latitude" is a required field.'
 			),
-			'error_message_not_entered_long' => Ai1ec_I18n::__( 
+			'error_message_not_entered_long' => Ai1ec_I18n::__(
 				'When the "Input coordinates" checkbox is checked, "Longitude" is a required field.'
 			),
-			'url_not_valid'                  => Ai1ec_I18n::__( 
+			'url_not_valid'                  => Ai1ec_I18n::__(
 				'The URL you have entered seems to be invalid. Please remember that URLs must start with either "http://" or "https://".'
 			),
 			'language'                       => $this->_registry->get( 'p28n.wpml' )->get_lang(),
@@ -432,7 +432,7 @@ class Ai1ec_Javascript_Controller {
 		$data = array(
 			'export_url' => AI1EC_EXPORT_URL,
 		);
-	
+
 		// Replace desired CSS selector with calendar, if selector has been set
 		$calendar_selector = $this->_settings->get( 'calendar_css_selector' );
 		if( $calendar_selector ) {
@@ -442,7 +442,8 @@ class Ai1ec_Javascript_Controller {
 			$data['selector'] = $calendar_selector;
 			$data['title']    = $page->post_title;
 		}
-		
+
+		// DEPRECATED: Only still here for backwards compatibility with Ai1ec 1.x.
 		$data['fonts'] = array();
 		$fonts_dir = AI1EC_DEFAULT_THEME_URL . 'font_css/';
 		$data['fonts'][] = array(

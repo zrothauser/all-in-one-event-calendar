@@ -62,9 +62,9 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		$this->lessc = $this->_registry->get( 'lessc' );;
 		$this->default_theme_url = $this->sanitize_default_theme_url( $default_theme_url );
 		$this->parsed_css = '';
-		$this->files = array( 
-			'style.less', 
-			'event.less', 
+		$this->files = array(
+			'style.less',
+			'event.less',
 			'calendar.less',
 			'override.less',
 			'../style.less',
@@ -97,23 +97,43 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 	 */
 	public function parse_less_files( array $variables = null ) {
 		// If no variables are passed i get them from the db
-		if( null === $variables ) {
+		if ( null === $variables ) {
 			$variables = $this->_registry->get( 'model.option' )->get(
 				self::DB_KEY_FOR_LESS_VARIABLES
 			);
 			// If they are not set in the db, get them from file.
 			// this happen when the user switched the theme and triggered a new parse.
-			if( ! $variables ) {
+			if ( ! $variables ) {
 				$variables = $this->get_less_variable_data_from_config_file();
+			} else {
+				// inject extension variables
+				$variables = apply_filters( 'ai1ec_less_variables', $variables );
 			}
 		}
 		// convert the variables to key / value
 		$variables = $this->convert_less_variables_for_parsing( $variables );
+		// Inject additional constants from extensions.
+		$variables = apply_filters( 'ai1ec_less_constants', $variables );
+
 		// Load the variable.less file to use
 		$this->load_less_variables_from_file();
 		$loader = $this->_registry->get( 'theme.loader' );
-		// extension add files.
+
+		// Allow extensions to add their own LESS files.
 		$this->files = apply_filters( 'ai1ec_less_files', $this->files );
+
+		// Find out the active theme URL.
+		$option       = $this->_registry->get( 'model.option' );
+		$theme        = $option->get( 'ai1ec_current_theme' );
+		// *** NOTE: ***
+		// This only works if active theme is under default theme directory, inside
+		// plugin directory. Will fail for themes installed elsewhere, such as in a
+		// directory that is immune from plugin software updates.
+		// TODO: Make it work if the theme is installed anywhere. Requires more
+		// information to be provided by the $theme object.
+		$theme_url    = AI1EC_THEMES_URL . '/' . $theme['stylesheet'];
+		$this->lessc->addImportDir( $theme['theme_dir'] . DIRECTORY_SEPARATOR . 'less' );
+		$import_dirs = array();
 		foreach ( $this->files as $file ) {
 			$file_to_parse = null;
 			try {
@@ -121,39 +141,46 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 				$file_to_parse = $loader->get_file( $file );
 
 			} catch ( Ai1ec_Exception $e ) {
-				// We let child themes ovverride properties of vortex.
+				// We let child themes override styles of Vortex.
 				// So there is no fallback for override and we can continue.
-				if( $file !== 'override.less' ) {
+				if ( $file !== 'override.less' ) {
 					throw $e;
 				} else {
-					// it's override, skip it.
+					// It's an override, skip it.
 					continue;
 				}
 			}
-			// if the file is a css file, no need to parse it, just serve it as usual.
-			if( substr_compare( $file_to_parse->get_name(), '.css', -strlen( '.css' ), strlen( '.css' ) ) === 0 ) {
+			// If the file is a CSS file, no need to parse it, just serve it as usual.
+			if ( substr_compare( $file_to_parse->get_name(), '.css', -strlen( '.css' ), strlen( '.css' ) ) === 0 ) {
 				$this->parsed_css .= $file_to_parse->get_content();
 				continue;
 			}
 
 			// We prepend the unparsed variables.less file we got earlier.
 			// We do this as we do not import that anymore in the less files.
-			$css_to_parse = $this->unparsed_variable_file . $file_to_parse->get_content();
+			$this->unparsed_variable_file .= $file_to_parse->get_content();
 
-			// Set the import dir for the file. This is important as
-			// dependencies will be resolved correctly
-			$this->lessc->importDir = dirname( $file_to_parse->get_name() );
-			$variables['imgdir'] = '~"' . $this->default_theme_url . "/img\"";
-			$variables['imgdir_default'] = '~"' . $this->default_theme_url . "/img\"";
-
-			try {
-				$this->parsed_css .= $this->lessc->parse(
-					$css_to_parse,
-					$variables
-				);
-			} catch ( Exception $e ) {
-				throw $e;
+			// Set the import directories for the file. Includes current directory of
+			// file as well as theme directory in core. This is important for
+			// dependencies to be resolved correctly.
+			$dir = dirname( $file_to_parse->get_name() );
+			if( ! isset( $import_dirs[$dir] ) ) {
+				$import_dirs[$dir] = true;
+				$this->lessc->addImportDir( $dir );
 			}
+		}
+		$variables['fontdir'] = '~"' . $theme_url . '/font"';
+		$variables['fontdir_default'] = '~"' . $this->default_theme_url . '/font"';
+		$variables['imgdir'] = '~"' . $theme_url . '/img"';
+		$variables['imgdir_default'] = '~"' . $this->default_theme_url . '/img"';
+		
+		try {
+			$this->parsed_css .= $this->lessc->parse(
+				$this->unparsed_variable_file,
+				$variables
+			);
+		} catch ( Exception $e ) {
+			throw $e;
 		}
 		return $this->parsed_css;
 	}
@@ -226,7 +253,8 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		// This variable is locate in the required file
 		$variables = $file->get_content();
 		// inject extension variables
-		return apply_filters( 'ai1ec_less_variables', $variables );
+		$variables = apply_filters( 'ai1ec_less_variables', $variables );
+		return $variables;
 	}
 
 
@@ -265,9 +293,11 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		$variables = $this->_registry->get( 'model.option' )->get(
 			self::DB_KEY_FOR_LESS_VARIABLES
 		);
-
 		if ( ! $variables ) {
-			return $this->get_less_variable_data_from_config_file();
+			$variables = $this->get_less_variable_data_from_config_file();
+		} else {
+			// inject extension variables
+			$variables = apply_filters( 'ai1ec_less_variables', $variables );
 		}
 		// i don't store the description in the db so i need to get it.
 		$variables_with_description = $this->get_less_variable_data_from_config_file();

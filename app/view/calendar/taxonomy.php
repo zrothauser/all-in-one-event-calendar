@@ -99,4 +99,5 @@ class Ai1ec_View_Calendar_Taxonomy extends Ai1ec_Base {
 		return $loader->get_file( $type_for_view_args . '.twig', $args, false )
 			->get_content();
 	}
+	
 }

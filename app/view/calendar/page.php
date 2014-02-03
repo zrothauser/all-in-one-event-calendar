@@ -16,10 +16,10 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 	 */
 	protected $_exact_dates = NULL;
 
-	
+
 	/**
 	 * Public constructor
-	 * 
+	 *
 	 * @param Ai1ec_Registry_Object $registry The registry object
 	 */
 	public function __construct( Ai1ec_Registry_Object $registry ) {
@@ -29,21 +29,21 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 
 	/**
 	 * Get the content if the calendar page
-	 * 
+	 *
 	 * @param Ai1ec_Request_Parser $request
 	 */
 	public function get_content( Ai1ec_Request_Parser $request ) {
 		// Are we loading a shortcode?
 		$shortcode       = $request->get( 'shortcode' );
-		
+
 		$view_args  = $this->get_view_args_for_view( $request );
 		$action     = $view_args['action'];
 		$type       = $request->get( 'request_type' );
-		
+
 		$exact_date = $this->get_exact_date( $request );
-		$view = $this->_registry->get( 'view.calendar.view.' . $action, $request );
-		$view_args = $view->get_extra_arguments( $view_args, $exact_date );
-		$view = $view->get_content( $view_args );
+		$view_obj = $this->_registry->get( 'view.calendar.view.' . $action, $request );
+		$view_args = $view_obj->get_extra_arguments( $view_args, $exact_date );
+		$view = $view_obj->get_content( $view_args );
 		$args = array(
 			'view' => $view,
 			'version' => AI1EC_VERSION,
@@ -66,7 +66,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			$dropdown_args['exact_date'] = $exact_date;
 		}
 		$views_dropdown =
-			$this->get_html_for_views_dropdown( $dropdown_args );
+			$this->get_html_for_views_dropdown( $dropdown_args, $view_obj );
 		$subscribe_buttons =
 			$this->get_html_for_subscribe_buttons( $view_args );
 
@@ -86,11 +86,11 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				'subscribe_buttons'  => $subscribe_buttons,
 				'are_filters_set'    => $are_filters_set,
 			);
-		
+
 		} else {
 			$loader = $this->_registry->get( 'theme.loader' );
 			$empty = $loader->get_file( 'empty.twig', array(), false );
-		
+
 			// Define new arguments for overall calendar view
 			$filter_args = array(
 				'views_dropdown'               => $views_dropdown,
@@ -103,7 +103,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				'authors'                      => apply_filters( 'ai1ec_authors', '' ),
 				'save_view_btngroup'           => apply_filters( 'ai1ec_save_view_btngroup', $empty ),
 			);
-			
+
 			$filter_menu = $loader->get_file( 'filter-menu.twig', $filter_args, false );
 			$calendar_args = array(
 				'version'     => AI1EC_VERSION,
@@ -112,13 +112,13 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				'subscribe_buttons'  => $subscribe_buttons,
 				'disable_standard_filter_menu' => apply_filters( 'ai1ec_disable_standard_filter_menu', false ),
 			);
-			
+
 			$calendar = $loader->get_file( 'calendar.twig', $calendar_args, false );
 			return $calendar->get_content();
 		}
 
 
-		
+
 	}
 
 	/**
@@ -163,11 +163,15 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 	}
 
 	/**
-	 * This function generates the html for the view dropdowns
+	 * This function generates the html for the view dropdowns.
 	 *
-	 * @param array $view_args
+	 * @param array                        $view_args Args passed to view
+	 * @param Ai1ec_Calendar_View_Abstract $view      View object
 	 */
-	protected function get_html_for_views_dropdown( array $view_args ) {
+	protected function get_html_for_views_dropdown(
+		array $view_args,
+		Ai1ec_Calendar_View_Abstract $view
+	) {
 		$settings        = $this->_registry->get( 'model.settings' );
 		$available_views = array();
 		$enabled_views   = (array)$settings->get( 'enabled_views', array() );
@@ -177,9 +181,12 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			$view_enabled = 'view_' . $key . '_enabled';
 			$values = array();
 			$options = $view_args;
-			if( $enabled_views[$key]['enabled'] === true ) {
-				if( $key === 'posterboard' || $key === 'agenda' || $key === 'stream' ) {
-					if( isset( $options['exact_date'] ) && ! isset( $options['time_limit'] ) ) {
+			if ( $enabled_views[$key]['enabled'] === true ) {
+				if ( $view instanceof Ai1ec_Calendar_View_Agenda ) {
+					if (
+						isset( $options['exact_date'] ) &&
+						! isset( $options['time_limit'] )
+					) {
 						$options['time_limit'] = $options['exact_date'];
 					}
 					unset( $options['exact_date'] );
@@ -212,12 +219,12 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 	 * Get the exact date from request if available, or else from settings.
 	 *
 	 * @param Ai1ec_Abstract_Query settings
-	 * 
+	 *
 	 * @return boolean|int
 	 */
 	private function get_exact_date( Ai1ec_Abstract_Query $request ) {
 		$settings = $this->_registry->get( 'model.settings' );
-	
+
 		// Preprocess exact_date.
 		// Check to see if a date has been specified.
 		$exact_date = $request->get( 'exact_date' );
@@ -254,7 +261,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 	 */
 	private function return_gmtime_from_exact_date( $exact_date ) {
 		$settings = $this->_registry->get( 'model.settings' );
-	
+
 		$bits = Ai1ec_Validation_Utility::validate_date_and_return_parsed_date(
 			$exact_date,
 			$settings->get( 'input_date_format' )
@@ -262,7 +269,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		if( false === $bits ) {
 			$exact_date = false;
 		} else {
-			$exact_date = $this->_registry->get( 
+			$exact_date = $this->_registry->get(
 				'date.time',
 				gmmktime(
 					0, 0, 0, $bits['month'], $bits['day'], $bits['year']
@@ -289,19 +296,18 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 
 	/**
 	 * Get the parameters for the view from the request object
-	 * 
+	 *
 	 * @param Ai1ec_Abstract_Query $request
-	 * 
+	 *
 	 * @return array
 	 */
 	protected function get_view_args_for_view( Ai1ec_Abstract_Query $request ) {
 		$settings = $this->_registry->get( 'model.settings' );
-		// Define arguments for specific calendar sub-view (month, agenda,
-		// posterboard, etc.)
+		// Define arguments for specific calendar sub-view (month, agenda, etc.)
 		// Preprocess action.
 		// Allow action w/ or w/o ai1ec_ prefix. Remove ai1ec_ if provided.
 		$action = $request->get( 'action' );
-	
+
 		if ( 0 === strncmp( $action, 'ai1ec_', 6 ) ) {
 			$action = substr( $action, 6 );
 		}
@@ -311,7 +317,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			'cat_ids',
 			'tag_ids',
 		) );
-	
+
 		$add_defaults = array(
 			'cat_ids' => 'categories',
 			'tag_ids' => 'tags',
@@ -323,18 +329,18 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				$view_args[$query] = $setting[$default];
 			}
 		}
-	
+
 		$type = $request->get( 'request_type' );
 
 		$view_args['data_type'] = $this->return_data_type_for_request_type(
 			$type
 		);
-	
+
 		$exact_date = $this->get_exact_date( $request );
-	
+
 		$view_args['no_navigation'] = $request
 			->get( 'no_navigation' ) === 'true';
-	
+
 		// Find out which view of the calendar page was requested, and render it
 		// accordingly.
 		$view_args['action'] = $action;

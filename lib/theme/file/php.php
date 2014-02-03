@@ -11,6 +11,11 @@
 class Ai1ec_File_Php extends Ai1ec_File_Abstract {
 
 	/**
+	 * @var string filename with the variables
+	 */
+	const USER_VARIABLES_FILE = 'user_variables';
+
+	/**
 	 * @var array the arguments used by the PHP template.
 	 */
 	private $_args;
@@ -47,10 +52,12 @@ class Ai1ec_File_Php extends Ai1ec_File_Abstract {
 		}
 		foreach ( $files_to_check as $file ) {
 			if ( is_file( $file ) ) {
-				if ( 'less/user_variables.php' === $this->_name ) {
-
-					// it's the user variables file for now.
-					// We must handle the fact that it might be legacy.
+				// Check if file is custom LESS variable definitions.
+				$user_variables_pattern = Ai1ec_File_Less::THEME_LESS_FOLDER .
+					'/' . self::USER_VARIABLES_FILE;
+				if ( strpos( $this->_name, $user_variables_pattern ) === 0 ) {
+					// It's a user variables file. We must handle the fact that it might
+					// be legacy.
 					if ( true === $this->_args['is_legacy_theme'] ) {
 						$content = ( require $file );
 						if ( isset( $less_user_variables ) ) {
@@ -72,5 +79,15 @@ class Ai1ec_File_Php extends Ai1ec_File_Abstract {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Legacy function to keep conpatibility with 1.x themes.
+	 *
+	 * @param string $file
+	 */
+	public function get_theme_img_url( $file ) {
+		return $this->_registry->get( 'theme.loader' )
+			->get_file( $file, array(), false )->get_url();
 	}
 }

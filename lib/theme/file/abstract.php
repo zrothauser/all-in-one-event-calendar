@@ -11,12 +11,12 @@
 abstract class Ai1ec_File_Abstract extends Ai1ec_Base {
 
 	/**
-	 * @var array the paths where to look for the file.
+	 * @var array The paths where to look for the file.
 	 */
-	protected  $_paths;
+	protected $_paths;
 
 	/**
-	 * @var string the name of the file.
+	 * @var string The name of the file.
 	 */
 	protected $_name;
 
@@ -28,7 +28,7 @@ abstract class Ai1ec_File_Abstract extends Ai1ec_Base {
 	protected $_content;
 
 	/**
-	 * Locate the files and parses it's content. Populates $this->_content.
+	 * Locates the file and parses its content. Populates $this->_content.
 	 *
 	 * @return boolean Returns true if the file is found, false otheriwse.
 	 */
@@ -61,7 +61,7 @@ abstract class Ai1ec_File_Abstract extends Ai1ec_Base {
 
 	/**
 	 * @param bool $mute_output used for compatibility reason with old code.
-	 * 
+	 *
 	 * @return mixed the parsed content of the file.
 	 */
 	public function get_content( $mute_output = false ) {

@@ -19,6 +19,8 @@ class Ai1ec_Event_Legacy extends Ai1ec_Event {
 		'get_color_style'                  => 'taxonomy',
 		'get_categories_html'              => 'taxonomy',
 		'get_tags_html'                    => 'taxonomy',
+		'get_category_text_color'          => 'taxonomy',
+		'get_category_bg_color'            => 'taxonomy',
 		'get_faded_color'                  => 'color',
 		'get_rgba_color'                   => 'color',
 		'get_event_avatar'                 => 'avatar',

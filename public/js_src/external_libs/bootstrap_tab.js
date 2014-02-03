@@ -30,7 +30,6 @@ define( ["jquery_timely"],
 	      if ( $this.parent('li').hasClass('active') ) return
 
 	      previous = $ul.find('.active a').last()[0]
-
 	      e = $.Event('show', {
 	        relatedTarget: previous
 	      })

@@ -22,24 +22,11 @@ class Ai1ec_File_Less extends Ai1ec_File_Abstract {
 	const THEME_LESS_FOLDER = 'less';
 
 	/**
-	 * @var string The URL to the file.
-	 */
-	protected $_url;
-
-	/**
 	 * Returns the name of the file.
 	 * @return string
 	 */
 	public function get_name() {
 		return $this->_name;
-	}
-
-	/**
-	 * Returns the URL to the file.
-	 * @return string
-	 */
-	public function get_url() {
-		return $this->_url;
 	}
 
 	/* (non-PHPdoc)
@@ -68,7 +55,6 @@ class Ai1ec_File_Less extends Ai1ec_File_Abstract {
 			if ( file_exists( $file_to_check ) ) {
 				$this->_content = file_get_contents( $file_to_check );
 				$this->_name    = $file_to_check;
-				$this->_url     = "how_do_we_get_a_URL_from_$file_to_check";
 				return true;
 			}
 		}

@@ -112,11 +112,26 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		}
 		// convert the variables to key / value
 		$variables = $this->convert_less_variables_for_parsing( $variables );
+		// Inject additional constants from extensions.
+		$variables = apply_filters( 'ai1ec_less_constants', $variables );
+
 		// Load the variable.less file to use
 		$this->load_less_variables_from_file();
 		$loader = $this->_registry->get( 'theme.loader' );
-		// extension add files.
+
+		// Allow extensions to add their own LESS files.
 		$this->files = apply_filters( 'ai1ec_less_files', $this->files );
+
+		// Find out the active theme URL.
+		$option       = $this->_registry->get( 'model.option' );
+		$theme        = $option->get( 'ai1ec_current_theme' );
+		// *** NOTE: ***
+		// This only works if active theme is under default theme directory, inside
+		// plugin directory. Will fail for themes installed elsewhere, such as in a
+		// directory that is immune from plugin software updates.
+		// TODO: Make it work if the theme is installed anywhere. Requires more
+		// information to be provided by the $theme object.
+		$theme_url    = AI1EC_THEMES_URL . '/' . $theme['stylesheet'];
 
 		foreach ( $this->files as $file ) {
 			$file_to_parse = null;
@@ -147,8 +162,9 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 			// Set the import dir for the file. This is important as
 			// dependencies will be resolved correctly.
 			$this->lessc->importDir = dirname( $file_to_parse->get_name() );
-			$variables['thisdir'] = '~"' . dirname( $file_to_parse->get_url() ) . '"';
-			$variables['imgdir'] = '~"' . $this->default_theme_url . '/img"';
+			$variables['fontdir'] = '~"' . $theme_url . '/font"';
+			$variables['fontdir_default'] = '~"' . $this->default_theme_url . '/font"';
+			$variables['imgdir'] = '~"' . $theme_url . '/img"';
 			$variables['imgdir_default'] = '~"' . $this->default_theme_url . '/img"';
 
 			try {

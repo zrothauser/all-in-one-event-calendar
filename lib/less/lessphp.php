@@ -159,9 +159,13 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 			// We do this as we do not import that anymore in the less files.
 			$css_to_parse = $this->unparsed_variable_file . $file_to_parse->get_content();
 
-			// Set the import dir for the file. This is important as
-			// dependencies will be resolved correctly.
-			$this->lessc->importDir = dirname( $file_to_parse->get_name() );
+			// Set the import directories for the file. Includes current directory of
+			// file as well as theme directory in core. This is important for
+			// dependencies to be resolved correctly.
+			$this->lessc->setImportDir( array(
+				dirname( $file_to_parse->get_name() ),
+				$theme['theme_dir'] . DIRECTORY_SEPARATOR . 'less',
+			) );
 			$variables['fontdir'] = '~"' . $theme_url . '/font"';
 			$variables['fontdir_default'] = '~"' . $this->default_theme_url . '/font"';
 			$variables['imgdir'] = '~"' . $theme_url . '/img"';

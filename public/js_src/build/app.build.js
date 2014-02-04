@@ -4,7 +4,7 @@
 	dir: "../../js",              // This is relative to this file's dir
 	keepBuildDir: false,
 	fileExclusionRegExp: /(jasmine|build|jshintr|^\.|.bat|.sh$)/,
-	mainConfigFile: '../main.js', // This is relative to this file's dir
+	mainConfigFile: '../main.js', // This is relative to this file's dir 
 	// optimize: "none",          // Uncomment this line if you need to debug
 	modules: [ {
 				name: "pages/calendar"
@@ -53,5 +53,5 @@
 		"jquery_timely"  : "empty:"
 	},
 	wrap: false,
-	removeCombined: true
+	removeCombined: false
 })

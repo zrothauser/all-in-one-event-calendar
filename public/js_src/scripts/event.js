@@ -3,17 +3,11 @@ define(
 		 "jquery_timely",
 		 'domReady',
 		 'ai1ec_config',
-		 'scripts/event/gmaps_helper',
-		 'external_libs/jquery_cookie',
-		 'external_libs/bootstrap_modal',
-		 'external_libs/bootstrap_transition',
-		 'external_libs/bootstrap_alert',
-		 'libs/modal_helper'
+		 'scripts/event/gmaps_helper'
 		 ],
 		 function( $, domReady, ai1ec_config, gmaps_helper) {
 	"use strict"; // jshint ;_;
-
-	$.cookie.json = true;
+	
 	// Perform all initialization functions required on the page.
 	var init = function() {
 		if( $( '#ai1ec-gmap-canvas' ).length > 0 ) {

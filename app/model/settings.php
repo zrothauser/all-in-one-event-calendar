@@ -26,6 +26,11 @@ class Ai1ec_Settings extends Ai1ec_App {
 	protected $_updated          = false;
 
 	/**
+	 * @var array The core options of the plugin.
+	 */
+	protected $_standard_options;
+
+	/**
 	 * Register new option to be used.
 	 *
 	 * @param string $option   Name of option.
@@ -229,6 +234,42 @@ class Ai1ec_Settings extends Ai1ec_App {
 	}
 
 	/**
+	 * Remove an option if is set.
+	 * 
+	 * @param string $option
+	 */
+	public function remove_option( $option ) {
+		if ( isset( $this->_options[$option] ) ) {
+			unset( $this->_options[$option] );
+			$this->_updated = true;
+		}
+	}
+
+	/**
+	 * Hide an option by unsetting it's renderer
+	 * 
+	 * @param string $option
+	 */
+	public function hide_option( $option ) {
+		if ( isset( $this->_options[$option] ) ) {
+			unset( $this->_options[$option]['renderer'] );
+			$this->_updated = true;
+		}
+	}
+
+	/**
+	 * Show an option by setting it's renderer
+	 *
+	 * @param string $option
+	 */
+	public function show_option( $option, array $renderer ) {
+		if ( isset( $this->_options[$option] ) ) {
+			$this->_options[$option]['renderer'] = $renderer;
+			$this->_updated = true;
+		}
+	}
+
+	/**
 	 * Check object state and update it's database representation as needed.
 	 *
 	 * @return void Destructor does not return.
@@ -248,8 +289,11 @@ class Ai1ec_Settings extends Ai1ec_App {
 		$this->_set_standard_values();
 		$values         = $this->_registry->get( 'model.option' )
 			->get( self::WP_OPTION_KEY, array() );
+
 		$this->_updated = false;
-		if ( empty( $values ) ) {
+		if ( empty( $values ) || 
+			AI1EC_VERSION !== $values['ai1ec_db_version']['version'] 
+		) {
 			$this->_register_standard_values();
 			$this->_updated = true;
 		} else if ( $values instanceof Ai1ec_Settings ) {
@@ -629,7 +673,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	protected function _register_standard_values() {
 		foreach ( $this->_standard_options as $key => $option ) {
 			$renderer = isset( $option['renderer'] ) ? $option['renderer'] : null;
-			$this->register( $key, $option['default'], $option['type'], $renderer );
+			$this->register( $key, $option['default'], $option['type'], $renderer, AI1EC_VERSION );
 		}
 	}
 

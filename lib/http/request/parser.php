@@ -81,7 +81,8 @@ class Ai1ec_Request_Parser extends Ai1ec_Abstract_Query {
 		}
 
 		if ( null === $default_action ) {
-			$enabled_views = $this->_registry->get( 'model.settings' )->get( 'enabled_views' );
+			$enabled_views = (array)$this->_registry->get( 'model.settings' )
+				->get( 'enabled_views', array() );
 			foreach ( $enabled_views as $name => $param ) {
 				if ( true === $param['default'] ) {
 					$default_action = $name;

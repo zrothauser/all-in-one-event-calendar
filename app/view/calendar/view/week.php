@@ -54,31 +54,21 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 		);
 		
 		// Create pagination links.
-		$pagination_links =
-		$ai1ec_calendar_helper->get_week_pagination_links( $args );
-		$pagination_links = $ai1ec_view_helper->get_theme_view(
-			'pagination.php',
-			array( 'links' => $pagination_links, 'data_type' => $args['data_type'] )
-		);
+		$pagination_links = $this->_get_pagination( $args );
+
 		
 		// Translators: "%s" below represents the week's start date.
 		$title = sprintf(
 			__( 'Week of %s', AI1EC_PLUGIN_NAME ),
-			Ai1ec_Time_Utility::date_i18n(
-				__( 'F j', AI1EC_PLUGIN_NAME ), $local_date, true
-			)
+			$local_date->format_i18n( 'F j' )
 		);
-		$time_format = Ai1ec_Meta::get_option(
-			'time_format',
-			__( 'g a', AI1EC_PLUGIN_NAME )
-		);
+		$time_format              = $this->_registry->get( 'model.option' )
+			->get( 'time_format', Ai1ec_I18n::__( 'g a' ) );
 		
 		// Calculate today marker's position.
-		$now = Ai1ec_Time_Utility::current_time();
-		$now = Ai1ec_Time_Utility::gmt_to_local( $now );
-		$now_text = $ai1ec_events_helper->get_short_time( $now, false );
-		$now = Ai1ec_Time_Utility::gmgetdate( $now );
-		$now = $now['hours'] * 60 + $now['minutes'];
+		$now = $this->_registry->get( 'date.time' );
+		$now_text = $now->format_i18n( 'M j' );
+		$now = $now->format( 'G' ) * 60 + $now->format( 'i' );
 		// Find out if the current week view contains "now" and thus should display
 		// the "now" marker.
 		$show_now = false;
@@ -88,17 +78,13 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 				break;
 			}
 		}
-		
-		$is_ticket_button_enabled =
-		$ai1ec_calendar_helper->is_buy_ticket_enabled_for_view( 'week' );
-		$show_reveal_button =
-		$ai1ec_settings->week_view_starts_at > 0 ||
-		$ai1ec_settings->week_view_ends_at < 24;
+		$is_ticket_button_enabled = apply_filters( 'ai1ec_week_ticket_button', false );
+		$show_reveal_button       = apply_filters( 'ai1ec_week_reveal_button', false );
 		$view_args = array(
 			'title'                    => $title,
 			'type'                     => 'week',
 			'cell_array'               => $cell_array,
-			'show_location_in_title'   => $ai1ec_settings->show_location_in_title,
+			'show_location_in_title'   => $settings->get( 'show_location_in_title' ),
 			'now_top'                  => $now,
 			'now_text'                 => $now_text,
 			'show_now'                 => $show_now,
@@ -112,21 +98,77 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 			'is_ticket_button_enabled' => $is_ticket_button_enabled,
 			'show_reveal_button'       => $show_reveal_button,
 		);
-		if( $ai1ec_settings->ajaxify_events_in_web_widget ) {
+		if( $settings->get( 'ajaxify_events_in_web_widget' ) ) {
 			$view_args['data_type_events'] = $args['data_type'];
 		}
+		$loader           = $this->_registry->get( 'theme.loader' );
 		// Add navigation if requested.
-		$navigation = Ai1ec_Render_Entity_Utility::get_instance( 'Navigation' )
-		->set( $view_args )->get_content( $args['no_navigation'] );
+		$navigation = $this->_get_navigation( $args['no_navigation'], $view_args );
 		$view_args['navigation'] = $navigation;
 		
-		return apply_filters(
-			'ai1ec_get_week_view',
-			$ai1ec_view_helper->get_theme_view( 'week.php', $view_args ),
-			$view_args
-		);
+		return $this->_get_view( $view_args );
 	}
+
+	/**
+	 * Returns a non-associative array of two links for the week view of the
+	 * calendar:
+	 *    previous week, and next week.
+	 * Each element is an associative array containing the link's enabled status
+	 * ['enabled'], CSS class ['class'], text ['text'] and value to assign to
+	 * link's href ['href'].
+	 *
+	 * @param array $args	Current request arguments
+	 *
+	 * @return array      Array of links
+	 */
+	protected function get_week_pagination_links( $args ) {
+		$links = array();
 	
+		$orig_date = $args['exact_date'];
+	
+		$negative_offset = $args['week_offset'] * 7 - 7;
+		$positive_offset = $args['week_offset'] * 7 + 7;
+		// =================
+		// = Previous week =
+		// =================
+		$local_date = $this->_registry
+			->get( 'date.time', $args['exact_date'], 'sys.default' )
+			->adjust_day( $negative_offset )
+			->set_time( 0, 0, 0 );
+		$args['exact_date'] = $local_date->format();
+		$href       = $this->_registry->get( 'html.element.href', $args );
+		$links[] = array(
+			'enabled' => true,
+			'class'=> 'ai1ec-prev-week',
+			'text' => '<i class="icon icon-chevron-left"></i>',
+			'href' => $href->generate_href(),
+		);
+		// ======================
+		// = Minical datepicker =
+		// ======================
+		$args['exact_date'] = $orig_date;
+		$factory = $this->_registry->get( 'factory.html' );
+		$links[] = $factory->create_datepicker_link(
+			$args,
+			$args['exact_date']
+		);
+	
+		// =============
+		// = Next week =
+		// =============
+		$local_date->adjust_day( $positive_offset * 2 ); // above was (-1), (+2) is to counteract
+		$args['exact_date'] = $local_date->format();
+		$href    = $this->_registry->get( 'html.element.href', $args );
+		$links[] = array(
+			'enabled' => true,
+			'class'=> 'ai1ec-next-week',
+			'text' => '<i class="icon icon-chevron-right"></i>',
+			'href' => $href->generate_href(),
+		);
+	
+		return $links;
+	}
+
 	/**
 	 * get_week_cell_array function
 	 *
@@ -155,47 +197,66 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 	 * @return array            array of arrays as per function description
 	 */
 	protected function get_week_cell_array( Ai1ec_Date_Time $start_of_week, $filter = array() ) {
-		global $ai1ec_events_helper, $ai1ec_settings;
-	
-	
+		$search      = $this->_registry->get( 'model.search' );
+		$settings    = $this->_registry->get( 'model.settings' );
+		$date_system = $this->_registry->get( 'date.system' );
+		$end_of_week = clone $start_of_week;
+		$end_of_week->adjust_day( 7 );
 		// Do one SQL query to find all events for the week, including spanning
-		$week_events = $this->get_events_between(
+		$week_events = $search->get_events_between(
 			$start_of_week,
-			gmmktime( 0, 0, 0, $bits['mon'], $bits['mday'] + 7, $bits['year'] ),
+			$end_of_week,
 			$filter,
-			true );
+			true 
+		);
 	
 		// Split up events on a per-day basis
 		$all_events = array();
 		foreach ( $week_events as $evt ) {
-			$evt_start = $ai1ec_events_helper->gmt_to_local( $evt->start );
-			$evt_end = $ai1ec_events_helper->gmt_to_local( $evt->end );
+			$evt_start = $evt->get( 'start' )->format();
+			$evt_end   = $evt->get( 'end' )->format();
 	
 			// Iterate through each day of the week and generate new event object
 			// based on this one for each day that it spans
-			for ( $day = $bits['mday']; $day < $bits['mday'] + 7; $day++ ) {
-				$day_start = gmmktime( 0, 0, 0, $bits['mon'], $day, $bits['year'] );
-				$day_end = gmmktime( 0, 0, 0, $bits['mon'], $day + 1, $bits['year'] );
+			for ( 
+				$day = $start_of_week->format( 'j' ); 
+				$day < $start_of_week->format( 'j' ) + 7; 
+				$day++ 
+			) {
+				$day_start = $this->_registry
+					->get( 'date.time' )
+					->set_date(
+						$start_of_week->format( 'Y' ),
+						$start_of_week->format( 'm' ),
+						$day
+					)
+					->set_time( 0, 0, 0 );
+				$day_end = clone $day_start;
+				$day_start = $day_start->format();
+				fb($day_start);
+				$day_end->adjust_day( 1 );
+				$day_end = $day_end->format();
 	
 				// If event falls on this day, make a copy.
 				if ( $evt_end > $day_start && $evt_start < $day_end ) {
 					$_evt = clone $evt;
 					if ( $evt_start < $day_start ) {
 						// If event starts before this day, adjust copy's start time
-						$_evt->start = $ai1ec_events_helper->local_to_gmt( $day_start );
-						$_evt->start_truncated = true;
+						$_evt->set( 'start', $day_start );
+						$_evt->set( 'start_truncated', true );
 					}
 					if ( $evt_end > $day_end ) {
 						// If event ends after this day, adjust copy's end time
-						$_evt->end = $ai1ec_events_helper->local_to_gmt( $day_end );
-						$_evt->end_truncated = true;
+						$_evt->set( 'end', $day_end );
+						$_evt->set( 'end_truncated', true );
 					}
 	
 					// Store reference to original, unmodified event, required by view.
-					$_evt->_orig = $evt;
+					$_evt->set( '_orig', $evt );
+					$this->_add_runtime_properties( $_evt );
 	
 					// Place copy of event in appropriate category
-					if ( $_evt->allday ) {
+					if ( $_evt->is_allday() ) {
 						$all_events[$day_start]['allday'][] = $_evt;
 					} else {
 						$all_events[$day_start]['notallday'][] = $_evt;
@@ -206,31 +267,47 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 	
 		// This will store the returned array
 		$days = array();
+		$now = $this->_registry->get( 'date.time' );
 		// =========================================
 		// = Iterate through each date of the week =
 		// =========================================
-		for ( $day = $bits['mday']; $day < $bits['mday'] + 7; $day++ ) {
-			$day_date = gmmktime( 0, 0, 0, $bits['mon'], $day, $bits['year'] );
-			// Re-fetch date bits, since $bits['mday'] + 7 might be in the next month
-			$day_bits = $ai1ec_events_helper->gmgetdate( $day_date );
-			$exact_date = Ai1ec_Time_Utility::format_date_for_url(
+		for ( 
+				$day = $start_of_week->format( 'j' ); 
+				$day < $start_of_week->format( 'j' ) + 7; 
+				$day++ 
+			) {
+			$day_date_ob = $this->_registry
+				->get( 'date.time' )
+				->set_date(
+					$start_of_week->format( 'Y' ),
+					$start_of_week->format( 'm' ),
+					$day
+				)
+				->set_time( 0, 0, 0 );
+			$day_date = $day_date_ob->format();
+
+			$exact_date = $date_system->format_date_for_url(
 				$day_date,
-				$ai1ec_settings->input_date_format
+				$settings->get( 'input_date_format' )
 			);
-			$href_for_date = $this->create_link_for_day_view( $exact_date );
+			$href_for_date = $this->_create_link_for_day_view( $exact_date );
 	
 			// Initialize empty arrays for this day if no events to minimize warnings
-			if ( ! isset( $all_events[$day_date]['allday'] ) ) $all_events[$day_date]['allday'] = array();
-			if ( ! isset( $all_events[$day_date]['notallday'] ) ) $all_events[$day_date]['notallday'] = array();
+			if ( ! isset( $all_events[$day_date]['allday'] ) ) {
+				$all_events[$day_date]['allday'] = array();
+			}
+			if ( ! isset( $all_events[$day_date]['notallday'] ) ) {
+				$all_events[$day_date]['notallday'] = array();
+			}
 	
 			$notallday = array();
 			$evt_stack = array( 0 ); // Stack to keep track of indentation
 			foreach ( $all_events[$day_date]['notallday'] as $evt ) {
-				$start_bits = $ai1ec_events_helper->gmgetdate( $ai1ec_events_helper->gmt_to_local( $evt->start ) );
+				$start = $evt->get( 'start' );
 	
 				// Calculate top and bottom edges of current event
-				$top = $start_bits['hours'] * 60 + $start_bits['minutes'];
-				$bottom = min( $top + $evt->getDuration() / 60, 1440 );
+				$top = $start->format( 'G' ) * 60 + $start->format( 'i' );
+				$bottom = min( $top + $evt->get_duration() / 60, 1440 );
 	
 				// While there's more than one event in the stack and this event's top
 				// position is beyond the last event's bottom, pop the stack
@@ -252,9 +329,9 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 	
 			$days[$day_date] = array(
 				'today'     =>
-				$day_bits['year'] == $now['year'] &&
-				$day_bits['mon']  == $now['mon'] &&
-				$day_bits['mday'] == $now['mday'],
+					$day_date_ob->format( 'Y' ) == $now->format( 'Y' ) &&
+					$day_date_ob->format( 'm' ) == $now->format( 'm' ) &&
+					$day_date_ob->format( 'j' ) == $now->format( 'j' ),
 				'allday'    => $all_events[$day_date]['allday'],
 				'notallday' => $notallday,
 				'href'      => $href_for_date,

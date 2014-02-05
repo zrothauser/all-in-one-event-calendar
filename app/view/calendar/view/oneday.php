@@ -76,10 +76,6 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 
 		$is_ticket_button_enabled = apply_filters( 'ai1ec_oneday_ticket_button', false );
 		$show_reveal_button       = apply_filters( 'ai1ec_oneday_reveal_button', false );
-		$time_format = $this->_registry->get( 'model.option' )->get(
-			'time_format',
-			__( 'g a', AI1EC_PLUGIN_NAME )
-		);
 
 		$time_format              = $this->_registry->get( 'model.option' )
 			->get( 'time_format', Ai1ec_I18n::__( 'g a' ) );

@@ -262,18 +262,4 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		return $dates;
 	}
 
-	/**
-	 *
-	 * @param string $exact_date
-	 */
-	protected function _create_link_for_day_view( $exact_date ) {
-		$href = $this->_registry->get(
-			'html.element.href',
-			array(
-				'action' => 'oneday',
-				'exact_date' => $exact_date,
-			)
-		);
-		return $href->generate_href();
-	}
 }

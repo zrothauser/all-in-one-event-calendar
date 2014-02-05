@@ -72,6 +72,71 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	abstract public function get_content( array $view_args );
 
 	/**
+	 *
+	 * @param string $exact_date
+	 */
+	protected function _create_link_for_day_view( $exact_date ) {
+		$href = $this->_registry->get(
+			'html.element.href',
+			array(
+				'action' => 'oneday',
+				'exact_date' => $exact_date,
+			)
+		);
+		return $href->generate_href();
+	}
+
+	protected function _get_view( array $view_args ) {
+		$loader = $this->_registry->get( 'theme.loader' );
+		$view = $this->get_name();
+		$file = $loader->get_file( $view . '.twig', $view_args, false );
+		
+		return apply_filters(
+			'ai1ec_' . $view . '_week_view',
+			$file->get_content(),
+			$view_args
+		);
+	}
+	/**
+	 * Get the navigation html
+	 * 
+	 * @param bool $no_navigation
+	 * @param array $view_args
+	 * @return string
+	 */
+	protected function _get_navigation( $no_navigation, array $view_args ) {
+		$loader = $this->_registry->get( 'theme.loader' );
+		$navigation = '';
+		if ( true !== $no_navigation ) {
+			$navigation = $loader->get_file(
+				'navigation.twig',
+				$view_args,
+				false
+			)->get_content();
+		}
+		return $navigation;
+	}
+
+	/**
+	 * @param array $args
+	 * @return string
+	 */
+	protected function _get_pagination( array $args ) {
+		$method = 'get_' . $this->get_name() . '_pagination_links';
+		$pagination_links = $this->$method( $args );
+		$loader           = $this->_registry->get( 'theme.loader' );
+		$pagination_links = $loader->get_file(
+			'pagination.twig',
+			array(
+				'links'      => $pagination_links,
+				'data_type'  => $args['data_type'],
+			),
+			false
+		)->get_content();
+		return $pagination_links;
+	}
+
+	/**
 	 * Adds runtime properties to the event.
 	 *
 	 * @param Ai1ec_Event $event

@@ -329,5 +329,6 @@ class Ai1ec_Date_Time {
 		}
 		$modifier = $quantifier . ' ' . $longname;
 		$this->_date_time->modify( $modifier );
+		return $this;
 	}
 }

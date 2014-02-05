@@ -10,18 +10,16 @@
 	</thead>
 	<tbody>
 		{% for week in cell_array %}
+			{% set added_stretcher = false %}
 			<tr class="ai1ec-week">
 				{% for day in week %}
 
 					{% if day.date is not empty %}
 						<td {% if day.today is not empty %}class="ai1ec-today"{% endif %}>
-							{#
-								TODO: This div should not be needed, but with multi-day
-								event bars it is required until a better method of arranging
-								events is contrived:
-							#}
-							{% if week.added_stretcher is empty %}
+							{# This div is needed for laying out multi-day event bars. #}
+							{% if not added_stretcher %}
 								<div class="ai1ec-day-stretcher"></div>
+								{% set added_stretcher = true %}
 							{% endif %}
 
 							<div class="ai1ec-day">

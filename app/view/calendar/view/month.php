@@ -232,7 +232,8 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 	}
 
 	protected function _add_view_specific_runtime_properties( Ai1ec_Event $event ) {
-		
+		$end_day = $event->get( 'end' )->adjust( -1, 'second' )->format_i18n( 'd' );
+		$event->set_runtime( 'multiday_end_day', $end_day );
 	}
 	/**
 	 * get_month_cell_array function

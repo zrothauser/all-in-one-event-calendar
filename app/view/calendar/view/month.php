@@ -34,8 +34,11 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		);
 		$args = wp_parse_args( $view_args, $defaults );
 		$local_date = $this->_registry
-			->get( 'date.time', $args['exact_date'], 'sys.default' )
-			->adjust_month( 0 + $args['month_offset'] )
+			->get( 'date.time', $args['exact_date'], 'sys.default' );
+		$local_date->set_date( 
+			$local_date->format( 'Y' ),
+			$local_date->format( 'm' ) + $args['month_offset'],
+			1 )
 			->set_time( 0, 0, 0 );
 		
 		$days_events = $this->get_events_for_month(
@@ -339,8 +342,6 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 	 * @return array            array of arrays as per function's description
 	 */
 	function get_events_for_month( Ai1ec_Date_Time $time, $filter = array() ) {
-		global $ai1ec_events_helper;
-	
 		$last_day = $time->format( 't' );
 	
 		$day_entry = array(

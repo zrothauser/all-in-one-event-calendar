@@ -17,7 +17,7 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 	public function get_name() {
 		return 'week';
 	}
-	
+
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Calendar_View_Abstract::get_content()
 	*/
@@ -33,7 +33,7 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 			'exact_date'    => $date_system->current_time(),
 		);
 		$args = wp_parse_args( $view_args, $defaults );
-		
+
 		// Localize requested date and get components.
 		$local_date = $this->_registry
 			->get( 'date.time', $args['exact_date'], 'sys.default' );
@@ -42,7 +42,7 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 		$local_date->adjust_day( 0 + $start_day_offset + ( $args['week_offset'] * 7 ) )
 			->set_time( 0, 0, 0 );
 
-		
+
 		$cell_array = $this->get_week_cell_array(
 			$local_date,
 			array(
@@ -52,11 +52,11 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 				'auth_ids' => $args['auth_ids'],
 			)
 		);
-		
+
 		// Create pagination links.
 		$pagination_links = $this->_get_pagination( $args );
 
-		
+
 		// Translators: "%s" below represents the week's start date.
 		$title = sprintf(
 			__( 'Week of %s', AI1EC_PLUGIN_NAME ),
@@ -64,7 +64,7 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 		);
 		$time_format              = $this->_registry->get( 'model.option' )
 			->get( 'time_format', Ai1ec_I18n::__( 'g a' ) );
-		
+
 		// Calculate today marker's position.
 		$now = $this->_registry->get( 'date.time' );
 		$now_text = $now->format_i18n( 'M j' );
@@ -105,7 +105,7 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 		// Add navigation if requested.
 		$navigation = $this->_get_navigation( $args['no_navigation'], $view_args );
 		$view_args['navigation'] = $navigation;
-		
+
 		return $this->_get_view( $view_args );
 	}
 
@@ -123,9 +123,9 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 	 */
 	protected function get_week_pagination_links( $args ) {
 		$links = array();
-	
+
 		$orig_date = $args['exact_date'];
-	
+
 		$negative_offset = $args['week_offset'] * 7 - 7;
 		$positive_offset = $args['week_offset'] * 7 + 7;
 		// =================
@@ -152,7 +152,7 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 			$args,
 			$args['exact_date']
 		);
-	
+
 		// =============
 		// = Next week =
 		// =============
@@ -165,7 +165,7 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 			'text' => '<i class="icon icon-chevron-right"></i>',
 			'href' => $href->generate_href(),
 		);
-	
+
 		return $links;
 	}
 
@@ -207,21 +207,20 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 			$start_of_week,
 			$end_of_week,
 			$filter,
-			true 
+			true
 		);
-	
 		// Split up events on a per-day basis
 		$all_events = array();
 		foreach ( $week_events as $evt ) {
 			$evt_start = $evt->get( 'start' )->format();
 			$evt_end   = $evt->get( 'end' )->format();
-	
+
 			// Iterate through each day of the week and generate new event object
 			// based on this one for each day that it spans
-			for ( 
-				$day = $start_of_week->format( 'j' ); 
-				$day < $start_of_week->format( 'j' ) + 7; 
-				$day++ 
+			for (
+				$day = $start_of_week->format( 'j' );
+				$day < $start_of_week->format( 'j' ) + 7;
+				$day++
 			) {
 				$day_start = $this->_registry
 					->get( 'date.time' )
@@ -233,10 +232,9 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 					->set_time( 0, 0, 0 );
 				$day_end = clone $day_start;
 				$day_start = $day_start->format();
-				fb($day_start);
 				$day_end->adjust_day( 1 );
 				$day_end = $day_end->format();
-	
+
 				// If event falls on this day, make a copy.
 				if ( $evt_end > $day_start && $evt_start < $day_end ) {
 					$_evt = clone $evt;
@@ -250,11 +248,11 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 						$_evt->set( 'end', $day_end );
 						$_evt->set( 'end_truncated', true );
 					}
-	
+
 					// Store reference to original, unmodified event, required by view.
 					$_evt->set( '_orig', $evt );
 					$this->_add_runtime_properties( $_evt );
-	
+
 					// Place copy of event in appropriate category
 					if ( $_evt->is_allday() ) {
 						$all_events[$day_start]['allday'][] = $_evt;
@@ -264,17 +262,17 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 				}
 			}
 		}
-	
+
 		// This will store the returned array
 		$days = array();
 		$now = $this->_registry->get( 'date.time' );
 		// =========================================
 		// = Iterate through each date of the week =
 		// =========================================
-		for ( 
-				$day = $start_of_week->format( 'j' ); 
-				$day < $start_of_week->format( 'j' ) + 7; 
-				$day++ 
+		for (
+				$day = $start_of_week->format( 'j' );
+				$day < $start_of_week->format( 'j' ) + 7;
+				$day++
 			) {
 			$day_date_ob = $this->_registry
 				->get( 'date.time' )
@@ -291,7 +289,7 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 				$settings->get( 'input_date_format' )
 			);
 			$href_for_date = $this->_create_link_for_day_view( $exact_date );
-	
+
 			// Initialize empty arrays for this day if no events to minimize warnings
 			if ( ! isset( $all_events[$day_date]['allday'] ) ) {
 				$all_events[$day_date]['allday'] = array();
@@ -299,16 +297,16 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 			if ( ! isset( $all_events[$day_date]['notallday'] ) ) {
 				$all_events[$day_date]['notallday'] = array();
 			}
-	
+
 			$notallday = array();
 			$evt_stack = array( 0 ); // Stack to keep track of indentation
 			foreach ( $all_events[$day_date]['notallday'] as $evt ) {
 				$start = $evt->get( 'start' );
-	
+
 				// Calculate top and bottom edges of current event
 				$top = $start->format( 'G' ) * 60 + $start->format( 'i' );
 				$bottom = min( $top + $evt->get_duration() / 60, 1440 );
-	
+
 				// While there's more than one event in the stack and this event's top
 				// position is beyond the last event's bottom, pop the stack
 				while ( count( $evt_stack ) > 1 && $top >= end( $evt_stack ) ) {
@@ -318,7 +316,7 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 				$indent = count( $evt_stack ) - 1;
 				// Push this event onto the top of the stack
 				array_push( $evt_stack, $bottom );
-	
+
 				$notallday[] = array(
 					'top'    => $top,
 					'height' => $bottom - $top,
@@ -326,7 +324,7 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 					'event'  => $evt,
 				);
 			}
-	
+
 			$days[$day_date] = array(
 				'today'     =>
 					$day_date_ob->format( 'Y' ) == $now->format( 'Y' ) &&
@@ -337,7 +335,7 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 				'href'      => $href_for_date,
 			);
 		}
-	
+
 		return apply_filters( 'ai1ec_get_week_cell_array', $days, $start_of_week, $filter );
 	}
 

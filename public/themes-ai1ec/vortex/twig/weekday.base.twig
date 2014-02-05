@@ -119,7 +119,7 @@
 									{% if event.get( '_orig' ).is_multiday %}ai1ec-multiday{% endif %}"
 								style="top: {{ day_array.top }}px;
 									height: {{ day_array.height }}px;
-									left: {{ day_array.indent * 16 + 54 }}px;
+									left: {{ day_array.indent * block( 'indent_multiplier' ) + block( 'indent_offset' ) }}px;
 									{{ event.get_runtime( 'color_style' ) }}
 									{% if event.get_runtime( 'faded_color' ) %}
 										{% set rgba1 = event.get_runtime( 'rgba_color ') | format( '0.05' ) %}

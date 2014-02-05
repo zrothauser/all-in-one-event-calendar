@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The concrete class for day view.
+ * The concrete class for month view.
 *
 * @author     Time.ly Network Inc.
 * @since      2.0
@@ -234,10 +234,14 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		return $weekdays;
 	}
 
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Calendar_View_Abstract::_add_view_specific_runtime_properties()
+	 */
 	protected function _add_view_specific_runtime_properties( Ai1ec_Event $event ) {
 		$end_day = $event->get( 'end' )->adjust( -1, 'second' )->format_i18n( 'd' );
 		$event->set_runtime( 'multiday_end_day', $end_day );
 	}
+
 	/**
 	 * get_month_cell_array function
 	 *
@@ -341,7 +345,7 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 	 *
 	 * @return array            array of arrays as per function's description
 	 */
-	function get_events_for_month( Ai1ec_Date_Time $time, $filter = array() ) {
+	protected function get_events_for_month( Ai1ec_Date_Time $time, $filter = array() ) {
 		$last_day = $time->format( 't' );
 	
 		$day_entry = array(

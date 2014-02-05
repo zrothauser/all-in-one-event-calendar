@@ -86,6 +86,13 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 		return $href->generate_href();
 	}
 
+	/**
+	 * Get the view html
+	 * 
+	 * @param array $view_args
+	 * 
+	 * @return string
+	 */
 	protected function _get_view( array $view_args ) {
 		$loader = $this->_registry->get( 'theme.loader' );
 		$view = $this->get_name();
@@ -97,6 +104,7 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 			$view_args
 		);
 	}
+
 	/**
 	 * Get the navigation html
 	 * 

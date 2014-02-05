@@ -319,8 +319,10 @@ class Ai1ec_Date_Time {
 	}
 
 	/**
-	 * @param unknown $quantifier
-	 * @param unknown $longname
+	 * Modifies the DateTime object 
+	 * 
+	 * @param int $quantifieruantifier
+	 * @param string $longname
 	 */
 	public function adjust( $quantifier, $longname ) {
 		$quantifier = (int)$quantifier;

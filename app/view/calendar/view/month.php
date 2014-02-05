@@ -147,8 +147,8 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		
 		$orig_date
 			->set_date(
-				$local_date->format( 'Y' ),
-				$local_date->format( 'm' ) + $args['month_offset'],
+				$orig_date->format( 'Y' ),
+				$orig_date->format( 'm' ) + $args['month_offset'],
 				1
 			);
 		$args['exact_date'] = $orig_date->format();
@@ -164,8 +164,8 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		// Align date to first of month, month offset applied, 1 month ahead.
 		$orig_date
 			->set_date(
-				$local_date->format( 'Y' ),
-				$local_date->format( 'm' ) + 1,
+				$orig_date->format( 'Y' ),
+				$orig_date->format( 'm' ) + 1,
 				1
 			);
 		$args['exact_date'] = $orig_date->format();
@@ -174,7 +174,7 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 			'enabled' => true,
 			'class'=> 'ai1ec-next-month',
 			'text' =>
-			$local_date->format_i18n( 'M' ) . 
+			$orig_date->format_i18n( 'M' ) . 
 			' <i class="icon-angle-right"></i>',
 			'href' => $href->generate_href(),
 		);
@@ -189,8 +189,8 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		// Align date to first of month, month offset applied, 1 month ahead.
 		$orig_date
 			->set_date(
-				$local_date->format( 'Y' ) + 1,
-				$local_date->format( 'm' ) - 1,
+				$orig_date->format( 'Y' ) + 1,
+				$orig_date->format( 'm' ) - 1,
 				1
 			);
 
@@ -198,7 +198,7 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 			'enabled' => true,
 			'class'=> 'ai1ec-next-year',
 			'text' =>
-			$local_date->format_i18n( 'M' ) . 
+			$orig_date->format_i18n( 'Y' ) . 
 			' <i class="icon-double-angle-right"></i>',
 			'href' => $href->generate_href(),
 		);

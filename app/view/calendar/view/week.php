@@ -101,10 +101,8 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 		if( $settings->get( 'ajaxify_events_in_web_widget' ) ) {
 			$view_args['data_type_events'] = $args['data_type'];
 		}
-		$loader           = $this->_registry->get( 'theme.loader' );
 		// Add navigation if requested.
-		$navigation = $this->_get_navigation( $args['no_navigation'], $view_args );
-		$view_args['navigation'] = $navigation;
+		$view_args['navigation'] = $this->_get_navigation( $args['no_navigation'], $view_args );
 
 		return $this->_get_view( $view_args );
 	}

@@ -45,6 +45,13 @@ class Ai1ec_Date_Time {
 	}
 
 	/**
+	 * Since clone is shallow, we need to clone the DateTime object
+	 */
+	public function __clone() {
+		$this->_date_time = clone $this->_date_time;
+	}
+
+	/**
 	 * Return formatted date in desired timezone.
 	 *
 	 * NOTICE: consider optimizing by storing multiple copies of `DateTime` for

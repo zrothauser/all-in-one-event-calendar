@@ -30,15 +30,15 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 			'auth_ids'      => array(),
 			'tag_ids'       => array(),
 			'post_ids'      => array(),
-			'exact_date'    => Ai1ec_Time_Utility::current_time(),
+			'exact_date'    => $date_system->current_time(),
 		);
-		$args = wp_parse_args( $args, $defaults );
+		$args = wp_parse_args( $view_args, $defaults );
 		$local_date = $this->_registry
 			->get( 'date.time', $args['exact_date'], 'sys.default' )
-			->adjust_day( 0 + $args['month_offset'] )
+			->adjust_month( 0 + $args['month_offset'] )
 			->set_time( 0, 0, 0 );
 		
-		$days_events = $ai1ec_calendar_helper->get_events_for_month(
+		$days_events = $this->get_events_for_month(
 			$local_date,
 			array(
 				'cat_ids'  => $args['cat_ids'],
@@ -47,8 +47,276 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 				'auth_ids' => $args['auth_ids'],
 			)
 		);
+		$cell_array = $this->get_month_cell_array(
+			$local_date,
+			$days_events
+		);
+		// Create pagination links.
+		$pagination_links = $this->_get_pagination( $args );
+		
+		$title = $local_date->format_i18n( 'F Y' );
+		$is_ticket_button_enabled = apply_filters( 'ai1ec_month_ticket_button', false );
+
+		$view_args = array(
+			'title'                    => $title,
+			'type'                     => 'month',
+			'weekdays'                 => $this->get_weekdays(),
+			'cell_array'               => $cell_array,
+			'show_location_in_title'   => $settings->get( 'show_location_in_title' ),
+			'pagination_links'         => $pagination_links,
+			'post_ids'                 => join( ',', $args['post_ids'] ),
+			'data_type'                => $args['data_type'],
+			'data_type_events'         => '',
+			'is_ticket_button_enabled' => $is_ticket_button_enabled,
+		);
+		if( $settings->get( 'ajaxify_events_in_web_widget' ) ) {
+			$view_args['data_type_events'] = $args['data_type'];
+		}
+		
+		// Add navigation if requested.
+		$view_args['navigation'] = $this->_get_navigation( $args['no_navigation'], $view_args );
+		
+		return $this->_get_view( $view_args );
 	}
+
+	/**
+	 * Returns a non-associative array of four links for the month view of the
+	 * calendar:
+	 *    previous year, previous month, next month, and next year.
+	 * Each element is an associative array containing the link's enabled status
+	 * ['enabled'], CSS class ['class'], text ['text'] and value to assign to
+	 * link's href ['href'].
+	 *
+	 * @param array $args	Current request arguments
+	 *
+	 * @return array      Array of links
+	 */
+	function get_month_pagination_links( $args ) {
+		$links = array();
 	
+		$local_date = $this->_registry
+			->get( 'date.time', $args['exact_date'], 'sys.default' );
+		$orig_date = clone $local_date;
+		// =================
+		// = Previous year =
+		// =================
+		// Align date to first of month, month offset applied, 1 year behind.
+		$local_date
+			->set_date( 
+				$local_date->format( 'Y' ) -1,
+				$local_date->format( 'm' ) + $args['month_offset'],
+				1
+			)
+			->set_time( 0, 0, 0 );
+
+		$args['exact_date'] = $local_date->format();
+		$href = $this->_registry->get( 'html.element.href', $args );
+		$links[] = array(
+			'enabled' => true,
+			'class'=> 'ai1ec-prev-year',
+			'text' =>
+			'<i class="icon-double-angle-left"></i> ' .
+				$local_date->format_i18n( 'Y' ),
+			'href' => $href->generate_href(),
+		);
+	
+		// ==================
+		// = Previous month =
+		// ==================
+		// Align date to first of month, month offset applied, 1 month behind.
+		$local_date
+			->set_date(
+				$local_date->format( 'Y' ) + 1,
+				$local_date->format( 'm' ) - 1,
+				1
+			);
+		$args['exact_date'] = $local_date->format();
+		$href = $this->_registry->get( 'html.element.href', $args );
+		$links[] = array(
+			'enabled' => true,
+			'class'=> 'ai1ec-prev-month',
+			'text' => '<i class="icon-angle-left"></i> ' .
+			$local_date->format_i18n( 'M' ),
+			'href' => $href->generate_href(),
+		);
+	
+		// ======================
+		// = Minical datepicker =
+		// ======================
+		// Align date to first of month, month offset applied.
+		
+		$orig_date
+			->set_date(
+				$local_date->format( 'Y' ),
+				$local_date->format( 'm' ) + $args['month_offset'],
+				1
+			);
+		$args['exact_date'] = $orig_date->format();
+		$factory = $this->_registry->get( 'factory.html' );
+		$links[] = $factory->create_datepicker_link(
+			$args,
+			$args['exact_date']
+		);
+	
+		// ==============
+		// = Next month =
+		// ==============
+		// Align date to first of month, month offset applied, 1 month ahead.
+		$orig_date
+			->set_date(
+				$local_date->format( 'Y' ),
+				$local_date->format( 'm' ) + 1,
+				1
+			);
+		$args['exact_date'] = $orig_date->format();
+		$href = $this->_registry->get( 'html.element.href', $args );
+		$links[] = array(
+			'enabled' => true,
+			'class'=> 'ai1ec-next-month',
+			'text' =>
+			$local_date->format_i18n( 'M' ) . 
+			' <i class="icon-angle-right"></i>',
+			'href' => $href->generate_href(),
+		);
+	
+		// =============
+		// = Next year =
+		// =============
+		// Align date to first of month, month offset applied, 1 year ahead.
+		// ==============
+		// = Next month =
+		// ==============
+		// Align date to first of month, month offset applied, 1 month ahead.
+		$orig_date
+			->set_date(
+				$local_date->format( 'Y' ) + 1,
+				$local_date->format( 'm' ) - 1,
+				1
+			);
+
+		$links[] = array(
+			'enabled' => true,
+			'class'=> 'ai1ec-next-year',
+			'text' =>
+			$local_date->format_i18n( 'M' ) . 
+			' <i class="icon-double-angle-right"></i>',
+			'href' => $href->generate_href(),
+		);
+	
+		return $links;
+	}
+
+	/**
+	 * get_weekdays function
+	 *
+	 * Returns a list of abbreviated weekday names starting on the configured
+	 * week start day setting.
+	 *
+	 * @return array
+	 */
+	protected function get_weekdays() {
+		$settings    = $this->_registry->get( 'model.settings' );
+		static $weekdays;
+
+		if( ! isset( $weekdays ) ) {
+			$time = $this->_registry->get( 'date.time', 'next Sunday' );
+			$time->adjust_day( $settings->get( 'week_start_day' ) );
+
+			$weekdays = array();
+			for( $i = 0; $i < 7; $i++ ) {
+				$weekdays[] = $time->format_i18n( 'D' ); 
+				$time->adjust_day( 1 );// Add a day
+			}
+		}
+		return $weekdays;
+	}
+	/**
+	 * get_month_cell_array function
+	 *
+	 * Return an array of weeks, each containing an array of days, each
+	 * containing the date for the day ['date'] (if inside the month) and
+	 * the events ['events'] (if any) for the day, and a boolean ['today']
+	 * indicating whether that day is today.
+	 *
+	 * @param int $timestamp	    UNIX timestamp of the 1st day of the desired
+	 *                            month to display
+	 * @param array $days_events  list of events for each day of the month in
+	 *                            the format returned by get_events_for_month()
+	 *
+	 * @return void
+	 */
+	protected function get_month_cell_array( Ai1ec_Date_Time $timestamp, $days_events ) {
+		$settings    = $this->_registry->get( 'model.settings' );
+		$date_system = $this->_registry->get( 'date.system' );
+		$today = $this->_registry->get( 'date.time' );// Used to flag today's cell
+	
+		// Figure out index of first table cell
+		$first_cell_index = $timestamp->format( 'w' );
+		// Modify weekday based on start of week setting
+		$first_cell_index = ( 7 + $first_cell_index - $settings->get( 'week_start_day' ) ) % 7;
+	
+		// Get the last day of the month
+		$last_day = $timestamp->format( 't' );
+		$last_timestamp = clone $timestamp;
+		$last_timestamp->set_date(
+			$timestamp->format( 'Y' ),
+			$timestamp->format( 'm' ),
+			$last_day
+			)->set_time( 0, 0, 0 );
+		// Figure out index of last table cell
+		$last_cell_index = $last_timestamp->format( 'w' );
+		// Modify weekday based on start of week setting
+		$last_cell_index = ( 7 + $last_cell_index - $settings->get( 'week_start_day' ) ) % 7;
+	
+		$weeks = array();
+		$week = 0;
+		$weeks[$week] = array();
+	
+		// Insert any needed blank cells into first week
+		for( $i = 0; $i < $first_cell_index; $i++ ) {
+			$weeks[$week][] = array(
+				'date'       => null,
+				'events'     => array(),
+				'date_link'  => null
+			);
+		}
+	
+		// Insert each month's day and associated events
+		for( $i = 1; $i <= $last_day; $i++ ) {
+			$day = $this->_registry->get( 'date.time' )
+				->set_date( 
+					$timestamp->format( 'Y' ),
+					$timestamp->format( 'm' ),
+					$i
+				)
+				->set_time( 0, 0, 0 )
+				->format();
+			$exact_date = $date_system->format_date_for_url(
+				$day,
+				$settings->get( 'input_date_format' )
+			);
+			$weeks[$week][] = array(
+				'date' => $i,
+				'date_link' => $this->_create_link_for_day_view( $exact_date ),
+				'today' =>
+					$timestamp->format( 'Y' ) == $today->format( 'Y' ) &&
+					$timestamp->format( 'm' ) == $today->format( 'm' ) &&
+					$i                        == $today->format( 'j' ),
+				'events' => $days_events[$i]
+			);
+			// If reached the end of the week, increment week
+			if( count( $weeks[$week] ) == 7 )
+				$week++;
+		}
+	
+		// Insert any needed blank cells into last week
+		for( $i = $last_cell_index + 1; $i < 7; $i++ ) {
+			$weeks[$week][] = array( 'date' => null, 'events' => array() );
+		}
+	
+		return $weeks;
+	}
+
 	/**
 	 * get_events_for_month function
 	 *
@@ -68,8 +336,7 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 	function get_events_for_month( Ai1ec_Date_Time $time, $filter = array() ) {
 		global $ai1ec_events_helper;
 	
-		$bits     = $ai1ec_events_helper->gmgetdate( $time );
-		$last_day = gmdate( 't', $time );
+		$last_day = $time->format( 't' );
 	
 		$day_entry = array(
 			'multi'  => array(),
@@ -82,34 +349,27 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 			$day_entry
 		);
 		unset( $day_entry );
-	
-		$start_time = gmmktime(
-			0,
-			0,
-			0,
-			$bits['mon'],
-			1,
-			$bits['year']
-		);
-		$end_time   = gmmktime(
-			0,
-			0,
-			0,
-			$bits['mon'],
-			$last_day + 1,
-			$bits['year']
-		);
-	
-		$month_events = $this->get_events_between(
+		$start_time = clone $time;
+		$start_time->set_date( 
+			$time->format( 'Y' ),
+			$time->format( 'm' ),
+			1
+		)->set_time( 0, 0, 0 );
+		$end_time = clone $start_time;
+		$end_time->adjust_month( 1 );
+		$search = $this->_registry->get( 'model.search' );
+		$month_events = $search->get_events_between(
 			$start_time,
 			$end_time,
 			$filter,
 			true
 		);
+		$start_time = $start_time->format();
+		$end_time   = $end_time->format();
 	
 		foreach ( $month_events as $event ) {
-			$event_start = $ai1ec_events_helper->gmt_to_local( $event->start );
-			$event_end   = $ai1ec_events_helper->gmt_to_local( $event->end );
+			$event_start = $event->get( 'start' )->format();
+			$event_end   = $event->get( 'end' )->format();
 	
 			/**
 			 * REASONING: we assume, that event spans multiple periods, one of
@@ -123,26 +383,27 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 			*/
 			$day = 1;
 			if ( $event_start > $start_time ) {
-				$day = (int)gmdate( 'j', $event_start );
+				$day = (int)$event->get( 'start' )->format( 'j' );
 			}
 	
 			// Set multiday properties. TODO: Should these be made event object
 			// properties? They probably shouldn't be saved to the DB, so I'm
 			// not sure. Just creating properties dynamically for now.
 			if ( $event_start < $start_time ) {
-				$event->start_truncated = true;
+				$event->set( 'start_truncated', true );
 			}
 			if ( $event_end >= $end_time ) {
-				$event->end_truncated = true;
+				$event->set( 'end_truncated', true );
 			}
 	
 			// Categorize event.
 			$priority = 'other';
-			if ( $event->allday ) {
+			if ( $event->is_allday() ) {
 				$priority = 'allday';
-			} elseif ( $event->get_multiday() ) {
+			} elseif ( $event->is_multiday() ) {
 				$priority = 'multi';
 			}
+			$this->_add_runtime_properties( $event );
 			$days_events[$day][$priority][] = $event;
 		}
 	

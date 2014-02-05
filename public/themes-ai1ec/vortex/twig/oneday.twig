@@ -3,7 +3,8 @@
 {% block name 'oneday' %}
 
 {% block weekday_html %}
-	<span class="ai1ec-weekday-date">{{ date | weekday }}</span>
+  <span class="ai1ec-weekday-date">{{ date | day }}</span>
+  <span class="ai1ec-weekday-day">{{ date | weekday }}</span>
 {% endblock weekday_html %}
 
 {% block event_popup %}

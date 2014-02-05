@@ -192,7 +192,8 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 				$orig_date->format( 'm' ) - 1,
 				1
 			);
-
+		$args['exact_date'] = $orig_date->format();
+		$href = $this->_registry->get( 'html.element.href', $args );
 		$links[] = array(
 			'enabled' => true,
 			'class'=> 'ai1ec-next-year',

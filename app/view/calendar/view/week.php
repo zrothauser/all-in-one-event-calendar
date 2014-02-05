@@ -62,7 +62,7 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 			__( 'Week of %s', AI1EC_PLUGIN_NAME ),
 			$local_date->format_i18n( 'F j' )
 		);
-		$time_format              = $this->_registry->get( 'model.option' )
+		$time_format = $this->_registry->get( 'model.option' )
 			->get( 'time_format', Ai1ec_I18n::__( 'g a' ) );
 
 		// Calculate today marker's position.

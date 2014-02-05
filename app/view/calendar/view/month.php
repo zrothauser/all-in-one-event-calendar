@@ -186,10 +186,6 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		// = Next year =
 		// =============
 		// Align date to first of month, month offset applied, 1 year ahead.
-		// ==============
-		// = Next month =
-		// ==============
-		// Align date to first of month, month offset applied, 1 month ahead.
 		$orig_date
 			->set_date(
 				$orig_date->format( 'Y' ) + 1,

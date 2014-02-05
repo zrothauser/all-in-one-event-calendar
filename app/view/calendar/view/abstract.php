@@ -99,7 +99,7 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 		$file = $loader->get_file( $view . '.twig', $view_args, false );
 		
 		return apply_filters(
-			'ai1ec_' . $view . '_week_view',
+			'ai1ec_get_' . $view . '_view',
 			$file->get_content(),
 			$view_args
 		);

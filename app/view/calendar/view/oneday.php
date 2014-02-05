@@ -19,18 +19,6 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 	}
 
 	/* (non-PHPdoc)
-	 * @see Ai1ec_Calendar_View_Abstract::get_extra_arguments()
-	 */
-	public function get_extra_arguments( array $view_args, $exact_date ) {
-		$offset = $this->get_name() . '_offset';
-		$view_args[$offset] = $this->_request->get( $offset );
-		if( false !== $exact_date ) {
-			$view_args['exact_date'] = $exact_date;
-		}
-		return $view_args;
-	}
-
-	/* (non-PHPdoc)
 	 * @see Ai1ec_Calendar_View_Abstract::get_content()
 	 */
 	public function get_content( array $view_args ) {
@@ -61,16 +49,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			)
 		);
 		// Create pagination links.
-		$pagination_links = $this->get_oneday_pagination_links( $args );
-		$loader           = $this->_registry->get( 'theme.loader' );
-		$pagination_links = $loader->get_file(
-			'pagination.twig',
-			array(
-				'links'      => $pagination_links,
-				'data_type'  => $args['data_type'],
-			),
-			false
-		)->get_content();
+		$pagination_links = $this->_get_pagination( $args );
 
 		$title    = $local_date->format_i18n(
 			$this->_registry->get( 'model.option' )
@@ -88,10 +67,6 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 
 		$is_ticket_button_enabled = apply_filters( 'ai1ec_oneday_ticket_button', false );
 		$show_reveal_button       = apply_filters( 'ai1ec_oneday_reveal_button', false );
-		$time_format = $this->_registry->get( 'model.option' )->get(
-			'time_format',
-			__( 'g a', AI1EC_PLUGIN_NAME )
-		);
 
 		$time_format              = $this->_registry->get( 'model.option' )
 			->get( 'time_format', Ai1ec_I18n::__( 'g a' ) );
@@ -117,23 +92,11 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		);
 
 		// Add navigation if requested.
-		$navigation = '';
 		$view_args['pagination_links'] = $pagination_links;
-		if ( true !== $args['no_navigation'] ) {
-			$navigation = $loader->get_file( 
-				'navigation.twig',
-				$view_args,
-				false
-			)->get_content();
-		} 
-		$view_args['navigation'] = $navigation;
-		$file = $loader->get_file( 'oneday.twig', $view_args, false );
+		// Add navigation if requested.
+		$view_args['navigation'] = $this->_get_navigation( $args['no_navigation'], $view_args );
 
-		return apply_filters(
-			'ai1ec_get_oneday_view',
-			$file->get_content(),
-			$view_args
-		);
+		return $this->_get_view( $view_args );
 	}
 
 	/**

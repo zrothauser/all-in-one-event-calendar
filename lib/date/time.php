@@ -45,6 +45,13 @@ class Ai1ec_Date_Time {
 	}
 
 	/**
+	 * Since clone is shallow, we need to clone the DateTime object
+	 */
+	public function __clone() {
+		$this->_date_time = clone $this->_date_time;
+	}
+
+	/**
 	 * Return formatted date in desired timezone.
 	 *
 	 * NOTICE: consider optimizing by storing multiple copies of `DateTime` for
@@ -235,12 +242,19 @@ class Ai1ec_Date_Time {
 	 * @return Ai1ec_Date_Time Instance of self for chaining.
 	 */
 	public function adjust_day( $quantifier ) {
-		$quantifier = (int)$quantifier;
-		if ( $quantifier > 0 && '+' !== $quantifier{0} ) {
-			$quantifier = '+' . $quantifier;
-		}
-		$modifier = $quantifier . ' day';
-		$this->_date_time->modify( $modifier );
+		$this->adjust( $quantifier, 'day' );
+		return $this;
+	}
+
+	/**
+	 * Adjust day part of date time entity.
+	 *
+	 * @param int $quantifier Day adjustment quantifier.
+	 *
+	 * @return Ai1ec_Date_Time Instance of self for chaining.
+	 */
+	public function adjust_month( $quantifier ) {
+		$this->adjust( $quantifier, 'month' );
 		return $this;
 	}
 
@@ -304,4 +318,19 @@ class Ai1ec_Date_Time {
 		return $this->format( 'c' );
 	}
 
+	/**
+	 * Modifies the DateTime object 
+	 * 
+	 * @param int $quantifieruantifier
+	 * @param string $longname
+	 */
+	public function adjust( $quantifier, $longname ) {
+		$quantifier = (int)$quantifier;
+		if ( $quantifier > 0 && '+' !== $quantifier{0} ) {
+			$quantifier = '+' . $quantifier;
+		}
+		$modifier = $quantifier . ' ' . $longname;
+		$this->_date_time->modify( $modifier );
+		return $this;
+	}
 }

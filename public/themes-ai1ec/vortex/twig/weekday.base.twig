@@ -23,8 +23,8 @@
 					{% block weekday_html %}
 						<a class="ai1ec-load-view" href="{{ day.href | e('html_attr') }}"
 							{{ data_type | raw }}>
-							<span class="ai1ec-weekday-date">{{ date | weekday }}</span>
-							<span class="ai1ec-weekday-day">{{ date | date_i18n }}</span>
+							<span class="ai1ec-weekday-date">{{ date | day }}</span>
+							<span class="ai1ec-weekday-day">{{ date | weekday }}</span>
 						</a>
 					{% endblock weekday_html %}
 
@@ -119,7 +119,7 @@
 									{% if event.get( '_orig' ).is_multiday %}ai1ec-multiday{% endif %}"
 								style="top: {{ day_array.top }}px;
 									height: {{ day_array.height }}px;
-									left: {{ day_array.indent * 16 + 54 }}px;
+									left: {{ day_array.indent * block( 'indent_multiplier' ) + block( 'indent_offset' ) }}px;
 									{{ event.get_runtime( 'color_style' ) }}
 									{% if event.get_runtime( 'faded_color' ) %}
 										{% set rgba1 = event.get_runtime( 'rgba_color ') | format( '0.05' ) %}

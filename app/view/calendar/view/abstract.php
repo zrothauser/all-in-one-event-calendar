@@ -186,6 +186,7 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	 * @param Ai1ec_Event $event
 	 */
 	protected function _add_view_specific_runtime_properties( Ai1ec_Event $event ) {
-
+		$end_day = $event->get( 'end' )->adjust( -1, 'second' )->format_1i8n( 'd' );
+		$event->set_runtime( 'multiday_end_day', $end_day );
 	}
 }

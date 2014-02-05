@@ -230,6 +230,10 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		}
 		return $weekdays;
 	}
+
+	protected function _add_view_specific_runtime_properties( Ai1ec_Event $event ) {
+		
+	}
 	/**
 	 * get_month_cell_array function
 	 *

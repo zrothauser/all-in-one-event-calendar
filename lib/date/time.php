@@ -242,7 +242,7 @@ class Ai1ec_Date_Time {
 	 * @return Ai1ec_Date_Time Instance of self for chaining.
 	 */
 	public function adjust_day( $quantifier ) {
-		$this->_adjust( $quantifier, 'day' );
+		$this->adjust( $quantifier, 'day' );
 		return $this;
 	}
 
@@ -254,7 +254,7 @@ class Ai1ec_Date_Time {
 	 * @return Ai1ec_Date_Time Instance of self for chaining.
 	 */
 	public function adjust_month( $quantifier ) {
-		$this->_adjust( $quantifier, 'month' );
+		$this->adjust( $quantifier, 'month' );
 		return $this;
 	}
 
@@ -318,7 +318,11 @@ class Ai1ec_Date_Time {
 		return $this->format( 'c' );
 	}
 
-	protected function _adjust( $quantifier, $longname ) {
+	/**
+	 * @param unknown $quantifier
+	 * @param unknown $longname
+	 */
+	public function adjust( $quantifier, $longname ) {
 		$quantifier = (int)$quantifier;
 		if ( $quantifier > 0 && '+' !== $quantifier{0} ) {
 			$quantifier = '+' . $quantifier;

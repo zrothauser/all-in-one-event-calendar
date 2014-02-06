@@ -22,10 +22,14 @@ class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 			if ( ! isset( $callback[1] ) ) {
 				$options = $this->{$options}();
 			} else {
+				$value = $this->_args['value'];
+				if( false === is_array( $this->_args['value'] ) ){
+					$value = array( $this->_args['value'] );
+				}
 				$options = $this->_registry->dispatch(
 					$callback[0],
 					$callback[1],
-					$this->_args['value']
+					$value
 				);
 			}
 		} else {

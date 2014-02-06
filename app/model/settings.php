@@ -148,9 +148,9 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 * @return array Parsed values representation, or input cast as array.
 	 */
 	protected function _parse_legacy( Ai1ec_Settings $values ) {
-		$result    = array();
 		$variables = get_object_vars( $values );
 		$default_tags_cat = array();
+		$legacy = array();
 		foreach ( $variables as $key => $value ) {
 			if ( 'default_categories' === $key ) {
 				$default_tags_cat['categories'] = $value;
@@ -168,21 +168,19 @@ class Ai1ec_Settings extends Ai1ec_App {
 			} elseif ( is_int( $value ) ) {
 				$type = 'int';
 			}
-			$this->_options[$key] = array(
-				'value'    => $value,
-				'type'     => $type,
-				'legacy'   => true,
-			);
-			if ( isset ( $this->_standard_options[$key]['renderer'] ) ) {
-				$this->_options[$key]['renderer'] = $this->_standard_options[$key]['renderer'];
+			if ( isset( $this->_options[$key] ) ) {
+				$this->_options[$key]['value'] = $value;
+			} else {
+				$legacy[$key] = array(
+					'value'    => $value,
+					'type'     => $type,
+					'legacy'   => true,
+					'version'  => AI1EC_VERSION
+				);
 			}
 		}
-		$this->_options['default_tags_categories'] = array(
-			'value'    => $default_tags_cat,
-			'type'     => 'array',
-			'legacy'   => true,
-			'renderer' => $this->_standard_options['default_tags_categories']['renderer']
-		);
+		$this->_options['default_tags_categories']['value'] = $default_tags_cat;
+		$this->_options['legacy_options'] = $legacy;
 	}
 
 	/**
@@ -291,12 +289,14 @@ class Ai1ec_Settings extends Ai1ec_App {
 			->get( self::WP_OPTION_KEY, array() );
 
 		$this->_updated = false;
+		$test_value = is_array( $values ) ? current( $values ) : false;
 		if ( empty( $values ) || 
-			AI1EC_VERSION !== $values['ai1ec_db_version']['version'] 
+			( false !== $test_value && AI1EC_VERSION !== $test_value['version'] )
 		) {
 			$this->_register_standard_values();
 			$this->_updated = true;
 		} else if ( $values instanceof Ai1ec_Settings ) {
+			$this->_register_standard_values();
 			$values = $this->_parse_legacy( $values );
 			$this->_updated = true;
 		} else {

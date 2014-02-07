@@ -303,14 +303,14 @@ define( ["jquery_timely"],
       case 'modal':
         template = '<div class="ai1ec-bootstrap-timepicker-widget ai1ec-modal ai1ec-fade ai1ec-in" data-backdrop="'+ (this.modalBackdrop ? 'true' : 'false') +'"><div class="ai1ec-modal-dialog"><div class="ai1ec-modal-content">'+
           '<div class="ai1ec-modal-header">'+
-            '<a href="#" class="ai1ec-close" data-dismiss="modal">×</a>'+
+            '<a href="#" class="ai1ec-close" data-dismiss="ai1ec-modal">×</a>'+
             '<h3>Pick a Time</h3>'+
           '</div>'+
           '<div class="ai1ec-modal-body">'+
             templateContent +
           '</div>'+
           '<div class="ai1ec-modal-footer">'+
-            '<a href="#" class="ai1ec-btn ai1ec-btn-primary" data-dismiss="modal">OK</a>'+
+            '<a href="#" class="ai1ec-btn ai1ec-btn-primary" data-dismiss="ai1ec-modal">OK</a>'+
           '</div>'+
         '</div></div></div>';
         break;

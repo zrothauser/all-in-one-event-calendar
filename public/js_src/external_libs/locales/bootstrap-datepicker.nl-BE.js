@@ -2,7 +2,7 @@
  * Belgium-Dutch translation for bootstrap-datepicker
  * Julien Poulin <poulin_julien@hotmail.com>
  */
-; (function ($) {
+define( ["jquery_timely"], function( $ ) {
   $.fn.datepicker.dates['nl-BE'] = {
     days: ["Zondag", "Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag", "Zondag"],
     daysShort: ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"],
@@ -13,5 +13,5 @@
     clear: "Leegmaken",
     weekStart: 1,
     format: "dd/mm/yyyy"
-  } } };
+  }
 } );

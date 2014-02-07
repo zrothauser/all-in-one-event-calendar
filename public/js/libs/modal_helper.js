@@ -1,1 +1,0 @@
-timely.define(["jquery_timely","domReady","external_libs/bootstrap_modal"],function(e,t){t(function(){var t=e("body");t.on("shown",".ai1ec-modal",function(){t.addClass("ai1ec-modal-open")}).on("hidden",".ai1ec-modal",function(){t.removeClass("ai1ec-modal-open")})})});

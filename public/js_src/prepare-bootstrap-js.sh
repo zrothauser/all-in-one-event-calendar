@@ -74,60 +74,90 @@ scripts to make this verification easier.
   # = Common cases =
   # ================
 
-  # Headers (define() call - all scripts but popover.js)
+  echo '
+====================================================
+Headers (define() call - all scripts but popover.js)
+===================================================='
   replace \
-    '\+function \(\$\) \{ "use strict";' \
+    '\+function \(\$\) \{\s*["'"'"']use strict["'"'"'];' \
     'define( ["jquery_timely"], function( $ ) { "use strict"; // jshint ;_;' \
     $GLOB --exclude="*popover.js" -r "$@"
-  # Header for popover.js
+  echo '
+=====================
+Header for popover.js
+====================='
   replace \
-    '\+function \(\$\) \{ "use strict";' \
+    '\+function \(\$\) \{\s*["'"'"']use strict["'"'"'];' \
     'define( ["jquery_timely", "external_libs/bootstrap/tooltip"], function( $ ) { "use strict"; // jshint ;_;' \
     external_libs/bootstrap/popover.js -r "$@"
 
-  # Footers (closing define())
+  echo '
+==========================
+Footers (closing define())
+=========================='
   replace \
     '\}\(jQuery\);' \
     '} );' \
     $GLOB -r "$@"
 
-  # [data-attribute=""], [data-attribute^=""] selectors
+  echo '
+===================================================
+[data-attribute=""], [data-attribute^=""] selectors
+==================================================='
   replace \
     '\[data-([_a-zA-Z0-9-]+\^?)=(['"'"'"])?([_a-zA-Z0-9-]+)\2\]' \
     '[data-$1=$2ai1ec-$3$2]' \
     $GLOB -r "$@"
 
-  # Strings beginning with .class selectors
+  echo '
+=======================================
+Strings beginning with .class selectors
+======================================='
   replace \
     '(['"'"'"]\s*)\.(-?[_a-zA-Z]+[_a-zA-Z0-9-]*)' \
     '$1.ai1ec-$2' \
     $GLOB -r "$@"
 
-  # add/remove/hasClass calls with string literal
+  echo '
+=============================================
+add/remove/hasClass calls with string literal
+============================================='
   replace \
     '(add|remove|has|toggle)Class\((['"'"'"])(-?[_a-zA-Z]+[_a-zA-Z0-9-]*)\2' \
     '$1Class($2ai1ec-$3$2' \
     $GLOB -r "$@"
 
-  # add/remove/hasClass calls with variable
+  echo '
+=======================================
+add/remove/hasClass calls with variable
+======================================='
   replace \
     '(add|remove|has|toggle)Class\(([\$_a-zA-Z0-9]+)\)' \
     '$1Class("ai1ec-" + $2)' \
     $GLOB -r "$@"
 
-  # Strings beginning with .class selectors, followed by 2nd .class selector
+  echo '
+========================================================================
+Strings beginning with .class selectors, followed by 2nd .class selector
+========================================================================'
   replace \
     '(['"'"'"]\s*\.-?[_a-zA-Z]+[_a-zA-Z0-9-]*)\.(-?[_a-zA-Z]+[_a-zA-Z0-9-]*)' \
     '$1.ai1ec-$2' \
     $GLOB -r "$@"
 
-  # CSS :not(), child, comma selectors followed by .class selector
+  echo '
+==============================================================
+CSS :not(), child, comma selectors followed by .class selector
+=============================================================='
   replace \
     '(:not\(['"'"'"]?|[>,]\s*)\.' \
     '$1.ai1ec-' \
     $GLOB -r "$@"
 
-  # HTML class attributes
+  echo '
+=====================
+HTML class attributes
+====================='
   replace \
     'class="' \
     'class="ai1ec-' \
@@ -139,13 +169,19 @@ scripts to make this verification easier.
   # Whenever upgrading Bootstrap, be sure to check on these cases, and check for
   # new ones.
 
-  # [data-slide], [data-slide-to] selectors
+  echo '
+=======================================
+[data-slide], [data-slide-to] selectors
+======================================='
   replace \
     'data-slide\b' \
     'data-ai1ec-slide' \
     $GLOB -r "$@"
 
-  # Unusual add/remove/hasClass calls (carousel.js, end of collapse.js)
+  echo '
+===================================================================
+Unusual add/remove/hasClass calls (carousel.js, end of collapse.js)
+==================================================================='
   replace \
     'removeClass\(\[(type|'"'"'active'"'"'), direction\]' \
     'removeClass(["ai1ec-" + $1, "ai1ec-" + direction]' \
@@ -155,14 +191,20 @@ scripts to make this verification easier.
     'removeClass$1]($2ai1ec-$3' \
     $GLOB -r "$@"
 
-  # Floating string containing class (modal.js)
+  echo '
+===============================================================
+Floating string containing class (modal.js, tab.js, tooltip.js)
+==============================================================='
   replace \
     "'fade'" \
     "'ai1ec-fade'" \
     $GLOB -r "$@"
 
-  # Multiple space-separated classes within one string (affix.js, popover.js,
-  # tooltip.js)
+  echo '
+=========================================================================
+Multiple space-separated classes within one string (affix.js, popover.js,
+tooltip.js)
+========================================================================='
   replace \
     'affix affix-top affix-bottom' \
     'ai1ec-affix ai1ec-affix-top ai1ec-affix-bottom' \
@@ -176,13 +218,19 @@ scripts to make this verification easier.
     'ai1ec-fade ai1ec-in ai1ec-top ai1ec-bottom ai1ec-left ai1ec-right' \
     $GLOB -r "$@"
 
-  # Variable value assigned as HTML class (tooltip.js)
+  echo '
+==================================================
+Variable value assigned as HTML class (tooltip.js)
+=================================================='
   replace \
     "addClass\(placement\)" \
     "addClass('ai1ec-' + placement)" \
     $GLOB -r "$@"
 
-  # Class appended to LI element (scrollspy.js & tab.js)
+  echo '
+====================================================
+Class appended to LI element (scrollspy.js & tab.js)
+===================================================='
   replace \
     "'li\.dropdown'" \
     "'li.ai1ec-dropdown'" \

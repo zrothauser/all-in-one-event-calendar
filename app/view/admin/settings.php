@@ -197,9 +197,9 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 					unset ( $tab['items'] );
 				} else {
 					// check active items for the dropdown
-					foreach ( $tab['items'] as &$item ) {
+					foreach ( $tab['items'] as $item => $longname ) {
 						if ( ! isset( $tab['items_active'][$item] ) ) {
-							unset( $item );
+							unset( $tab['items'][$item] );
 						}
 					}
 				}

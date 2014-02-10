@@ -168,9 +168,11 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 								'hour'  => 0,
 								'min'   => 0,
 								'sec'   => 0,
-								'tz'    => $start['value']['tz'],
 							),
 						);
+						if ( isset( $start['value']['tz'] ) ) {
+							$end['value']['tz'] = $start['value']['tz'];
+						}
 					} else {
 						// #3 set end date to start time
 						$end = $start;
@@ -254,15 +256,18 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 			// = Recurrence rules & recurrence dates =
 			// =======================================
 			if ( $rrule = $e->createRrule() ) {
-				$rrule = trim( end( explode( ':', $rrule ) ) );
+				$rrule = explode( ':', $rrule );
+				$rrule = trim( end( $rrule ) );
 			}
 
 			if ( $exrule = $e->createExrule() ) {
-				$exrule = trim( end( explode( ':', $exrule ) ) );
+				$exrule = explode( ':', $exrule );
+				$exrule = trim( end( $exrule ) );
 			}
 
 			if ( $rdate = $e->createRdate() ) {
-				$rdate = trim( end( explode( ':', $rdate ) ) );
+				$rdate = explode( ':', $rdate );
+				$rdate = trim( end( $rdate ) );
 			}
 
 

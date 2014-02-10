@@ -144,6 +144,16 @@ class Ai1ec_Exception_Handler {
 			}
 			return false;
 		}
+		switch ( $errno ) {
+			case E_USER_WARNING:
+			case E_USER_NOTICE:
+			case E_STRICT:
+				if ( ! defined( 'AI1EC_DEBUG' ) || false === AI1EC_DEBUG ) {
+					// do not disable plugin in production if the error is not
+					// too high
+					return;
+				}
+		}
 		throw new Ai1ec_Error_Exception(
 			$errstr,
 			$errno,

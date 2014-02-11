@@ -88,16 +88,16 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 
 	/**
 	 * Get the view html
-	 * 
+	 *
 	 * @param array $view_args
-	 * 
+	 *
 	 * @return string
 	 */
 	protected function _get_view( array $view_args ) {
 		$loader = $this->_registry->get( 'theme.loader' );
 		$view = $this->get_name();
 		$file = $loader->get_file( $view . '.twig', $view_args, false );
-		
+
 		return apply_filters(
 			'ai1ec_get_' . $view . '_view',
 			$file->get_content(),
@@ -107,7 +107,7 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 
 	/**
 	 * Get the navigation html
-	 * 
+	 *
 	 * @param bool $no_navigation
 	 * @param array $view_args
 	 * @return string
@@ -160,10 +160,18 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 		);
 		$event->set_runtime( 'instance_permalink', $instance_permalink );
 
-
 		$event->set_runtime(
 			'filtered_title',
-			apply_filters( 'the_title', $event->get( 'post' )->post_title, $event->get( 'post_id' ) )
+			apply_filters(
+				'the_title',
+				$event->get( 'post' )->post_title,
+				$event->get( 'post_id' )
+			)
+		);
+
+		$event->set_runtime(
+			'filtered_content',
+			apply_filters( 'the_content', $event->get( 'post' )->post_content )
 		);
 
 		$taxonomy = $this->_registry->get( 'view.event.taxonomy' );

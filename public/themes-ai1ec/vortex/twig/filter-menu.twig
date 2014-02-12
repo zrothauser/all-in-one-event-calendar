@@ -5,5 +5,8 @@
 				{{ categories | raw }}
 				{{ tags | raw }}
 			</ul>
+                        {% autoescape false %}
+                            {{ contribution_buttons }}
+                        {% endautoescape %}
 	</div><!-- /.ai1ec-calendar-toolbar -->
 </div>

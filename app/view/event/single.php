@@ -51,7 +51,7 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			$event
 		);
 
-		if( strlen( $venues_html ) == 0 ){
+		if( strlen( $venues_html ) === 0 ){
 			$venues_html = nl2br( $location->get_location( $event ) );
 		}
 

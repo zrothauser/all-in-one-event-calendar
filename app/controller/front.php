@@ -682,7 +682,37 @@ class Ai1ec_Front_Controller {
 			} else {
 				throw new Ai1ec_Database_Update_Exception();
 			}
+
+			// If the schema structure upgrade is complete move contents
+			$categories_are_ported = $this->_registry->get( 'model.option' )
+				->get( 'ai1ec_caetgory_meta_ported' );
+
+			if( FALSE == $categories_are_ported ) {
+				$this->_migrate_categories_meta();
+			}
 		}
+	}
+
+	protected  function _migrate_categories_meta(){
+
+		$db         = $this->_registry->get( 'dbi.dbi' );
+		$table_name = $db->get_table_name( 'ai1ec_event_category_colors' );
+
+		// Migrate color information
+		$dest_table = $db->get_table_name( 'ai1ec_event_category_meta' );
+
+		$colors     = $db->select(
+			$table_name, array( 'term_id', 'term_color'), ARRAY_A );
+
+		foreach( $colors as $color ){
+			$db->insert( $dest_table, $color );
+		}
+
+		// Drop the old table
+		$db->query( 'DROP TABLE ' . $table_name );
+
+		$this->_registry->get( 'model.option' )
+			->set( 'ai1ec_caetgory_meta_ported', true );
 	}
 
 	/**

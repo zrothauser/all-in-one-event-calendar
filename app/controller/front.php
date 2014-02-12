@@ -683,7 +683,12 @@ class Ai1ec_Front_Controller {
 			}
 
 			// If the schema structure upgrade is complete move contents
-			$this->_migrate_categories_meta();
+			$categories_are_ported = $this->_registry->get( 'model.option' )
+				->get( 'ai1ec_caetgory_meta_ported' );
+
+			if( FALSE == $categories_are_ported ) {
+				$this->_migrate_categories_meta();
+			}
 		}
 	}
 
@@ -691,11 +696,6 @@ class Ai1ec_Front_Controller {
 
 		$db         = $this->_registry->get( 'dbi.dbi' );
 		$table_name = $db->get_table_name( 'ai1ec_event_category_colors' );
-
-		if( $db->get_var("SHOW TABLES LIKE '$table_name'") != $table_name ) {
-			// Old table already removed nothing to do
-			return;
-		}
 
 		// Migrate color information
 		$dest_table = $db->get_table_name( 'ai1ec_event_category_meta' );
@@ -709,6 +709,9 @@ class Ai1ec_Front_Controller {
 
 		// Drop the old table
 		$db->query( 'DROP TABLE ' . $table_name );
+
+		$this->_registry->get( 'model.option' )
+			->set( 'ai1ec_caetgory_meta_ported', true );
 	}
 
 	/**

@@ -45,13 +45,23 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			$event
 		);
 
+		$venues_html = apply_filters(
+			'ai1ec_rendering_single_event_venues',
+			'',
+			$event
+		);
+
+		if( strlen( $venues_html ) == 0 ){
+			$venues_html = nl2br( $location->get_location( $event ) );
+		}
+
 		$args = array(
 			'event'                   => $event,
 			'recurrence'              => $rrule->rrule_to_text( $event->get( 'recurrence_rules' ) ),
 			'exclude'                 => $time->get_exclude_html( $event, $rrule ),
 			'categories'              => $taxonomy->get_categories_html( $event ),
 			'tags'                    => $taxonomy->get_tags_html( $event ),
-			'location'                => nl2br( $location->get_location( $event ) ),
+			'location'                => $venues_html,
 			'map'                     => $location->get_map_view( $event ),
 			'contact'                 => $ticket->get_contact_html( $event ),
 			'back_to_calendar'        => $content->get_back_to_calendar_button_html(),

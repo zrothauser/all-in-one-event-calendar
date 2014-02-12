@@ -121,14 +121,14 @@ define(
 	};
 
 	/**
-	 * Add a hook into Bootstrap collapse for accordions for proper overflow
+	 * Add a hook into Bootstrap collapse for panels for proper overflow
 	 * behaviour when open.
 	 */
 	var init_collapsibles = function() {
-		$( '.ai1ec-accordion-body' ).on( 'hide', function() {
+		$( '.ai1ec-panel-collapse' ).on( 'hide', function() {
 			$( this ).removeClass( 'ai1ec-overflow-visible' );
 		} );
-		$( '.ai1ec-accordion-body' ).on( 'shown', function() {
+		$( '.ai1ec-panel-collapse' ).on( 'shown', function() {
 			var $el = $( this );
 			window.setTimeout(
 				function() { $el.addClass( 'ai1ec-overflow-visible' ); },

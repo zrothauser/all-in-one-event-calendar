@@ -188,19 +188,21 @@ define(
 				var height = 24 * 60;
 				$( '.tablescroll_wrapper' ).animate( { height: height + 'px' } );
 			}
-
 		);
 
 		// Bind to statechange event.
-		History.Adapter.bind( window, 'statechange', load_views.handle_state_change );
+		History.Adapter.bind( window,   'statechange',
+			load_views.handle_state_change
+		);
 
-		$( document ).on( 'click', '#ai1ec-calendar-view .ai1ec-load-event', function( e ) {
-			e.preventDefault();
-			$.cookie.raw = false;
-			$.cookie( 'ai1ec_calendar_url', document.URL );
-			window.location.href = this.href;
-		} );
-
+		$( document ).on( 'click',      '#ai1ec-calendar-view .ai1ec-load-event',
+			function( e ) {
+				e.preventDefault();
+				$.cookie.raw = false;
+				$.cookie( 'ai1ec_calendar_url', document.URL );
+				window.location.href = this.href;
+			}
+		);
 	};
 
 	var initialize_select2 = function() {

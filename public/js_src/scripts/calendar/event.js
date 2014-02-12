@@ -9,7 +9,7 @@ define(
 	var load_event_through_jsonp = function( e ) {
 		e.preventDefault();
 		// Remove popovers
-		$( 'div.popover' ).remove();
+		$( 'div.ai1ec-popover' ).remove();
 		var type = 'jsonp';
 		var timely_div = $( this ).closest( '.timely-calendar' );
 		var query = {

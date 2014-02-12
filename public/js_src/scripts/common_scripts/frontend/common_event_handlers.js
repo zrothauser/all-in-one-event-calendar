@@ -42,9 +42,13 @@ define(
 			placement: popover_placement,
 			trigger: 'manual',
 			html: true,
-			template: '<div class="timely popover ' + el_classes_data +
-				'"><div class="arrow"></div><div class="popover-inner">' +
-				'<div class="popover-content"><div></div></div></div></div></div>',
+			template:
+				'<div class="timely ai1ec-popover ' + el_classes_data + '">' +
+					'<div class="ai1ec-arrow"></div>' +
+					'<div class="ai1ec-popover-inner">' +
+						'<div class="ai1ec-popover-content"><div></div></div>' +
+					'</div>' +
+				'</div>',
 			container: $this.closest( '.ai1ec-popover-boundary' )
 		}).constrained_popover( 'show' );
 	};
@@ -73,9 +77,9 @@ define(
 	var handle_popover_self_out = function( e ) {
 		var $el = $( e.toElement || e.relatedTarget );
 		// If an ancestor of element being entered is not a tooltip, hide popover.
-		if ( $el.closest( '.tooltip' ).length === 0 ) {
+		if ( $el.closest( '.ai1ec-tooltip' ).length === 0 ) {
 			$( this ).remove();
-			$( 'body > .tooltip' ).remove();
+			$( 'body > .ai1ec-tooltip' ).remove();
 		}
 	};
 
@@ -87,9 +91,11 @@ define(
 	var handle_tooltip_over = function( e ) {
 		var $this = $( this ),
 		    params = {
-					template: '<div class="timely tooltip">' +
-						'<div class="tooltip-arrow"></div><div class="tooltip-inner">' +
-						'</div></div>',
+					template:
+						'<div class="timely ai1ec-tooltip">' +
+							'<div class="ai1ec-tooltip-arrow"></div>' +
+							'<div class="ai1ec-tooltip-inner"></div>' +
+						'</div>',
 					trigger: 'manual'
 				};
 
@@ -111,7 +117,7 @@ define(
 	 */
 	var handle_tooltip_out = function( e ) {
 		var $el = $( e.toElement || e.relatedTarget );
-		if ( $el.closest( '.tooltip' ).length === 0 ) {
+		if ( $el.closest( '.ai1ec-tooltip' ).length === 0 ) {
 			$( this ).tooltip( 'hide' );
 		}
 	};

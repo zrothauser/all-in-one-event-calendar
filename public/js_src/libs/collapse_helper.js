@@ -8,11 +8,11 @@ define(
 	"use strict";
 
 	domReady( function() {
-		// Toggle visibility of .icon-caret-down/.icon-caret-up in collapse triggers
+		// Toggle visibility of .fa-caret-down/.fa-caret-up in collapse triggers
 		// when they are clicked.
 		$( document ).on( 'click', '[data-toggle="ai1ec-collapse"]', function() {
 			$( this ).toggleClass( 'ai1ec-active' );
-			$( '.icon-caret-down, .icon-caret-up, .icon-chevron-down, .icon-chevron-up, .icon-arrow-down, .icon-arrow-up', this )
+			$( '.fa-caret-down, .fa-caret-up, .fa-chevron-down, .fa-chevron-up, .fa-arrow-down, .fa-arrow-up', this )
 				.toggleClass( 'ai1ec-hide' );
 		} );
 	} );

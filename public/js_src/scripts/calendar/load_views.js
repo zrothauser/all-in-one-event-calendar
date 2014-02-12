@@ -319,9 +319,9 @@ define(
 					todayHighlight: true,
 					headTemplate:
 						'<thead><tr class="ai1ec-datepicker-btn-group">' +
-							'<th class="ai1ec-prev"><i class="icon-arrow-left"></i></th>' +
+							'<th class="ai1ec-prev"><i class="fa-arrow-left"></i></th>' +
 							'<th colspan="5" class="ai1ec-datepicker-switch"></th>' +
-							'<th class="ai1ec-next"><i class="icon-arrow-right"></i></th>' +
+							'<th class="ai1ec-next"><i class="fa-arrow-right"></i></th>' +
 						'</tr></thead>'
 				} );
 

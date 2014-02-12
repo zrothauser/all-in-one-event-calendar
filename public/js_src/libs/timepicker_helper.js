@@ -39,9 +39,15 @@ define(
 						.removeClass( 'ai1ec-timepicker-visible' );
 				} );
 
+			// Capture the timepicker container element on the page.
+			var $widget = $this.data( 'timepicker' ).$widget;
+
+			// Apply .timely class to timepicker container to ensure proper Bootstrap
+			// styling is applied to unclassed HTML elements contained therein.
+			$widget.addClass( 'timely' );
+
 			// Apply alignment class.
-			var $widget = $this.data( 'timepicker' ).$widget,
-			    alignment = $this.data( 'alignment' );
+			var alignment = $this.data( 'alignment' );
 			if ( typeof alignment === 'undefined' ) alignment = 'left';
 			$widget.addClass( 'ai1ec-alignment-' + alignment );
 		}

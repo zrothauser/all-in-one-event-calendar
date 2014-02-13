@@ -26,6 +26,7 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 		$_POST['enabled_views'] = true;
 		foreach ( $options as $name => $data ) {
 			$value = null;
+			
 			if ( isset( $_POST[$name] ) ) {
 				// if a validator is pecified, use it.
 				if ( isset( $data['renderer']['validator'] ) ) {
@@ -66,11 +67,13 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 					$value = false;
 				}
 			}
-			
 			if ( null !== $value ) {
 				$settings->set( $name, $value );
 			}
 		}
+		$new_options = $settings->get_options();
+		// let extension manipulate things if needed.
+		do_action( 'ai1ec_settings_updated', $options, $new_options );
 
 		return array(
 			'url' => admin_url( 

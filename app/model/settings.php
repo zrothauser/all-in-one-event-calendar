@@ -287,7 +287,6 @@ class Ai1ec_Settings extends Ai1ec_App {
 		$this->_set_standard_values();
 		$values         = $this->_registry->get( 'model.option' )
 			->get( self::WP_OPTION_KEY, array() );
-
 		$this->_updated = false;
 		$test_value = is_array( $values ) ? current( $values ) : false;
 		if ( empty( $values ) || 
@@ -662,6 +661,26 @@ class Ai1ec_Settings extends Ai1ec_App {
 					),
 				),
 				'default'  => false,
+			),
+			'edit_robots_txt' => array(
+				'type' => 'string',
+				'renderer' => array(
+					'class'    => 'textarea',
+					'tab'      => 'advanced',
+					'item'     => 'advanced',
+					'label'    => Ai1ec_I18n::__( 'Current <strong>robots.txt</strong> in this WordPress' ),
+					'type'     => 'normal',
+					'rows'     => 6,
+					'readonly' => 'readonly',
+					'help'     => Ai1ec_I18n::__(
+						'The Robot Exclusion Standard, also known as the Robots Exclusion Protocol or
+						<a href="http://en.wikipedia.org/wiki/Robots.txt" target="_blank">robots.txt</a>
+						protocol, is a convention to advising cooperating web crawlers and other web robots
+						about accessing all or part of a website which is otherwise publicly viewable.
+						You can change it manually by editing robots.txt in your root WordPress directory'
+					),
+				),
+				'default'  => '',
 			),
 		);
 	}

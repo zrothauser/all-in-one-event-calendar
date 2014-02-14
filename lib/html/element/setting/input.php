@@ -37,8 +37,8 @@ class Ai1ec_Html_Setting_Input extends Ai1ec_Html_Element_Settings {
 		$input_args = array(
 			'class' => $class,
 		);
+		$settings    = $this->_registry->get( 'model.settings' );
 		if ( true === $date ) {
-			$settings    = $this->_registry->get( 'model.settings' );
 			$input_args += array(
 				'data-date-weekstart' => $settings->get( 'week_start_day' ),
 				'data-date-format'    => $settings->get( 'input_date_format' ),
@@ -51,6 +51,13 @@ class Ai1ec_Html_Setting_Input extends Ai1ec_Html_Element_Settings {
 			'input_args' => $input_args,
 			'value'      => $this->_args['value'],
 		);
+		if ( isset( $this->_args['renderer']['status'] ) ) {
+			fb( $settings->get( $this->_args['renderer']['status'] ) );
+			$args['licence_valid'] = 
+				$settings->get( $this->_args['renderer']['status'] ) === 'valid' ?
+				true :
+				false;
+		}
 		if ( true === $append ) {
 			$args['append'] = $this->_args['renderer']['append'];
 		}

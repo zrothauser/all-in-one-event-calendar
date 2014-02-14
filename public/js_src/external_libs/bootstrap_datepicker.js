@@ -846,7 +846,7 @@ define(
 
 			$.each(this.dates, function(i, d){
 				if (d.getUTCFullYear() == year)
-					months.eq(d.getUTCMonth()).addClass('active');
+					months.eq(d.getUTCMonth()).addClass('ai1ec-active');
 			});
 
 			if (year < startYear || year > endYear) {

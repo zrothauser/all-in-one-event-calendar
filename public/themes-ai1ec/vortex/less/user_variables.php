@@ -66,12 +66,6 @@ return array(
 		"tab" => "buttons",
 		"type" => "color",
 	),
-	"btnBackgroundHighlight" => array(
-		"value"  => "#e6e6e6",
-		"description" => __( "Button background shading", AI1EC_PLUGIN_NAME ),
-		"tab" => "buttons",
-		"type" => "color",
-	),
 	"btnBorder" => array(
 		"value"  => "#d9d9d9",
 		"description" => __( "Button border", AI1EC_PLUGIN_NAME ),
@@ -93,12 +87,6 @@ return array(
 	"btnPrimaryBackground" => array(
 		"value"  => "#62c462",
 		"description" => __( "Button background (primary buttons)", AI1EC_PLUGIN_NAME ),
-		"tab" => "buttons",
-		"type" => "color",
-	),
-	"btnPrimaryBackgroundHighlight" => array(
-		"value"  => "#51a351",
-		"description" => __( "Button background shading (primary buttons)", AI1EC_PLUGIN_NAME ),
 		"tab" => "buttons",
 		"type" => "color",
 	),

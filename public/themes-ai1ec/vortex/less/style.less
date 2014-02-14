@@ -72,7 +72,7 @@
 // = Modal and Select2 overrides =
 // ===============================
 .ai1ec-modal-backdrop {
-	background-color: @bodyBackground;
+	background-color: @body-bg;
 }
 .select2-container {
 	margin-bottom: 9px;
@@ -81,15 +81,15 @@
 	background-color: @inputBackground;
 	background-image: none;
 	border-color: @inputBorder;
-	border-radius: @inputBorderRadius;
+	border-radius: @input-border-radius;
 	.ai1ec-box-shadow( inset 0 1px 1px rgba(0,0,0,0.075) );
   .select2-dropdown-open& {
     border-bottom-color: #fff;
-    border-radius: @inputBorderRadius @inputBorderRadius 0 0;
+    border-radius: @input-border-radius @input-border-radius 0 0;
     .select2-drop-above& {
       border-bottom-color: @inputBorder;
       border-top-color: #fff;
-      border-radius: 0 0 @inputBorderRadius @inputBorderRadius;
+      border-radius: 0 0 @input-border-radius @input-border-radius;
     }
   }
 	.select2-search-field input {
@@ -107,11 +107,11 @@
 	}
 }
 .select2-drop {
-	background-color: @bodyBackground;
+	background-color: @body-bg;
 	border-color: @inputBorderFocus;
-	color: @textColor;
-	font-family: @baseFontFamily;
-	font-size: @baseFontSize;
+	color: @text-color;
+	font-family: @font-family-base;
+	font-size: @font-size-base;
 	line-height: @baseLineHeight;
 	z-index: @zindexDropdown;
 	.ai1ec-modal-open & {
@@ -128,7 +128,7 @@
 	.select2-no-results,
 	.select2-searching,
 	.select2-selection-limit {
-		background-color: mix( @textColor, @bodyBackground, 10% );
+		background-color: mix( @text-color, @body-bg, 10% );
 	}
 }
 .select2-search-choice-close {
@@ -246,10 +246,10 @@
 	// Copied from scaffolding body reset, with additions; needed to apply to
 	// .timely, not body.
 	margin: 0;
-	font-family: @baseFontFamily;
-	font-size: @baseFontSize;
+	font-family: @font-family-base;
+	font-size: @font-size-base;
 	line-height: @baseLineHeight;
-	color: @textColor;
+	color: @text-color;
 	word-wrap: break-word;
 
 	a {
@@ -260,20 +260,20 @@
 	// = Button & dropdown overrides =
 	// ===============================
 	/*.ai1ec-btn {
-		color: @btnTextColor;
-		text-shadow: @btnTextShadow;
+		color: @btntext-color;
+		text-shadow: @btn-text-shadow;
 		.ai1ec-buttonBackground( @btnBackground, @btnBackgroundHighlight );
 		border: 1px solid @btnBorder;
 		*border: 0; // Remove the border to prevent IE7's black border on input:focus
 		border-bottom-color: darken(@btnBorder, 10%);
-		.ai1ec-box-shadow( @btnShadow );
+		.ai1ec-box-shadow( @btn-shadow );
 		.ai1ec-box-sizing( content-box );
 		&:hover {
 			color: @btnTextHover;
 		}
 		&.disabled,
 		&[disabled] {
-			background-color: mix( @bodyBackground, @textColor, 95% );
+			background-color: mix( @body-bg, @text-color, 95% );
 		}
 	}
 	// Repeat all .btn-* overrides to give them higher precendence than above
@@ -290,7 +290,7 @@
 	.btn-info:hover,
 	.btn-inverse,
 	.btn-inverse:hover {
-		color: mix( @bodyBackground, @white, 12% );
+		color: mix( @body-bg, @white, 12% );
 		text-shadow: 0 -1px 0 rgba(0,0,0,.25);
 	}
 	.btn-primary.active,
@@ -338,7 +338,7 @@
 		> .ai1ec-btn,
 		> .ai1ec-dropdown-menu,
 		> .ai1ec-popover {
-			font-size: @baseFontSize; // redeclare as part 2 of font-size inline-block hack
+			font-size: @font-size-base; // redeclare as part 2 of font-size inline-block hack
 		}
 		&.ai1ec-pull-right + &.ai1ec-pull-right {
 			margin-left: 0;
@@ -346,13 +346,13 @@
 		}
 		// Reset fonts for other sizes
 		> .ai1ec-btn-mini {
-			font-size: @baseFontSize - 2px;
+			font-size: @font-size-base - 2px;
 		}
 		> .ai1ec-btn-small {
 			font-size: @fontSizeSmall;
 		}
 		> .ai1ec-btn-large {
-			font-size: @baseFontSize + 2px;
+			font-size: @font-size-base + 2px;
 		}
 	}
 
@@ -380,9 +380,9 @@
 	.ai1ec-nav-tabs .ai1ec-open .ai1ec-dropdown-toggle,
 	.ai1ec-nav-pills .ai1ec-open .ai1ec-dropdown-toggle,
 	.ai1ec-nav > li.ai1ec-dropdown.ai1ec-open.ai1ec-active > a:hover {
-		#gradient > .ai1ec-vertical( fade( @bodyBackground, 0% ), fade( @bodyBackground, 50% ) );
+		#gradient > .ai1ec-vertical( fade( @body-bg, 0% ), fade( @body-bg, 50% ) );
 		filter: none\9; // IE8 doesn't support translucent gradients
-		.listItemActive( ~", inset 0 2px 1px " fade( @textColor, 10% ) );
+		.listItemActive( ~", inset 0 2px 1px " fade( @text-color, 10% ) );
 	}
 	// Fix coloring of Dropdown menus.
 	.dropdown-toggle {
@@ -392,8 +392,8 @@
 		}
 	}
 	.caret {
-		border-top-color: @textColor;
-		border-bottom-color: @textColor;
+		border-top-color: @text-color;
+		border-bottom-color: @text-color;
 		.opacity( 0.75 );
 	}
 	.dropdown .caret {
@@ -437,7 +437,7 @@
 		min-height: 250px;
 		margin-left: -250px;
 		width: 500px;
-		background-color: @bodyBackground !important;
+		background-color: @body-bg !important;
 		border-color: @modalBorder !important;
 	}
 	.ai1ec-modal-header {
@@ -454,15 +454,15 @@
 		-webkit-overflow-scrolling: touch;
 	}
 	.ai1ec-modal-footer {
-		background-color: @modalFooterBackground;
+		background-color: @modal-footer-background-color;
 		border-top-color: @fadedModalBorder;
-		.box-shadow( @modalFooterShadow );
+		.box-shadow( @modal-footer-shadow );
 	}
 	.close {
-		color: @textColor;
+		color: @text-color;
 		.opacity( 0.3 );
 		&:hover {
-			color: @textColor;
+			color: @text-color;
 			.opacity( 0.6 );
 		}
 	}*/
@@ -508,7 +508,7 @@
 	input[readonly],
 	select[readonly],
 	textarea[readonly] {
-		border-color: mix( @inputBorder, @bodyBackground, 75% );
+		border-color: mix( @inputBorder, @body-bg, 75% );
 		cursor: auto;
 	}
 	input[readonly],
@@ -526,7 +526,7 @@
 		cursor: pointer;
 	}
 	.ai1ec-datepicker {
-		@datepickerFontSize: @baseFontSize * 0.85;
+		@datepickerFontSize: @font-size-base * 0.85;
 		font-size: @datepickerFontSize;
 		padding: @datepickerFontSize * 0.5;
 		&.ai1ec-right-aligned:before {
@@ -569,19 +569,19 @@
 			}
 			&.ai1ec-old,
 			&.ai1ec-new {
-				color: mix( @textColor, @bodyBackground, 60% );
+				color: mix( @text-color, @body-bg, 60% );
 			}
 			&.ai1ec-disabled,
 			&.ai1ec-disabled:hover {
 				background: none;
-				color: mix( @textColor, @bodyBackground, 30% );
+				color: mix( @text-color, @body-bg, 30% );
 			}
 			&.ai1ec-today,
 			&.ai1ec-today:hover,
 			&.ai1ec-today.ai1ec-disabled,
 			&.ai1ec-today.ai1ec-disabled:hover {
 				.ai1ec-buttonBackground( @todayColor, @todayColor );
-				.ai1ec-box-shadow( inset 0 0 2px mix( @todayColor, @textColor, 50% ) );
+				.ai1ec-box-shadow( inset 0 0 2px mix( @todayColor, @text-color, 50% ) );
 			}
 			&.ai1ec-active,
 			&.ai1ec-active:hover,
@@ -597,12 +597,12 @@
 					background-color: @dropdownLinkBackgroundHover;
 				}
 				&.ai1ec-old {
-					color: mix( @textColor, @bodyBackground, 60% );
+					color: mix( @text-color, @body-bg, 60% );
 				}
 				&.ai1ec-disabled,
 				&.ai1ec-disabled:hover {
 					background: none;
-					color: mix( @textColor, @bodyBackground, 30% );
+					color: mix( @text-color, @body-bg, 30% );
 				}
 				&.ai1ec-active,
 				&.ai1ec-active:hover,
@@ -698,7 +698,7 @@
 	width: 100%;
 	height: 100%;
 	background: url('@{imgdir}/ajax-loader.gif') no-repeat center center;
-	background-color: fade( @bodyBackground, 50% );
+	background-color: fade( @body-bg, 50% );
 	display: none;
 	#ai1ec-calendar-view-container & {
 		background-color: transparent;
@@ -715,16 +715,16 @@
 .site-footer .widget {
 	.timely {
 		a {
-			color: @linkColor;
+			color: @link-color;
 			&:visited {
-				color: @linkColor;
+				color: @link-color;
 			}
 			&:hover {
-				color: @linkColorHover;
+				color: @link-hover-color;
 			}
 		}
 		.ai1ec-btn {
-			color: @btnTextColor;
+			color: @btntext-color;
 			&:hover {
 				color: @btnTextHover;
 			}
@@ -732,7 +732,7 @@
 	}
 	.ai1ec-agenda-widget-view .ai1ec-date-title,
 	.ai1ec-agenda-view .ai1ec-date-title {
-		color: mix( @textColor, @agendaDateTitleBackground, 85% );
+		color: mix( @text-color, @agendaDateTitleBackground, 85% );
 	}
 }
 
@@ -766,7 +766,7 @@
 }
 
 .ai1ec-no-results {
-	color: @muted;
+	color: @text-muted;
 }
 
 // Special formatting for paragraph text (as opposed to most application UI).
@@ -775,7 +775,7 @@
 }
 .ai1ec-prose {
 	p, ul, ol, li {
-		font-size: @baseFontSize * 1.08;
+		font-size: @font-size-base * 1.08;
 		line-height: @baseLineHeight * 1.2;
 	}
 	p, ul, ol {
@@ -795,7 +795,7 @@
 	line-height: 2em !important;
 	margin: 1px 0;
 	padding: 0 0.5em !important;
-	text-shadow: 0 1px 0 @textEmboss;
+	text-shadow: 0 1px 0 @text-emboss;
 	text-transform: uppercase;
 	white-space: nowrap;
 	.ai1ec-listItem();
@@ -825,7 +825,7 @@
 // ========
 .ai1ec-tag {
 	border-radius: 4px;
-	color: @linkColor;
+	color: @link-color;
 	cursor: pointer;
 	display: inline-block !important;
 	line-height: 1.7em !important;
@@ -857,29 +857,29 @@
 .ai1ec-agenda-widget-view,
 .ai1ec-agenda-view {
 	.ai1ec-date-title {
-		border: 1px solid mix( @textColor, @agendaDateTitleBackground, 30% );
+		border: 1px solid mix( @text-color, @agendaDateTitleBackground, 30% );
 		border-top: none;
 		border-radius: 5px;
 		.ai1ec-box-shadow( 0 2px 2px rgba(0,0,0,0.08) );
 		.ai1ec-box-sizing( border-box );
-		color: mix( @textColor, @agendaDateTitleBackground, 85% );
+		color: mix( @text-color, @agendaDateTitleBackground, 85% );
 		float: left;
 		font-weight: bold !important;
 		#gradient > .ai1ec-vertical-three-colors(
 			@agendaDateTitleBackground,
 			@agendaDateTitleBackground,
 			1em,
-			mix(@agendaDateTitleBackground, @textColor, 88%)
+			mix(@agendaDateTitleBackground, @text-color, 88%)
 		);
 		filter: none\9; // IE8 doesn't get how to do this gradient for some reason
 		line-height: 1.2em;
-		margin: @baseFontSize / 2 0.75em;
+		margin: @font-size-base / 2 0.75em;
 		overflow: hidden;
 		text-align: center;
-		text-shadow: 0 1px 0 @textEmboss;
+		text-shadow: 0 1px 0 @text-emboss;
 		width: 4em;
 		&:hover {
-			color: @textColor !important;
+			color: @text-color !important;
 		}
 	}
 	.ai1ec-month {
@@ -901,7 +901,7 @@
 		padding: 0 0 0.2em;
 	}
 	.ai1ec-year {
-		background-color: mix( @textColor, @agendaDateTitleBackground, 13% );
+		background-color: mix( @text-color, @agendaDateTitleBackground, 13% );
 		.ai1ec-box-shadow( inset 0 3px 3px fade( #000, 8% ) );
 		font-size: 0.7em;
 		letter-spacing: 0.2em;
@@ -913,7 +913,7 @@
 			@agendaDateBackground,
 			@agendaDateBackground,
 			1em,
-			@bodyBackground
+			@body-bg
 		);
 		&.ai1ec-today {
 			border-top: 1px solid darken(@agendaTodayBackground, 5%);
@@ -921,7 +921,7 @@
 				@agendaTodayBackground,
 				@agendaTodayBackground,
 				1em,
-				@bodyBackground
+				@body-bg
 			);
 		}
 	}
@@ -943,7 +943,7 @@
 	// Agenda widget view events.
 	.ai1ec-event {
 		clear: right;
-		margin: @baseFontSize / 2 0 @baseFontSize / 2 4.8em;
+		margin: @font-size-base / 2 0 @font-size-base / 2 4.8em;
 		padding: 0;
 		position: relative;
 		> a {
@@ -1039,7 +1039,7 @@
 		background: @eventBackground;
 		border-radius: 4px;
 		color: @eventText;
-		font-size: @baseFontSize;
+		font-size: @font-size-base;
 		font-weight: normal;
 		padding: 5px 8px;
 		position: relative;
@@ -1047,7 +1047,7 @@
 	}
 	.ai1ec-event-time {
 		background: @eventTimeBackground;
-		font-size: @baseFontSize * 0.85;
+		font-size: @font-size-base * 0.85;
 		font-weight: bold;
 		margin: 2px -8px 0;
 		padding: 1px 8px;
@@ -1082,7 +1082,7 @@
 }
 
 .ai1ec-popover-title.ai1ec-popup-title {
-	font-size: @baseFontSize * 0.95;
+	font-size: @font-size-base * 0.95;
 	font-weight: bold;
 	line-height: @baseLineHeight;
 	background: none;
@@ -1097,7 +1097,7 @@
 }
 
 .ai1ec-popup-excerpt {
-	font-size: @baseFontSize * 0.85;
+	font-size: @font-size-base * 0.85;
 	margin-top: 2px;
 }
 

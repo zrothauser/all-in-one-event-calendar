@@ -59,15 +59,15 @@ class Ai1ec_Event_Taxonomy {
 		array $attrs = array()
 	) {
 		$field = ( $is_id ) ? 'id' : 'name';
-		$term  = get_term_by( $field, $term, $taxonomy );
-		if ( false === $term ) {
-			$term = wp_insert_term( $term, $taxonomy, $attrs );
-			if ( is_wp_error( $term ) ) {
+		$term_to_return = get_term_by( $field, $term, $taxonomy );
+		if ( false === $term_to_return ) {
+			$term_to_return = wp_insert_term( $term, $taxonomy, $attrs );
+			if ( is_wp_error( $term_to_return ) ) {
 				return false;
 			}
-			$term = (object)$term;
+			$term_to_return = (object)$term_to_return;
 		}
-		return (int)$term->term_id;
+		return (int)$term_to_return->term_id;
 	}
 
 	/**

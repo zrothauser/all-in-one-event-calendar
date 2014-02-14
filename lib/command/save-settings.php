@@ -26,7 +26,6 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 		$_POST['enabled_views'] = true;
 		foreach ( $options as $name => $data ) {
 			$value = null;
-			
 			if ( isset( $_POST[$name] ) ) {
 				// if a validator is pecified, use it.
 				if ( isset( $data['renderer']['validator'] ) ) {
@@ -55,11 +54,11 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 						case 'array';
 							$method = '_handle_saving_' . $name;
 							$value = $this->$method();
-						break;
+							break;
 						case 'mixed';
 							$method = '_handle_saving_' . $name;
 							$value = $this->$method( $_POST[$name] );
-						break;
+							break;
 					}
 				}
 			} else {

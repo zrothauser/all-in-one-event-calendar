@@ -11,7 +11,7 @@
  */
 class Ai1ec_Html_Setting_Input extends Ai1ec_Html_Element_Settings {
 
-	
+
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Html_Element_Settings::render()
 	 */
@@ -20,7 +20,7 @@ class Ai1ec_Html_Setting_Input extends Ai1ec_Html_Element_Settings {
 		$date  = $append = false;
 		$class = '';
 		switch ( $type ) {
-			case 'date': 
+			case 'date':
 				$date = true;
 				$class = 'input-small';
 				break;
@@ -52,8 +52,7 @@ class Ai1ec_Html_Setting_Input extends Ai1ec_Html_Element_Settings {
 			'value'      => $this->_args['value'],
 		);
 		if ( isset( $this->_args['renderer']['status'] ) ) {
-			fb( $settings->get( $this->_args['renderer']['status'] ) );
-			$args['licence_valid'] = 
+			$args['licence_valid'] =
 				$settings->get( $this->_args['renderer']['status'] ) === 'valid' ?
 				true :
 				false;

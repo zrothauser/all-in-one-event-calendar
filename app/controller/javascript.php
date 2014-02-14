@@ -383,6 +383,9 @@ class Ai1ec_Javascript_Controller {
 		force_ssl_admin( $force_ssl_admin );
 		$settings        = $this->_registry->get( 'model.settings' );
 		$locale          = $this->_registry->get( 'p28n.wpml' );
+		$blog_timezone   = $this->_registry->get( 'model.option' )
+			->get( 'gmt_offset' );
+
 		$data            = array(
 			// ICS feed error messages
 			'duplicate_feed_message'         => esc_html(
@@ -430,6 +433,7 @@ class Ai1ec_Javascript_Controller {
 			'day_names'                      => $locale->get_localized_week_names(),
 			// Start the week on this day in the date picker
 			'week_start_day'                 => $settings->get( 'week_start_day' ),
+			'blog_timezone'                  => $blog_timezone,
 		);
 		return $data;
 	}

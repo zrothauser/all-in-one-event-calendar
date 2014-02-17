@@ -282,21 +282,6 @@ define(
 
 		);
 
-		$( document ).on( 'submit',     '.ai1ec-submit-ics-form',
-			submit_ics_modal.handle_form_submission
-		);
-
-
-		// Handle click on save view
-		$( document ).on( 'click', '#save_filtered_views:not(.active)',
-			load_views.save_current_filter
-		);
-
-		// Handle click on remove saved view
-		$( document ).on( 'click', '#save_filtered_views.active',
-			load_views.remove_current_filter
-		);
-
 		// Bind to statechange event.
 		History.Adapter.bind( window, 'statechange', load_views.handle_state_change );
 

@@ -3,11 +3,11 @@
 /**
  * Concrete implementation for email notifications.
  *
- * @author     Time.ly Network Inc.
- * @since      2.0
- *
- * @package    AI1EC
- * @subpackage AI1EC.Notification
+ * @author       Time.ly Network Inc.
+ * @since        2.0
+ * @instantiator new
+ * @package      AI1EC
+ * @subpackage   AI1EC.Notification
  */
 class Ai1ec_Email_Notification extends Ai1ec_Notification {
 

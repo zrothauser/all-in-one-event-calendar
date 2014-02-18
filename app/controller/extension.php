@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * Basic extension controller.
+ *
+ * @author     Time.ly Network Inc.
+ * @since      2.0
+ *
+ * @package    AI1EC
+ * @subpackage AI1EC.Controller
+ */
 abstract class Ai1ec_Extension_Controller extends Ai1ec_Base {
 
 	/**

@@ -15,9 +15,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.ai1ec-fa {
-  font-family: Timely_FontAwesome;
-}
 /* makes the font 33% larger relative to the icon container */
 .ai1ec-fa-lg {
   font-size: 1.33333333em;
@@ -1333,6 +1330,15 @@
 }
 .ai1ec-fa-plus-square-o:before {
   content: "\f196";
+}
+.ai1ec-fa {
+  font-family: Timely_FontAwesome;
+}
+ul.ai1ec-fa-ul {
+  list-style-type: none;
+}
+a.ai1ec-fa.ai1ec-hide {
+  display: none;
 }
 .timely {
   /*! normalize.ai1ec-css v2.1.3 | MIT License | git.ai1ec-io/normalize */
@@ -6229,12 +6235,6 @@ fieldset[disabled] .ai1ec-datepicker table tr td span.ai1ec-active.ai1ec-disable
   border-width: 1px 0;
   margin-left: -5px;
   margin-right: -5px;
-}
-ul.ai1ec-fa-ul {
-  list-style-type: none;
-}
-a.ai1ec-fa.hide {
-  display: none;
 }
 .ai1ec-popover-title {
   font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;

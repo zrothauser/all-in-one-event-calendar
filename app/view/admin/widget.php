@@ -32,6 +32,15 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 	}
 
 	/**
+	 * Register widget current WP instance.
+	 *
+	 * @return Ai1ec_View_Admin_Widget
+	 */
+	public function register_widget() {
+		return register_widget( __CLASS__ );
+	}
+
+	/**
 	 * Form function.
 	 *
 	 * Renders the widget's configuration form for the Manage Widgets page.

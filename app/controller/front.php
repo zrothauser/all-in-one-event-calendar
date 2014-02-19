@@ -350,6 +350,10 @@ class Ai1ec_Front_Controller {
 			10,
 			3
 		);
+		$dispatcher->register_action(
+			'widgets_init',
+			array( 'view.admin.widget', 'register_widget' )
+		);
 
 		if ( is_admin() ) {
 			// get the repeat box

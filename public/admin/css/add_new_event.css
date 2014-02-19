@@ -8,7 +8,7 @@
 .icon32-posts-ai1ec_event ~ #post.ai1ec-visible {
 	visibility: visible;
 }
-#ai1ec-time-and-date-box .panel-body {
+#ai1ec-time-and-date-box .ai1ec-panel-body {
 	min-height: 200px;
 }
 .ai1ec-form, .ai1ec-form-nested {
@@ -92,7 +92,7 @@
 #ai1ec-event-location-box {
 	overflow: hidden;
 }
-#ai1ec-event-location-box .panel-body {
+#ai1ec-event-location-box .ai1ec-panel-body {
 	min-width: 625px;
 }
 .ai1ec-form.ai1ec-location-form {

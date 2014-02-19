@@ -1069,39 +1069,6 @@ input.ai1ec-timepicker[readonly] {
 	margin-top: 2px;
 }
 
-// ============================================================================
-// = Gmaps Autocomplete results (should be synced with timely-bootstrap.less) =
-// ============================================================================
-
-.ai1ec-geo-ac-results-not-ready {
-	// Hide by default (using a hiding attribute unused by the library).
-	// Only show once we have had a chance to do some markup-based styling in JS.
-	visibility: hidden;
-}
-.ai1ec-geo-ac-results {
-	img {
-		float: left;
-		margin-right: 5px;
-	}
-	.ai1ec-dropdown-menu {
-		display: block;
-		width: 275px;
-		li {
-			clear: left;
-			color: @dropdown-link-color;
-			cursor: pointer;
-			margin: 2px 0;
-			padding: 0 5px;
-			&:hover {
-				color: @dropdown-link-hover-color;
-				background-color: @dropdown-link-hover-bg;
-			}
-		}
-	}
-	.ai1ec-modal-open & {
-		z-index: @zindex-dropdown + @zindex-modal-background;
-	}
-}
 
 // ===========================
 // = Responsive declarations =

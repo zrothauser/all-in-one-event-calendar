@@ -37,7 +37,7 @@
 	display: block;
 }
 
-.tab-content.ai1ec-boxed-tabs {
+.ai1ec-tab-content.ai1ec-boxed-tabs {
 	background: #fff;
 	border: solid #ddd;
 	border-width: 0 1px 1px;
@@ -82,8 +82,8 @@
   display: inline-block;
   vertical-align: top;
 }
-#ai1ec-support a.btn,
-#ai1ec-support a.btn:hover {
+#ai1ec-support a.ai1ec-btn,
+#ai1ec-support a.ai1ec-btn:hover {
   text-decoration: none;
 }
 #ai1ec-support .ai1ec-download {
@@ -103,7 +103,7 @@
 	font-size: 28px;
 	padding: 4px 0;
 }
-#ai1ec-support .ai1ec-account .btn {
+#ai1ec-support .ai1ec-account .ai1ec-btn {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
@@ -122,7 +122,7 @@
 	text-align: center;
 	margin-bottom: 5px;
 }
-#ai1ec-support .ai1ec-account > .btn-group {
+#ai1ec-support .ai1ec-account > .ai1ec-btn-group {
 	display: inline-block;
 }
 
@@ -149,7 +149,7 @@
 
 /* General settings */
 
-.ai1ec-boxed-tabs > .tab-pane.active ~ .ai1ec-tab-pane-not-loaded {
+.ai1ec-boxed-tabs > .ai1ec-tab-pane.ai1ec-active ~ .ai1ec-tab-pane-not-loaded {
 	display: none;
 }
 
@@ -169,7 +169,7 @@
 	width: 160px;
 	margin-right: 10px;
 }
-.timely .ai1ec-default-filters .help-block {
+.timely .ai1ec-default-filters .ai1ec-help-block {
 	font-size: 0.85em;
 	line-height: 1.4em;
 	margin-bottom: 0;
@@ -199,14 +199,14 @@
 #ai1ec-embedding-trigger:hover {
 	text-decoration: none;
 }
-#ai1ec-embedding .alert:last-child {
+#ai1ec-embedding .ai1ec-alert:last-child {
 	margin-bottom: 0;
 }
 
-.ai1ec-week-view-hours input.input-mini {
+.ai1ec-week-view-hours input.ai1ec-input-sm {
 	width: 2em;
 }
-.ai1ec-week-view-hours .input-append {
+.ai1ec-week-view-hours .input-group {
 	display: inline-block;
 }
 
@@ -229,10 +229,10 @@
 #ai1ec-less-variables-tabs .inside {
 	margin: 10px 0;
 }
-#ai1ec-less-variables-tabs .form-horizontal .control-label {
+#ai1ec-less-variables-tabs .ai1ec-form-horizontal .ai1ec-control-label {
 	width: 180px;
 }
-#ai1ec-less-variables-tabs .form-horizontal .controls {
+#ai1ec-less-variables-tabs .ai1ec-form-horizontal .ai1ec-control-label + div {
 	margin-left: 200px;
 }
 .ai1ec_event_page_all-in-one-event-calendar-edit-css #poststuff,

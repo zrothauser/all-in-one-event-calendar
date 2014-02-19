@@ -6,7 +6,7 @@
 #ai1ec-calendar-tasks {
 	background: #fff;
 }
-#ai1ec-calendar-tasks .btn {
+#ai1ec-calendar-tasks .ai1ec-btn {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
@@ -16,7 +16,7 @@
 	background-image: url(../img/admin-bar-sprite.png);
 }
 /* Weird rendering of large icons in WP 3.2. */
-.branch-3-2 .icon-large::before {
+.branch-3-2 .ai1ec-fa-lg:before {
 	vertical-align: bottom;
 }
 

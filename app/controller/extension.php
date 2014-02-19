@@ -22,6 +22,11 @@ abstract class Ai1ec_Extension_Controller extends Ai1ec_Base {
 	protected static $_registry_static;
 
 	/**
+	 * @var array
+	 */
+	protected static $_settings_static;
+
+	/**
 	 * @var string the name of the option for the on_activation() hook
 	 */
 	protected $_activated_option;
@@ -47,9 +52,14 @@ abstract class Ai1ec_Extension_Controller extends Ai1ec_Base {
 	abstract public function init();
 
 	/**
+	 * Get the name of the main plugin file
+	 */
+	abstract public function get_file();
+
+	/**
 	 * Add extension specific settings
 	 */
-	abstract protected function _set_settings();
+	abstract protected function _get_settings();
 
 	/**
 	 * Register action/filters/shortcodes for the extension
@@ -58,6 +68,27 @@ abstract class Ai1ec_Extension_Controller extends Ai1ec_Base {
 	 */
 	abstract protected function _register_actions( Ai1ec_Event_Dispatcher $dispatcher );
 
+	/**
+	 * Taken from stack exchange
+	 * http://wordpress.stackexchange.com/questions/25910/uninstall-activate-deactivate-a-plugin-typical-features-how-to/25979#25979
+	 */
+	public static function on_uninstall() {
+		if ( ! current_user_can( 'activate_plugins' ) ) {
+			return;
+		}
+		check_admin_referer( 'bulk-plugins' );
+	
+		// Important: Check if the file is the one
+		// that was registered during the uninstall hook.
+		if ( __FILE__ != WP_UNINSTALL_PLUGIN ) {
+			return;
+		}
+	
+		$settings = self::$_registry_static->get( 'model.settings' );
+		foreach ( self::$_settings_static as $name => $params ) {
+			$settings->remove_option( $name );
+		}
+	}
 
 	/**
 	 * Initializes the extension.
@@ -67,10 +98,14 @@ abstract class Ai1ec_Extension_Controller extends Ai1ec_Base {
 	public function __construct( Ai1ec_Registry_Object $registry ) {
 		parent::__construct( $registry );
 		$this->_activated_option = 'ai1ec_' . $this->get_machine_name() . '_activated';
+		// static properties are needed as uninstall hook must be static
+		// http://wpseek.com/register_uninstall_hook/
 		self::$_registry_static = $registry;
-		register_deactivation_hook( __FILE__, array( $this, 'on_deactivation' ) );
+		register_deactivation_hook( $this->get_file(), array( $this, 'on_deactivation' ) );
 	
-		$this->_set_settings();
+		$settings = $this->_get_settings();
+		$this->_settings = $settings;
+		self::$_settings_static = $settings;
 		// if we are reactivating, show the options
 		if ( is_admin() && get_option( $this->_activated_option ) ) {
 			$this->show_settings();
@@ -120,33 +155,11 @@ abstract class Ai1ec_Extension_Controller extends Ai1ec_Base {
 	}
 	
 	/**
-	 * Taken from stack exchange
-	 * http://wordpress.stackexchange.com/questions/25910/uninstall-activate-deactivate-a-plugin-typical-features-how-to/25979#25979
-	 */
-	public function on_uninstall() {
-		if ( ! current_user_can( 'activate_plugins' ) ) {
-			return;
-		}
-		check_admin_referer( 'bulk-plugins' );
-	
-		// Important: Check if the file is the one
-		// that was registered during the uninstall hook.
-		if ( __FILE__ != WP_UNINSTALL_PLUGIN ) {
-			return;
-		}
-	
-		$settings = $this->_registry->get( 'model.settings' );
-		foreach ( $this->_settings as $name => $params ) {
-			$settings->remove_option( $name );
-		}
-	}
-	
-	/**
 	 * Since the call the to the uninstall hook it's static, if a different behaviour
 	 * is needed also this call must be overridden.
 	 */
 	protected function _register_uninstall_hook() {
-		register_uninstall_hook( __FILE__, array( __CLASS__, 'on_uninstall' ) );
+		register_uninstall_hook( $this->get_file(), array( __CLASS__, 'on_uninstall' ) );
 	}
 
 	/**

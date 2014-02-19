@@ -88,11 +88,11 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 			                                  'options' => $events_options
 			                                 ),
 		);
-		foreach( $fields as $field => $data ) {
+		foreach ( $fields as $field => $data ) {
 			$fields[$field]['id']    = $this->get_field_id( $field );
 			$fields[$field]['name']  = $this->get_field_name( $field );
 			$fields[$field]['value'] = $data['value'];
-			if( isset($data['options']) ) {
+			if ( isset($data['options']) ) {
 				$fields[$field]['options'] = $data['options'];
 			}
 		}
@@ -104,26 +104,25 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 	}
 
 	/**
-	 * update function
+	 * Update function.
 	 *
-	 * Called when a user submits the widget configuration form. The data should
-	 * be validated and returned.
+	 * Called when a user submits the widget configuration form.
+	 * The data should be validated and returned.
 	 *
-	 * @param array $new_instance The new data that was submitted.
-	 * @param array $old_instance The widget's old data.
-	 * @return array The new data to save for this widget instance.
+	 * @param  array $new_instance The new data that was submitted.
+	 * @param  array $old_instance The widget's old data.
+	 * @return array               The new data to save for this widget instance.
 	 */
-	function update( $new_instance, $old_instance )
-	{
+	public function update( $new_instance, $old_instance ) {
 		// Save existing data as a base to modify with new data
 		$instance = $old_instance;
 		$instance['title']                  = strip_tags( $new_instance['title'] );
-		$instance['events_per_page']        = Ai1ec_Number_Utility::index(
+		$instance['events_per_page']        = Ai1ec_Primitive_Int::index(
 			$new_instance['events_per_page'],
 			1,
 			1
 		);
-		$instance['days_per_page']          = Ai1ec_Number_Utility::index(
+		$instance['days_per_page']          = Ai1ec_Primitive_Int::index(
 			$new_instance['days_per_page'],
 			1,
 			1
@@ -138,37 +137,37 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		// For limits, set the limit to False if no IDs were selected, or set the respective IDs to empty if "limit by" was unchecked
 		$instance['limit_by_cat'] = false;
 		$instance['event_cat_ids'] = array();
-		if( isset( $new_instance['event_cat_ids'] ) && $new_instance['event_cat_ids'] != false ) {
+		if ( isset( $new_instance['event_cat_ids'] ) && $new_instance['event_cat_ids'] != false ) {
 			$instance['limit_by_cat'] = true;
 		}
-		if( isset( $new_instance['limit_by_cat'] ) && $new_instance['limit_by_cat'] != false ) {
+		if ( isset( $new_instance['limit_by_cat'] ) && $new_instance['limit_by_cat'] != false ) {
 			$instance['limit_by_cat'] = true;
 		}
-		if( isset( $new_instance['event_cat_ids'] ) && $instance['limit_by_cat'] === true ) {
+		if ( isset( $new_instance['event_cat_ids'] ) && $instance['limit_by_cat'] === true ) {
 			$instance['event_cat_ids'] = $new_instance['event_cat_ids'];
 		}
 
 		$instance['limit_by_tag'] = false;
 		$instance['event_tag_ids'] = array();
-		if( isset( $new_instance['event_tag_ids'] ) && $new_instance['event_tag_ids'] != false ) {
+		if ( isset( $new_instance['event_tag_ids'] ) && $new_instance['event_tag_ids'] != false ) {
 			$instance['limit_by_tag'] = true;
 		}
-		if( isset( $new_instance['limit_by_tag'] ) && $new_instance['limit_by_tag'] != false ) {
+		if ( isset( $new_instance['limit_by_tag'] ) && $new_instance['limit_by_tag'] != false ) {
 			$instance['limit_by_tag'] = true;
 		}
-		if( isset( $new_instance['event_tag_ids'] ) && $instance['limit_by_tag'] === true ) {
+		if ( isset( $new_instance['event_tag_ids'] ) && $instance['limit_by_tag'] === true ) {
 			$instance['event_tag_ids'] = $new_instance['event_tag_ids'];
 		}
 
 		$instance['limit_by_post'] = false;
 		$instance['event_post_ids'] = array();
-		if( isset( $new_instance['event_post_ids'] ) && $new_instance['event_post_ids'] != false ) {
+		if ( isset( $new_instance['event_post_ids'] ) && $new_instance['event_post_ids'] != false ) {
 			$instance['limit_by_post'] = true;
 		}
-		if( isset( $new_instance['limit_by_post'] ) && $new_instance['limit_by_post'] != false ) {
+		if ( isset( $new_instance['limit_by_post'] ) && $new_instance['limit_by_post'] != false ) {
 			$instance['limit_by_post'] = true;
 		}
-		if( isset( $new_instance['event_post_ids'] ) && $instance['limit_by_post'] === true ) {
+		if ( isset( $new_instance['event_post_ids'] ) && $instance['limit_by_post'] === true ) {
 			$instance['event_post_ids'] = $new_instance['event_post_ids'];
 		}
 
@@ -210,7 +209,7 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		);
 		$instance = wp_parse_args( $instance, $defaults );
 
-		if( $instance['hide_on_calendar_page'] &&
+		if ( $instance['hide_on_calendar_page'] &&
 		    is_page( $ai1ec_settings->calendar_page_id ) ) {
 			return;
 		}

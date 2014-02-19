@@ -1,8 +1,8 @@
 //
 // @file
 //
-// This is adapted from Twitter Bootstrap. Change these variables to modify the
-// look of the calendar.
+// This overrides and extends variables definitions from Bootstrap's
+// variables.less. Change these variables to modify the look of the calendar.
 //
 
 @import "bootstrap/variables.less";
@@ -12,85 +12,24 @@
 @text-muted:            mix( @text-color, @body-bg, 60% );
 @headings-color:        @grayLight;
 
-@btn-shadow:            ~"inset 1px 0 0 rgba(255, 255, 255, .125), inset 0 1px 0 rgba(255, 255, 255, .2), 0 1px 2px rgba(0, 0, 0, .05)";
+// @btn-shadow:            ~"inset 1px 0 0 rgba(255, 255, 255, .125), inset 0 1px 0 rgba(255, 255, 255, .2), 0 1px 2px rgba(0, 0, 0, .05)";
+// @btn-text-shadow:       0 -1px 0 @textEmboss;
 
-// Tables
-// -------------------------
-@tableBackgroundAccent:             @grayDarkest; // for striping
-@tableBackgroundHover:              @grayDarker; // for hover
-@tableBorder:                       @grayDark; // table and cell border
+@tableBackgroundAccent:   @grayDarkest;
+@tableBackgroundHover:    @grayDarker;
+@tableBorder:             @grayDark;
 
-// Buttons
-// -------------------------
-@btnTextShadow:                     0 -1px 0 @textEmboss;
+@zindex-dropdown:         10000;
+@zindex-popover:          10010;
+@zindex-tooltip:          10020;
+@zindex-navbar-fixed:     10030;
+@zindex-modal-background: 10040;
+@zindex-modal:            10050;
 
-@btnSuccessBackground:              #62c462;
-@btnSuccessBackgroundHighlight:     #51a351;
+@modal-content-border:    mix( @body-bg, @text-color, 70% );
+@modal-footer-shadow:     0 1px 0 @body-bg;
 
-@btnInfoBackground:                 #004a80;
-@btnInfoBackgroundHighlight:        #004a80;
+@toolbar-bg:              mix( @btn-default-bg, @body-bg, 66% );
+@toolbar-border-color:    mix( @btn-default-border, @body-bg, 66% );
 
-@btnWarningBackground:              lighten(@orange, 15%);
-@btnWarningBackgroundHighlight:     @orange;
-
-@btnDangerBackground:               #ee5f5b;
-@btnDangerBackgroundHighlight:      #bd362f;
-
-@btnInverseBackground:              @gray;
-@btnInverseBackgroundHighlight:     @grayLighter;
-
-
-
-// Forms
-// -------------------------
-@inputBorderRadius:             3px;
-
-
-// COMPONENT VARIABLES
-// --------------------------------------------------
-
-// Z-index master list
-// -------------------------
-// Used for a bird's eye view of components dependent on the z-axis
-// Try to avoid customizing these :)
-@zindexDropdown:          10000;
-@zindexPopover:           10010;
-@zindexTooltip:           10020;
-@zindexFixedNavbar:       10030;
-@zindexModalBackdrop:     10040;
-@zindexModal:             10050;
-
-
-// Hr border color
-// -------------------------
-@hrBorder:                @grayDarker;
-
-
-// Modals
-// -------------------------
-@modalBorder:             mix( @bodyBackground, @textColor, 70% );
-@modalFooterBackground:   mix( @bodyBackground, @textColor, 85% );
-@modalFooterShadow:       inset 0 1px 2px @fadedModalBorder;
-@fadedModalBorder:        mix( @modalBorder, @bodyBackground, 75% );
-
-
-// Form states and alerts
-// -------------------------
-@warningText:             #c09853;
-@warningBackground:       #fcf8e3;
-@warningBorder:           darken(spin(@warningBackground, -10), 3%);
-
-@errorText:               #b94a48;
-@errorBackground:         #f2dede;
-@errorBorder:             darken(spin(@errorBackground, -10), 3%);
-
-@successText:             #468847;
-@successBackground:       #dff0d8;
-@successBorder:           darken(spin(@successBackground, -10), 5%);
-
-@infoText:                #3a87ad;
-@infoBackground:          #d9edf7;
-@infoBorder:              darken(spin(@infoBackground, -10), 7%);
-
-@toolbar-bg:              mix( @btnBackground, @bodyBackground, 66% );
-@toolbar-border-color:    mix( @btnBorder, @bodyBackground, 66% );
+@event-hover-border:      mix( @event-border, @text-color, 50% );

@@ -1,23 +1,56 @@
-// UTILITY CLASSES
-// ---------------
+//
+// Utility classes
+// --------------------------------------------------
 
-// Quick floats
-.pull-right {
-  float: right;
+
+// Floats
+// -------------------------
+
+.ai1ec-clearfix {
+  .ai1ec-clearfix();
 }
-.pull-left {
-  float: left;
+.ai1ec-center-block {
+  .ai1ec-center-block();
 }
+.ai1ec-pull-right {
+  float: right !important;
+}
+.ai1ec-pull-left {
+  float: left !important;
+}
+
 
 // Toggling content
-.hide {
-  display: none;
+// -------------------------
+
+// Note: Deprecated .ai1ec-hide in favor of .ai1ec-hidden or .ai1ec-sr-only (as appropriate) in v3.0.1
+.ai1ec-hide {
+  display: none !important;
 }
-.show {
-  display: block;
+.ai1ec-show {
+  display: block !important;
+}
+.ai1ec-invisible {
+  visibility: hidden;
+}
+.ai1ec-text-hide {
+  .ai1ec-text-hide();
 }
 
-// Visibility
-.invisible {
-  visibility: hidden;
+
+// Hide from screenreaders and browsers
+//
+// Credit: HTML5 Boilerplate
+
+.ai1ec-hidden {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+
+// For Affix plugin
+// -------------------------
+
+.ai1ec-affix {
+  position: fixed;
 }

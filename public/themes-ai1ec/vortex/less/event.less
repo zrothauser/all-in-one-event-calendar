@@ -3,7 +3,7 @@
 //
 // Used for single and multiple event pages (not calendar views).
 //
-// We do not import variable.less as it's handled server side';
+
 @import "bootstrap/mixins.less";
 @import "timely-mixins.less";
 
@@ -11,16 +11,16 @@
 // = Events pages =
 // ================
 
-@eventFontSize: @font-size-base * 1.1;
-@eventLineHeight: @baseLineHeight * 1.25;
+@event-font-size: @font-size-base * 1.1;
+@event-line-height: @line-height-base * 1.25;
 
 .ai1ec-single-event,
 .ai1ec-multi-event {
 	.ai1ec-event-details {
-		margin-bottom: @eventLineHeight * 0.6;
+		margin-bottom: @event-line-height * 0.6;
 		> * {
 			clear: left;
-			margin-bottom: @eventLineHeight * 0.4;
+			margin-bottom: @event-line-height * 0.4;
 			position: relative;
 		}
 		.ai1ec-pull-right {
@@ -31,10 +31,10 @@
 		}
 	}
 	.ai1ec-label {
-		font-size: @eventFontSize * 0.85;
+		font-size: @event-font-size * 0.85;
 		left: 0;
-		line-height: @eventLineHeight * 0.85;
-		margin-top: @eventFontSize * 0.15;
+		line-height: @event-line-height * 0.85;
+		margin-top: @event-font-size * 0.15;
 		position: absolute;
 		height: 100%;
 		text-align: right;
@@ -43,7 +43,7 @@
 	}
 	.ai1ec-field-value {
 		margin-left: 90px;
-		min-height: @eventLineHeight;
+		min-height: @event-line-height;
 	}
 
 	// Date/time & recurrence.
@@ -55,7 +55,7 @@
 		}
 	}
 	.ai1ec-exclude {
-		color: @text-muted;
+		.ai1ec-text-muted;
 		font-size: 0.9em;
 	}
 	.ai1ec-edit-instance-link {
@@ -71,7 +71,7 @@
 		}
 	}
 	.ai1ec-categories + .ai1ec-tags {
-		margin-top: -@eventLineHeight * 0.4;
+		margin-top: -@event-line-height * 0.4;
 	}
 	.ai1ec-category {
 		font-size: 0.8em;
@@ -85,7 +85,7 @@
 		width: 45%;
 	}
 	.ai1ec-gmap-container {
-		border: 1px solid @tableBorder;
+		border: 1px solid @table-border-color;
 		border-radius: 4px;
 		position: relative;
 	}
@@ -107,13 +107,13 @@
 		color: @link-color;
 		cursor: pointer;
 		height: 12em;
-		border: 1px dashed @tableBorder;
+		border: 1px dashed @table-border-color;
 		min-width: 18em;
 		margin-bottom: 0.3em;
 		text-align: center;
 		width: 100%;
 		&:hover {
-			border-color: darken(@tableBorder, 15%);
+			border-color: darken( @table-border-color, 15% );
 			color: @link-hover-color;
 		}
 		strong {
@@ -137,8 +137,8 @@
 
 // Single event page.
 .ai1ec-single-event {
-	font-size: @eventFontSize;
-	line-height: @eventLineHeight;
+	font-size: @event-font-size;
+	line-height: @event-line-height;
 	// Event avatar/featured image.
 	.ai1ec-event-avatar {
 		max-width: 40%;
@@ -154,21 +154,21 @@
 // Multi-event loop and event excerpts.
 .ai1ec-multi-event,
 .ai1ec-excerpt {
-	font-size: @eventFontSize * 0.9;
-	line-height: @eventLineHeight * 0.9;
-	.ai1ec-label {
-		margin-top: @eventFontSize * 0.1;
+	font-size: @event-font-size * 0.9;
+	line-height: @event-line-height * 0.9;
+	.ai1ec-field-label {
+		margin-top: @event-font-size * 0.1;
 	}
 }
 
 .ai1ec-excerpt {
-	margin-bottom: @eventLineHeight * 0.5;
+	margin-bottom: @event-line-height * 0.5;
 }
 
 // Footer.
 .ai1ec-event-footer {
+	.ai1ec-text-muted;
 	clear: both;
-	color: @text-muted;
 	font-size: 0.9em;
 }
 .ai1ec-ics-icon {
@@ -185,8 +185,8 @@
 	.ai1ec-single-event,
 	.ai1ec-multi-event,
 	.ai1ec-excerpt {
-		.ai1ec-label {
-			line-height: @eventLineHeight;
+		.ai1ec-field-label {
+			line-height: @event-line-height;
 			margin: 0;
 			position: static;
 			height: auto;
@@ -219,6 +219,7 @@
 		}
 	}
 }
+
 // Hide the close button in the modal
 #ai1ec_subscribe_email_modal .ai1ec-btn-danger {
 	display: none;

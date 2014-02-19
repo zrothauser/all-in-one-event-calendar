@@ -97,6 +97,7 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 			}
 		}
 
+		// Display theme
 		$this->_registry->get( 'theme.loader' )->get_file(
 			'agenda-widget-form.php',
 			$fields
@@ -175,20 +176,21 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 	}
 
 	/**
-	 * widget function
+	 * Widget function.
 	 *
 	 * Outputs the given instance of the widget to the front-end.
 	 *
-	 * @param array $args Display arguments passed to the widget
-	 * @param array $instance The settings for this widget instance
+	 * @param  array $args     Display arguments passed to the widget
+	 * @param  array $instance The settings for this widget instance
+	 * @return void
 	 */
-	function widget( $args, $instance ) {
-		global $ai1ec_view_helper,
-		       $ai1ec_events_helper,
+	public function widget( $args, $instance ) {
+		global $ai1ec_events_helper,
 		       $ai1ec_calendar_helper,
-		       $ai1ec_settings,
 		       $ai1ec_themes_controller,
 		       $ai1ec_requirejs_controller;
+
+		$settings = $this->_registry->get( 'model.settings' );
 
 		if ( $ai1ec_themes_controller->frontend_outdated_themes_notice() ) {
 			return;
@@ -210,7 +212,7 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		$instance = wp_parse_args( $instance, $defaults );
 
 		if ( $instance['hide_on_calendar_page'] &&
-		    is_page( $ai1ec_settings->calendar_page_id ) ) {
+		    is_page( $settings->get( 'calendar_page_id' ) ) ) {
 			return;
 		}
 
@@ -263,26 +265,28 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		$args['show_subscribe_buttons']    = $instance['show_subscribe_buttons'];
 		$args['show_calendar_button']      = $instance['show_calendar_button'];
 		$args['dates']                     = $dates;
-		$args['show_location_in_title']    = $ai1ec_settings->show_location_in_title;
-		$args['show_year_in_agenda_dates'] =
-			$ai1ec_settings->show_year_in_agenda_dates;
+		$args['show_location_in_title']    = $settings->get( 'show_location_in_title' );
+		$args['show_year_in_agenda_dates'] = $settings->get( 'show_year_in_agenda_dates ' );
 		$args['calendar_url']              =
 			$ai1ec_calendar_helper->get_calendar_url( $limit );
 		$args['subscribe_url']             = AI1EC_EXPORT_URL . $subscribe_filter;
 		$args['is_ticket_button_enabled']  =
 			$ai1ec_calendar_helper->is_buy_ticket_enabled_for_view( 'agenda' );
 
-		$ai1ec_view_helper->display_theme( 'agenda-widget.php', $args );
+		// Display theme
+		$this->_registry->get( 'theme.loader' )->get_file(
+			'agenda-widget.php',
+			$args
+		)->render();
 	}
 
 	/**
-	 * _valid_seek_type method
+	 * _valid_seek_type method.
 	 *
 	 * Return valid seek type for given user input (selection).
 	 *
-	 * @param string $value User selection for seek type
-	 *
-	 * @return string Seek type to use
+	 * @param  string $value User selection for seek type
+	 * @return string        Seek type to use
 	 */
 	protected function _valid_seek_type( $value ) {
 		static $list = array( 'events', 'days' );

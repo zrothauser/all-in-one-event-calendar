@@ -24,12 +24,7 @@
   font-style: normal;
 }
 
-// Core & core overrides
 @import "font-awesome/core";
-.@{fa-css-prefix} {
-  font-family: Timely_FontAwesome;
-}
-
 @import "font-awesome/larger";
 @import "font-awesome/fixed-width";
 @import "font-awesome/list";
@@ -38,3 +33,14 @@
 @import "font-awesome/rotated-flipped";
 @import "font-awesome/stacked";
 @import "font-awesome/icons";
+
+// Other overrides
+.@{fa-css-prefix} {
+  font-family: Timely_FontAwesome;
+}
+ul.ai1ec-fa-ul {
+  list-style-type: none;
+}
+a.ai1ec-fa.ai1ec-hide {
+  display: none;
+}

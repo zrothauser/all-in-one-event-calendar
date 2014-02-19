@@ -24,7 +24,7 @@
 		{% endif %}
 
 		<div class="ai1ec-time">
-			<div class="ai1ec-label">{{ 'When:' | __ }}</div>
+			<div class="ai1ec-field-label">{{ 'When:' | __ }}</div>
 			<div class="ai1ec-field-value">{{ event | timespan | raw }}</div>
 		</div>
 
@@ -32,18 +32,18 @@
 
 		{% if location is not empty %}
 			<div class="ai1ec-location">
-				<div class="ai1ec-label">{{ 'Where:' | __ }}</div>
+				<div class="ai1ec-field-label">{{ 'Where:' | __ }}</div>
 				<div class="ai1ec-field-value">{{ location | raw }}</div>
 			</div>
 		{% endif %}
 
 		{% if categories is not empty %}
 			<div class="ai1ec-categories">
-				<div class="ai1ec-label ai1ec-hidden-narrow-phone"
+				<div class="ai1ec-field-label ai1ec-hidden-narrow-phone"
 					title="{{ 'Categories' | __ }}">
 					<i class="icon-folder-open icon-large"></i>
 				</div>
-				<div class="ai1ec-label ai1ec-visible-narrow-phone">
+				<div class="ai1ec-field-label ai1ec-visible-narrow-phone">
 					<i class="icon-folder-open"></i>
 					{{ 'Categories' | __ }}
 				</div>
@@ -53,11 +53,11 @@
 
 		{% if tags is not empty %}
 			<div class="ai1ec-tags">
-				<div class="ai1ec-label ai1ec-hidden-narrow-phone"
+				<div class="ai1ec-field-label ai1ec-hidden-narrow-phone"
 					title="{{ 'Tags' | __ }}">
 					<i class="icon-tags icon-large"></i>
 				</div>
-				<div class="ai1ec-label ai1ec-visible-narrow-phone">
+				<div class="ai1ec-field-label ai1ec-visible-narrow-phone">
 					<i class="icon-tags"></i>
 					{{ 'Tags' | __ }}
 				</div>

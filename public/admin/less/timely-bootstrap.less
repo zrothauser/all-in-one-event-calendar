@@ -68,15 +68,9 @@
 // = Unnamespaced overrides =
 // ==========================
 
-// Font Awesome
-ul.ai1ec-fa-ul {
-	list-style-type: none;
-}
-a.ai1ec-fa.hide {
-	display: none;
-}
-
-// = Bootstrap =
+//
+// Bootstrap
+//
 
 // Popovers
 .ai1ec-popover-title {
@@ -151,9 +145,10 @@ ul.ai1ec-dropdown-menu {
 	}
 }
 
-// =====================
-// = Select2 overrides =
-// =====================
+//
+// Select2
+//
+
 .select2-container {
 	margin-bottom: 9px;
 	width: 100%;
@@ -346,12 +341,19 @@ ul.ai1ec-dropdown-menu {
 // =======================================================================
 // Recalculate z-index where appropriate
 .ai1ec-modal-open {
-	.ai1ec-dropdown-menu       {  z-index: @zindex-dropdown + @zindex-modal-background !important; }
-	.ai1ec-dropdown.ai1ec-open { *z-index: @zindex-dropdown + @zindex-modal-background !important; }
-	.ai1ec-popover             {  z-index: @zindex-popover  + @zindex-modal-background !important; }
-	.ai1ec-tooltip             {  z-index: @zindex-tooltip  + @zindex-modal-background !important; }
+	.ai1ec-dropdown-menu {
+		z-index: @zindex-dropdown + @zindex-modal-background !important;
+	}
+	.ai1ec-dropdown.ai1ec-open {
+		*z-index: @zindex-dropdown + @zindex-modal-background !important;
+	}
+	.ai1ec-popover {
+		z-index: @zindex-popover  + @zindex-modal-background !important;
+	}
+	.ai1ec-tooltip {
+		z-index: @zindex-tooltip  + @zindex-modal-background !important;
+	}
 }
-
 
 // =============================================================================
 // = Category colors (should be synced with vortex/less/style.less)            =

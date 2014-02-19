@@ -13,23 +13,18 @@
 
 // Namespace the font name instead of importing path.less directly.
 @font-face {
-  font-family: 'Timely_FontAwesome';
-  src: url('@{fa-font-path}/fontawesome-webfont.eot?v=@{fa-version}');
-  src: url('@{fa-font-path}/fontawesome-webfont.eot?#iefix&v=@{fa-version}') format('embedded-opentype'),
-    url('@{fa-font-path}/fontawesome-webfont.woff?v=@{fa-version}') format('woff'),
-    url('@{fa-font-path}/fontawesome-webfont.ttf?v=@{fa-version}') format('truetype'),
-    url('@{fa-font-path}/fontawesome-webfont.svg?v=@{fa-version}#fontawesomeregular') format('svg');
+	font-family: 'Timely_FontAwesome';
+	src: url('@{fa-font-path}/fontawesome-webfont.eot?v=@{fa-version}');
+	src: url('@{fa-font-path}/fontawesome-webfont.eot?#iefix&v=@{fa-version}') format('embedded-opentype'),
+		url('@{fa-font-path}/fontawesome-webfont.woff?v=@{fa-version}') format('woff'),
+		url('@{fa-font-path}/fontawesome-webfont.ttf?v=@{fa-version}') format('truetype'),
+		url('@{fa-font-path}/fontawesome-webfont.svg?v=@{fa-version}#fontawesomeregular') format('svg');
 //  src: url('@{fa-font-path}/FontAwesome.otf') format('opentype'); // used when developing fonts
-  font-weight: normal;
-  font-style: normal;
+	font-weight: normal;
+	font-style: normal;
 }
 
-// Core & core overrides
 @import "font-awesome/core";
-.@{fa-css-prefix} {
-  font-family: Timely_FontAwesome;
-}
-
 @import "font-awesome/larger";
 @import "font-awesome/fixed-width";
 @import "font-awesome/list";
@@ -38,3 +33,17 @@
 @import "font-awesome/rotated-flipped";
 @import "font-awesome/stacked";
 @import "font-awesome/icons";
+
+// Other overrides
+.@{fa-css-prefix} {
+	font-family: Timely_FontAwesome;
+}
+a.ai1ec-fa.ai1ec-hide {
+	display: none;
+}
+// Sometimes theme developers place WP posts within <ul>/<li> structures. This
+// causes issues with Font Awesome. Here's how we protect against that.
+li .ai1ec-fa,
+li .ai1ec-fa-lg:before {
+	width: auto;
+}

@@ -7,7 +7,7 @@ return array(
 		"type" => "color",
 	),
 	"textColor" => array(
-		"value"  => "#4d4d4d",
+		"value"  => "#333333",
 		"description" => __( "Text color", AI1EC_PLUGIN_NAME ),
 		"tab" => "general",
 		"type" => "color",
@@ -19,13 +19,13 @@ return array(
 		"type" => "color",
 	),
 	"linkColor" => array(
-		"value"  => "#507295",
+		"value"  => "#3d6b99",
 		"description" => __( "Link", AI1EC_PLUGIN_NAME ),
 		"tab" => "general",
 		"type" => "color",
 	),
 	"linkColorHover" => array(
-		"value"  => "#354c63",
+		"value"  => "#335980",
 		"description" => __( "Link (hover)", AI1EC_PLUGIN_NAME ),
 		"tab" => "general",
 		"type" => "color",
@@ -60,6 +60,12 @@ return array(
 		"tab" => "table",
 		"type" => "color",
 	),
+	"btnPrimaryBackground" => array(
+		"value"  => "#3d6b99",
+		"description" => __( "Primary brand color", AI1EC_PLUGIN_NAME ),
+		"tab" => "buttons",
+		"type" => "color",
+	),
 	"btnBackground" => array(
 		"value"  => "#ffffff",
 		"description" => __( "Button background", AI1EC_PLUGIN_NAME ),
@@ -67,7 +73,7 @@ return array(
 		"type" => "color",
 	),
 	"btnBorder" => array(
-		"value"  => "#d9d9d9",
+		"value"  => "#cccccc",
 		"description" => __( "Button border", AI1EC_PLUGIN_NAME ),
 		"tab" => "buttons",
 		"type" => "color",
@@ -75,18 +81,6 @@ return array(
 	"btnTextColor" => array(
 		"value"  => "#333333",
 		"description" => __( "Button text", AI1EC_PLUGIN_NAME ),
-		"tab" => "buttons",
-		"type" => "color",
-	),
-	"btnTextHover" => array(
-		"value"  => "#1a1a1a",
-		"description" => __( "Button text (hover)", AI1EC_PLUGIN_NAME ),
-		"tab" => "buttons",
-		"type" => "color",
-	),
-	"btnPrimaryBackground" => array(
-		"value"  => "#62c462",
-		"description" => __( "Button background (primary buttons)", AI1EC_PLUGIN_NAME ),
 		"tab" => "buttons",
 		"type" => "color",
 	),
@@ -133,25 +127,25 @@ return array(
 		"type" => "color",
 	),
 	"dropdownBorder" => array(
-		"value"  => "rgba(0,0,0,0.2)",
+		"value"  => "rgba(0,0,0,0.15)",
 		"description" => __( "Dropdown list border", AI1EC_PLUGIN_NAME ),
 		"tab" => "forms",
 		"type" => "color",
 	),
 	"dropdownLinkColor" => array(
-		"value"  => "#666666",
+		"value"  => "#333333",
 		"description" => __( "List item text", AI1EC_PLUGIN_NAME ),
 		"tab" => "forms",
 		"type" => "color",
 	),
 	"dropdownLinkColorHover" => array(
-		"value"  => "#000000",
+		"value"  => "#262626",
 		"description" => __( "List item text (active/hover)", AI1EC_PLUGIN_NAME ),
 		"tab" => "forms",
 		"type" => "color",
 	),
 	"dropdownLinkBackgroundHover" => array(
-		"value"  => "#e0efff",
+		"value"  => "#f5f5f5",
 		"description" => __( "List item background (active/hover)", AI1EC_PLUGIN_NAME ),
 		"tab" => "forms",
 		"type" => "color",
@@ -163,7 +157,7 @@ return array(
 		"type" => "color",
 	),
 	"calendarTitle" => array(
-		"value"  => "#9e9e9e",
+		"value"  => "#999999",
 		"description" => __( "Calendar title", AI1EC_PLUGIN_NAME ),
 		"tab" => "calendar",
 		"type" => "color",
@@ -175,7 +169,7 @@ return array(
 		"type" => "color",
 	),
 	"alldayBadgeGradientMiddle" => array(
-		"value"  => "#507295",
+		"value"  => "#3d6b99",
 		"description" => __( "All-day badge color", AI1EC_PLUGIN_NAME ),
 		"tab" => "calendar",
 		"type" => "color",
@@ -187,13 +181,13 @@ return array(
 		"type" => "color",
 	),
 	"eventDefaultColor" => array(
-		"value"  => "#507295",
+		"value"  => "#3d6b99",
 		"description" => __( "Event default color", AI1EC_PLUGIN_NAME ),
 		"tab" => "month",
 		"type" => "color",
 	),
 	"eventDefaultColorHover" => array(
-		"value"  => "#354c63",
+		"value"  => "#335980",
 		"description" => __( "Event default color (hover)", AI1EC_PLUGIN_NAME ),
 		"tab" => "month",
 		"type" => "color",
@@ -211,7 +205,7 @@ return array(
 		"type" => "color",
 	),
 	"eventBorder" => array(
-		"value"  => "#ccc",
+		"value"  => "#cccccc",
 		"description" => __( "Event border", AI1EC_PLUGIN_NAME ),
 		"tab" => "month",
 		"type" => "color",
@@ -223,7 +217,7 @@ return array(
 		"type" => "color",
 	),
 	"eventTimeBackground" => array(
-		"value"  => "#eee",
+		"value"  => "#eeeeee",
 		"description" => __( "Event time background", AI1EC_PLUGIN_NAME ),
 		"tab" => "month",
 		"type" => "color",
@@ -247,20 +241,14 @@ return array(
 		"type" => "color",
 	),
 	"agendaDateTitleBorder" => array(
-		"value"  => "#617284",
-		"description" => __( "Date title border", AI1EC_PLUGIN_NAME ),
+		"value"  => "#6689AC",
+		"description" => __( "Date label accent color", AI1EC_PLUGIN_NAME ),
 		"tab" => "agenda",
 		"type" => "color",
 	),
 	"agendaDateTitleBackground" => array(
 		"value"  => "#ffffff",
-		"description" => __( "Date title background", AI1EC_PLUGIN_NAME ),
-		"tab" => "agenda",
-		"type" => "color",
-	),
-	"agendaDateTitleMonthText" => array(
-		"value"  => "#ffffff",
-		"description" => __( "Date title month text", AI1EC_PLUGIN_NAME ),
+		"description" => __( "Date label background", AI1EC_PLUGIN_NAME ),
 		"tab" => "agenda",
 		"type" => "color",
 	),

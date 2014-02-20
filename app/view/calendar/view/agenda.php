@@ -43,7 +43,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			),
 			$view_args['time_limit']
 		);
-		$dates = $this->_get_agenda_like_date_array(
+		$dates = $this->get_agenda_like_date_array(
 			$results['events'],
 			$view_args['request']
 		);
@@ -146,6 +146,59 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 	}
 
 	/**
+	 * Breaks down the given ordered array of event objects into dates, and
+	 * outputs an ordered array of two-element associative arrays in the
+	 * following format:
+	 *	key: localized UNIX timestamp of date
+	 *	value:
+	 *		['events'] => two-element associatative array broken down thus:
+	 *			['allday'] => all-day events occurring on this day
+	 *			['notallday'] => all other events occurring on this day
+	 *		['today'] => whether or not this date is today
+	 *
+	 * @param array                     $events Event results
+	 * @param Ai1ec_Abstract_Query|null $query  Current calendar page request, if
+	 *                                          any (null for widget)
+	 *
+	 * @return array
+	 */
+	public function get_agenda_like_date_array(
+		$events,
+		Ai1ec_Abstract_Query $query = null
+	) {
+		$dates = array();
+		$time = $this->_registry->get( 'date.system' );
+		$settings = $this->_registry->get( 'model.settings' );
+		// Classify each event into a date/allday category
+		foreach( $events as $event ) {
+			$timestamp = $event->get( 'start' )->set_time( 0, 0, 0 )->format();
+			$exact_date = $time->format_date_for_url(
+				$timestamp,
+				$settings->get( 'input_date_format' )
+			);
+			$href_for_date = $this->_create_link_for_day_view( $exact_date );
+			// Ensure all-day & non all-day categories are created in correct order.
+			if ( ! isset( $dates[$timestamp]['events'] ) ) {
+				$dates[$timestamp]['events'] = array(
+					'allday'    => array(),
+					'notallday' => array(),
+				);
+			}
+			$this->_add_runtime_properties( $event );
+			// Add the event.
+			$category = $event->is_allday() ? 'allday' : 'notallday';
+			$dates[$timestamp]['events'][$category][] = $event;
+			$dates[$timestamp]['href'] = $href_for_date;
+		}
+		// Flag today
+		$today = $this->_registry->get( 'date.time' )->set_time( 0, 0, 0 )->format();
+		if( isset( $dates[$today] ) ) {
+			$dates[$today]['today'] = true;
+		}
+		return $dates;
+	}
+
+	/**
 	 * Returns an associative array of two links for any agenda-like view of the
 	 * calendar:
 	 *    previous page (if previous events exist),
@@ -207,59 +260,6 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		);
 
 		return $links;
-	}
-
-	/**
-	 * Breaks down the given ordered array of event objects into dates, and
-	 * outputs an ordered array of two-element associative arrays in the
-	 * following format:
-	 *	key: localized UNIX timestamp of date
-	 *	value:
-	 *		['events'] => two-element associatative array broken down thus:
-	 *			['allday'] => all-day events occurring on this day
-	 *			['notallday'] => all other events occurring on this day
-	 *		['today'] => whether or not this date is today
-	 *
-	 * @param array                     $events Event results
-	 * @param Ai1ec_Abstract_Query|null $query  Current calendar page request, if
-	 *                                          any (null for widget)
-	 *
-	 * @return array
-	 */
-	protected function _get_agenda_like_date_array(
-		$events,
-		Ai1ec_Abstract_Query $query = null
-	) {
-		$dates = array();
-		$time = $this->_registry->get( 'date.system' );
-		$settings = $this->_registry->get( 'model.settings' );
-		// Classify each event into a date/allday category
-		foreach( $events as $event ) {
-			$timestamp = $event->get( 'start' )->set_time( 0, 0, 0 )->format();
-			$exact_date = $time->format_date_for_url(
-				$timestamp,
-				$settings->get( 'input_date_format' )
-			);
-			$href_for_date = $this->_create_link_for_day_view( $exact_date );
-			// Ensure all-day & non all-day categories are created in correct order.
-			if ( ! isset( $dates[$timestamp]['events'] ) ) {
-				$dates[$timestamp]['events'] = array(
-					'allday'    => array(),
-					'notallday' => array(),
-				);
-			}
-			$this->_add_runtime_properties( $event );
-			// Add the event.
-			$category = $event->is_allday() ? 'allday' : 'notallday';
-			$dates[$timestamp]['events'][$category][] = $event;
-			$dates[$timestamp]['href'] = $href_for_date;
-		}
-		// Flag today
-		$today = $this->_registry->get( 'date.time' )->set_time( 0, 0, 0 )->format();
-		if( isset( $dates[$today] ) ) {
-			$dates[$today]['today'] = true;
-		}
-		return $dates;
 	}
 
 }

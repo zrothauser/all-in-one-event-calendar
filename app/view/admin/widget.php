@@ -199,6 +199,8 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		       $ai1ec_themes_controller,
 		       $ai1ec_requirejs_controller;
 
+		$agenda = $this->_registry->get( 'view.calendar.view.agenda' );
+		$search = $this->_registry->get( 'model.search' );
 		$settings = $this->_registry->get( 'model.settings' );
 
 		if ( $ai1ec_themes_controller->frontend_outdated_themes_notice() ) {
@@ -254,7 +256,8 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 				'+' . $instance['days_per_page'] . ' days'
 			);
 		}
-		$event_results = $ai1ec_calendar_helper->get_events_relative_to(
+
+		$event_results = $search->get_events_relative_to(
 			$timestamp,
 			$seek_count,
 			0,
@@ -268,7 +271,7 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 			}
 		}
 
-		$dates = $ai1ec_calendar_helper->get_agenda_like_date_array( $event_results['events'] );
+		$dates = $agenda->get_agenda_like_date_array( $event_results['events'] );
 
 		$args['title']                     = $instance['title'];
 		$args['show_subscribe_buttons']    = $instance['show_subscribe_buttons'];

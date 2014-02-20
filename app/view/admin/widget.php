@@ -201,12 +201,12 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 	 * @return void
 	 */
 	public function widget( $args, $instance ) {
-		global $ai1ec_events_helper,
-		       $ai1ec_themes_controller,
+		global $ai1ec_themes_controller,
 		       $ai1ec_requirejs_controller;
-		
+
 		$type = $this->get_name();
 		$agenda   = $this->_registry->get( 'view.calendar.view.agenda' );
+		$time     = $this->_registry->get( 'date.time' )->format_to_gmt();
 		$search   = $this->_registry->get( 'model.search' );
 		$settings = $this->_registry->get( 'model.settings' );
 		$html     = $this->_registry->get( 'factory.html' );
@@ -242,9 +242,7 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		$subscribe_filter .= $instance['event_post_ids'] ? '&ai1ec_post_ids=' . join( ',', $instance['event_post_ids'] ) : '';
 
 		// Get localized time
-		$timestamp = $ai1ec_events_helper->gmt_to_local(
-			Ai1ec_Time_Utility::current_time()
-		);
+		$timestamp = $time->format_to_gmt();
 
 		// Set $limit to the specified category/tag
 		$limit = array(

@@ -201,22 +201,20 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 	 * @return void
 	 */
 	public function widget( $args, $instance ) {
-		global $ai1ec_themes_controller,
-		       $ai1ec_requirejs_controller;
+		$type       = $this->get_name();
+		$agenda     = $this->_registry->get( 'view.calendar.view.agenda' );
+		$time       = $this->_registry->get( 'date.time' )->format_to_gmt();
+		$search     = $this->_registry->get( 'model.search' );
+		$settings   = $this->_registry->get( 'model.settings' );
+		$html       = $this->_registry->get( 'factory.html' );
+		$javascript = $this->_registry->get( 'controller.javascript' );
 
-		$type = $this->get_name();
-		$agenda   = $this->_registry->get( 'view.calendar.view.agenda' );
-		$time     = $this->_registry->get( 'date.time' )->format_to_gmt();
-		$search   = $this->_registry->get( 'model.search' );
-		$settings = $this->_registry->get( 'model.settings' );
-		$html     = $this->_registry->get( 'factory.html' );
+//		if ( $ai1ec_themes_controller->frontend_outdated_themes_notice() ) {
+//			return;
+//		}
 
-		if ( $ai1ec_themes_controller->frontend_outdated_themes_notice() ) {
-			return;
-		}
-
-		$ai1ec_requirejs_controller->add_link_to_render_js(
-			Ai1ec_Requirejs_Controller::LOAD_ONLY_FRONTEND_SCRIPTS,
+		$javascript->add_link_to_render_js(
+			Ai1ec_Javascript_Controller::LOAD_ONLY_FRONTEND_SCRIPTS,
 			false
 		);
 		$defaults = array(

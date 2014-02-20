@@ -40,6 +40,13 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		return register_widget( __CLASS__ );
 	}
 
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Calendar_View_Abstract::get_name()
+	*/
+	public function get_name() {
+		return 'widget';
+	}
+
 	/**
 	 * Form function.
 	 *
@@ -197,7 +204,8 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		global $ai1ec_events_helper,
 		       $ai1ec_themes_controller,
 		       $ai1ec_requirejs_controller;
-
+		
+		$type = $this->get_name();
 		$agenda   = $this->_registry->get( 'view.calendar.view.agenda' );
 		$search   = $this->_registry->get( 'model.search' );
 		$settings = $this->_registry->get( 'model.settings' );

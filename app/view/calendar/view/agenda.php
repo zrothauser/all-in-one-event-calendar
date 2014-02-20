@@ -86,7 +86,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		} else {
 			$title_date_range = "$start_month $start_year – $end_month $end_year";
 		}
-		$is_ticket_button_enabled = apply_filters( 'ai1ec_'. $type . '_ticket_button', false );
+		$is_ticket_button_enabled = apply_filters( 'ai1ec_' . $type . '_ticket_button', false );
 		$args = array(
 			'title'                     => $title_date_range,
 			'dates'                     => $dates,

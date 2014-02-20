@@ -195,7 +195,6 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		global $ai1ec_events_helper,
-		       $ai1ec_calendar_helper,
 		       $ai1ec_themes_controller,
 		       $ai1ec_requirejs_controller;
 
@@ -272,7 +271,8 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 			}
 		}
 
-		$dates = $agenda->get_agenda_like_date_array( $event_results['events'] );
+		$dates                    = $agenda->get_agenda_like_date_array( $event_results['events'] );
+		$is_ticket_button_enabled = apply_filters( 'ai1ec_' . $type . '_ticket_button', false );
 
 		$args['title']                     = $instance['title'];
 		$args['show_subscribe_buttons']    = $instance['show_subscribe_buttons'];
@@ -282,8 +282,7 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		$args['show_year_in_agenda_dates'] = $settings->get( 'show_year_in_agenda_dates ' );
 		$args['calendar_url']              = $html->create_href_helper_instance( $limit )->generate_href();
 		$args['subscribe_url']             = AI1EC_EXPORT_URL . $subscribe_filter;
-		$args['is_ticket_button_enabled']  =
-			$ai1ec_calendar_helper->is_buy_ticket_enabled_for_view( 'agenda' );
+		$args['is_ticket_button_enabled']  = $is_ticket_button_enabled;
 
 		// Display theme
 		$this->_registry->get( 'theme.loader' )->get_file(

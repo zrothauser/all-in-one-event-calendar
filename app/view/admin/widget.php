@@ -199,9 +199,10 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		       $ai1ec_themes_controller,
 		       $ai1ec_requirejs_controller;
 
-		$agenda = $this->_registry->get( 'view.calendar.view.agenda' );
-		$search = $this->_registry->get( 'model.search' );
+		$agenda   = $this->_registry->get( 'view.calendar.view.agenda' );
+		$search   = $this->_registry->get( 'model.search' );
 		$settings = $this->_registry->get( 'model.settings' );
+		$html     = $this->_registry->get( 'factory.html' );
 
 		if ( $ai1ec_themes_controller->frontend_outdated_themes_notice() ) {
 			return;
@@ -279,8 +280,7 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		$args['dates']                     = $dates;
 		$args['show_location_in_title']    = $settings->get( 'show_location_in_title' );
 		$args['show_year_in_agenda_dates'] = $settings->get( 'show_year_in_agenda_dates ' );
-		$args['calendar_url']              =
-			$ai1ec_calendar_helper->get_calendar_url( $limit );
+		$args['calendar_url']              = $html->create_href_helper_instance( $limit )->generate_href();
 		$args['subscribe_url']             = AI1EC_EXPORT_URL . $subscribe_filter;
 		$args['is_ticket_button_enabled']  =
 			$ai1ec_calendar_helper->is_buy_ticket_enabled_for_view( 'agenda' );

@@ -56,22 +56,6 @@
 		<?php endif ?>
 	</select>
 </div>
-<p class="ai1ec-limit-by-container">
-	<!-- Limit by Event -->
-	<input id="<?php echo $limit_by_post['id'] ?>" class="ai1ec-limit-by-event" name="<?php echo $limit_by_post['name'] ?>" type="checkbox" value="1" <?php if( $limit_by_post['value'] ) echo 'checked="checked"' ?> />
-	<label for="<?php echo $limit_by_post['id'] ?>"><?php _e( '<strong>Or</strong> any of these <strong>Events</strong>', AI1EC_PLUGIN_NAME ) ?></label>
-</p>
-<div class="ai1ec-limit-by-options-container" <?php if( ! $limit_by_post['value'] ) { ?> style="display: none;" <?php } ?>>
-	<!-- Limit by Event Select box -->
-	<select id="<?php echo $event_post_ids['id'] ?>" class="ai1ec-widget-event-ids" name="<?php echo $event_post_ids['name'] ?>[]" size="5" multiple="multiple">
-		<?php foreach( $event_post_ids['options'] as $event_post ): ?>
-			<option value="<?php echo $event_post->ID; ?>"<?php if( in_array( $event_post->ID, $event_post_ids['value'] ) ) { ?> selected="selected"<?php } ?>><?php echo $event_post->post_title; ?></option>
-		<?php endforeach ?>
-		<?php if( count( $event_post_ids['options'] ) == 0 ) : ?>
-			<option disabled="disabled"><?php _e( 'No events found.', AI1EC_PLUGIN_NAME ) ?></option>
-		<?php endif ?>
-	</select>
-</div>
 <br />
 <p>
 	<input id="<?php echo $show_calendar_button['id'] ?>" name="<?php echo $show_calendar_button['name'] ?>" type="checkbox" value="1" <?php if( $show_calendar_button['value'] ) echo 'checked="checked"' ?> />

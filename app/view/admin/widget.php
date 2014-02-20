@@ -66,18 +66,14 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 			'hide_on_calendar_page'  => true,
 			'limit_by_cat'           => false,
 			'limit_by_tag'           => false,
-			'limit_by_post'          => false,
 			'event_cat_ids'          => array(),
 			'event_tag_ids'          => array(),
-			'event_post_ids'         => array(),
 		);
 		$instance = wp_parse_args( (array) $instance, $default );
 
 		// Get available cats, tags, events to allow user to limit widget to certain categories
 		$events_categories = get_terms( 'events_categories', array( 'orderby' => 'name', "hide_empty" => false ) );
 		$events_tags       = get_terms( 'events_tags', array( 'orderby' => 'name', "hide_empty" => false ) );
-		$get_events        = new WP_Query( array ( 'post_type' => AI1EC_POST_TYPE, 'posts_per_page' => -1 ) );
-		$events_options    = $get_events->posts;
 
 		// Generate unique IDs and NAMEs of all needed form fields
 		$fields = array(
@@ -90,7 +86,6 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 			'hide_on_calendar_page'  => array('value'   => $instance['hide_on_calendar_page']),
 			'limit_by_cat'           => array('value'   => $instance['limit_by_cat']),
 			'limit_by_tag'           => array('value'   => $instance['limit_by_tag']),
-			'limit_by_post'          => array('value'   => $instance['limit_by_post']),
 			'event_cat_ids'          => array(
 			                                  'value'   => (array)$instance['event_cat_ids'],
 			                                  'options' => $events_categories
@@ -98,10 +93,6 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 			'event_tag_ids'          => array(
 			                                  'value'   => (array)$instance['event_tag_ids'],
 			                                  'options' => $events_tags
-			                                 ),
-			'event_post_ids'         => array(
-			                                  'value'   => (array)$instance['event_post_ids'],
-			                                  'options' => $events_options
 			                                 ),
 		);
 		foreach ( $fields as $field => $data ) {
@@ -176,18 +167,6 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 			$instance['event_tag_ids'] = $new_instance['event_tag_ids'];
 		}
 
-		$instance['limit_by_post'] = false;
-		$instance['event_post_ids'] = array();
-		if ( isset( $new_instance['event_post_ids'] ) && $new_instance['event_post_ids'] != false ) {
-			$instance['limit_by_post'] = true;
-		}
-		if ( isset( $new_instance['limit_by_post'] ) && $new_instance['limit_by_post'] != false ) {
-			$instance['limit_by_post'] = true;
-		}
-		if ( isset( $new_instance['event_post_ids'] ) && $instance['limit_by_post'] === true ) {
-			$instance['event_post_ids'] = $new_instance['event_post_ids'];
-		}
-
 		return $instance;
 	}
 
@@ -209,10 +188,6 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		$html       = $this->_registry->get( 'factory.html' );
 		$javascript = $this->_registry->get( 'controller.javascript' );
 
-//		if ( $ai1ec_themes_controller->frontend_outdated_themes_notice() ) {
-//			return;
-//		}
-
 		$javascript->add_link_to_render_js(
 			Ai1ec_Javascript_Controller::LOAD_ONLY_FRONTEND_SCRIPTS,
 			false
@@ -221,7 +196,6 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 			'hide_on_calendar_page'  => true,
 			'event_cat_ids'          => array(),
 			'event_tag_ids'          => array(),
-			'event_post_ids'         => array(),
 			'events_per_page'        => 10,
 			'days_per_page'          => 10,
 			'events_seek_type'       => 'events',
@@ -237,7 +211,6 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		$subscribe_filter  = '';
 		$subscribe_filter .= $instance['event_cat_ids'] ? '&ai1ec_cat_ids=' . join( ',', $instance['event_cat_ids'] ) : '';
 		$subscribe_filter .= $instance['event_tag_ids'] ? '&ai1ec_tag_ids=' . join( ',', $instance['event_tag_ids'] ) : '';
-		$subscribe_filter .= $instance['event_post_ids'] ? '&ai1ec_post_ids=' . join( ',', $instance['event_post_ids'] ) : '';
 
 		// Get localized time
 		$timestamp = $time->format_to_gmt();
@@ -246,7 +219,6 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		$limit = array(
 		                'cat_ids'   => $instance['event_cat_ids'],
 		                'tag_ids'   => $instance['event_tag_ids'],
-		                'post_ids'  => $instance['event_post_ids'],
 		              );
 
 		// Get events, then classify into date array

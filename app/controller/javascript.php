@@ -381,7 +381,8 @@ class Ai1ec_Javascript_Controller {
 		}
 		$ajax_url        = admin_url( 'admin-ajax.php' );
 		force_ssl_admin( $force_ssl_admin );
-
+		$settings = $this->_registry->get( 'model.settings' );
+		$locale = $this->_registry->get( 'p28n.wpml' );
 		$data = array(
 			// ICS feed error messages
 			'duplicate_feed_message'         => esc_html(
@@ -419,6 +420,16 @@ class Ai1ec_Javascript_Controller {
 			),
 			'language'                       => $this->_registry->get( 'p28n.wpml' )->get_lang(),
 			'ajax_url'                       => $ajax_url,
+			// 24h time format for time pickers
+			'twentyfour_hour'                => $settings->get( 'input_24h_time' ),
+			// Date format for date pickers
+			'date_format'                    => $settings->get( 'input_date_format' ),
+			// Names for months in date picker header (escaping is done in wp_localize_script)
+			'month_names'                    => $locale->get_localized_month_names(),
+			// Names for days in date picker header (escaping is done in wp_localize_script)
+			'day_names'                      => $locale->get_localized_week_names(),
+			// Start the week on this day in the date picker
+			'week_start_day'                 => $settings->get( 'week_start_day' ),
 		);
 		return $data;
 	}

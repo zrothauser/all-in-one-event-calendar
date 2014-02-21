@@ -87,6 +87,29 @@ class Ai1ec_Localization_Helper {
 	}
 
 	/**
+	 *
+	 * @return array
+	 *
+	 * @see Ai1ec_Locale::get_localized_week_names()
+	 *
+	 */
+	public function get_localized_week_names() {
+		global $wp_locale;
+		return implode( ',', $wp_locale->weekday_initial );
+	}
+	/**
+	 *
+	 * @return array
+	 *
+	 * @see Ai1ec_Locale::get_localized_month_names()
+	 *
+	 */
+	public function get_localized_month_names() {
+		global $wp_locale;
+		return implode( ',', $wp_locale->month );
+	}
+
+	/**
 	 * get_translatable_id method
 	 *
 	 * Get ID of AI1EC Event being currently translated.

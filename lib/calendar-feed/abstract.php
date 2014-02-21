@@ -75,7 +75,6 @@ abstract class Ai1ec_Connector_Plugin extends Ai1ec_Base {
 	 *
 	 */
 	protected function get_plugin_settings( $class_name ) {
-
 		$settings = $this->_registry->get( 'model.settings' );
 		$plugins_options = $settings->get( 'plugins_options' );
 		return isset( $plugins_options[$class_name] ) ? $plugins_options[$class_name] : array();

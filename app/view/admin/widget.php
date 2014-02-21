@@ -138,9 +138,9 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		$instance['events_seek_type']       = $this->_valid_seek_type(
 			$new_instance['events_seek_type']
 		);
-		$instance['show_subscribe_buttons'] = $new_instance['show_subscribe_buttons'] ? true : false;
-		$instance['show_calendar_button']   = $new_instance['show_calendar_button']   ? true : false;
-		$instance['hide_on_calendar_page']  = $new_instance['hide_on_calendar_page']  ? true : false;
+		$instance['show_subscribe_buttons'] = isset( $new_instance['show_subscribe_buttons'] ) ? true : false;
+		$instance['show_calendar_button']   = isset( $new_instance['show_calendar_button'] ) ? true : false;
+		$instance['hide_on_calendar_page']  = isset( $new_instance['hide_on_calendar_page'] ) ? true : false;
 
 		// For limits, set the limit to False if no IDs were selected, or set the respective IDs to empty if "limit by" was unchecked
 		$instance['limit_by_cat'] = false;
@@ -181,8 +181,11 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		$type       = $this->get_name();
-		$agenda     = $this->_registry->get( 'view.calendar.view.agenda' );
-		$time       = $this->_registry->get( 'date.time' )->format_to_gmt();
+		$agenda     = $this->_registry->get( 
+			'view.calendar.view.agenda',
+			$this->_registry->get( 'http.request.parser' )
+		);
+		$time       = $this->_registry->get( 'date.time' );
 		$search     = $this->_registry->get( 'model.search' );
 		$settings   = $this->_registry->get( 'model.settings' );
 		$html       = $this->_registry->get( 'factory.html' );
@@ -203,7 +206,7 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		$instance = wp_parse_args( $instance, $defaults );
 
 		if ( $instance['hide_on_calendar_page'] &&
-		    is_page( $settings->get( 'calendar_page_id' ) ) ) {
+			is_page( $settings->get( 'calendar_page_id' ) ) ) {
 			return;
 		}
 
@@ -217,9 +220,9 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 
 		// Set $limit to the specified category/tag
 		$limit = array(
-		                'cat_ids'   => $instance['event_cat_ids'],
-		                'tag_ids'   => $instance['event_tag_ids'],
-		              );
+			'cat_ids'   => $instance['event_cat_ids'],
+			'tag_ids'   => $instance['event_tag_ids'],
+		);
 
 		// Get events, then classify into date array
 		// JB: apply seek check here

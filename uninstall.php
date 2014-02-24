@@ -4,7 +4,7 @@
 // = Trigger Uninstall process only if WP_UNINSTALL_PLUGIN is defined =
 // ====================================================================
 if( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-	global $wpdb, $wp_filesystem, $wp_taxonomies;
+	global $wp_filesystem;
 
 	/**
 	 * remove_taxonomy function
@@ -14,7 +14,7 @@ if( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	 * @return void
 	 **/
 	function ai1ec_remove_taxonomy( $taxonomy ) {
-	
+		global $wp_taxonomies;
 		// get all terms in $taxonomy
 		$terms = get_terms( $taxonomy );
 	
@@ -47,6 +47,7 @@ if( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	 * Delete our options
 	 */
 	function ai1ec_uninstall_options() {
+		global $wpdb;
 		$options = $wpdb->get_col( 'SELECT `option_name` FROM ' . $wpdb->options . ' WHERE `option_name` LIKE \'ai1ec_%\'' );
 		foreach ( $options as $option ) {
 			delete_option( $option );
@@ -59,6 +60,7 @@ if( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	 * @param string $table
 	 */
 	function ai1ec_delete_table_and_backup( $table ) {
+		global $wpdb;
 		$query = 'SHOW TABLES LIKE \'' . $table . '%\'';
 		foreach( $wpdb->get_col( $query ) as $table_name ) {
 			// Delete table events
@@ -70,7 +72,7 @@ if( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	 * Deletes posts and drop tables
 	 */
 	function ai1ec_clean_up_tables() {
-
+		global $wpdb;
 		// Delete events
 		$table_name = $wpdb->prefix . 'ai1ec_events';
 		$query = 'SELECT DISTINCT post_id FROM ' . $table_name;
@@ -110,6 +112,7 @@ if( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	}
 	// For Multisite
 	else {
+		global $wpdb;
 		$blog_ids = $wpdb->get_col( 'SELECT blog_id FROM ' . $wpdb->blogs );
 		$original_blog_id = get_current_blog_id();
 		foreach ( $blog_ids as $blog_id ) {

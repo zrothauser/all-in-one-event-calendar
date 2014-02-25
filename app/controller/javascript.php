@@ -123,7 +123,7 @@ class Ai1ec_Javascript_Controller {
 			$page = self::CALENDAR_PAGE_JS;
 		}
 		if( null !== $page ) {
-			$this->_add_link_to_render_js( $page, false );
+			$this->add_link_to_render_js( $page, false );
 		}
 	}
 
@@ -319,7 +319,7 @@ class Ai1ec_Javascript_Controller {
 			$script_to_load = self::LOAD_ONLY_BACKEND_SCRIPTS;
 		}
 
-		$this->_add_link_to_render_js( $script_to_load, true );
+		$this->add_link_to_render_js( $script_to_load, true );
 
 		add_action( 'current_screen', array( $this, 'add_jira_reporter' ) );
 
@@ -530,7 +530,7 @@ JSC;
 	 *
 	 * @return void
 	 */
-	private function _add_link_to_render_js( $page, $backend ) {
+	public function add_link_to_render_js( $page, $backend ) {
 		$load_backend_script = 'false';
 		if ( true === $backend ) {
 			$load_backend_script = self::TRUE_PARAM;

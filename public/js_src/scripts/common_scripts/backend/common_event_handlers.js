@@ -67,7 +67,10 @@ define(
 
 	// Show/hide the multiselect containers when user clicks on "limit by" widget options
 	var handle_multiselect_containers_widget_page = function( e ) {
-		$( this ).parent().next( '.ai1ec-limit-by-options-container' ).toggle();
+		$( this ).parent().next( '.ai1ec-limit-by-options-container' )
+                                  .toggle()
+                                  .find( 'option' )
+                                  .removeAttr( 'selected' );
 	};
 
 	return {

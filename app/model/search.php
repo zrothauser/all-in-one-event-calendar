@@ -231,7 +231,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		// Get the Join (filter_join) and Where (filter_where) statements based
 		// on $filter elements specified
 		$filter = $this->_get_filter_sql( $filter );
-		
+
 		// Query arguments
 		$args = array( $time );
 		$args = array_merge( $args, $where_parameters['args'] );
@@ -242,7 +242,6 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 			$first_record = ( -$page_offset - 1 ) * $limit;
 		}
 	
-;
 	
 		$wpml_join_particle  = $localization_helper
 			->get_wpml_table_join( 'p.ID' );
@@ -269,8 +268,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 			$filter_date_clause .= ' %d ';
 			$args[0]             = $last_day;
 			$first_record        = 0;
-		} 
-
+		}
 		$query = $this->_dbi->prepare(
 			'SELECT DISTINCT p.*, e.post_id, i.id AS instance_id, ' .
 			'i.start AS start, ' .
@@ -297,6 +295,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 			' LIMIT ' . $first_record . ', ' . $upper_boundary,
 			$args
 		);
+
 		$events = $this->_dbi->get_results( $query, ARRAY_A );
 	
 		// Limit the number of records to convert to data-object
@@ -549,9 +548,9 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		$filter_join  = join( ' ', $filter_join );
 		if ( count( $filter_where ) > 0 ) {
 			$operator     = $this->get_distinct_types_operator();
-			$filter_where = '( ' .
+			$filter_where = $operator . '( ' .
 				implode( ' ) ' . $operator . ' ( ', $filter_where ) .
-				' )';
+				' ) ';
 		} else {
 			$filter_where = '';
 		}

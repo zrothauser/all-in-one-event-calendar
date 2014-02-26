@@ -92,7 +92,7 @@
 				</tr>
 				<tr>
 					<td>
-					  <input type="checkbox" name="ai1ec_exclude" id="ai1ec_exclude" value="1" <?php echo $exclude_event ? 'checked="checked"' : ''; ?> <?php echo $repeating_event ? '' : 'disabled="true"'; ?>/>
+					  <input type="checkbox" name="ai1ec_exclude" id="ai1ec_exclude" value="1" <?php echo $exclude_event ? 'checked="checked"' : ''; ?> <?php echo $repeating_event ? '' : 'disabled'; ?>/>
 					  <input type="hidden" name="ai1ec_exrule" id="ai1ec_exrule" value="<?php echo $exrule; ?>" />
 						<label for="ai1ec_exclude" id="ai1ec_exclude_label">
 							<?php _e( 'Exclude', AI1EC_PLUGIN_NAME ); echo $exclude_event ? ':' : '...'; ?>

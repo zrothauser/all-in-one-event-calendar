@@ -36,7 +36,7 @@
 			<option value="<?php echo $event_cat->term_id; ?>"<?php if( in_array( $event_cat->term_id, $event_cat_ids['value'] ) ) { ?> selected="selected"<?php } ?>><?php echo $event_cat->name; ?></option>
 		<?php endforeach ?>
 		<?php if( count( $event_cat_ids['options'] ) == 0 ) : ?>
-			<option disabled="disabled"><?php _e( 'No categories found.', AI1EC_PLUGIN_NAME ) ?></option>
+			<option disabled><?php _e( 'No categories found.', AI1EC_PLUGIN_NAME ) ?></option>
 		<?php endif ?>
 	</select>
 </div>
@@ -52,7 +52,7 @@
 			<option value="<?php echo $event_tag->term_id; ?>"<?php if( in_array( $event_tag->term_id, $event_tag_ids['value'] ) ) { ?> selected="selected"<?php } ?>><?php echo $event_tag->name; ?></option>
 		<?php endforeach ?>
 		<?php if( count( $event_tag_ids['options'] ) == 0 ) : ?>
-			<option disabled="disabled"><?php _e( 'No tags found.', AI1EC_PLUGIN_NAME ) ?></option>
+			<option disabled><?php _e( 'No tags found.', AI1EC_PLUGIN_NAME ) ?></option>
 		<?php endif ?>
 	</select>
 </div>

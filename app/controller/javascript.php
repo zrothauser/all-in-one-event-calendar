@@ -381,9 +381,9 @@ class Ai1ec_Javascript_Controller {
 		}
 		$ajax_url        = admin_url( 'admin-ajax.php' );
 		force_ssl_admin( $force_ssl_admin );
-		$settings = $this->_registry->get( 'model.settings' );
-		$locale = $this->_registry->get( 'p28n.wpml' );
-		$data = array(
+		$settings        = $this->_registry->get( 'model.settings' );
+		$locale          = $this->_registry->get( 'p28n.wpml' );
+		$data            = array(
 			// ICS feed error messages
 			'duplicate_feed_message'         => esc_html(
 				Ai1ec_I18n::__( 'This feed is already being imported.' )

@@ -24,12 +24,12 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 		$count   = 100;
 		$end     = NULL;
 		$until   = $time_system->current_time( true );
-	
+
 		// try getting the event
 		try {
 			$event = $this->_registry->get( 'model.event', $post_id );
 			$rule = '';
-	
+
 			if ( $repeat ) {
 				$rule = $event->get( 'recurrence_rules' ) ?
 				'' :
@@ -39,11 +39,11 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 				'' :
 				$event->get( 'exception_rules' );
 			}
-	
+
 			$rc = new SG_iCal_Recurrence(
 				new SG_iCal_Line( 'RRULE:' . $rule )
 			);
-	
+
 			if ( $until = $rc->getUntil() ) {
 				$until = ( is_numeric( $until ) )
 				? $until
@@ -52,7 +52,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 				$count = ( is_numeric( $count ) ) ? $count : 100;
 			}
 		} catch( Ai1ec_Event_Not_Found_Exception $e ) { /* event wasn't found, keep defaults */ }
-	
+
 		$args = array(
 			'row_daily'       => $this->row_daily(),
 			'row_weekly'      => $this->row_weekly(),
@@ -99,7 +99,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 			5 => 'FR',
 			6 => 'SA',
 		);
-	
+
 		if ( $by_value ) {
 			while ( $_name = current( $week_days ) ) {
 				if ( $_name == $day_id ) {
@@ -149,7 +149,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 			? stripslashes( $message )
 			: $message,
 		);
-	
+
 		$json_strategy = $this->_registry->get( 'http.response.render.strategy.json' );
 		$json_strategy->render( array( 'data' => $output ) );
 	}
@@ -164,13 +164,13 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 	 **/
 	protected function create_end_dropdown( $selected = NULL ) {
 		ob_start();
-	
+
 		$options = array(
 			0 => Ai1ec_I18n::__( 'Never' ),
 			1 => Ai1ec_I18n::__( 'After' ),
 			2 => Ai1ec_I18n::__( 'On date' ),
 		);
-	
+
 		?>
 		<select name="ai1ec_end" id="ai1ec_end">
 					<?php foreach( $options as $key => $val ): ?>
@@ -181,10 +181,10 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 					<?php endforeach ?>
 				</select>
 		<?php
-		
+
 				$output = ob_get_contents();
 				ob_end_clean();
-		
+
 				return $output;
 	}
 
@@ -197,7 +197,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 	 **/
 	protected function row_daily( $visible = false, $selected = 1 ) {
 		$loader = $this->_registry->get( 'theme.loader' );
-	
+
 		$args = array(
 			'visible'  => $visible,
 			'count'    => $this->create_count_input(
@@ -209,7 +209,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 		return $loader->get_file( 'row_daily.php', $args, true )
 			->get_content();
 	}
-	
+
 	/**
 	 * Generates and returns "End after X times" input
 	 *
@@ -219,7 +219,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 	 */
 	protected function create_count_input( $name, $count = 100, $max = 365 ) {
 		ob_start();
-	
+
 		if ( ! $count ) {
 			$count = 100;
 		}
@@ -230,7 +230,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 	<?php
 		return ob_get_clean();
 	}
-	
+
 	/**
 	 * row_weekly function
 	 *
@@ -247,14 +247,14 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 		$start_of_week = $this->_registry->get( 'model.option' )
 			->get( 'start_of_week', 1 );
 		$loader = $this->_registry->get( 'theme.loader' );
-	
+
 		$options = array();
 		// get days from start_of_week until the last day
 		for ( $i = $start_of_week; $i <= 6; ++$i ) {
 			$options[$this->get_weekday_by_id( $i )] = $wp_locale
 				->weekday_initial[$wp_locale->weekday[$i]];
 		}
-	
+
 		// get days from 0 until start_of_week
 		if ( $start_of_week > 0 ) {
 			for ( $i = 0; $i < $start_of_week; $i++ ) {
@@ -262,7 +262,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 					->weekday_initial[$wp_locale->weekday[$i]];
 			}
 		}
-	
+
 		$args = array(
 			'visible'    => $visible,
 			'count'      => $this->create_count_input(
@@ -279,7 +279,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 		return $loader->get_file( 'row_weekly.php', $args, true )
 			->get_content();
 	}
-	
+
 	/**
 	 * create_list_element method
 	 *
@@ -309,7 +309,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 	<?php
 			return ob_get_clean();
 	}
-	
+
 	/**
 	 * row_monthly function
 	 *
@@ -330,14 +330,14 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 		$start_of_week = $this->_registry->get( 'model.option' )
 			->get( 'start_of_week', 1 );
 		$loader = $this->_registry->get( 'theme.loader' );
-	
+
 		$options_wd = array();
 		// get days from start_of_week until the last day
 		for ( $i = $start_of_week; $i <= 6; ++$i ) {
 			$options_wd[$this->get_weekday_by_id( $i )] = $wp_locale
 				->weekday[$i];
 		}
-	
+
 		// get days from 0 until start_of_week
 		if ( $start_of_week > 0 ) {
 			for ( $i = 0; $i < $start_of_week; $i++ ) {
@@ -345,17 +345,17 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 					->weekday[$i];
 			}
 		}
-	
+
 		// get options like 1st/2nd/3rd for "day number"
 		$options_dn = array( 1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5 );
 		foreach ( $options_dn as $_dn ) {
-			$options_dn[$_dn] = $this->_registry->get( 
+			$options_dn[$_dn] = $this->_registry->get(
 				'date.time',
 				strtotime( $_dn . '-01-1998 12:00:00' )
 			)->format_i18n( 'jS' );
 		}
 		$options_dn['-1'] = Ai1ec_I18n::__( 'last' );
-	
+
 		$args = array(
 			'visible'              => $visible,
 			'count'                => $this->create_count_input(
@@ -416,7 +416,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 		$s_selected = false
 	) {
 		$ret = '';
-	
+
 		$first_options = array(
 			'0' => Ai1ec_I18n::__( 'first' ),
 			'1' => Ai1ec_I18n::__( 'second' ),
@@ -431,7 +431,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 			$f_selected,
 			array( 4 )
 		);
-	
+
 		$second_options = array(
 			'0'   => Ai1ec_I18n::__( 'Sunday' ),
 			'1'   => Ai1ec_I18n::__( 'Monday' ),
@@ -445,7 +445,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 			'9'   => Ai1ec_I18n::__( 'weekday' ),
 			'10'  => Ai1ec_I18n::__( 'weekend day' )
 		);
-	
+
 		return $ret . $this->create_select_element(
 			'ai1ec_monthly_on_the_select',
 			$second_options,
@@ -453,7 +453,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 			array( 7 )
 		);
 	}
-	
+
 	/**
 	 * create_select_element function
 	 *
@@ -478,7 +478,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 				<?php foreach( $options as $key => $val ): ?>
 					<option value="<?php echo $key ?>"
 			<?php echo $key === $selected ? 'selected="selected"' : '' ?>
-			<?php echo in_array( $key, $disabled_keys ) ? 'disabled="disabled"' : '' ?>>
+			<?php echo in_array( $key, $disabled_keys ) ? 'disabled' : '' ?>>
 						<?php echo $val ?>
 					</option>
 				<?php endforeach ?>
@@ -486,7 +486,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 	<?php
 			return ob_get_clean();
 	}
-	
+
 	/**
 	 * row_yearly function
 	 *
@@ -502,7 +502,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 		$second  = false
 	) {
 		$loader = $this->_registry->get( 'theme.loader' );
-	
+
 		$args = array(
 			'visible'              => $visible,
 			'count'                => $this->create_count_input(
@@ -519,7 +519,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 		return $loader->get_file( 'row_yearly.php', $args, true )
 			->get_content();
 	}
-	
+
 	/**
 	 * create_yearly_date_select function
 	 *

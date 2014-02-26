@@ -70,6 +70,7 @@ class Ai1ec_Export_Controller extends Ai1ec_Base {
 	 * @return void
 	 */
 	function n_cron() {
+		global $wp_filesystem;
 		$dbi            = $this->_registry->get( 'dbi.dbi' );
 		$ai1ec_settings = $this->_registry->get( 'model.settings' );
 
@@ -101,8 +102,8 @@ class Ai1ec_Export_Controller extends Ai1ec_Base {
 				$tags[] = $term->name;
 			}
 		}
-		$options = $this->_registry->get( 'model.option' );
-		$data = array(
+		$options    = $this->_registry->get( 'model.option' );
+		$data       = array(
 			'n_users'        => $n_users,
 			'n_events'       => $n_events,
 			'categories'     => $categories,
@@ -120,6 +121,9 @@ class Ai1ec_Export_Controller extends Ai1ec_Base {
 				->get_default_timezone(),
 			'privacy'        => $options->get( 'blog_public' ),
 			'plugin_version' => AI1EC_VERSION,
+			'wp_filesystem'  => $wp_filesystem->method,
+			'wp_debug'       => WP_DEBUG,
+			'ai1ec_debug'    => AI1EC_DEBUG,
 			'active_theme'   => $options->get(
 				'ai1ec_template',
 				AI1EC_DEFAULT_THEME_NAME

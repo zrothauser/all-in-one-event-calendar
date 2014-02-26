@@ -69,8 +69,7 @@ abstract class Ai1ec_Extension_Controller extends Ai1ec_Base {
 	abstract protected function _register_actions( Ai1ec_Event_Dispatcher $dispatcher );
 
 	/**
-	 * Taken from stack exchange
-	 * http://wordpress.stackexchange.com/questions/25910/uninstall-activate-deactivate-a-plugin-typical-features-how-to/25979#25979
+	 * Removes options when uninstalling the plugin.
 	 */
 	public static function on_uninstall() {
 		if ( ! current_user_can( 'activate_plugins' ) ) {

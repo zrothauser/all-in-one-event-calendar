@@ -262,4 +262,18 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		return $links;
 	}
 
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Calendar_View_Abstract::_add_view_specific_runtime_properties()
+	*/
+	protected function _add_view_specific_runtime_properties( Ai1ec_Event $event ) {
+		$taxonomy = $this->_registry->get( 'view.event.taxonomy' );
+		$event->set_runtime(
+			'categories_html',
+			$taxonomy->get_categories_html( $event )
+		);
+		$event->set_runtime(
+			'tags_html',
+			$taxonomy->get_tags_html( $event )
+		);
+	}
 }

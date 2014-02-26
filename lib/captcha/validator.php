@@ -6,8 +6,8 @@
  * @author     Time.ly Network Inc.
  * @since      2.0
  *
- * @package    AI1ECIF
- * @subpackage AI1ECIF.Controller
+ * @package    AI1EC
+ * @subpackage AI1EC.Captcha
  */
 class Ai1ec_Captcha_Validator extends Ai1ec_Base {
 
@@ -28,9 +28,9 @@ class Ai1ec_Captcha_Validator extends Ai1ec_Base {
 		require_once( AI1EC_VENDOR_PATH . 'recaptcha/recaptchalib.php' );
 		$resp = recaptcha_check_answer(
 			$settings->get( 'recaptcha_private_key' ),
-			$_SERVER["REMOTE_ADDR"],
-			$_POST["recaptcha_challenge_field"],
-			$_POST["recaptcha_response_field"]
+			$_SERVER['REMOTE_ADDR'],
+			$_POST['recaptcha_challenge_field'],
+			$_POST['recaptcha_response_field']
 		);
 	
 		if ( ! $resp->is_valid ) {

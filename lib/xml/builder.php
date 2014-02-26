@@ -3,11 +3,11 @@
 /**
  * XML document manipulations library.
  *
- * @author     Timely Network Inc
- * @since      2012.11.27
+ * @author     Time.ly Network Inc.
+ * @since      2.0
  *
- * @package    AllInOneEventCalendar
- * @subpackage AllInOneEventCalendar.Lib.Utility
+ * @package    AI1EC
+ * @subpackage AI1EC.Xml
  */
 class Ai1ec_XML_Builder {
 

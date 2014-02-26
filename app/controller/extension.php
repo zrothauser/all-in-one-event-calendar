@@ -76,13 +76,6 @@ abstract class Ai1ec_Extension_Controller extends Ai1ec_Base {
 		if ( ! current_user_can( 'activate_plugins' ) ) {
 			return;
 		}
-		check_admin_referer( 'bulk-plugins' );
-	
-		// Important: Check if the file is the one
-		// that was registered during the uninstall hook.
-		if ( __FILE__ != WP_UNINSTALL_PLUGIN ) {
-			return;
-		}
 	
 		$settings = self::$_registry_static->get( 'model.settings' );
 		foreach ( self::$_settings_static as $name => $params ) {
@@ -107,17 +100,19 @@ abstract class Ai1ec_Extension_Controller extends Ai1ec_Base {
 		$this->_settings = $settings;
 		self::$_settings_static = $settings;
 		// if we are reactivating, show the options
-		if ( is_admin() && get_option( $this->_activated_option ) ) {
+		if ( is_admin() && 
+			$registry->get( 'model.option' )->get( $this->_activated_option ) 
+		) {
 			$this->show_settings();
-			delete_option( $this->_activated_option );
+			$registry->get( 'model.option' )->delete( $this->_activated_option );
 		}
 		$this->_register_actions( $registry->get( 'event.dispatcher' ) );
 		$this->_add_settings( $registry->get( 'model.settings' ) );
 	}
 
 	/**
-	 * Taken from stack exchange
-	 * http://wordpress.stackexchange.com/questions/25910/uninstall-activate-deactivate-a-plugin-typical-features-how-to/25979#25979
+	 * Adds an option to the db to perform activation after the redirect
+	 * 
 	 */
 	public function on_activation() {
 		if ( ! current_user_can( 'activate_plugins' ) ) {
@@ -128,8 +123,7 @@ abstract class Ai1ec_Extension_Controller extends Ai1ec_Base {
 	}
 
 	/**
-	 * Taken from stack exchange
-	 * http://wordpress.stackexchange.com/questions/25910/uninstall-activate-deactivate-a-plugin-typical-features-how-to/25979#25979
+	 * Hides settings on deactivation.
 	 */
 	public function on_deactivation() {
 		if ( ! current_user_can( 'activate_plugins' ) ) {

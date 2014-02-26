@@ -5,6 +5,13 @@
 {% from 'form-elements/input.twig' import input %}
 {% spaceless %}
 {{ input( id, id, value, 'text', input_args ) }}
+{% if licence_valid is defined %}
+	{% if licence_valid == true %}
+		<i class='icon-ok'></i>
+	{% else %}
+		<i class='icon-off'></i>
+	{% endif %}
+{% endif %}
 {% if append is defined %}
   <span class="add-on">{{ append }}</span>
 </div>

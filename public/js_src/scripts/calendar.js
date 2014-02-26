@@ -6,7 +6,6 @@ define(
 		"scripts/calendar/print",
 		"scripts/calendar/agenda_view",
 		"scripts/calendar/month_view",
-		"scripts/calendar/submit_ics_modal",
 		"ai1ec_calendar",
 		"ai1ec_config",
 		"scripts/common_scripts/frontend/common_frontend",
@@ -18,11 +17,10 @@ define(
 		'external_libs/jquery_cookie',
 	],
 	function( $, domReady, load_views, print, agenda_view,
-		month_view, submit_ics_modal, ai1ec_calendar, ai1ec_config, common_frontend,
+		month_view, ai1ec_calendar, ai1ec_config, common_frontend,
 		AI1EC_UTILS, select2_multiselect_helper ) {
 	"use strict"; // jshint ;_;
 
-	var create_event_form;
 	/**
 	 * Moves calendar into CSS selector defined by advanced settings.
 	 */
@@ -47,90 +45,6 @@ define(
 				.css( 'visibility', 'visible' )
 				.fadeIn( 'fast' );
 		}
-	};
-
-	/**
-	 * Initialize Create Your Event modal dialog.
-	 */
-	var init_create_event_modal = function() {
-		var $modal = $( '#ai1ec-create-event-modal' );
-		// move the modal to be a child of the body
-		$timely = $( '<div class="timely" />' );
-		$modal.appendTo( $timely );
-		$timely.appendTo( 'body' );
-		$modal
-			.modal( { show: false } )
-			// Execute initialization only once.
-			.one( 'show', function() {
-				// Load the form body via AJAX.
-				$( '.ai1ec-ajax-placeholder', this ).load(
-					ai1ec_config.ajax_url + '?action=ai1ec_front_end_create_event_form',
-					function() {
-						// Hide spinner.
-						$( '> .ai1ec-loading', $modal ).removeClass( 'show' );
-						// Start up requirejs when form body is loaded.
-						require( [ 'scripts/front_end_create_event_form' ],
-							function( page ) {
-								create_event_form = page;
-								page.start();
-						} );
-				} );
-			} )
-			.on( 'show', function() {
-				// the first time the object is not present.
-				if( typeof create_event_form !== 'undefined' ) {
-					create_event_form.init_recaptcha();
-				}
-			} )
-			.on( 'hidden', function( e ) {
-				// Take off classes so that it reinitializes correctly.
-				$( '.ai1ec-recaptcha', this ).removeClass(
-					'ai1ec-initializing ai1ec-initialized'
-				);
-				// remove the backdrop since firefox has problems with transitionend
-				$( '.ai1ec-modal-backdrop' ).remove();
-				Recaptcha.destroy();
-			} );
-
-		// Stop bubbling of collapsibles within modal, else they interfere with
-		// above events.
-		$modal.on( 'show hidden', '.collapse', function( e ) {
-			e.stopPropagation();
-		} );
-	};
-
-	/**
-	 * Initialize Add Your Calendar modal.
-	 */
-	var init_submit_ics_modal = function() {
-		var $modal = $( '#ai1ec-submit-ics-modal' );
-		// move the modal to be a child of the body
-		$timely = $( '<div class="timely" />' );
-		$modal.appendTo( $timely );
-		$timely.appendTo( 'body' );
-		$modal
-			.modal( { show: false } )
-			.one( 'show', function() {
-				submit_ics_modal.init_form();
-			} )
-			.on( 'show', function() {
-				submit_ics_modal.init_recaptcha();
-			} )
-			.on( 'hidden', function() {
-				// Take off classes so that it reinitializes correctly.
-				$( '.ai1ec-recaptcha', this ).removeClass(
-					'ai1ec-initializing ai1ec-initialized'
-				);
-				// remove the backdrop since firefox has problems with transitionend
-				$( '.ai1ec-modal-backdrop' ).remove();
-				Recaptcha.destroy();
-			} );
-
-		// Stop bubbling of collapsibles within modal, else they interfere with
-		// above events.
-		$modal.on( 'show hidden', '.collapse', function( e ) {
-			e.stopPropagation();
-		} );
 	};
 
 	/**
@@ -187,11 +101,6 @@ define(
 	var init = function() {
 		// Do the replacement of the calendar and create title if not present
 		css_selector_replacement();
-
-		// Initialize Post Your Event modal.
-		init_create_event_modal();
-		// Initialize Add Your Calendar modal.
-		init_submit_ics_modal();
 	};
 
 
@@ -280,21 +189,6 @@ define(
 				$( '.tablescroll_wrapper' ).animate( { height: height + 'px' } );
 			}
 
-		);
-
-		$( document ).on( 'submit',     '.ai1ec-submit-ics-form',
-			submit_ics_modal.handle_form_submission
-		);
-
-
-		// Handle click on save view
-		$( document ).on( 'click', '#save_filtered_views:not(.active)',
-			load_views.save_current_filter
-		);
-
-		// Handle click on remove saved view
-		$( document ).on( 'click', '#save_filtered_views.active',
-			load_views.remove_current_filter
 		);
 
 		// Bind to statechange event.

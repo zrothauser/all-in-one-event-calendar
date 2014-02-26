@@ -54,11 +54,11 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 						case 'array';
 							$method = '_handle_saving_' . $name;
 							$value = $this->$method();
-						break;
+							break;
 						case 'mixed';
 							$method = '_handle_saving_' . $name;
 							$value = $this->$method( $_POST[$name] );
-						break;
+							break;
 					}
 				}
 			} else {
@@ -66,11 +66,13 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 					$value = false;
 				}
 			}
-			
 			if ( null !== $value ) {
 				$settings->set( $name, $value );
 			}
 		}
+		$new_options = $settings->get_options();
+		// let extension manipulate things if needed.
+		do_action( 'ai1ec_settings_updated', $options, $new_options );
 
 		return array(
 			'url' => admin_url( 

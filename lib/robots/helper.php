@@ -37,6 +37,9 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 			'edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings',
 			'ai1ec-nonce'
 		);
+		if ( ! function_exists( 'request_filesystem_credentials' )  ) {
+			return;
+		}
 
 		$creds = request_filesystem_credentials( $url, '', false, false, null );
 		if ( ! WP_Filesystem( $creds ) ) {

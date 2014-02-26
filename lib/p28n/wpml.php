@@ -87,6 +87,29 @@ class Ai1ec_Localization_Helper {
 	}
 
 	/**
+	 * Get a list of localized week day names.
+	 *
+	 * @see Ai1ec_Locale::get_localized_week_names()
+	 *
+	 * @return string Comma-separated list of localized week day names.
+	 */
+	public function get_localized_week_names() {
+		global $wp_locale;
+		return implode( ',', $wp_locale->weekday_initial );
+	}
+	/**
+	 * Return list of localized month names.
+	 *
+	 * @see Ai1ec_Locale::get_localized_month_names()
+	 *
+	 * @return array Comma-separated list of localized month names.
+	 */
+	public function get_localized_month_names() {
+		global $wp_locale;
+		return implode( ',', $wp_locale->month );
+	}
+
+	/**
 	 * get_translatable_id method
 	 *
 	 * Get ID of AI1EC Event being currently translated.

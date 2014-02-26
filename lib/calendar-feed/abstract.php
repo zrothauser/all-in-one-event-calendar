@@ -65,26 +65,29 @@ abstract class Ai1ec_Connector_Plugin extends Ai1ec_Base {
 		$file->render();
 	}
 	/**
-	 * Gets the settings for the Plugin from the settings object
+	 * Gets the settings for the Plugin from the settings object.
 	 *
-	 * @param string $class_name
-	 *  The name of the Plugin for which we are retrieving the settings
+	 * @param string $class_name The name of the Plugin for which we are
+	 *                           retrieving the settings.
 	 *
-	 * @return array
-	 *   An associative array with the settings stored in settings object or an empty array if settings are not set
-	 *
+	 * @return array An associative array with the settings stored in settings
+	 *               object or an empty array if settings are not set.
 	 */
 	protected function get_plugin_settings( $class_name ) {
-
-		$settings = $this->_registry->get( 'model.settings' );
-		$plugins_options = $settings->get( 'plugins_options' );
-		return isset( $plugins_options[$class_name] ) ? $plugins_options[$class_name] : array();
+		$plugins_options = $this->_registry->get( 'model.settings' )
+			->get( 'plugins_options' );
+		return isset( $plugins_options[$class_name] )
+			? $plugins_options[$class_name]
+			: array();
 	}
+
 	/**
-	 * Generate an arry which contains all settings data that will be processed by the admin view
+	 * Generate an arry which contains all settings data.
 	 *
-	 * @return array
-	 *   An array of Associative arrays that hold everything that's needed to render the settings field in the admin section
+	 * Only data that will be processed by the admin view is considered.
+	 *
+	 * @return array An array of Associative arrays that hold everything that's
+	 *               needed to render the settings field in the admin section.
 	 */
 	protected function generate_settings_array_for_admin_view() {
 		// Get the plugin settings

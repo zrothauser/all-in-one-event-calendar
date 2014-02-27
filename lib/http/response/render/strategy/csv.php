@@ -17,11 +17,11 @@ class Ai1ec_Render_Strategy_Csv extends Ai1ec_Http_Response_Render_Strategy {
 		$this->_dump_buffers();
 
 		$now       = gmdate( 'D, d M Y H:i:s' );
-		$filename = $params['filename'];
+		$filename  = $params['filename'];
 
 		header( 'Expires: Tue, 03 Jul 2001 06:00:00 GMT' );
 		header( 'Cache-Control: max-age=0, no-cache, must-revalidate, proxy-revalidate' );
-		header( "Last-Modified: {$now} GMT" );
+		header( 'Last-Modified: ' . $now . ' GMT' );
 
 		// force download
 		header( 'Content-Type: application/force-download' );

@@ -249,7 +249,7 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		);
 		if ( $seek_days ) {
 			foreach ( $event_results['events'] as $ek => $event ) {
-				if ( $event->start >= $last_day ) {
+				if ( $event->get( 'start' )->format() >= $last_day ) {
 					unset( $event_results['events'][$ek] );
 				}
 			}

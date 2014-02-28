@@ -4,7 +4,7 @@
 	{{ ( before_title ~ title ~ after_title ) | raw }}
 {% endif %}
 
-<div class="timely ai1ec-agenda-widget-view"><div class="clearfix">
+<div class="timely ai1ec-agenda-widget-view ai1ec-clearfix">
 
 	{% if dates is empty %}
 		<p class="ai1ec-no-results">
@@ -53,52 +53,7 @@
 										</span>
 									</a>
 
-									<div class="ai1ec-popup hide">
-										{% set category_colors = event.get_runtime( 'category_colors' ) %}
-										{% if category_colors is not empty %}
-											<div class="ai1ec-color-swatches">{{ category_colors }}</div>
-										{% endif %}
-
-										<span class="ai1ec-popup-title popover-title">
-											<a href="{{ event.get_runtime( 'instance_permalink' ) | e('html_attr') }}"
-												>{{ event.get_runtime( 'filtered_title' ) | truncate }}</a>
-											{% if show_location_in_title and event.get( 'venue' ) is not empty %}
-												<span class="ai1ec-event-location"
-													>{{ '@ %s' | __ | format( event.get( 'venue' ) ) }}</span>
-											{% endif %}
-											{% if is_ticket_button_enabled and event.get( 'ticket_url' ) is not empty %}
-												<a class="pull-right btn btn-primary btn-mini
-													ai1ec-buy-tickets"
-													target="_blank"
-													href="{{ event.get( 'ticket_url' ) | e('html_attr') }}"
-													>{{ event.get_runtime( 'ticket_url_label' ) }}</a>
-											{% endif %}
-										</span>
-
-										{% set edit_post_link = event.get_runtime( 'edit_post_link' ) %}
-										{% if edit_post_link is not empty %}
-											<a class="post-edit-link"
-												href="{{ edit_post_link | raw }}">
-												<i class="icon-pencil"></i> {{ 'Edit' | __ }}
-											</a>
-										{% endif %}
-
-										<div class="ai1ec-event-time">
-											{{ event | timespan( 'short' ) | raw }}
-										</div>
-
-										{{ event | avatar( [
-											'post_thumbnail',
-											'content_img',
-											'location_avatar',
-											'category_avatar'
-											], 'alignleft' ) | raw }}
-
-										{% set post_excerpt = event.get_runtime( 'post_excerpt' ) | trim %}
-										{% if post_excerpt is not empty %}
-											<div class="ai1ec-popup-excerpt">{{ post_excerpt }}</div>
-										{% endif %}
-									</div>
+									{% include 'event-popup.twig' %}
 
 								</div>
 							{% endfor %} {# event in category #}
@@ -112,16 +67,17 @@
 	{% if show_calendar_button or show_subscribe_buttons %}
 		<p>
 			{% if show_calendar_button %}
-				<a class="btn btn-mini pull-right ai1ec-calendar-link"
+				<a class="ai1ec-btn ai1ec-btn-default ai1ec-btn-xs ai1ec-pull-right
+					ai1ec-calendar-link"
 					href="{{ calendar_url | e('html_attr') }}">
 					{{ 'View Calendar' | __ }}
-					<i class="icon-arrow-right"></i>
+					<i class="ai1ec-fa ai1ec-fa-arrow-right"></i>
 				</a>
 			{% endif %}
 
 			{% if show_subscribe_buttons %}
 				{% include 'subscribe-buttons.twig' with {
-					'button_classes':  'btn-mini',
+					'button_classes':  'ai1ec-btn-xs',
 					'export_url':      subscribe_url,
 					'subscribe_label': 'Add' | __,
 					'google_label':    'Add' | __
@@ -130,6 +86,6 @@
 		</p>
 	{% endif %} {# show_calendar_button or show_subscribe_buttons #}
 
-</div></div>
+</div>
 
 {{ args.after_widget }}

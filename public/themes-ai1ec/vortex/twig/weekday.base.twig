@@ -12,10 +12,11 @@
 					{# Display Reveal button in last cell only #}
 					{% if show_reveal_button and loop.last %}
 						<div class="ai1ec-reveal-full-day">
-							<button class="btn btn-small ai1ec-tooltip-trigger"
+							<button class="ai1ec-btn ai1ec-btn-default ai1ec-btn-sm
+									ai1ec-tooltip-trigger"
 								data-placement="left"
 								title="{{ 'Reveal full day' | __ | e('html_attr') }}">
-								<i class="icon-resize-full icon-large"></i>
+								<i class="ai1ec-fa ai1ec-fa-resize-full ai1ec-fa-lg"></i>
 							</button>
 						</div>
 					{% endif %}
@@ -166,4 +167,4 @@
 	</tbody>
 </table>
 
-<div class="pull-right">{{ pagination_links | raw }}</div>
+<div class="ai1ec-pull-right">{{ pagination_links | raw }}</div>

@@ -1,1 +1,1 @@
-<div class="tab-pane" id="<?php echo $id ?>">
+<div class="ai1ec-tab-pane" id="<?php echo $id ?>">

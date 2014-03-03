@@ -1,21 +1,17 @@
 <label class="textinput" for="{{ id }}">
-    {% autoescape false %}
-        {{ label }}
-    {% endautoescape %}
+	{{ label | raw }}
 </label>
 {% if append is defined %}
-	<div class="input-append">
+	<div class="ai1ec-input-group">
 {% endif %}
 {% from 'form-elements/textarea.twig' import textarea %}
 {{ textarea( id, id, value, input_args ) }}
 {% if append is defined %}
-	<span class="add-on">{{ append }}</span>
+		<span class="ai1ec-input-addon">{{ append }}</span>
 	</div>
 {% endif %}
 {% if help is defined %}
-<span class="help-block">
-	{% autoescape false %}
-	{{ help }}
-	{% endautoescape %}
-</span>
+	<span class="ai1ec-help-block">
+		{{ help | raw }}
+	</span>
 {% endif %}

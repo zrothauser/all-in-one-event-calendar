@@ -1,26 +1,24 @@
 <label class="textinput" for="{{ id }}">{{ label }}</label>
 {% if append is defined %}
-	<div class="input-append">
+	<div class="ai1ec-input-group">
 {% endif %}
 {% from 'form-elements/input.twig' import input %}
 {% spaceless %}
 {{ input( id, id, value, 'text', input_args ) }}
 {% if licence_valid is defined %}
 	{% if licence_valid == true %}
-		<i class='icon-ok'></i>
+		<i class='ai1ec-fa ai1ec-fa-check'></i>
 	{% else %}
-		<i class='icon-off'></i>
+		<i class='ai1ec-fa ai1ec-fa-power-off'></i>
 	{% endif %}
 {% endif %}
 {% if append is defined %}
-  <span class="add-on">{{ append }}</span>
+  <span class="ai1ec-input-addon">{{ append }}</span>
 </div>
 {% endif %}
 {% endspaceless %}
 {% if help is defined %}
-<span class="help-block">
-	{% autoescape false %}
-	{{ help }}
-	{% endautoescape %}
+<span class="ai1ec-help-block">
+	{{ help | raw }}
 </span>
 {% endif %}

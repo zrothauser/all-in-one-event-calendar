@@ -1,13 +1,15 @@
-<div class="accordion-heading">
-	<a class="accordion-toggle" data-toggle="ai1ec_collapse"
+<div class="ai1ec-panel-heading">
+	<a data-toggle="ai1ec-collapse"
 		data-parent="#ai1ec-add-new-event-accordion"
 		href="#ai1ec-event-location-box">
-		<i class="icon-map-marker"></i> <?php _e( 'Event location details', AI1EC_PLUGIN_NAME ); ?>
+		<i class="ai1ec-fa ai1ec-fa-map-marker"></i>
+		<?php _e( 'Event location details', AI1EC_PLUGIN_NAME ); ?>
 	</a>
 </div>
-<div id="ai1ec-event-location-box" class="accordion-body collapse">
-	<div class="accordion-inner">
-		<div class="ai1ec_box_map <?php if( $show_map ) echo 'ai1ec_box_map_visible' ?>">
+<div id="ai1ec-event-location-box" class="ai1ec-panel-collapse ai1ec-collapse">
+	<div class="ai1ec-panel-body">
+		<div class="ai1ec_box_map
+			<?php if( $show_map ) echo 'ai1ec_box_map_visible' ?>">
 			<div id="ai1ec_map_canvas"></div>
 		</div>
 		<div id="ai1ec-inside-wrapper">
@@ -20,7 +22,9 @@
 							</label>
 						</td>
 						<td>
-							<input type="text" name="ai1ec_venue" id="ai1ec_venue" value="<?php echo $venue; ?>" />
+							<input type="text" name="ai1ec_venue" id="ai1ec_venue"
+								class="ai1ec-form-control"
+								value="<?php echo $venue; ?>">
 						</td>
 					</tr>
 					<tr>
@@ -30,7 +34,9 @@
 							</label>
 						</td>
 						<td>
-							<input type="text" name="ai1ec_address" id="ai1ec_address" value="<?php echo $address; ?>" />
+							<input type="text" name="ai1ec_address" id="ai1ec_address"
+								class="ai1ec-form-control"
+								value="<?php echo $address; ?>">
 						</td>
 					</tr>
 					<tr>
@@ -40,7 +46,8 @@
 							</label>
 						</td>
 						<td>
-							<input type="checkbox" value="1" name="ai1ec_google_map" id="ai1ec_google_map" <?php echo $google_map; ?> />
+							<input type="checkbox" value="1" name="ai1ec_google_map"
+								id="ai1ec_google_map" <?php echo $google_map; ?>>
 						</td>
 					</tr>
 					<tr>
@@ -50,7 +57,8 @@
 							</label>
 						</td>
 						<td>
-							<input type="checkbox" value="1" name="ai1ec_input_coordinates" id="ai1ec_input_coordinates" <?php echo $coordinates; ?> />
+							<input type="checkbox" value="1" name="ai1ec_input_coordinates"
+								id="ai1ec_input_coordinates" <?php echo $coordinates; ?>>
 						</td>
 					</tr>
 				</tbody>
@@ -64,7 +72,10 @@
 							</label>
 						</td>
 						<td>
-							<input type="text" class="longitude coordinates" name="ai1ec_longitude" id="ai1ec_longitude" value="<?php echo $longitude; ?>" />
+							<input type="text" class="longitude coordinates"
+								name="ai1ec_longitude" id="ai1ec_longitude"
+								class="ai1ec-form-control"
+								value="<?php echo $longitude; ?>">
 						</td>
 					</tr>
 					<tr>
@@ -74,15 +85,18 @@
 							</label>
 						</td>
 						<td>
-							<input type="text" class="latitude coordinates" name="ai1ec_latitude" id="ai1ec_latitude" value="<?php echo $latitude; ?>" />
+							<input type="text" class="latitude coordinates"
+								name="ai1ec_latitude" id="ai1ec_latitude"
+								class="ai1ec-form-control"
+								value="<?php echo $latitude; ?>">
 						</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
-		<input type="hidden" name="ai1ec_city" 				id="ai1ec_city" 				value="<?php echo $city; ?>" />
-		<input type="hidden" name="ai1ec_province" 		id="ai1ec_province" 		value="<?php echo $province; ?>" />
-		<input type="hidden" name="ai1ec_postal_code" id="ai1ec_postal_code"	value="<?php echo $postal_code; ?>" />
-		<input type="hidden" name="ai1ec_country" 		id="ai1ec_country" 			value="<?php echo $country; ?>" />
+		<input type="hidden" name="ai1ec_city" 				id="ai1ec_city" 				value="<?php echo $city; ?>">
+		<input type="hidden" name="ai1ec_province" 		id="ai1ec_province" 		value="<?php echo $province; ?>">
+		<input type="hidden" name="ai1ec_postal_code" id="ai1ec_postal_code"	value="<?php echo $postal_code; ?>">
+		<input type="hidden" name="ai1ec_country" 		id="ai1ec_country" 			value="<?php echo $country; ?>">
 	</div>
 </div>

@@ -1,14 +1,15 @@
 <div class="message {{class}}">
 	{% if label %}
-	<h3>{{ label }}</h3>
+		<h3>{{ label }}</h3>
 	{% endif %}
 
-	{% autoescape false %}
-		{{ message }}
-	{% endautoescape %}
+	{{ message | raw }}
 
 	{% if button %}
-		<div><input type="button" class="button {{ button.class }}" value="{{ button.value }}" /></div>
+		<div>
+			<input type="button" class="button {{ button.class }}"
+				value="{{ button.value }}">
+		</div>
 		<p></p>
 	{% endif %}
 </div>

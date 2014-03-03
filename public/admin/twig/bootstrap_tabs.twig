@@ -1,38 +1,43 @@
-<div class="tabbable {{ class }}">
-	<ul class="nav nav-tabs">
+<ul class="ai1ec-nav ai1ec-nav-tabs
+	{% if stacked %}ai1ec-nav-stacked ai1ec-pull-left{% endif %}">
+
 	{% for id, data in tabs %}
 		{% if data.items is defined %}
-			<li class="dropdown">
-				<a href="#" data-toggle="dropdown">
-					{{ data.name }}<i class="icon-caret-down"></i>
+			<li class="ai1ec-dropdown">
+				<a href="#" data-toggle="ai1ec-dropdown">
+					{{ data.name }}<i class="ai1ec-fa ai1ec-fa-caret-down"></i>
 				</a>
-				<ul class="dropdown-menu">
+				<ul class="ai1ec-dropdown-menu">
 					{% for drop_id, drop_name in data.items %}
-						<li><a href="#ai1ec-{{ drop_id }}" data-toggle="tab">{{ drop_name }}</a></li>
+						<li>
+							<a href="#ai1ec-{{ drop_id }}" data-toggle="ai1ec-tab">
+								{{ drop_name }}
+							</a>
+						</li>
 					{% endfor %}
 				</ul>
 			</li>
 		{% else %}
 			<li>
-				<a href="#ai1ec-{{ id }}" data-toggle="tab">{{ data.name }}</a>
+				<a href="#ai1ec-{{ id }}" data-toggle="ai1ec-tab">{{ data.name }}</a>
 			</li>
 		{% endif %}
 	{% endfor %}
-	</ul>
-	<div class="tab-content ai1ec-boxed-tabs">
+
+</ul>
+
+<div class="ai1ec-tab-content ai1ec-boxed-tabs {{ content_class }}">
 	{% for id, data in tabs %}
-		<div class="tab-pane" id="ai1ec-{{ id }}">
-			{% if hide_name is not defined %}
-			<h2>{{ data.name }}</h2>
+		<div class="ai1ec-tab-pane" id="ai1ec-{{ id }}">
+			{% if hide_name is not empty %}
+				<h2>{{ data.name }}</h2>
 			{% endif %}
 			{% for element in data.elements %}
-			{% autoescape false %}
-				{{ element.html }}
-			{% endautoescape %}
+				{{ element.html | raw }}
 			{% endfor %}
 		</div>
 	{% endfor %}
-	</div>
 </div>
+
 {% block extra_html %}
 {% endblock %}

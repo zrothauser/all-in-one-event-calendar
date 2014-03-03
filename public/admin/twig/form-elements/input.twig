@@ -2,13 +2,16 @@
 	{% if name == '' %}
 		{% set id = name %}
 	{% endif %}
-	<input 
+	<input
 		type="{{ type }}"
-		name="{{ name }}" 
+		name="{{ name }}"
 		value="{{ value }}"
 		id="{{ id }}"
+		class="ai1ec-form-control {{ attributes.class }}"
 		{% for attribute, value in attributes %}
-			{{ attribute }}="{{ value }}"
+			{% if attribute != 'class' %}
+				{{ attribute }}="{{ value }}"
+			{% endif %}
 		{% endfor %}
 		/>
 {% endmacro %}

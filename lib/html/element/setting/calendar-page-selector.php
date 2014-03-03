@@ -52,7 +52,7 @@ class Ai1ec_Html_Element_Calendar_Page_Selector
 	 */
 	public function render( $snippet = '' ) {
 		$output = $this->_get_pages_selector() . $this->_get_page_view_link();
-		$output = '<div class="pull-left">' . $output . '</div>';
+		$output = '<div class="ai1ec-pull-left">' . $output . '</div>';
 		$output = '<label class="textinput" for="' . self::ELEMENT_ID . '">' .
 			Ai1ec_I18n::__( 'Calendar page:' ) .
 			'</label>' . $output;
@@ -74,7 +74,7 @@ class Ai1ec_Html_Element_Calendar_Page_Selector
 		}
 		return '<p><a target="_blank" href="' . get_permalink( $post->ID ) . '">
 			View "' . $post->title . '"
-			<i class="icon-arrow-right"></i>
+			<i class="ai1ec-fa ai1ec-fa-arrow-right"></i>
 		</a></p>';
 	}
 

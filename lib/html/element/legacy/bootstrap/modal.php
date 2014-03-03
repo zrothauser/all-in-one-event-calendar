@@ -87,14 +87,14 @@ class Ai1ec_Bootstrap_Modal extends Ai1ec_Html_Element {
 	 * @return string
 	 */
 	private function render_keep_button_if_present() {
-		return isset( $this->keep_button_text ) ? "<a href='#' class='btn keep btn-primary'>{$this->keep_button_text}</a>" : '';
+		return isset( $this->keep_button_text ) ? "<a href='#' class='ai1ec-btn keep ai1ec-btn-primary'>{$this->keep_button_text}</a>" : '';
 	}
 
 	/**
 	 * @return string
 	 */
 	private function render_remove_button_if_present() {
-		return isset( $this->delete_button_text ) ? "<a href='#' class='btn remove btn-danger'>{$this->delete_button_text}</a>" : '';
+		return isset( $this->delete_button_text ) ? "<a href='#' class='ai1ec-btn remove ai1ec-btn-danger'>{$this->delete_button_text}</a>" : '';
 	}
 
 	/**
@@ -108,18 +108,20 @@ class Ai1ec_Bootstrap_Modal extends Ai1ec_Html_Element {
 		$body                = $this->body_text;
 		$classes             = implode( ' ', $this->classes );
 		$html = <<<HTML
-<div class="timely">
-	<div class="ai1ec-modal $classes hide" $id>
-		<div class="ai1ec-modal-header">
-			<button class="close" data-dismiss="ai1ec_modal">×</button>
-			$header
-		</div>
-		<div class="ai1ec-modal-body">
-			$body
-		</div>
-		<div class="ai1ec-modal-footer">
-			$remove_event_button
-			$keep_event_button
+<div class="ai1ec-modal $classes ai1ec-fade timely" $id>
+	<div class="ai1ec-modal-dialog">
+		<div class="ai1ec-modal-content">
+			<div class="ai1ec-modal-header">
+				<button class="close" data-dismiss="ai1ec-modal">×</button>
+				$header
+			</div>
+			<div class="ai1ec-modal-body">
+				$body
+			</div>
+			<div class="ai1ec-modal-footer">
+				$remove_event_button
+				$keep_event_button
+			</div>
 		</div>
 	</div>
 </div>

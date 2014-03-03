@@ -22,16 +22,11 @@ class Ai1ec_Html_Setting_Input extends Ai1ec_Html_Element_Settings {
 		switch ( $type ) {
 			case 'date':
 				$date = true;
-				$class = 'input-small';
 				break;
 
 			case 'append':
 				$append = true;
-				$class = 'input-mini';
 				break;
-
-			default:
-				$class = 'input-xlarge';
 		}
 
 		$input_args = array(

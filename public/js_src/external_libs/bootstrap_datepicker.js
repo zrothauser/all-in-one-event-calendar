@@ -129,7 +129,7 @@ define(
 		this.element = $(element);
 		this.isInline = false;
 		this.isInput = this.element.is('input');
-		this.component = this.element.is('.ai1ec-date') ? this.element.find('.ai1ec-add-on, .ai1ec-input-group-addon, .ai1ec-btn') : false;
+		this.component = this.element.is('.ai1ec-date') ? this.element.find('.ai1ec-input-group, .ai1ec-input-group-addon, .ai1ec-btn') : false;
 		this.hasInput = this.component && this.element.find('input').length;
 		if(this.component && this.component.length === 0)
 			this.component = false;

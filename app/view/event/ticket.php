@@ -28,7 +28,7 @@ class Ai1ec_View_Event_Ticket {
 		if ( $long ) {
 			$output = apply_filters(
 				'ai1ec_buy_tickets_url_icon',
-				'<i class="icon-shopping-cart"></i>'
+				'<i class="ai1ec-fa ai1ec-fa-shopping-cart"></i>'
 			);
 			if ( ! empty( $output ) ) {
 				$output .= ' ';
@@ -39,7 +39,7 @@ class Ai1ec_View_Event_Ticket {
 			: __( 'Tickets', AI1EC_PLUGIN_NAME );
 		return $output;
 	}
-	
+
 	/**
 	 * Contact info as HTML
 	 */
@@ -47,31 +47,35 @@ class Ai1ec_View_Event_Ticket {
 		$contact = '';
 		if ( $event->get( 'contact_name' ) ) {
 			$contact .=
-			'<span class="ai1ec-contact-name"><i class="icon-user"></i>' .
+			'<span class="ai1ec-contact-name">' .
+			'<i class="ai1ec-fa ai1ec-fa-user"></i>' .
 			esc_html( $event->get( 'contact_name' ) ) .
 			'</span>';
 		}
 		if ( $event->get( 'contact_phone' ) ) {
 			$contact .=
-			'<span class="ai1ec-contact-phone"><i class="icon-phone"></i>' .
+			'<span class="ai1ec-contact-phone">' .
+			'<i class="ai1ec-fa ai1ec-fa-phone"></i>' .
 			esc_html( $event->get( 'contact_phone' ) ) .
 			'</span>';
 		}
 		if ( $event->get( 'contact_email' ) ) {
 			$contact .=
 			'<span class="ai1ec-contact-email">' .
-			'<a href="mailto:' . esc_attr( $event->get( 'contact_email' ) ) . '"><i class="icon-envelope-alt"></i>' .
+			'<a href="mailto:' . esc_attr( $event->get( 'contact_email' ) ) . '">' .
+			'<i class="ai1ec-fa ai1ec-fa-envelope-alt"></i>' .
 			__( 'E-mail', AI1EC_PLUGIN_NAME ) . '</a></span>';
 		}
 		if ( $event->get( 'contact_url' ) ) {
 			$contact .=
 			'<span class="ai1ec-contact-url">' .
-			'<a target="_blank" href="' . esc_attr( $event->get( 'contact_url' ) ) . '"><i class="icon-link"></i>' .
+			'<a target="_blank" href="' . esc_attr( $event->get( 'contact_url' ) ) .
+			'"><i class="ai1ec-fa ai1ec-fa-link"></i>' .
 			apply_filters(
 				'ai1ec_contact_url',
 				__( 'Event website', AI1EC_PLUGIN_NAME )
 			) .
-			' <i class="icon-external-link"></i></a></span>';
+			' <i class="ai1ec-fa ai1ec-fa-external-link"></i></a></span>';
 		}
 		return $contact;
 	}

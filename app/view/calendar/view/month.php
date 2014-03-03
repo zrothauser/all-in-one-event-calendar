@@ -17,7 +17,7 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 	public function get_name() {
 		return 'month';
 	}
-	
+
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Calendar_View_Abstract::get_content()
 	*/
@@ -35,12 +35,12 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		$args = wp_parse_args( $view_args, $defaults );
 		$local_date = $this->_registry
 			->get( 'date.time', $args['exact_date'], 'sys.default' );
-		$local_date->set_date( 
+		$local_date->set_date(
 			$local_date->format( 'Y' ),
 			$local_date->format( 'm' ) + $args['month_offset'],
 			1 )
 			->set_time( 0, 0, 0 );
-		
+
 		$days_events = $this->get_events_for_month(
 			$local_date,
 			array(
@@ -56,7 +56,7 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		);
 		// Create pagination links.
 		$pagination_links = $this->_get_pagination( $args );
-		
+
 		$title = $local_date->format_i18n( 'F Y' );
 		$is_ticket_button_enabled = apply_filters( 'ai1ec_month_ticket_button', false );
 
@@ -75,10 +75,10 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		if( $settings->get( 'ajaxify_events_in_web_widget' ) ) {
 			$view_args['data_type_events'] = $args['data_type'];
 		}
-		
+
 		// Add navigation if requested.
 		$view_args['navigation'] = $this->_get_navigation( $args['no_navigation'], $view_args );
-		
+
 		return $this->_get_view( $view_args );
 	}
 
@@ -96,7 +96,7 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 	 */
 	function get_month_pagination_links( $args ) {
 		$links = array();
-	
+
 		$local_date = $this->_registry
 			->get( 'date.time', $args['exact_date'], 'sys.default' );
 		$orig_date = clone $local_date;
@@ -105,7 +105,7 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		// =================
 		// Align date to first of month, month offset applied, 1 year behind.
 		$local_date
-			->set_date( 
+			->set_date(
 				$local_date->format( 'Y' ) -1,
 				$local_date->format( 'm' ) + $args['month_offset'],
 				1
@@ -118,11 +118,11 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 			'enabled' => true,
 			'class'=> 'ai1ec-prev-year',
 			'text' =>
-			'<i class="icon-double-angle-left"></i> ' .
+			'<i class="ai1ec-fa ai1ec-fa-angle-double-left"></i> ' .
 				$local_date->format_i18n( 'Y' ),
 			'href' => $href->generate_href(),
 		);
-	
+
 		// ==================
 		// = Previous month =
 		// ==================
@@ -138,16 +138,16 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		$links[] = array(
 			'enabled' => true,
 			'class'=> 'ai1ec-prev-month',
-			'text' => '<i class="icon-angle-left"></i> ' .
+			'text' => '<i class="ai1ec-fa ai1ec-fa-angle-left"></i> ' .
 			$local_date->format_i18n( 'M' ),
 			'href' => $href->generate_href(),
 		);
-	
+
 		// ======================
 		// = Minical datepicker =
 		// ======================
 		// Align date to first of month, month offset applied.
-		
+
 		$orig_date
 			->set_date(
 				$orig_date->format( 'Y' ),
@@ -160,7 +160,7 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 			$args,
 			$args['exact_date']
 		);
-	
+
 		// ==============
 		// = Next month =
 		// ==============
@@ -177,11 +177,11 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 			'enabled' => true,
 			'class'=> 'ai1ec-next-month',
 			'text' =>
-			$orig_date->format_i18n( 'M' ) . 
-			' <i class="icon-angle-right"></i>',
+			$orig_date->format_i18n( 'M' ) .
+			' <i class="ai1ec-fa ai1ec-fa-angle-right"></i>',
 			'href' => $href->generate_href(),
 		);
-	
+
 		// =============
 		// = Next year =
 		// =============
@@ -198,11 +198,11 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 			'enabled' => true,
 			'class'=> 'ai1ec-next-year',
 			'text' =>
-			$orig_date->format_i18n( 'Y' ) . 
-			' <i class="icon-double-angle-right"></i>',
+			$orig_date->format_i18n( 'Y' ) .
+			' <i class="ai1ec-fa ai1ec-fa-angle-double-right"></i>',
 			'href' => $href->generate_href(),
 		);
-	
+
 		return $links;
 	}
 
@@ -224,7 +224,7 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 
 			$weekdays = array();
 			for( $i = 0; $i < 7; $i++ ) {
-				$weekdays[] = $time->format_i18n( 'D' ); 
+				$weekdays[] = $time->format_i18n( 'D' );
 				$time->adjust_day( 1 );// Add a day
 			}
 		}
@@ -258,12 +258,12 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		$settings    = $this->_registry->get( 'model.settings' );
 		$date_system = $this->_registry->get( 'date.system' );
 		$today = $this->_registry->get( 'date.time' );// Used to flag today's cell
-	
+
 		// Figure out index of first table cell
 		$first_cell_index = $timestamp->format( 'w' );
 		// Modify weekday based on start of week setting
 		$first_cell_index = ( 7 + $first_cell_index - $settings->get( 'week_start_day' ) ) % 7;
-	
+
 		// Get the last day of the month
 		$last_day = $timestamp->format( 't' );
 		$last_timestamp = clone $timestamp;
@@ -276,11 +276,11 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		$last_cell_index = $last_timestamp->format( 'w' );
 		// Modify weekday based on start of week setting
 		$last_cell_index = ( 7 + $last_cell_index - $settings->get( 'week_start_day' ) ) % 7;
-	
+
 		$weeks = array();
 		$week = 0;
 		$weeks[$week] = array();
-	
+
 		// Insert any needed blank cells into first week
 		for( $i = 0; $i < $first_cell_index; $i++ ) {
 			$weeks[$week][] = array(
@@ -289,11 +289,11 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 				'date_link'  => null
 			);
 		}
-	
+
 		// Insert each month's day and associated events
 		for( $i = 1; $i <= $last_day; $i++ ) {
 			$day = $this->_registry->get( 'date.time' )
-				->set_date( 
+				->set_date(
 					$timestamp->format( 'Y' ),
 					$timestamp->format( 'm' ),
 					$i
@@ -317,12 +317,12 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 			if( count( $weeks[$week] ) == 7 )
 				$week++;
 		}
-	
+
 		// Insert any needed blank cells into last week
 		for( $i = $last_cell_index + 1; $i < 7; $i++ ) {
 			$weeks[$week][] = array( 'date' => null, 'events' => array() );
 		}
-	
+
 		return $weeks;
 	}
 
@@ -344,7 +344,7 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 	 */
 	protected function get_events_for_month( Ai1ec_Date_Time $time, $filter = array() ) {
 		$last_day = $time->format( 't' );
-	
+
 		$day_entry = array(
 			'multi'  => array(),
 			'allday' => array(),
@@ -357,7 +357,7 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		);
 		unset( $day_entry );
 		$start_time = clone $time;
-		$start_time->set_date( 
+		$start_time->set_date(
 			$time->format( 'Y' ),
 			$time->format( 'm' ),
 			1
@@ -373,11 +373,11 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		);
 		$start_time = $start_time->format();
 		$end_time   = $end_time->format();
-	
+
 		foreach ( $month_events as $event ) {
 			$event_start = $event->get( 'start' )->format();
 			$event_end   = $event->get( 'end' )->format();
-	
+
 			/**
 			 * REASONING: we assume, that event spans multiple periods, one of
 			 * which happens to be current (month). Thus we mark, that current
@@ -392,7 +392,7 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 			if ( $event_start > $start_time ) {
 				$day = (int)$event->get( 'start' )->format( 'j' );
 			}
-	
+
 			// Set multiday properties. TODO: Should these be made event object
 			// properties? They probably shouldn't be saved to the DB, so I'm
 			// not sure. Just creating properties dynamically for now.
@@ -402,7 +402,7 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 			if ( $event_end >= $end_time ) {
 				$event->set( 'end_truncated', true );
 			}
-	
+
 			// Categorize event.
 			$priority = 'other';
 			if ( $event->is_allday() ) {
@@ -413,7 +413,7 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 			$this->_add_runtime_properties( $event );
 			$days_events[$day][$priority][] = $event;
 		}
-	
+
 		for ( $day = 1; $day <= $last_day; $day++ ) {
 			$days_events[$day] = array_merge(
 				$days_events[$day]['multi'],
@@ -421,7 +421,7 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 				$days_events[$day]['other']
 			);
 		}
-	
+
 		return apply_filters(
 			'ai1ec_get_events_for_month',
 			$days_events,

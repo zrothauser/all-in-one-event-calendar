@@ -123,7 +123,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			$instant_event    = $event->is_instant() ? 'checked' : '';
 
 			$start            = $event->get( 'start' );
-			$end 	          = $event->get( 'end' );
+			$end              = $event->get( 'end' );
 
 			$multi_day        = $event->is_multiday();
 
@@ -328,6 +328,6 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		}
 		return $input;
 	}
-	
+
 
 }

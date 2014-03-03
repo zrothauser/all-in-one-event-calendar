@@ -34,6 +34,9 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		throw new Ai1ec_Parse_Exception( 'The passed string is not a valid ics feed' );
 	}
 
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Import_Export_Engine::export()
+	 */
 	public function export( array $arguments ) {
 		$c = new vcalendar();
 		$c->setProperty( 'calscale', 'GREGORIAN' );
@@ -961,7 +964,7 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 			if ( empty( $cat_name ) ) {
 				continue;
 			}
-			$term_id = $event_taxonomy->initiate_term( $cat_name, $taxonomy );
+			$term_id = $event_taxonomy->initiate_term( $cat_name, $taxonomy, ! $use_name );
 			if ( false !== $term_id ) {
 				$imported_terms[$term_id] = true;
 			}

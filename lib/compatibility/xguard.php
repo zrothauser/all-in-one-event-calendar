@@ -42,17 +42,8 @@ class Ai1ec_Compatibility_Xguard {
 	 * @return boolean
 	 */
 	public function release( $name ) {
-		$name = $this->safe_name( $name );
-		$path = AI1EC_PATH . DIRECTORY_SEPARATOR . 'xguard_' . $name . '.log';
-		$handle = fopen( $path, 'r+' );
-		if ( ! $handle ) {
-			return false;
-		}
-		$last = false;
-		if ( flock( $handle, LOCK_EX ) ) {
-			$last = unlink( $path, $handle );
-		}
-		return $last;
+		$this->acquire( $name );
+		return true;
 	}
 
 	/**

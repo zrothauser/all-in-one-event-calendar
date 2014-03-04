@@ -68,6 +68,7 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 
 		$all_day          = isset( $_POST['ai1ec_all_day_event'] )    ? 1                                             : 0;
 		$instant_event    = isset( $_POST['ai1ec_instant_event'] )    ? 1                                             : 0;
+		$timezone_name    = isset( $_POST['ai1ec_timezone_name'] )    ? $_POST['ai1ec_timezone_name']                 : 'sys.default';
 		$start_time       = isset( $_POST['ai1ec_start_time'] )       ? $_POST['ai1ec_start_time']                    : '';
 		$end_time         = isset( $_POST['ai1ec_end_time'] )         ? $_POST['ai1ec_end_time']                      : '';
 		$venue            = isset( $_POST['ai1ec_venue'] )            ? $_POST['ai1ec_venue']                         : '';
@@ -139,11 +140,14 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 			$end_time = $start_time + 1800;
 		}
 
-		$timezone_name = $this->_registry->get( 'date.timezone' )
-			->get_default_timezone();
+		$start_time_entry = $this->_registry
+			->get( 'date.time', $start_time, $timezone_name );
+		$end_time_entry   = $this->_registry
+			->get( 'date.time', $end_time,   $timezone_name );
+
 		$event->set( 'post_id',          $post_id );
-		$event->set( 'start',            $start_time );
-		$event->set( 'end',              $end_time );
+		$event->set( 'start',            $start_time_entry );
+		$event->set( 'end',              $end_time_entry );
 		$event->set( 'timezone_name',    $timezone_name );
 		$event->set( 'allday',           $all_day );
 		$event->set( 'instant_event',    $instant_event );

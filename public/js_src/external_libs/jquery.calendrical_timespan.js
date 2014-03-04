@@ -27,6 +27,43 @@ var calendricalDateFormats = {
 			zeroPad : false }
 	};
 
+	var pad2 = function( number ) {
+		return ( number < 10 ) ? '0' + number : number;
+	};
+
+	var formatDateToIso = function( date, use_time ) {
+		if ( typeof use_time == 'undefined' ) {
+			use_time = false;
+		}
+		var output = date.getUTCFullYear() + '-' +
+			pad2( date.getUTCMonth() ) + '-' +
+			pad2( date.getUTCDate() );
+		if ( use_time ) {
+			output += 'T' +
+				pad2( date.getUTCHours() ) + ':' +
+				pad2( date.getUTCMinutes() ) + ':00';
+		}
+		return output;
+	};
+
+	var parseIsoToDate = function( $input, default_t ) {
+		var value  = $input.val();
+		var parsed = null;
+		if ( value.length < 4 ) {
+			parsed = new Date( default_t );
+		} else {
+			parsed = new Date( value );
+			parsed.setMinutes( parsed.getMinutes() - parsed.getTimezoneOffset() );
+		}
+		return parsed;
+	};
+
+	var parseAndAdjustIso = function( $input, default_t, adjust_h, adjust_m ) {
+		default_t += ( adjust_h * 3600000 );
+		default_t -= ( default_t % ( adjust_m * 60000 ) );
+		return parseIsoToDate( $input, default_t );
+	};
+
 	var formatDate = function(date, format, noutc)
 	{
 		var y, m, d;
@@ -638,36 +675,26 @@ var calendricalDateFormats = {
     	// Fill out input fields with default date/time based on these original
     	// values.
 
-    	var start = parseInt( start_time.val() );
-    	// If start_time field has a valid integer, use it, else use current time
-    	// rounded to nearest quarter-hour.
-    	if( ! isNaN( parseInt( start ) ) ) {
-    		start = new Date( parseInt( start ) * 1000 );
-    		start_time_input.val( formatTime( start.getUTCHours(), start.getUTCMinutes(), twentyfour_hour ) );
-    	} else {
-    		start = new Date( now );
-    		// Round minutes to nearest quarter-hour.
-    		start_time_input.val(
-    			formatTime( start.getUTCHours(), start.getUTCMinutes() - start.getUTCMinutes() % 15, twentyfour_hour ) );
-    	}
+		var start = parseAndAdjustIso( start_time, now, 0, 15 );
+		start_time_input.val(
+			formatTime(
+				start.getUTCHours(), start.getUTCMinutes(), twentyfour_hour
+			)
+		);
     	start_date_input.val( formatDate( start, date_format ) );
 
-    	var end = parseInt( end_time.val() );
-    	// If end_time field has a valid integer, use it, else use start time plus
-    	// one hour.
-    	if( ! isNaN( parseInt( end ) ) ) {
-    		end = new Date( parseInt( end ) * 1000 );
-    		end_time_input.val( formatTime( end.getUTCHours(), end.getUTCMinutes(), twentyfour_hour ) );
-    	} else {
-    		end = new Date( start.getTime() + 3600000 );
-    		// Round minutes to nearest quarter-hour.
-    		end_time_input.val(
-    			formatTime( end.getUTCHours(), end.getUTCMinutes() - end.getUTCMinutes() % 15, twentyfour_hour ) );
-    	}
+    	// end defaults to start +1h
+    	var end = parseAndAdjustIso( end_time, start.getTime(), 1, 15 );
+   		end_time_input.val(
+			formatTime(
+				end.getUTCHours(), end.getUTCMinutes(), twentyfour_hour
+			)
+		);
     	// If all-day is checked, end date one day *before* last day of the span,
     	// provided we were given an iCalendar-spec all-day timespan.
-    	if( allday.get(0).checked )
+    	if( allday.get(0).checked ) {
     		end.setUTCDate( end.getUTCDate() - 1 );
+		}
     	end_date_input.val( formatDate( end, date_format ) );
 
     	// Trigger function (defined above) to internally store values of each
@@ -864,7 +891,7 @@ var calendricalDateFormats = {
     				// Convert Date object into UNIX timestamp for form submission
     				var unix_start_time = parseDate( start_date_input.val(), o.date_format ).getTime() / 1000;
     				// If parsed correctly, proceed to add the time.
-    				if( ! isNaN( unix_start_time ) ) {
+    				if ( ! isNaN( unix_start_time ) ) {
     					// Add time quantity to date, unless "All day" is checked.
     					if( ! allday.get(0).checked ) {
     						var time = parseTime( start_time_input.val() );
@@ -882,7 +909,9 @@ var calendricalDateFormats = {
     				}
     				// Set start date value to valid unix time, or empty string, depending
     				// on above validation.
-    				start_time.val( unix_start_time );
+					if ( unix_start_time > 0 ) {
+    					start_time.val( formatDateToIso( new Date( unix_start_time * 1000 ), true ) );
+					}
 
     				// 2. End date/time
 
@@ -911,7 +940,9 @@ var calendricalDateFormats = {
     				}
     				// Set end date value to valid unix time, or empty string, depending
     				// on above validation.
-    				end_time.val( unix_end_time );
+					if ( unix_end_time > 0 ) {
+    					end_time.val( formatDateToIso( new Date( unix_end_time * 1000 ), true ) );
+					}
     			} );
 
     		// Store original form values

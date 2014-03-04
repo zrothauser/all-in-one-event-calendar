@@ -2,7 +2,7 @@
 	<a data-toggle="ai1ec-collapse"
 		data-parent="#ai1ec-add-new-event-accordion"
 		href="#ai1ec-event-contact-box">
-		<i class="ai1ec-fa ai1ec-fa-phone"></i>
+		<i class="ai1ec-fa ai1ec-fa-phone ai1ec-fa-fw"></i>
 		<?php _e( 'Organizer contact info', AI1EC_PLUGIN_NAME ); ?>
 	</a>
 </div>

@@ -2,7 +2,7 @@
 	<a data-toggle="ai1ec-collapse"
 		data-parent="#ai1ec-add-new-event-accordion"
 		href="#ai1ec-time-and-date-box">
-		<i class="ai1ec-fa ai1ec-fa-clock-o"></i>
+		<i class="ai1ec-fa ai1ec-fa-clock-o ai1ec-fa-fw"></i>
 		<?php _e( 'Event date and time', AI1EC_PLUGIN_NAME ); ?>
 	</a>
 </div>
@@ -19,36 +19,34 @@
 		<table class="ai1ec-form">
 			<tbody>
 				<tr>
-					<td class="ai1ec-first">
+					<td colspan="2">
 						<label for="ai1ec_all_day_event">
-							<?php _e( 'All-day event?', AI1EC_PLUGIN_NAME ); ?>
+							<input type="checkbox" name="ai1ec_all_day_event"
+								id="ai1ec_all_day_event" value="1" <?php echo $all_day_event; ?>>
+							<?php _e( 'All-day event', AI1EC_PLUGIN_NAME ); ?>
 						</label>
-					</td>
-					<td>
-						<input type="checkbox" name="ai1ec_all_day_event"
-							id="ai1ec_all_day_event" value="1" <?php echo $all_day_event; ?>>
 					</td>
 				</tr>
 				<tr>
-					<td>
+					<td colspan="2">
 						<label for="ai1ec_instant_event">
-							<?php _e( 'No end time?', AI1EC_PLUGIN_NAME ); ?>
+							<input type="checkbox" name="ai1ec_instant_event"
+								id="ai1ec_instant_event" value="1" <?php echo $instant_event; ?>>
+							<?php _e( 'No end time', AI1EC_PLUGIN_NAME ); ?>
 						</label>
-					</td>
-					<td>
-						<input type="checkbox" name="ai1ec_instant_event"
-							id="ai1ec_instant_event" value="1" <?php echo $instant_event; ?>>
 					</td>
 				</tr>
 				<tr>
-					<td>
+					<td class="ai1ec-first">
 						<label for="ai1ec_start-date-input">
 							<?php _e( 'Start date / time', AI1EC_PLUGIN_NAME ); ?>:
 						</label>
 					</td>
 					<td>
-						<input type="text" class="ai1ec-date-input" id="ai1ec_start-date-input">
-						<input type="text" class="ai1ec-time-input" id="ai1ec_start-time-input">
+						<input type="text" class="ai1ec-date-input ai1ec-form-control"
+							id="ai1ec_start-date-input">
+						<input type="text" class="ai1ec-time-input ai1ec-form-control"
+							id="ai1ec_start-time-input">
 						<?php if ( $timezone_string ) : ?>
 							<small>
 								<?php printf(
@@ -72,8 +70,10 @@
 						</label>
 					</td>
 					<td>
-						<input type="text" class="ai1ec-date-input" id="ai1ec_end-date-input">
-						<input type="text" class="ai1ec-time-input" id="ai1ec_end-time-input">
+						<input type="text" class="ai1ec-date-input ai1ec-form-control"
+							id="ai1ec_end-date-input">
+						<input type="text" class="ai1ec-time-input ai1ec-form-control"
+							id="ai1ec_end-time-input">
 						<input type="hidden"
 							name="ai1ec_end_time"
 							id="ai1ec_end-time"
@@ -82,12 +82,12 @@
 				</tr>
 				<tr>
 					<td>
-						<input type="checkbox" name="ai1ec_repeat" id="ai1ec_repeat"
-							value="1"
-							<?php echo $repeating_event ? 'checked="checked"' : ''; ?>>
-						<input type="hidden" name="ai1ec_rrule" id="ai1ec_rrule"
-							value="<?php echo $rrule; ?>">
 						<label for="ai1ec_repeat" id="ai1ec_repeat_label">
+							<input type="checkbox" name="ai1ec_repeat" id="ai1ec_repeat"
+								value="1"
+								<?php echo $repeating_event ? 'checked' : ''; ?>>
+							<input type="hidden" name="ai1ec_rrule" id="ai1ec_rrule"
+								value="<?php echo $rrule; ?>">
 							<?php _e( 'Repeat', AI1EC_PLUGIN_NAME );
 								echo $repeating_event ? ':' : '...'; ?>
 						</label>
@@ -100,12 +100,13 @@
 				</tr>
 				<tr>
 					<td>
-						<input type="checkbox" name="ai1ec_exclude" id="ai1ec_exclude"
-							value="1" <?php echo $exclude_event ? 'checked="checked"' : ''; ?>
-							<?php echo $repeating_event ? '' : 'disabled'; ?>>
-						<input type="hidden" name="ai1ec_exrule" id="ai1ec_exrule"
-							value="<?php echo $exrule; ?>">
 						<label for="ai1ec_exclude" id="ai1ec_exclude_label">
+							<input type="checkbox" name="ai1ec_exclude" id="ai1ec_exclude"
+								value="1"
+								<?php echo $exclude_event ? 'checked' : ''; ?>
+								<?php echo $repeating_event ? '' : 'disabled'; ?>>
+							<input type="hidden" name="ai1ec_exrule" id="ai1ec_exrule"
+								value="<?php echo $exrule; ?>">
 							<?php _e( 'Exclude', AI1EC_PLUGIN_NAME );
 								echo $exclude_event ? ':' : '...'; ?>
 						</label>

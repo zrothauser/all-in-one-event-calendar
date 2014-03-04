@@ -1,8 +1,6 @@
 <div class="ai1ec-feed-container ai1ec-well ai1ec-well-sm ai1ec-clearfix">
-	<h4>
-		<?php _e( 'iCalendar/.ics Feed URL:', AI1EC_PLUGIN_NAME ); ?>
-	</h4>
-	<div class="ai1ec-row">
+	<div class="ai1ec-form-group">
+		<label><?php _e( 'iCalendar/.ics Feed URL:', AI1EC_PLUGIN_NAME ); ?></label>
 		<input type="text" class="ai1ec-feed-url ai1ec-form-control"
 			readonly="readonly" value="<?php echo esc_attr( $feed_url ) ?>">
 	</div>
@@ -57,11 +55,13 @@
 	<div class="ai1ec-pull-right">
 		<img src="images/wpspin_light.gif" class="ajax-loading ai1ec-pull-left" alt="">
 		<div class="ai1ec-btn-group ai1ec-pull-left">
-			<button class="ai1ec-btn ai1ec-btn-default ai1ec_update_ics">
+			<button class="ai1ec-btn ai1ec-btn-sm ai1ec-btn-default ai1ec-text-primary
+				ai1ec_update_ics">
 				<i class="ai1ec-fa ai1ec-fa-refresh"></i>
 				<?php _e( 'Refresh', AI1EC_PLUGIN_NAME ); ?>
 			</button>
-			<button class="ai1ec-btn ai1ec-btn-default ai1ec_delete_ics">
+			<button class="ai1ec-btn ai1ec-btn-sm ai1ec-btn-default ai1ec-text-danger
+				ai1ec_delete_ics">
 				<i class="ai1ec-fa ai1ec-fa-times"></i>
 				<?php _e( 'Remove', AI1EC_PLUGIN_NAME ); ?>
 			</button>

@@ -2,7 +2,7 @@
 	<a data-toggle="ai1ec-collapse"
 		data-parent="#ai1ec-add-new-event-accordion"
 		href="#ai1ec-event-location-box">
-		<i class="ai1ec-fa ai1ec-fa-map-marker"></i>
+		<i class="ai1ec-fa ai1ec-fa-map-marker ai1ec-fa-fw"></i>
 		<?php _e( 'Event location details', AI1EC_PLUGIN_NAME ); ?>
 	</a>
 </div>
@@ -40,25 +40,21 @@
 						</td>
 					</tr>
 					<tr>
-						<td>
+						<td colspan="2">
 							<label for="ai1ec_google_map">
-								<?php _e( 'Show Google Map:', AI1EC_PLUGIN_NAME ); ?>
+								<input type="checkbox" value="1" name="ai1ec_google_map"
+									id="ai1ec_google_map" <?php echo $google_map; ?>>
+								<?php _e( 'Show Google Map', AI1EC_PLUGIN_NAME ); ?>
 							</label>
-						</td>
-						<td>
-							<input type="checkbox" value="1" name="ai1ec_google_map"
-								id="ai1ec_google_map" <?php echo $google_map; ?>>
 						</td>
 					</tr>
 					<tr>
-						<td>
+						<td colspan="2">
 							<label for="ai1ec_input_coordinates">
-								<?php _e( 'Input Coordinates:', AI1EC_PLUGIN_NAME ); ?>
+								<input type="checkbox" value="1" name="ai1ec_input_coordinates"
+									id="ai1ec_input_coordinates" <?php echo $coordinates; ?>>
+								<?php _e( 'Input Coordinates', AI1EC_PLUGIN_NAME ); ?>
 							</label>
-						</td>
-						<td>
-							<input type="checkbox" value="1" name="ai1ec_input_coordinates"
-								id="ai1ec_input_coordinates" <?php echo $coordinates; ?>>
 						</td>
 					</tr>
 				</tbody>

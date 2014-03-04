@@ -2,7 +2,7 @@
 	<a data-toggle="ai1ec-collapse"
 		data-parent="#ai1ec-add-new-event-accordion"
 		href="#ai1ec-event-cost-box">
-		<i class="ai1ec-fa ai1ec-fa-shopping-cart"></i>
+		<i class="ai1ec-fa ai1ec-fa-shopping-cart ai1ec-fa-fw"></i>
 		<?php _e( 'Event cost and Tickets', AI1EC_PLUGIN_NAME ); ?>
 	</a>
 </div>
@@ -11,7 +11,7 @@
 		<table class="ai1ec-form">
 			<tbody>
 				<tr>
-					<td class="ai1ec-first">
+					<td class="ai1ec-first ai1ec-cost-label">
 						<label for="ai1ec_cost">
 							<?php _e( 'Cost', AI1EC_PLUGIN_NAME ); ?>:
 						</label>

@@ -14,6 +14,7 @@ define(
 		'external_libs/jquery.tools',
 		'external_libs/jquery.blockui',
 		'external_libs/ai1ec_datepicker',
+		'external_libs/bootstrap/transition',
 		'external_libs/bootstrap/collapse'
 	],
 	function (

@@ -10,17 +10,19 @@
 	<div id="ics-alerts"></div>
 	<label class="textinput" for="cron_freq">
 	  <?php _e( 'Check for new events', AI1EC_PLUGIN_NAME ) ?>:
+		<?php echo $cron_freq ?>
 	</label>
 	<input type="submit" name="ai1ec_save_settings" id="ai1ec_save_settings"
-		class="ai1ec-btn ai1ec-btn-primary ai1ec-pull-right"
+		class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-sm ai1ec-pull-right"
 		value="<?php _e( 'Update Settings', AI1EC_PLUGIN_NAME ); ?>">
-	<?php echo $cron_freq ?>
 </div>
 
 <div id="ai1ec-feeds-after"
 	class="ai1ec-feed-container ai1ec-well ai1ec-well-sm ai1ec-clearfix">
-	<h4><?php _e( 'iCalendar/.ics Feed URL:', AI1EC_PLUGIN_NAME ) ?></h4>
-	<div class="ai1ec-row">
+	<div class="ai1ec-form-group">
+		<label for="ai1ec_feed_url">
+			<?php _e( 'iCalendar/.ics Feed URL:', AI1EC_PLUGIN_NAME ) ?>
+		</label>
 		<input type="text" name="ai1ec_feed_url" id="ai1ec_feed_url"
 			class="ai1ec-form-control">
 	</div>
@@ -54,7 +56,8 @@
 		</label>
 	</div>
 	<div class="ai1ec-pull-right">
-		<button id="ai1ec_add_new_ics" class="ai1ec-btn ai1ec-btn-default">
+		<button id="ai1ec_add_new_ics" class="ai1ec-btn ai1ec-btn-primary
+			ai1ec-btn-sm">
 			<i class="ai1ec-fa ai1ec-fa-plus"></i>
 			<?php _e( 'Add new subscription', AI1EC_PLUGIN_NAME ) ?>
 		</button>
@@ -64,12 +67,4 @@
 <?php
 echo $feed_rows;
 echo $modal->render();
-?>
-
-<?php
-	submit_button(
-		esc_attr__( 'Update Settings', AI1EC_PLUGIN_NAME ),
-		'primary',
-		'ai1ec_save_settings'
-	);
 ?>

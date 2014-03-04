@@ -21,19 +21,13 @@
 .ai1ec-first-padding {
 	padding-left: 8.5em;
 }
-.ai1ec-form label, .ai1ec-form-nested label {
-	font-size: 9pt;
+.ai1ec-form label,
+.ai1ec-form-nested label {
+	font-weight: normal;
 	margin-bottom: 0;
 }
 .ai1ec-form td, .ai1ec-form-nested td {
 	line-height: 1.5em;
-}
-#ai1ec-add-new-event-accordion .ai1ec-section-title {
-	text-transform: uppercase;
-	border-bottom: 1px solid #eee;
-	padding-bottom: 0.4em;
-	color: #aaa;
-	clear: both;
 }
 
 /* Recurrence fields */
@@ -73,9 +67,11 @@
 /* Event post fields */
 .timely .ai1ec-date-input {
 	background: no-repeat url(../img/date-field-icon.png) 95% 40%;
+	display: inline-block;
 	width: 7.5em;
 }
 .timely .ai1ec-time-input {
+	display: inline-block;
 	width: 5.5em;
 }
 #ai1ec_venue,
@@ -87,7 +83,7 @@
 #ai1ec_contact_url,
 #ai1ec_ticket_url {
 	width: 100%;
-	max-width: 20em;
+	max-width: 24em;
 }
 #ai1ec-event-location-box {
 	overflow: hidden;
@@ -436,14 +432,15 @@ ul.ai1ec_repeat_tabs li a.ai1ec_active {
 #ai1ec_apply_button_holder {
 	margin-top: 10px;
 }
-.ai1ec_repeat_cancel {
-	color: red;
-	text-decoration: none;
-	border-bottom: 1px solid red;
+.wp-core-ui .button.ai1ec_repeat_apply {
+	vertical-align: inherit;
 }
-a.ai1ec_repeat_cancel:hover {
-	color: white;
-	background-color: red;
+.ai1ec_repeat_cancel {
+	color: #A00;
+	text-decoration: none;
+}
+.ai1ec_repeat_cancel:hover {
+	color: #f00;
 }
 #ai1ec_count_holder,
 #ai1ec_until_holder {
@@ -544,13 +541,16 @@ div.growlUI h2 {
 	width: 33em;
 }
 
+.ai1ec-cost-label {
+	vertical-align: top;
+	margin-top: 5px;
+}
 #ai1ec_cost {
 	-webkit-transition: width 0.2s, padding 0.2s, opacity 0.2s;
 	-moz-transition: width 0.2s, padding 0.2s, opacity 0.2s;
 	-ms-transition: width 0.2s, padding 0.2s, opacity 0.2s;
 	-o-transition: width 0.2s, padding 0.2s, opacity 0.2s;
 	transition: width 0.2s, padding 0.2s, opacity 0.2s;
-	width: 175px;
 }
 #ai1ec_cost.ai1ec-hidden {
 	-webkit-box-sizing: border-box;
@@ -568,3 +568,4 @@ div.growlUI h2 {
 #ai1ec_refresh_tokens {
 	margin-top:8px;
 }
+

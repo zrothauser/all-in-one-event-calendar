@@ -144,6 +144,10 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 			->get( 'date.time', $start_time, $timezone_name );
 		$end_time_entry   = $this->_registry
 			->get( 'date.time', $end_time,   $timezone_name );
+		$timezone_name = $start_time_entry->get_timezone();
+		if ( null === $timezone_name ) {
+			$timezone_name = $start_time_entry->get_default_format_timezone();
+		}
 
 		$event->set( 'post_id',          $post_id );
 		$event->set( 'start',            $start_time_entry );

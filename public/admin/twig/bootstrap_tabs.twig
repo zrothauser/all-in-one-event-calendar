@@ -1,5 +1,11 @@
-<ul class="ai1ec-nav ai1ec-nav-tabs
-	{% if stacked %}ai1ec-nav-stacked ai1ec-pull-left{% endif %}">
+{% if stacked %}<div class="ai1ec-row"><div class="ai1ec-col-sm-3">{% endif %}
+
+<ul class="ai1ec-nav
+	{% if stacked %}
+		ai1ec-nav-pills ai1ec-nav-stacked
+	{% else %}
+		ai1ec-nav-tabs
+	{% endif %}">
 
 	{% for id, data in tabs %}
 		{% if data.items is defined %}
@@ -26,11 +32,14 @@
 
 </ul>
 
-<div class="ai1ec-tab-content ai1ec-boxed-tabs {{ content_class }}">
+{% if stacked %}</div><div class="ai1ec-col-sm-9">{% endif %}
+
+<div class="ai1ec-tab-content
+	{{ content_class }}">
 	{% for id, data in tabs %}
 		<div class="ai1ec-tab-pane" id="ai1ec-{{ id }}">
 			{% if hide_name is not empty %}
-				<h2>{{ data.name }}</h2>
+				<h4 class="ai1ec-text-center">{{ data.name }}</h4>
 			{% endif %}
 			{% for element in data.elements %}
 				{{ element.html | raw }}
@@ -38,6 +47,8 @@
 		</div>
 	{% endfor %}
 </div>
+
+{% if stacked %}</div></div>{% endif %}
 
 {% block extra_html %}
 {% endblock %}

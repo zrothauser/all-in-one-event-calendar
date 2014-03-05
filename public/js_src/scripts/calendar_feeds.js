@@ -48,10 +48,10 @@ define(
 		select2_multiselect_helper.init( $file_upload_container );
 		tags_select.init( $file_upload_container );
 		// Save the active tab in a cookie on click.
-		$( 'ul.ai1ec-nav-tabs a' ).on( 'click', handle_set_tab_cookie );
+		$( 'ul.ai1ec-nav a' ).on( 'click', handle_set_tab_cookie );
 		// Reinitialize Select2 widgets when displayed (required for placement of
 		// placeholders).
-		$( 'ul.ai1ec-nav-tabs a' ).on( 'shown', refresh_select2 );
+		$( 'ul.ai1ec-nav a' ).on( 'shown', refresh_select2 );
 
 		// ============================ICS EVENT HANDLERs=======================
 		$( document ).on( 'click', '#ai1ec_add_new_ics', ics_event_handlers.add_new_ics_event_handler );

@@ -38,7 +38,6 @@ abstract class Ai1ec_Less_Variable extends Ai1ec_Html_Element {
 		$this->id          = $params['id'];
 		$this->description = $params['description'];
 		$this->value       = $params['value'];
-
 	}
 
 }

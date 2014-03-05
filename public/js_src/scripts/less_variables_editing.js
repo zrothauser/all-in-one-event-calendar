@@ -19,10 +19,10 @@ define(
 	var activate_saved_tab_on_page_load = function( active_tab ) {
 		if ( active_tab === null ){
 			// Activate the first tab
-			$( 'ul.ai1ec-nav-tabs a:first' ).tab( 'show' );
+			$( 'ul.ai1ec-nav a:first' ).tab( 'show' );
 		} else {
 			// Activate the correct tab
-			$( 'ul.ai1ec-nav-tabs a[href=' + active_tab + ']' ).tab( 'show' );
+			$( 'ul.ai1ec-nav a[href=' + active_tab + ']' ).tab( 'show' );
 		}
 	};
 
@@ -97,7 +97,7 @@ define(
 
 		// Register event handlers.
 		$( document )
-			.on( 'click',  'ul.ai1ec-nav-tabs a',             handle_set_tab_cookie )
+			.on( 'click',  'ul.ai1ec-nav a',             handle_set_tab_cookie )
 			.on( 'click',  '#ai1ec_reset_themes_options',    confirm_on_reset )
 			.on( 'change', '.ai1ec_font',               handle_custom_fonts );
 		$( '#ai1ec_save_themes_options' ).closest( 'form' ).on( 'submit', validate );

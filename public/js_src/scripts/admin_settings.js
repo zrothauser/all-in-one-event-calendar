@@ -102,7 +102,7 @@ define(
 			if( true === checked && '' === discl ) {
 				alert( ai1ec_config.require_desclaimer );
 				// Activate the correct tab
-				$( '#ai1ec-general-settings ul.ai1ec-nav-tabs a[href="#ai1ec-advanced"]' )
+				$( '#ai1ec-general-settings ul.ai1ec-nav a[href="#ai1ec-advanced"]' )
 					.tab( 'show' );
 				$( '#disclaimer' ).focus();
 				e.preventDefault();
@@ -120,7 +120,7 @@ define(
 			utils.activate_saved_tab_on_page_load( $.cookie( 'ai1ec_general_settings_active_tab' ) );
 			$( document ).on(
 				'click',
-				'#ai1ec-general-settings .ai1ec-nav-tabs a[data-toggle="ai1ec-tab"]',
+				'#ai1ec-general-settings .ai1ec-nav a[data-toggle="ai1ec-tab"]',
 				handle_set_tab_cookie
 			);
 

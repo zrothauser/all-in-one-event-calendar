@@ -37,13 +37,6 @@
 	display: block;
 }
 
-.ai1ec-tab-content.ai1ec-boxed-tabs {
-	background: #fff;
-	border: solid #ddd;
-	border-width: 0 1px 1px;
-	padding: 8px 10px;
-}
-
 /* Support box */
 
 .ai1ec-support-placeholder {
@@ -149,7 +142,7 @@
 
 /* General settings */
 
-.ai1ec-boxed-tabs > .ai1ec-tab-pane.ai1ec-active ~ .ai1ec-tab-pane-not-loaded {
+.ai1ec-tab-content > .ai1ec-tab-pane.ai1ec-active ~ .ai1ec-tab-pane-not-loaded {
 	display: none;
 }
 
@@ -223,23 +216,10 @@
 
 /* Calendar theme options */
 
-#ai1ec-less-variables-tabs {
-	background: #fff;
-}
 #ai1ec-less-variables-tabs .inside {
 	margin: 10px 0;
-}
-#ai1ec-less-variables-tabs .ai1ec-form-horizontal .ai1ec-control-label {
-	width: 180px;
-}
-#ai1ec-less-variables-tabs .ai1ec-form-horizontal .ai1ec-control-label + div {
-	margin-left: 200px;
 }
 .ai1ec_event_page_all-in-one-event-calendar-edit-css #poststuff,
 .ai1ec_event_page_all-in-one-event-calendar-edit-css .metabox-holder {
 	padding-top: 0;
-}
-
-#ai1ec-reset-variables {
-	margin-left: 4px;
 }

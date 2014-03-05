@@ -151,10 +151,10 @@ define(
 				activate_saved_tab_on_page_load : function( active_tab ) {
 					if ( null === active_tab || undefined === active_tab ){
 						// Activate the first tab
-						$( 'ul.ai1ec-nav-tabs a:first' ).tab( 'show' );
+						$( 'ul.ai1ec-nav a:first' ).tab( 'show' );
 					} else {
 						// Activate the correct tab
-						$( 'ul.ai1ec-nav-tabs a[href=' + active_tab + ']' ).tab( 'show' );
+						$( 'ul.ai1ec-nav a[href=' + active_tab + ']' ).tab( 'show' );
 					}
 				}
 			};

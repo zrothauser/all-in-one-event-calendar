@@ -8,6 +8,7 @@
 // = Core variables and mixins =
 // =============================
 @import "bootstrap/mixins.less";
+@import "timely-mixins.less";
 @import "bootstrap/variables.less";
 @import "timely-variables.less"; // Modify this for custom colors, fonts, etc.
 
@@ -37,6 +38,7 @@
 @import "bootstrap/component-animations.less";
 @import "bootstrap/dropdowns.less";
 @import "bootstrap/button-groups.less";
+@import "bootstrap/input-groups.less";
 .timely { @import "bootstrap/navs.less"; }
 @import "bootstrap/labels.less";
 @import "bootstrap/jumbotron.less";
@@ -100,10 +102,6 @@ ul.ai1ec-dropdown-menu {
 .ai1ec-btn-group > .ai1ec-btn-primary {
 	z-index: 3;
 }
-// Tabs
-.ai1ec-nav-tabs {
-	margin-bottom: 0;
-}
 // Modals
 .ai1ec-modal {
 	text-align: left;
@@ -131,6 +129,10 @@ ul.ai1ec-dropdown-menu {
 	a:hover {
 		text-decoration: none;
 	}
+}
+// Tabs
+.timely .ai1ec-tab-pane h4:first-child {
+	margin-top: 0;
 }
 
 //
@@ -297,11 +299,6 @@ ul.ai1ec-dropdown-menu {
 	.ai1ec-facebook-multiselect {
 		width: 100%;
 		color: black;
-	}
-
-	// Custom font input
-	input[id$="_custom"] {
-		margin-left: 7px;
 	}
 }
 

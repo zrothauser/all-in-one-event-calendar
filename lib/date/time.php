@@ -105,6 +105,15 @@ class Ai1ec_Date_Time {
 	}
 
 	/**
+	 * Create JavaScript ready date/time information string.
+	 *
+	 * @return string JavaScript date/time string.
+	 */
+	public function format_to_javascript() {
+		return $this->format( 'Y-m-d\TH:i:s' );
+	}
+
+	/**
 	 * Get timezone to use when format doesn't have one.
 	 *
 	 * Precedence:

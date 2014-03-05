@@ -51,6 +51,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		$instant_event    = '';
 		$start            = $this->_registry->get( 'date.time' );
 		$end              = $this->_registry->get( 'date.time', '+1 hour' );
+		$timezone_name    = null;
 		$show_map         = false;
 		$google_map       = '';
 		$venue            = '';
@@ -124,6 +125,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 
 			$start            = $event->get( 'start' );
 			$end              = $event->get( 'end' );
+			$timezone_name    = $event->get( 'timezone_name' );
 
 			$multi_day        = $event->is_multiday();
 
@@ -196,6 +198,16 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 				->get_gmt_offset_expr();
 		}
 
+		if ( empty( $timezone_name ) ) {
+			/**
+			 * Actual Olsen timezone name is used when value is to be directly
+			 * exposed to user in some mean. It's possible to use named const.
+			 * `'sys.default'` only when passing value to date.time library.
+			 */
+			$timezone_name = $this->_registry->get( 'date.timezone' )
+				->get_default_timezone();
+		}
+
 		// This will store each of the accordion tabs' markup, and passed as an
 		// argument to the final view.
 		$boxes = array();
@@ -216,6 +228,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			'exrule_text'        => $exrule_text,
 			'timezone'           => $timezone,
 			'timezone_string'    => $timezone_string,
+			'timezone_name'      => $timezone_name,
 			'exdate'             => $exdate,
 			'instance_id'        => $instance_id,
 		);

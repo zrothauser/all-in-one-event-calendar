@@ -38,24 +38,17 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 		}
 
 		// Localize time.
-		$start      = $this->_registry->get(
-			'date.time',
-			$event->get( 'start' )
-		);
-		$end        = $this->_registry->get(
-			'date.time',
-			$event->get( 'end' )->format()
-		);
+		$start = $this->_registry->get( 'date.time', $event->get( 'start' ) );
+		$end   = $this->_registry->get( 'date.time', $event->get( 'end'   ) );
 
 		// All-day events need to have their end time shifted by 1 second less
 		// to land on the correct day.
 		$end_offset = 0;
 		if ( $event->is_allday() ) {
-			$end_offset = -1;
 			$end->set_time(
 				$end->format( 'H' ),
 				$end->format( 'i' ),
-				$end->format( 's' ) + $end_offset
+				$end->format( 's' ) - 1
 			);
 		}
 
@@ -110,7 +103,7 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 			if ( $start_ts !== $end_ts ) {
 				// for short date, use short display type
 				if ( 'short' === $start_date_display ) {
-					$output .= $this->get_short_date( $start );
+					$output .= $this->get_short_date( $end );
 				} else {
 					$output .= $this->get_long_date( $end );
 				}

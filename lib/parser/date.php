@@ -13,7 +13,7 @@ class Ai1ec_Parser_Date {
 	/**
 	 * @var string Character separating tokens.
 	 */
-	protected $_token_separator    = "\0";
+	protected $_token_separator    = "\f";
 
 	/**
 	 * @var string Character specifying need for localization.

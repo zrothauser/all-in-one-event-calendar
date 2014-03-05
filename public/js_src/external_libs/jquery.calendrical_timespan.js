@@ -53,7 +53,15 @@ var calendricalDateFormats = {
 			parsed = new Date( default_t );
 		} else {
 			parsed = new Date( value );
-			parsed.setMinutes( parsed.getMinutes() - parsed.getTimezoneOffset() );
+			/**
+			 * code bellow is used to avoid date/time interpretation in respect
+			 * to local (browser) timezone.
+			 */
+			var particles = value.split( 'T' );
+			var a_date = particles[0].split( '-' );
+			var a_time = particles[1].split( ':' );
+			parsed.setUTCFullYear( a_date[0], a_date[1] - 1, a_date[2] );
+			parsed.setUTCHours( a_time[0], a_time[1], a_time[2], 0 );
 		}
 		return parsed;
 	};

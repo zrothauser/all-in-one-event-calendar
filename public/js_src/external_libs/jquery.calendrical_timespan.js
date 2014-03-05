@@ -36,7 +36,7 @@ var calendricalDateFormats = {
 			use_time = false;
 		}
 		var output = date.getUTCFullYear() + '-' +
-			pad2( date.getUTCMonth() ) + '-' +
+			pad2( date.getUTCMonth() + 1 ) + '-' +
 			pad2( date.getUTCDate() );
 		if ( use_time ) {
 			output += 'T' +

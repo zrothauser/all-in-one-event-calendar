@@ -211,10 +211,13 @@
 	}
 }
 
-// =====================================================================
-// = Bootstrap fix, due to requirement to .timely-namespace forms.less =
-// =====================================================================
-// Copied from forms.less
+// =========================
+// = Bug fixes/workarounds =
+// =========================
+
+// forms.less needs to be .timely-namespaced since it contains unclassed HTML
+// tagsf, but this makes .ai1ec-input-sm and .ai1ec-input-lg inaccessible as
+// mixins. So we copy them from forms.less:
 .ai1ec-input-sm() {
   .ai1ec-input-size(@input-height-small; @padding-small-vertical; @padding-small-horizontal; @font-size-small; @line-height-small; @border-radius-small);
 }

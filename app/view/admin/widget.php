@@ -21,8 +21,10 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		// Set registry
 		$this->_registry = new Ai1ec_Registry_Object( $ai1ec_loader );
 
-		// Load CSS
-		$this->_registry->get( 'css.frontend' )->add_link_to_html_for_frontend();
+		// Load CSS in front-end.
+		if ( ! is_admin() ) {
+			$this->_registry->get( 'css.frontend' )->add_link_to_html_for_frontend();
+		}
 
 		parent::__construct(
 			'ai1ec_agenda_widget',

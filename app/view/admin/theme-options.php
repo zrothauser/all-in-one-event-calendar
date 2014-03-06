@@ -163,7 +163,7 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 				'value'       => '<i class="ai1ec-fa ai1ec-fa-save ai1ec-fa-fw"></i> ' .
 					Ai1ec_I18n::__( 'Save Options' ),
 				'args'        => array(
-					'class'     => 'ai1ec-btn ai1ec-btn-primary',
+					'class'     => 'ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg',
 				),
 			),
 			'reset'         => array(
@@ -171,7 +171,7 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 				'value'       => '<i class="ai1ec-fa ai1ec-fa-undo ai1ec-fa-fw"></i> ' .
 					Ai1ec_I18n::__( 'Reset to Defaults' ),
 				'args'        => array(
-					'class'     => 'ai1ec-btn ai1ec-btn-default ai1ec-btn-danger',
+					'class'     => 'ai1ec-btn ai1ec-btn-danger ai1ec-btn-lg',
 				),
 			),
 		);

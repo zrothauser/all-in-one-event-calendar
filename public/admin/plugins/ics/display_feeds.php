@@ -8,13 +8,17 @@
 	    AI1EC_PLUGIN_NAME ); ?>
 	</p>
 	<div id="ics-alerts"></div>
-	<label class="textinput" for="cron_freq">
-	  <?php _e( 'Check for new events', AI1EC_PLUGIN_NAME ) ?>:
-		<?php echo $cron_freq ?>
-	</label>
-	<input type="submit" name="ai1ec_save_settings" id="ai1ec_save_settings"
-		class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-sm ai1ec-pull-right"
-		value="<?php _e( 'Update Settings', AI1EC_PLUGIN_NAME ); ?>">
+	<p>
+		<label class="textinput" for="cron_freq">
+		  <?php _e( 'Check for new events', AI1EC_PLUGIN_NAME ) ?>:
+			<?php echo $cron_freq ?>
+		</label>
+		<button type="submit" name="ai1ec_save_settings" id="ai1ec_save_settings"
+			class="ai1ec-btn ai1ec-btn-primary ai1ec-pull-right">
+			<i class="ai1ec-fa ai1ec-fa-save ai1ec-fa-fw"></i>
+			<?php _e( 'Save Settings', AI1EC_PLUGIN_NAME ); ?>
+		</button>
+	</p>
 </div>
 
 <div id="ai1ec-feeds-after"

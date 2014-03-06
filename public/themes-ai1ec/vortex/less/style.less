@@ -40,7 +40,7 @@
 .timely { @import "bootstrap/type.less"; }
 @import "bootstrap/grid.less";
 .timely { @import "bootstrap/forms.less"; }
-@import "bootstrap/buttons.less";
+.timely { @import "bootstrap/buttons.less"; }
 
 // Components
 @import "bootstrap/component-animations.less";
@@ -84,9 +84,6 @@
 .ai1ec-btn-group {
 	margin-bottom: 6px;
 	vertical-align: bottom;
-	> .ai1ec-btn {
-		max-height: 16px;
-	}
 	> .ai1ec-btn-primary {
 		z-index: 3;
 	}
@@ -565,10 +562,6 @@ input.ai1ec-timepicker[readonly] {
 	.dropdown-toggle {
 		cursor: pointer;
 	}
-	.dropdown-menu {
-		border-color: @dropdown-border;
-		margin-top: 0 !important;
-	}
 	.dropdown-menu a:hover,
 	.dropdown-menu .active > a,
 	.dropdown-menu .active > a:hover {
@@ -577,6 +570,9 @@ input.ai1ec-timepicker[readonly] {
 		background: @dropdown-link-hover-bg !important;
 		color: @dropdown-link-hover-color;
 	}*/
+	.dropdown-menu {
+		margin-top: 0 !important;
+	}
 
 	//
 	// Modals

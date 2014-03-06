@@ -157,7 +157,6 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 			'stacked'       => true,
 			'content_class' => 'ai1ec-form-horizontal',
 			'tabs'          => $tabs,
-			'hide_name'     => true,
 			'submit'        => array(
 				'id'          => self::SUBMIT_ID,
 				'value'       => '<i class="ai1ec-fa ai1ec-fa-save ai1ec-fa-fw"></i> ' .

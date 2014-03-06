@@ -1,10 +1,14 @@
-<label for="{{ id }}">
-{% from 'form-elements/input.twig' import input %}
-{{ input( id, id, 1, 'checkbox', attributes ) }}
-	{{ renderer.label | raw }}
-	{% if renderer.help is defined %}
-	<div class="help-block">
-		{{ renderer.help | raw }}
+<div class="ai1ec-col-sm-12">
+	<div class="checkbox">
+		<label for="{{ id }}">
+			{% from 'form-elements/input.twig' import input %}
+			{{ input( id, id, 1, 'checkbox', attributes ) }}
+
+			{{ renderer.label | raw }}
+
+			{% if renderer.help is defined %}
+				<div class="ai1ec-help-block">{{ renderer.help | raw }}</div>
+			{% endif %}
+		</label>
 	</div>
-	{% endif %}
-</label>
+</div>

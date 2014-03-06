@@ -1658,4 +1658,4 @@ define(
 	// = Timely edit end =
 	// ===================
 
-}( window.jQuery ));
+} );

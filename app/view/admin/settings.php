@@ -10,7 +10,7 @@
  * @subpackage AI1EC.View
  */
 class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
-	
+
 	/**
 	 * @var string The nonce action
 	 */
@@ -40,16 +40,8 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 				'action' => 'left',
 				'object' => null
 			),
-			'action' => 
-				admin_url( '?controller=front&action=ai1ec_save_settings&plugin=' . AI1EC_PLUGIN_NAME )
-			,
-			'submit' => array(
-				'id'    => 'ai1ec_save_settings',
-				'value' => Ai1ec_I18n::__( 'Update Settings' ),
-				'args'  => array(
-					'class' => 'button button-primary',
-				),
-			),
+			'action' =>
+				admin_url( '?controller=front&action=ai1ec_save_settings&plugin=' . AI1EC_PLUGIN_NAME ),
 		);
 		$loader = $this->_registry->get( 'theme.loader' );
 		$file   = $loader->get_file( 'setting/page.twig', $args, true );
@@ -89,7 +81,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 
 	/**
 	 * Displays the meta box for the settings page.
-	 * 
+	 *
 	 * @param mixed $object
 	 * @param mixed $box
 	 */
@@ -116,35 +108,45 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 		);
 
 		// let other extensions add tabs.
-		$tabs            = apply_filters( 'ai1ec_add_setting_tabs', $tabs );
-		$settings        = $this->_registry->get( 'model.settings' );
-		$plugin_settings = $settings->get_options();
+		$tabs             = apply_filters( 'ai1ec_add_setting_tabs', $tabs );
+		$settings         = $this->_registry->get( 'model.settings' );
+		$plugin_settings  = $settings->get_options();
 
-		$tabs            = $this->_get_tabs_to_show( $plugin_settings, $tabs );
-		$loader          = $this->_registry->get( 'theme.loader' );
-		$args            = array(
-			'tabs' => $tabs,
+		$tabs             = $this->_get_tabs_to_show( $plugin_settings, $tabs );
+		$loader           = $this->_registry->get( 'theme.loader' );
+		$args             = array(
+			'tabs'          => $tabs,
+			'content_class' => 'ai1ec-form-horizontal',
+			'submit'        => array(
+				'id'          => 'ai1ec_save_settings',
+				'value'       => '<i class="ai1ec-fa ai1ec-fa-save ai1ec-fa-fw"></i> ' .
+					Ai1ec_I18n::__( 'Save Settings' ),
+				'args'        => array(
+					'class'     => 'ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg',
+				),
+			),
+
 		);
 
-		$file = $loader->get_file( 'bootstrap_tabs.twig', $args, true );
+		$file = $loader->get_file( 'setting/bootstrap_tabs.twig', $args, true );
 		$file->render();
 	}
 
 	/**
 	 * Based on the plugin options, decides what tabs to render.
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
 	 * @param array $plugin_settings
 	 * @param array $tabs
-	 * 
+	 *
 	 * @return array
 	 */
 	protected function _get_tabs_to_show( array $plugin_settings, array $tabs ) {
 		foreach ( $plugin_settings as $id => $setting ) {
 			// if the setting is shown
 			if ( isset ( $setting['renderer'] ) ) {
-				$tab_to_use = isset( $setting['renderer']['item'] ) ? 
+				$tab_to_use = isset( $setting['renderer']['item'] ) ?
 					$setting['renderer']['item'] :
 					$setting['renderer']['tab'];
 				// check if it's the first one

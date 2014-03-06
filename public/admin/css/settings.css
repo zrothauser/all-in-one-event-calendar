@@ -13,30 +13,6 @@
 	width: 100%;
 }
 
-#ai1ec-general-settings label,
-#ai1ec-plugins-settings label {
-	float: left;
-	clear: left;
-	margin: 0.25em 0;
-}
-#ai1ec-general-settings label.textinput,
-#ai1ec-plugins-settings label.textinput {
-	width: 230px;
-}
-#ai1ec-general-settings h2,
-#ai1ec-plugins-settings h2 {
-	margin: 5px 0;
-	padding: 0;
-}
-
-.timely p.submit {
-	padding: 0;
-}
-#ai1ec_save_settings {
-	clear: left;
-	display: block;
-}
-
 /* Support box */
 
 .ai1ec-support-placeholder {
@@ -149,27 +125,16 @@
 .ai1ec-admin-view-settings {
 	margin: 0 0 0.75em;
 }
-.ai1ec-admin-view-settings table {
-	width: 400px;
+.ai1ec-admin-view-settings td {
+	text-align: center;
 }
 .ai1ec-admin-view-settings td:first-child {
 	text-align: right;
-}
-.ai1ec-control-table-column {
-	text-align: center;
-}
-.timely .ai1ec-default-filters select {
-	width: 160px;
-	margin-right: 10px;
 }
 .timely .ai1ec-default-filters .ai1ec-help-block {
 	font-size: 0.85em;
 	line-height: 1.4em;
 	margin-bottom: 0;
-}
-#ai1ec-general-settings .ai1ec-default-filters div label {
-	float: none;
-	clear: none;
 }
 
 #exact_date {

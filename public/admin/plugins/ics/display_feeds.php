@@ -9,10 +9,12 @@
 	</p>
 	<div id="ics-alerts"></div>
 	<p>
-		<label class="textinput" for="cron_freq">
+		<label class="ai1ec-control-label" for="cron_freq">
 		  <?php _e( 'Check for new events', AI1EC_PLUGIN_NAME ) ?>:
-			<?php echo $cron_freq ?>
 		</label>
+		<div class="ai1ec-col-sm-10">
+			<?php echo $cron_freq ?>
+		</div>
 		<button type="submit" name="ai1ec_save_settings" id="ai1ec_save_settings"
 			class="ai1ec-btn ai1ec-btn-primary ai1ec-pull-right">
 			<i class="ai1ec-fa ai1ec-fa-save ai1ec-fa-fw"></i>

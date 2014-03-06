@@ -51,11 +51,10 @@ class Ai1ec_Html_Element_Calendar_Page_Selector
 	 * @return string HTML snippet for page selection.
 	 */
 	public function render( $snippet = '' ) {
-		$output = $this->_get_pages_selector() . $this->_get_page_view_link();
-		$output = '<div class="ai1ec-pull-left">' . $output . '</div>';
-		$output = '<label class="textinput" for="' . self::ELEMENT_ID . '">' .
-			Ai1ec_I18n::__( 'Calendar page:' ) .
-			'</label>' . $output;
+		$output = '<label class="ai1ec-control-label ai1ec-col-sm-5" for="' .
+			self::ELEMENT_ID . '">' . Ai1ec_I18n::__( 'Calendar page' ) . '</label>'
+			. '<div class="ai1ec-col-sm-7">' .
+			$this->_get_pages_selector() . $this->_get_page_view_link() . '</div>';
 		return parent::render( $output );
 	}
 
@@ -85,7 +84,7 @@ class Ai1ec_Html_Element_Calendar_Page_Selector
 	 */
 	protected function _get_pages_selector() {
 		$html = '<select id="' . self::ELEMENT_ID .
-			'" class="inputwidth" name="' . self::ELEMENT_ID . '">';
+			'" class="ai1ec-form-control" name="' . self::ELEMENT_ID . '">';
 		$list = $this->_get_pages();
 		foreach ( $list as $key => $value ) {
 			$html .= '<option value="' . $this->_html->esc_attr( $key ) . '"';

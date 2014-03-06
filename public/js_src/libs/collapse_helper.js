@@ -2,6 +2,7 @@ define(
 	[
 		"jquery_timely",
 		"domReady",
+		"external_libs/bootstrap/transition",
 		"external_libs/bootstrap/collapse"
 	],
 	function( $, domReady ) {

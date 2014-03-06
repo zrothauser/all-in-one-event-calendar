@@ -1,35 +1,32 @@
-<div class="ai1ec-admin-view-settings ai1ec-clearfix">
-	<label>{{ label }}</label>
-	<div>
-		<table>
+<div class="ai1ec-admin-view-settings ai1ec-form-group">
+	<label class="ai1ec-control-label ai1ec-col-sm-5">{{ label }}</label>
+	<div class="ai1ec-col-sm-7">
+		<table class="ai1ec-table ai1ec-table-striped">
 			<thead>
-				<tr class="ai1ec-admin-view-head">
+				<tr>
 					<th></th>
-					<th>{{ 'Enabled'|__ }}</th>
-					<th>{{ 'Default'|__ }}</th>
-					<th></th>
+					<th>{{ 'Enabled' | __ }}</th>
+					<th>{{ 'Default' | __ }}</th>
 				</tr>
 			</thead>
 			<tbody>
-					{% for view, args in views %}
+				{% for view, args in views %}
 					<tr>
 						<td>
 							{{ args.longname }}
 						</td>
 						<td class="ai1ec-control-table-column">
-							<input class="checkbox ai1ec-toggle-view" type="checkbox" name="view_{{ view }}_enabled" value="1"
-								{{ args.enabled }} />
+							<input class="checkbox ai1ec-toggle-view" type="checkbox"
+								name="view_{{ view }}_enabled" value="1"
+								{{ args.enabled }}>
 						</td>
 						<td class="ai1ec-control-table-column">
-							<input class="ai1ec-toggle-default-view" type="radio" name="default_calendar_view" value="{{ view }}"
+							<input class="ai1ec-toggle-default-view" type="radio"
+								name="default_calendar_view" value="{{ view }}"
 								{{ args.default }}>
 						</td>
-						<td class="ai1ec-control-table-column">
-
-						</td>
 					</tr>
-					{% endfor %}
-
+				{% endfor %}
 			</tbody>
 		</table>
 	</div>

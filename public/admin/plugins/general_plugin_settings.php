@@ -8,8 +8,8 @@
 	$value = esc_attr( $setting['setting-value'] );
 	$id = esc_attr( $setting['setting-id'] );
 	?>
-	<div class="ai1ec-clearfix">
-		<label class="textinput" for="<?php echo $id; ?>">
+	<div class="ai1ec-form-group">
+		<label class="ai1ec-control-label" for="<?php echo $id; ?>">
 			<?php echo $description; ?>
 		</label>
 		<input name="<?php echo $id; ?>" id="<?php echo $id; ?>" type="text"

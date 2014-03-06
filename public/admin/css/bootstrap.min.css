@@ -1,4 +1,3 @@
-@import url("//fonts.googleapis.com/css?family=Lato:700");
 @font-face {
   font-family: 'Timely_FontAwesome';
   src: url('../font/fontawesome-webfont.eot?v=4.0.3');
@@ -1550,7 +1549,7 @@ a.ai1ec-fa.ai1ec-hide {
 .timely .ai1ec-h4,
 .timely .ai1ec-h5,
 .timely .ai1ec-h6 {
-  font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", Arial, sans-serif;
   font-weight: 500;
   line-height: 1.1;
   color: #333333;
@@ -2583,7 +2582,7 @@ a.ai1ec-fa.ai1ec-hide {
 .timely .ai1ec-table > thead > tr > td,
 .timely .ai1ec-table > tbody > tr > td,
 .timely .ai1ec-table > tfoot > tr > td {
-  padding: 8px;
+  padding: 4px;
   line-height: 1.42857143;
   vertical-align: top;
   border-top: 1px solid #dddddd;
@@ -3536,7 +3535,7 @@ input[type="button"].ai1ec-btn-block {
 .ai1ec-dropdown-menu > li > a:focus {
   text-decoration: none;
   color: #262626;
-  background-color: #6aab2d;
+  background-color: #f5f5f5;
 }
 .ai1ec-dropdown-menu > .ai1ec-active > a,
 .ai1ec-dropdown-menu > .ai1ec-active > a:hover,
@@ -6317,7 +6316,7 @@ fieldset[disabled] .ai1ec-datepicker table tr td span.ai1ec-active.ai1ec-disable
   margin-right: -5px;
 }
 .ai1ec-popover-title {
-  font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", Arial, sans-serif;
   font-size: 16.25px !important;
 }
 .ai1ec-popover-content {
@@ -6338,6 +6337,12 @@ ul.ai1ec-dropdown-menu li {
 }
 .ai1ec-btn-group > .ai1ec-btn-primary {
   z-index: 3;
+}
+.timely .ai1ec-form-group {
+  margin-bottom: 10px;
+}
+.timely label {
+  font-weight: normal;
 }
 .ai1ec-modal {
   text-align: left;
@@ -6443,6 +6448,55 @@ ul.ai1ec-dropdown-menu li {
   font-size: 13px;
   line-height: 1.42857143;
   color: #333333;
+  /*
+	fieldset {
+		.ai1ec-well;
+		.ai1ec-well-sm;
+		background-color: mix( @body-bg, @text-color, 96% );
+		margin: 0 0 @line-height-base;
+		position: relative;
+		top: @line-height-base / 3;
+		:last-child {
+			margin-bottom: 0;
+		}
+	}
+	legend {
+		background: mix( @body-bg, @text-color, 96% );
+		border: 1px solid #eee;
+		border: 1px solid rgba(0, 0, 0, 0.05);
+		border-radius: 3px;
+		.ai1ec-box-shadow( inset 0 1px 1px rgba(0, 0, 0, 0.05) );
+		.ai1ec-box-sizing( border-box );
+		margin: 0;
+		padding: 3px 6px;
+		font-size: @font-size-base;
+		line-height: @line-height-base;
+	}*/
+  /*
+	// Form for ics feeds tab and Facebook tab
+	#ai1ec-feeds-after input:focus,
+	.ai1ec_submit_wrapper input:focus,
+	.ai1ec_file_upload_tags_categories input:focus {
+		border-color: none;
+		box-shadow: none;
+		outline: none;
+	}
+
+	input[type="text"] {
+		height: 28px;
+		line-height: 28px;
+	}
+	input[type="file"] {
+		border: 0;
+		height: auto;
+		line-height: inherit;
+		padding: 0;
+	}
+	.ai1ec-facebook-multiselect {
+		width: 100%;
+		color: black;
+	}
+	*/
 }
 .timely h4 {
   font-size: 16px;
@@ -6457,75 +6511,12 @@ ul.ai1ec-dropdown-menu li {
 .timely input[type="checkbox"] {
   margin: -1px 3px 0 0;
 }
-.timely fieldset {
-  min-height: 20px;
-  padding: 19px;
-  margin-bottom: 20px;
-  background-color: #f5f5f5;
-  border: 1px solid #e3e3e3;
-  border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-  padding: 9px;
-  border-radius: 3px;
-  background-color: #f7f7f7;
-  margin: 0 0 1.42857143;
-  position: relative;
-  top: 0.47619048;
-}
-.timely fieldset blockquote {
-  border-color: #ddd;
-  border-color: rgba(0, 0, 0, 0.15);
-}
-.timely fieldset :last-child {
-  margin-bottom: 0;
-}
-.timely legend {
-  background: #f7f7f7;
-  border: 1px solid #eee;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 3px;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 3px 6px;
-  font-size: 13px;
-  line-height: 1.42857143;
-}
-.timely #ai1ec-feeds-after input:focus,
-.timely .ai1ec_submit_wrapper input:focus,
-.timely .ai1ec_file_upload_tags_categories input:focus {
-  border-color: none;
-  box-shadow: none;
-  outline: none;
+.timely textarea.ai1ec-form-control {
+  height: auto;
 }
 .timely pre {
   overflow: auto;
   white-space: nowrap;
-}
-.timely a.button-primary {
-  color: #fff;
-}
-.timely a.button-primary:hover {
-  color: #EAF2FA;
-  text-decoration: none;
-}
-.timely input[type="text"] {
-  height: 28px;
-  line-height: 28px;
-}
-.timely input[type="file"] {
-  border: 0;
-  height: auto;
-  line-height: inherit;
-  padding: 0;
-}
-.timely .ai1ec-facebook-multiselect {
-  width: 100%;
-  color: black;
 }
 .ai1ec-loader-icon {
   background: url('../img/ajax-loader.gif') no-repeat center center;
@@ -6595,7 +6586,7 @@ ul.ai1ec-dropdown-menu li {
 }
 .ai1ec-geo-ac-results .ai1ec-dropdown-menu li:hover {
   color: #262626;
-  background-color: #6aab2d;
+  background-color: #f5f5f5;
 }
 .ai1ec-modal-open .ai1ec-geo-ac-results {
   z-index: 2040;
@@ -6667,4 +6658,8 @@ ul.ai1ec-dropdown-menu li {
 .ai1ec_category_small_image_preview {
   max-width: 50px;
   max-height: 50px;
+}
+.ai1ec-prose ul {
+  list-style-type: disc;
+  padding-left: 40px;
 }

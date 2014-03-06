@@ -15,7 +15,6 @@
 // =========
 // = Fonts =
 // =========
-@import url("//fonts.googleapis.com/css?family=Lato:700");
 @import "timely-font-awesome.less";
 
 // =============
@@ -56,14 +55,10 @@
 @import "bootstrap/utilities.less";
 
 // ===========
-// = Select2 =
+// = Plugins =
 // ===========
-// Select2 is well-namespaced already by its class name definitions.
-@import "plugins/select2.less";
 
-// ========================
-// = Bootstrap Datepicker =
-// ========================
+@import "plugins/select2.less";
 @import "plugins/datepicker3.less";
 
 // ==========================
@@ -101,6 +96,15 @@ ul.ai1ec-dropdown-menu {
 // Buttons
 .ai1ec-btn-group > .ai1ec-btn-primary {
 	z-index: 3;
+}
+// Forms
+.timely {
+	.ai1ec-form-group {
+		margin-bottom: 10px;
+	}
+	label {
+		font-weight: normal;
+	}
 }
 // Modals
 .ai1ec-modal {
@@ -242,6 +246,8 @@ ul.ai1ec-dropdown-menu {
 	input[type="checkbox"] {
 		margin: -1px 3px 0 0;
 	}
+	// TODO: NEEDED?
+	/*
 	fieldset {
 		.ai1ec-well;
 		.ai1ec-well-sm;
@@ -264,8 +270,20 @@ ul.ai1ec-dropdown-menu {
 		padding: 3px 6px;
 		font-size: @font-size-base;
 		line-height: @line-height-base;
+	}*/
+
+	textarea.ai1ec-form-control {
+    height: auto;
+  }
+
+	// Code
+	pre {
+		overflow: auto;
+		white-space: nowrap;
 	}
 
+	// TODO: NEEDED??
+	/*
 	// Form for ics feeds tab and Facebook tab
 	#ai1ec-feeds-after input:focus,
 	.ai1ec_submit_wrapper input:focus,
@@ -275,20 +293,6 @@ ul.ai1ec-dropdown-menu {
 		outline: none;
 	}
 
-	// Code
-	pre {
-		overflow: auto;
-		white-space: nowrap;
-	}
-
-	// Restore WP styles.
-	a.button-primary {
-		color: #fff;
-		&:hover {
-			color: #EAF2FA;
-			text-decoration: none;
-		}
-	}
 	input[type="text"] {
 		height: 28px;
 		line-height: 28px;
@@ -303,6 +307,7 @@ ul.ai1ec-dropdown-menu {
 		width: 100%;
 		color: black;
 	}
+	*/
 }
 
 // AJAX loaders

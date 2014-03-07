@@ -352,7 +352,7 @@ class Ai1ec_Front_Controller {
 		);
 		$dispatcher->register_action(
 			'widgets_init',
-			array( 'view.admin.widget', 'register_widget' )
+			array( 'view.calendar.widget', 'register_widget' )
 		);
 
 		if ( is_admin() ) {

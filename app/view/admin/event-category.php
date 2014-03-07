@@ -23,7 +23,7 @@ class Ai1ec_View_Admin_EventCategory extends Ai1ec_Base {
 		wp_enqueue_media();
 		$this->_registry->get( 'css.admin' )
 			->process_enqueue( array(
-				array( 'style', 'admin.css' )
+				array( 'style', 'bootstrap.min.css' )
 			) );
 		return array_splice( $columns, 0, 3 ) + // get only first element
 			// insert at index 2

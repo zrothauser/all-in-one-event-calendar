@@ -23,7 +23,11 @@
 					{% endif %}
 					{{ data_type | raw }}
 					href="{{ term.href }}">
-					{{ term.color | raw }}
+					{% if term.color is empty %}
+						<span class="ai1ec-color-swatch-empty"></span>
+					{% else %}
+						{{ term.color | raw }}
+					{% endif %}
 					{{ term.name }}
 				</a>
 			</div>

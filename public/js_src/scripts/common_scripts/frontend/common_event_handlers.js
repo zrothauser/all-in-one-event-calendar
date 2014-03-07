@@ -49,7 +49,7 @@ define(
 						'<div class="ai1ec-popover-content"><div></div></div>' +
 					'</div>' +
 				'</div>',
-			container: $this.closest( '.ai1ec-popover-boundary' )
+			container: 'body'
 		}).constrained_popover( 'show' );
 	};
 
@@ -96,7 +96,8 @@ define(
 							'<div class="ai1ec-tooltip-arrow"></div>' +
 							'<div class="ai1ec-tooltip-inner"></div>' +
 						'</div>',
-					trigger: 'manual'
+					trigger: 'manual',
+					container: 'body'
 				};
 
 		// Don't add tooltips to category colour squares already contained in

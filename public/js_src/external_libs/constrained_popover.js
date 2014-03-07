@@ -40,7 +40,7 @@ define(
 	 */
 	ConstrainedPopover.prototype.applyPlacement =
 		function( offset, placement ) {
-			$.fn.popover.prototype.applyPlacement.call( this, offset, placement );
+			$.fn.popover.Constructor.prototype.applyPlacement.call( this, offset, placement );
 
 			var $tip     = this.tip(),
 			    actualWidth = $tip[0].offsetWidth,

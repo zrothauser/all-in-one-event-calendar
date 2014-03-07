@@ -140,6 +140,11 @@
 	background-color: @body-bg;
 }
 
+// Tooltips
+.ai1ec-tooltip {
+	margin: 0 !important;
+}
+
 //
 // Select2
 //
@@ -821,78 +826,18 @@ input.ai1ec-timepicker[readonly] {
 
 .ai1ec-popover.ai1ec-popup {
 	text-align: left;
+	border-color: @event-border;
+	width: 170px;
 
-/*
-	// Until we upgrade Bootstrap, must undo some Bootstrap styles applied by
-	// themes based on more recent Bootstrap.
-	line-height: @line-height-base;
-	background: none;
-	background-clip: inherit;
-	border: none;
-	border-radius: 0;
-	.ai1ec-box-shadow( none );
-	width: auto;
-
-	&.ai1ec-fade {
-		opacity: 0;
-		.ai1ec-transition( all .15s );
-		&.ai1ec-in {
-			opacity: 1;
-			.ai1ec-transition( opacity .15s );
-		}
-	}
-	@ai1ec-arrow-size: 10px;
-	&.ai1ec-top    { margin-top:  0; }
-	&.ai1ec-right  { margin-left: 0; }
-	&.ai1ec-bottom { margin-top:  0; }
-	&.ai1ec-left   { margin-left: 0; }
-
-	.ai1ec-arrow {
-		z-index: 1;
-	}
-	&.ai1ec-top .ai1ec-arrow {
-		#timelyPopoverArrow  > .ai1ec-top( @ai1ec-arrow-size, @event-border );
-		&:after {
-			#timelyPopoverArrow  > #outlinedArrow .ai1ec-top( 10px, 2px, @event-bg );
-		}
-	}
-	&.ai1ec-left .ai1ec-arrow {
-		#timelyPopoverArrow  > .ai1ec-left( @ai1ec-arrow-size, @event-border );
-		&:after {
-			#timelyPopoverArrow  > #outlinedArrow .ai1ec-left( 10px, 2px, @event-bg );
-		}
-	}
-	&.ai1ec-bottom .ai1ec-arrow {
-		#timelyPopoverArrow  > .ai1ec-bottom( @ai1ec-arrow-size, @event-border );
-		&:after {
-			#timelyPopoverArrow  > #outlinedArrow .ai1ec-bottom( 10px, 2px, @event-bg );
-		}
-	}
-	&.ai1ec-right .ai1ec-arrow {
-		#timelyPopoverArrow  > .ai1ec-right( @ai1ec-arrow-size, @event-border );
-		&:after {
-			#timelyPopoverArrow  > #outlinedArrow .ai1ec-right( 10px, 2px, @event-bg );
-		}
-	}
-
-	.ai1ec-popover-inner {
-		background: @event-border;
-		border-radius: 5px;
-		.ai1ec-box-shadow( 0 3px 10px rgba(0,0,0,0.3) );
-		padding: 1px;
-		position: relative;
-		width: 170px;
-	}
 	.ai1ec-popover-content {
 		background: @event-bg;
-		border-radius: 4px;
 		color: @event-text;
 		font-size: @font-size-base;
 		font-weight: normal;
 		padding: 5px 8px;
 		position: relative;
 		z-index: 2;
-	}*/
+	}
 	.ai1ec-event-time {
 		background: @event-time-bg;
 		font-size: @font-size-base * 0.85;
@@ -929,7 +874,7 @@ input.ai1ec-timepicker[readonly] {
 	}
 }
 
-.ai1ec-popover-title.ai1ec-popup-title {
+.ai1ec-popup-title {
 	font-size: @font-size-base * 0.95;
 	font-weight: bold;
 	line-height: @line-height-base;
@@ -948,48 +893,3 @@ input.ai1ec-timepicker[readonly] {
 	font-size: @font-size-base * 0.85;
 	margin-top: 2px;
 }
-
-
-// ===========================
-// = Responsive declarations =
-// ===========================
-
-.ai1ec-visible-narrow-phone {
-	display: none !important;
-}
-
-// Portrait phone
-@media (max-width: 480px) {
-	.ai1ec-visible-narrow-phone {
-		display: inherit !important;
-	}
-	.ai1ec-hidden-narrow-phone {
-		display: none !important;
-	}
-	.ai1ec-btn {
-		font-size: 11px;
-	}
-	.ai1ec-btn-lg {
-		font-size: 15px;
-	}
-}
-
-/*
-// Devices that are too narrow to display modals properly.
-@media (max-width: 500px ) {
-	.ai1ec-modal {
-		position: fixed;
-		top: 3%;
-		right: 3%;
-		left: 3%;
-		width: auto;
-		margin: 0;
-	}
-	.ai1ec-modal.ai1ec-fade.ai1ec-in {
-		top: 3%;
-	}
-	.ai1ec-modal-body {
-		max-height: 222px;
-	}
-}
-*/

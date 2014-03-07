@@ -6,7 +6,7 @@ define(
 		"ai1ec_calendar",
 		"external_libs/modernizr",
 		"external_libs/bootstrap/tooltip",
-		"external_libs/bootstrap/popover",
+		"external_libs/constrained_popover",
 		"external_libs/bootstrap/dropdown"
 	],
 	function( $, domReady, event_handlers, ai1ec_calendar, Modernizr ) {

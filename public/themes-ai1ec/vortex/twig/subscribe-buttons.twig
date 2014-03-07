@@ -1,5 +1,5 @@
 <div class="ai1ec-subscribe-container ai1ec-btn-group ai1ec-pull-left">
-	<a class="ai1ec-btn ai1ec-btn-default ai1ec-subscribe
+	<a class="ai1ec-btn ai1ec-btn-default ai1ec-btn-sm ai1ec-subscribe
 			ai1ec-tooltip-trigger {{ button_classes }}"
 		data-placement="bottom"
 		href="{{ ( export_url ~ url_args ) | e('html_attr') }}"
@@ -16,7 +16,7 @@
 		{% endif %}
 	</a>
 	{% set url = export_url | replace( ['webcal://', 'http://'] ) ~ url_args %}
-	<a class="ai1ec-btn ai1ec-btn-default ai1ec-subscribe-google
+	<a class="ai1ec-btn ai1ec-btn-default ai1ec-btn-sm ai1ec-subscribe-google
 			ai1ec-tooltip-trigger {{ button_classes }}"
 		target="_blank" data-placement="bottom"
 		href="http://www.google.com/calendar/render?cid={{ url | url_encode | e('html_attr') }}"

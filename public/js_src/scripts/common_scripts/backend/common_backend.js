@@ -153,7 +153,7 @@ define(
 			placement: 'left'
 		} );
 		// Initialize any tooltips.
-		$( '.ai1ec-tooltip-toggle' ).tooltip();
+		$( '.ai1ec-tooltip-toggle' ).tooltip( { container: 'body' } );
 	};
 
 	// If it was set in the backend, run the script

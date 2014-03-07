@@ -71,8 +71,8 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			)->get_content();
 		}
 		// Generate title of view based on date range month & year.
-		$range_start = $results['date_first'] ? $results['date_first'] : $timestamp;
-		$range_end   = $results['date_last']  ? $results['date_last'] : $timestamp;
+		$range_start = $results['date_first'] ? $results['date_first'] : $this->_registry->get( 'date.time', $timestamp );
+		$range_end   = $results['date_last']  ? $results['date_last'] : $this->_registry->get( 'date.time', $timestamp );
 		$range_start = $this->_registry->get( 'date.time', $range_start );
 		$range_end   = $this->_registry->get( 'date.time', $range_end );
 		$start_year  = $range_start->format_i18n( 'Y' );
@@ -171,7 +171,10 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		$settings = $this->_registry->get( 'model.settings' );
 		// Classify each event into a date/allday category
 		foreach( $events as $event ) {
-			$timestamp = $event->get( 'start' )->set_time( 0, 0, 0 )->format();
+			$timestamp = $this->_registry
+				->get( 'date.time', $event->get( 'start' ) )
+				->set_time( 0, 0, 0 )
+				->format();
 			$exact_date = $time->format_date_for_url(
 				$timestamp,
 				$settings->get( 'input_date_format' )
@@ -191,8 +194,10 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$dates[$timestamp]['href'] = $href_for_date;
 		}
 		// Flag today
-		$today = $this->_registry->get( 'date.time' )->set_time( 0, 0, 0 )->format();
-		if( isset( $dates[$today] ) ) {
+		$today = $this->_registry->get( 'date.time' )
+			->set_time( 0, 0, 0 )
+			->format();
+		if ( isset( $dates[$today] ) ) {
 			$dates[$today]['today'] = true;
 		}
 		return $dates;
@@ -227,7 +232,12 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		$links = array();
 
 		$args['page_offset'] = -1;
-		$args['time_limit']  = $date_first - 1;
+		$args['time_limit']  = $this->_registry
+			->get( 'date.time', $date_first )->set_time(
+				$date_first->format( 'H' ),
+				$date_first->format( 'i' ),
+				$date_first->format( 's' ) - 1
+			)->format_to_gmt();
 		$href = $this->_registry->get(
 			'html.element.href',
 			$args
@@ -243,11 +253,16 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		$factory = $this->_registry->get( 'factory.html' );
 		$links[] = $factory->create_datepicker_link(
 			$args,
-			$date_first
+			$date_first->format_to_gmt()
 		);
 
 		$args['page_offset'] = 1;
-		$args['time_limit']  = $date_last + 1;
+		$args['time_limit']  = $this->_registry
+			->get( 'date.time', $date_last )->set_time(
+				$date_last->format( 'H' ),
+				$date_last->format( 'i' ),
+				$date_last->format( 's' ) + 1
+			)->format_to_gmt();
 		$href = $this->_registry->get(
 			'html.element.href',
 			$args

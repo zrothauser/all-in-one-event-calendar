@@ -277,7 +277,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 			'e.recurrence_rules, e.exception_rules, e.ticket_url, e.instant_event, e.recurrence_dates, e.exception_dates, ' .
 			'e.venue, e.country, e.address, e.city, e.province, e.postal_code, ' .
 			'e.show_map, e.contact_name, e.contact_phone, e.contact_email, e.cost, ' .
-			'e.ical_feed_url, e.ical_source_url, e.ical_organizer, e.ical_contact, e.ical_uid ' .
+			'e.ical_feed_url, e.ical_source_url, e.ical_organizer, e.ical_contact, e.ical_uid, e.timezone_name ' .
 			'FROM ' . $this->_dbi->get_table_name( 'ai1ec_events' ) . ' e ' .
 			'INNER JOIN ' . $this->_dbi->get_table_name( 'posts' ) . ' p ON e.post_id = p.ID ' .
 			$wpml_join_particle .
@@ -314,12 +314,14 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	
 		foreach ( $events as &$event ) {
 			$event['allday'] = $this->_is_all_day( $event );
-			if ( NULL === $date_first ) {
-				$date_first = $event['start'];
+			$event           = $this->_registry->get( 'model.event', $event );
+			if ( null === $date_first ) {
+				$date_first = $event->get( 'start' );
 			}
-			$date_last = $event['start'];
-			$event     = $this->_registry->get( 'model.event', $event );
+			$date_last = $event->get( 'start' );
 		}
+		$date_first = $this->_registry->get( 'date.time', $date_first );
+		$date_last  = $this->_registry->get( 'date.time', $date_last );
 
 		$next = false;
 		$prev = false;

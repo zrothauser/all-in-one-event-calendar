@@ -1,19 +1,21 @@
 <label class="ai1ec-control-label ai1ec-col-sm-5" for="{{ id }}">
 	{{ label | raw }}
 </label>
-<div class="ai1ec-col-sm-7">
-	{% if append is defined %}
+{% if append is defined %}
+	<div class="ai1ec-col-sm-3">
 		<div class="ai1ec-input-group">
-	{% endif %}
+{% else %}
+	<div class="ai1ec-col-sm-7">
+{% endif %}
 
 	{% from 'form-elements/input.twig' import input %}
 	{% spaceless %}
 	{{ input( id, id, value, 'text', input_args ) }}
 
 	{% if licence_valid is defined %}
-			<i class="ai1ec-fa
-				ai1ec-fa-{% if licence_valid %}check{% else %}power-off{% endif %}">
-			</i>
+		<i class="ai1ec-fa
+			ai1ec-fa-{% if licence_valid %}check{% else %}power-off{% endif %}">
+		</i>
 	{% endif %}
 
 	{% if append is defined %}

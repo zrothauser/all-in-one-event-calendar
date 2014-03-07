@@ -10,7 +10,7 @@ class Ai1ec_Export_Controller extends Ai1ec_Base {
 	 *
 	 * @return void
 	 **/
-	function export_location( $data, $update = false ) {
+	public function export_location( $data, $update = false ) {
 		// if there is no data to send, return
 		if (
 			empty( $data['venue'] ) &&
@@ -69,7 +69,14 @@ class Ai1ec_Export_Controller extends Ai1ec_Base {
 	 *
 	 * @return void
 	 */
-	function n_cron() {
+	public function n_cron() {
+		$xguard = $this->_registry->get( 'compatibility.xguard' );
+
+		// Acquire Cron
+		$last = $xguard->acquire( 'n_cron' );
+		if ( ! $last || $last + 86400 < time() ) {
+			return null;
+		}
 		global $wp_filesystem;
 		$dbi            = $this->_registry->get( 'dbi.dbi' );
 		$ai1ec_settings = $this->_registry->get( 'model.settings' );
@@ -114,6 +121,8 @@ class Ai1ec_Export_Controller extends Ai1ec_Base {
 			),
 			'ics_url'        => AI1EC_EXPORT_URL,
 			'php_version'    => phpversion(),
+			'mysql_version'  => $this->_registry->get( 'dbi.dbi' )
+				->db_version(),
 			'wp_version'     => get_bloginfo( 'version' ),
 			'wp_lang'        => get_bloginfo( 'language' ),
 			'wp_url'         => home_url(),
@@ -136,6 +145,9 @@ class Ai1ec_Export_Controller extends Ai1ec_Base {
 				'body' => $data,
 			)
 		);
+
+		// Release lock
+		$xguard->release( 'n_cron' );
 	}
 
 }

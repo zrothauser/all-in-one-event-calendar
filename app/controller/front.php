@@ -589,15 +589,12 @@ class Ai1ec_Front_Controller {
 				AI1EC_N_CRON_FREQ,
 				AI1EC_N_CRON_VERSION
 			);
+			$this->_registry->get( 'event.dispatcher' )
+				->register_action(
+					$hook_name,
+					array( 'controller.export', 'n_cron' )
+				);
 		}
-		// Enable checking for cron updates
-		$hook_name = 'ai1ec_u_cron';
-		// reschedule the cron
-		$correct   = $scheduling->reschedule(
-			$hook_name,
-			AI1EC_U_CRON_FREQ,
-			AI1EC_U_CRON_VERSION
-		);
 		if ( false === $correct ) {
 			throw new Ai1ec_Scheduling_Exception(
 				'Some CRON function might not have been installed'

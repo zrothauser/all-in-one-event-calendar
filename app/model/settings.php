@@ -289,7 +289,8 @@ class Ai1ec_Settings extends Ai1ec_App {
 			->get( self::WP_OPTION_KEY, array() );
 		$this->_updated = false;
 		$test_value = is_array( $values ) ? current( $values ) : false;
-		if ( empty( $values ) ||
+		if (
+			empty( $values ) ||
 			( false !== $test_value && AI1EC_VERSION !== $test_value['version'] )
 		) {
 			$this->_register_standard_values();
@@ -684,6 +685,21 @@ class Ai1ec_Settings extends Ai1ec_App {
 					),
 				),
 				'default'  => '',
+			),
+			'allow_statistics' => array(
+				'type' => 'bool',
+				'renderer' => array(
+					'class' => 'checkbox',
+					'tab'   => 'advanced',
+					'item'  => 'advanced',
+					'label' => sprintf(
+						Ai1ec_I18n::__(
+							'<strong>Publicize, promote, and share my events</strong> marked as public on the Timely network. (<a href="%s" target="_blank">Learn more »</a>)'
+						),
+						'http://time.ly/event-search-calendar'
+					),
+				),
+				'default'  => true,
 			),
 		);
 	}

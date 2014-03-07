@@ -1,16 +1,16 @@
 {% autoescape false %}
+<div class="ai1ec-col-sm-12">
 <p>
 	<a href="#ai1ec-embedding" id="ai1ec-embedding-trigger"
-		data-toggle="ai1ec_collapse">
-		<i class="icon-info-sign icon-large"></i>
+		data-toggle="ai1ec-collapse">
+		<i class="ai1ec-fa ai1ec-fa-code ai1ec-fa-lg ai1ec-fa-fw"></i>
 		{{ 'Embed the calendar using a shortcode'|__ }}
-		<i class="icon-caret-down"></i>
-		<i class="icon-caret-up hide"></i>
+		<i class="ai1ec-fa ai1ec-fa-caret-down"></i>
+		<i class="ai1ec-fa ai1ec-fa-caret-up ai1ec-hide"></i>
 	</a>
 </p>
-<div id="ai1ec-embedding" class="collapse">
-	<div class="well">
-		<h4>{{ 'With a shortcode'|__ }}</h4>
+<div id="ai1ec-embedding" class="ai1ec-collapse">
+	<div class="ai1ec-well ai1ec-prose">
 		<p>{{ 'Insert one of these shortcodes into your page body to embed the calendar into any arbitrary WordPress Page:'|__ }}</p>
 		<ul>
 			<li>{{ 'Month view:'|__ }} <code>[ai1ec view="monthly"]</code></li>
@@ -21,7 +21,7 @@
 			<li>{{ 'Default view as per settings:'|__ }} <code>[ai1ec]</code></li>
 		</ul>
 		<p>
-			<span class="muted">{{ 'Optional.'|__ }}</span>
+			<span class="ai1ec-text-muted">{{ 'Optional.'|__ }}</span>
 			{{ 'Add options to display a filtered calender. (You can find out category and tag IDs by inspecting the URL of your filtered calendar page.)'|__ }}
 		</p>
 		<ul>
@@ -38,10 +38,11 @@
 			<li>{{ 'Filter by post ID:'|__ }} <code>[ai1ec post_id="1"]</code></li>
 			<li>{{ 'Filter by post IDs (separate IDs by comma):'|__ }} <code>[ai1ec post_id="1,2"]</code></li>
 		</ul>
-		<div class="alert alert-block">
-			<p><strong>{{ 'Warning'|__ }}</strong></p>
-			<p>{{ 'It is currently not supported to embed more than one calendar in the same page. Do not attempt to embed the calendar via shortcode or Super Widget in a page that already displays the calendar.'|__ }}</p>
+		<div class="ai1ec-alert ai1ec-alert-warning">
+			<strong>{{ 'Warning:'|__ }}</strong>
+			{{ 'It is currently not supported to embed more than one calendar in the same page. Do not attempt to embed the calendar via shortcode in a page that already displays the calendar.'|__ }}
 		</div>
 	</div>
+</div>
 </div>
 {% endautoescape %}

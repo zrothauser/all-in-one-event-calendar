@@ -11,7 +11,7 @@
  */
 class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 
-	
+
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Html_Element_Settings::render()
 	 */
@@ -41,10 +41,8 @@ class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 				}
 			}
 		}
-		
-		$select_args = array(
-			'class' => 'inputwidth'
-		);
+
+		$select_args = array();
 		$args = array(
 			'id'         => $this->_args['id'],
 			'label'      => $this->_args['renderer']['label'],
@@ -58,7 +56,7 @@ class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 
 	/**
 	 * Gets the options for the "Starting day of week" select.
-	 * 
+	 *
 	 * @return array
 	 */
 	protected function get_weekdays() {

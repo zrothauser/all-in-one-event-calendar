@@ -16,22 +16,19 @@ class Ai1ec_Html_Setting_Input extends Ai1ec_Html_Element_Settings {
 	 * @see Ai1ec_Html_Element_Settings::render()
 	 */
 	public function render( $output = '' ) {
-		$type  = $this->_args['renderer']['type'];
-		$date  = $append = false;
-		$class = '';
+		$system = $this->_registry->get( 'date.system' );
+		$type   = $this->_args['renderer']['type'];
+		$date   = $append = false;
+		$class  = '';
+
 		switch ( $type ) {
 			case 'date':
 				$date = true;
-				$class = 'input-small';
 				break;
 
 			case 'append':
 				$append = true;
-				$class = 'input-mini';
 				break;
-
-			default:
-				$class = 'input-xlarge';
 		}
 
 		$input_args = array(
@@ -41,8 +38,10 @@ class Ai1ec_Html_Setting_Input extends Ai1ec_Html_Element_Settings {
 		if ( true === $date ) {
 			$input_args += array(
 				'data-date-weekstart' => $settings->get( 'week_start_day' ),
-				'data-date-format'    => $settings->get( 'input_date_format' ),
-				'size'                => 8,
+				'data-date-format'    => $system->get_date_pattern_by_key(
+					$settings->get( 'input_date_format' )
+				),
+				'size'                => 12,
 			);
 		}
 		$args = array(

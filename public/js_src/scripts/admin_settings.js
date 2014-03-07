@@ -5,10 +5,10 @@ define(
 		"ai1ec_config",
 		"libs/utils",
 		"libs/collapse_helper",
-		"external_libs/bootstrap_tab",
-		"external_libs/bootstrap_dropdown",
+		"external_libs/bootstrap/tab",
+		"external_libs/bootstrap/dropdown",
 		"external_libs/bootstrap_datepicker",
-		"external_libs/bootstrap_tooltip",
+		"external_libs/bootstrap/tooltip",
 		"external_libs/jquery_cookie"
 	],
 	function( $, domReady, ai1ec_config, utils ) {
@@ -23,36 +23,6 @@ define(
 		} );
 		if ( remove === true ) {
 			$( '#ai1ec-plugins-settings' ).remove();
-		}
-	};
-
-	/**
-	 * Destroys and reinitializes the datepicker on the given element with the
-	 * given data map to assign to the element before initializing the new
-	 * datepicker. The previous date value is preserved.
-	 *
-	 * @param  {object} $el  jQuery object of element datepicker is attached to
-	 * @param  {array}  data Data map to assign to $el before calling .datepicker()
-	 */
-	var reset_datepicker = function( $el, data ) {
-		// Save the old date from the datepicker.
-		var cur_date = false;
-		if ( $el.val() !== '' ) {
-			cur_date = $el.data( 'datepicker' ).date;
-		}
-		// Destroy the datepicker.
-		var dp = $el.data( 'datepicker' );
-		if( dp !== undefined ) {
-			dp.hide();
-			dp.picker.remove();
-			$el.removeData( 'datepicker' );
-		}
-		// Reinitialize datepicker to use the new pattern, and restore the date.
-		$el.data( data ).datepicker();
-		dp = $el.data( 'datepicker' );
-		if ( cur_date !== false ) {
-			dp.date = cur_date;
-			dp.setValue();
 		}
 	};
 
@@ -83,6 +53,7 @@ define(
 			return false;
 		}
 	};
+
 	/**
 	 * Initialize the license status indicator with API call.
 	 */
@@ -102,13 +73,14 @@ define(
 			if( true === checked && '' === discl ) {
 				alert( ai1ec_config.require_desclaimer );
 				// Activate the correct tab
-				$( '#ai1ec-general-settings ul.nav-tabs a[href="#ai1ec-advanced"]' )
+				$( '#ai1ec-general-settings ul.ai1ec-nav a[href="#ai1ec-advanced"]' )
 					.tab( 'show' );
 				$( '#disclaimer' ).focus();
 				e.preventDefault();
 			}
 		} );
 	};
+
 	var start = function() {
 		// Perform DOM ready tasks.
 		domReady( function() {
@@ -120,7 +92,7 @@ define(
 			utils.activate_saved_tab_on_page_load( $.cookie( 'ai1ec_general_settings_active_tab' ) );
 			$( document ).on(
 				'click',
-				'#ai1ec-general-settings .nav-tabs a[data-toggle="tab"]',
+				'#ai1ec-general-settings .ai1ec-nav a[data-toggle="ai1ec-tab"]',
 				handle_set_tab_cookie
 			);
 
@@ -135,17 +107,7 @@ define(
 
 			// Initialize datepicker and have it respond to changes in format settings.
 			var $exact_date = $('#exact_date');
-			$exact_date.datepicker();
-			// Apply the new date pattern when "Calendar default start date" is changed.
-			$( document ).on( 'change', '#input_date_format', function() {
-				var pattern = $( 'option:selected', this ).data( 'pattern' );
-				reset_datepicker( $exact_date, { dateFormat: pattern } );
-			});
-			// Change the week start day in the picker.
-			$( document ).on( 'change', '#week_start_day', function() {
-				var week_start_day = $( this ).val();
-				reset_datepicker( $exact_date, { dateWeekstart: week_start_day } );
-			});
+			$exact_date.datepicker( { autoclose: true } );
 
 			remove_feeds_postbox_if_all_values_are_empty();
 
@@ -178,8 +140,8 @@ define(
 			$( '#show_create_event_button' ).trigger( 'ready' );
 		} );
 	};
+
 	return {
-		start : start,
-		reset_datepicker : reset_datepicker
+		start: start
 	};
 } );

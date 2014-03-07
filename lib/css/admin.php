@@ -32,7 +32,6 @@ class Ai1ec_Css_Admin  extends Ai1ec_Base {
 				array( 'script', 'postbox', ),
 				array( 'style',  'settings.css', ),
 				array( 'style',  'bootstrap.min.css', ),
-				array( 'style',  'bootstrap_datepicker.css', ),
 			),
 			$settings->get( 'feeds_page' )    => array(
 				array( 'script', 'common', ),

@@ -3,11 +3,11 @@ if ( empty( $parent ) && empty( $children ) ) {
 	return '';
 }
 ?>
-<div class="accordion-heading">
-	<a class="accordion-toggle" data-toggle="ai1ec_collapse"
+<div class="ai1ec-panel-heading">
+	<a data-toggle="ai1ec-collapse"
 		data-parent="#ai1ec-add-new-event-accordion"
 		href="#ai1ec-event-children-box">
-		<i class="icon-retweet"></i> <?php
+		<i class="ai1ec-fa ai1ec-fa-retweet"></i> <?php
 		if ( $parent ) {
 			_e( 'Base recurrence event', AI1EC_PLUGIN_NAME );
 		} else {
@@ -16,8 +16,8 @@ if ( empty( $parent ) && empty( $children ) ) {
 	?>
 	</a>
 </div>
-<div id="ai1ec-event-children-box" class="accordion-body collapse">
-	<div class="accordion-inner">
+<div id="ai1ec-event-children-box" class="ai1ec-panel-collapse ai1ec-collapse">
+	<div class="ai1ec-panel-body">
 	<?php if ( $parent ) : ?>
 	<?php _e( 'Edit parent:', AI1EC_PLUGIN_NAME ); ?>
 	<a href="<?php echo get_edit_post_link( $parent->post_id ); ?>"><?php

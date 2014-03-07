@@ -233,7 +233,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 
 	/**
 	 * Remove an option if is set.
-	 * 
+	 *
 	 * @param string $option
 	 */
 	public function remove_option( $option ) {
@@ -245,7 +245,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 
 	/**
 	 * Hide an option by unsetting it's renderer
-	 * 
+	 *
 	 * @param string $option
 	 */
 	public function hide_option( $option ) {
@@ -289,7 +289,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 			->get( self::WP_OPTION_KEY, array() );
 		$this->_updated = false;
 		$test_value = is_array( $values ) ? current( $values ) : false;
-		if ( empty( $values ) || 
+		if ( empty( $values ) ||
 			( false !== $test_value && AI1EC_VERSION !== $test_value['version'] )
 		) {
 			$this->_register_standard_values();
@@ -609,7 +609,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 						' Show the old <strong>Post Your Event</strong> button above the calendar to privileged users'
 					),
 					'help'  => Ai1ec_I18n::__(
-						'<a target="_blank" href="http://time.ly/pro-calendar">Upgrade to Pro</a> for the new <strong>front-end Post Your Event form</strong>.'
+						'Install the <a target="_blank" href="http://time.ly/">Interactive Frontend Extension</a> for the <strong>frontend Post Your Event form</strong>.'
 					),
 				),
 				'default'  => false,
@@ -657,7 +657,10 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'tab'   => 'advanced',
 					'item'  => 'advanced',
 					'label' => Ai1ec_I18n::__(
-						'Disable <strong>gzip</strong> compression. Use this option if calendar is non-responsive. Read <a href="http://support.time.ly/disable-gzip-compression/">more about</a> the issue.'
+						'Disable <strong>gzip</strong> compression.'
+					),
+					'help'  => Ai1ec_I18n::__(
+						'Use this option if calendar is non-responsive. <a href="http://support.time.ly/disable-gzip-compression/">Read more</a> about the issue.'
 					),
 				),
 				'default'  => false,
@@ -668,16 +671,16 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'class'    => 'textarea',
 					'tab'      => 'advanced',
 					'item'     => 'advanced',
-					'label'    => Ai1ec_I18n::__( 'Current <strong>robots.txt</strong> in this WordPress' ),
+					'label'    => Ai1ec_I18n::__( 'Current <strong>robots.txt</strong> on this site' ),
 					'type'     => 'normal',
 					'rows'     => 6,
 					'readonly' => 'readonly',
 					'help'     => Ai1ec_I18n::__(
 						'The Robot Exclusion Standard, also known as the Robots Exclusion Protocol or
-						<a href="http://en.wikipedia.org/wiki/Robots.txt" target="_blank">robots.txt</a>
-						protocol, is a convention to advising cooperating web crawlers and other web robots
-						about accessing all or part of a website which is otherwise publicly viewable.
-						You can change it manually by editing robots.txt in your root WordPress directory'
+						<code><a href="http://en.wikipedia.org/wiki/Robots.txt" target="_blank">robots.txt</a></code>
+						protocol, is a convention for cooperating web crawlers and other web robots
+						about accessing all or part of a website that is otherwise publicly viewable.
+						You can change it manually by editing <code>robots.txt</code> in your root WordPress directory.'
 					),
 				),
 				'default'  => '',

@@ -123,7 +123,7 @@ class Ai1ec_Less_Variable_Font extends Ai1ec_Less_Variable {
 		);
 
 		if ( $this->value !== self::CUSTOM_FONT ) {
-			$args['input']['args']['class'] = 'ai1ec-custom-font hide';
+			$args['input']['args']['class'] = 'ai1ec-custom-font ai1ec-hide';
 		} else {
 			$args['input']['value'] = $this->custom_value;
 		}

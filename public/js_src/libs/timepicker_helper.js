@@ -31,15 +31,20 @@ define(
 				// Toggle class on root element to disable "overflow: none" on Bootstrap
 				// Collapse elements while timepicker is visible.
 				.on( 'show.timepicker', function() {
-					$this.parents( '.collapse' ).addClass( 'ai1ec-timepicker-visible' );
+					$this.parents( '.ai1ec-collapse' )
+						.addClass( 'ai1ec-timepicker-visible' );
 				} )
 				.on( 'hide.timepicker', function() {
-					$this.parents( '.collapse' ).removeClass( 'ai1ec-timepicker-visible' );
+					$this.parents( '.ai1ec-collapse' )
+						.removeClass( 'ai1ec-timepicker-visible' );
 				} );
 
-			// Wrap timepicker in div.timely to avoid polluting global namespace.
+			// Capture the timepicker container element on the page.
 			var $widget = $this.data( 'timepicker' ).$widget;
-			$widget.wrapAll( '<div class="timely">' );
+
+			// Apply .timely class to timepicker container to ensure proper Bootstrap
+			// styling is applied to unclassed HTML elements contained therein.
+			$widget.addClass( 'timely' );
 
 			// Apply alignment class.
 			var alignment = $this.data( 'alignment' );

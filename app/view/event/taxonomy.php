@@ -10,7 +10,7 @@
  * @subpackage AI1EC.View.Event
  */
 class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
-	
+
 	/**
 	 * Style attribute for event category
 	 */
@@ -32,7 +32,7 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 
 		return '';
 	}
-	
+
 	/**
 	 * Returns the style attribute assigning the category color style to an event.
 	 *
@@ -55,7 +55,7 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 		}
 		return '';
 	}
-	
+
 	/**
 	 * HTML of category color boxes for this event
 	 */
@@ -71,7 +71,7 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 		}
 		return $category_colors[$id];
 	}
-	
+
 	/**
 	 * Returns the HTML markup for the category color square.
 	 *
@@ -143,7 +143,7 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 				$event->is_allday() || $event->is_multiday()
 			);
 		}
-		
+
 		return $category_bg_color;
 	}
 
@@ -220,7 +220,7 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 			'events_categories'
 		);
 		foreach ( $categories as &$category ) {
-			$href = $this->_registry->get( 
+			$href = $this->_registry->get(
 				'html.element.href',
 				array( 'cat_ids' => $category->term_id )
 			);
@@ -256,7 +256,7 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 				) . ' ';
 			} else {
 				$html .=
-				'<i ' . $color_style . 'class="icon-folder-open"></i>';
+				'<i ' . $color_style . 'class="ai1ec-fa ai1ec-fa-folder-open"></i>';
 			}
 
 			$html .= esc_html( $category->name ) . '</a>';
@@ -264,7 +264,7 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 		}
 		return implode( ' ', $categories );
 	}
-	
+
 	/**
 	 * Tags as HTML
 	 */
@@ -274,7 +274,7 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 			'events_tags'
 		);
 		foreach ( $tags as &$tag ) {
-			$href = $this->_registry->get( 
+			$href = $this->_registry->get(
 				'html.element.href',
 				array( 'tag_ids' => $tag->term_id )
 			);
@@ -287,7 +287,7 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 			$tag = '<a ' . $data_type . ' class="ai1ec-tag ' . $class .
 			' ai1ec-term-id-' . $tag->term_id . '" ' . $title .
 			'href="' . $href->generate_href() . '">' .
-			'<i class="icon-tag"></i>' . esc_html( $tag->name ) . '</a>';
+			'<i class="ai1ec-fa ai1ec-fa-tag"></i>' . esc_html( $tag->name ) . '</a>';
 		}
 		return implode( ' ', $tags );
 	}

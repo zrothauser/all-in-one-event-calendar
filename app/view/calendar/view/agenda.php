@@ -234,7 +234,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		);
 		$links[] = array(
 			'class'   => 'ai1ec-prev-page',
-			'text'    => '<i class="icon-chevron-left"></i>',
+			'text'    => '<i class="ai1ec-fa ai1ec-fa-chevron-left"></i>',
 			'href'    => $href->generate_href(),
 			'enabled' => $prev,
 		);
@@ -254,7 +254,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		);
 		$links[] = array(
 			'class'   => 'ai1ec-next-page',
-			'text'    => '<i class="icon-chevron-right"></i>',
+			'text'    => '<i class="ai1ec-fa ai1ec-fa-chevron-right"></i>',
 			'href'    => $href->generate_href(),
 			'enabled' => $next,
 		);

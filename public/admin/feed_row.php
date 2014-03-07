@@ -1,28 +1,27 @@
-<div class="ai1ec-feed-container well well-small clearfix">
-	<h4>
-		<?php _e( 'iCalendar/.ics Feed URL:', AI1EC_PLUGIN_NAME ); ?>
-	</h4>
-	<div class="row-fluid">
-		<input type="text" class="ai1ec-feed-url span12" readonly="readonly"
-			value="<?php echo esc_attr( $feed_url ) ?>" />
+<div class="ai1ec-feed-container ai1ec-well ai1ec-well-sm ai1ec-clearfix">
+	<div class="ai1ec-form-group">
+		<label><?php _e( 'iCalendar/.ics Feed URL:', AI1EC_PLUGIN_NAME ); ?></label>
+		<input type="text" class="ai1ec-feed-url ai1ec-form-control"
+			readonly="readonly" value="<?php echo esc_attr( $feed_url ) ?>">
 	</div>
-	<input type="hidden" name="feed_id" class="ai1ec_feed_id" value="<?php echo $feed_id;?>" />
-	<div class="clearfix">
+	<input type="hidden" name="feed_id" class="ai1ec_feed_id"
+		value="<?php echo $feed_id;?>">
+	<div class="ai1ec-clearfix">
 		<?php if ( $event_category ) : ?>
-			<div class="ai1ec-feed-category pull-left">
+			<div class="ai1ec-feed-category ai1ec-pull-left">
 				<?php _e( 'Event categories:', AI1EC_PLUGIN_NAME ); ?>
 				<strong><?php echo $event_category; ?></strong>
 			</div>
 		<?php endif; ?>
 		<?php if ( $tags ) : ?>
-			<div class="ai1ec-feed-tags pull-left">
+			<div class="ai1ec-feed-tags ai1ec-pull-left">
 				<?php _e( 'Tag with', AI1EC_PLUGIN_NAME ); ?>:
 				<strong><?php echo $tags; ?></strong>
 			</div>
 		<?php endif; ?>
 	</div>
-	<div class="clearfix">
-		<div class="ai1ec-feed-comments-enabled pull-left">
+	<div class="ai1ec-clearfix">
+		<div class="ai1ec-feed-comments-enabled ai1ec-pull-left">
 			<?php _e( 'Allow comments', AI1EC_PLUGIN_NAME ); ?>:
 			<strong><?php
 			if ( $comments_enabled ) {
@@ -32,7 +31,7 @@
 			}
 			?></strong>
 		</div>
-		<div class="ai1ec-feed-map-display-enabled pull-left">
+		<div class="ai1ec-feed-map-display-enabled ai1ec-pull-left">
 			<?php _e( 'Show map', AI1EC_PLUGIN_NAME ); ?>:
 			<strong><?php
 			if ( $map_display_enabled ) {
@@ -53,15 +52,17 @@
 		}
 		?></strong>
 	</div>
-	<div class="pull-right">
-		<img src="images/wpspin_light.gif" class="ajax-loading pull-left" alt="" />
-		<div class="btn-group pull-left">
-			<button class="btn ai1ec_update_ics">
-				<i class="icon-refresh"></i>
+	<div class="ai1ec-pull-right">
+		<img src="images/wpspin_light.gif" class="ajax-loading ai1ec-pull-left" alt="">
+		<div class="ai1ec-btn-group ai1ec-pull-left">
+			<button class="ai1ec-btn ai1ec-btn-sm ai1ec-btn-default ai1ec-text-primary
+				ai1ec_update_ics">
+				<i class="ai1ec-fa ai1ec-fa-refresh"></i>
 				<?php _e( 'Refresh', AI1EC_PLUGIN_NAME ); ?>
 			</button>
-			<button class="btn ai1ec_delete_ics">
-				<i class="icon-remove"></i>
+			<button class="ai1ec-btn ai1ec-btn-sm ai1ec-btn-default ai1ec-text-danger
+				ai1ec_delete_ics">
+				<i class="ai1ec-fa ai1ec-fa-times"></i>
 				<?php _e( 'Remove', AI1EC_PLUGIN_NAME ); ?>
 			</button>
 		</div>

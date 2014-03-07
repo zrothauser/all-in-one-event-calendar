@@ -11,8 +11,8 @@ define(
 		"scripts/common_scripts/frontend/common_frontend",
 		"libs/utils",
 		"libs/select2_multiselect_helper",
-		"external_libs/bootstrap_transition",
-		"libs/modal_helper",
+		"external_libs/bootstrap/transition",
+		"external_libs/bootstrap/modal",
 		"external_libs/jquery.scrollTo",
 		'external_libs/jquery_cookie',
 	],
@@ -153,9 +153,6 @@ define(
 		// Register minical datepicker events.
 		$( document ).on( 'click',      '.ai1ec-minical-trigger',
 			load_views.handle_minical_trigger );
-		$( document ).on( 'changeDate', '.ai1ec-minical-trigger',
-			load_views.handle_minical_change_date
-		);
 
 		// Handle clearing filters.
 		$( document ).on( 'click',      '.ai1ec-clear-filter',
@@ -188,19 +185,21 @@ define(
 				var height = 24 * 60;
 				$( '.tablescroll_wrapper' ).animate( { height: height + 'px' } );
 			}
-
 		);
 
 		// Bind to statechange event.
-		History.Adapter.bind( window, 'statechange', load_views.handle_state_change );
+		History.Adapter.bind( window,   'statechange',
+			load_views.handle_state_change
+		);
 
-		$( document ).on( 'click', '#ai1ec-calendar-view .ai1ec-load-event', function( e ) {
-			e.preventDefault();
-			$.cookie.raw = false;
-			$.cookie( 'ai1ec_calendar_url', document.URL );
-			window.location.href = this.href;
-		} );
-
+		$( document ).on( 'click',      '#ai1ec-calendar-view .ai1ec-load-event',
+			function( e ) {
+				e.preventDefault();
+				$.cookie.raw = false;
+				$.cookie( 'ai1ec_calendar_url', document.URL );
+				window.location.href = this.href;
+			}
+		);
 	};
 
 	var initialize_select2 = function() {

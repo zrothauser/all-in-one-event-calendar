@@ -10,7 +10,7 @@
  * @subpackage AI1EC.View
  */
 class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
-	
+
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Calendar_View_Abstract::get_name()
 	 */
@@ -38,7 +38,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			->get( 'date.time', $args['exact_date'], 'sys.default' )
 			->adjust_day( 0 + $args['oneday_offset'] )
 			->set_time( 0, 0, 0 );
-		
+
 		$cell_array = $this->get_oneday_cell_array(
 			$local_date,
 			array(
@@ -126,7 +126,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		$links[]    = array(
 			'enabled' => true,
 			'class'=> 'ai1ec-prev-day',
-			'text' => '<i class="icon-chevron-left"></i>',
+			'text' => '<i class="ai1ec-fa ai1ec-fa-chevron-left"></i>',
 			'href' => $href->generate_href(),
 		);
 
@@ -139,7 +139,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			$args,
 			$args['exact_date']
 		);
-	
+
 		// ============
 		// = Next day =
 		// ============
@@ -149,7 +149,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		$links[] = array(
 			'enabled' => true,
 			'class'   => 'ai1ec-next-day',
-			'text'    => '<i class="icon-chevron-right"></i>',
+			'text'    => '<i class="ai1ec-fa ai1ec-fa-chevron-right"></i>',
 			'href'    => $href->generate_href(),
 		);
 
@@ -227,7 +227,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 					$_evt->set( 'end', $day_end_ts );
 					$_evt->set( 'end_truncated', true );
 				}
-	
+
 				// Store reference to original, unmodified event, required by view.
 				$_evt->set( '_orig', $evt );
 				$this->_add_runtime_properties( $_evt );

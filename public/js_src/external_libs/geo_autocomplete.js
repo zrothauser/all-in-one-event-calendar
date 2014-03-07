@@ -75,9 +75,8 @@ $.fn.extend({
 							$results
 								.removeClass( 'ai1ec-geo-ac-results-not-ready' )
 								.addClass( 'ai1ec-geo-ac-results' )
-								.wrap( '<div class="timely"/>' )
 								.children( 'ul' )
-									.addClass( 'dropdown-menu' );
+									.addClass( 'ai1ec-dropdown-menu' );
 							clearInterval( interval_id );
 						}
 					},

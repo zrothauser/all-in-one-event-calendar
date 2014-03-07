@@ -11,7 +11,7 @@
  */
 class Ai1ec_Html_Setting_Tags_Categories extends Ai1ec_Html_Element_Settings {
 
-	
+
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Html_Element_Settings::render()
 	 */
@@ -54,11 +54,11 @@ class Ai1ec_Html_Setting_Tags_Categories extends Ai1ec_Html_Element_Settings {
 
 	/**
 	 * Creates the multiselect for tags and categories
-	 * 
+	 *
 	 * @param string $type
 	 * @param string $label
 	 * @param array $terms
-	 * 
+	 *
 	 * @return string The html for the select
 	 */
 	protected function _get_select_for_terms( $type, $label, array $terms ) {
@@ -83,8 +83,9 @@ class Ai1ec_Html_Setting_Tags_Categories extends Ai1ec_Html_Element_Settings {
 			'name'       => 'default_' . $type . '[]',
 			'label'      => $label,
 			'options'    => $options,
+			'stacked'    => true,
 			'attributes' => array(
-				'class'    => 'inputwidth',
+				'class'    => 'ai1ec-form-control',
 				'multiple' => 'multiple',
 			),
 		);

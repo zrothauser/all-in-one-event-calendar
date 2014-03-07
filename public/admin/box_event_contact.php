@@ -1,12 +1,13 @@
-<div class="accordion-heading">
-	<a class="accordion-toggle" data-toggle="ai1ec_collapse"
+<div class="ai1ec-panel-heading">
+	<a data-toggle="ai1ec-collapse"
 		data-parent="#ai1ec-add-new-event-accordion"
 		href="#ai1ec-event-contact-box">
-		<i class="icon-phone"></i> <?php _e( 'Organizer contact info', AI1EC_PLUGIN_NAME ); ?>
+		<i class="ai1ec-fa ai1ec-fa-phone ai1ec-fa-fw"></i>
+		<?php _e( 'Organizer contact info', AI1EC_PLUGIN_NAME ); ?>
 	</a>
 </div>
-<div id="ai1ec-event-contact-box" class="accordion-body collapse">
-	<div class="accordion-inner">
+<div id="ai1ec-event-contact-box" class="ai1ec-panel-collapse ai1ec-collapse">
+	<div class="ai1ec-panel-body">
 		<table class="ai1ec-form">
 			<tbody>
 				<tr>
@@ -16,7 +17,10 @@
 						</label>
 					</td>
 					<td>
-						<input type="text" name="ai1ec_contact_name" id="ai1ec_contact_name" value="<?php echo $contact_name; ?>" />
+						<input type="text" name="ai1ec_contact_name"
+							id="ai1ec_contact_name"
+							class="ai1ec-form-control"
+							value="<?php echo $contact_name; ?>">
 					</td>
 				</tr>
 				<tr>
@@ -26,7 +30,10 @@
 						</label>
 					</td>
 					<td>
-						<input type="text" name="ai1ec_contact_phone" id="ai1ec_contact_phone" value="<?php echo $contact_phone; ?>" />
+						<input type="text" name="ai1ec_contact_phone"
+							id="ai1ec_contact_phone"
+							class="ai1ec-form-control"
+							value="<?php echo $contact_phone; ?>">
 					</td>
 				</tr>
 				<tr>
@@ -36,7 +43,10 @@
 						</label>
 					</td>
 					<td>
-						<input type="text" name="ai1ec_contact_email" id="ai1ec_contact_email" value="<?php echo $contact_email; ?>" />
+						<input type="text" name="ai1ec_contact_email"
+							id="ai1ec_contact_email"
+							class="ai1ec-form-control"
+							value="<?php echo $contact_email; ?>">
 					</td>
 				</tr>
 				<tr>
@@ -46,7 +56,10 @@
 						</label>
 					</td>
 					<td>
-						<input type="text" name="ai1ec_contact_url" id="ai1ec_contact_url" value="<?php echo $event->get_nonloggable_url( $contact_url ); ?>" />
+						<input type="text" name="ai1ec_contact_url"
+							id="ai1ec_contact_url"
+							class="ai1ec-form-control"
+							value="<?php echo $event->get_nonloggable_url( $contact_url ); ?>">
 					</td>
 				</tr>
 			</tbody>

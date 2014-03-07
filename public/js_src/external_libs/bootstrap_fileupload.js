@@ -27,7 +27,7 @@ define( ["jquery_timely"],
 
   var Fileupload = function (element, options) {
     this.$element = $(element)
-    this.type = this.$element.data('uploadtype') || (this.$element.find('.thumbnail').length > 0 ? "image" : "file")
+    this.type = this.$element.data('uploadtype') || (this.$element.find('.ai1ec-thumbnail').length > 0 ? "image" : "file")
 
     this.$input = this.$element.find(':file')
     if (this.$input.length === 0) return
@@ -40,7 +40,7 @@ define( ["jquery_timely"],
       this.$element.prepend(this.$hidden)
     }
 
-    this.$preview = this.$element.find('.fileupload-preview')
+    this.$preview = this.$element.find('.ai1ec-fileupload-preview')
     var height = this.$preview.css('height')
     if (this.$preview.css('display') != 'inline' && height != '0px' && height != 'none') this.$preview.css('line-height', height)
 
@@ -78,13 +78,13 @@ define( ["jquery_timely"],
 
         reader.onload = function(e) {
           preview.html('<img src="' + e.target.result + '" ' + (preview.css('max-height') != 'none' ? 'style="max-height: ' + preview.css('max-height') + ';"' : '') + ' />')
-          element.addClass('fileupload-exists').removeClass('fileupload-new')
+          element.addClass('ai1ec-fileupload-exists').removeClass('ai1ec-fileupload-new')
         }
 
         reader.readAsDataURL(file)
       } else {
         this.$preview.text(file.name)
-        this.$element.addClass('fileupload-exists').removeClass('fileupload-new')
+        this.$element.addClass('ai1ec-fileupload-exists').removeClass('ai1ec-fileupload-new')
       }
     },
 
@@ -95,7 +95,7 @@ define( ["jquery_timely"],
       this.$input.val('') // Doesn't work in IE, which causes issues when selecting the same file twice
 
       this.$preview.html('')
-      this.$element.addClass('fileupload-new').removeClass('fileupload-exists')
+      this.$element.addClass('ai1ec-fileupload-new').removeClass('ai1ec-fileupload-exists')
 
       if (e) {
         this.$input.trigger('change', [ 'clear' ])

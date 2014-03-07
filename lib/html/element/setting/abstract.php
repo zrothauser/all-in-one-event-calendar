@@ -68,7 +68,7 @@ abstract class Ai1ec_Html_Element_Settings extends Ai1ec_Base
 	 * @return string Finalized HTML snippet.
 	 */
 	public function render( $output = '' ) {
-		return '<div class="clearfix">' . $output . '</div>';
+		return '<div class="ai1ec-form-group">' . $output . '</div>';
 	}
 
 }

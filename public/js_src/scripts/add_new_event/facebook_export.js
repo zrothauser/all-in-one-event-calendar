@@ -1,7 +1,7 @@
 define(
 	[
 		"jquery_timely",
-		"libs/modal_helper"
+		"external_libs/bootstrap/modal"
 	],
 	function( $ ) {
 	"use strict";
@@ -44,9 +44,9 @@ define(
 				// are the radios hidden or not?
 				var hidden = true;
 				if( $multi.length > 0 ) {
-					hidden = $multi.hasClass( 'hide' );
+					hidden = $multi.hasClass( 'ai1ec-hide' );
 				}
-				
+
 				// if the radio buttons exist, replace them
 				if( $radios.length > 0 ) {
 					$radios.replaceWith( data );
@@ -54,7 +54,8 @@ define(
 					$facebook.find( '.ai1ec_refresh_tokens' ).before( data );
 				}
 				if( false === hidden ) {
-					$( '#ai1ec-facebook-publish' ).find( '.ai1ec_multi_choiches' ).removeClass( 'hide' );
+					$( '#ai1ec-facebook-publish' ).find( '.ai1ec_multi_choiches' )
+						.removeClass( 'ai1ec-hide' );
 				}
 			},
 			'json'
@@ -65,9 +66,9 @@ define(
 
 		if( 0 !== $multi.length ) {
 			if( this.checked ) {
-				$multi.removeClass( 'hide' );
+				$multi.removeClass( 'ai1ec-hide' );
 			} else {
-				$multi.addClass( 'hide' );
+				$multi.addClass( 'ai1ec-hide' );
 			}
 		}
 	};

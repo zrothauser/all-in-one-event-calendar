@@ -173,7 +173,7 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		$variables['fontdir_default'] = '~"' . $this->default_theme_url . '/font"';
 		$variables['imgdir'] = '~"' . $theme_url . '/img"';
 		$variables['imgdir_default'] = '~"' . $this->default_theme_url . '/img"';
-		
+
 		try {
 			$this->parsed_css .= $this->lessc->parse(
 				$this->unparsed_variable_file,
@@ -299,13 +299,21 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 			// inject extension variables
 			$variables = apply_filters( 'ai1ec_less_variables', $variables );
 		}
-		// i don't store the description in the db so i need to get it.
-		$variables_with_description = $this->get_less_variable_data_from_config_file();
+		// We don't store description in options table, so find it in current config
+		// file.
+		$variables_from_config = $this->get_less_variable_data_from_config_file();
 
-		// Add the description at runtime so that it can get the translation
-		foreach( $variables as $name => $attrs ) {
-			if( isset( $variables_with_description[$name]['description'] ) ) {
-				$variables[$name]['description'] = $variables_with_description[$name]['description'];
+		// Add the description at runtime so that it can be translated.
+		foreach ( $variables as $name => $attrs ) {
+			// Also filter out any legacy variables that are no longer found in
+			// current config file (exceptions thrown is this is not handled here).
+			if ( ! isset( $variables_from_config[$name] ) ) {
+				unset( $variables[$name] );
+			}
+			// If description is available in config file, use it.
+			else if ( isset( $variables_from_config[$name]['description'] ) ) {
+				$variables[$name]['description'] =
+					$variables_from_config[$name]['description'];
 			}
 		}
 		return $variables;

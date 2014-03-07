@@ -19,21 +19,9 @@ class Ai1ec_Html_Setting_Textarea extends Ai1ec_Html_Element_Settings {
 	public function render( $output = '' ) {
 		$type  = $this->_args['renderer']['type'];
 		$date  = $append = false;
-		$class = '';
-		switch ( $type ) {
-			case 'append':
-				$append = true;
-				$class = 'input-mini';
-				break;
-
-			default:
-				$class = 'input-xlarge';
-		}
 
 		// Set attributes
-		$input_args = array(
-			'class' => $class
-		);
+		$input_args = array();
 
 		// Set textarea rows
 		if ( ! empty( $this->_args['renderer']['rows'] ) ) {

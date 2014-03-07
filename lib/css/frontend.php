@@ -11,12 +11,12 @@
  */
 class Ai1ec_Css_Frontend extends Ai1ec_Base {
 
-	const GET_VARIBALE_NAME                 = 'ai1ec_render_css';
+	const QUERY_STRING_PARAM                = 'ai1ec_render_css';
 
 	// This is for testing purpose, set it to AI1EC_DEBUG value.
 	const PARSE_LESS_FILES_AT_EVERY_REQUEST = AI1EC_DEBUG;
 
-	const KEY_FOR_PERSISTANCE = 'ai1ec_parsed_css';
+	const KEY_FOR_PERSISTANCE               = 'ai1ec_parsed_css';
 	/**
 	 * @var Ai1ec_Css_Persistence_Helper
 	 */
@@ -47,15 +47,15 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		$preview_mode = false
 	) {
 		parent::__construct( $registry );
-		$this->persistance_context = $this->_registry->get( 
+		$this->persistance_context = $this->_registry->get(
 			'cache.strategy.persistence-context',
 			self::KEY_FOR_PERSISTANCE,
-			AI1EC_CACHE_PATH 
+			AI1EC_CACHE_PATH
 		);
 		$this->lessphp_controller  = $this->_registry->get( 'less.lessphp' );
 		$this->db_adapter          = $this->_registry->get( 'model.option' );
 		$this->preview_mode        = $preview_mode;
-	
+
 	}
 
 	/**
@@ -67,7 +67,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		header( 'HTTP/1.1 200 OK' );
 		header( 'Content-Type: text/css', true, 200 );
 		// Aggressive caching to save future requests from the same client.
-		$etag = '"' . md5( __FILE__ . $_GET[self::GET_VARIBALE_NAME] ) . '"';
+		$etag = '"' . md5( __FILE__ . $_GET[self::QUERY_STRING_PARAM] ) . '"';
 		header( 'ETag: ' . $etag );
 		$max_age = 31536000;
 		$time_sys = $this->_registry->get( 'date.system' );
@@ -120,9 +120,10 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	 * @return string
 	 */
 	public function get_css_url() {
-		$time = $this->db_adapter->get( self::GET_VARIBALE_NAME );
+		$time = $this->db_adapter->get( self::QUERY_STRING_PARAM );
 		$template_helper = $this->_registry->get( 'template.link.helper' );
-		return $template_helper->get_site_url() . "/?" . self::GET_VARIBALE_NAME . "=$time";
+		return $template_helper->get_site_url() . "/?" . self::QUERY_STRING_PARAM .
+			"=$time";
 	}
 
 	/**
@@ -161,13 +162,14 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 				$this->persistance_context->delete_data_from_persistence();
 			}
 		} catch ( Ai1ec_Cache_Write_Exception $e ) {
+			// This means successful during parsing but problems persisting the CSS.
 			$message = '<p>' . Ai1ec_I18n::__( "The LESS file compiled correctly but there was an error while saving the generated CSS to persistence." ) . '</p>';
 			$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 'error' );
-			// this means a correct parsing but an error in saving to persistance
 			return false;
 		} catch ( Exception $e ) {
+			// An error from lessphp.
 			$message = sprintf(
-				Ai1ec_I18n::__( '<p>The message returned was: <em>%s</em></p>' ),
+				Ai1ec_I18n::__( '<p><strong>There was an error while compiling CSS.</strong> The message returned was: <em>%s</em></p>' ),
 				$e->getMessage()
 			);
 			$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 'error' );
@@ -191,7 +193,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 				Ai1ec_Less_Lessphp::DB_KEY_FOR_LESS_VARIABLES,
 				$variables
 			);
-			
+
 
 			$message = sprintf(
 				'<p>' .Ai1ec_I18n::__(
@@ -253,7 +255,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	 */
 	private function save_less_parse_time() {
 		$this->db_adapter->set(
-			self::GET_VARIBALE_NAME,
+			self::QUERY_STRING_PARAM,
 			$this->_registry->get( 'date.system' )->current_time()
 		);
 	}

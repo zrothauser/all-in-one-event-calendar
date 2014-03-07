@@ -39,7 +39,8 @@
 											data-end-truncated="{{ event.get( 'end_truncated' ) ? 'true' : 'false' }}"
 										{% endif %}
 										data-instance-id="{{ event.get( 'instance_id' ) }}"
-										class="ai1ec-event-container ai1ec-load-event ai1ec-popup-trigger
+										class="ai1ec-event-container ai1ec-load-event
+											ai1ec-popup-trigger
 											ai1ec-event-id-{{ event.get( 'post_id' ) }}
 											ai1ec-event-instance-id-{{ event.get( 'instance_id' ) }}
 											{% if event.allday %}ai1ec-allday{% endif %}

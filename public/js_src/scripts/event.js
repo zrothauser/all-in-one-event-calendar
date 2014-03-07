@@ -1,13 +1,14 @@
 define(
-		[
-		 "jquery_timely",
-		 'domReady',
-		 'ai1ec_config',
-		 'scripts/event/gmaps_helper'
-		 ],
-		 function( $, domReady, ai1ec_config, gmaps_helper) {
+	[
+		'jquery_timely',
+		'domReady',
+		'ai1ec_config',
+		'scripts/event/gmaps_helper'
+	],
+	function( $, domReady, ai1ec_config, gmaps_helper ) {
+
 	"use strict"; // jshint ;_;
-	
+
 	// Perform all initialization functions required on the page.
 	var init = function() {
 		if( $( '#ai1ec-gmap-canvas' ).length > 0 ) {
@@ -19,8 +20,11 @@ define(
 
 	var attach_event_handlers = function() {
 		// handle showing the maps when clicking on the placeholder
-		$( '.ai1ec-gmap-placeholder:first' ).click( gmaps_helper.handle_show_map_when_clicking_on_placeholder );
+		$( '.ai1ec-gmap-placeholder:first' ).click(
+			gmaps_helper.handle_show_map_when_clicking_on_placeholder
+		);
 	};
+
 	var start = function() {
 		domReady( function() {
 			// Initialize the page.
@@ -29,6 +33,7 @@ define(
 			attach_event_handlers();
 		} );
 	};
+
 	return {
 		start: start
 	};

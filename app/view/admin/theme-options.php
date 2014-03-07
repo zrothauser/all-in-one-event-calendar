@@ -15,7 +15,7 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 	 * @var string The nonce action
 	 */
 	const NONCE_ACTION = 'ai1ec_theme_options_save';
-	
+
 	/**
 	 * @var string The nonce name
 	 */
@@ -107,9 +107,9 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 
 
 		$loader = $this->_registry->get( 'theme.loader' );
-		
+
 		$file   = $loader->get_file( 'theme-options/page.twig', $args, true );
-		
+
 		return $file->render();
 
 	}
@@ -154,21 +154,23 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 
 		$loader          = $this->_registry->get( 'theme.loader' );
 		$args            = array(
-			'class' => 'tabs-left form-horizontal',
-			'tabs'  => $tabs,
-			'hide_name' => true,
-			'submit' => array(
-				'id'    => self::SUBMIT_ID,
-				'value' => Ai1ec_I18n::__( 'Save Options' ),
-				'args'  => array(
-					'class' => 'button button-primary',
+			'stacked'       => true,
+			'content_class' => 'ai1ec-form-horizontal',
+			'tabs'          => $tabs,
+			'submit'        => array(
+				'id'          => self::SUBMIT_ID,
+				'value'       => '<i class="ai1ec-fa ai1ec-fa-save ai1ec-fa-fw"></i> ' .
+					Ai1ec_I18n::__( 'Save Options' ),
+				'args'        => array(
+					'class'     => 'ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg',
 				),
 			),
-			'reset' => array(
-				'id'    => self::RESET_ID,
-				'value' => Ai1ec_I18n::__( 'Reset to defaults' ),
-				'args'  => array(
-					'class' => 'button',
+			'reset'         => array(
+				'id'          => self::RESET_ID,
+				'value'       => '<i class="ai1ec-fa ai1ec-fa-undo ai1ec-fa-fw"></i> ' .
+					Ai1ec_I18n::__( 'Reset to Defaults' ),
+				'args'        => array(
+					'class'     => 'ai1ec-btn ai1ec-btn-danger ai1ec-btn-lg',
 				),
 			),
 		);
@@ -196,7 +198,7 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 		}
 		foreach ( $less_variables as $variable_id => $variable_attributes ) {
 			$variable_attributes['id'] = $variable_id;
-			$renderable = $this->_registry->get( 
+			$renderable = $this->_registry->get(
 				'less.variable.' . $variable_attributes['type'],
 				$variable_attributes
 			);

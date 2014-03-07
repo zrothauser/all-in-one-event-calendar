@@ -638,7 +638,7 @@ class Ai1ec_Front_Controller {
 		// ==================================
 		// = Add the hook to render the css =
 		// ==================================
-		if ( isset( $_GET[Ai1ec_Css_Frontend::GET_VARIBALE_NAME] ) ) {
+		if ( isset( $_GET[Ai1ec_Css_Frontend::QUERY_STRING_PARAM] ) ) {
 			// we need to wait for the extension to be registered if the css
 			// needs to be compiled. Will find a better way when compiling css.
 			$css_controller = $this->_registry->get( 'css.frontend' );

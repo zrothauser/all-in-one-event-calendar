@@ -3,47 +3,28 @@
 //
 // Used for single and multiple event pages (not calendar views).
 //
-// We do not import variable.less as it's handled server side';
+
 @import "bootstrap/mixins.less";
-@import "bootstrap/mixins-custom.less";
+@import "timely-mixins.less";
 
 // ================
 // = Events pages =
 // ================
 
-@eventFontSize: @baseFontSize * 1.1;
-@eventLineHeight: @baseLineHeight * 1.25;
+@event-font-size: @font-size-base * 1.1;
+@event-line-height: @line-height-base * 1.25;
 
 .ai1ec-single-event,
 .ai1ec-multi-event {
 	.ai1ec-event-details {
-		margin-bottom: @eventLineHeight * 0.6;
-		> * {
-			clear: left;
-			margin-bottom: @eventLineHeight * 0.4;
-			position: relative;
-		}
-		.pull-right {
-			clear: right !important;
-			margin-left: 10px;
-			// Make sure right-floated elements get cursor sensitivity priority.
-			z-index: 1;
+		margin-bottom: @event-line-height * 0.6;
+		.ai1ec-row {
+			margin-bottom: @event-line-height * 0.4;
 		}
 	}
-	.ai1ec-label {
-		font-size: @eventFontSize * 0.85;
-		left: 0;
-		line-height: @eventLineHeight * 0.85;
-		margin-top: @eventFontSize * 0.15;
-		position: absolute;
-		height: 100%;
-		text-align: right;
-		top: 0;
-		width: 80px;
-	}
-	.ai1ec-field-value {
-		margin-left: 90px;
-		min-height: @eventLineHeight;
+
+	.ai1ec-field-label {
+		line-height: 25px;
 	}
 
 	// Date/time & recurrence.
@@ -55,7 +36,7 @@
 		}
 	}
 	.ai1ec-exclude {
-		color: @muted;
+		.ai1ec-text-muted;
 		font-size: 0.9em;
 	}
 	.ai1ec-edit-instance-link {
@@ -63,15 +44,8 @@
 	}
 
 	// Categories & tags.
-	.ai1ec-categories,
-	.ai1ec-tags {
-		.ai1ec-label.ai1ec-hidden-narrow-phone {
-			cursor: help;
-			margin-top: 4px;
-		}
-	}
 	.ai1ec-categories + .ai1ec-tags {
-		margin-top: -@eventLineHeight * 0.4;
+		margin-top: -@event-line-height * 0.4;
 	}
 	.ai1ec-category {
 		font-size: 0.8em;
@@ -85,8 +59,8 @@
 		width: 45%;
 	}
 	.ai1ec-gmap-container {
-		border: 1px solid @tableBorder;
-		.border-radius( 4px );
+		border: 1px solid @table-border-color;
+		border-radius: 4px;
 		position: relative;
 	}
 	#ai1ec-gmap-canvas {
@@ -103,18 +77,18 @@
 		margin: 0 !important;
 	}
 	.ai1ec-gmap-placeholder {
-		.border-radius(4px);
-		color: @linkColor;
+		border-radius: 4px;
+		color: @link-color;
 		cursor: pointer;
 		height: 12em;
-		border: 1px dashed @tableBorder;
+		border: 1px dashed @table-border-color;
 		min-width: 18em;
 		margin-bottom: 0.3em;
 		text-align: center;
 		width: 100%;
 		&:hover {
-			border-color: darken(@tableBorder, 15%);
-			color: @linkColorHover;
+			border-color: darken( @table-border-color, 15% );
+			color: @link-hover-color;
 		}
 		strong {
 			position: relative;
@@ -137,8 +111,9 @@
 
 // Single event page.
 .ai1ec-single-event {
-	font-size: @eventFontSize;
-	line-height: @eventLineHeight;
+	position: relative;
+	font-size: @event-font-size;
+	line-height: @event-line-height;
 	// Event avatar/featured image.
 	.ai1ec-event-avatar {
 		max-width: 40%;
@@ -149,26 +124,44 @@
 			width: 100%;
 		}
 	}
+	.ai1ec-event-details {
+		overflow: hidden;
+	}
+	.ai1ec-actions {
+		.ai1ec-pull-right;
+		margin-left: 10px;
+		.ai1ec-btn-group-vertical {
+			margin-bottom: 10px;
+			display: block;
+		}
+		.ai1ec-btn {
+			font-size: @font-size-small;
+			text-align: left;
+		}
+		.ai1ec-fa-fw {
+			width: 20px;
+		}
+	}
 }
 
 // Multi-event loop and event excerpts.
 .ai1ec-multi-event,
 .ai1ec-excerpt {
-	font-size: @eventFontSize * 0.9;
-	line-height: @eventLineHeight * 0.9;
-	.ai1ec-label {
-		margin-top: @eventFontSize * 0.1;
+	font-size: @event-font-size * 0.9;
+	line-height: @event-line-height * 0.9;
+	.ai1ec-field-label {
+		margin-top: @event-font-size * 0.1;
 	}
 }
 
 .ai1ec-excerpt {
-	margin-bottom: @eventLineHeight * 0.5;
+	margin-bottom: @event-line-height * 0.5;
 }
 
 // Footer.
 .ai1ec-event-footer {
+	.ai1ec-text-muted;
 	clear: both;
-	color: @muted;
 	font-size: 0.9em;
 }
 .ai1ec-ics-icon {
@@ -180,46 +173,28 @@
 // = Responsive declarations =
 // ===========================
 
-// Portrait phone
-@media (max-width: 480px) {
-	.ai1ec-single-event,
-	.ai1ec-multi-event,
-	.ai1ec-excerpt {
-		.ai1ec-label {
-			line-height: @eventLineHeight;
-			margin: 0;
-			position: static;
-			height: auto;
-			text-align: left;
-			width: auto;
-		}
-		.ai1ec-field-value {
-			margin-left: 10px;
-		}
-	}
-}
-
 // Portrait/landscape phone/narrow desktop
-@media (max-width: 767px) {
+@media (max-width: @screen-sm-max) {
 	.ai1ec-single-event,
 	.ai1ec-multi-event,
 	.ai1ec-excerpt {
-		.btn-group > .btn {
+		.ai1ec-btn-group > .ai1ec-btn {
 			display: block;
 			float: none;
 			margin-left: 0;
 			margin-top: -1px;
 			&:first-child {
 				margin-top: 0;
-				.border-radius( 4px 4px 0 0 );
+				border-radius: 4px 4px 0 0;
 			}
 			&:last-child {
-				.border-radius( 0 0 4px 4px );
+				border-radius: 0 0 4px 4px;
 			}
 		}
 	}
 }
+
 // Hide the close button in the modal
-#ai1ec_subscribe_email_modal .btn-danger {
+#ai1ec_subscribe_email_modal .ai1ec-btn-danger {
 	display: none;
 }

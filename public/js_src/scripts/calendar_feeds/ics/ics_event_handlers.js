@@ -102,7 +102,7 @@ define( [
 	var handle_open_modal = function( e ) {
 		e.preventDefault();
 		// Save the user id, the current elements and if we are removing the logged on user.
-		$( '#ai1ec-ics-modal a.btn' ).data( 'el', this );
+		$( '#ai1ec-ics-modal a.ai1ec-btn' ).data( 'el', this );
 		// Open the modal with a static background.
 		$( '#ai1ec-ics-modal' ).modal( {
 			"show": true,

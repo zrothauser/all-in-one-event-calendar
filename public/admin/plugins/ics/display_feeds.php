@@ -1,26 +1,30 @@
-<div class="ai1ec-clearfix">
-	<p>
-	<?php _e(
-	    'Configure which other calendars your own calendar subscribes to.
-	    You can add any calendar that provides an iCalendar (.ics) feed.
-	    Enter the feed URL(s) below and the events from those feeds will be
-	    imported periodically.',
-	    AI1EC_PLUGIN_NAME ); ?>
-	</p>
-	<div id="ics-alerts"></div>
-	<p>
-		<label class="ai1ec-control-label" for="cron_freq">
-		  <?php _e( 'Check for new events', AI1EC_PLUGIN_NAME ) ?>:
-		</label>
-		<div class="ai1ec-col-sm-10">
-			<?php echo $cron_freq ?>
+<p>
+<?php _e(
+    'Configure which other calendars your own calendar subscribes to.
+    You can add any calendar that provides an iCalendar (.ics) feed.
+    Enter the feed URL(s) below and the events from those feeds will be
+    imported periodically.',
+    AI1EC_PLUGIN_NAME ); ?>
+</p>
+<div id="ics-alerts"></div>
+<div class="ai1ec-form-horizontal">
+	<div class="ai1ec-form-group">
+		<div class="ai1ec-col-md-8">
+			<label class="ai1ec-control-label ai1ec-pull-left" for="cron_freq">
+			  <?php _e( 'Check for new events', AI1EC_PLUGIN_NAME ) ?>:
+			</label>
+			<div class="ai1ec-col-sm-6">
+				<?php echo $cron_freq ?>
+			</div>
 		</div>
-		<button type="submit" name="ai1ec_save_settings" id="ai1ec_save_settings"
-			class="ai1ec-btn ai1ec-btn-primary ai1ec-pull-right">
-			<i class="ai1ec-fa ai1ec-fa-save ai1ec-fa-fw"></i>
-			<?php _e( 'Save Settings', AI1EC_PLUGIN_NAME ); ?>
-		</button>
-	</p>
+		<div class="ai1ec-col-md-4">
+			<button type="submit" name="ai1ec_save_settings" id="ai1ec_save_settings"
+				class="ai1ec-btn ai1ec-btn-sm ai1ec-btn-primary ai1ec-pull-right">
+				<i class="ai1ec-fa ai1ec-fa-save ai1ec-fa-fw"></i>
+				<?php _e( 'Save Settings', AI1EC_PLUGIN_NAME ); ?>
+			</button>
+		</div>
+	</div>
 </div>
 
 <div id="ai1ec-feeds-after"

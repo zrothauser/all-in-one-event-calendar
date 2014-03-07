@@ -1424,17 +1424,17 @@ define(
 	var DPGlobal = {
 		modes: [
 			{
-				clsName: 'ai1ec-days',
+				clsName: 'days',
 				navFnc: 'Month',
 				navStep: 1
 			},
 			{
-				clsName: 'ai1ec-months',
+				clsName: 'months',
 				navFnc: 'FullYear',
 				navStep: 1
 			},
 			{
-				clsName: 'ai1ec-years',
+				clsName: 'years',
 				navFnc: 'FullYear',
 				navStep: 10
 		}],

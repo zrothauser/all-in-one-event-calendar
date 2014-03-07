@@ -380,6 +380,9 @@ class Ai1ec_Date_Timezone extends Ai1ec_Base {
 	 * @return string Timezone name to use
 	 */
 	public function get_name( $zone ) {
+		if ( empty( $zone ) ) {
+			$zone = 'UTC';
+		}
 		if ( false === $this->_identifiers ) {
 			return $zone; // anything should do, as zones are not supported
 		}

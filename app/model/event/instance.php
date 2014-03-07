@@ -59,6 +59,100 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 	}
 
 	/**
+	 * Create list of recurrent instances.
+	 *
+	 * @param Ai1ec_Event $event          Event to generate instances for.
+	 * @param array       $event_instance First instance contents.
+	 * @param int         $_start         Timestamp of first occurence.
+	 * @param int         $tif            Timestamp of last occurence.
+	 * @param int         $duration       Event duration in seconds.
+	 *
+	 * @return array List of event instances.
+	 */
+	public function create_instances_by_recurrence(
+		Ai1ec_Event $event,
+		array $event_instance,
+		$_start,
+		$tif,
+		$duration
+	) {
+		$recurrence_parser = $this->_registry->get( 'recurrence.rule' );
+		$evs               = array();
+
+		$startdate = array(
+			'timestamp' => $_start,
+			'tz'        => $event->get( 'start' )->get_timezone(),
+		);
+		$enddate = array(
+			'timestamp' => $tif,
+			'tz'        => $event->get( 'end' )->get_timezone(),
+		);
+		$start			   = $event_instance['start'];
+		$wdate             = $startdate
+		                   = iCalUtilityFunctions::_timestamp2date( $startdate, 6 );
+		$enddate		   = iCalUtilityFunctions::_timestamp2date( $enddate, 6 );
+		$exclude_dates	   = array();
+		$recurrence_dates  = array();
+		if ( $event->get( 'exception_rules' ) ) {
+			// creat an array for the rules
+			$exception_rules = $recurrence_parser
+				->build_recurrence_rules_array(
+					$event->get( 'exception_rules' )
+				);
+			$exception_rules = iCalUtilityFunctions::_setRexrule(
+				$exception_rules
+			);
+			$result = array();
+			// The first array is the result and it is passed by reference
+			iCalUtilityFunctions::_recur2date(
+				$exclude_dates,
+				$exception_rules,
+				$wdate,
+				$startdate,
+				$enddate
+			);
+		}
+		$recurrence_rules = $recurrence_parser
+			->build_recurrence_rules_array(
+				$event->get( 'recurrence_rules' )
+			);
+		$recurrence_rules = iCalUtilityFunctions::_setRexrule( $recurrence_rules );
+		iCalUtilityFunctions::_recur2date(
+			$recurrence_dates,
+			$recurrence_rules,
+			$wdate,
+			$startdate,
+			$enddate
+		);
+		$recurrence_dates = array_keys( $recurrence_dates );
+		// Add the instances
+		foreach ( $recurrence_dates as $date ) {
+			// The arrays are in the form timestamp => true so an isset call is what we need
+			if ( isset( $exclude_dates[$date] ) ) {
+				continue;
+			}
+			$event_instance['start'] = $date;
+			$event_instance['end']	 = $date + $duration;
+			$excluded	= false;
+
+			// Check if exception dates match this occurence
+			if ( $exception_dates = $event->get( 'exception_dates' ) ) {
+				if (
+					$this->date_match_exdates( $date, $exception_dates )
+				) {
+					$excluded = true;
+				}
+			}
+		
+			// Add event only if it is not excluded
+			if ( false === $excluded ) {
+				$evs[] = $event_instance;
+			}
+		}
+		return $evs;
+	}
+
+	/**
 	 * Generate and store instance entries in database for given event.
 	 *
 	 * @param Ai1ec_Event $event Instance of event to create entries for.
@@ -83,68 +177,21 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
         $_start = $event->get( 'start' )->format_to_gmt();
         $_end   = $event->get( 'end'   )->format_to_gmt();
 
-		$recurrence_parser = $this->_registry->get( 'recurrence.rule' );
-
         if ( $event->get( 'recurrence_rules' ) ) {
-            $start            = $e['start'];
-            $wdate = $startdate = iCalUtilityFunctions::_timestamp2date( $_start, 6 );
-            $enddate          = iCalUtilityFunctions::_timestamp2date( $tif, 6 );
-            $exclude_dates    = array();
-            $recurrence_dates = array();
-            if ( $event->get( 'exception_rules' ) ) {
-                // creat an array for the rules
-                $exception_rules = $recurrence_parser
-					->build_recurrence_rules_array(
-						$event->get( 'exception_rules' )
-					);
-                $exception_rules = iCalUtilityFunctions::_setRexrule( $exception_rules );
-                $result = array();
-                // The first array is the result and it is passed by reference
-                iCalUtilityFunctions::_recur2date(
-                    $exclude_dates,
-                    $exception_rules,
-                    $wdate,
-                    $startdate,
-                    $enddate
-                );
-            }
-            $recurrence_rules = $recurrence_parser
-				->build_recurrence_rules_array(
-					$event->get( 'recurrence_rules' )
-				);
-            $recurrence_rules = iCalUtilityFunctions::_setRexrule( $recurrence_rules );
-            iCalUtilityFunctions::_recur2date(
-                $recurrence_dates,
-                $recurrence_rules,
-                $wdate,
-                $startdate,
-                $enddate
-            );
-            // Add the instances
-            foreach ( $recurrence_dates as $date => $bool ) {
-                // The arrays are in the form timestamp => true so an isset call is what we need
-                if( isset( $exclude_dates[$date] ) ) {
-                    continue;
-                }
-                $e['start'] = $date;
-                $e['end']   = $date + $duration;
-                $excluded   = false;
-
-
-                // Check if exception dates match this occurence
-                if ( $exception_dates = $event->get( 'exception_dates' ) ) {
-                    if (
-						$this->date_match_exdates( $date, $exception_dates )
-					) {
-                        $excluded = true;
-					}
-                }
-
-                // Add event only if it is not excluded
-                if ( false === $excluded ) {
-                    $evs[] = $e;
-                }
-            }
+			$_restore_default_tz = date_default_timezone_get();
+			date_default_timezone_set( $event->get( 'start' )->get_timezone() );
+			$evs = array_merge(
+				$evs,
+				$this->create_instances_by_recurrence(
+					$event,
+					$e,
+					$_start,
+					$tif,
+					$duration
+				)
+			);
+			date_default_timezone_set( $_restore_default_tz );
+			unset( $_restore_default_tz );
         }
 
         // Make entries unique (sometimes recurrence generator creates duplicates?)

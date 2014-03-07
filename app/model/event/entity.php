@@ -59,7 +59,7 @@ class Ai1ec_Event_Entity extends Ai1ec_Base {
 		$field = '_' . $name;
 		if ( isset( $time_fields[$name] ) ) {
 			// object of Ai1ec_Date_Time type is now handled in it itself
-			$this->{$field}->set_date_time( $value );
+			$this->{$field}->set_date_time( $value, $this->_timezone_name );
 		} else {
 			$this->{$field} = $value;
 		}

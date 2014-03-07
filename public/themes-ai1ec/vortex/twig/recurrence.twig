@@ -1,10 +1,10 @@
 {% if recurrence is not empty %}
-  <div class="ai1ec-recurrence">
-    <div class="ai1ec-field-label">
+  <div class="ai1ec-recurrence ai1ec-row">
+    <div class="ai1ec-field-label ai1ec-col-sm-3">
       <i class="ai1ec-fa ai1ec-fa-repeat"></i>
       {{ 'Repeats:' | __ }}
     </div>
-    <div class="ai1ec-field-value">
+    <div class="ai1ec-field-value ai1ec-col-sm-9">
       {% if edit_instance_url is not empty %}
         <a class="ai1ec-edit-instance-link ai1ec-pull-right"
           href="{{ edit_instance_url }}">

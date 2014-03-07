@@ -153,9 +153,6 @@ define(
 		// Register minical datepicker events.
 		$( document ).on( 'click',      '.ai1ec-minical-trigger',
 			load_views.handle_minical_trigger );
-		$( document ).on( 'changeDate', '.ai1ec-minical-trigger',
-			load_views.handle_minical_change_date
-		);
 
 		// Handle clearing filters.
 		$( document ).on( 'click',      '.ai1ec-clear-filter',

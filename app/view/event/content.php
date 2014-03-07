@@ -125,7 +125,7 @@ class Ai1ec_View_Event_Content extends Ai1ec_Base {
 		ai1ec-pull-right $class"
 	href="$href"
 	$data_type>
-	<i class="ai1ec-fa ai1ec-fa-arrow-left"></i> $text
+	<i class="ai1ec-fa ai1ec-fa-arrow-left ai1ec-fa-fw"></i> $text
 </a>
 HTML;
 		return apply_filters( 'ai1ec_get_back_to_calendar_html', $html, $href );

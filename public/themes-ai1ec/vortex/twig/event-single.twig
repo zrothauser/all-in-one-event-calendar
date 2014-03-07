@@ -5,12 +5,47 @@
 
 <a id="ai1ec-event"></a>
 
+{% if show_subscribe_buttons or event.get( 'ticket_url' ) is not empty %}
+	<div class="ai1ec-actions">
+		<div class="ai1ec-btn-group-vertical ai1ec-clearfix">
+			{{ back_to_calendar | raw }}
+		</div>
+
+		<div class="ai1ec-btn-group-vertical ai1ec-clearfix">
+			{% if event.get( 'ticket_url' ) is not empty %}
+				<a href="{{ event.get( 'ticket_url' ) | e('html_attr') }}" target="_blank"
+					class="ai1ec-tickets ai1ec-btn ai1ec-btn-sm ai1ec-btn-primary">
+					<i class="ai1ec-fa ai1ec-fa-ticket ai1ec-fa-fw"></i>
+					{{ event.get_runtime( 'tickets_url_label' ) }}
+				</a>
+			{% endif %}
+			{% if show_subscribe_buttons %}
+				<a class="ai1ec-btn ai1ec-btn-default ai1ec-btn-sm ai1ec-subscribe"
+					href="{{ subscribe_url | e('html_attr') }}"
+					title="{{ 'Add this event to your favourite calendar program (iCal, Outlook, etc.)' | __ }}" >
+					<i class="ai1ec-fa ai1ec-fa-plus ai1ec-fa-fw"></i>
+					{{ 'Add to Calendar' | __ }}</a>
+				<a class="ai1ec-btn ai1ec-btn-default ai1ec-btn-sm
+						ai1ec-subscribe-google"
+					target="_blank"
+					href="{{ google_url | e('html_attr') }}"
+					title="{{ 'Add this event to your Google Calendar' | __ }}">
+					<i class="ai1ec-fa ai1ec-fa-google-plus ai1ec-fa-lg ai1ec-fa-fw"></i>
+					{{ 'Add to Google' | __ }}
+				</a>
+			{% endif %}
+			{% if extra_buttons %}
+				{{ extra_buttons | raw }}
+			{% endif %}
+		</div>
+	</div>
+{% endif %}
+
 <div class="ai1ec-event-details ai1ec-clearfix">
 
-	<div class="ai1ec-clearfix">{{ back_to_calendar | raw }}</div>
-	<div class="ai1ec-time">
-		<div class="ai1ec-field-label">{{ 'When:' | __ }}</div>
-		<div class="ai1ec-field-value">{{ event | timespan | raw }}</div>
+	<div class="ai1ec-time ai1ec-row">
+		<div class="ai1ec-field-label ai1ec-col-sm-3">{{ 'When:' | __ }}</div>
+		<div class="ai1ec-field-value ai1ec-col-sm-9">{{ event | timespan | raw }}</div>
 	</div>
 
 	{% include 'recurrence.twig' %}
@@ -19,82 +54,44 @@
 		<div class="ai1ec-map ai1ec-pull-right">{{ map | raw }}</div>
 	{% endif %}
 
-	{% if show_subscribe_buttons or event.get( 'ticket_url' ) is not empty %}
-		<div class="ai1ec-actions ai1ec-pull-right ai1ec-btn-group">
-			{% if event.get( 'ticket_url' ) is not empty %}
-				<a href="{{ event.get( 'ticket_url' ) | e('html_attr') }}" target="_blank"
-					class="ai1ec-tickets ai1ec-btn ai1ec-btn-sm ai1ec-btn-primary"
-					>{{ event.get_runtime( 'tickets_url_label' ) }}</a>
-			{% endif %}
-			{% if show_subscribe_buttons %}
-				<a class="ai1ec-btn ai1ec-btn-default ai1ec-btn-sm ai1ec-subscribe"
-					href="{{ subscribe_url | e('html_attr') }}"
-					title="{{ 'Add this event to your favourite calendar program (iCal, Outlook, etc.)' | __ }}" >
-					<i class="ai1ec-fa ai1ec-fa-plus"></i>
-					{{ 'Add to Calendar' | __ }}</a>
-				<a class="ai1ec-btn ai1ec-btn-default ai1ec-btn-sm
-						ai1ec-subscribe-google"
-					target="_blank"
-					href="{{ google_url | e('html_attr') }}"
-					title="{{ 'Add this event to your Google Calendar' | __ }}">
-					<i class="ai1ec-fa ai1ec-fa-google-plus ai1ec-fa-lg"></i>
-					{{ 'Add to Google' | __ }}
-				</a>
-			{% endif %}
-			{% if extra_buttons %}
-				{{ extra_buttons | raw }}
-			{% endif %}
-		</div>
-	{% endif %}
-
 	{% if location is not empty %}
-		<div class="ai1ec-location">
-			<div class="ai1ec-field-label">{{ 'Where:' | __ }}</div>
-			<div class="ai1ec-field-value">{{ location | raw }}</div>
+		<div class="ai1ec-location ai1ec-row">
+			<div class="ai1ec-field-label ai1ec-col-sm-3">{{ 'Where:' | __ }}</div>
+			<div class="ai1ec-field-value ai1ec-col-sm-9">{{ location | raw }}</div>
 		</div>
 	{% endif %}
 
 	{% if event.get( 'cost' ) is not empty or event.is_free %}
-		<div class="ai1ec-cost">
-			<div class="ai1ec-field-label">{{ 'Cost:' | __ }}</div>
-			<div class="ai1ec-field-value">
+		<div class="ai1ec-cost ai1ec-row">
+			<div class="ai1ec-field-label ai1ec-col-sm-3">{{ 'Cost:' | __ }}</div>
+			<div class="ai1ec-field-value ai1ec-col-sm-9">
 				{{ event.is_free ? 'Free' | __ : event.get( 'cost' ) }}
 			</div>
 		</div>
 	{% endif %}
 
 	{% if contact is not empty %}
-		<div class="ai1ec-contact">
-			<div class="ai1ec-field-label">{{ 'Contact:' | __ }}</div>
-			<div class="ai1ec-field-value">{{ contact | raw }}</div>
+		<div class="ai1ec-contact ai1ec-row">
+			<div class="ai1ec-field-label ai1ec-col-sm-3">{{ 'Contact:' | __ }}</div>
+			<div class="ai1ec-field-value ai1ec-col-sm-9">{{ contact | raw }}</div>
 		</div>
 	{% endif %}
 
 	{% if categories is not empty %}
-		<div class="ai1ec-categories">
-			<div class="ai1ec-field-label ai1ec-hidden-narrow-phone"
-				title="{{ 'Categories' | __ }}">
-				<i class="ai1ec-fa ai1ec-fa-folder-open ai1ec-fa-lg"></i>
-			</div>
-			<div class="ai1ec-field-label ai1ec-visible-narrow-phone">
-				<i class="ai1ec-fa ai1ec-fa-folder-open"></i>
+		<div class="ai1ec-categories ai1ec-row">
+			<div class="ai1ec-field-label ai1ec-col-sm-3">
 				{{ 'Categories:' | __ }}
 			</div>
-			<div class="ai1ec-field-value">{{ categories | raw }}</div>
+			<div class="ai1ec-field-value ai1ec-col-sm-9">{{ categories | raw }}</div>
 		</div>
 	{% endif %}
 
 	{% if tags is not empty %}
-		<div class="ai1ec-tags">
-			<div class="ai1ec-field-label ai1ec-hidden-narrow-phone"
-				title="{{ 'Tags' | __ }}">
-				<i class="ai1ec-fa ai1ec-fa-tags ai1ec-fa-lg"></i>
-			</div>
-			<div class="ai1ec-field-label ai1ec-visible-narrow-phone">
-				<i class="ai1ec-fa ai1ec-fa-tags"></i>
+		<div class="ai1ec-tags ai1ec-row">
+			<div class="ai1ec-field-label ai1ec-col-sm-3">
 				{{ 'Tags:' | __ }}
 			</div>
-			<div class="ai1ec-field-value">{{ tags | raw }}</div>
+			<div class="ai1ec-field-value ai1ec-col-sm-9">{{ tags | raw }}</div>
 		</div>
 	{% endif %}
 

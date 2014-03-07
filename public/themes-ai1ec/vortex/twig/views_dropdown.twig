@@ -6,9 +6,9 @@
 			{{ view_names[current_view] }}
 			<span class="ai1ec-caret"></span>
 		</a>
-		<div class="ai1ec-dropdown-menu">
+		<ul class="ai1ec-dropdown-menu">
 			{% for key, args in available_views %}
-				<div class="{% if key == current_view %}ai1ec-active{% endif %}"
+				<li class="{% if key == current_view %}ai1ec-active{% endif %}"
 					data-action="{{ key }}">
 					<a id="ai1ec-view-{{ key }}"
 						{{ data_type | raw }}
@@ -18,8 +18,8 @@
 							alt="{{ available_views[key].desc }}" />
 						{{ available_views[key].desc }}
 					</a>
-				</div>
+				</li>
 			{% endfor %}
-		</div>
+		</ul>
 	</li>
 {% endif %}

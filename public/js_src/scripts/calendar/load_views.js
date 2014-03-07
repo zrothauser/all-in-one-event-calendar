@@ -95,6 +95,8 @@ define(
 		var dp = $( '.ai1ec-minical-trigger' ).data( 'datepicker' );
 		if ( typeof dp !== 'undefined' ) {
 			dp.picker.remove();
+			// Detach event handler.
+			$( document ).off( 'changeDate', '.ai1ec-minical-trigger' );
 		}
 		// Destroy any visible tooltips or popovers.
 		$( '.ai1ec-tooltip.ai1ec-in, .ai1ec-popup' ).remove();
@@ -344,6 +346,11 @@ define(
 					right: $( document ).width() - offset.left - $el.outerWidth()
 				} );
 			};
+
+			// Attach event handlers.
+			$( document ).on( 'changeDate', '.ai1ec-minical-trigger',
+				handle_minical_change_date
+			);
 		}
 
 		$el.datepicker( 'show' );

@@ -18,32 +18,13 @@
 .ai1ec-multi-event {
 	.ai1ec-event-details {
 		margin-bottom: @event-line-height * 0.6;
-		> * {
-			clear: left;
+		.ai1ec-row {
 			margin-bottom: @event-line-height * 0.4;
-			position: relative;
-		}
-		.ai1ec-pull-right {
-			clear: right !important;
-			margin-left: 10px;
-			// Make sure right-floated elements get cursor sensitivity priority.
-			z-index: 1;
 		}
 	}
-	.ai1ec-label {
-		font-size: @event-font-size * 0.85;
-		left: 0;
-		line-height: @event-line-height * 0.85;
-		margin-top: @event-font-size * 0.15;
-		position: absolute;
-		height: 100%;
-		text-align: right;
-		top: 0;
-		width: 80px;
-	}
-	.ai1ec-field-value {
-		margin-left: 90px;
-		min-height: @event-line-height;
+
+	.ai1ec-field-label {
+		line-height: 25px;
 	}
 
 	// Date/time & recurrence.
@@ -63,13 +44,6 @@
 	}
 
 	// Categories & tags.
-	.ai1ec-categories,
-	.ai1ec-tags {
-		.ai1ec-label.ai1ec-hidden-narrow-phone {
-			cursor: help;
-			margin-top: 4px;
-		}
-	}
 	.ai1ec-categories + .ai1ec-tags {
 		margin-top: -@event-line-height * 0.4;
 	}
@@ -137,6 +111,7 @@
 
 // Single event page.
 .ai1ec-single-event {
+	position: relative;
 	font-size: @event-font-size;
 	line-height: @event-line-height;
 	// Event avatar/featured image.
@@ -147,6 +122,24 @@
 			max-height: 300px;
 			min-height: 0;
 			width: 100%;
+		}
+	}
+	.ai1ec-event-details {
+		overflow: hidden;
+	}
+	.ai1ec-actions {
+		.ai1ec-pull-right;
+		margin-left: 10px;
+		.ai1ec-btn-group-vertical {
+			margin-bottom: 10px;
+			display: block;
+		}
+		.ai1ec-btn {
+			font-size: @font-size-small;
+			text-align: left;
+		}
+		.ai1ec-fa-fw {
+			width: 20px;
 		}
 	}
 }
@@ -179,25 +172,6 @@
 // ===========================
 // = Responsive declarations =
 // ===========================
-
-// Portrait phone
-@media (max-width: 480px) {
-	.ai1ec-single-event,
-	.ai1ec-multi-event,
-	.ai1ec-excerpt {
-		.ai1ec-field-label {
-			line-height: @event-line-height;
-			margin: 0;
-			position: static;
-			height: auto;
-			text-align: left;
-			width: auto;
-		}
-		.ai1ec-field-value {
-			margin-left: 10px;
-		}
-	}
-}
 
 // Portrait/landscape phone/narrow desktop
 @media (max-width: @screen-sm-max) {

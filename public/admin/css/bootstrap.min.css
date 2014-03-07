@@ -6474,30 +6474,6 @@ ul.ai1ec-dropdown-menu li {
   line-height: 1.42857143;
   color: #333333;
   /*
-	fieldset {
-		.ai1ec-well;
-		.ai1ec-well-sm;
-		background-color: mix( @body-bg, @text-color, 96% );
-		margin: 0 0 @line-height-base;
-		position: relative;
-		top: @line-height-base / 3;
-		:last-child {
-			margin-bottom: 0;
-		}
-	}
-	legend {
-		background: mix( @body-bg, @text-color, 96% );
-		border: 1px solid #eee;
-		border: 1px solid rgba(0, 0, 0, 0.05);
-		border-radius: 3px;
-		.ai1ec-box-shadow( inset 0 1px 1px rgba(0, 0, 0, 0.05) );
-		.ai1ec-box-sizing( border-box );
-		margin: 0;
-		padding: 3px 6px;
-		font-size: @font-size-base;
-		line-height: @line-height-base;
-	}*/
-  /*
 	// Form for ics feeds tab and Facebook tab
 	#ai1ec-feeds-after input:focus,
 	.ai1ec_submit_wrapper input:focus,
@@ -6538,6 +6514,10 @@ ul.ai1ec-dropdown-menu li {
 }
 .timely textarea.ai1ec-form-control {
   height: auto;
+}
+.timely .ai1ec-help-block {
+  margin-top: 2px;
+  margin-bottom: 5px;
 }
 .timely pre {
   overflow: auto;

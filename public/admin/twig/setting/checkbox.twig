@@ -6,9 +6,9 @@
 
 			{{ renderer.label | raw }}
 
-			{% if renderer.help is defined %}
-				<div class="ai1ec-help-block">{{ renderer.help | raw }}</div>
-			{% endif %}
 		</label>
 	</div>
+	{% if renderer.help is defined %}
+		<div class="ai1ec-help-block">{{ renderer.help | raw }}</div>
+	{% endif %}
 </div>

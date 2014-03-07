@@ -87,14 +87,14 @@ class Ai1ec_Bootstrap_Modal extends Ai1ec_Html_Element {
 	 * @return string
 	 */
 	private function render_keep_button_if_present() {
-		return isset( $this->keep_button_text ) ? "<a href='#' class='ai1ec-btn keep ai1ec-btn-primary'>{$this->keep_button_text}</a>" : '';
+		return isset( $this->keep_button_text ) ? "<a href='#' class='ai1ec-btn keep ai1ec-btn-primary ai1ec-btn-lg'>{$this->keep_button_text}</a>" : '';
 	}
 
 	/**
 	 * @return string
 	 */
 	private function render_remove_button_if_present() {
-		return isset( $this->delete_button_text ) ? "<a href='#' class='ai1ec-btn remove ai1ec-btn-danger'>{$this->delete_button_text}</a>" : '';
+		return isset( $this->delete_button_text ) ? "<a href='#' class='ai1ec-btn remove ai1ec-btn-danger ai1ec-btn-lg'>{$this->delete_button_text}</a>" : '';
 	}
 
 	/**
@@ -112,7 +112,7 @@ class Ai1ec_Bootstrap_Modal extends Ai1ec_Html_Element {
 	<div class="ai1ec-modal-dialog">
 		<div class="ai1ec-modal-content">
 			<div class="ai1ec-modal-header">
-				<button class="close" data-dismiss="ai1ec-modal">×</button>
+				<button class="ai1ec-close" data-dismiss="ai1ec-modal">×</button>
 				$header
 			</div>
 			<div class="ai1ec-modal-body">

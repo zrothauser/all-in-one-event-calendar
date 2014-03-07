@@ -31,7 +31,7 @@
 @import "bootstrap/grid.less";
 .timely { @import "bootstrap/tables.less"; }
 .timely { @import "bootstrap/forms.less"; }
-@import "bootstrap/buttons.less";
+.timely { @import "bootstrap/buttons.less"; }
 
 // Components
 @import "bootstrap/component-animations.less";
@@ -44,7 +44,7 @@
 @import "bootstrap/alerts.less";
 @import "bootstrap/panels.less";
 @import "bootstrap/wells.less";
-@import "bootstrap/close.less";
+.timely { @import "bootstrap/close.less"; }
 
 // Components w/ JavaScript
 @import "bootstrap/modals.less";
@@ -140,6 +140,14 @@ ul.ai1ec-dropdown-menu {
 }
 .timely .ai1ec-tab-pane h4:first-child {
 	margin-top: 0;
+}
+// Close
+.timely button.ai1ec-close {
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  -webkit-appearance: none;
 }
 
 //

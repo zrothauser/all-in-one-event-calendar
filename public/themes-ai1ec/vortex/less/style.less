@@ -50,7 +50,7 @@
 @import "bootstrap/thumbnails.less";
 @import "bootstrap/alerts.less";
 @import "bootstrap/wells.less";
-@import "bootstrap/close.less";
+.timely { @import "bootstrap/close.less"; }
 
 // Components w/ JavaScript
 @import "bootstrap/modals.less";
@@ -109,7 +109,6 @@
 		font-size: @font-size-base + 2px;
 	}
 }
-
 // Position navs properly.
 .ai1ec-nav {
 	margin: 0 0 @line-height-base !important;
@@ -129,20 +128,25 @@
 	margin-bottom: 0;
 	padding: 8px 9px 7px;
 }
-
 // Fix margins on dropdowns.
 .ai1ec-dropdown-menu {
 	margin: 0;
 }
-
 // Modals
 .ai1ec-modal-backdrop {
 	background-color: @body-bg;
 }
-
 // Tooltips
 .ai1ec-tooltip {
 	margin: 0 !important;
+}
+// Close
+.timely button.ai1ec-close {
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  -webkit-appearance: none;
 }
 
 //

@@ -24,8 +24,16 @@ class Ai1ec_Command_Render_Event extends Ai1ec_Command_Render_Calendar {
 	 */
 	public function do_execute() {
 		// get the event html
-		$event = $this->_registry->get( 'model.event', get_the_ID() );
-		$event_page = null;
+		$instance    = false;
+		if ( isset( $_REQUEST['instance_id'] ) ) {
+			$instance = (int)$_REQUEST['instance_id'];
+		}
+		$event       = $this->_registry->get(
+			'model.event',
+			get_the_ID(),
+			$instance
+		);
+		$event_page  = null;
 		$footer_html = '';
 		if( is_single() ) {
 			$event_page = $this->_registry->get( 'view.event.single' );

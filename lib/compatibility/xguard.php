@@ -1,17 +1,26 @@
 <?php
 
 /**
- * Execution guard
+ * Execution guard.
+ *
+ * Guards process execution for multiple runs at the same moment of time.
+ *
+ * @author     Time.ly Network, Inc.
+ * @since      2.0
+ * @package    Ai1EC
+ * @subpackage Ai1EC.Compatibility
  */
 class Ai1ec_Compatibility_Xguard {
 
 	/**
-	 * Method acquire always return time of last acquisition.
+	 * Return time of last acquisition.
+	 *
 	 * If execution guard with that name was never acquired it returns 0 (zero).
 	 * If acquisition fails it returns false.
 	 *
-	 * @param  string  $name Name of acquisition
-	 * @return boolean
+	 * @param string $name Name of guard to be acquired.
+	 *
+	 * @return int|bool Timestamp of last acquisition or false.
 	 */
 	public function acquire( $name ) {
 		$name = $this->safe_name( $name );
@@ -27,10 +36,12 @@ class Ai1ec_Compatibility_Xguard {
 			$success &= fwrite( $handle, time() );
 			$success &= fflush( $handle );
 			$success &= flock( $handle, LOCK_UN );
-			$success &= fclose( $handle );
 			if ( ! $success ) {
-				return false;
+				$last = false;
 			}
+		}
+		if ( ! fclose( $handle ) ) {
+			return false;
 		}
 		return $last;
 	}
@@ -38,8 +49,9 @@ class Ai1ec_Compatibility_Xguard {
 	/**
 	 * Method release logs execution guard release phase.
 	 *
-	 * @param  string  $name Name of acquisition
-	 * @return boolean
+	 * @param string $name Name of acquisition.
+	 *
+	 * @return bool Not expected to fail.
 	 */
 	public function release( $name ) {
 		$this->acquire( $name );

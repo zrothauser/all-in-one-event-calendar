@@ -74,77 +74,80 @@ class Ai1ec_Export_Controller extends Ai1ec_Base {
 
 		// Acquire Cron
 		$last = $xguard->acquire( 'n_cron' );
-		if ( $last && $last + 86400 >= time() ) {
-			global $wp_filesystem;
-			$dbi            = $this->_registry->get( 'dbi.dbi' );
-			$ai1ec_settings = $this->_registry->get( 'model.settings' );
-
-			$query = 'SELECT COUNT( ID ) as num_events
-				FROM ' . $dbi->get_table_name( 'posts' ) . '
-				WHERE post_type   = \'' . AI1EC_POST_TYPE . '\'
-				  AND post_status = \'publish\'';
-			$n_events = $dbi->get_var( $query );
-
-			$query   = 'SELECT COUNT( ID ) FROM ' . $dbi->get_table_name( 'users' );
-			$n_users = $dbi->get_var( $query );
-
-			$categories = $tags = array();
-			$term_list  = get_terms(
-				'events_categories',
-				array( 'hide_empty' => false )
-			);
-			foreach ( $term_list as $term ) {
-				if ( isset( $term->name ) ) {
-					$categories[] = $term->name;
-				}
-			}
-			$term_list  = get_terms(
-				'events_tags',
-				array( 'hide_empty' => false )
-			);
-			foreach ( $term_list as $term ) {
-				if ( isset( $term->name ) ) {
-					$tags[] = $term->name;
-				}
-			}
-			$options    = $this->_registry->get( 'model.option' );
-			$data       = array(
-				'n_users'        => $n_users,
-				'n_events'       => $n_events,
-				'categories'     => $categories,
-				'tags'           => $tags,
-				'blog_name'      => get_bloginfo( 'name' ),
-				'cal_url'        => get_permalink(
-					$ai1ec_settings->get( 'calendar_page_id' )
-				),
-				'ics_url'        => AI1EC_EXPORT_URL,
-				'php_version'    => phpversion(),
-				'wp_version'     => get_bloginfo( 'version' ),
-				'wp_lang'        => get_bloginfo( 'language' ),
-				'wp_url'         => home_url(),
-				'timezone'       => $this->_registry->get( 'date.timezone' )
-					->get_default_timezone(),
-				'privacy'        => $options->get( 'blog_public' ),
-				'plugin_version' => AI1EC_VERSION,
-				'wp_filesystem'  => $wp_filesystem->method,
-				'wp_debug'       => WP_DEBUG,
-				'ai1ec_debug'    => AI1EC_DEBUG,
-				'active_theme'   => $options->get(
-					'ai1ec_template',
-					AI1EC_DEFAULT_THEME_NAME
-				),
-			);
-			// send request
-			wp_remote_post(
-				AI1EC_STATS_API,
-				array(
-					'body' => $data,
-				)
-			);
-
-			// Release Cron
-			$xguard->release( 'n_cron' );
+		if ( ! $last || $last + 86400 < time() ) {
+			return null;
 		}
+		global $wp_filesystem;
+		$dbi            = $this->_registry->get( 'dbi.dbi' );
+		$ai1ec_settings = $this->_registry->get( 'model.settings' );
+
+		$query = 'SELECT COUNT( ID ) as num_events
+			FROM ' . $dbi->get_table_name( 'posts' ) . '
+			WHERE post_type   = \'' . AI1EC_POST_TYPE . '\'
+			  AND post_status = \'publish\'';
+		$n_events = $dbi->get_var( $query );
+
+		$query   = 'SELECT COUNT( ID ) FROM ' . $dbi->get_table_name( 'users' );
+		$n_users = $dbi->get_var( $query );
+
+		$categories = $tags = array();
+		$term_list  = get_terms(
+			'events_categories',
+			array( 'hide_empty' => false )
+		);
+		foreach ( $term_list as $term ) {
+			if ( isset( $term->name ) ) {
+				$categories[] = $term->name;
+			}
+		}
+		$term_list  = get_terms(
+			'events_tags',
+			array( 'hide_empty' => false )
+		);
+		foreach ( $term_list as $term ) {
+			if ( isset( $term->name ) ) {
+				$tags[] = $term->name;
+			}
+		}
+		$options    = $this->_registry->get( 'model.option' );
+		$data       = array(
+			'n_users'        => $n_users,
+			'n_events'       => $n_events,
+			'categories'     => $categories,
+			'tags'           => $tags,
+			'blog_name'      => get_bloginfo( 'name' ),
+			'cal_url'        => get_permalink(
+				$ai1ec_settings->get( 'calendar_page_id' )
+			),
+			'ics_url'        => AI1EC_EXPORT_URL,
+			'php_version'    => phpversion(),
+			'mysql_version'  => $this->_registry->get( 'dbi.dbi' )
+				->db_version(),
+			'wp_version'     => get_bloginfo( 'version' ),
+			'wp_lang'        => get_bloginfo( 'language' ),
+			'wp_url'         => home_url(),
+			'timezone'       => $this->_registry->get( 'date.timezone' )
+				->get_default_timezone(),
+			'privacy'        => $options->get( 'blog_public' ),
+			'plugin_version' => AI1EC_VERSION,
+			'wp_filesystem'  => $wp_filesystem->method,
+			'wp_debug'       => WP_DEBUG,
+			'ai1ec_debug'    => AI1EC_DEBUG,
+			'active_theme'   => $options->get(
+				'ai1ec_template',
+				AI1EC_DEFAULT_THEME_NAME
+			),
+		);
+		// send request
+		wp_remote_post(
+			AI1EC_STATS_API,
+			array(
+				'body' => $data,
+			)
+		);
+
+		// Release lock
+		$xguard->release( 'n_cron' );
 	}
 
 }

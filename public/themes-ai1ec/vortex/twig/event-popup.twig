@@ -5,7 +5,7 @@
 		<div class="ai1ec-color-swatches">{{ category_colors | raw }}</div>
 	{% endif %}
 
-	<span class="ai1ec-popup-title ai1ec-popover-title">
+	<span class="ai1ec-popup-title">
 		<a href="{{ event.get_runtime( 'instance_permalink' ) | e('html_attr') }}"
 			>{{ event.get_runtime( 'filtered_title' ) | truncate }}</a>
 		{% if show_location_in_title and event.get( 'venue' ) is not empty %}

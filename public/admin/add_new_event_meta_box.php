@@ -5,7 +5,6 @@
 			<?php echo $box; ?>
 		</div>
 	<?php endforeach; ?>
-	</div>
 	<?php if ( ! empty( $publish_button ) ) : ?>
 		<?php echo $publish_button; ?>
 	<?php endif; ?>

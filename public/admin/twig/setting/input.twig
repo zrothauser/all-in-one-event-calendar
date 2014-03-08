@@ -1,7 +1,7 @@
 <label class="ai1ec-control-label ai1ec-col-sm-5" for="{{ id }}">
 	{{ label | raw }}
 </label>
-{% if append is defined %}
+{% if append is defined or licence_valid is defined %}
 	<div class="ai1ec-col-sm-3">
 		<div class="ai1ec-input-group">
 {% else %}
@@ -12,14 +12,20 @@
 	{% spaceless %}
 	{{ input( id, id, value, 'text', input_args ) }}
 
-	{% if licence_valid is defined %}
-		<i class="ai1ec-fa
-			ai1ec-fa-{% if licence_valid %}check{% else %}power-off{% endif %}">
-		</i>
-	{% endif %}
 
 	{% if append is defined %}
 			<span class="ai1ec-input-group-addon">{{ append }}</span>
+		</div>
+	{% elseif licence_valid is defined %}
+			<span class="ai1ec-input-group-addon">
+				<i class="ai1ec-fa
+					{% if licence_valid %}
+						ai1ec-fa-check ai1ec-text-success
+					{% else %}
+						ai1ec-fa-times ai1ec-text-danger
+					{% endif %}">
+				</i>
+			</span>
 		</div>
 	{% endif %}
 	{% endspaceless %}

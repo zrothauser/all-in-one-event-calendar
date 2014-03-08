@@ -37,10 +37,10 @@
 
 // Core CSS
 .timely { @import "bootstrap/scaffolding.less"; }
-.timely { @import "bootstrap/type.less"; }
 @import "bootstrap/grid.less";
 .timely { @import "bootstrap/forms.less"; }
 .timely { @import "bootstrap/buttons.less"; }
+.timely { @import "bootstrap/type.less"; }
 
 // Components
 @import "bootstrap/component-animations.less";
@@ -103,7 +103,7 @@
 		font-size: @font-size-base - 2px;
 	}
 	> .ai1ec-btn-sm {
-		font-size: @font-size-small;
+		font-size: @font-size-small - 1px;
 	}
 	> .ai1ec-btn-lg {
 		font-size: @font-size-base + 2px;
@@ -303,17 +303,17 @@ input.ai1ec-timepicker[readonly] {
 			&.ai1ec-today:hover,
 			&.ai1ec-today.ai1ec-disabled,
 			&.ai1ec-today.ai1ec-disabled:hover {
-				.ai1ec-buttonBackground( @today-color, @today-color );
-				.ai1ec-box-shadow( inset 0 0 2px mix( @today-color, @text-color, 50% ) );
+				background: mix( @today-color, @text-color, 95% );
 			}
-			&.ai1ec-active,
-			&.ai1ec-active:hover,
-			&.ai1ec-active.ai1ec-disabled,
-			&.ai1ec-active.ai1ec-disabled:hover {
-				.ai1ec-buttonBackground( @dropdown-link-hover-bg, @dropdown-link-hover-bg );
-				.ai1ec-box-shadow( none );
-				color: @dropdown-link-color;
-				text-shadow: none;
+			&.ai1ec-active {
+				&.ai1ec-active,
+				&.ai1ec-active:hover,
+				&.ai1ec-active.ai1ec-disabled,
+				&.ai1ec-active.ai1ec-disabled:hover {
+					background: @dropdown-link-active-bg;
+					color: @dropdown-link-active-color;
+					text-shadow: none;
+				}
 			}
 			&.ai1ec-day {
 				&:hover,

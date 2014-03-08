@@ -19,7 +19,7 @@
 		</div>
 		<div class="ai1ec-col-md-4">
 			<button type="submit" name="ai1ec_save_settings" id="ai1ec_save_settings"
-				class="ai1ec-btn ai1ec-btn-sm ai1ec-btn-primary ai1ec-pull-right">
+				class="ai1ec-btn ai1ec-btn-primary ai1ec-pull-right">
 				<i class="ai1ec-fa ai1ec-fa-save ai1ec-fa-fw"></i>
 				<?php _e( 'Save Settings', AI1EC_PLUGIN_NAME ); ?>
 			</button>

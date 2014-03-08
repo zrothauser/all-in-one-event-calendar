@@ -45,11 +45,6 @@ define(
 			// Apply .timely class to timepicker container to ensure proper Bootstrap
 			// styling is applied to unclassed HTML elements contained therein.
 			$widget.addClass( 'timely' );
-
-			// Apply alignment class.
-			var alignment = $this.data( 'alignment' );
-			if ( typeof alignment === 'undefined' ) alignment = 'left';
-			$widget.addClass( 'ai1ec-alignment-' + alignment );
 		}
 	};
 

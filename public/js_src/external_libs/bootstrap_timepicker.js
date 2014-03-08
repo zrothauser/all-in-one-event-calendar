@@ -259,16 +259,16 @@ define( ["jquery_timely"],
 
       templateContent = '<table>'+
          '<tr>'+
-           '<td><a href="#" data-action="incrementHour"><i class="ai1ec-fa ai1ec-fa-chevron-circle-up"></i></a></td>'+
+           '<td><a href="#" data-action="incrementHour"><i class="ai1ec-fa ai1ec-fa-chevron-up"></i></a></td>'+
            '<td class="ai1ec-separator">&nbsp;</td>'+
-           '<td><a href="#" data-action="incrementMinute"><i class="ai1ec-fa ai1ec-fa-chevron-circle-up"></i></a></td>'+
+           '<td><a href="#" data-action="incrementMinute"><i class="ai1ec-fa ai1ec-fa-chevron-up"></i></a></td>'+
            (this.showSeconds ?
              '<td class="ai1ec-separator">&nbsp;</td>'+
-             '<td><a href="#" data-action="incrementSecond"><i class="ai1ec-fa ai1ec-fa-chevron-circle-up"></i></a></td>'
+             '<td><a href="#" data-action="incrementSecond"><i class="ai1ec-fa ai1ec-fa-chevron-up"></i></a></td>'
            : '') +
            (this.showMeridian ?
              '<td class="ai1ec-separator">&nbsp;</td>'+
-             '<td class="ai1ec-meridian-column"><a href="#" data-action="toggleMeridian"><i class="ai1ec-fa ai1ec-fa-chevron-circle-up"></i></a></td>'
+             '<td class="ai1ec-meridian-column"><a href="#" data-action="toggleMeridian"><i class="ai1ec-fa ai1ec-fa-chevron-up"></i></a></td>'
            : '') +
          '</tr>'+
          '<tr>'+
@@ -285,16 +285,16 @@ define( ["jquery_timely"],
            : '') +
          '</tr>'+
          '<tr>'+
-           '<td><a href="#" data-action="decrementHour"><i class="ai1ec-fa ai1ec-fa-chevron-circle-down"></i></a></td>'+
+           '<td><a href="#" data-action="decrementHour"><i class="ai1ec-fa ai1ec-fa-chevron-down"></i></a></td>'+
            '<td class="ai1ec-separator"></td>'+
-           '<td><a href="#" data-action="decrementMinute"><i class="ai1ec-fa ai1ec-fa-chevron-circle-down"></i></a></td>'+
+           '<td><a href="#" data-action="decrementMinute"><i class="ai1ec-fa ai1ec-fa-chevron-down"></i></a></td>'+
            (this.showSeconds ?
             '<td class="ai1ec-separator">&nbsp;</td>'+
-            '<td><a href="#" data-action="decrementSecond"><i class="ai1ec-fa ai1ec-fa-chevron-circle-down"></i></a></td>'
+            '<td><a href="#" data-action="decrementSecond"><i class="ai1ec-fa ai1ec-fa-chevron-down"></i></a></td>'
            : '') +
            (this.showMeridian ?
             '<td class="ai1ec-separator">&nbsp;</td>'+
-            '<td><a href="#" data-action="toggleMeridian"><i class="ai1ec-fa ai1ec-fa-chevron-circle-down"></i></a></td>'
+            '<td><a href="#" data-action="toggleMeridian"><i class="ai1ec-fa ai1ec-fa-chevron-down"></i></a></td>'
            : '') +
          '</tr>'+
        '</table>';
@@ -899,7 +899,7 @@ define( ["jquery_timely"],
         this.$widget.modal('show').on('hidden', $.proxy(this.hideWidget, this));
       } else {
         if (this.isOpen === false) {
-          this.$widget.addClass('open');
+          this.$widget.addClass('ai1ec-open');
         }
       }
 

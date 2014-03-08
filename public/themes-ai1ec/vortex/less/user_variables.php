@@ -61,7 +61,7 @@ return array(
 		"type" => "color",
 	),
 	"btnPrimaryBackground" => array(
-		"value"  => "#3d6b99",
+		"value"  => "#6dbb4f",
 		"description" => __( "Primary brand color", AI1EC_PLUGIN_NAME ),
 		"tab" => "buttons",
 		"type" => "color",

@@ -377,11 +377,14 @@ input.ai1ec-timepicker[readonly] {
 	td {
 	}
 }
-.ai1ec-bootstrap-timepicker table td {
-	height: auto;
-	a:hover {
-		background-color: @dropdown-link-hover-bg;
-		border: none;
+.ai1ec-bootstrap-timepicker table {
+	border: none;
+	td {
+		height: auto;
+		a:hover {
+			background-color: @dropdown-link-hover-bg;
+			border: none;
+		}
 	}
 }
 .ai1ec-datepicker,
@@ -391,18 +394,6 @@ input.ai1ec-timepicker[readonly] {
 	}
 	&:after {
 		border-bottom-color: @dropdown-bg;
-	}
-}
-.ai1ec-bootstrap-timepicker-widget.ai1ec-dropdown-menu.ai1ec-alignment-right {
-	left: auto;
-	right: 0;
-	&:before {
-		left: auto;
-		right: 9px;
-	}
-	&:after {
-		left: auto;
-		right: 10px;
 	}
 }
 .ai1ec-collapse.ai1ec-in.ai1ec-timepicker-visible {

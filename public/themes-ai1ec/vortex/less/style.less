@@ -109,6 +109,9 @@
 		font-size: @font-size-base + 2px;
 	}
 }
+.ai1ec-btn-primary {
+	color: @btn-primary-color !important;
+}
 // Position navs properly.
 .ai1ec-nav {
 	margin: 0 0 @line-height-base !important;
@@ -136,6 +139,9 @@
 .ai1ec-modal-backdrop {
 	background-color: @body-bg;
 }
+.ai1ec-modal-footer {
+	margin-top: 0;
+}
 // Tooltips
 .ai1ec-tooltip {
 	margin: 0 !important;
@@ -154,7 +160,6 @@
 //
 
 .select2-container {
-	margin-bottom: 9px;
 	input[type="text"]:focus {
 		.ai1ec-box-shadow( none );
 	}
@@ -180,6 +185,9 @@
 		&.select2-default {
 			color: @input-color-placeholder !important;
 		}
+	}
+	.select2-search-choice {
+		padding-left: 5px;
 	}
 }
 .select2-drop-mask {
@@ -232,14 +240,14 @@
 .ai1ec-location-filter,
 .ai1ec-author-filter {
 	.select2-choices {
-		padding-left: 1.5em;
+		padding-left: 1.8em;
 	}
 }
 .select2-choices:before {
 	display: inline-block;
 	font-family: Timely_FontAwesome;
 	-webkit-font-smoothing: antialiased;
-	left: 5px;
+	left: 10px;
 	line-height: @line-height-base;
 	position: absolute;
 	speak: none;
@@ -401,6 +409,12 @@ input.ai1ec-timepicker[readonly] {
 	overflow: visible;
 }
 
+// Fileupload
+
+.ai1ec-fileupload {
+	margin-bottom: 0;
+}
+
 // ===============
 // = Hard resets =
 // ===============
@@ -475,10 +489,6 @@ input.ai1ec-timepicker[readonly] {
 		border: none;
 	}
 
-	.dropdown-menu {
-		margin-top: 0 !important;
-	}
-
 
 	//
 	// Forms
@@ -499,9 +509,22 @@ input.ai1ec-timepicker[readonly] {
 		background-color: @input-bg;
 		border-color: @input-border;
 	}
+	input[type="radio"],
+	input[type="checkbox"] {
+		margin-top: 3px;
+	}
+	textarea.ai1ec-form-control {
+    height: auto;
+  }
 	.ai1ec-help-block {
 		margin-top: 2px;
 		margin-bottom: 5px;
+	}
+	.ai1ec-form-group {
+		margin-bottom: 10px;
+	}
+	label {
+		font-weight: normal;
 	}
 }
 

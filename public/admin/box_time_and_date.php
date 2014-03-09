@@ -82,12 +82,12 @@
 				</tr>
 				<tr>
 					<td>
-						<label for="ai1ec_repeat" id="ai1ec_repeat_label">
-							<input type="checkbox" name="ai1ec_repeat" id="ai1ec_repeat"
+						<input type="checkbox" name="ai1ec_repeat" id="ai1ec_repeat"
 								value="1"
 								<?php echo $repeating_event ? 'checked' : ''; ?>>
-							<input type="hidden" name="ai1ec_rrule" id="ai1ec_rrule"
+						<input type="hidden" name="ai1ec_rrule" id="ai1ec_rrule"
 								value="<?php echo $rrule; ?>">
+						<label for="ai1ec_repeat" id="ai1ec_repeat_label">
 							<?php _e( 'Repeat', AI1EC_PLUGIN_NAME );
 								echo $repeating_event ? ':' : '...'; ?>
 						</label>
@@ -100,13 +100,13 @@
 				</tr>
 				<tr>
 					<td>
-						<label for="ai1ec_exclude" id="ai1ec_exclude_label">
-							<input type="checkbox" name="ai1ec_exclude" id="ai1ec_exclude"
+						<input type="checkbox" name="ai1ec_exclude" id="ai1ec_exclude"
 								value="1"
 								<?php echo $exclude_event ? 'checked' : ''; ?>
 								<?php echo $repeating_event ? '' : 'disabled'; ?>>
-							<input type="hidden" name="ai1ec_exrule" id="ai1ec_exrule"
+						<input type="hidden" name="ai1ec_exrule" id="ai1ec_exrule"
 								value="<?php echo $exrule; ?>">
+						<label for="ai1ec_exclude" id="ai1ec_exclude_label">
 							<?php _e( 'Exclude', AI1EC_PLUGIN_NAME );
 								echo $exclude_event ? ':' : '...'; ?>
 						</label>

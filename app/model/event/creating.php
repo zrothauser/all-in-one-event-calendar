@@ -111,9 +111,7 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 				$_POST['ai1ec_exrule'],
 				$_POST['ai1ec_rrule']
 			);
-			$exrule = $exrule;
 		}
-
 		// if exdate is set, convert it from local to UTC time
 		if (
 			isset( $_POST['ai1ec_exdate'] ) &&

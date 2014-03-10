@@ -21,9 +21,12 @@ class Ai1ec_Meta_User extends Ai1ec_Meta {
 	 * @return mixed Current user's option or $default if none found.
 	 */
 	public function get_current( $meta_key, $default = null ) {
-		$user    = wp_get_current_user();
-		$user_id = (int)$user->ID;
-		unset( $user );
+		$user_id = 0;
+		if ( is_callable( 'wp_get_current_user' ) ) {
+			$user    = wp_get_current_user();
+			$user_id = (int)$user->ID;
+			unset( $user );
+		}
 		if ( $user_id <= 0 ) {
 			return $default;
 		}

@@ -71,13 +71,12 @@ class Ai1ec_Export_Controller extends Ai1ec_Base {
 	 */
 	public function n_cron() {
 		$xguard = $this->_registry->get( 'compatibility.xguard' );
+		$guard_name = 'n_cron';
 
 		// Acquire Cron
-		$last = $xguard->acquire( 'n_cron' );
-		if ( ! $last || $last + 86400 < time() ) {
+		if ( ! $xguard->acquire( $guard_name ) ) {
 			return null;
 		}
-		global $wp_filesystem;
 		$dbi            = $this->_registry->get( 'dbi.dbi' );
 		$ai1ec_settings = $this->_registry->get( 'model.settings' );
 
@@ -109,6 +108,11 @@ class Ai1ec_Export_Controller extends Ai1ec_Base {
 				$tags[] = $term->name;
 			}
 		}
+		$fs_method  = 'UNKNOWN';
+		global $wp_filesystem;
+		if ( is_object( $wp_filesystem ) && isset( $wp_filesystem->method ) ) {
+			$fs_method = $wp_filesystem->method;
+		}
 		$options    = $this->_registry->get( 'model.option' );
 		$data       = array(
 			'n_users'        => $n_users,
@@ -130,7 +134,7 @@ class Ai1ec_Export_Controller extends Ai1ec_Base {
 				->get_default_timezone(),
 			'privacy'        => $options->get( 'blog_public' ),
 			'plugin_version' => AI1EC_VERSION,
-			'wp_filesystem'  => $wp_filesystem->method,
+			'wp_filesystem'  => $fs_method,
 			'wp_debug'       => WP_DEBUG,
 			'ai1ec_debug'    => AI1EC_DEBUG,
 			'active_theme'   => $options->get(
@@ -139,7 +143,7 @@ class Ai1ec_Export_Controller extends Ai1ec_Base {
 			),
 		);
 		// send request
-		wp_remote_post(
+		$output = wp_remote_post(
 			AI1EC_STATS_API,
 			array(
 				'body' => $data,
@@ -147,7 +151,7 @@ class Ai1ec_Export_Controller extends Ai1ec_Base {
 		);
 
 		// Release lock
-		$xguard->release( 'n_cron' );
+		$xguard->release( $guard_name );
 	}
 
 }

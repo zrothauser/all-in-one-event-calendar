@@ -200,6 +200,10 @@ class Ai1ec_Front_Controller {
 		try {
 			// Initialize the registry object
 			$this->_initialize_registry( $ai1ec_loader );
+			$this->_registry->get( 'event.dispatcher' )->register_filter(
+				'ai1ec_perform_scheme_update',
+				array( 'database.datetime-migration', 'filter_scheme_update' )
+			);
 			// Load the css if needed
 			$this->_load_css_if_needed();
 			// Initialize the crons
@@ -678,50 +682,50 @@ class Ai1ec_Front_Controller {
 			$this->_registry->get( 'database.applicator' )
 				->remove_instance_duplicates();
 
-			$schema     = $this->_registry->get( 'database.schema' );
-			if ( ! $schema->upgrade( 200 /* past 1.x point */ ) ) {
-				throw new Ai1ec_Database_Schema_Exception(
-					'Failed to perform schema upgrade'
-				);
-			}
-			unset( $schema );
-
-			if ( $this->_registry->get( 'database.helper' )->apply_delta( $schema_sql ) ) {
+			if (
+				apply_filters( 'ai1ec_perform_scheme_update', true ) &&
+				$this->_registry->get( 'database.helper' )->apply_delta(
+					$schema_sql
+				)
+			) {
 				$option->set( 'ai1ec_db_version', $version );
 			} else {
 				throw new Ai1ec_Database_Update_Exception();
 			}
 
 			// If the schema structure upgrade is complete move contents
-			$categories_are_ported = $this->_registry->get( 'model.option' )
-				->get( 'ai1ec_caetgory_meta_ported' );
-
-			if( FALSE == $categories_are_ported ) {
+			$categories_key = 'ai1ec_category_meta_ported';
+			if ( ! $option->get( $categories_key ) ) {
 				$this->_migrate_categories_meta();
+				$option->set( $categories_key, true );
 			}
 		}
 	}
 
-	protected  function _migrate_categories_meta(){
-
+	/**
+	 * Transform categories meta information.
+	 *
+	 * Use new `meta` table instead of legacy `colors` table.
+	 *
+	 * @return void Method does not return.
+	 */
+	protected  function _migrate_categories_meta() {
 		$db         = $this->_registry->get( 'dbi.dbi' );
 		$table_name = $db->get_table_name( 'ai1ec_event_category_colors' );
-
 		// Migrate color information
 		$dest_table = $db->get_table_name( 'ai1ec_event_category_meta' );
-
 		$colors     = $db->select(
-			$table_name, array( 'term_id', 'term_color'), ARRAY_A );
-
-		foreach( $colors as $color ){
-			$db->insert( $dest_table, $color );
+			$table_name,
+			array( 'term_id', 'term_color'),
+			ARRAY_A
+		);
+		if ( ! empty( $colors ) ) {
+			foreach ( $colors as $color ) {
+				$db->insert( $dest_table, $color );
+			}
 		}
-
 		// Drop the old table
 		$db->query( 'DROP TABLE ' . $table_name );
-
-		$this->_registry->get( 'model.option' )
-			->set( 'ai1ec_caetgory_meta_ported', true );
 	}
 
 	/**

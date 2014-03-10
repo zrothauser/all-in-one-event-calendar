@@ -25,7 +25,7 @@
 							<div class="ai1ec-event
 								ai1ec-event-id-{{ event.get( 'post_id' ) }}
 								ai1ec-event-instance-id-{{ event.get( 'instance_id' ) }}
-								{% if event.allday %}ai1ec-allday{% endif %}
+								{% if event.is_allday %}ai1ec-allday{% endif %}
 								{% if event.expanded %}ai1ec-expanded{% endif %}">
 
 								<div class="ai1ec-event-header">

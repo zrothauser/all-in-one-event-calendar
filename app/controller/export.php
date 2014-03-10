@@ -143,7 +143,7 @@ class Ai1ec_Export_Controller extends Ai1ec_Base {
 			),
 		);
 		// send request
-		$output = wp_remote_post(
+		wp_remote_post(
 			AI1EC_STATS_API,
 			array(
 				'body' => $data,

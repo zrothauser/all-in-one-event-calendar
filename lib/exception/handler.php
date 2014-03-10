@@ -96,16 +96,19 @@ class Ai1ec_Exception_Handler {
 			die();
 		}
 		// if it's something we handle, handle it
+		$backtrace = '<br><br>' . nl2br( $exception );
 		if ( $exception instanceof $this->_exception_class ) {
 			// check if it has a methof for deatiled html
 			$message = method_exists( $exception, 'get_html_message' ) ?
 					$exception->get_html_message() :
 					$exception->getMessage();
-			$this->soft_deactivate_plugin( $message );
+			$this->soft_deactivate_plugin( $message . $backtrace );
 		}
 		// if it's a PHP error in our plugin files, deactivate and redirect
 		else if ( $exception instanceof $this->_error_exception_class ) {
-			$this->soft_deactivate_plugin( $exception->getMessage() );
+			$this->soft_deactivate_plugin(
+				$exception->getMessage() . $backtrace
+			);
 		}
 		// if another handler was set, let it handle the exception
 		if ( is_callable( $this->_prev_ex_handler ) ) {

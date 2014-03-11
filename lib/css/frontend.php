@@ -172,7 +172,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 				Ai1ec_I18n::__( '<p><strong>There was an error while compiling CSS.</strong> The message returned was: <em>%s</em></p>' ),
 				$e->getMessage()
 			);
-			$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 'error' );
+			$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 'error', 1 );
 			return false;
 		}
 		return true;

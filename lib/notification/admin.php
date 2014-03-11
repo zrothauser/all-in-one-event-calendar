@@ -40,10 +40,11 @@ class Ai1ec_Notification_Admin extends Ai1ec_Notification {
 	 * Set local variables. Optionally store message, if any passed.
 	 *
 	 * @param Ai1ec_Registry_Object $registry   Inejcted object registry.
-	 * @param string                $message    Message to be dispatched.
-	 * @param array                 $recipients List of message recipients.
+	 * @param string $message    Message to be dispatched.
+	 * @param array $recipients List of message recipients.
 	 *
-	 * @return void
+	 * @param string $class
+	 * @return \Ai1ec_Notification_Admin
 	 */
 	public function __construct(
 		Ai1ec_Registry_Object $registry,
@@ -61,14 +62,15 @@ class Ai1ec_Notification_Admin extends Ai1ec_Notification {
 	 * Add message to store.
 	 *
 	 * @param string $message    Actual message.
-	 * @param array  $recipients List of message recipients.
+	 * @param array $recipients  List of message recipients.
 	 * @param string $class      Message box class.
+	 * @param int $importance    Optional importance parameter for the message
 	 *
 	 * @return bool Success.
 	 */
-	public function store( $message, array $recipients, $class ) {
+	public function store( $message, array $recipients, $class, $importance = 0 ) {
 		$this->retrieve();
-		$entity  = compact( 'message', 'class' );
+		$entity  = compact( 'message', 'class', 'importance' );
 		$msg_key = sha1( json_encode( $entity ) );
 		if ( isset( $this->_message_list['_messages'][$msg_key] ) ) {
 			return true;
@@ -128,7 +130,7 @@ class Ai1ec_Notification_Admin extends Ai1ec_Notification {
 	 */
 	public function send() {
 		$this->retrieve();
-		$filter       = current_filter();
+
 		$destinations = array( self::RCPT_ALL, current_filter() );
 		$modified     = false;
 		foreach ( $destinations as $dst ) {
@@ -144,7 +146,7 @@ class Ai1ec_Notification_Admin extends Ai1ec_Notification {
 					}
 				}
 				$this->_message_list[$dst] = array();
-				$modified = true;
+				$modified                  = true;
 			}
 		}
 		if ( ! $modified ) {
@@ -154,16 +156,66 @@ class Ai1ec_Notification_Admin extends Ai1ec_Notification {
 	}
 
 	protected function _render_message( array $entity ) {
-		static $theme = null;
-		if ( null === $theme ) {
-			$theme = $this->_registry->get( 'theme.loader' );
+		isset( $entity['importance'] ) ?
+			$importance = $entity['importance'] : $importance = 0;
+
+		if ( $this->are_notices_available( $importance ) ) {
+			static $theme = null;
+			if ( null === $theme ) {
+				$theme = $this->_registry->get( 'theme.loader' );
+			}
+			$file = $theme->get_file(
+				'notification/admin.twig',
+				$entity,
+				true
+			);
+			$file->render();
 		}
-		$file = $theme->get_file(
-			'notification/admin.twig',
-			$entity,
-			true
+	}
+
+	/**
+	 * Check whereas our notices should be displayed on this page.
+	 *
+	 * Limits notices to Ai1EC pages and WordPress "Plugins", "Updates" pages.
+	 * Important notices are also displayable in WordPress "Dashboard".
+	 * Levels of importance (see $importance) are as following:
+	 *     - 0 - messages limited to Ai1EC pages;
+	 *     - 1 - messages limited to [0] and Plugins/Updates pages;
+	 *     - 2 - messages limited to [1] and Dashboard.
+	 *
+	 * @param int $importance The level of importance. See above for details.
+	 *
+	 * @return bool Availability
+	 */
+	public function are_notices_available( $importance ) {
+		// In CRON `get_current_screen()` is not present
+		// and we wish to have notice on all "our" pages
+
+		$acl = $this->_registry->get( 'acl.aco' );
+		if ( $acl->is_all_events_page() || $acl->are_we_editing_our_post() ) {
+			return true;
+		}
+
+		if ( $importance < 1 ) {
+			return false;
+		}
+
+		$screen   = get_current_screen();
+		$allow_on = array(
+			'plugins',
+			'update-core',
 		);
-		return $file->render();
+		if ( $importance > 1 ) {
+			$allow_on[] = 'dashboard';
+		}
+		if (
+			is_object( $screen ) &&
+			isset( $screen->id ) &&
+			in_array( $screen->id, $allow_on )
+		) {
+			return true;
+		}
+		return false;
 	}
 
 }

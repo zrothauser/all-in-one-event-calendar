@@ -172,7 +172,14 @@ class Ai1ec_Exception_Handler {
 				! defined( 'AI1EC_DEBUG' ) || false === AI1EC_DEBUG
 			)
 		) {
-			return;
+			$message = sprintf(
+				'All-in-One Event Calendar: %s @ %s:%d #%d',
+				$errstr,
+				$errfile,
+				$errline,
+				$errno
+			);
+			return error_log( $message, 0 );
 		}
 		throw new Ai1ec_Error_Exception(
 			$errstr,

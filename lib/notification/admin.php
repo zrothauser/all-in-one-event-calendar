@@ -156,9 +156,10 @@ class Ai1ec_Notification_Admin extends Ai1ec_Notification {
 	}
 
 	protected function _render_message( array $entity ) {
-		isset( $entity['importance'] ) ?
-			$importance = $entity['importance'] : $importance = 0;
-
+		$importance = 0;
+		if ( isset( $entity['importance'] ) ) {
+			$importance = ( (int)$entity['importance'] ) % 3;
+		}
 		if ( $this->are_notices_available( $importance ) ) {
 			static $theme = null;
 			if ( null === $theme ) {
@@ -200,7 +201,11 @@ class Ai1ec_Notification_Admin extends Ai1ec_Notification {
 			return false;
 		}
 
-		$screen   = get_current_screen();
+		$screen = null;
+		if ( is_callable( 'get_current_screen' ) ) {
+			$screen = get_current_screen();
+		}
+
 		$allow_on = array(
 			'plugins',
 			'update-core',

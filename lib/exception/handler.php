@@ -93,8 +93,10 @@ class Ai1ec_Exception_Handler {
 			E_STRICT       => true,
 		);
 		if ( version_compare( PHP_VERSION, '5.3.0' ) >= 0 ) {
-			$this->_nonfatal_errors[E_DEPRECATED]      = true;
-			$this->_nonfatal_errors[E_USER_DEPRECATED] = true;
+			// wrapper `constant( 'XXX' )` is used to avoid compile notices
+			// on earlier PHP versions.
+			$this->_nonfatal_errors[constant( 'E_DEPRECATED' )]      = true;
+			$this->_nonfatal_errors[constant( 'E_USER_DEPRECATED') ] = true;
 		}
 	}
 

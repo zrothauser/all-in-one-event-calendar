@@ -148,9 +148,9 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 * @return array Parsed values representation, or input cast as array.
 	 */
 	protected function _parse_legacy( Ai1ec_Settings $values ) {
-		$variables = get_object_vars( $values );
+		$variables        = get_object_vars( $values );
 		$default_tags_cat = array();
-		$legacy = array();
+		$legacy           = array();
 		foreach ( $variables as $key => $value ) {
 			if ( 'default_categories' === $key ) {
 				$default_tags_cat['categories'] = $value;
@@ -700,6 +700,10 @@ class Ai1ec_Settings extends Ai1ec_App {
 					),
 				),
 				'default'  => true,
+			),
+			'legacy_options' => array(
+				'type'     => 'legacy_options',
+				'default'  => null,
 			),
 		);
 	}

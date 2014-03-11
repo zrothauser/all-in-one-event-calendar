@@ -15,12 +15,13 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 	 * @see Ai1ec_Command::do_execute()
 	 */
 	public function do_execute() {
-
 		$settings = $this->_registry->get( 'model.settings' );
-		$options = $settings->get_options();
+		$options  = $settings->get_options();
 		// if either tag or categories are set, process the setting.
-		if( isset( $_POST['default_tags'] ) || 
-				isset( $_POST['default_categories'] ) ) {
+		if (
+			isset( $_POST['default_tags'] ) || 
+			isset( $_POST['default_categories'] )
+		) {
 			$_POST['default_tags_categories'] = true;
 		}
 		$_POST['enabled_views'] = true;
@@ -40,7 +41,7 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 						continue;
 					}
 				} else {
-					
+
 					switch ( $data['type'] ) {
 						case 'bool';
 							$value = true;
@@ -90,9 +91,9 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 	 * @return array
 	 */
 	protected function _handle_saving_enabled_views() {
-		$settings = $this->_registry->get( 'model.settings' );
+		$settings      = $this->_registry->get( 'model.settings' );
 		$enabled_views = $settings->get( 'enabled_views' );
-		foreach( $enabled_views as $view => &$options ) {
+		foreach ( $enabled_views as $view => &$options ) {
 			$options['enabled'] = isset( $_POST['view_' . $view . '_enabled'] );
 			$options['default'] = $_POST['default_calendar_view'] === $view;
 		}
@@ -117,13 +118,14 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 
 	/**
 	 * Creates the calendar page if a string is passed.
-	 * 
+	 *
 	 * @param int|string $calendar_page
-	 * 
+	 *
 	 * @return int
 	 */
 	protected function _handle_saving_calendar_page_id( $calendar_page ) {
-		if ( ! is_numeric( $calendar_page ) &&
+		if (
+			! is_numeric( $calendar_page ) &&
 			preg_match( '#^__auto_page:(.*?)$#', $calendar_page, $matches ) 
 		) {
 			return wp_insert_post(
@@ -138,6 +140,5 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 			return (int)$calendar_page;
 		}
 	}
-}
 
-?>
+}

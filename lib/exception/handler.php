@@ -47,6 +47,12 @@ class Ai1ec_Exception_Handler {
 	protected $_message;
 
 	/**
+	 * @var array Mapped list of errors that are non-fatal, to be ignored
+	 *            in production.
+	 */
+	protected $_nonfatal_errors = null;
+
+	/**
 	 * Store exception handler that was previously set
 	 *
 	 * @param callable|null $_prev_ex_handler
@@ -79,6 +85,19 @@ class Ai1ec_Exception_Handler {
 	public function __construct( $exception_class, $error_class ) {
 		$this->_exception_class       = $exception_class;
 		$this->_error_exception_class = $error_class;
+		$this->_nonfatal_errors       = array(
+			E_USER_WARNING => true,
+			E_WARNING      => true,
+			E_USER_NOTICE  => true,
+			E_NOTICE       => true,
+			E_STRICT       => true,
+		);
+		if ( version_compare( PHP_VERSION, '5.3.0' ) >= 0 ) {
+			// wrapper `constant( 'XXX' )` is used to avoid compile notices
+			// on earlier PHP versions.
+			$this->_nonfatal_errors[constant( 'E_DEPRECATED' )]      = true;
+			$this->_nonfatal_errors[constant( 'E_USER_DEPRECATED') ] = true;
+		}
 	}
 
 	/**
@@ -147,15 +166,20 @@ class Ai1ec_Exception_Handler {
 			}
 			return false;
 		}
-		switch ( $errno ) {
-			case E_USER_WARNING:
-			case E_USER_NOTICE:
-			case E_STRICT:
-				if ( ! defined( 'AI1EC_DEBUG' ) || false === AI1EC_DEBUG ) {
-					// do not disable plugin in production if the error is not
-					// too high
-					return;
-				}
+		// do not disable plugin in production if the error is rather low
+		if (
+			isset( $this->_nonfatal_errors[$errno] ) && (
+				! defined( 'AI1EC_DEBUG' ) || false === AI1EC_DEBUG
+			)
+		) {
+			$message = sprintf(
+				'All-in-One Event Calendar: %s @ %s:%d #%d',
+				$errstr,
+				$errfile,
+				$errline,
+				$errno
+			);
+			return error_log( $message, 0 );
 		}
 		throw new Ai1ec_Error_Exception(
 			$errstr,

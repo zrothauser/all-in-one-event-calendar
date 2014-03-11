@@ -81,7 +81,8 @@ function ai1ec_clean_up_tables() {
 	global $wpdb;
 	// Delete events
 	$table_name = $wpdb->prefix . 'ai1ec_events';
-	$query      = 'SELECT DISTINCT post_id FROM ' . $table_name;
+	$query      = 'SELECT DISTINCT `ID` FROM `' . $wpdb->posts .
+		'` WHERE `post_type` = \'ai1ec_event\'';
 	foreach ( $wpdb->get_col( $query ) as $postid ) {
 		wp_delete_post( (int) $postid, true );
 	}

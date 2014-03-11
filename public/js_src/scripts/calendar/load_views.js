@@ -246,7 +246,6 @@ define(
 						}
 						are_filters_set = data.are_filters_set;
 
-
 						// Animate vertical height of container between HTML replacement
 						var $container = $('#ai1ec-calendar-view-container');
 						$container.height( $container.height() );
@@ -272,10 +271,15 @@ define(
 		);
 	};
 
+	var previously_pushed_state = false;
 	// When the state changes, load the corresponding view
 	var handle_state_change = function( e ) {
 		var state = History.getState();
-		if( state.data.ai1ec !== undefined && true === state.data.ai1ec ) {
+		if( state.data.ai1ec !== undefined && true === state.data.ai1ec ||
+				true === previously_pushed_state ) {
+			// set this to true to detect back/forward navigation.
+			// this should not interfere with other plugins.
+			previously_pushed_state = true;
 			load_view( state.url, 'json' );
 		}
 	};

@@ -17,6 +17,7 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 	public function do_execute() {
 		$settings = $this->_registry->get( 'model.settings' );
 		$options  = $settings->get_options();
+		unset( $options['legacy_options'] );
 		// if either tag or categories are set, process the setting.
 		if (
 			isset( $_POST['default_tags'] ) || 

@@ -73,9 +73,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 * @return array:
 	 */
 	public function get_options() {
-		$options = $this->_options;
-		unset( $options['legacy_options'] );
-		return $options;
+		return $this->_options;
 	}
 
 	/**

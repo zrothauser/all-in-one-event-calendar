@@ -701,6 +701,10 @@ class Ai1ec_Settings extends Ai1ec_App {
 				),
 				'default'  => true,
 			),
+			'legacy_options' => array(
+				'type'     => 'legacy_options',
+				'default'  => null,
+			),
 		);
 	}
 

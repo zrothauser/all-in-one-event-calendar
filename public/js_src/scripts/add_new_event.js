@@ -191,7 +191,7 @@ define(
 	};
 
 	/**
-	 * Attach event handlers to page.
+	 * Attach event handlers to add/edit event page.
 	 */
 	var attach_event_handlers = function() {
 		// Toggle the visibility of google map on checkbox click
@@ -201,33 +201,27 @@ define(
 		// Validate fields when clicking Publish
 		$( '#post' ).submit( validate_form );
 		// on blur, update the map if both coordinates are set
-		$( 'input.coordinates' ).blur ( input_coordinates_event_handlers.update_map_from_coordinates_on_blur );
-		// ==============================================
-		// = EVENT HANDLERS FOR EVENT DATE AND TIME BOX =
-		// ==============================================
+		$( 'input.coordinates' ).blur( input_coordinates_event_handlers.update_map_from_coordinates_on_blur );
+
 		// Show different fields for the "ends" clause in the modal
-		$( document ).on( 'change', '#ai1ec_end', date_time_event_handlers.show_end_fields );
+		$( '#ai1ec_end' ).on( 'change', date_time_event_handlers.show_end_fields );
 		// If the extra publish button is present handle it's click
 		$( '#ai1ec_bottom_publish' ).on( 'click', date_time_event_handlers.trigger_publish );
 		// Handle clicking on tabs when the modal is open
-		$( document ).on( 'click', '.ai1ec_tab', date_time_event_handlers.handle_click_on_tab_modal );
+		$( '.ai1ec_tab' ).on( 'click', date_time_event_handlers.handle_click_on_tab_modal );
 		// Handle click on the Apply button of the modal
-		$( document ).on( 'click', '.ai1ec_repeat_apply', date_time_event_handlers.handle_click_on_apply_button );
+		$( '.ai1ec_repeat_apply' ).on( 'click', date_time_event_handlers.handle_click_on_apply_button );
 		// Handle click on the cancel button of the modal
-		$( document ).on( 'click', 'a.ai1ec_repeat_cancel', date_time_event_handlers.handle_click_on_cancel_modal );
+		$( 'a.ai1ec_repeat_cancel' ).on( 'click', date_time_event_handlers.handle_click_on_cancel_modal );
 		// Handle click on the cancel button of the modal
-		$( document ).on( 'click', '#ai1ec_monthly_type_bymonthday, #ai1ec_monthly_type_byday', date_time_event_handlers.handle_checkbox_monthly_tab_modal );
+		$( '#ai1ec_monthly_type_bymonthday, #ai1ec_monthly_type_byday' ).on( 'click', date_time_event_handlers.handle_checkbox_monthly_tab_modal );
 		// initialize showing / hiding the calendars
 		$( '#widgetField > a, #widgetField > span, #ai1ec_exclude_date_label' ).on( 'click', date_time_event_handlers.handle_animation_of_calendar_widget );
-		$( document ).on( 'click', '#ai1ec_weekly_date_select > li,#ai1ec_montly_date_select > li,#ai1ec_yearly_date_select > li', date_time_event_handlers.handle_click_on_day_month_in_modal );
+		$( '#ai1ec_weekly_date_select > li, #ai1ec_montly_date_select > li, #ai1ec_yearly_date_select > li' ).on( 'click', date_time_event_handlers.handle_click_on_day_month_in_modal );
+		$( '#ai1ec_is_free' ).on( 'change', event_cost.handle_change_is_free );
 
-		$( document ).on(
-			'change',
-			'#ai1ec_is_free',
-			event_cost.handle_change_is_free
-		);
-		// Attach pseudo handler function. These functions are kind of wrappers around other functions
-		// i left them as i found them.
+		// Attach pseudo handler function. These functions are kind of wrappers
+		// around other functions i left them as i found them.
 		date_time_event_handlers.execute_pseudo_handlers();
 	};
 

@@ -6475,6 +6475,9 @@ ul.ai1ec-dropdown-menu li {
 .timely hr {
   margin: 14px 0;
 }
+.timely input[type="radio"] {
+  margin: 0 3px 0 0;
+}
 .timely input[type="checkbox"] {
   margin: -1px 3px 0 0;
 }

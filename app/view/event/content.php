@@ -105,7 +105,6 @@ class Ai1ec_View_Event_Content extends Ai1ec_Base {
 	 * @return string
 	 */
 	public function get_back_to_calendar_button_html() {
-		global $ai1ec_calendar_controller;
 		$class     = '';
 		$data_type = '';
 		$href      = '';

@@ -563,7 +563,6 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 			vcalendar $calendar,
 			$export = false
 	) {
-		global $ai1ec_events_helper;
 
 		$tz  = $this->_registry->get( 'date.timezone' )
 			->get_default_timezone();

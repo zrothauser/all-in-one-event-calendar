@@ -16,10 +16,8 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 	 * Constructor for widget.
 	 */
 	public function __construct() {
-		global $ai1ec_loader;
-
 		// Set registry
-		$this->_registry = new Ai1ec_Registry_Object( $ai1ec_loader );
+		$this->_registry = apply_filters( 'ai1ec_registry', false );
 
 		// Load CSS in front-end.
 		if ( ! is_admin() ) {

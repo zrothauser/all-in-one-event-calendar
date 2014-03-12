@@ -150,7 +150,6 @@ abstract class Ai1ec_Connector_Plugin extends Ai1ec_Base {
 	 *
 	 */
 	public function initialize_settings_if_not_set() {
-		global $ai1ec_settings;
 		// Get the class name.
 		$class_name = get_class( $this );
 		$settings = $this->_registry->get( 'model.settings' );

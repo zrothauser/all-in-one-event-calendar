@@ -58,6 +58,17 @@ class Ai1ec_Front_Controller {
 	}
 
 	/**
+	 * Returns the registry object
+	 * 
+	 * @param mixed $discard not used. Always return the registry.
+	 * 
+	 * @return Ai1ec_Registry_Object
+	 */
+	public function return_registry( $discard ) {
+		return $this->_registry;
+	}
+
+	/**
 	 * Perform actions needed when our plugin is activated.
 	 *
 	 * @wp_hook activate_all-in-one-event-calendar/all-in-one-event-calendar.php
@@ -160,20 +171,6 @@ class Ai1ec_Front_Controller {
 			$application->set( 'permalinks_enabled', true );
 		}
 
-		// If we are requesting the calendar page and we have a saved cookie,
-		// redirect the user. Do not redirect if the user saved the home page,
-		// otherwise we enter a loop.
-		$cookie_dto = $router->get_cookie_set_dto();
-		if ( true === $cookie_dto->get_is_cookie_set_for_calendar_page() ) {
-			$cookie = $cookie_dto->get_calendar_cookie();
-			$href = Ai1ec_View_Factory::create_href_helper_instance( $cookie );
-			// wp_redirect sanitizes the url which strips out the |
-			header( 'Location: ' . $href->generate_href(), true, '302' );
-			exit ( 0 );
-		}
-		// We need to reset the cookie, it's to early for the is_page() call
-		$router->set_cookie_set_dto();
-
 		$router->asset_base( $page_base )
 			->register_rewrite( $page_link );
 	}
@@ -221,7 +218,10 @@ class Ai1ec_Front_Controller {
 		} catch ( Ai1ec_Database_Schema_Exception $e ) {
 			// Blocking throw it so that the plugin is disabled
 			$exception = $e;
+		} catch ( Ai1ec_Scheduling_Exception $e ) {
+			// not blocking
 		}
+		
 		if ( null !== $exception ) {
 			throw $exception;
 		}
@@ -263,6 +263,7 @@ class Ai1ec_Front_Controller {
 			$action = 'init';
 		}
 		add_action( $action, array( $this, 'route_request' ) );
+		add_filter( 'ai1ec_registry', array( $this, 'return_registry' ) );
 	}
 
 	/**

@@ -6359,14 +6359,14 @@ ul.ai1ec-dropdown-menu li {
 .ai1ec-modal {
   text-align: left;
 }
-.ai1ec-overflow-visible {
-  overflow: visible;
-}
 .ai1ec-panel-group {
   margin-bottom: 0;
 }
 .ai1ec-panel-group .ai1ec-panel {
   background-color: #ffffff;
+}
+.ai1ec-panel-group .ai1ec-panel.ai1ec-overflow-visible {
+  overflow: visible;
 }
 .ai1ec-panel-group .ai1ec-panel table {
   margin-bottom: 0;

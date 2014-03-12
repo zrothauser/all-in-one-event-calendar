@@ -7,7 +7,7 @@
 	</a>
 </div>
 <div id="ai1ec-time-and-date-box"
-	class="ai1ec-panel-collapse ai1ec-collapse ai1ec-in ai1ec-overflow-visible">
+	class="ai1ec-panel-collapse ai1ec-collapse ai1ec-in">
 	<div class="ai1ec-panel-body">
 		<?php wp_nonce_field( 'ai1ec', AI1EC_POST_TYPE ); ?>
 		<?php if ( $instance_id ) : ?>

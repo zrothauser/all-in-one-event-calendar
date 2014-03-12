@@ -125,12 +125,12 @@ define(
 	 */
 	var init_collapsibles = function() {
 		$( '.ai1ec-panel-collapse' ).on( 'hide', function() {
-			$( this ).removeClass( 'ai1ec-overflow-visible' );
+			$( this ).parent().removeClass( 'ai1ec-overflow-visible' );
 		} );
 		$( '.ai1ec-panel-collapse' ).on( 'shown', function() {
 			var $el = $( this );
 			window.setTimeout(
-				function() { $el.addClass( 'ai1ec-overflow-visible' ); },
+				function() { $el.parent().addClass( 'ai1ec-overflow-visible' ); },
 				350
 			);
 		} );

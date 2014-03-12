@@ -175,7 +175,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			// set the new cron
 			wp_schedule_event(
 				current_time( 'timestamp' ) + 600,
-				$settings->get( 'cron_freq' ),
+				$settings->get( 'ics_cron_freq' ),
 				'ai1ec_cron'
 			);
 			// update the cron version
@@ -259,7 +259,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	public function handle_feeds_page_post() {
 		$settings = $this->_registry->get( 'model.settings' );
 		if ( isset( $_POST['ai1ec_save_settings'] ) ) {
-			$settings->set( 'cron_freq', $_REQUEST['cron_freq'] );
+			$settings->set( 'ics_cron_freq', $_REQUEST['cron_freq'] );
 		}
 	}
 	/**
@@ -305,24 +305,27 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			)
 		);
 		$modal->set_header_text(
-			esc_html__( "Removing ICS Feed", AI1EC_PLUGIN_NAME ) );
+			esc_html__( 'Removing ICS Feed', AI1EC_PLUGIN_NAME )
+		);
 		$modal->set_keep_button_text(
-			esc_html__( "Keep Events", AI1EC_PLUGIN_NAME ) );
+			esc_html__( 'Keep Events', AI1EC_PLUGIN_NAME )
+		);
 		$modal->set_delete_button_text(
-			esc_html__( "Remove Events", AI1EC_PLUGIN_NAME ) );
+			esc_html__( 'Remove Events', AI1EC_PLUGIN_NAME )
+		);
 		$modal->set_id( 'ai1ec-ics-modal' );
-		$loader = $this->_registry->get( 'theme.loader' );
+		$loader    = $this->_registry->get( 'theme.loader' );
 		$cron_freq = $loader->get_file(
 			'cron_freq.php',
-			array( 'cron_freq' => $settings->get( 'cron_freq' ) ),
+			array( 'cron_freq' => $settings->get( 'ics_cron_freq' ) ),
 			true
 		);
 		$args = array(
-			'cron_freq' => $cron_freq->get_content(),
+			'cron_freq'        => $cron_freq->get_content(),
 			'event_categories' => $select2_cats,
-			'event_tags' => $select2_tags,
-			'feed_rows' => $this->_get_feed_rows(),
-			'modal' => $modal
+			'event_tags'       => $select2_tags,
+			'feed_rows'        => $this->_get_feed_rows(),
+			'modal'            => $modal,
 		);
 
 		$display_feeds = $loader->get_file(

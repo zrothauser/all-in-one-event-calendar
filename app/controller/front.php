@@ -243,6 +243,17 @@ class Ai1ec_Front_Controller {
 					'legacy'     => false,
 				)
 			);
+		} else if ( is_string( $theme ) ) {
+			// Legacy theme
+			$option->set(
+				'ai1ec_current_theme',
+				array(
+					'theme_dir'  => AI1EC_DEFAULT_THEME_PATH,
+					'theme_root' => AI1EC_DEFAULT_THEME_ROOT,
+					'stylesheet' => strtolower( $theme ),
+					'legacy'     => false,
+				)
+			);
 		}
 	}
 

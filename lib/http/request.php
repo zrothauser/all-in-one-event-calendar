@@ -43,7 +43,10 @@ class Ai1ec_Http_Request {
 		) {
 			return true;
 		}
-		if ( isset( $_GET['ai1ec_render_js'] ) ) {
+		if (
+			isset( $_GET['ai1ec_render_js'] ) ||
+			isset( $_GET['ai1ec_render_css'] )
+		) {
 			return true;
 		}
 		return apply_filters( 'ai1ec_is_ajax', false );

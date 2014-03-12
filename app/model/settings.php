@@ -129,13 +129,13 @@ class Ai1ec_Settings extends Ai1ec_App {
 				$value != $this->_options[$option]['value']
 			) {
 				$this->_options[$option]['value'] = $value;
-				$this->_updated                   = true;
+				$this->_change_update_status ( true );
 			}
 		} else if (
 			(string)$value !== (string)$this->_options[$option]['value']
 		) {
 			$this->_options[$option]['value'] = $value;
-			$this->_updated                   = true;
+			$this->_change_update_status ( true );
 		}
 		return $this;
 	}
@@ -195,7 +195,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 		$success = $this->_registry->get( 'model.option' )
 			->set( self::WP_OPTION_KEY, $this->_options );
 		if ( $success ) {
-			$this->_updated = false;
+			$this->_change_update_status( false );
 		}
 		return $success;
 	}
@@ -239,7 +239,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	public function remove_option( $option ) {
 		if ( isset( $this->_options[$option] ) ) {
 			unset( $this->_options[$option] );
-			$this->_updated = true;
+			$this->_change_update_status( true );
 		}
 	}
 
@@ -251,7 +251,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	public function hide_option( $option ) {
 		if ( isset( $this->_options[$option] ) ) {
 			unset( $this->_options[$option]['renderer'] );
-			$this->_updated = true;
+			$this->_change_update_status( true );
 		}
 	}
 
@@ -263,7 +263,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	public function show_option( $option, array $renderer ) {
 		if ( isset( $this->_options[$option] ) ) {
 			$this->_options[$option]['renderer'] = $renderer;
-			$this->_updated = true;
+			$this->_change_update_status( true );
 		}
 	}
 
@@ -287,18 +287,18 @@ class Ai1ec_Settings extends Ai1ec_App {
 		$this->_set_standard_values();
 		$values         = $this->_registry->get( 'model.option' )
 			->get( self::WP_OPTION_KEY, array() );
-		$this->_updated = false;
+		$this->_change_update_status( false );
 		$test_value = is_array( $values ) ? current( $values ) : false;
 		if (
 			empty( $values ) ||
 			( false !== $test_value && AI1EC_VERSION !== $test_value['version'] )
 		) {
 			$this->_register_standard_values();
-			$this->_updated = true;
+			$this->_change_update_status( true );
 		} else if ( $values instanceof Ai1ec_Settings ) {
 			$this->_register_standard_values();
 			$values = $this->_parse_legacy( $values );
-			$this->_updated = true;
+			$this->_change_update_status( true );
 		} else {
 			$this->_options = $values;
 		}
@@ -717,6 +717,19 @@ class Ai1ec_Settings extends Ai1ec_App {
 			$renderer = isset( $option['renderer'] ) ? $option['renderer'] : null;
 			$this->register( $key, $option['default'], $option['type'], $renderer, AI1EC_VERSION );
 		}
+	}
+
+	/**
+	 * Change `updated` flag value.
+	 *
+	 * @param bool $new_status Status to change to.
+	 *
+	 * @return bool Previous status flag value.
+	 */
+	protected function _change_update_status( $new_status ) {
+		$previous = $this->_updated;
+		$this->_updated = (bool)$new_status;
+		return $previous;
 	}
 
 }

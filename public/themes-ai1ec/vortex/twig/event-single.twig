@@ -50,14 +50,19 @@
 
 	{% include 'recurrence.twig' %}
 
-	{% if map is not empty %}
-		<div class="ai1ec-map ai1ec-pull-right">{{ map | raw }}</div>
-	{% endif %}
-
 	{% if location is not empty %}
 		<div class="ai1ec-location ai1ec-row">
 			<div class="ai1ec-field-label ai1ec-col-sm-3">{{ 'Where:' | __ }}</div>
-			<div class="ai1ec-field-value ai1ec-col-sm-9">{{ location | raw }}</div>
+			<div class="ai1ec-field-value ai1ec-col-sm-9">
+				{% if map is not empty %}
+					<div class="ai1ec-row">
+						<div class="ai1ec-col-md-6">{{ location | raw }}</div>
+						<div class="ai1ec-map ai1ec-col-md-6">{{ map | raw }}</div>
+					</div>
+				{% else %}
+					{{ location | raw }}
+				{% endif %}
+			</div>
 		</div>
 	{% endif %}
 

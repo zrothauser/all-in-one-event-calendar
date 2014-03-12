@@ -250,7 +250,7 @@ class Ai1ec_Event_Entity extends Ai1ec_Base {
 	private $_contact_phone;
 
 	/**
-	 * @var string Event contact information - e-mail address
+	 * @var string Event contact information - email address
 	 */
 	private $_contact_email;
 

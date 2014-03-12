@@ -120,8 +120,7 @@ class Ai1ec_View_Event_Content extends Ai1ec_Base {
 		$text = Ai1ec_I18n::__( 'Back to Calendar' );
 		$html = <<<HTML
 <a
-	class="ai1ec-calendar-link ai1ec-btn ai1ec-btn-default ai1ec-btn-sm
-		ai1ec-pull-right $class"
+	class="ai1ec-calendar-link ai1ec-btn ai1ec-btn-default ai1ec-btn-sm $class"
 	href="$href"
 	$data_type>
 	<i class="ai1ec-fa ai1ec-fa-arrow-left ai1ec-fa-fw"></i> $text

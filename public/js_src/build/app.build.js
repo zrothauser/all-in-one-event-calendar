@@ -44,6 +44,9 @@
 			},
 			{
 				name: "domReady"
+			},
+			{
+				name: "scripts/common_scripts/page_ready"
 			}
 	],
 	namespace: 'timely', // Set the namespace.

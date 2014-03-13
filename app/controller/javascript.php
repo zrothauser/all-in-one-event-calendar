@@ -46,10 +46,38 @@ class Ai1ec_Javascript_Controller {
 	// the file for the calendar feedsa page
 	const CALENDAR_FEEDS_PAGE = 'calendar_feeds.js';
 
+	// add new event page js
+	const ADD_NEW_EVENT_PAGE = 'add_new_event.js';
+
+	// event category page js
+	const EVENT_CATEGORY_PAGE = 'event_category.js';
+
+	// less variable editing page
+	const LESS_VARIBALES_PAGE = 'less_variables_editing.js';
+
+	// settings page
+	const SETTINGS_PAGE = 'admin_settings.js';
+
 	/**
 	 * @var Ai1ec_Registry_Object
 	 */
 	private $_registry;
+
+	/**
+	 * The core js pages to load.
+	 * Used to avoid errors when extensions add pages. 
+	 * 
+	 * @var array
+	 */
+	private $_core_pages = array(
+		self::CALENDAR_FEEDS_PAGE => true,
+		self::ADD_NEW_EVENT_PAGE  => true,
+		self::EVENT_CATEGORY_PAGE => true,
+		self::LESS_VARIBALES_PAGE => true,
+		self::SETTINGS_PAGE       => true,
+		self::EVENT_PAGE_JS       => true,
+		self::CALENDAR_PAGE_JS    => true,
+	);
 
 	/**
 	 * Holds an instance of the settings object
@@ -175,9 +203,7 @@ class Ai1ec_Javascript_Controller {
 		// load the script for the page
 
 		$page_js = '';
-		if ( $page_to_load !== self::LOAD_ONLY_BACKEND_SCRIPTS &&
-			$page_to_load !== self::LOAD_ONLY_FRONTEND_SCRIPTS
-		) {
+		if ( isset( $this->_core_pages[$page_to_load] ) ) {
 			$page_js = file_get_contents( $js_path . 'pages/' . $page_to_load );
 		}
 
@@ -297,11 +323,11 @@ class Ai1ec_Javascript_Controller {
 		// Start the scripts for the event category page
 		if ( $this->_are_we_editing_event_categories() === TRUE ) {
 			// Load script required when editing categories
-			$script_to_load = 'event_category.js';
+			$script_to_load = self::EVENT_CATEGORY_PAGE;
 		}
 		if ( $this->_are_we_editing_less_variables() === TRUE ) {
 			// Load script required when editing categories
-			$script_to_load = 'less_variables_editing.js';
+			$script_to_load = self::LESS_VARIBALES_PAGE;
 		}
 		// Load the js needed when you edit an event / add a new event
 		if (
@@ -309,14 +335,14 @@ class Ai1ec_Javascript_Controller {
 			true === $this->_are_we_editing_an_event()
 		) {
 			// Load script for adding / modifying events
-			$script_to_load = 'add_new_event.js';
+			$script_to_load = self::ADD_NEW_EVENT_PAGE;
 		}
 		if( $this->_are_we_accessing_the_calendar_settings_page() === TRUE ) {
-			$script_to_load = 'admin_settings.js';
+			$script_to_load = self::SETTINGS_PAGE;
 		}
 
 		if( false === $script_to_load ) {
-			$script_to_load = self::LOAD_ONLY_BACKEND_SCRIPTS;
+			$script_to_load = apply_filters( 'ai1ec_backend_js', self::LOAD_ONLY_BACKEND_SCRIPTS );
 		}
 
 		$this->add_link_to_render_js( $script_to_load, true );

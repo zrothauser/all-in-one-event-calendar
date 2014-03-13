@@ -11,7 +11,6 @@
  */
 class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 
-
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Html_Element_Settings::render()
 	 */
@@ -28,20 +27,17 @@ class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 				}
 				$options = $this->_registry->dispatch(
 					$callback[0],
-					$callback[1],
-					$value
+					$callback[1]
 				);
 			}
-		} else {
-			foreach ( $options as &$option ) {
-				if ( $option['value'] === $this->_args['value'] ) {
-					$option['args'] = array(
-						'selected' => 'selected',
-					);
-				}
+		}
+		foreach ( $options as &$option ) {
+			if ( $option['value'] === $this->_args['value'] ) {
+				$option['args'] = array(
+					'selected' => 'selected',
+				);
 			}
 		}
-
 		$select_args = array();
 		$args = array(
 			'id'         => $this->_args['id'],
@@ -67,11 +63,6 @@ class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 				'text'  => $locale->get_weekday( $day_index ),
 				'value' => $day_index,
 			);
-			if ( $this->_args['value'] === $day_index ) {
-				$option['args'] = array(
-					'selected' => 'selected',
-				);
-			}
 			$options[] = $option;
 		}
 		return $options;

@@ -241,7 +241,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		// = Display event location details and Google map =
 		// =================================================
 		$args = array(
-			'select_venue'     => apply_filters( 'ai1ec_select_venue', '' ),
+			'select_venue'     => apply_filters( 'ai1ec_admin_pre_venue_html', '' ),
 			'venue'            => $venue,
 			'country'          => $country,
 			'address'          => $address,

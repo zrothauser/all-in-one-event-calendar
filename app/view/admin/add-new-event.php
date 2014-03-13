@@ -242,6 +242,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		// =================================================
 		$args = array(
 			'select_venue'     => apply_filters( 'ai1ec_admin_pre_venue_html', '' ),
+			'save_venue'       => apply_filters( 'ai1ec_save_venue', '' ),
 			'venue'            => $venue,
 			'country'          => $country,
 			'address'          => $address,

@@ -15,6 +15,7 @@
 		<div id="ai1ec-inside-wrapper">
 			<table class="ai1ec-form ai1ec-location-form">
 				<tbody>
+					<?php echo $select_venue; ?>
 					<tr>
 						<td class="ai1ec-first">
 							<label for="ai1ec_venue">

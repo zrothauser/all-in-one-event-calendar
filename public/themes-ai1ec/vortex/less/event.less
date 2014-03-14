@@ -55,12 +55,9 @@
 	}
 
 	// Location & Google map.
-	.ai1ec-map {
-		width: 45%;
-	}
 	.ai1ec-gmap-container {
 		border: 1px solid @table-border-color;
-		border-radius: 4px;
+		border-radius: @border-radius-base;
 		position: relative;
 	}
 	#ai1ec-gmap-canvas {
@@ -68,10 +65,14 @@
 		height: 140px;
 	}
 	.ai1ec-gmap-link {
-		position: absolute;
-		margin: 0;
 		bottom: -1px;
+		display: none;
+		margin: 0;
+		position: absolute;
 		right: -1px;
+	}
+	.ai1ec-gmap-container:hover .ai1ec-gmap-link {
+		display: block;
 	}
 	#ai1ec-gmap-canvas input {
 		margin: 0 !important;

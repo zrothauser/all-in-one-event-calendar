@@ -186,9 +186,6 @@
 			color: @input-color-placeholder !important;
 		}
 	}
-	.select2-search-choice {
-		padding-left: 5px;
-	}
 }
 .select2-drop-mask {
 	z-index: @zindex-dropdown - 1;
@@ -221,7 +218,10 @@
 		background-color: mix( @text-color, @body-bg, 10% );
 	}
 }
-.select2-search-choice-close {
+.timely a.select2-search-choice-close {
+	.ai1ec-transition( none );
+	background: url('@{imgdir_default}/select2.png') right top no-repeat;
+	left: 5px;
 	top: 3px;
 }
 .select2-container,

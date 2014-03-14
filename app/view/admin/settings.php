@@ -101,7 +101,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 				'name' => Ai1ec_I18n::__( 'Advanced' ),
 				'items' => array(
 					'advanced' => Ai1ec_I18n::__( 'Advanced Settings' ),
-					'email'    => Ai1ec_I18n::__( 'E-mail Templates' ),
+					'email'    => Ai1ec_I18n::__( 'Email Templates' ),
 					'apis'     => Ai1ec_I18n::__( 'External Services' ),
 				)
 			),

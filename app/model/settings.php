@@ -705,6 +705,10 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'type'     => 'legacy_options',
 				'default'  => null,
 			),
+			'ics_cron_freq' => array(
+				'type'    => 'string',
+				'default' => 'hourly',
+			),
 		);
 	}
 

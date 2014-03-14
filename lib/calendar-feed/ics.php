@@ -11,6 +11,11 @@
  */
 class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
+	/**
+	 * @var string Name of cron hook.
+	 */
+	const HOOK_NAME = 'ai1ec_cron';
+
 	const ICS_OPTION_DB_VERSION = 'ai1ec_ics_db_version';
 
 	const ICS_DB_VERSION        = 106;
@@ -163,24 +168,15 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	 * @return void
 	 */
 	private function install_cron() {
-		// If existing CRON version is not consistent with current plugin's version,
-		// or does not exist, then create/update cron using
-		if (
-			$this->_registry->get( 'model.option' )->get( 'ai1ec_cron_version' ) !=
+		$this->_registry->get( 'scheduling.utility' )->reschedule(
+			self::HOOK_NAME,
+			$this->_registry->get( 'model.settings' )->get( 'ics_cron_freq' ),
 			AI1EC_CRON_VERSION
-		) {
-			$settings = $this->_registry->get( 'model.settings' );
-			// delete our scheduled crons
-			wp_clear_scheduled_hook( 'ai1ec_cron' );
-			// set the new cron
-			wp_schedule_event(
-				current_time( 'timestamp' ) + 600,
-				$settings->get( 'cron_freq' ),
-				'ai1ec_cron'
-			);
-			// update the cron version
-			update_option( 'ai1ec_cron_version', AI1EC_CRON_VERSION );
-		}
+		);
+		$this->_registry->get( 'event.dispatcher' )->register_action(
+			self::HOOK_NAME,
+			array( 'calendar-feed.ics', 'cron' )
+		);
 	}
 
 	/**
@@ -222,12 +218,13 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	}
 
 	/**
-	 * cron function
+	 * Cron callback.
 	 *
-	 * Import all ICS feeds
+	 * (Re-)Import all ICS feeds.
+	 *
+	 * @wp_hook ai1ec_cron
 	 *
 	 * @return void
-	 *
 	 */
 	public function cron() {
 		$db = $this->_registry->get( 'dbi.dbi' );
@@ -259,7 +256,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	public function handle_feeds_page_post() {
 		$settings = $this->_registry->get( 'model.settings' );
 		if ( isset( $_POST['ai1ec_save_settings'] ) ) {
-			$settings->set( 'cron_freq', $_REQUEST['cron_freq'] );
+			$settings->set( 'ics_cron_freq', $_REQUEST['cron_freq'] );
 		}
 	}
 	/**
@@ -305,24 +302,27 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			)
 		);
 		$modal->set_header_text(
-			esc_html__( "Removing ICS Feed", AI1EC_PLUGIN_NAME ) );
+			esc_html__( 'Removing ICS Feed', AI1EC_PLUGIN_NAME )
+		);
 		$modal->set_keep_button_text(
-			esc_html__( "Keep Events", AI1EC_PLUGIN_NAME ) );
+			esc_html__( 'Keep Events', AI1EC_PLUGIN_NAME )
+		);
 		$modal->set_delete_button_text(
-			esc_html__( "Remove Events", AI1EC_PLUGIN_NAME ) );
+			esc_html__( 'Remove Events', AI1EC_PLUGIN_NAME )
+		);
 		$modal->set_id( 'ai1ec-ics-modal' );
-		$loader = $this->_registry->get( 'theme.loader' );
+		$loader    = $this->_registry->get( 'theme.loader' );
 		$cron_freq = $loader->get_file(
 			'cron_freq.php',
-			array( 'cron_freq' => $settings->get( 'cron_freq' ) ),
+			array( 'cron_freq' => $settings->get( 'ics_cron_freq' ) ),
 			true
 		);
 		$args = array(
-			'cron_freq' => $cron_freq->get_content(),
+			'cron_freq'        => $cron_freq->get_content(),
 			'event_categories' => $select2_cats,
-			'event_tags' => $select2_tags,
-			'feed_rows' => $this->_get_feed_rows(),
-			'modal' => $modal
+			'event_tags'       => $select2_tags,
+			'feed_rows'        => $this->_get_feed_rows(),
+			'modal'            => $modal,
 		);
 
 		$display_feeds = $loader->get_file(
@@ -413,11 +413,12 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	 */
 	public function run_uninstall_procedures() {
 		// Delete tables
-		$db = $this->_registry->get( 'dbi.dbi' );
-		$table_name = $db->prefix . 'ai1ec_event_feeds';
-		$db->query( "DROP TABLE IF EXISTS $table_name" );
+		$dbi        = $this->_registry->get( 'dbi.dbi' );
+		$table_name = $dbi->get_table_name( 'ai1ec_event_feeds' );
+		$dbi->query( 'DROP TABLE IF EXISTS ' . $table_name );
 		// Delete scheduled tasks
-		wp_clear_scheduled_hook( 'ai1ec_cron' );
+		$this->_registry->get( 'scheduling.utility' )
+			->delete( self::HOOK_NAME );
 		// Delete options
 		delete_option( self::ICS_DB_VERSION );
 		delete_option( self::ICS_OPTION_DB_VERSION );

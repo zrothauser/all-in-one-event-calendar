@@ -246,11 +246,11 @@ class Ai1ec_Front_Controller {
 		} else if ( is_string( $theme ) ) {
 			// Legacy settings
 
-			$theme_loader = $this->_registry->get( 'theme.loader' );
 			$theme_name = strtolower( $theme );
+			$core_themes = unserialize( AI1EC_CORE_THEMES );
 
 			$legacy = true;
-			if( array_key_exists( $theme_name, $theme_loader->_core_themes ) ) {
+			if( array_key_exists( $theme_name, $core_themes ) ) {
 				$legacy = false;
 			}
 

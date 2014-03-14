@@ -42,16 +42,6 @@ class Ai1ec_Theme_Loader {
 	}
 
 	/**
-	 * @var array the core calendar themes
-	 */
-	static protected $_core_themes = array(
-		'vortex' => true,
-		'umbra' => true,
-		'gamma' => true,
-		'plana' => true,
-	);
-
-	/**
 	 *
 	 * @param $registry Ai1ec_Registry_Object
 	 *       	 The registry Object.

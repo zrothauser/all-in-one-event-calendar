@@ -182,6 +182,22 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	}
 
 
+	// =====================
+	// = AI1EC Core themes =
+	// =====================
+	if ( ! defined( 'AI1EC_CORE_THEMES' ) ) {
+		define(
+			'AI1EC_CORE_THEMES',
+			serialize ( array(
+					'vortex' => true,
+					'umbra' => true,
+					'gamma' => true,
+					'plana' => true,
+				)
+			)
+		);
+	}
+
 	// ===================
 	// = AI1EC Theme URL =
 	// ===================

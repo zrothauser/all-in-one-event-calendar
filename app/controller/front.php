@@ -244,14 +244,23 @@ class Ai1ec_Front_Controller {
 				)
 			);
 		} else if ( is_string( $theme ) ) {
-			// Legacy theme
+			// Legacy settings
+
+			$theme_loader = $this->_registry->get( 'theme.loader' );
+			$theme_name = strtolower( $theme );
+
+			$legacy = true;
+			if( array_key_exists( $theme_name, $theme_loader->_core_themes ) ) {
+				$legacy = false;
+			}
+
 			$option->set(
 				'ai1ec_current_theme',
 				array(
 					'theme_dir'  => AI1EC_DEFAULT_THEME_PATH,
 					'theme_root' => AI1EC_DEFAULT_THEME_ROOT,
-					'stylesheet' => strtolower( $theme ),
-					'legacy'     => false,
+					'stylesheet' => $theme_name,
+					'legacy'     => $legacy,
 				)
 			);
 		}

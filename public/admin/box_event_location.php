@@ -58,6 +58,7 @@
 							</label>
 						</td>
 					</tr>
+					<?php echo $save_venue; ?>
 				</tbody>
 			</table>
 			<table id="ai1ec_table_coordinates" class="ai1ec-form ai1ec-location-form">

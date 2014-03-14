@@ -7,7 +7,6 @@ define(
 		'scripts/add_new_event/event_location/input_coordinates_event_handlers',
 		'scripts/add_new_event/event_location/input_coordinates_utility_functions',
 		'scripts/add_new_event/event_date_time/date_time_event_handlers',
-		'scripts/add_new_event/facebook_export',
 		'scripts/add_new_event/event_cost_helper',
 		'external_libs/jquery.calendrical_timespan',
 		'external_libs/jquery.inputdate',
@@ -25,7 +24,6 @@ define(
 		input_coordinates_event_handlers,
 		input_utility_functions,
 		date_time_event_handlers,
-		facebook_export,
 		event_cost,
 		calendrical_functions
 	) {
@@ -222,11 +220,7 @@ define(
 		// initialize showing / hiding the calendars
 		$( '#widgetField > a, #widgetField > span, #ai1ec_exclude_date_label' ).on( 'click', date_time_event_handlers.handle_animation_of_calendar_widget );
 		$( document ).on( 'click', '#ai1ec_weekly_date_select > li,#ai1ec_montly_date_select > li,#ai1ec_yearly_date_select > li', date_time_event_handlers.handle_click_on_day_month_in_modal );
-		// Attach event on the facebook export checkbox
-		$( '#ai1ec_facebook_export' ).click( facebook_export.open_modal_when_user_chooses_to_unpublish_event );
-		$( '#ai1ec_facebook_export' ).click( facebook_export.show_multi_choices_when_present );
-		$( document ).on( 'click', '#ai1ec_refresh_tokens',  facebook_export.refresh_page_tokens );
-		$( 'body' ).on( 'click', '.remove, .keep', facebook_export.add_hidden_field_when_user_click_remove_in_modal );
+
 		$( document ).on(
 			'change',
 			'#ai1ec_is_free',

@@ -293,7 +293,7 @@ define(
 			var data = {
 				ai1ec : true
 			};
-			History.pushState( data, null, url );
+			History.pushState( data, document.title, url );
 		} else {
 			load_view( url, 'jsonp' );
 		}

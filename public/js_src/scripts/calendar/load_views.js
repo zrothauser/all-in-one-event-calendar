@@ -321,19 +321,9 @@ define(
 		if ( typeof $el.data( 'datepicker' ) === 'undefined' ) {
 			// Initialize this view's minical datepicker.
 			$el.datepicker( {
-					todayBtn: 'linked',
-					todayHighlight: true,
-					headTemplate:
-						'<thead><tr class="ai1ec-datepicker-btn-group">' +
-							'<th class="ai1ec-prev">' +
-								'<i class="ai1ec-fa ai1ec-fa-arrow-left"></i>' +
-							'</th>' +
-							'<th colspan="5" class="ai1ec-datepicker-switch"></th>' +
-							'<th class="ai1ec-next">' +
-								'<i class="ai1ec-fa ai1ec-fa-arrow-right"></i>' +
-							'</th>' +
-						'</tr></thead>'
-				} );
+				todayBtn: 'linked',
+				todayHighlight: true
+			} );
 
 			// Extend Datepicker behaviour without modifying the plugin.
 			var dp = $el.data( 'datepicker' );
@@ -373,10 +363,15 @@ define(
 
 		$el.datepicker( 'hide' );
 
-		// Get URL template, and date, replacing '/' with '-' to be URL-friendly.
+		// Get URL template.
 		url = $el.data( 'href' );
-		date = $el.data( 'date' ).replace( /\//g, '-' );
+		// Fetch date provided by datepicker event object's format() function.
+		date = e.format();
+		// Replace '/' in date with '-' to be URL-friendly.
+		date = date.replace( /\//g, '-' );
+		// Insert date into URL template.
 		url = url.replace( '__DATE__', date );
+		// Load the new URL using method specified by type data-attribute.
 		load_view_according_to_datatype( $el.data( 'type' ), url );
 	};
 

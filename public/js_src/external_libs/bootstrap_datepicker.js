@@ -1585,9 +1585,15 @@ define(
 		},
 		headTemplate: '<thead>'+
 							'<tr>'+
-								'<th class="ai1ec-prev">&laquo;</th>'+
+// ==========================
+// = Timely edit 17-03-2014 =
+// ==========================
+								'<th class="ai1ec-prev"><i class="ai1ec-fa ai1ec-fa-arrow-left"></i></th>'+
 								'<th colspan="5" class="ai1ec-datepicker-switch"></th>'+
-								'<th class="ai1ec-next">&raquo;</th>'+
+								'<th class="ai1ec-next"><i class="ai1ec-fa ai1ec-fa-arrow-right"></i></th>'+
+// ===================
+// = Timely edit end =
+// ===================
 							'</tr>'+
 						'</thead>',
 		contTemplate: '<tbody><tr><td colspan="7"></td></tr></tbody>',
@@ -1647,15 +1653,15 @@ define(
 		$('[data-provide="datepicker-inline"]').datepicker();
 	});
 
-	// ==========================
-	// = Timely edit 10-01-2014 =
-	// ==========================
+// ==========================
+// = Timely edit 10-01-2014 =
+// ==========================
 	// Load language files.
 	for ( var i = 2, len = arguments.length; i < len; i++ ) {
 		arguments[i].localize();
 	}
-	// ===================
-	// = Timely edit end =
-	// ===================
+// ===================
+// = Timely edit end =
+// ===================
 
 } );

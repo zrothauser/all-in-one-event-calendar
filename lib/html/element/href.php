@@ -68,6 +68,10 @@ class Ai1ec_Html_Element_Href {
 	 */
 	public function set_pretty_permalinks_enabled( $pretty_permalinks_enabled ) {
 		$this->pretty_permalinks_enabled = $pretty_permalinks_enabled;
+		if ( $pretty_permalinks_enabled ) {
+			$this->calendar_page = trim( (string)$this->calendar_page, '/' )
+				. '/';
+		}
 	}
 
 	/**
@@ -113,7 +117,7 @@ class Ai1ec_Html_Element_Href {
 		$href = '';
 		$to_implode = array();
 		foreach ( $this->used_paramaters as $key ) {
-			if( ! empty( $this->args[$key] ) ) {
+			if ( ! empty( $this->args[$key] ) ) {
 				$value = $this->args[$key];
 				if( is_array( $this->args[$key] ) ) {
 					$value = implode( ',', $this->args[$key] );
@@ -122,12 +126,12 @@ class Ai1ec_Html_Element_Href {
 					$value;
 			}
 		}
-		if( $this->is_category || $this->is_tag || $this->is_author ) {
+		if ( $this->is_category || $this->is_tag || $this->is_author ) {
 			$to_implode = $this->add_or_remove_category_from_href(
 				$to_implode
 			);
 		}
-		if( $this->pretty_permalinks_enabled ) {
+		if ( $this->pretty_permalinks_enabled ) {
 			$href .= implode( '/', $to_implode );
 			if ( ! empty( $href ) ) {
 				$href .=  '/';

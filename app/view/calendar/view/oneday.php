@@ -263,10 +263,6 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 				$top + ( $evt->get_duration() / 60 ),
 				1440
 			);
-			$gmt_offset = $this->_registry->get( 'date.system' )
-				->get_gmt_offset();
-			$top       += $gmt_offset;
-			$bottom    += $gmt_offset;
 
 			// While there's more than one event in the stack and this event's
 			// top position is beyond the last event's bottom, pop the stack

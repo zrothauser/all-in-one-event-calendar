@@ -11,10 +11,12 @@ define(
 		'external_libs/jquery.calendrical_timespan',
 		'external_libs/jquery.inputdate',
 		'external_libs/jquery.tools',
-		'external_libs/jquery.blockui',
 		'external_libs/ai1ec_datepicker',
 		'external_libs/bootstrap/transition',
-		'external_libs/bootstrap/collapse'
+		'external_libs/bootstrap/collapse',
+		'external_libs/bootstrap/modal',
+		'external_libs/bootstrap/alert',
+		'external_libs/bootstrap/tab'
 	],
 	function (
 		$,
@@ -194,35 +196,40 @@ define(
 	 * Attach event handlers to add/edit event page.
 	 */
 	var attach_event_handlers = function() {
-		// Toggle the visibility of google map on checkbox click
+		// Toggle the visibility of Google map on checkbox click.
 		$( '#ai1ec_google_map' ).click( input_coordinates_event_handlers.toggle_visibility_of_google_map_on_click );
-		// Hide / Show the coordinates table when clicking the checkbox
+		// Hide / Show the coordinates table when clicking the checkbox.
 		$( '#ai1ec_input_coordinates' ).change( input_coordinates_event_handlers.toggle_visibility_of_coordinate_fields_on_click );
-		// Validate fields when clicking Publish
+		// Validate fields when clicking Publish.
 		$( '#post' ).submit( validate_form );
-		// on blur, update the map if both coordinates are set
+		// On blur, update the map if both coordinates are set.
 		$( 'input.coordinates' ).blur( input_coordinates_event_handlers.update_map_from_coordinates_on_blur );
 
-		// Show different fields for the "ends" clause in the modal
-		$( '#ai1ec_end' ).on( 'change', date_time_event_handlers.show_end_fields );
-		// If the extra publish button is present handle it's click
+		// If the extra publish button is present, handle its click.
 		$( '#ai1ec_bottom_publish' ).on( 'click', date_time_event_handlers.trigger_publish );
-		// Handle clicking on tabs when the modal is open
-		$( '.ai1ec_tab' ).on( 'click', date_time_event_handlers.handle_click_on_tab_modal );
-		// Handle click on the Apply button of the modal
-		$( '.ai1ec_repeat_apply' ).on( 'click', date_time_event_handlers.handle_click_on_apply_button );
-		// Handle click on the cancel button of the modal
-		$( 'a.ai1ec_repeat_cancel' ).on( 'click', date_time_event_handlers.handle_click_on_cancel_modal );
-		// Handle click on the cancel button of the modal
-		$( '#ai1ec_monthly_type_bymonthday, #ai1ec_monthly_type_byday' ).on( 'click', date_time_event_handlers.handle_checkbox_monthly_tab_modal );
-		// initialize showing / hiding the calendars
-		$( '#widgetField > a, #widgetField > span, #ai1ec_exclude_date_label' ).on( 'click', date_time_event_handlers.handle_animation_of_calendar_widget );
-		$( '#ai1ec_weekly_date_select > li, #ai1ec_montly_date_select > li, #ai1ec_yearly_date_select > li' ).on( 'click', date_time_event_handlers.handle_click_on_day_month_in_modal );
-		$( '#ai1ec_is_free' ).on( 'change', event_cost.handle_change_is_free );
 
+		// Recurrence modal event handlers.
+		$( document )
+			// Show different fields for the "ends" clause in the repeat modal.
+			.on( 'change', '#ai1ec_end', date_time_event_handlers.show_end_fields )
+			// Handle click on the Apply button of the repeat modal.
+			.on( 'click', '#ai1ec_repeat_apply', date_time_event_handlers.handle_click_on_apply_button )
+			// Handle click on the cancel button of the repeat modal.
+			.on( 'click', '#ai1ec_repeat_cancel', date_time_event_handlers.handle_click_on_cancel_modal )
+			// Handle click on monthly repeat radios.
+			.on( 'click', '#ai1ec_monthly_type_bymonthday, #ai1ec_monthly_type_byday', date_time_event_handlers.handle_checkbox_monthly_tab_modal )
+			// Handle weekday/day/month toggle buttons.
+			.on( 'click', '.ai1ec-btn-group-grid a', date_time_event_handlers.handle_click_on_toggle_buttons );
+		$( '#ai1ec_repeat_box' ).on( 'hidden.bs.modal', date_time_event_handlers.handle_modal_hide );
 		// Attach pseudo handler function. These functions are kind of wrappers
-		// around other functions i left them as i found them.
+		// around other functions, and may need refactoring someday.
 		date_time_event_handlers.execute_pseudo_handlers();
+
+		// Initialize showing/hiding of the exclude dates widget.
+		$( '#widgetField > a, #widgetField > span, #ai1ec_exclude_date_label' ).on( 'click', date_time_event_handlers.handle_animation_of_calendar_widget );
+
+		// Free checkbox.
+		$( '#ai1ec_is_free' ).on( 'change', event_cost.handle_change_is_free );
 	};
 
 	/**

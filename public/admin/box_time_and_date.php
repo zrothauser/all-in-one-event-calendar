@@ -141,7 +141,18 @@
 						</span>
 					</td>
 				</tr>
-				<div id="ai1ec_repeat_box"></div>
+
+				<?php // Recurrence modal skeleton ?>
+				<div id="ai1ec_repeat_box" class="ai1ec-modal ai1ec-fade">
+					<div class="ai1ec-modal-dialog">
+						<div class="ai1ec-loading ai1ec-modal-content">
+							<div class="ai1ec-modal-body ai1ec-text-center">
+								<i class="ai1ec-fa ai1ec-fa-spinner ai1ec-fa-spin ai1ec-fa-3x"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+
 			</tbody>
 		</table>
 	</div>

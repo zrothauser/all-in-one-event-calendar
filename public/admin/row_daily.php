@@ -1,6 +1,8 @@
-<div class="ai1ec_repeat_centered_content">
-  <label for="ai1ec_daily_count">
-	  <?php _e( 'Every', AI1EC_PLUGIN_NAME ) ?>:
+<div class="ai1ec-form-group">
+  <label for="ai1ec_daily_count" class="ai1ec-control-label ai1ec-col-sm-3">
+	  <?php _e( 'Every', AI1EC_PLUGIN_NAME ); ?>:
   </label>
-  <?php echo $count ?>
+  <div class="ai1ec-col-sm-9">
+    <?php echo $count; ?>
+  </div>
 </div>

@@ -52,7 +52,6 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 	 * @see Ai1ec_View_Admin_Abstract::add_page()
 	 */
 	public function add_page() {
-		$settings      = $this->_registry->get( 'model.settings' );
 		$settings_page = add_submenu_page(
 			AI1EC_ADMIN_BASE_URL,
 			Ai1ec_I18n::__( 'Settings' ),
@@ -61,16 +60,27 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 			AI1EC_PLUGIN_NAME . '-settings',
 			array( $this, 'display_page' )
 		);
+		$this->_registry->get( 'model.settings' )
+			->set( 'settings_page', $settings_page );
+	}
+
+	/**
+	 * Adds metabox to the page.
+	 *
+	 * @wp_hook admin_init
+	 *
+	 * @return void
+	 */
+	public function add_meta_box() {
 		// Add the 'General Settings' meta box.
 		add_meta_box(
 			'ai1ec-general-settings',
 			Ai1ec_I18n::_x( 'General Settings', 'meta box' ),
 			array( $this, 'display_meta_box' ),
-			$settings_page,
+			$this->_registry->get( 'model.settings' )->get( 'settings_page' ),
 			'left',
 			'default'
 		);
-		$settings->set( 'settings_page', $settings_page );
 	}
 
 	/* (non-PHPdoc)

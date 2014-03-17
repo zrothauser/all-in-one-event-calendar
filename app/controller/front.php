@@ -400,8 +400,16 @@ class Ai1ec_Front_Controller {
 				array( 'view.admin.calendar-feeds', 'add_page' )
 			);
 			$dispatcher->register_action(
+				'current_screen',
+				array( 'view.admin.calendar-feeds', 'add_meta_box' )
+			);
+			$dispatcher->register_action(
 				'admin_menu',
 				array( 'view.admin.theme-options', 'add_page' )
+			);
+			$dispatcher->register_action(
+				'current_screen',
+				array( 'view.admin.theme-options', 'add_meta_box' )
 			);
 			$dispatcher->register_action(
 				'admin_menu',
@@ -410,6 +418,10 @@ class Ai1ec_Front_Controller {
 			$dispatcher->register_action(
 				'admin_menu',
 				array( 'view.admin.settings', 'add_page' )
+			);
+			$dispatcher->register_action(
+				'current_screen',
+				array( 'view.admin.settings', 'add_meta_box' )
 			);
 			$dispatcher->register_action(
 				'init',

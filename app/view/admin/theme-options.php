@@ -45,9 +45,6 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 	 * Adds the page to the correct menu.
 	 */
 	public function add_page() {
-
-		$settings      = $this->_registry->get( 'model.settings' );
-
 		$theme_options_page = add_submenu_page(
 			AI1EC_ADMIN_BASE_URL,
 			Ai1ec_I18n::__( 'Theme Options' ),
@@ -56,7 +53,7 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 			AI1EC_PLUGIN_NAME . '-edit-css',
 			array( $this, 'display_page' )
 		);
-
+		$settings = $this->_registry->get( 'model.settings' );
 		if ( false !== $settings->get( 'less_variables_page' ) ) {
 			// Make copy of Theme Options page at its old location.
 			$submenu['themes.php'][] = array(
@@ -65,19 +62,27 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 				AI1EC_THEME_OPTIONS_BASE_URL,
 			);
 		};
+		$settings->set( 'less_variables_page', $theme_options_page );
+	}
 
+	/**
+	 * Add meta box for page.
+	 *
+	 * @wp_hook admin_init
+	 *
+	 * @return void
+	 */
+	public function add_meta_box() {
 		// Add the 'General Settings' meta box.
 		add_meta_box(
 			'ai1ec-less-variables-tabs',
 			Ai1ec_I18n::_x( 'Calendar Theme Options', 'meta box' ),
 			array( $this, 'display_meta_box' ),
-			$theme_options_page,
+			$this->_registry->get( 'model.settings' )
+				->get( 'less_variables_page' ),
 			'left',
 			'default'
 		);
-
-
-		$settings->set( 'less_variables_page', $theme_options_page );
 	}
 
 	/**

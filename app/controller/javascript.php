@@ -65,8 +65,8 @@ class Ai1ec_Javascript_Controller {
 
 	/**
 	 * The core js pages to load.
-	 * Used to avoid errors when extensions add pages. 
-	 * 
+	 * Used to avoid errors when extensions add pages.
+	 *
 	 * @var array
 	 */
 	private $_core_pages = array(
@@ -191,38 +191,41 @@ class Ai1ec_Javascript_Controller {
 				$this->_frontend_scripts_loaded = true;
 			}
 		}
-		// create the config object for require js
+
+		// Create the config object for Require.js.
 		$require_config = $this->_create_require_js_config_object();
-		// load require
+
+		// Load Require.js script.
 		$require = file_get_contents( $js_path . 'require.js' );
 
-		// get jquery
+		// Load appropriate jQuery script based on browser.
 		$jquery = $this->get_jquery_version_based_on_browser(
-				$_SERVER['HTTP_USER_AGENT']
+			$_SERVER['HTTP_USER_AGENT']
 		);
-		// load the script for the page
 
+		// Load the main script for the page.
 		$page_js = '';
 		if ( isset( $this->_core_pages[$page_to_load] ) ) {
 			$page_js = file_get_contents( $js_path . 'pages/' . $page_to_load );
 		}
 
-
+		// Load translation module.
 		$translation = $this->get_frontend_translation_data();
 		$permalink = $this->_template_link_helper
 			->get_permalink( $this->_settings->get( 'calendar_page_id' ) );
-
 		$translation['calendar_url'] = $permalink;
+		$translation_module = $this->create_require_js_module(
+			self::FRONTEND_CONFIG_MODULE,
+			$translation
+		);
 
-		$tranlsation_module = $this->create_require_js_module(
-				self::FRONTEND_CONFIG_MODULE,
-				$translation
-		);
+		// Load Ai1ec config script.
 		$config = $this->create_require_js_module(
-				'ai1ec_config',
-				$this->get_translation_data()
+			'ai1ec_config',
+			$this->get_translation_data()
 		);
-		// let extensions add their files.
+
+		// Let extensions add their scripts.
 		$extension_files = array();
 		$extension_files = apply_filters(
 			'ai1ec_render_js',
@@ -234,8 +237,14 @@ class Ai1ec_Javascript_Controller {
 			$ext_js .= file_get_contents( $file );
 		}
 
-		$javascript = $require . $require_config . $tranlsation_module .
-		$config . $jquery . $page_js . $common_js . $ext_js;
+		// Finally, load the page_ready script to execute code that must run after
+		// all scripts have been loaded.
+		$page_ready = file_get_contents(
+			$js_path . 'scripts/common_scripts/page_ready.js'
+		);
+
+		$javascript = $require . $require_config . $translation_module .
+			$config . $jquery . $page_js . $common_js . $ext_js . $page_ready;
 		$this->_echo_javascript( $javascript );
 	}
 

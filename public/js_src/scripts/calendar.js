@@ -1,7 +1,6 @@
 define(
 	[
 		"jquery_timely",
-		"domReady",
 		"scripts/calendar/load_views",
 		"scripts/calendar/print",
 		"scripts/calendar/agenda_view",
@@ -16,7 +15,7 @@ define(
 		"external_libs/jquery.scrollTo",
 		'external_libs/jquery_cookie',
 	],
-	function( $, domReady, load_views, print, agenda_view,
+	function( $, load_views, print, agenda_view,
 		month_view, ai1ec_calendar, ai1ec_config, common_frontend,
 		AI1EC_UTILS, select2_multiselect_helper ) {
 	"use strict"; // jshint ;_;
@@ -215,7 +214,7 @@ define(
 	 * Start calendar page.
 	 */
 	var start = function() {
-		domReady( function() {
+		$( document ).on( 'page_ready.ai1ec', function() {
 			init();
 			if( ai1ec_config.use_select2 ) {
 				initialize_select2();
@@ -226,6 +225,7 @@ define(
 			load_views.initialize_view();
 		} );
 	};
+
 	return {
 		start : start
 	};

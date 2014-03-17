@@ -67,6 +67,9 @@ class Ai1ec_View_Admin_Theme_Switching extends Ai1ec_View_Admin_Abstract {
 		}
 	}
 
+	public function add_meta_box() {
+	}
+
 	public function handle_post() {
 	}
 

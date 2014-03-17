@@ -12,14 +12,13 @@
 class Ai1ec_View_Calendar_Feeds extends Ai1ec_View_Admin_Abstract {
 
 	/**
-	 * Adds page and metabox to the menu.
+	 * Adds page to the menu.
 	 *
-	 * @wp-hook admin_menu
+	 * @wp_hook admin_menu
 	 *
 	 * @return void
 	 */
 	public function add_page() {
-		$settings = $this->_registry->get( 'model.settings' );
 		// =======================
 		// = Calendar Feeds Page =
 		// =======================
@@ -31,16 +30,27 @@ class Ai1ec_View_Calendar_Feeds extends Ai1ec_View_Admin_Abstract {
 			AI1EC_PLUGIN_NAME . '-feeds',
 			array( $this, 'display_page' )
 		);
+		$this->_registry->get( 'model.settings' )
+			->set( 'feeds_page', $calendar_feeds );
+	}
+
+	/**
+	 * Adds metabox to the page.
+	 *
+	 * @wp_hook admin_init
+	 *
+	 * @return void
+	 */
+	public function add_meta_box() {
 		// Add the 'ICS Import Settings' meta box.
 		add_meta_box(
 			'ai1ec-feeds',
-			_x( 'Feed Subscriptions', 'meta box', AI1EC_PLUGIN_NAME ),
+			Ai1ec_I18n::_x( 'Feed Subscriptions', 'meta box' ),
 			array( $this, 'display_meta_box' ),
-			$calendar_feeds,
+			$this->_registry->get( 'model.settings' )->get( 'feeds_page' ),
 			'left',
 			'default'
 		);
-		$settings->set( 'feeds_page', $calendar_feeds );
 	}
 
 	/**

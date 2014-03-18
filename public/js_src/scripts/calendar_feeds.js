@@ -9,7 +9,8 @@ define(
 		'external_libs/jquery_cookie',
 		'external_libs/bootstrap/tab',
 		'external_libs/bootstrap/alert',
-		'external_libs/bootstrap/modal'
+		'external_libs/bootstrap/modal',
+		'external_libs/bootstrap/button'
 	],
 	function(
 		$,
@@ -53,16 +54,20 @@ define(
 		// placeholders).
 		$( 'ul.ai1ec-nav a' ).on( 'shown', refresh_select2 );
 
-		// ============================ICS EVENT HANDLERs=======================
-		$( document ).on( 'click', '#ai1ec_add_new_ics', ics_event_handlers.add_new_ics_event_handler );
-		// The modal handles the events when you click on the buttons.
-		$( '#ai1ec-ics-modal' ).on( 'click', 'a.remove, a.keep', ics_event_handlers.delete_ics_modal_handler );
-		// Handles opening the modal window for deleting the feeds
-		$( document ).on( 'click', '.ai1ec_delete_ics', ics_event_handlers.handle_open_modal );
-		// Handle updating the feeds events
-		$( 'div#ics' ).on( 'click', '.ai1ec_update_ics', ics_event_handlers.update_ics_handler );
-
-		$( document ).on( 'click', '.ai1ec_update_ics', ics_event_handlers.update_ics_handler );
+		// ===========================
+		// = ICS feed event handlers =
+		// ===========================
+		// Handles clicking the buttons in the ICS delete modal.
+		$( '#ai1ec-ics-modal' ).on(
+			'click', '.remove, .keep', ics_event_handlers.submit_delete_modal
+		);
+		$( document )
+			// Handles submitting a new feed.
+			.on( 'click', '#ai1ec_add_new_ics', ics_event_handlers.add_new_feed )
+			// Handles opening the modal window for deleting the feeds.
+			.on( 'click', '.ai1ec_delete_ics', ics_event_handlers.open_delete_modal )
+			// Handles refreshing the feed's events.
+			.on( 'click', '.ai1ec_update_ics', ics_event_handlers.update_feed );
 	};
 
 	var start = function() {

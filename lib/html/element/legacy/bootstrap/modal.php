@@ -112,7 +112,8 @@ class Ai1ec_Bootstrap_Modal extends Ai1ec_Html_Element {
 	<div class="ai1ec-modal-dialog">
 		<div class="ai1ec-modal-content">
 			<div class="ai1ec-modal-header">
-				<button class="ai1ec-close" data-dismiss="ai1ec-modal">×</button>
+				<button type="button" class="ai1ec-close" data-dismiss="ai1ec-modal"
+					aria-hidden="true">×</button>
 				$header
 			</div>
 			<div class="ai1ec-modal-body">

@@ -1,55 +1,76 @@
-define( [
-         "jquery_timely",
-         'scripts/calendar_feeds/ics/ics_utility_functions',
-         "libs/utils"
-         ],
-         function( $, utility_functions, AI1EC_UTILS ) {
+define(
+	[
+  	'jquery_timely',
+  	'libs/utils'
+  ],
+  function( $, AI1EC_UTILS ) {
+
 	"use strict"; // jshint ;_;
 
+	/**
+	 * Feed creation complete.
+	 *
+	 * @param  {object} response AJAX response object
+	 */
 	var handle_add_new_ics = function( response ) {
-		var $button = $( '#ai1ec_add_new_ics' );
-		var $url = $( '#ai1ec_feed_url' );
-		// restore add button
-		$button.removeAttr( 'disabled' );
+		var $button = $( '#ai1ec_add_new_ics' ),
+		    $url = $( '#ai1ec_feed_url' );
+
+		// Reset add new feed button state.
+		$button.button( 'reset' );
+
 		if ( response.error ) {
-			// tell the user there is an error
-			// TODO: Use other method of notification
-			window.alert( response.message );
+			// Error adding feed; alert user.
+	    $alert = AI1EC_UTILS.make_alert( response.message, 'error' );
+			$( '#ics-alerts' ).append( $alert );
 		} else {
+			// Reset the form and add the feed to the bottom of the list.
 			$url.val( '' );
-			// Add the feed to the settings screen
 			$( '#ai1ec-feeds-after' ).after( response.message );
 		}
 	};
 
+	/**
+	 * Feed delete complete.
+	 *
+	 * @param  {object} response AJAX response data
+	 */
 	var handle_delete_ics = function( response ) {
-		var $hidden = $( 'input[value=' + response.ics_id + ']' );
+		var $container = $( 'input[value=' + response.ics_id + ']' )
+		    	.closest( '.ai1ec-feed-container' ),
+		    type = response.error ? 'error' : 'success',
+		    $alert = AI1EC_UTILS.make_alert( response.message, type );
+
 		if ( response.error ) {
-			// Restore things
-			utility_functions.restore_normal_state_after_unsuccesful_delete( $hidden );
+			// Reset delete button state.
+			$( '.ai1ec_update_ics', $container ).button( 'reset' );
 		} else {
-			// Remove the feed
-			utility_functions.remove_feed_from_dom( $hidden );
+			// Remove the feed from the DOM.
+			$container.remove();
 		}
-		var type = response.error === true ? 'error' : 'success';
-		var $alert = AI1EC_UTILS.make_alert( response.message, type );
+
+		// Append alert message to DOM.
 		$( '#ics-alerts' ).append( $alert );
 	};
 
+	/**
+	 * Feed refresh complete.
+	 *
+	 * @param  {object} response AJAX response data
+	 */
 	var handle_update_ics = function( response ) {
 		var $container = $( 'input[value=' + response.ics_id + ']' )
-			.closest( '.ai1ec-feed-container' );
-		var $alert;
-		if ( response.error ) {
-			// tell the user there is an error
-			$alert = AI1EC_UTILS.make_alert( response.message, 'error' );
-		} else {
-			$alert = AI1EC_UTILS.make_alert( response.message, 'success' );
-		}
+		    	.closest( '.ai1ec-feed-container' ),
+		    type = response.error ? 'error' : 'success',
+		    $alert = AI1EC_UTILS.make_alert( response.message, type );
+
+		// Reset refresh button state.
+		$( '.ai1ec_update_ics', $container ).button( 'reset' );
+
+		// Append alert message to DOM.
 		$( '#ics-alerts' ).append( $alert );
-		$( '.ai1ec_update_ics', $container ).removeAttr( 'disabled' );
-		$( '.ajax-loading', $container ).css( 'visibility', 'hidden' );
 	};
+
 	return {
 		"handle_add_new_ics" : handle_add_new_ics,
 		"handle_delete_ics"  : handle_delete_ics,

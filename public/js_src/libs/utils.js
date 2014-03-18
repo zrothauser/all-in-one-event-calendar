@@ -93,11 +93,11 @@ define(
 					} );
 					if ( ! hide_close_button ) {
 						// Create the close button
-						var $close = $( '<a />', {
+						var $close = $( '<button>', {
+							"type"         : "button",
 							"class"        : "ai1ec-close",
 							"data-dismiss" : "ai1ec-alert",
-							"href"         : "#",
-							"text"         : "x"
+							"text"         : "×"
 						} );
 						// Prepend the close button to the alert.
 						$alert.prepend( $close );

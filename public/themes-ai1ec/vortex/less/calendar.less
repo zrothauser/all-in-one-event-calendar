@@ -461,6 +461,28 @@ table.ai1ec-oneday-view-original {
 		line-height: 14px;
 		margin: 0 0 1px;
 	}
+	// Apply word wrapping if enabled.
+	.ai1ec-word-wrap& {
+		.ai1ec-event {
+			border-bottom: 1px dotted @table-border-color;
+			height: auto;
+			overflow: visible;
+			padding-top: 1px;
+			padding-bottom: 2px;
+			white-space: normal;
+		}
+		// Disable word wrapping styles in some contexts.
+		.ai1ec-multiday .ai1ec-event {
+			border-bottom: none;
+			overflow: hidden;
+			padding-top: 0;
+			padding-bottom: 1px;
+			white-space: nowrap;
+		}
+		.ai1ec-allday .ai1ec-event {
+			border-bottom: none;
+		}
+	}
 	.ai1ec-allday {
 		padding-left: 1px;
 		width: 97.5%;

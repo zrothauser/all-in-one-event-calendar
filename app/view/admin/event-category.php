@@ -81,6 +81,10 @@ class Ai1ec_View_Admin_EventCategory extends Ai1ec_Base {
 	 * @return void Method does not return.
 	 */
 	public function edited_events_categories( $term_id ) {
+		if ( isset( $_POST['_inline_edit'] ) ) {
+			return;
+		}
+
 		$tag_color_value = '';
 		if ( ! empty( $_POST['tag-color-value'] ) ) {
 			$tag_color_value = (string)$_POST['tag-color-value'];

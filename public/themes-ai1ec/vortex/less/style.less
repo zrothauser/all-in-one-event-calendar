@@ -112,29 +112,37 @@
 .ai1ec-btn-primary {
 	color: @btn-primary-color !important;
 }
-// Position navs properly.
-.ai1ec-nav {
-	margin: 0 0 @line-height-base !important;
-	list-style: none !important;
-	padding: 0 !important;
-	> li {
-		list-style: none !important;
-		margin: 0 !important;
-		padding: 0 !important;
-		> a {
-			cursor: pointer;
-		}
-	}
-}
-.ai1ec-nav-pills > li > a {
-	margin-top: 0;
-	margin-bottom: 0;
-	padding: 8px 9px 7px;
+// Fix cursor on dropdowns.
+.ai1ec-dropdown-toggle {
+	cursor: pointer;
 }
 // Fix margins on dropdowns.
 .ai1ec-dropdown-menu {
 	margin: 0;
 }
+// Dropdowns - port to div structure
+//
+// The following block is adapted from bootstrap/dropdowns.less; ports default
+// <ul>/<li> structure of navs to <div>/<div> structure to reduce theme
+// conflicts. Only the parts used by the plugin is ported to reduce bloat.
+//
+// NOTICE: This MUST be synced/updated whenever Bootstrap is upgraded.
+.ai1ec-dropdown-menu > div > a {
+	display: block;
+	padding: 3px 20px;
+	clear: both;
+	font-weight: normal;
+	line-height: @line-height-base;
+	color: @dropdown-link-color;
+	white-space: nowrap; // prevent links from randomly breaking onto new lines
+	&:hover,
+	&:focus {
+		text-decoration: none;
+		color: @dropdown-link-hover-color;
+		background-color: @dropdown-link-hover-bg;
+	}
+}
+
 // Modals
 .ai1ec-modal-backdrop {
 	background-color: @body-bg;
@@ -145,14 +153,6 @@
 // Tooltips
 .ai1ec-tooltip {
 	margin: 0 !important;
-}
-// Close
-.timely button.ai1ec-close {
-  padding: 0;
-  cursor: pointer;
-  background: transparent;
-  border: 0;
-  -webkit-appearance: none;
 }
 
 //
@@ -505,8 +505,8 @@ input.ai1ec-timepicker[readonly] {
 		margin-top: 3px;
 	}
 	textarea.ai1ec-form-control {
-    height: auto;
-  }
+		height: auto;
+	}
 	.ai1ec-help-block {
 		margin-top: 2px;
 		margin-bottom: 5px;
@@ -516,6 +516,17 @@ input.ai1ec-timepicker[readonly] {
 	}
 	label {
 		font-weight: normal;
+	}
+
+	//
+	// Close
+	//
+	button.ai1ec-close {
+		padding: 0;
+		cursor: pointer;
+		background: transparent;
+		border: 0;
+		-webkit-appearance: none;
 	}
 }
 

@@ -6388,19 +6388,6 @@ ul.ai1ec-dropdown-menu li {
 .ai1ec-panel-heading a:hover {
   text-decoration: none;
 }
-.timely .ai1ec-nav.ai1ec-nav-tabs {
-  margin-bottom: 16px;
-}
-.timely .ai1ec-tab-pane h4:first-child {
-  margin-top: 0;
-}
-.timely button.ai1ec-close {
-  padding: 0;
-  cursor: pointer;
-  background: transparent;
-  border: 0;
-  -webkit-appearance: none;
-}
 .select2-container {
   margin-bottom: 9px;
   width: 100%;
@@ -6509,6 +6496,19 @@ ul.ai1ec-dropdown-menu li {
 .timely pre {
   overflow: auto;
   white-space: nowrap;
+}
+.timely .ai1ec-nav.ai1ec-nav-tabs {
+  margin-bottom: 16px;
+}
+.timely .ai1ec-tab-pane h4:first-child {
+  margin-top: 0;
+}
+.timely button.ai1ec-close {
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  -webkit-appearance: none;
 }
 .ai1ec-loader-icon {
   background: url('../img/ajax-loader.gif') no-repeat center center;

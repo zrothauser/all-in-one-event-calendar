@@ -171,7 +171,8 @@
 /* ICS Feeds */
 
 .ai1ec-feed-comments-enabled,
-.ai1ec-feed-map-display-enabled {
+.ai1ec-feed-map-display-enabled,
+.ai1ec-feed-category {
 	margin-right: 0.5em;
 }
 

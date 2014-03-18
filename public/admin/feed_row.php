@@ -52,19 +52,24 @@
 		}
 		?></strong>
 	</div>
-	<div class="ai1ec-pull-right">
-		<img src="images/wpspin_light.gif" class="ajax-loading ai1ec-pull-left" alt="">
-		<div class="ai1ec-btn-group ai1ec-pull-left">
-			<button class="ai1ec-btn ai1ec-btn-sm ai1ec-btn-default ai1ec-text-primary
-				ai1ec_update_ics">
-				<i class="ai1ec-fa ai1ec-fa-refresh"></i>
-				<?php _e( 'Refresh', AI1EC_PLUGIN_NAME ); ?>
-			</button>
-			<button class="ai1ec-btn ai1ec-btn-sm ai1ec-btn-default ai1ec-text-danger
-				ai1ec_delete_ics">
-				<i class="ai1ec-fa ai1ec-fa-times"></i>
-				<?php _e( 'Remove', AI1EC_PLUGIN_NAME ); ?>
-			</button>
-		</div>
+	<div class="ai1ec-btn-group ai1ec-pull-right">
+		<button type="button"
+			class="ai1ec-btn ai1ec-btn-sm ai1ec-btn-default ai1ec-text-primary
+				ai1ec_update_ics"
+			data-loading-text="<?php echo esc_attr(
+				'<i class="ai1ec-fa ai1ec-fa-refresh ai1ec-fa-spin ai1ec-fa-fw"></i> ' .
+				__( 'Refreshing…', AI1EC_PLUGIN_NAME ) ); ?>">
+			<i class="ai1ec-fa ai1ec-fa-refresh ai1ec-fa-fw"></i>
+			<?php _e( 'Refresh', AI1EC_PLUGIN_NAME ); ?>
+		</button>
+		<button type="button"
+			class="ai1ec-btn ai1ec-btn-sm ai1ec-btn-default ai1ec-text-danger
+				ai1ec_delete_ics"
+			data-loading-text="<?php echo esc_attr(
+				'<i class="ai1ec-fa ai1ec-fa-spinner ai1ec-fa-spin ai1ec-fa-fw"></i> ' .
+				__( 'Removing…', AI1EC_PLUGIN_NAME ) ); ?>">
+			<i class="ai1ec-fa ai1ec-fa-times ai1ec-fa-fw"></i>
+			<?php _e( 'Remove', AI1EC_PLUGIN_NAME ); ?>
+		</button>
 	</div>
 </div>

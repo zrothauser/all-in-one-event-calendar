@@ -504,11 +504,10 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				$this->delete_ics_feed( FALSE, $ics_id );
 			}
 			echo json_encode( $output );
-			exit();
 		} else {
 			$this->delete_ics_feed( TRUE, $ics_id );
-
 		}
+		exit();
 	}
 
 	/**
@@ -587,7 +586,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'message' => __( 'Feed deleted', AI1EC_PLUGIN_NAME ),
 			'ics_id'  => $ics_id,
 		);
-		if ( $ajax === TRUE ) {
+		if ( $ajax ) {
 			echo json_encode( $output );
 		}
 	}

@@ -281,12 +281,10 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 	}
 
 	/**
-	 * create_list_element method
-	 *
-	 *
+	 * Creates a grid of weekday, day, or month selection buttons.
 	 *
 	 * @return string
-	 **/
+	 */
 	protected function create_list_element(
 		$name,
 		array $options  = array(),
@@ -294,20 +292,22 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 	) {
 		ob_start();
 		?>
-	<ul class="ai1ec_date_select <?php echo $name?>" id="<?php echo $name?>">
-				<?php foreach( $options as $key => $val ): ?>
-					<li
-			<?php echo in_array( $key, $selected ) ? 'class="ai1ec_selected"' : '' ?>>
-						<?php echo $val ?>
-						<input type="hidden" name="<?php echo $name . '_' . $key ?>"
-			value="<?php echo $key ?>" />
-		</li>
-				<?php endforeach ?>
-			</ul>
-	<input type="hidden" name="<?php echo $name ?>"
-		value="<?php echo implode( ',', $selected ) ?>" />
-	<?php
-			return ob_get_clean();
+<div class="ai1ec-btn-group-grid" id="<?php echo $name; ?>">
+	<?php foreach ( $options as $key => $val ) : ?>
+		<div class="ai1ec-pull-left">
+			<a class="ai1ec-btn ai1ec-btn-default ai1ec-btn-block
+				<?php echo in_array( $key, $selected ) ? 'ai1ec-active' : ''; ?>">
+				<?php echo $val; ?>
+			</a>
+			<input type="hidden" name="<?php echo $name . '_' . $key; ?>"
+				value="<?php echo $key; ?>">
+		</div class="ai1ec-pull-left">
+	<?php endforeach; ?>
+</div>
+<input type="hidden" name="<?php echo $name; ?>"
+	value="<?php echo implode( ',', $selected ) ?>">
+<?php
+		return ob_get_clean();
 	}
 
 	/**
@@ -365,7 +365,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 			) . Ai1ec_I18n::__( 'month(s)' ),
 			'ai1ec_monthly_each'   => $ai1ec_monthly_each,
 			'ai1ec_monthly_on_the' => $ai1ec_monthly_on_the,
-			'month'                => $this->create_montly_date_select(
+			'month'                => $this->create_monthly_date_select(
 				$month
 			),
 			'on_the_select'        => $this->create_on_the_select(
@@ -386,13 +386,11 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 	}
 
 	/**
-	 * create_montly_date_select function
-	 *
-	 *
+	 * Creates selector for dates in monthly repeat tab.
 	 *
 	 * @return void
-	 **/
-	protected function create_montly_date_select( $selected = array() ) {
+	 */
+	protected function create_monthly_date_select( $selected = array() ) {
 		$options = array();
 		for ( $i = 1; $i <= 31; ++$i ) {
 			$options[$i] = $i;

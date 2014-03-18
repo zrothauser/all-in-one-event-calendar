@@ -1,20 +1,21 @@
 define(
-		[
-		 "jquery_timely",
-		 "ai1ec_config",
-		 "libs/utils"
-		 ],
-		 function( $, ai1ec_config, AI1EC_UTILS ) {
+	[
+		'jquery_timely',
+		'ai1ec_config',
+		'libs/utils'
+	],
+	function( $, ai1ec_config, AI1EC_UTILS ) {
+
 	"use strict"; // jshint ;_;
+
 	var ajaxurl = AI1EC_UTILS.get_ajax_url();
 
-	var hide_all_end_fields = function() {
-		$( '#ai1ec_count_holder, #ai1ec_until_holder' ).hide();
-	};
-
-	var ai1ec_repeat_form_success = function( s1, s2, s3, rule, button, response ) {
+	var repeat_form_success = function( s1, s2, s3, rule, button, response ) {
 		$( s1 ).val( rule );
-		$.unblockUI();
+
+		// Hide the recurrence modal.
+		$( '#ai1ec_repeat_box' ).modal( 'hide' );
+
 		var txt = $.trim( $( s2 ).text() );
 		if( txt.lastIndexOf( ':' ) === -1 ) {
 			txt = txt.substring( 0, txt.length - 3 );
@@ -27,8 +28,11 @@ define(
 		});
 	};
 
-	var ai1ec_repeat_form_error = function( s1, s2, response, button ) {
-		$.growlUI( 'Error', response.message );
+	var repeat_form_error = function( s1, s2, response, button ) {
+		$( '#ai1ec_repeat_box .ai1ec-alert-danger' )
+			.text( response.message )
+			.removeClass( 'ai1ec-hide' );
+
 		$( button ).attr( 'disabled', false );
 		$( s1 ).val( '' );
 		var txt = $.trim( $( s2 ).text() );
@@ -36,13 +40,14 @@ define(
 			txt = txt.substring( 0, txt.length - 1 );
 			$( s2 ).text( txt + '...' );
 		}
-		// If there is no text, uncheck the checkbox, otherwise keep it as the provious rule is still valid.
+		// If there is no text, uncheck the checkbox, otherwise keep it, as the
+		// previous rule is still valid.
 		if( $( this ).closest( 'tr' ).find( '.ai1ec_rule_text' ).text() === '' ) {
 			$( s1 ).siblings( 'input:checkbox' ).removeAttr( 'checked' );
 		}
 	};
 
-	var ai1ec_click_on_ics_rule_text = function( s1, s2, s3, data, fn ) {
+	var click_on_ics_rule_text = function( s1, s2, s3, data, fn ) {
 		$( document ).on( 'click', s1, function() {
 			if( ! $( s2 ).is( ':checked' ) ) {
 				$( s2 ).attr( 'checked', true );
@@ -50,20 +55,20 @@ define(
 				txt = txt.substring( 0, txt.length - 3 );
 				$( s3 ).text( txt + ':' );
 			}
-			ai1ec_show_repeat_tabs( data, fn );
+			show_repeat_tabs( data, fn );
 			return false;
 		});
 	};
 
-	var ai1ec_click_on_checkbox = function( s1, s2, s3, data, fn ) {
+	var click_on_checkbox = function( s1, s2, s3, data, fn ) {
 		$( s1 ).click( function() {
-			if( $(this).is( ':checked' ) ) {
-				if( this.id === 'ai1ec_repeat' ) {
+			if ( $(this).is( ':checked' ) ) {
+				if ( this.id === 'ai1ec_repeat' ) {
 					$( '#ai1ec_exclude' ).removeAttr( 'disabled' );
 				};
-				ai1ec_show_repeat_tabs( data, fn );
+				show_repeat_tabs( data, fn );
 			} else {
-				if( this.id === 'ai1ec_repeat' ) {
+				if ( this.id === 'ai1ec_repeat' ) {
 					$( '#ai1ec_exclude' ).attr( 'disabled', true );
 				};
 				$( s2 ).text( '' );
@@ -71,15 +76,25 @@ define(
 				txt = txt.substring( 0, txt.length - 1 );
 				$( s3 ).text( txt + '...' );
 			}
-		});
+		} );
 	};
 
-	var ai1ec_click_on_modal_cancel = function( s1, s2, s3 ) {
-		if( $.trim( $( s1 ).text() ) === '' ) {
+	/**
+	 * Handle clicking on cancel of recurrence modal.
+	 * @param  {[type]} s1 The selector of the <a> of the RRULE/EXRULE.
+	 * @param  {[type]} s2 The selector of the checkbox of the RRULE/EXRULE.
+	 * @param  {[type]} s3 The selector of the label of the RRULE/EXRULE.
+	 */
+	var click_on_modal_cancel = function( s1, s2, s3 ) {
+		// If the original value of RRULE/EXRULE was empty, then uncheck the box.
+		if ( $.trim( $( s1 ).text() ) === '' ) {
 			$( s2 ).removeAttr( 'checked' );
-			if( ! $( '#ai1ec_repeat' ).is( ':checked' ) ) {
+			// Handle disabling of EXRULE setting if RRULE is unchecked.
+			if ( ! $( '#ai1ec_repeat' ).is( ':checked' ) ) {
 				$( '#ai1ec_exclude' ).attr( 'disabled', true );
 			}
+			// Adjust the label depending on if there is an ellipsis?
+			// (Who coded this??)
 			var txt = $.trim( $( s3 ).text() );
 			if( txt.lastIndexOf( '...' ) === -1 ) {
 				txt = txt.substring( 0, txt.length - 1 );
@@ -88,8 +103,10 @@ define(
 		}
 	};
 
-	// called after the repeat block is inserted in the DOM
-	var ai1ec_apply_js_on_repeat_block = function() {
+	/**
+	 * Called after the recurrence modal's markup is loaded to initialize widgets.
+	 */
+	var init_modal_widgets = function() {
 		// Initialize count range slider
 		$( '#ai1ec_count, #ai1ec_daily_count, #ai1ec_weekly_count, #ai1ec_monthly_count, #ai1ec_yearly_count' ).rangeinput( {
 			css: {
@@ -99,6 +116,7 @@ define(
 				handle: 'ai1ec-handle'
 			}
 		} );
+
 		// Initialize inputdate plugin on our "until" date input.
 		var data = {
 			start_date_input : '#ai1ec_until-date-input',
@@ -113,52 +131,47 @@ define(
 		$.inputdate( data );
 	};
 
-	var ai1ec_show_repeat_tabs = function( data, post_ajax_func ) {
-		$.blockUI( {
-			message: '<div class="ai1ec-repeat-box-loading"></div>',
-			css: {
-				width: '358px',
-				border: '0',
-				background: 'transparent',
-				cursor: 'normal'
-			}
-		} );
+	/**
+	 * Shows the recurrence modal.
+	 *
+	 * @param  {object}   data           Data to post to get contents via AJAX.
+	 * @param  {function} post_ajax_func Optional callback to execute after AJAX.
+	 */
+	var show_repeat_tabs = function( data, callback ) {
+		var $modal = $( '#ai1ec_repeat_box' ),
+		    $loading = $( '.ai1ec-loading', $modal );
+
+		// Show the modal.
+		$modal.modal( { backdrop: 'static' } );
+
 		$.post(
 			ajaxurl,
 			data,
 			function( response ) {
-				if( response.error ) {
-					// tell the user there is an error
+				if ( response.error ) {
+					// Tell the user there is an error
 					// TODO: Use other method of notification
 					window.alert( response.message );
-					$.unblockUI();
+					$modal.modal( 'hide' );
 				} else {
-					// display the form
-					$.blockUI( {
-						message: response.message,
-						css: {
-							width: '358px',
-							border: '0',
-							background: 'transparent',
-							cursor: 'normal'
-						}
-					});
-					if( typeof post_ajax_func === 'function' ) {
-						post_ajax_func();
+					$loading.addClass( 'ai1ec-hide' ).after( response.message );
+					// Execute any requested AJAX completion callback.
+					if ( typeof callback === 'function' ) {
+						callback();
 					}
 				}
 			},
 			'json'
 		);
 	};
+
 	return {
-		ai1ec_show_repeat_tabs         : ai1ec_show_repeat_tabs,
-		ai1ec_apply_js_on_repeat_block : ai1ec_apply_js_on_repeat_block,
-		ai1ec_click_on_modal_cancel    : ai1ec_click_on_modal_cancel,
-		ai1ec_click_on_checkbox        : ai1ec_click_on_checkbox,
-		ai1ec_click_on_ics_rule_text   : ai1ec_click_on_ics_rule_text,
-		ai1ec_repeat_form_error        : ai1ec_repeat_form_error,
-		ai1ec_repeat_form_success      : ai1ec_repeat_form_success,
-		hide_all_end_fields            : hide_all_end_fields
+		show_repeat_tabs       : show_repeat_tabs,
+		init_modal_widgets     : init_modal_widgets,
+		click_on_modal_cancel  : click_on_modal_cancel,
+		click_on_checkbox      : click_on_checkbox,
+		click_on_ics_rule_text : click_on_ics_rule_text,
+		repeat_form_error      : repeat_form_error,
+		repeat_form_success    : repeat_form_success
 	};
-		} );
+} );

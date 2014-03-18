@@ -431,13 +431,28 @@ class Ai1ec_Settings extends Ai1ec_App {
 				),
 				'default'  => 10,
 			),
-			'agenda_include_entire_last_day' => array(
-				'type' => 'bool',
+			'month_word_wrap' => array(
+				'type'     => 'bool',
 				'renderer' => array(
-					'class' => 'checkbox',
-					'tab'   => 'viewing-events',
-					'item'  => 'viewing-events',
-					'label' => Ai1ec_I18n::__(
+					'class'  => 'checkbox',
+					'tab'    => 'viewing-events',
+					'item'   => 'viewing-events',
+					'label'  => Ai1ec_I18n::__(
+						'<strong>Word-wrap event stubs</strong> in Month view'
+					),
+					'help'  => Ai1ec_I18n::__(
+						'Only applies to events that span a single day.'
+					),
+				),
+				'default'  => false,
+			),
+			'agenda_include_entire_last_day' => array(
+				'type'     => 'bool',
+				'renderer' => array(
+					'class'  => 'checkbox',
+					'tab'    => 'viewing-events',
+					'item'   => 'viewing-events',
+					'label'  => Ai1ec_I18n::__(
 						'In <span class="ai1ec-tooltip-toggle"
 						data-original-title="These include Agenda view,
 						the Upcoming Events widget, and some extended views.">

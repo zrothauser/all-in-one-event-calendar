@@ -66,6 +66,7 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 			'weekdays'                 => $this->get_weekdays(),
 			'cell_array'               => $cell_array,
 			'show_location_in_title'   => $settings->get( 'show_location_in_title' ),
+			'month_word_wrap'          => $settings->get( 'month_word_wrap' ),
 			'pagination_links'         => $pagination_links,
 			'post_ids'                 => join( ',', $args['post_ids'] ),
 			'data_type'                => $args['data_type'],

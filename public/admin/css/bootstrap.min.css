@@ -6473,7 +6473,8 @@ ul.ai1ec-dropdown-menu li {
   color: #333333;
 }
 .timely h4 {
-  font-size: 16px;
+  font-size: 14px;
+  font-weight: bold;
   line-height: 2.14285714;
 }
 .timely hr {

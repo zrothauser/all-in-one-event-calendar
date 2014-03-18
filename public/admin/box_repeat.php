@@ -9,28 +9,32 @@
 <div class="ai1ec-modal-body ai1ec-form-horizontal">
 	<div class="ai1ec-alert ai1ec-alert-danger ai1ec-hide"></div>
 
-	<ul class="ai1ec-nav ai1ec-nav-tabs">
-		<li class="ai1ec-active">
-			<a href="#ai1ec_daily_content" data-toggle="ai1ec-tab">
-				<?php _e( 'Daily', AI1EC_PLUGIN_NAME ) ;?>
-			</a>
-		</li>
-		<li>
-			<a href="#ai1ec_weekly_content" data-toggle="ai1ec-tab">
-				<?php _e( 'Weekly', AI1EC_PLUGIN_NAME ) ;?>
-			</a>
-		</li>
-		<li>
-			<a href="#ai1ec_monthly_content" data-toggle="ai1ec-tab">
-				<?php _e( 'Monthly', AI1EC_PLUGIN_NAME ) ;?>
-			</a>
-		</li>
-		<li>
-			<a href="#ai1ec_yearly_content" data-toggle="ai1ec-tab">
-				<?php _e( 'Yearly', AI1EC_PLUGIN_NAME ) ;?>
-			</a>
-		</li>
-	</ul>
+	<big>
+		<ul class="ai1ec-nav ai1ec-nav-pills ai1ec-row">
+			<li class="ai1ec-active ai1ec-col-xs-3 ai1ec-text-center">
+				<a href="#ai1ec_daily_content" data-toggle="ai1ec-tab">
+					<?php _e( 'Daily', AI1EC_PLUGIN_NAME ) ;?>
+				</a>
+			</li>
+			<li class="ai1ec-col-xs-3 ai1ec-text-center">
+				<a href="#ai1ec_weekly_content" data-toggle="ai1ec-tab">
+					<?php _e( 'Weekly', AI1EC_PLUGIN_NAME ) ;?>
+				</a>
+			</li>
+			<li class="ai1ec-col-xs-3 ai1ec-text-center">
+				<a href="#ai1ec_monthly_content" data-toggle="ai1ec-tab">
+					<?php _e( 'Monthly', AI1EC_PLUGIN_NAME ) ;?>
+				</a>
+			</li>
+			<li class="ai1ec-col-xs-3 ai1ec-text-center">
+				<a href="#ai1ec_yearly_content" data-toggle="ai1ec-tab">
+					<?php _e( 'Yearly', AI1EC_PLUGIN_NAME ) ;?>
+				</a>
+			</li>
+		</ul>
+
+		<p></p>
+	</big>
 
 	<div class="ai1ec-tab-content">
 		<div id="ai1ec_daily_content" data-freq="daily"
@@ -89,14 +93,17 @@
 
 	<input type="hidden" id="ai1ec_is_box_repeat" value="<?php echo $repeat; ?>">
 
-	<button id="ai1ec_repeat_apply"
-		class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg">
+	<button type="button" id="ai1ec_repeat_apply"
+		class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg"
+		data-loading-text="<?php echo esc_attr(
+			'<i class="ai1ec-fa ai1ec-fa-spinner ai1ec-fa-fw ai1ec-fa-spin"></i> ' .
+			__( 'Please wait…', AI1EC_PLUGIN_NAME ) ); ?>">
 		<i class="ai1ec-fa ai1ec-fa-check ai1ec-fa-fw"></i>
 		<?php _e( 'Apply', AI1EC_PLUGIN_NAME ); ?>
 	</button>
 	<a id="ai1ec_repeat_cancel"
-		class="ai1ec-btn ai1ec-btn-link ai1ec-text-danger ai1ec-btn-lg">
-		<i class="ai1ec-fa ai1ec-fa-times ai1ec-fa-fw"></i
+		class="ai1ec-btn ai1ec-btn-default ai1ec-text-danger ai1ec-btn-lg">
+		<i class="ai1ec-fa ai1ec-fa-undo ai1ec-fa-fw"></i
 		><?php _e( 'Cancel', AI1EC_PLUGIN_NAME ); ?>
 	</a>
 </div>

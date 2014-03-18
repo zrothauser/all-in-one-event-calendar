@@ -4,7 +4,8 @@ define(
 		'ai1ec_config',
 		'scripts/add_new_event/event_date_time/date_time_utility_functions',
 		'external_libs/jquery.calendrical_timespan',
-		'libs/utils'
+		'libs/utils',
+		'external_libs/bootstrap/button'
 	],
 	function(
 		$,
@@ -151,10 +152,7 @@ define(
 		};
 
 		$button
-			.attr( 'disabled', true )
-			.find( '.ai1ec-fa' )
-				.addClass( 'ai1ec-fa-spinner ai1ec-fa-spin' )
-				.end()
+			.button( 'loading' )
 			.next()
 				.addClass( 'ai1ec-disabled' );
 
@@ -163,7 +161,12 @@ define(
 			data,
 			function( response ) {
 				if ( response.error ) {
-					if ( $( '#ai1ec_is_box_repeat' ).val() === '1' ) {
+					$button
+						.button( 'reset' )
+						.next()
+							.removeClass( 'ai1ec-disabled' );
+
+					if ( '1' === $( '#ai1ec_is_box_repeat' ).val() ) {
 						date_time_utility_functions.repeat_form_error(
 							'#ai1ec_rrule', '#ai1ec_repeat_label', response, $button
 						);
@@ -173,7 +176,7 @@ define(
 						);
 					}
 				} else {
-					if ( $( '#ai1ec_is_box_repeat' ).val() === '1' ) {
+					if ( '1' === $( '#ai1ec_is_box_repeat' ).val() ) {
 						date_time_utility_functions.repeat_form_success(
 							'#ai1ec_rrule',
 							'#ai1ec_repeat_label',
@@ -193,14 +196,6 @@ define(
 						);
 					}
 				}
-
-				$button
-					.attr( 'disabled', false )
-					.find( '.ai1ec-fa' )
-						.removeClass( 'ai1ec-fa-spinner ai1ec-fa-spin' )
-						.end()
-					.next()
-						.removeClass( 'ai1ec-disabled' );
 			},
 			'json'
 		);

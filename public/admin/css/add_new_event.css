@@ -206,6 +206,17 @@
  * Recurrence modal controls
  */
 
+/* Recurrence tabs styling override */
+.timely #ai1ec_repeat_box .ai1ec-nav-pills > li + li {
+	margin-left: 0;
+}
+#ai1ec_repeat_box .ai1ec-nav > .ai1ec-col-xs-3 {
+	padding: 0 8px;
+}
+.timely #ai1ec_repeat_box .ai1ec-nav > li > a {
+	padding: 10px 0;
+}
+
 /* Range input (from jQuery Tools) */
 
 /* slider root element */

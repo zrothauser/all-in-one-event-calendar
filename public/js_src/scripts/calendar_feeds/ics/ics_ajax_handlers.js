@@ -21,7 +21,7 @@ define(
 
 		if ( response.error ) {
 			// Error adding feed; alert user.
-	    $alert = AI1EC_UTILS.make_alert( response.message, 'error' );
+			$alert = AI1EC_UTILS.make_alert( response.message, 'error' );
 			$( '#ics-alerts' ).append( $alert );
 		} else {
 			// Reset the form and add the feed to the bottom of the list.

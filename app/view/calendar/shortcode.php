@@ -29,9 +29,14 @@ class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 			return false; // so far process only first request
 		}
 
-		$view_names = array(
-			'oneday' => true,
+		$view_names_list = array_keys(
+			(array)$this->_registry->get( 'model.settings' )
+				->get( 'enabled_views', array() )
 		);
+		$view_names = array();
+		foreach ( $view_names_list as $view_name ) {
+			$view_names[$view_name] = true;
+		}
 
 		$view       = 'oneday';
 		$categories = $tags = $post_ids = array();

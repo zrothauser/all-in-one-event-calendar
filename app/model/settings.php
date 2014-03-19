@@ -211,8 +211,8 @@ class Ai1ec_Settings extends Ai1ec_App {
 			return;
 		}
 		$enabled_views[$view['name']] = array(
-			'enabled' => $view['enabled'],
-			'default' => $view['default'],
+			'enabled'  => $view['enabled'],
+			'default'  => $view['default'],
 			'longname' => $view['longname'],
 		);
 		$this->set( 'enabled_views', $enabled_views );

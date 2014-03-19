@@ -15,8 +15,13 @@ class Ai1ec_Command_Render_Event extends Ai1ec_Command_Render_Calendar {
 	 * @see Ai1ec_Command::is_this_to_execute()
 	 */
 	public function is_this_to_execute() {
-		$post_id = get_the_ID();
-		if ( empty( $post_id ) || post_password_required( $post_id ) ) {
+		global $post;
+		if (
+			! isset( $post ) ||
+			! is_object( $post ) ||
+			(int)$post->ID <= 0 ||
+			post_password_required( $post->ID )
+		) {
 			return false;
 		}
 		return $this->_registry->get( 'acl.aco' )->is_our_post_type();

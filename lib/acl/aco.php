@@ -60,4 +60,3 @@ class Ai1ec_Acl_Aco {
 	}
 
 }
-

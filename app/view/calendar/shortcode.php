@@ -29,16 +29,16 @@ class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 			return false; // so far process only first request
 		}
 
-		$view_names_list = array_keys(
-			(array)$this->_registry->get( 'model.settings' )
-				->get( 'enabled_views', array() )
-		);
-		$view_names = array();
+		$settings_view   = $this->_registry->get( 'model.settings-view' );
+		$view_names_list = array_keys( $settings_view->get_all() );
+		$default_view    = $settings_view->get_default();
+
+		$view_names      = array();
 		foreach ( $view_names_list as $view_name ) {
 			$view_names[$view_name] = true;
 		}
 
-		$view       = 'oneday';
+		$view       = $default_view;
 		$categories = $tags = $post_ids = array();
 		if ( isset( $atts['view'] ) ) {
 			if ( 'ly' === substr( $atts['view'], -2 ) ) {
@@ -110,7 +110,7 @@ class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 		$request = $this->_registry->get(
 			'http.request.parser',
 			$query,
-			'oneday'
+			$default_view
 		);
 		$request->parse();
 		$page_content = $this->_registry->get( 'view.calendar.page' )

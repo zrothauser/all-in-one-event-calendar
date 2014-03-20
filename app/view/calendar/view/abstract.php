@@ -79,7 +79,7 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 		$href = $this->_registry->get(
 			'html.element.href',
 			array(
-				'action' => 'oneday',
+				'action'     => 'oneday',
 				'exact_date' => $exact_date,
 			)
 		);

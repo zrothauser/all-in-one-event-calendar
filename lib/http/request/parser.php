@@ -70,24 +70,14 @@ class Ai1ec_Request_Parser extends Ai1ec_Abstract_Query {
 		$default_action = null
 	) {
 		parent::__construct( $registry, $argv );
-		$action_list = array(
-			'week',
-			'oneday',
-			'agenda',
-			'month',
-		);
+		$settings_view = $this->_registry->get( 'model.settings-view' );
+		$action_list   = array_keys( $settings_view->get_all() );
 		foreach ( $action_list as $action ) {
 			$action_list[] = 'ai1ec_' . $action;
 		}
 
 		if ( null === $default_action ) {
-			$enabled_views = (array)$this->_registry->get( 'model.settings' )
-				->get( 'enabled_views', array() );
-			foreach ( $enabled_views as $name => $param ) {
-				if ( true === $param['default'] ) {
-					$default_action = $name;
-				}
-			}
+			$default_action = $settings_view->get_default();
 		}
 
 		$this->add_rule(

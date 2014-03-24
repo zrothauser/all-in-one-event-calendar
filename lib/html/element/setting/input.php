@@ -62,6 +62,9 @@ class Ai1ec_Html_Setting_Input extends Ai1ec_Html_Element_Settings {
 		if ( isset( $this->_args['renderer']['help'] ) ) {
 			$args['help'] = $this->_args['renderer']['help'];
 		}
+		if ( isset( $this->_args['renderer']['group-class'] ) ) {
+			$args['group_class'] = $this->_args['renderer']['group-class'];
+		}
 		$loader = $this->_registry->get( 'theme.loader' );
 		$file   = $loader->get_file( 'setting/input.twig', $args, true );
 		return parent::render( $file->get_content() );

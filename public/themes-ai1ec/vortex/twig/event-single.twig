@@ -102,12 +102,4 @@
 
 </div>
 
-{% if event.get_runtime( 'content_img_url' ) is empty %}
-	{{ event | avatar( [
-		'post_thumbnail',
-		'location_avatar',
-		'category_avatar'
-		], 'timely alignleft', false ) | raw }}
-{% endif %}
-
 </div>

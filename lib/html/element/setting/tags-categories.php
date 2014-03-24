@@ -69,15 +69,15 @@ class Ai1ec_Html_Setting_Tags_Categories extends Ai1ec_Html_Element_Settings {
 				'value' => $term->term_id,
 				'text'  => $term->name,
 			);
-		}
-		if ( isset( $this->_args['value'][$type] ) ) {
-			if ( in_array( $term->term_id , $this->_args['value'][$type] ) ) {
-				$option['args'] = array(
-					'selected' => 'selected',
-				);
+			if ( isset( $this->_args['value'][$type] ) ) {
+				if ( in_array( $term->term_id , $this->_args['value'][$type] ) ) {
+					$option['args'] = array(
+						'selected' => 'selected',
+					);
+				}
 			}
+			$options[] = $option;
 		}
-		$options[] = $option;
 		$args = array(
 			'id'         => 'default_' . $type,
 			'name'       => 'default_' . $type . '[]',

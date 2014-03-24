@@ -157,6 +157,8 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		) {
 			$args['url_args'] .= '&lang=' . $use_lang;
 		}
+		$settings = $this->_registry->get( 'model.settings' );
+		$args['show_subscribe_buttons'] = ! $settings->get( 'turn_off_subscription_buttons' );
 		$subscribe = $this->_registry->get( 'theme.loader' )
 			->get_file( 'subscribe-buttons.twig', $args, false );
 		return $subscribe->get_content();

@@ -46,7 +46,7 @@ class Ai1ec_Theme_Loader {
 	 * @param $registry Ai1ec_Registry_Object
 	 *       	 The registry Object.
 	 */
-	public function __construct( 
+	public function __construct(
 			Ai1ec_Registry_Object $registry
 		) {
 		$this->_registry         = $registry;
@@ -138,7 +138,7 @@ class Ai1ec_Theme_Loader {
 	 *
 	 * @return Ai1ec_File_Abstract An instance of a file object with content parsed.
 	 */
-	public function get_file( 
+	public function get_file(
 		$filename,
 		$args            = array(),
 		$is_admin        = null,
@@ -223,17 +223,17 @@ class Ai1ec_Theme_Loader {
 
 	/**
 	 * Tries to load a php file from the theme. if not present, it falls back to twig
-	 * 
+	 *
 	 * @param string $filename
 	 * @param array $args
 	 * @param array $paths
-	 * 
+	 *
 	 * @return Ai1ec_File_Abstract
 	 */
 	protected function _get_legacy_file( $filename, array $args, array $paths ) {
 		$php_file = $filename . '.php';
 		$php_file = $this->get_file( $php_file, $args, false, false, $paths );
-		
+
 		if ( false === $php_file->process_file() ) {
 			$twig_file = $this->_registry->get(
 				'theme.file.twig',
@@ -241,7 +241,7 @@ class Ai1ec_Theme_Loader {
 				$args,
 				$this->_get_twig_instance( $paths )
 			);
-			
+
 			// here file is a concrete class otherwise the exception is thrown
 			if ( ! $twig_file->process_file() ) {
 				throw new Ai1ec_Exception(
@@ -283,7 +283,7 @@ class Ai1ec_Theme_Loader {
 				'optimizations'    => -1,   // all
 			);
 			if ( AI1EC_DEBUG ) {
-				$environment += array( 
+				$environment += array(
 					'debug' => true, // produce node structure
 				);
 				// auto_reload never worked well

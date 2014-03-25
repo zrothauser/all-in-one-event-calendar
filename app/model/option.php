@@ -82,6 +82,9 @@ class Ai1ec_Option extends Ai1ec_App {
 		if ( $default === $value ) {
 			$value = get_option( $name, $default );
 			$this->_cache->set( $name, $value );
+		} else {
+			// Caching bypasses 'option_$name' filter; apply filter as expected.
+			$value = apply_filters( 'option_' . $name, $value );
 		}
 		return $value;
 	}

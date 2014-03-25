@@ -6,7 +6,7 @@
  * @author     Time.ly Network, Inc.
  * @since      2.0
  * @package    Ai1EC
- * @subpackage Ai1EC.Html
+ * @subpackage Ai1EC.Model
  */
 class Ai1ec_Settings extends Ai1ec_App {
 
@@ -198,37 +198,6 @@ class Ai1ec_Settings extends Ai1ec_App {
 			$this->_change_update_status( false );
 		}
 		return $success;
-	}
-
-	/**
-	 * Add a view if not set.
-	 *
-	 * @param array $view
-	 */
-	public function add_view( array $view ) {
-		$enabled_views = $this->get( 'enabled_views' );
-		if ( isset( $enabled_views[$view['name']] ) ) {
-			return;
-		}
-		$enabled_views[$view['name']] = array(
-			'enabled'  => $view['enabled'],
-			'default'  => $view['default'],
-			'longname' => $view['longname'],
-		);
-		$this->set( 'enabled_views', $enabled_views );
-	}
-
-	/**
-	 * Remove a view.
-	 *
-	 * @param string $view
-	 */
-	public function remove_view( $view ) {
-		$enabled_views = $this->get( 'enabled_views' );
-		if ( isset( $enabled_views[$view] ) ) {
-			unset( $enabled_views[$view] );
-			$this->set( 'enabled_views', $enabled_views );
-		}
 	}
 
 	/**

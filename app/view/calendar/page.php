@@ -34,17 +34,29 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 	 */
 	public function get_content( Ai1ec_Request_Parser $request ) {
 		// Are we loading a shortcode?
-		$shortcode       = $request->get( 'shortcode' );
+		$shortcode  = $request->get( 'shortcode' );
 
 		$view_args  = $this->get_view_args_for_view( $request );
-		$action     = $view_args['action'];
+
+		try {
+			$action     = $this->_registry->get( 'model.settings-view' )
+				->get_configured( $view_args['action'] );
+		} catch ( Ai1ec_Settings_Exception $exception ) {
+			// short-circuit and return error message
+			return '<div id="ai1ec-container"><div class="timely"><p>' .
+				Ai1ec_I18n::__( 'There was an error loading calendar. Please contact site administrator and inform him to configure calendar views.' ) .
+				'</p></div></div>';
+		}
 		$type       = $request->get( 'request_type' );
 
 		$exact_date = $this->get_exact_date( $request );
-		$view_obj = $this->_registry->get( 'view.calendar.view.' . $action, $request );
-		$view_args = $view_obj->get_extra_arguments( $view_args, $exact_date );
-		$view = $view_obj->get_content( $view_args );
-		$args = array(
+		$view_obj   = $this->_registry->get(
+			'view.calendar.view.' . $action,
+			$request
+		);
+		$view_args  = $view_obj->get_extra_arguments( $view_args, $exact_date );
+		$view       = $view_obj->get_content( $view_args );
+		$args       = array(
 			'view' => $view,
 			'version' => AI1EC_VERSION,
 			'subscribe_buttons' => '',
@@ -89,35 +101,58 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 
 		} else {
 			$loader = $this->_registry->get( 'theme.loader' );
-			$empty = $loader->get_file( 'empty.twig', array(), false );
+			$empty  = $loader->get_file( 'empty.twig', array(), false );
 
 			// Define new arguments for overall calendar view
 			$filter_args = array(
 				'views_dropdown'               => $views_dropdown,
 				'categories'                   => $categories,
 				'tags'                         => $tags,
-				'contribution_buttons'         => apply_filters( 'ai1ec_contribution_buttons', '' ),
-				'show_dropdowns'               => apply_filters( 'ai1ec_show_dropdowns', true ),
-				'show_select2'                 => apply_filters( 'ai1ec_show_select2', false ),
-				'span_for_select2'             => apply_filters( 'ai1ec_span_for_select2', '' ),
-				'authors'                      => apply_filters( 'ai1ec_authors', '' ),
-				'save_view_btngroup'           => apply_filters( 'ai1ec_save_view_btngroup', $empty ),
+				'contribution_buttons'         => apply_filters(
+					'ai1ec_contribution_buttons',
+					''
+				),
+				'show_dropdowns'               => apply_filters(
+					'ai1ec_show_dropdowns',
+					true
+				),
+				'show_select2'                 => apply_filters(
+					'ai1ec_show_select2',
+					false
+				),
+				'span_for_select2'             => apply_filters(
+					'ai1ec_span_for_select2',
+					''
+				),
+				'authors'                      => apply_filters(
+					'ai1ec_authors',
+					''
+				),
+				'save_view_btngroup'           => apply_filters(
+					'ai1ec_save_view_btngroup',
+					$empty
+				),
 			);
 
-			$filter_menu = $loader->get_file( 'filter-menu.twig', $filter_args, false );
+			$filter_menu   = $loader->get_file(
+				'filter-menu.twig',
+				$filter_args,
+				false
+			);
 			$calendar_args = array(
-				'version'     => AI1EC_VERSION,
-				'filter_menu' => $filter_menu,
-				'view'        => $view,
-				'subscribe_buttons'  => $subscribe_buttons,
-				'disable_standard_filter_menu' => apply_filters( 'ai1ec_disable_standard_filter_menu', false ),
+				'version'                      => AI1EC_VERSION,
+				'filter_menu'                  => $filter_menu,
+				'view'                         => $view,
+				'subscribe_buttons'            => $subscribe_buttons,
+				'disable_standard_filter_menu' => apply_filters(
+					'ai1ec_disable_standard_filter_menu',
+					false
+				),
 			);
 
 			$calendar = $loader->get_file( 'calendar.twig', $calendar_args, false );
 			return $calendar->get_content();
 		}
-
-
 
 	}
 

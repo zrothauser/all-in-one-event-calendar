@@ -122,15 +122,18 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 	}
 
 	/**
-	 * get_html_for_subscribe_buttons method
+	 * Render the HTML for the `subscribe' buttons.
 	 *
-	 * Render the HTML for the `subscribe' buttons
+	 * @param array $view_args Args to pass.
 	 *
-	 * @param array $view_args Args to pass
-	 *
-	 * @return string Rendered HTML to include in output
+	 * @return string Rendered HTML to include in output.
 	 */
 	public function get_html_for_subscribe_buttons( array $view_args ) {
+		$turn_off_subscribe = $this->_registry->get( 'model.settings' )
+			->get( 'turn_off_subscription_buttons' );
+		if ( $turn_off_subscribe ) {
+			return '';
+		}
 		$args = array(
 			'url_args'    => '',
 			'is_filtered' => false,

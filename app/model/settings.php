@@ -513,7 +513,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 						' <strong>Hide featured image</strong> from event details page'
 					),
 					'help'  => Ai1ec_I18n::__(
-						'Select this option if your theme already displays each post\'s featured image.'
+						"Select this option if your theme already displays each post's featured image."
 					),
 				),
 				'default'  => false,

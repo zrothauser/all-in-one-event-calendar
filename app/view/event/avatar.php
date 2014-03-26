@@ -205,24 +205,25 @@ class Ai1ec_View_Event_Avatar extends Ai1ec_Base {
 	/**
 	 * Returns avatar image for event's deepest category, if any.
 	 *
-	 * @param   null       $size           (width, height) array of returned image
+	 * @param Ai1ec_Event $event Avatar requester.
+	 * @param void        $size  Unused argument.
 	 *
-	 * @return  string|null
+	 * @return string|null Avatar's HTML or null if none.
 	 */
 	public function get_category_avatar_url( Ai1ec_Event $event, &$size = null ) {
 		$db =  $this->_registry->get( 'dbi.dbi' );
-		
+
 		$terms = get_the_terms( $event->get( 'post_id' ), 'events_categories' );
 		if ( empty( $terms ) ) {
 			return null;
 		}
-	
+
 		$terms_by_id = array();
 		// Key $terms by term_id rather than arbitrary int.
 		foreach ( $terms as $term ) {
 			$terms_by_id[$term->term_id] = $term;
 		}
-	
+
 		// Array to store term depths, sorted later.
 		$term_depths = array();
 		foreach ( $terms_by_id as $term ) {
@@ -240,13 +241,14 @@ class Ai1ec_View_Event_Avatar extends Ai1ec_Base {
 		}
 		// Order term IDs by depth.
 		asort( $term_depths );
-	
+
 		$url = '';
+		$sql_query = 'SELECT term_image FROM ' .
+			$db->get_table_name( 'ai1ec_event_category_meta' ) .
+			' WHERE term_id = ';
 		// Starting at deepest depth, find the first category that has an avatar.
 		foreach ( $term_depths as $term_id => $depth ) {
-			$term_image = $db->get_var(
-				$db->prepare( 'SELECT term_image FROM ' . $db->get_table_name( 'ai1ec_event_category_meta' ) . ' WHERE term_id = %s', $term_id )
-			);
+			$term_image = $db->get_var( $sql_query . ((int)$term_id) );
 			if ( $term_image ) {
 				$url = $term_image;
 				break;
@@ -254,4 +256,5 @@ class Ai1ec_View_Event_Avatar extends Ai1ec_Base {
 		}
 		return empty( $url ) ? null : $url;
 	}
+
 }

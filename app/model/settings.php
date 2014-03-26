@@ -503,6 +503,21 @@ class Ai1ec_Settings extends Ai1ec_App {
 				),
 				'default'  => false,
 			),
+			'hide_featured_image' => array(
+				'type' => 'bool',
+				'renderer' => array(
+					'class' => 'checkbox',
+					'tab'   => 'viewing-events',
+					'item'  => 'viewing-events',
+					'label' => Ai1ec_I18n::__(
+						' <strong>Hide featured image</strong> from event details page'
+					),
+					'help'  => Ai1ec_I18n::__(
+						"Select this option if your theme already displays each post's featured image."
+					),
+				),
+				'default'  => false,
+			),
 			'embedding' => array(
 				'type' => 'html',
 				'renderer' => array(

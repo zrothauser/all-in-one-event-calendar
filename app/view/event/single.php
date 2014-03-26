@@ -47,13 +47,9 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 
 		$venues_html = apply_filters(
 			'ai1ec_rendering_single_event_venues',
-			'',
+			nl2br( $location->get_location( $event ) ),
 			$event
 		);
-
-		if( strlen( $venues_html ) === 0 ){
-			$venues_html = nl2br( $location->get_location( $event ) );
-		}
 
 		$args = array(
 			'event'                   => $event,

@@ -205,26 +205,25 @@ class Ai1ec_View_Event_Avatar extends Ai1ec_Base {
 	/**
 	 * Returns avatar image for event's deepest category, if any.
 	 *
-	 * @param   null       $size           (width, height) array of returned image
+	 * @param Ai1ec_Event $event Avatar requester.
+	 * @param void        $size  Unused argument.
 	 *
-	 * @return  string|null
+	 * @return string|null Avatar's HTML or null if none.
 	 */
-	public function get_category_avatar_url( &$size = null ) {
-		// still need to implement this later.
-		return null;
-	
-		$terms = get_the_terms( $this->post_id, 'events_categories' );
-	
+	public function get_category_avatar_url( Ai1ec_Event $event, &$size = null ) {
+		$db =  $this->_registry->get( 'dbi.dbi' );
+
+		$terms = get_the_terms( $event->get( 'post_id' ), 'events_categories' );
 		if ( empty( $terms ) ) {
 			return null;
 		}
-	
+
 		$terms_by_id = array();
 		// Key $terms by term_id rather than arbitrary int.
 		foreach ( $terms as $term ) {
 			$terms_by_id[$term->term_id] = $term;
 		}
-	
+
 		// Array to store term depths, sorted later.
 		$term_depths = array();
 		foreach ( $terms_by_id as $term ) {
@@ -240,35 +239,22 @@ class Ai1ec_View_Event_Avatar extends Ai1ec_Base {
 			// Store negative depths for asort() to order from deepest to shallowest.
 			$term_depths[$term->term_id] = -$depth;
 		}
-	
 		// Order term IDs by depth.
 		asort( $term_depths );
-	
+
+		$url = '';
+		$sql_query = 'SELECT term_image FROM ' .
+			$db->get_table_name( 'ai1ec_event_category_meta' ) .
+			' WHERE term_id = ';
 		// Starting at deepest depth, find the first category that has an avatar.
 		foreach ( $term_depths as $term_id => $depth ) {
-			$cat_img_meta = $ai1ec_tax_meta_class->get_tax_meta(
-				$term_id,
-				'ai1ec_image_field_id',
-				'events_categories'
-			);
-	
-			if ( isset( $cat_img_meta['id'] ) ) {
-				$ordered_img_sizes = array( 'medium', 'large', 'full' );
-				foreach ( $ordered_img_sizes as $size ) {
-					$attributes = wp_get_attachment_image_src(
-						$cat_img_meta['id'],
-						$size
-					);
-					if ( $attributes ) {
-						$url = array_shift( $attributes );
-						$size = $attributes;
-						break;
-					}
-				}
+			$term_image = $db->get_var( $sql_query . ((int)$term_id) );
+			if ( $term_image ) {
+				$url = $term_image;
 				break;
 			}
 		}
-	
 		return empty( $url ) ? null : $url;
 	}
+
 }

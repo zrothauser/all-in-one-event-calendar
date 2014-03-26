@@ -119,7 +119,9 @@ define(
 	var handle_tooltip_out = function( e ) {
 		var $el = $( e.toElement || e.relatedTarget );
 		if ( $el.closest( '.ai1ec-tooltip' ).length === 0 ) {
-			$( this ).tooltip( 'hide' );
+			if ( $( this ).data( 'bs.tooltip' ) ) {
+				$( this ).tooltip( 'hide' );
+			}
 		}
 	};
 

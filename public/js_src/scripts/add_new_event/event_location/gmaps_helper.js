@@ -51,15 +51,7 @@ define(
 	};
 	var set_autocomplete_if_needed = function() {
 		if( ! ai1ec_config.disable_autocompletion ) {
-			// This is the only way to stop the autocomplete from firing when the
-			// coordinates checkbox is checked. The new jQuery UI autocomplete
-			// supports the method .autocomplete( "disable" ) but not this version.
 			$( '#ai1ec_address' )
-				.bind( "keypress keyup keydown change", function( e ) {
-					if( $( '#ai1ec_input_coordinates:checked' ).length ) {
-						e.stopImmediatePropagation();
-					}
-				})
 				// Initialize geo_autocomplete plugin
 				.geo_autocomplete(
 					new google.maps.Geocoder(),

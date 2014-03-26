@@ -109,6 +109,23 @@ class Ai1ec_Registry_Object implements Ai1ec_Registry {
 		);
 	}
 
+	/**
+	 * Allow to set previously created globally accessible class instance.
+	 *
+	 * @param string $name   Class name to be used.
+	 * @param object $object Actual instance of class above.
+	 *
+	 * @return void
+	 */
+	public function inject_object( $name, $object ) {
+		if ( ! is_object( $object ) || ! ( $object instanceof $name ) ) {
+			throw new Ai1ec_Bootstrap_Exception(
+				'Attempt to inject not an object / invalid object.'
+			);
+		}
+		$this->_objects[$name] = $object;
+	}
+
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Registry::set()
 	 */

@@ -133,10 +133,6 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 			$is_new = true;
 			$event  =  $this->_registry->get( 'model.event' );
 		}
-		// If the events is marked as instant, make it last 30 minutes
-		if ( $instant_event ) {
-			$end_time = $start_time + 1800;
-		}
 
 		$start_time_entry = $this->_registry
 			->get( 'date.time', $start_time, $timezone_name );

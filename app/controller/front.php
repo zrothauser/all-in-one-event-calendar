@@ -231,18 +231,19 @@ class Ai1ec_Front_Controller {
 	 * Set the default theme if no theme is set.
 	 */
 	protected function _add_default_theme_if_not_set() {
+		$default_theme = array(
+			'theme_dir'  => AI1EC_DEFAULT_THEME_PATH,
+			'theme_root' => AI1EC_DEFAULT_THEME_ROOT,
+			'theme_url'  => AI1EC_THEMES_URL . '/vortex',
+			'stylesheet' => 'vortex',
+			'legacy'     => false,
+		);
 		$option = $this->_registry->get( 'model.option' );
 		$theme  = $option->get( 'ai1ec_current_theme', array() );
+
 		// Theme setting is undefined; default to Vortex.
 		if ( empty( $theme ) ) {
-			$theme = array(
-				'theme_dir'  => AI1EC_DEFAULT_THEME_PATH,
-				'theme_root' => AI1EC_DEFAULT_THEME_ROOT,
-				'theme_url'  => AI1EC_THEMES_URL . '/vortex',
-				'stylesheet' => 'vortex',
-				'legacy'     => false,
-			);
-			$option->set( 'ai1ec_current_theme', $theme );
+			$option->set( 'ai1ec_current_theme', $default_theme );
 		}
 		// Legacy settings; in 1.x the active theme was stored as a bare string,
 		// and they were located in a different folder than they are now.
@@ -257,6 +258,25 @@ class Ai1ec_Front_Controller {
 			} else {
 				$root = AI1EC_DEFAULT_THEME_ROOT;
 				$url  = AI1EC_THEMES_URL . '/' . $theme_name;
+			}
+
+			// Ensure existence of theme directory.
+			if ( ! is_dir( $root . DIRECTORY_SEPARATOR . $theme_name ) ) {
+				// It's missing; something is wrong with this theme. Reset theme to
+				// Vortex and warn the user accordingly.
+				$option->set( 'ai1ec_current_theme', $default_theme );
+
+				$notification = $this->_registry->get( 'notification.admin',
+					sprintf(
+						Ai1ec_I18n::__(
+							'Your active calendar theme could not be properly initialized. The default theme has been activated instead. Please visit %s and try reactivating your theme manually.'
+						),
+						'<a href="' . admin_url( AI1EC_THEME_SELECTION_BASE_URL ) . '">' .
+						Ai1ec_I18n::__( 'Calendar Themes' ) . '</a>'
+					),
+					'error',
+					1
+				);
 			}
 
 			$theme = array(

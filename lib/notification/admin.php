@@ -39,22 +39,24 @@ class Ai1ec_Notification_Admin extends Ai1ec_Notification {
 	/**
 	 * Set local variables. Optionally store message, if any passed.
 	 *
-	 * @param Ai1ec_Registry_Object $registry   Inejcted object registry.
-	 * @param string $message    Message to be dispatched.
-	 * @param array $recipients List of message recipients.
+	 * @param Ai1ec_Registry_Object $registry Inejcted object registry.
+	 * @param string $message                 Message to be dispatched.
+	 * @param string $class                   Message box class.
+	 * @param int    $importance              Optional importance parameter.
+	 * @param array  $recipients              List of message recipients.
 	 *
-	 * @param string $class
-	 * @return \Ai1ec_Notification_Admin
+	 * @return Ai1ec_Notification_Admin
 	 */
 	public function __construct(
 		Ai1ec_Registry_Object $registry,
 		$message          = null,
-		array $recipients = array( self::RCPT_ALL ),
-		$class            = 'updated'
+		$class            = 'updated',
+		$importance       = 0,
+		array $recipients = array( self::RCPT_ADMIN )
 	) {
 		$this->_registry = $registry;
 		if ( $message ) {
-			$this->store( $message, $recipients, $class );
+			$this->store( $message, $class, $importance, $recipients );
 		}
 	}
 
@@ -62,13 +64,18 @@ class Ai1ec_Notification_Admin extends Ai1ec_Notification {
 	 * Add message to store.
 	 *
 	 * @param string $message    Actual message.
-	 * @param array $recipients  List of message recipients.
 	 * @param string $class      Message box class.
-	 * @param int $importance    Optional importance parameter for the message
+	 * @param int    $importance Optional importance parameter for the message.
+	 * @param array  $recipients List of message recipients.
 	 *
 	 * @return bool Success.
 	 */
-	public function store( $message, array $recipients, $class, $importance = 0 ) {
+	public function store(
+		$message,
+		$class            = 'updated',
+		$importance       = 0,
+		array $recipients = array( self::RCPT_ADMIN )
+	) {
 		$this->retrieve();
 		$entity  = compact( 'message', 'class', 'importance' );
 		$msg_key = sha1( json_encode( $entity ) );

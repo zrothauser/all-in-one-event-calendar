@@ -164,7 +164,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		} catch ( Ai1ec_Cache_Write_Exception $e ) {
 			// This means successful during parsing but problems persisting the CSS.
 			$message = '<p>' . Ai1ec_I18n::__( "The LESS file compiled correctly but there was an error while saving the generated CSS to persistence." ) . '</p>';
-			$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 'error' );
+			$notification->store( $message, 'error' );
 			return false;
 		} catch ( Exception $e ) {
 			// An error from lessphp.
@@ -172,7 +172,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 				Ai1ec_I18n::__( '<p><strong>There was an error while compiling CSS.</strong> The message returned was: <em>%s</em></p>' ),
 				$e->getMessage()
 			);
-			$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 'error', 1 );
+			$notification->store( $message, 'error', 1 );
 			return false;
 		}
 		return true;
@@ -187,21 +187,13 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	 */
 	public function update_variables_and_compile_css( array $variables, $resetting ) {
 		$no_parse_errors = $this->invalidate_cache( $variables, true );
-		$notification   = $this->_registry->get( 'notification.admin' );
+		$notification    = $this->_registry->get( 'notification.admin' );
+
 		if ( $no_parse_errors ) {
 			$this->db_adapter->set(
 				Ai1ec_Less_Lessphp::DB_KEY_FOR_LESS_VARIABLES,
 				$variables
 			);
-
-
-			$message = sprintf(
-				'<p>' .Ai1ec_I18n::__(
-					"Theme options were updated successfully. <a href='%s'>Visit site</a>"
-				) . '</p>',
-				get_site_url()
-			);
-			$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 'updated' );
 
 			if ( true === $resetting ) {
 				$message = sprintf(
@@ -210,8 +202,16 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 					) . '</p>',
 					get_site_url()
 				);
-				$notification->store( $message, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 'updated' );
+			} else {
+				$message = sprintf(
+					'<p>' .Ai1ec_I18n::__(
+						"Theme options were updated successfully. <a href='%s'>Visit site</a>"
+					) . '</p>',
+					get_site_url()
+				);
 			}
+
+			$notification->store( $message );
 		}
 	}
 	/**

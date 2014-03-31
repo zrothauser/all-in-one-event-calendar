@@ -44,7 +44,7 @@
 											ai1ec-popup-trigger
 											ai1ec-event-id-{{ event.get( 'post_id' ) }}
 											ai1ec-event-instance-id-{{ event.get( 'instance_id' ) }}
-											{% if event.allday %}ai1ec-allday{% endif %}
+											{% if event.is_allday %}ai1ec-allday{% endif %}
 											{% if event.is_multiday %}ai1ec-multiday{% endif %}"
 										>
 
@@ -53,7 +53,7 @@
 											<span class="ai1ec-event-title">
 												{{ event.get_runtime( 'filtered_title' ) }}
 											</span>
-											{% if event.allday %}
+											{% if event.is_allday %}
 												<span class="ai1ec-event-time">
 													{{ event.get_runtime( 'short_start_time' ) }}
 												</span>

@@ -291,7 +291,11 @@ class Ai1ec_Date_Time {
 		$date_time_tz = $this->_registry->get( 'date.timezone' )
 				->get( $timezone );
 		$reset_tz     = false;
-		if ( $time > 0 && ( $time >> 10 ) > 2 ) {
+		if (
+			$time > 0 &&
+			( ! isset( $time{8} ) || 'T' !== $time{8} ) // '20001231T001559Z'
+			&& ( $time >> 10 ) > 2
+		) {
 			$time     = '@' . $time; // treat as UNIX timestamp
 			$reset_tz = true; // store intended TZ
 		}

@@ -66,6 +66,7 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 	 * @param int         $_start         Timestamp of first occurence.
 	 * @param int         $tif            Timestamp of last occurence.
 	 * @param int         $duration       Event duration in seconds.
+	 * @param string      $timezone       Target timezone.
 	 *
 	 * @return array List of event instances.
 	 */
@@ -74,18 +75,19 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 		array $event_instance,
 		$_start,
 		$tif,
-		$duration
+		$duration,
+		$timezone
 	) {
 		$recurrence_parser = $this->_registry->get( 'recurrence.rule' );
 		$evs               = array();
 
 		$startdate = array(
 			'timestamp' => $_start,
-			'tz'        => $event->get( 'start' )->get_timezone(),
+			'tz'        => $timezone,
 		);
 		$enddate = array(
 			'timestamp' => $tif,
-			'tz'        => $event->get( 'end' )->get_timezone(),
+			'tz'        => $timezone,
 		);
 		$start			   = $event_instance['start'];
 		$wdate             = $startdate
@@ -137,13 +139,16 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 
 			// Check if exception dates match this occurence
 			if ( $exception_dates = $event->get( 'exception_dates' ) ) {
-				if (
-					$this->date_match_exdates( $date, $exception_dates )
-				) {
+				$match_exdates = $this->date_match_exdates(
+					$date,
+					$exception_dates,
+					$timezone
+				);
+				if ( $match_exdates ) {
 					$excluded = true;
 				}
 			}
-		
+
 			// Add event only if it is not excluded
 			if ( false === $excluded ) {
 				$evs[] = $event_instance;
@@ -179,7 +184,8 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 
         if ( $event->get( 'recurrence_rules' ) ) {
 			$_restore_default_tz = date_default_timezone_get();
-			date_default_timezone_set( $event->get( 'start' )->get_timezone() );
+			$start_timezone      = $event->get( 'start' )->get_timezone();
+			date_default_timezone_set( $start_timezone );
 			$evs = array_merge(
 				$evs,
 				$this->create_instances_by_recurrence(
@@ -187,7 +193,8 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 					$e,
 					$_start,
 					$tif,
-					$duration
+					$duration,
+					$start_timezone
 				)
 			);
 			date_default_timezone_set( $_restore_default_tz );
@@ -236,22 +243,54 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 	 *
 	 * @param string $date     Date to check.
 	 * @param string $ics_rule ICS EXDATES rule.
+	 * @param string $timezone Timezone to evaluate value in.
 	 *
 	 * @return bool True if given date is in rule.
 	 */
-    public function date_match_exdates( $date, $ics_rule ) {
-        foreach ( explode( ',', $ics_rule ) as $_date ) {
-            $_date_start = $this->_registry->get( 'date.time', $_date )
-				->format_to_gmt();
-            if ( false !== $_date_start ) {
-                // add 23h 59m 59s so the whole day is excluded
-                $_date_end = $_date_start + (24 * 60 * 60) - 1;
-                if ( $date >= $_date_start && $date <= $_date_end ) {
-                    return true;
-                }
-            }
+    public function date_match_exdates( $date, $ics_rule, $timezone ) {
+		$ranges = $this->_get_date_ranges( $ics_rule, $timezone );
+        foreach ( $ranges as $interval ) {
+			if ( $date >= $interval[0] && $date <= $interval[1] ) {
+				return true;
+			}
+			if ( $date <= $interval[0] ) {
+				break;
+			}
         }
         return false;
     }
+
+	/**
+	 * Prepare date range list for fast exdate search.
+	 *
+	 * NOTICE: timezone is relevant in only first run.
+	 *
+	 * @param string $date_list ICS list provided from data model.
+	 * @param string $timezone  Timezone in which to evaluate.
+	 *
+	 * @return array List of date ranges, sorted in increasing order.
+	 */
+	protected function _get_date_ranges( $date_list, $timezone ) {
+		static $ranges = array();
+		if ( ! isset( $ranges[$date_list] ) ) {
+			$ranges[$date_list] = array();
+			$exploded = explode( ',', $date_list );
+			sort( $exploded );
+			foreach ( $exploded as $date ) {
+				// COMMENT on `rtrim( $date, 'Z' )`:
+				// user selects exclusion date in event timezone thus it
+				// must be parsed as such as opposed to UTC which happen
+				// when 'Z' is preserved.
+				$date = $this->_registry
+					->get( 'date.time', rtrim( $date, 'Z' ), $timezone )
+					->format_to_gmt();
+				$ranges[$date_list][] = array(
+					$date,
+					$date + (24 * 60 * 60) - 1
+				);
+			}
+		}
+		return $ranges[$date_list];
+	}
 
 }

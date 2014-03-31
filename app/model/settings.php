@@ -258,16 +258,15 @@ class Ai1ec_Settings extends Ai1ec_App {
 			->get( self::WP_OPTION_KEY, array() );
 		$this->_change_update_status( false );
 		$test_value = is_array( $values ) ? current( $values ) : false;
-		if (
-			empty( $values ) ||
-			( false !== $test_value && AI1EC_VERSION !== $test_value['version'] )
-		) {
+		if ( empty( $values ) ) {
 			$this->_register_standard_values();
 			$this->_change_update_status( true );
 		} else if ( $values instanceof Ai1ec_Settings ) {
 			$this->_register_standard_values();
 			$values = $this->_parse_legacy( $values );
 			$this->_change_update_status( true );
+		} else if( false !== $test_value && AI1EC_VERSION !== $test_value['version'] ) {
+			$this->_options = $values;
 		} else {
 			$this->_options = $values;
 		}

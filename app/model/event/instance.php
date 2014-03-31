@@ -148,7 +148,7 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 					$excluded = true;
 				}
 			}
-		
+
 			// Add event only if it is not excluded
 			if ( false === $excluded ) {
 				$evs[] = $event_instance;
@@ -277,9 +277,13 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 			$exploded = explode( ',', $date_list );
 			sort( $exploded );
 			foreach ( $exploded as $date ) {
+				// COMMENT on `rtrim( $date, 'Z' )`:
+				// user selects exclusion date in event timezone thus it
+				// must be parsed as such as opposed to UTC which happen
+				// when 'Z' is preserved.
 				$date = $this->_registry
-					->get( 'date.time', $date, $timezone )
-					->format();
+					->get( 'date.time', rtrim( $date, 'Z' ), $timezone )
+					->format_to_gmt();
 				$ranges[$date_list][] = array(
 					$date,
 					$date + (24 * 60 * 60) - 1

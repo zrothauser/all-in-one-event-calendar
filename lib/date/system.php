@@ -121,6 +121,23 @@ class Ai1ec_Date_System extends Ai1ec_Base {
 	}
 
 	/**
+	 * Similar to {@see format_date_for_url} just using new DateTime interface.
+	 *
+	 * @param Ai1ec_Date_Time $datetime Instance of datetime to format.
+	 * @param string          $pattern  Target format to use.
+	 *
+	 * @return string Formatted datetime string.
+	 */
+	public function format_datetime_for_url(
+		Ai1ec_Date_Time $datetime,
+		$pattern = 'def'
+	) {
+		$date = $datetime->format( $this->get_date_format_patter( $pattern ) );
+		return str_replace( '/', '-', $date );
+		return $date;
+	}
+
+	/**
 	 * Returns a formatted date given a timestamp, based on the given date format.
 	 *
 	 * @see  Ai1ec_Time_Utility::get_date_patterns() for supported date formats.
@@ -132,13 +149,17 @@ class Ai1ec_Date_System extends Ai1ec_Base {
 	 * @return string            Formatted date string
 	 */
 	public function format_date( $timestamp, $pattern = 'def' ) {
-		$pattern = $this->get_date_pattern_by_key( $pattern );
+		return gmdate( $this->get_date_format_patter( $pattern ), $timestamp );
+	}
+
+	public function get_date_format_patter( $requested ) {
+		$pattern = $this->get_date_pattern_by_key( $requested );
 		$pattern = str_replace(
 			array( 'dd', 'd', 'mm', 'm', 'yyyy', 'yy' ),
 			array( 'd',  'j', 'm',  'n', 'Y',    'y' ),
 			$pattern
 		);
-		return gmdate( $pattern, $timestamp );
+		return $pattern;
 	}
 
 	/**

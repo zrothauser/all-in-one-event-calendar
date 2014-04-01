@@ -42,7 +42,6 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 		$local_date->adjust_day( 0 + $start_day_offset + ( $args['week_offset'] * 7 ) )
 			->set_time( 0, 0, 0 );
 
-
 		$cell_array = $this->get_week_cell_array(
 			$local_date,
 			array(
@@ -178,12 +177,12 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 	 *   ['notallday'] => non-associative ordered array of non-all-day events to
 	 *                    display for that day, each element another associative
 	 *                    array like so:
-	 *     ['top']       => how many minutes offset from the start of the day
-	 *     ['height']    => how many minutes this event spans
-	 *     ['indent']    => how much to indent this event to accommodate multiple
-	 *                      events occurring at the same time (0, 1, 2, etc., to
-	 *                      be multiplied by whatever desired px/em amount)
-	 *     ['event']     => event data object
+	 *   ['top']       => how many minutes offset from the start of the day
+	 *   ['height']    => how many minutes this event spans
+	 *   ['indent']    => how much to indent this event to accommodate multiple
+	 *                    events occurring at the same time (0, 1, 2, etc., to
+	 *                    be multiplied by whatever desired px/em amount)
+	 *   ['event']     => event data object
 	 *
 	 * @param int $start_of_week    the UNIX timestamp of the first day of the week
 	 * @param array $filter     Array of filters for the events returned:
@@ -198,7 +197,7 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 		$search      = $this->_registry->get( 'model.search' );
 		$settings    = $this->_registry->get( 'model.settings' );
 		$date_system = $this->_registry->get( 'date.system' );
-		$end_of_week = clone $start_of_week;
+		$end_of_week = $this->_registry->get( 'date.time', $start_of_week );
 		$end_of_week->adjust_day( 7 );
 		// Do one SQL query to find all events for the week, including spanning
 		$week_events = $search->get_events_between(
@@ -209,6 +208,7 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 		);
 		// Split up events on a per-day basis
 		$all_events = array();
+		$this->_days_cache = $this->_registry->get( 'cache.memory' );
 		foreach ( $week_events as $evt ) {
 			$evt_start = $evt->get( 'start' )->format();
 			$evt_end   = $evt->get( 'end' )->format();
@@ -216,22 +216,17 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 			// Iterate through each day of the week and generate new event object
 			// based on this one for each day that it spans
 			for (
-				$day = $start_of_week->format( 'j' );
-				$day < $start_of_week->format( 'j' ) + 7;
+				$day = $start_of_week->format( 'j' ),
+					$last_week_day_index = $start_of_week->format( 'j' ) + 7;
+				$day < $last_week_day_index;
 				$day++
 			) {
-				$day_start = $this->_registry
-					->get( 'date.time' )
-					->set_date(
-						$start_of_week->format( 'Y' ),
-						$start_of_week->format( 'm' ),
-						$day
-					)
-					->set_time( 0, 0, 0 );
-				$day_end = clone $day_start;
-				$day_start = $day_start->format();
-				$day_end->adjust_day( 1 );
-				$day_end = $day_end->format();
+				list( $day_start, $day_end ) = $this->
+					_get_wkday_start_end( $day, $start_of_week );
+
+				if ( $evt_end < $day_start ) {
+					break; // save cycles
+				}
 
 				// If event falls on this day, make a copy.
 				if ( $evt_end > $day_start && $evt_start < $day_end ) {
@@ -263,27 +258,25 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 
 		// This will store the returned array
 		$days = array();
-		$now = $this->_registry->get( 'date.time' );
+		$now  = $this->_registry->get(
+			'date.time',
+			'now',
+			$start_of_week->get_timezone()
+		);
 		// =========================================
 		// = Iterate through each date of the week =
 		// =========================================
 		for (
-				$day = $start_of_week->format( 'j' );
-				$day < $start_of_week->format( 'j' ) + 7;
-				$day++
-			) {
-			$day_date_ob = $this->_registry
-				->get( 'date.time' )
-				->set_date(
-					$start_of_week->format( 'Y' ),
-					$start_of_week->format( 'm' ),
-					$day
-				)
-				->set_time( 0, 0, 0 );
-			$day_date = $day_date_ob->format();
+			$day = $start_of_week->format( 'j' ),
+				$last_week_day_index = $start_of_week->format( 'j' ) + 7;
+			$day < $last_week_day_index;
+			$day++
+		) {
+			list( $day_date, , $day_date_ob ) = $this->
+				_get_wkday_start_end( $day, $start_of_week );
 
-			$exact_date = $date_system->format_date_for_url(
-				$day_date,
+			$exact_date = $date_system->format_datetime_for_url(
+				$day_date_ob,
 				$settings->get( 'input_date_format' )
 			);
 			$href_for_date = $this->_create_link_for_day_view( $exact_date );
@@ -351,4 +344,41 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 		$settings = $this->_registry->get( 'model.settings' );
 		return - ( 7 - ( $settings->get( 'week_start_day' ) - $wday ) ) % 7;
 	}
+
+	/**
+	 * Get start/end timestamps for a given weekday and week start identifier.
+	 *
+	 * @param int             $day        Week day number.
+	 * @param Ai1ec_Date_Time $week_start Date/Time information for week start.
+	 *
+	 * @return array List of start and and timestamps, 0-indexed array.
+	 */
+	protected function _get_wkday_start_end(
+		$day,
+		Ai1ec_Date_Time $week_start
+	) {
+		$entry = null;
+		$day   = (int)$day;
+		if ( null === ( $entry = $this->_days_cache->get( $day ) ) ) {
+			$day_start = $this->_registry
+				->get( 'date.time', $week_start )
+				->set_date(
+					$week_start->format( 'Y' ),
+					$week_start->format( 'm' ),
+					$day
+				)
+				->set_time( 0, 0, 0 );
+			$day_end   = $this->_registry->get( 'date.time', $day_start );
+			$day_end->adjust_day( 1 );
+			$entry     = array(
+				$day_start->format(),
+				$day_end->format(),
+				$day_start
+			);
+			unset( $day_end ); // discard and free memory
+			$this->_days_cache->set( $day, $entry );
+		}
+		return $entry;
+	}
+
 }

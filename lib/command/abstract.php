@@ -36,7 +36,7 @@ abstract class Ai1ec_Command {
 			Ai1ec_Request_Parser $request
 	) {
 		$this->_registry = $registry;
-		$this->_request = $request;
+		$this->_request  = $request;
 	}
 
 	/**

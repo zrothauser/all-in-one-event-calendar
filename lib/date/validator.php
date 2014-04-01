@@ -35,17 +35,58 @@ class Ai1ec_Validation_Utility {
 	 * by $pattern, which matches one of the supported date patterns.
 	 * @see  Ai1ec_Time_Utility::get_date_patterns()
 	 *
-	 * @param  string  $date    Date string to parse
-	 * @param  string  $pattern Key of date pattern (@see
-	 *                          Ai1ec_Time_Utility::get_date_patterns()) to
-	 *                          match date string against
-	 * @return array|boolean		An array with the parsed date or false if the date
-	 *                          is not valid
+	 * @param string $date    Date string to parse
+	 * @param string $pattern Key of date pattern (@see
+	 *                        Ai1ec_Time_Utility::get_date_patterns()) to
+	 *                        match date string against
+	 * @return array|boolean An array with the parsed date or false if the date
+	 *                       is not valid.
 	 */
 	static public function validate_date_and_return_parsed_date(
 		$date, $pattern = 'def'
 	) {
-		// Convert pattern to regex.
+		$pattern = self::_get_pattern_regexp( $pattern );
+		if ( preg_match( $pattern, $date, $matches ) ) {
+			if ( checkdate( $matches['m'], $matches['d'], $matches['y'] ) ) {
+				return array(
+					'month' => $matches['m'],
+					'day'   => $matches['d'],
+					'year'  => $matches['y'],
+				);
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Convert input into a valid ISO date.
+	 *
+	 * @param string $date    Date to convert to ISO.
+	 * @param string $pattern Format used to store it.
+	 *
+	 * @return string|bool Re-formatted date or false on failure.
+	 */
+	static public function format_as_iso( $date, $pattern = 'def' ) {
+		$regexp = self::_get_pattern_regexp( $pattern );
+		if ( ! preg_match( $regexp, $date, $matches ) ) {
+			return false;
+		}
+		return sprintf(
+			'%04d-%02d-%02d',
+			$matches['y'],
+			$matches['m'],
+			$matches['d']
+		);
+	}
+
+	/**
+	 * Create regexp with named groups to match positional elements.
+	 *
+	 * @param string $pattern Pattern to convert.
+	 *
+	 * @return string Regular expression pattern.
+	 */
+	static protected function _get_pattern_regexp( $pattern ) {
 		$pattern = self::get_date_pattern_by_key( $pattern );
 		$pattern = preg_quote( $pattern, '/' );
 		$pattern = str_replace(
@@ -55,18 +96,7 @@ class Ai1ec_Validation_Utility {
 		);
 		// Accept hyphens and dots in place of forward slashes (for URLs).
 		$pattern = str_replace( '\/', '[\/\-\.]', $pattern );
-		$pattern = "/^$pattern$/";
-
-		if( preg_match( $pattern, $date, $matches ) ) {
-			if( checkdate( $matches['m'], $matches['d'], $matches['y'] ) ) {
-				return array(
-					"month" => $matches['m'],
-					"day"   => $matches['d'],
-					"year"  => $matches['y'],
-				);
-			}
-		}
-		return false;
+		return '#^' . $pattern . '$#';
 	}
 
 	/**
@@ -78,11 +108,14 @@ class Ai1ec_Validation_Utility {
 	 */
 	static public function is_valid_time_stamp( $timestamp ) {
 		return
-			( is_int( $timestamp ) || ( string ) ( int ) $timestamp === $timestamp )
+			(
+				is_int( $timestamp ) ||
+				( (string)(int)$timestamp ) === (string)$timestamp
+			)
 			&& ( $timestamp <= PHP_INT_MAX )
 			&& ( $timestamp >= ~ PHP_INT_MAX );
 	}
-	
+
 	/**
 	 * Returns the associative array of date patterns supported by the plugin,
 	 * currently:
@@ -119,4 +152,5 @@ class Ai1ec_Validation_Utility {
 		$patterns = self::get_date_patterns();
 		return $patterns[$key];
 	}
+
 }

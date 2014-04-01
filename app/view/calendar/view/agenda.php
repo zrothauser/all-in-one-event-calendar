@@ -166,21 +166,24 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		$events,
 		Ai1ec_Abstract_Query $query = null
 	) {
-		$dates = array();
-		$time = $this->_registry->get( 'date.system' );
+		$dates    = array();
+		$time     = $this->_registry->get( 'date.system' );
 		$settings = $this->_registry->get( 'model.settings' );
 		// Classify each event into a date/allday category
-		foreach( $events as $event ) {
-			$timestamp = $this->_registry
+		foreach ( $events as $event ) {
+			$start_time    = $this->_registry
 				->get( 'date.time', $event->get( 'start' ) )
-				->set_time( 0, 0, 0 )
-				->format();
-			$exact_date = $time->format_date_for_url(
-				$timestamp,
+				->set_time( 0, 0, 0 );
+			$exact_date    = $time->format_datetime_for_url(
+				$start_time,
 				$settings->get( 'input_date_format' )
 			);
 			$href_for_date = $this->_create_link_for_day_view( $exact_date );
-			// Ensure all-day & non all-day categories are created in correct order.
+			// timestamp is used to have correctly sorted array as UNIX
+			// timestamp never goes in decreasing order for increasing dates.
+			$timestamp     = $start_time->format();
+			// Ensure all-day & non all-day categories are created in correct
+			// order: "allday" preceding "notallday".
 			if ( ! isset( $dates[$timestamp]['events'] ) ) {
 				$dates[$timestamp]['events'] = array(
 					'allday'    => array(),

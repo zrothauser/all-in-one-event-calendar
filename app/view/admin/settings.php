@@ -28,7 +28,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 		$settings = $this->_registry->get( 'model.settings' );
 		$args = array(
 			'title' => Ai1ec_I18n::__(
-				'All-in-One Event Calendar: Calendar Feeds'
+				'All-in-One Event Calendar: Settings'
 			),
 			'nonce' => array(
 				'action'   => self::NONCE_ACTION,

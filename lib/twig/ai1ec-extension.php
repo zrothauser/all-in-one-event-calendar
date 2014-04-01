@@ -169,18 +169,49 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	}
 
 	/**
-	 * Truncate a string after $length characthers
-	 * @param number $length
-	 * @param string $read_more
+	 * Truncate a string after $length characters, appending $read_more string
+	 * at end of truncation.
+	 *
+	 * @param number $length        Length to truncate string to.
+	 * @param string $read_more     What string to append if truncated.
+	 * @param string $html_entities Whether to treat input string as HTML with
+	 *                              possible &asdf; entities
 	 * @return string
 	 */
-	public function truncate( $string, $length = 35, $read_more = '...' ) {
+	public function truncate(
+		$string,
+		$length = 35,
+		$read_more = '...',
+		$html_entities = true
+	) {
+		// Truncate multibyte encodings differently, if supported.
 		if ( function_exists( 'mb_strimwidth' ) ) {
-			return mb_strimwidth( $string, 0, $length, $read_more );
-		} else {
-			$read_more = strlen( $string ) > 35 ? $read_more : '';
-			return substr( $string, 0, 35 ) . $read_more;
+			// First decode entities if requested.
+			if ( $html_entities ) {
+				$string = html_entity_decode( $string, ENT_QUOTES, 'UTF-8' );
+			}
+			// Truncate string.
+			$string = mb_strimwidth( $string, 0, $length, $read_more, 'UTF-8' );
+			// Reencode entities if requested.
+			if ( $html_entities ) {
+				$string = htmlentities( $string, ENT_QUOTES, 'UTF-8' );
+			}
 		}
+		else {
+			// First decode entities if requested.
+			if ( $html_entities ) {
+				$string = html_entity_decode( $string, ENT_QUOTES );
+			}
+			// Truncate string.
+			$read_more = strlen( $string ) > 35 ? $read_more : '';
+			$string = substr( $string, 0, 35 ) . $read_more;
+			// Reencode entities if requested.
+			if ( $html_entities ) {
+				$string = html_entity_decode( $string, ENT_QUOTES );
+			}
+		}
+
+		return $string;
 	}
 
 	/**

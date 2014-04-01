@@ -267,12 +267,12 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		// Check to see if a date has been specified.
 		$exact_date = $request->get( 'exact_date' );
 		$use_key    = $exact_date;
-		if ( NULL === ( $exact_date = $this->_exact_dates->get( $use_key ) ) ) {
+		if ( null === ( $exact_date = $this->_exact_dates->get( $use_key ) ) ) {
 			$exact_date = $use_key;
 			// Let's check if we have a date
 			if ( false !== $exact_date ) {
 				// If it's not a timestamp
-				if( ! Ai1ec_Validation_Utility::is_valid_time_stamp( $exact_date ) ) {
+				if ( ! Ai1ec_Validation_Utility::is_valid_time_stamp( $exact_date ) ) {
 					// Try to parse it
 					$exact_date = $this->return_gmtime_from_exact_date( $exact_date );
 				}
@@ -298,23 +298,21 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 	 *                                else UNIX timestamp in GMT
 	 */
 	private function return_gmtime_from_exact_date( $exact_date ) {
-		$settings = $this->_registry->get( 'model.settings' );
+		$input_format = $this->_registry->get( 'model.settings' )
+			->get( 'input_date_format' );
 
-		$bits = Ai1ec_Validation_Utility::validate_date_and_return_parsed_date(
+		$date = Ai1ec_Validation_Utility::format_as_iso(
 			$exact_date,
-			$settings->get( 'input_date_format' )
+			$input_format
 		);
-		if( false === $bits ) {
+		if ( false === $date ) {
 			$exact_date = false;
 		} else {
 			$exact_date = $this->_registry->get(
 				'date.time',
-				gmmktime(
-					0, 0, 0, $bits['month'], $bits['day'], $bits['year']
-				),
+				$date,
 				$this->_registry->get( 'model.option' )->get( 'timezone_string' )
-			);
-			$exact_date = $exact_date->format_to_gmt();
+			)->format_to_gmt();
 		}
 		return $exact_date;
 	}

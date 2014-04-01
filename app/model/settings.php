@@ -265,7 +265,10 @@ class Ai1ec_Settings extends Ai1ec_App {
 			$this->_register_standard_values();
 			$values = $this->_parse_legacy( $values );
 			$this->_change_update_status( true );
-		} else if( false !== $test_value && AI1EC_VERSION !== $test_value['version'] ) {
+		} else if (
+			false !== $test_value &&
+			AI1EC_VERSION !== $test_value['version']
+		) {
 			$this->_options = $values;
 		} else {
 			$this->_options = $values;

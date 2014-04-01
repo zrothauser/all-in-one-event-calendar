@@ -34,7 +34,7 @@
 										<i class="ai1ec-fa ai1ec-fa-plus-circle ai1ec-fa-lg"></i>
 									</div>
 									<span class="ai1ec-event-title">
-										{{ event.get_runtime( 'filtered_title' )|raw }}
+										{{ event.get_runtime( 'filtered_title' ) | raw }}
 										{% if show_location_in_title and event.get( 'venue' ) is not empty %}
 											<span class="ai1ec-event-location"
 												>{{ '@ %s' | __ | format( event.get( 'venue' ) ) }}</span>

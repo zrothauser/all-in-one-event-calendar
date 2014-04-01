@@ -54,7 +54,7 @@
 							<div class="ai1ec-event"
 								style="{{ event.get_runtime( 'color_style' ) | e('html_attr') }}">
 								<span class="ai1ec-event-title">
-									{{ event.get_runtime( 'filtered_title' ) }}
+									{{ event.get_runtime( 'filtered_title' ) | raw }}
 									{% if show_location_in_title and event.get( 'venue' ) is not empty %}
 										<span class="ai1ec-event-location"
 											>{{ '@ %s' | __ | format( event.get( 'venue' ) ) }}</span>
@@ -147,7 +147,7 @@
 										{{ event.get_runtime( 'short_start_time' ) }}
 									</span>
 									<span class="ai1ec-event-title">
-										{{ event.get_runtime( 'filtered_title' ) }}
+										{{ event.get_runtime( 'filtered_title' ) | raw }}
 										{% if show_location_in_title and event.get( 'venue' ) is not empty %}
 											<span class="ai1ec-event-location"
 												>{{ '@ %s' | __ | format( event.get( 'venue' ) ) }}</span>

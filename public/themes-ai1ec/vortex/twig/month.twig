@@ -51,7 +51,7 @@
 										<div class="ai1ec-event"
 											 style="{{ event.get_runtime( 'color_style' ) | e('html_attr') }}">
 											<span class="ai1ec-event-title">
-												{{ event.get_runtime( 'filtered_title' ) }}
+												{{ event.get_runtime( 'filtered_title' ) | raw }}
 											</span>
 											{% if event.is_allday %}
 												<span class="ai1ec-event-time">

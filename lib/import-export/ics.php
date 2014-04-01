@@ -598,7 +598,8 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		$content = html_entity_decode( $content, ENT_QUOTES, 'UTF-8' );
 		// Prepend featured image if available.
 		$size = null;
-		if ( $img_url = $event->get_post_thumbnail_url( $size ) ) {
+		$avatar = $this->_registry->get( 'view.event.avatar' );
+		if ( $img_url = $avatar->get_post_thumbnail_url( $event, $size ) ) {
 			$content = '<div class="ai1ec-event-avatar alignleft timely"><img src="' .
 					esc_attr( $img_url ) . '" width="' . $size[0] . '" height="' .
 					$size[1] . '" /></div>' . $content;
@@ -661,10 +662,11 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 				$dtstart
 			);
 
+
 			$e->setProperty(
 				'dtend',
 				$this->_sanitize_value(
-					$event->end->format( "Ymd\THis" )
+					$event->get( 'end' )->format( "Ymd\THis" )
 				),
 				$dtend
 			);

@@ -261,7 +261,12 @@ class Ai1ec_Settings extends Ai1ec_App {
 		if ( is_array( $values ) && isset( $values['calendar_page_id'] ) ) {
 			$test_version = $values['calendar_page_id']['version'];
 		}
-		if ( empty( $values ) || AI1EC_VERSION !== $test_version ) {
+		if (
+			empty( $values ) || (
+				false !== $test_version &&
+				AI1EC_VERSION !== $test_version
+			)
+		) {
 			$this->_register_standard_values( $values );
 			$this->_change_update_status( true );
 		} else if ( $values instanceof Ai1ec_Settings ) {

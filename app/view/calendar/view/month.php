@@ -36,9 +36,10 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		$local_date = $this->_registry
 			->get( 'date.time', $args['exact_date'], 'sys.default' );
 		$local_date->set_date(
-			$local_date->format( 'Y' ),
-			$local_date->format( 'm' ) + $args['month_offset'],
-			1 )
+				$local_date->format( 'Y' ),
+				$local_date->format( 'm' ) + $args['month_offset'],
+				1
+			)
 			->set_time( 0, 0, 0 );
 
 		$days_events = $this->get_events_for_month(
@@ -58,7 +59,10 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		$pagination_links = $this->_get_pagination( $args );
 
 		$title = $local_date->format_i18n( 'F Y' );
-		$is_ticket_button_enabled = apply_filters( 'ai1ec_month_ticket_button', false );
+		$is_ticket_button_enabled = apply_filters(
+			'ai1ec_month_ticket_button',
+			false
+		);
 
 		$view_args = array(
 			'title'                    => $title,
@@ -219,8 +223,12 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		$settings    = $this->_registry->get( 'model.settings' );
 		static $weekdays;
 
-		if( ! isset( $weekdays ) ) {
-			$time = $this->_registry->get( 'date.time', 'next Sunday' );
+		if ( ! isset( $weekdays ) ) {
+			$time = $this->_registry->get(
+				'date.time',
+				'next Sunday',
+				'sys.default'
+			);
 			$time->adjust_day( $settings->get( 'week_start_day' ) );
 
 			$weekdays = array();

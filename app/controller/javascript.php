@@ -262,59 +262,6 @@ class Ai1ec_Javascript_Controller {
 	}
 
 	/**
-	 * Embed JIRA reporting routine.
-	 *
-	 * Currently limited to admin Dashboard.
-	 *
-	 * @return bool Success to add JavaScript.
-	 */
-	public function add_jira_reporter() {
-		$screen = get_current_screen();
-		if (
-			! isset( $screen->post_type ) ||
-			AI1EC_POST_TYPE !== $screen->post_type
-		) {
-			$basename   = pathinfo( $_SERVER['SCRIPT_NAME'] );
-			$basename   = $basename['basename'];
-			if (
-				! isset( $_GET['page'] ) &&
-				! isset( $_REQUEST['post_type'] ) &&
-				'post.php' !== $basename
-			) {
-				return false;
-			}
-			if (
-				isset( $_GET['page'] ) &&
-				0 !== strncasecmp(
-					$_GET['page'],
-					AI1EC_PLUGIN_NAME,
-					strlen( AI1EC_PLUGIN_NAME )
-				)
-			) {
-				return false;
-			}
-			if ( isset( $_REQUEST['post_type'] ) ) {
-				if ( AI1EC_POST_TYPE !== $_REQUEST['post_type'] ) {
-					return false;
-				}
-			} else {
-				if (
-					'post.php' === $basename &&
-					! $this->_registry->get( 'acl.aco' )->are_we_editing_our_post()
-				) {
-					return false;
-				}
-			}
-		}
-		return wp_enqueue_script(
-			'timely_jira_collector',
-			'https://jira.time.ly:8443/s/en_US-ekw80v-418945332/850/31/1.2.9/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?collectorId=7910ef3f',
-			array(),
-			'7910ef3f'
-		);
-	}
-
-	/**
 	 * Check what file needs to be loaded and add the correct link.
 	 *
 	 * @wp-hook init
@@ -355,8 +302,6 @@ class Ai1ec_Javascript_Controller {
 		}
 
 		$this->add_link_to_render_js( $script_to_load, true );
-
-		add_action( 'current_screen', array( $this, 'add_jira_reporter' ) );
 
 	}
 

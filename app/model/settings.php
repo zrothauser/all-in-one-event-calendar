@@ -254,15 +254,20 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 */
 	protected function _initialize() {
 		$this->_set_standard_values();
-		$values         = $this->_registry->get( 'model.option' )
+		$values       = $this->_registry->get( 'model.option' )
 			->get( self::WP_OPTION_KEY, array() );
 		$this->_change_update_status( false );
-		$test_value = is_array( $values ) ? current( $values ) : false;
+		$test_version = false;
+		if ( is_array( $values ) && isset( $values['calendar_page_id'] ) ) {
+			$test_version = $values['calendar_page_id']['version'];
+		}
 		if (
-			empty( $values ) ||
-			( false !== $test_value && AI1EC_VERSION !== $test_value['version'] )
+			empty( $values ) || (
+				false !== $test_version &&
+				AI1EC_VERSION !== $test_version
+			)
 		) {
-			$this->_register_standard_values();
+			$this->_register_standard_values( $values );
 			$this->_change_update_status( true );
 		} else if ( $values instanceof Ai1ec_Settings ) {
 			$this->_register_standard_values();
@@ -714,11 +719,30 @@ class Ai1ec_Settings extends Ai1ec_App {
 	/**
 	 * Register the standard setting values.
 	 *
+	 * @param mixed Previously stored values. Only `array` is processed here.
+	 *
+	 * @return void Method doesn't return.
 	 */
-	protected function _register_standard_values() {
+	protected function _register_standard_values( $retrieved = null ) {
+		if ( ! is_array( $retrieved ) ) {
+			$retrieved = array();
+		}
 		foreach ( $this->_standard_options as $key => $option ) {
-			$renderer = isset( $option['renderer'] ) ? $option['renderer'] : null;
-			$this->register( $key, $option['default'], $option['type'], $renderer, AI1EC_VERSION );
+			$renderer = null;
+			$value    = $option['default'];
+			if ( isset( $option['renderer'] ) ) {
+				$renderer = $option['renderer'];
+			}
+			if ( isset( $retrieved[$key] ) ) {
+				$value = $retrieved[$key]['value'];
+			}
+			$this->register(
+				$key,
+				$value,
+				$option['type'],
+				$renderer,
+				AI1EC_VERSION
+			);
 		}
 	}
 

@@ -7,7 +7,7 @@
 
 	<span class="ai1ec-popup-title">
 		<a href="{{ event.get_runtime( 'instance_permalink' ) | e('html_attr') }}"
-			>{{ event.get_runtime( 'filtered_title' ) | truncate }}</a>
+			>{{ event.get_runtime( 'filtered_title' ) | truncate | raw }}</a>
 		{% if show_location_in_title and event.get( 'venue' ) is not empty %}
 			<span class="ai1ec-event-location"
 				>{{ '@ %s' | __ | format( event.get( 'venue' ) ) }}</span>

@@ -162,7 +162,7 @@ define(
 				$( '#ai1ec_category_image_uploader' ).click( category_image_uploader );
 
 				var img = $( '#ai1ec_category_imag_preview' ).attr('src');
-				if ( img.length > 0 ) {
+				if ( img && img.length > 0 ) {
 					$( '#ai1ec_category_image_url' ).val( img );
 				}
 			} );

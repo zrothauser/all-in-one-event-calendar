@@ -44,26 +44,26 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 
 					switch ( $data['type'] ) {
 						case 'bool';
-							$value = true;
+							$value  = true;
 							break;
 						case 'int';
-							$value = (int)$_POST[$name];
+							$value  = (int)$_POST[$name];
 							break;
 						case 'string';
-							$value = (string)$_POST[$name];
+							$value  = (string)$_POST[$name];
 							break;
 						case 'array';
 							$method = '_handle_saving_' . $name;
-							$value = $this->$method();
+							$value  = $this->$method();
 							break;
 						case 'mixed';
 							$method = '_handle_saving_' . $name;
-							$value = $this->$method( $_POST[$name] );
+							$value  = $this->$method( $_POST[$name] );
 							break;
 					}
 				}
 			} else {
-				if ( 'bool' === $data['type'] ) {
+				if ( isset( $data['type'] ) && 'bool' === $data['type'] ) {
 					$value = false;
 				}
 			}

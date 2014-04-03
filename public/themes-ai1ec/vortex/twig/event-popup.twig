@@ -44,7 +44,7 @@
 
 	{% set post_excerpt = event.get_runtime( 'post_excerpt' ) | trim %}
 	{% if post_excerpt is not empty %}
-		<div class="ai1ec-popup-excerpt">{{ post_excerpt }}</div>
+		<div class="ai1ec-popup-excerpt">{{ post_excerpt | raw }}</div>
 	{% endif %}
 
 </div>

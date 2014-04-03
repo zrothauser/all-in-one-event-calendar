@@ -228,22 +228,27 @@ class Ai1ec_Front_Controller {
 	}
 
 	/**
-	 * Set the default theme if no theme is set.
+	 * Set the default theme if no theme is set, or populate theme info array if
+	 * insufficient information is currently being stored.
+	 *
+	 * @uses apply_filters() Calls 'ai1ec_pre_save_current_theme' hook to allow
+	 *       overwriting of theme information before being stored.
 	 */
 	protected function _add_default_theme_if_not_set() {
-		$default_theme = array(
-			'theme_dir'  => AI1EC_DEFAULT_THEME_PATH,
-			'theme_root' => AI1EC_DEFAULT_THEME_ROOT,
-			'theme_url'  => AI1EC_THEMES_URL . '/vortex',
-			'stylesheet' => 'vortex',
-			'legacy'     => false,
-		);
 		$option = $this->_registry->get( 'model.option' );
 		$theme  = $option->get( 'ai1ec_current_theme', array() );
+		$update = false;
 
 		// Theme setting is undefined; default to Vortex.
 		if ( empty( $theme ) ) {
-			$option->set( 'ai1ec_current_theme', $default_theme );
+			$theme  = array(
+				'theme_dir'  => AI1EC_DEFAULT_THEME_PATH,
+				'theme_root' => AI1EC_DEFAULT_THEME_ROOT,
+				'theme_url'  => AI1EC_THEMES_URL . '/vortex',
+				'stylesheet' => 'vortex',
+				'legacy'     => false,
+			);
+			$update = true;
 		}
 		// Legacy settings; in 1.x the active theme was stored as a bare string,
 		// and they were located in a different folder than they are now.
@@ -286,7 +291,7 @@ class Ai1ec_Front_Controller {
 				'stylesheet' => $theme_name,
 				'legacy'     => $legacy,
 			);
-			$option->set( 'ai1ec_current_theme', $theme );
+			$update = true;
 		}
 		// Ensure 'theme_url' is defined, as this property was added after the first
 		// public beta release.
@@ -297,6 +302,11 @@ class Ai1ec_Front_Controller {
 			} else {
 				$theme['theme_url'] = AI1EC_THEMES_URL . '/' . $theme['stylesheet'];
 			}
+			$update = true;
+		}
+
+		if ( $update ) {
+			$theme = apply_filters( 'ai1ec_pre_save_current_theme', $theme );
 			$option->set( 'ai1ec_current_theme', $theme );
 		}
 	}

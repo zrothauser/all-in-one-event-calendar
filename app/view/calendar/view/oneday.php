@@ -217,8 +217,8 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		$day_end_ts   = $loc_end_time->format();
 
 		foreach ( $day_events as $evt ) {
-			$evt_start = $evt->get( 'start' )->format();
-			$evt_end   = $evt->get( 'end' )->format();
+			list( $evt_start, $evt_end ) = $this->
+				_get_view_specific_timestamps( $evt );
 
 			// If event falls on this day, make a copy.
 			if ( $evt_end > $day_start_ts && $evt_start < $day_end_ts ) {

@@ -172,8 +172,11 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		// Classify each event into a date/allday category
 		foreach ( $events as $event ) {
 			$start_time    = $this->_registry
-				->get( 'date.time', $event->get( 'start' ) )
-				->set_time( 0, 0, 0 );
+				->get(
+					'date.time',
+					$event->get( 'start' )->format( 'Y-m-d\T00:00:00' ),
+					'sys.default'
+				);
 			$exact_date    = $time->format_datetime_for_url(
 				$start_time,
 				$settings->get( 'input_date_format' )

@@ -210,22 +210,8 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 		$all_events = array();
 		$this->_days_cache = $this->_registry->get( 'cache.memory' );
 		foreach ( $week_events as $evt ) {
-			$evt_start = 0;
-			$evt_end   = 0;
-			if ( $evt->is_allday() ) {
-				// reset to be day-contained with respect to current timezone
-				$evt_start = $this->_registry
-					->get( 'date.time', $evt->get( 'start' ), 'sys.default' )
-					->set_time( 0, 0, 0 )
-					->format();
-				$evt_end   = $this->_registry
-					->get( 'date.time', $evt->get( 'end' ), 'sys.default' )
-					->set_time( 0, 0, 0 )
-					->format();
-			} else {
-				$evt_start = $evt->get( 'start' )->format();
-				$evt_end   = $evt->get( 'end' )->format();
-			}
+			list( $evt_start, $evt_end ) = $this->
+				_get_view_specific_timestamps( $evt );
 
 			// Iterate through each day of the week and generate new event object
 			// based on this one for each day that it spans

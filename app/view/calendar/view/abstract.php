@@ -106,6 +106,31 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	}
 
 	/**
+	 * Prepare week specific event start/end timestamps.
+	 *
+	 * @param Ai1ec_Event $event Instance of event.
+	 *
+	 * @return array Start and end respectively in 0 and 1 positions.
+	 */
+	protected function _get_view_specific_timestamps( Ai1ec_Event $event ) {
+		if ( $event->is_allday() ) {
+			// reset to be day-contained with respect to current timezone
+			$event_start = $this->_registry
+				->get( 'date.time', $event->get( 'start' ), 'sys.default' )
+				->set_time( 0, 0, 0 )
+				->format();
+			$event_end   = $this->_registry
+				->get( 'date.time', $event->get( 'end' ), 'sys.default' )
+				->set_time( 0, 0, 0 )
+				->format();
+		} else {
+			$event_start = $event->get( 'start' )->format();
+			$event_end   = $event->get( 'end' )->format();
+		}
+		return array( $event_start, $event_end );
+	}
+
+	/**
 	 * Get the navigation html
 	 *
 	 * @param bool $no_navigation

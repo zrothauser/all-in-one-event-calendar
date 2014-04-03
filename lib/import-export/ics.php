@@ -531,19 +531,20 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 			$date_time->set_timezone( $timezone );
 		}
 
+		if ( ! isset( $time['value']['hour'] ) ) {
+			$time['value']['hour'] = $time['value']['min'] =
+				$time['value']['sec'] = 0;
+		}
+
 		$date_time->set_date(
 			$time['value']['year'],
 			$time['value']['month'],
 			$time['value']['day']
+		)->set_time(
+			$time['value']['hour'],
+			$time['value']['min'],
+			$time['value']['sec']
 		);
-
-		if ( isset( $time['value']['hour'] ) ) {
-			$date_time->set_time(
-				$time['value']['hour'],
-				$time['value']['min'],
-				$time['value']['sec']
-			);
-		}
 
 		return $date_time;
 	}

@@ -25,7 +25,7 @@
 						<td>
 							<input type="text" name="ai1ec_venue" id="ai1ec_venue"
 								class="ai1ec-form-control"
-								value="<?php echo $venue; ?>">
+								value="<?php echo esc_attr( $venue ); ?>">
 						</td>
 					</tr>
 					<tr>
@@ -37,7 +37,7 @@
 						<td>
 							<input type="text" name="ai1ec_address" id="ai1ec_address"
 								class="ai1ec-form-control"
-								value="<?php echo $address; ?>">
+								value="<?php echo esc_attr( $address ); ?>">
 						</td>
 					</tr>
 					<tr>
@@ -92,9 +92,9 @@
 				</tbody>
 			</table>
 		</div>
-		<input type="hidden" name="ai1ec_city" 				id="ai1ec_city" 				value="<?php echo $city; ?>">
-		<input type="hidden" name="ai1ec_province" 		id="ai1ec_province" 		value="<?php echo $province; ?>">
-		<input type="hidden" name="ai1ec_postal_code" id="ai1ec_postal_code"	value="<?php echo $postal_code; ?>">
-		<input type="hidden" name="ai1ec_country" 		id="ai1ec_country" 			value="<?php echo $country; ?>">
+		<input type="hidden" name="ai1ec_city" id="ai1ec_city" value="<?php echo esc_attr( $city ); ?>">
+		<input type="hidden" name="ai1ec_province" id="ai1ec_province" value="<?php echo esc_attr( $province ); ?>">
+		<input type="hidden" name="ai1ec_postal_code" id="ai1ec_postal_code" value="<?php echo esc_attr( $postal_code ); ?>">
+		<input type="hidden" name="ai1ec_country" id="ai1ec_country" value="<?php echo esc_attr( $country ); ?>">
 	</div>
 </div>

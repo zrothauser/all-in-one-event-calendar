@@ -42,7 +42,9 @@ class Ai1ec_Front_Controller {
 		ai1ec_start();
 		$this->_init( $ai1ec_loader );
 		$this->_initialize_dispatcher();
-		$this->_registry->get( 'less.lessphp' )->initialize_less_variables_if_not_set();
+		$lessphp = $this->_registry->get( 'less.lessphp' );
+		$lessphp->initialize_less_variables_if_not_set();
+		$lessphp->invalidate_css_cache_if_requested();
 		$this->_registry->get( 'controller.shutdown' )
 			->register( 'ai1ec_stop' );
 		add_action( 'plugins_loaded', array( $this, 'register_extensions' ), 1 );

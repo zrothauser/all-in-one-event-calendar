@@ -210,6 +210,20 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 	}
 
 	/**
+	 * Invalidates CSS cache if ai1ec_invalidate_css_cache option was flagged.
+	 * Deletes flag afterwards.
+	 */
+	public function invalidate_css_cache_if_requested() {
+		$option = $this->_registry->get( 'model.option' );
+
+		if ( $option->get( 'ai1ec_invalidate_css_cache' ) ) {
+			$css_controller = $this->_registry->get( 'css.frontend' );
+			$css_controller->invalidate_cache( null, false );
+			$option->delete( 'ai1ec_invalidate_css_cache' );
+		}
+	}
+
+	/**
 	 * After updating core themes, we also need to update the LESS variables with
 	 * the new ones as they may have changed. This function assumes that the
 	 * user_variables.php file in the active theme and/or parent theme has just

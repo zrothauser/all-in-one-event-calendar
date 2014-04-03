@@ -29,7 +29,7 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 				'Event Contributor',
 				$caps
 			);
-			$role->add_cap( 'publish_ai1ec_events' );
+			$role->add_cap( 'edit_ai1ec_event' );
 			$role->add_cap( 'edit_ai1ec_events' );
 			$role->add_cap( 'delete_ai1ec_event' );
 			$role->add_cap( 'read' );

@@ -150,10 +150,14 @@ class Ai1ec_Date_Time {
 	 *
 	 * @param DateTimeZone $timezone Preferred timezone instance.
 	 *
-	 * @return void
+	 * @return Ai1ec_Date_Time Instance of self for chaining.
 	 */
-	public function set_preferred_timezone( DateTimeZone $timezone ) {
-		$this->_preferred_timezone = $timezone->getName();
+	public function set_preferred_timezone( $timezone ) {
+		if ( $timezone instanceof DateTimeZone ) {
+			$timezone = $timezone->getName();
+		}
+		$this->_preferred_timezone = (string)$timezone;
+		return $this;
 	}
 
 	/**
@@ -281,7 +285,8 @@ class Ai1ec_Date_Time {
 	 */
 	public function set_date_time( $time = 'now', $timezone = 'UTC' ) {
 		if ( $time instanceof self ) {
-			$this->_date_time = clone $time->_date_time;
+			$this->_date_time          = clone $time->_date_time;
+			$this->_preferred_timezone = $time->_preferred_timezone;
 			if ( 'UTC' !== $timezone && $timezone ) {
 				$this->set_timezone( $timezone );
 			}

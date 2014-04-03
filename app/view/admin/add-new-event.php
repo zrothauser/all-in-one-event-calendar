@@ -65,7 +65,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		$contact_email    = '';
 		$contact_url      = '';
 		$cost             = '';
-		$is_free          = 'checked="checked"';
+		$is_free          = '';
 		$rrule            = '';
 		$rrule_text       = '';
 		$repeating_event  = false;

@@ -20,7 +20,7 @@
 						<input type="text" name="ai1ec_contact_name"
 							id="ai1ec_contact_name"
 							class="ai1ec-form-control"
-							value="<?php echo $contact_name; ?>">
+							value="<?php echo esc_attr( $contact_name ); ?>">
 					</td>
 				</tr>
 				<tr>
@@ -33,7 +33,7 @@
 						<input type="text" name="ai1ec_contact_phone"
 							id="ai1ec_contact_phone"
 							class="ai1ec-form-control"
-							value="<?php echo $contact_phone; ?>">
+							value="<?php echo esc_attr( $contact_phone ); ?>">
 					</td>
 				</tr>
 				<tr>
@@ -46,7 +46,7 @@
 						<input type="text" name="ai1ec_contact_email"
 							id="ai1ec_contact_email"
 							class="ai1ec-form-control"
-							value="<?php echo $contact_email; ?>">
+							value="<?php echo esc_attr( $contact_email ); ?>">
 					</td>
 				</tr>
 				<tr>
@@ -59,7 +59,7 @@
 						<input type="text" name="ai1ec_contact_url"
 							id="ai1ec_contact_url"
 							class="ai1ec-form-control"
-							value="<?php echo $event->get_nonloggable_url( $contact_url ); ?>">
+							value="<?php echo esc_attr( $event->get_nonloggable_url( $contact_url ) ); ?>">
 					</td>
 				</tr>
 			</tbody>

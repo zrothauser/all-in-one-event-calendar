@@ -24,7 +24,7 @@
 							if ( ! empty( $is_free ) ) {
 								echo 'class="ai1ec-hidden" ';
 							}
-						 ?>value="<?php echo $cost; ?>">
+						 ?>value="<?php echo esc_attr( $cost ); ?>">
 						<label for="ai1ec_is_free">
 							<input class="checkbox"
 								type="checkbox"
@@ -46,7 +46,7 @@
 					<td>
 						<input type="text" name="ai1ec_ticket_url" id="ai1ec_ticket_url"
 							class="ai1ec-form-control"
-							value="<?php echo $event->get_nonloggable_url( $ticket_url ); ?>">
+							value="<?php echo esc_attr( $event->get_nonloggable_url( $ticket_url ) ); ?>">
 					</td>
 				</tr>
 			</tbody>

@@ -74,7 +74,7 @@ class Ai1ec_Theme_Loader {
 		if ( ! isset( $this->_paths[$target] ) ) {
 			return false;
 		}
-		array_unshift( $this->_paths[$target], $path );
+		$this->_paths[$target][] = $path;
 		return true;
 	}
 

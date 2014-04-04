@@ -55,7 +55,6 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		$this->lessphp_controller  = $this->_registry->get( 'less.lessphp' );
 		$this->db_adapter          = $this->_registry->get( 'model.option' );
 		$this->preview_mode        = $preview_mode;
-
 	}
 
 	/**
@@ -141,14 +140,18 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	}
 
 	/**
-	 * Invalidate the persistence layer only after a succesful compile of the
+	 * Invalidate the persistence layer only after a successful compile of the
 	 * LESS files.
 	 *
-	 * @param array $variables
-	 * @param boolean $update_persistence
-	 * @return boolean
+	 * @param  array   $variables          LESS variable array to use
+	 * @param  boolean $update_persistence Whether the persist successful compile
+	 *
+	 * @return boolean                     Whether successful
 	 */
-	public function invalidate_cache( array $variables = null, $update_persistence = false ) {
+	public function invalidate_cache(
+		array $variables    = null,
+		$update_persistence = false
+	) {
 		// Reset the parse time to force a browser reload of the CSS, whether we are
 		// updating persistence or not.
 		$this->save_less_parse_time();

@@ -135,7 +135,6 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 			try {
 				// Get the filename following our fallback convention
 				$file_to_parse = $loader->get_file( $file );
-
 			} catch ( Ai1ec_Exception $e ) {
 				// We let child themes override styles of Vortex.
 				// So there is no fallback for override and we can continue.

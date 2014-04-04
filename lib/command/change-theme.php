@@ -12,14 +12,14 @@
 class Ai1ec_Command_Change_Theme extends Ai1ec_Command {
 
 	/**
-	 * NOTICE: {@see self::is_this_to_execute} for details, why input is trusted
-	 * and not check for injections.
+	 * Executes the command to change the active theme.
+	 *
+	 * NOTE: {@see self::is_this_to_execute} must return true for this command
+	 * to execute; we can trust that input has been checked for injections.
 	 */
 	public function do_execute() {
-		// Invalidate the cached data so that the next request recompiles the css
-		$css_controller = $this->_registry->get( 'css.frontend' );
-		$css_controller->invalidate_cache( null, false );
-		$stylesheet     = preg_replace(
+		// Update the active theme in the options table.
+		$stylesheet = preg_replace(
 			'|[^a-z_\-]+|i',
 			'',
 			$_GET['ai1ec_stylesheet']
@@ -34,6 +34,15 @@ class Ai1ec_Command_Change_Theme extends Ai1ec_Command {
 				'stylesheet' => $stylesheet,
 			)
 		);
+		// Delete user variables from database so fresh ones are used by new theme.
+		$this->_registry->get( 'model.option' )->delete(
+			Ai1ec_Less_Lessphp::DB_KEY_FOR_LESS_VARIABLES
+		);
+		// Recompile CSS for new theme.
+		$css_controller = $this->_registry->get( 'css.frontend' );
+		$css_controller->invalidate_cache( null, false );
+
+		// Return user to themes list page with success message.
 		return array(
 			'url' => admin_url(
 				'edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-themes'

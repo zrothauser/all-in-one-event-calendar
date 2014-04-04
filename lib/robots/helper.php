@@ -18,20 +18,20 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 	 */
 	public function install() {
 		$option   = $this->_registry->get( 'model.option' );
-		$settings = $this->_registry->get( 'model.settings' );		
+		$settings = $this->_registry->get( 'model.settings' );
 		$robots   = $option->get( 'ai1ec_robots_txt' );
-		
-		if ( isset( $robots['page_id'] ) && 
-				isset( $robots['is_installed'] ) &&
+
+		if ( isset( $robots['page_id'] ) &&
+				! empty( $robots['is_installed'] ) &&
 					$robots['page_id'] == $settings->get( 'calendar_page_id' ) ) {
 			return;
 		}
 
 		$robots_file   = ABSPATH . 'robots.txt';
-		$robots_txt    = array();		
+		$robots_txt    = array();
 		$is_installed  = false;
 		$current_rules = null;
-		$custom_rules  = null;
+		$custom_rules  = $this->rules( null, null );
 
 		$url = wp_nonce_url(
 			'edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings',
@@ -46,7 +46,7 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 			request_filesystem_credentials( $url, '', true, false, null );
 		}
 
-		global $wp_filesystem;		
+		global $wp_filesystem;
 		if ( $wp_filesystem->exists( $robots_file )
 				&& $wp_filesystem->is_readable( $robots_file )
 					&& $wp_filesystem->is_writable( $robots_file ) ) {
@@ -70,7 +70,7 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 
 		// Set Page ID
 		$robots_txt['page_id'] = $settings->get( 'calendar_page_id' );
-		
+
 		// Update Robots Txt
 		$option->set( 'ai1ec_robots_txt', $robots_txt );
 
@@ -81,7 +81,7 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 	/**
 	 * Get default robots rules for the calendar
 	 *
-	 * @param  array  $output Current robots rules
+	 * @param  string $output Current robots rules
 	 * @param  string $public Public flag
 	 * @return array
 	 */

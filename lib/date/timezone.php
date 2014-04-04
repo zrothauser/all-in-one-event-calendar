@@ -364,7 +364,6 @@ class Ai1ec_Date_Timezone extends Ai1ec_Base {
 						'<a href="' . admin_url( 'options-general.php' ) .
 						'">' . Ai1ec_I18n::__( 'Settings' ) . '</a>'
 					),
-					array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
 					'error'
 				);
 			}

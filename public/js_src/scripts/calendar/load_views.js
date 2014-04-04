@@ -91,6 +91,9 @@ define(
 	 * a newly retrieved view.
 	 */
 	var destroy_view = function() {
+		// Execute any registered hooks from extensions.
+		$( '#ai1ec-calendar-view-container' ).trigger( 'destroy_view.ai1ec' );
+
 		// Destroy any datepicker before loading new view.
 		var dp = $( '.ai1ec-minical-trigger' ).data( 'datepicker' );
 		if ( typeof dp !== 'undefined' ) {
@@ -410,6 +413,7 @@ define(
 		load_view                          : load_view,
 		save_current_filter                : save_current_filter,
 		remove_current_filter              : remove_current_filter,
-		load_view_from_select2_filter      : load_view_from_select2_filter
+		load_view_from_select2_filter      : load_view_from_select2_filter,
+		load_view_according_to_datatype    : load_view_according_to_datatype
 	};
 });

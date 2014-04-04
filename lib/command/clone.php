@@ -10,7 +10,7 @@
  * @subpackage AI1EC.Command
  */
 class Ai1ec_Command_Clone extends Ai1ec_Command {
-	
+
 	/**
 	 * @var array The posts that must be cloned
 	 */
@@ -78,7 +78,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 			}
 			return true;
 		}
-		
+
 		// duplicate all selected post by bottom dropdown
 		if (
 			isset( $_REQUEST['action2'] ) &&
@@ -100,7 +100,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 			$_REQUEST['action'] === 'duplicate_post_save_as_new_post' &&
 			! empty( $_REQUEST['post'] )
 		) {
-			
+
 			$this->_posts[] = array(
 				'status' => '',
 				'post'   => get_post( $_REQUEST['post'] )
@@ -123,10 +123,10 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Sets the render strategy.
-	 * 
+	 *
 	 * @param Ai1ec_Request_Parser $request
 	 */
 	public function set_render_strategy( Ai1ec_Request_Parser $request ) {
@@ -136,7 +136,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 			$this->_render_strategy = $this->_registry->get( 'http.response.render.strategy.void' );
 		}
 	}
-	
+
 	/**
 	 * Create a duplicate from a posts' instance
 	 */
@@ -148,7 +148,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 			$new_post_status = $post->post_status;
 		}
 		$new_post_status = $this->_get_new_post_status( $new_post_status );
-	
+
 		$new_post = array(
 			'menu_order'     => $post->menu_order,
 			'comment_status' => $post->comment_status,
@@ -166,9 +166,8 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 			'post_type'      => $post->post_type,
 			'to_ping'        => $post->to_ping,
 		);
-	
+
 		$new_post_id    = wp_insert_post( $new_post );
-		$notification   = $this->_registry->get( 'notification.admin' );
 		$edit_event_url = esc_attr(
 			admin_url( "post.php?post={$new_post_id}&action=edit" )
 		);
@@ -177,11 +176,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 			$post->post_title,
 			$edit_event_url
 		);
-		$notification->store(
-			$message,
-			array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
-			'updated'
-		);
+		$notification   = $this->_registry->get( 'notification.admin', $message );
 		$this->_duplicate_post_copy_post_taxonomies( $new_post_id, $post );
 		$this->_duplicate_post_copy_attachments(     $new_post_id, $post );
 		$this->_duplicate_post_copy_post_meta_info(  $new_post_id, $post );
@@ -213,15 +208,15 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 				$post->post_type,
 				$post->post_parent
 			);
-	
+
 			$new_post = array();
 			$new_post['ID']        = $new_post_id;
 			$new_post['post_name'] = $post_name;
-	
+
 			// Update the post into the database
 			wp_update_post( $new_post );
 		}
-	
+
 		return $new_post_id;
 	}
 
@@ -235,7 +230,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 		//if ( $meta_blacklist == "" )
 		$meta_blacklist = array();
 		$meta_keys = array_diff( $post_meta_keys, $meta_blacklist );
-	
+
 		foreach ( $meta_keys as $meta_key ) {
 			$meta_values = get_post_custom_values( $meta_key, $post->ID );
 			foreach ( $meta_values as $meta_value ) {
@@ -251,13 +246,13 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 	 */
 	protected function _duplicate_post_copy_attachments( $new_id , $post ) {
 		//if (get_option('duplicate_post_copyattachments') == 0) return;
-	
+
 		// get old attachments
 		$attachments = get_posts( array( 'post_type' => 'attachment' , 'numberposts' => -1 , 'post_status' => null , 'post_parent' => $post->ID ) );
 		// clone old attachments
 		foreach ( $attachments as $att ) {
 			$new_att_author = $this->_duplicate_post_get_current_user();
-	
+
 			$new_att = array (
 				'menu_order'     => $att->menu_order,
 				'comment_status' => $att->comment_status,
@@ -279,17 +274,17 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 				'post_type'      => $att->post_type,
 				'to_ping'        => $att->to_ping
 			);
-	
+
 			$new_att_id = wp_insert_post( $new_att );
-	
+
 			// get and apply a unique slug
 			$att_name = wp_unique_post_slug( $att->post_name , $new_att_id , $att->post_status , $att->post_type , $new_id );
 			$new_att = array();
 			$new_att['ID']        = $new_att_id;
 			$new_att['post_name'] = $att_name;
-	
+
 			wp_update_post( $new_att );
-	
+
 
 		}
 	}
@@ -302,7 +297,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 		if ( $db->are_terms_set() ) {
 			// Clear default category (added by wp_insert_post)
 			wp_set_object_terms( $new_id , NULL, 'category' );
-	
+
 			$post_taxonomies = get_object_taxonomies( $post->post_type );
 
 			$taxonomies_blacklist = array();

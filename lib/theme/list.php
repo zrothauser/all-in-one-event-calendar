@@ -245,7 +245,9 @@ class Ai1ec_Theme_List extends WP_List_Table {
 					"&amp;ai1ec_stylesheet=" .
 					urlencode( $stylesheet ) .
 					"&amp;ai1ec_theme_root=" .
-					urlencode( $theme_root ),
+					urlencode( $theme_root ) .
+					"&amp;ai1ec_theme_url=" .
+					urlencode( $theme_root_uri ),
 					'switch-ai1ec_theme_' . $template
 				);
 				$activate_text  = esc_attr(

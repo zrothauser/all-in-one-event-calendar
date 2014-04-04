@@ -29,12 +29,13 @@ class Ai1ec_Command_Change_Theme extends Ai1ec_Command {
 			array(
 				'theme_dir'  => realpath( $_GET['ai1ec_theme_dir'] ),
 				'theme_root' => realpath( $_GET['ai1ec_theme_root'] ),
+				'theme_url'  => $_GET['ai1ec_theme_url'],
 				'legacy'     => (bool)intval( $_GET['ai1ec_legacy'] ),
 				'stylesheet' => $stylesheet,
 			)
 		);
 		return array(
-			'url' => admin_url( 
+			'url' => admin_url(
 				'edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-themes'
 			),
 			'query_args' => array(

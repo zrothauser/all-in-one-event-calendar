@@ -42,10 +42,12 @@ class Ai1ec_Front_Controller {
 		ai1ec_start();
 		$this->_init( $ai1ec_loader );
 		$this->_initialize_dispatcher();
-		$this->_registry->get( 'less.lessphp' )->initialize_less_variables_if_not_set();
+		$lessphp = $this->_registry->get( 'less.lessphp' );
+		$lessphp->initialize_less_variables_if_not_set();
 		$this->_registry->get( 'controller.shutdown' )
 			->register( 'ai1ec_stop' );
 		add_action( 'plugins_loaded', array( $this, 'register_extensions' ), 1 );
+		add_action( 'init', array( $lessphp, 'invalidate_css_cache_if_requested' ) );
 	}
 
 	/**
@@ -59,9 +61,9 @@ class Ai1ec_Front_Controller {
 
 	/**
 	 * Returns the registry object
-	 * 
+	 *
 	 * @param mixed $discard not used. Always return the registry.
-	 * 
+	 *
 	 * @return Ai1ec_Registry_Object
 	 */
 	public function return_registry( $discard ) {
@@ -221,48 +223,93 @@ class Ai1ec_Front_Controller {
 		} catch ( Ai1ec_Scheduling_Exception $e ) {
 			// not blocking
 		}
-		
+
 		if ( null !== $exception ) {
 			throw $exception;
 		}
 	}
 
 	/**
-	 * Set the default theme if no theme is set.
+	 * Set the default theme if no theme is set, or populate theme info array if
+	 * insufficient information is currently being stored.
+	 *
+	 * @uses apply_filters() Calls 'ai1ec_pre_save_current_theme' hook to allow
+	 *       overwriting of theme information before being stored.
 	 */
 	protected function _add_default_theme_if_not_set() {
 		$option = $this->_registry->get( 'model.option' );
 		$theme  = $option->get( 'ai1ec_current_theme', array() );
-		if ( empty( $theme ) ) {
-			$option->set(
-				'ai1ec_current_theme',
-				array(
-					'theme_dir'  => AI1EC_DEFAULT_THEME_PATH,
-					'theme_root' => AI1EC_DEFAULT_THEME_ROOT,
-					'stylesheet' => 'vortex',
-					'legacy'     => false,
-				)
-			);
-		} else if ( is_string( $theme ) ) {
-			// Legacy settings
+		$update = false;
 
+		// Theme setting is undefined; default to Vortex.
+		if ( empty( $theme ) ) {
+			$theme  = array(
+				'theme_dir'  => AI1EC_DEFAULT_THEME_PATH,
+				'theme_root' => AI1EC_DEFAULT_THEME_ROOT,
+				'theme_url'  => AI1EC_THEMES_URL . '/vortex',
+				'stylesheet' => 'vortex',
+				'legacy'     => false,
+			);
+			$update = true;
+		}
+		// Legacy settings; in 1.x the active theme was stored as a bare string,
+		// and they were located in a different folder than they are now.
+		else if ( is_string( $theme ) ) {
 			$theme_name  = strtolower( $theme );
 			$core_themes = explode( ',', AI1EC_CORE_THEMES );
+			$legacy      = ! in_array( $theme_name, $core_themes );
 
-			$legacy = true;
-			if ( in_array( $theme_name, $core_themes ) ) {
-				$legacy = false;
+			if ( $legacy ) {
+				$root = WP_CONTENT_DIR . DIRECTORY_SEPARATOR . AI1EC_THEMES_FOLDER;
+				$url  = WP_CONTENT_URL . '/' . AI1EC_THEMES_FOLDER . '/' . $theme_name;
+			} else {
+				$root = AI1EC_DEFAULT_THEME_ROOT;
+				$url  = AI1EC_THEMES_URL . '/' . $theme_name;
 			}
 
-			$option->set(
-				'ai1ec_current_theme',
-				array(
-					'theme_dir'  => AI1EC_DEFAULT_THEME_PATH,
-					'theme_root' => AI1EC_DEFAULT_THEME_ROOT,
-					'stylesheet' => $theme_name,
-					'legacy'     => $legacy,
-				)
+			// Ensure existence of theme directory.
+			if ( ! is_dir( $root . DIRECTORY_SEPARATOR . $theme_name ) ) {
+				// It's missing; something is wrong with this theme. Reset theme to
+				// Vortex and warn the user accordingly.
+				$option->set( 'ai1ec_current_theme', $default_theme );
+
+				$notification = $this->_registry->get( 'notification.admin',
+					sprintf(
+						Ai1ec_I18n::__(
+							'Your active calendar theme could not be properly initialized. The default theme has been activated instead. Please visit %s and try reactivating your theme manually.'
+						),
+						'<a href="' . admin_url( AI1EC_THEME_SELECTION_BASE_URL ) . '">' .
+						Ai1ec_I18n::__( 'Calendar Themes' ) . '</a>'
+					),
+					'error',
+					1
+				);
+			}
+
+			$theme = array(
+				'theme_dir'  => $root . DIRECTORY_SEPARATOR . $theme_name,
+				'theme_root' => $root,
+				'theme_url'  => $url,
+				'stylesheet' => $theme_name,
+				'legacy'     => $legacy,
 			);
+			$update = true;
+		}
+		// Ensure 'theme_url' is defined, as this property was added after the first
+		// public beta release.
+		else if ( ! isset( $theme['theme_url'] ) ) {
+			if ( $theme['legacy'] ) {
+				$theme['theme_url'] = WP_CONTENT_URL . '/' . AI1EC_THEMES_FOLDER . '/' .
+					$theme['stylesheet'];
+			} else {
+				$theme['theme_url'] = AI1EC_THEMES_URL . '/' . $theme['stylesheet'];
+			}
+			$update = true;
+		}
+
+		if ( $update ) {
+			$theme = apply_filters( 'ai1ec_pre_save_current_theme', $theme );
+			$option->set( 'ai1ec_current_theme', $theme );
 		}
 	}
 

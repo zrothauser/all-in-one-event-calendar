@@ -8,27 +8,36 @@
 @import "bootstrap/variables.less";
 @import "user-variable-map.less";
 
-@text-muted:              mix( @text-color, @body-bg, 60% );
-@headings-color:          @grayLight;
-@dropdown-link-active-bg: mix( @body-bg, @link-color, 20% );
+@text-muted:                 mix( @text-color, @body-bg, 60% );
+@headings-color:             @grayLight;
+@dropdown-link-active-bg:    mix( @body-bg, @link-color, 20% );
 
-@tableBackgroundAccent:   @grayDarkest;
-@tableBackgroundHover:    @grayDarker;
-@tableBorder:             @grayDark;
+@table-bg-accent:            @gray-darkest;
+@table-bg-hover:             @gray-darker;
+@table-border-color:         @gray-darker;
 
-@zindex-dropdown:         10000;
-@zindex-popover:          10010;
-@zindex-tooltip:          10020;
-@zindex-navbar-fixed:     10030;
-@zindex-modal-background: 10040;
-@zindex-modal:            10050;
+@zindex-dropdown:            10000;
+@zindex-popover:             10010;
+@zindex-tooltip:             10020;
+@zindex-navbar-fixed:        10030;
+@zindex-modal-background:    10040;
+@zindex-modal:               10050;
 
-@modal-content-border:    mix( @body-bg, @text-color, 70% );
-@modal-footer-shadow:     0 1px 0 @body-bg;
+@modal-backdrop-bg:          @body-bg;
+@modal-content-bg:           @body-bg;
+@modal-content-border-color: mix( @body-bg, @text-color, 70% );
+@modal-footer-shadow:        0 1px 0 @body-bg;
+@modal-header-border-color:  @modal-content-border-color;
 
-@toolbar-bg:              @body-bg;
-@toolbar-border-color:    mix( @btn-default-border, @body-bg, 66% );
+@toolbar-bg:                 @btn-default-bg;
+@toolbar-border-color:       @btn-default-border;
 
-@event-hover-border:      mix( @event-border, @text-color, 50% );
+@event-hover-border:         mix( @event-border, @text-color, 50% );
 
-@popover-arrow-width:     5px;
+@popover-arrow-width:        5px;
+@popover-bg:                 @event-bg;
+@popover-arrow-color:        @event-border;
+
+@nav-link-hover-bg:          @dropdown-link-hover-bg;
+
+@close-color:                @text-color;

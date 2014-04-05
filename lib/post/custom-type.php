@@ -179,12 +179,14 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 		// = register custom post type for events =
 		// ========================================
 		register_post_type( AI1EC_POST_TYPE, $args );
-		
+
 		// get event contributor if saved in the db
 		$contributor = get_role( 'ai1ec_event_assistant' );
 		// if it's present and has the wrong capability delete it.
-		if ( $contributor instanceOf WP_Role && 
-			$contributor->has_cap( 'publish_ai1ec_events' ) ) {
+		if (
+			$contributor instanceOf WP_Role && 
+			$contributor->has_cap( 'publish_ai1ec_events' )
+		) {
 			remove_role( 'ai1ec_event_assistant' );
 			$contributor = false;
 		}
@@ -238,7 +240,6 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 				$role->add_cap( 'manage_events_categories' );
 				// Manage calendar feeds.
 				$role->add_cap( 'manage_ai1ec_feeds' );
-		
 				if ( 'administrator' === $role_name ) {
 					// Change calendar themes & manage calendar options.
 					$role->add_cap( 'switch_ai1ec_themes' );
@@ -246,6 +247,7 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 				}
 			}
 		}
+
 	}
 
 	/**

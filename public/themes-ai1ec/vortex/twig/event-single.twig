@@ -84,19 +84,25 @@
 
 	{% if categories is not empty %}
 		<div class="ai1ec-categories ai1ec-row">
-			<div class="ai1ec-field-label ai1ec-col-sm-3">
-				{{ 'Categories:' | __ }}
+			<div class="ai1ec-field-label ai1ec-col-sm-3 ai1ec-col-xs-1">
+				<i class="ai1ec-fa ai1ec-fa-folder-open ai1ec-tooltip-trigger"
+					title="{{ 'Categories' | __ | e('html_attr') }}"></i>
 			</div>
-			<div class="ai1ec-field-value ai1ec-col-sm-9">{{ categories | raw }}</div>
+			<div class="ai1ec-field-value ai1ec-col-sm-9 ai1ec-col-xs-10">
+				{{ categories | raw }}
+			</div>
 		</div>
 	{% endif %}
 
 	{% if tags is not empty %}
 		<div class="ai1ec-tags ai1ec-row">
-			<div class="ai1ec-field-label ai1ec-col-sm-3">
-				{{ 'Tags:' | __ }}
+			<div class="ai1ec-field-label ai1ec-col-sm-3 ai1ec-col-xs-1">
+				<i class="ai1ec-fa ai1ec-fa-tags ai1ec-tooltip-trigger"
+					title="{{ 'Tags' | __ | e('html_attr') }}"></i>
 			</div>
-			<div class="ai1ec-field-value ai1ec-col-sm-9">{{ tags | raw }}</div>
+			<div class="ai1ec-field-value ai1ec-col-sm-9 ai1ec-col-xs-10">
+				{{ tags | raw }}
+			</div>
 		</div>
 	{% endif %}
 

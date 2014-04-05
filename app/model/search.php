@@ -104,6 +104,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 				`i`.`id` AS `instance_id`,
 				`i`.`start` AS `start`,
 				`i`.`end` AS `end`,
+				`e`.`timezone_name` AS `timezone_name`,
 				`e`.`allday` AS `event_allday`,
 				`e`.`recurrence_rules`,
 				`e`.`exception_rules`,

@@ -17,10 +17,10 @@
 				{% if term.term_id in selected_tag_ids %}
 					class="ai1ec-active"
 				{% endif %}>
-				{% if term.description is not empty %}
-					title="{{ term.description | e('html_attr') }}"
-				{% endif %}
 				<a class="ai1ec-load-view ai1ec-tag"
+					{% if term.description is not empty %}
+						title="{{ term.description | e('html_attr') }}"
+					{% endif %}
 					{{ data_type | raw }}
 					href="{{ term.href | e('html_attr') }}">
 					{{ term.name }}

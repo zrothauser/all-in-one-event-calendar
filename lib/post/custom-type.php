@@ -19,65 +19,6 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 	public function register() {
 		$settings = $this->_registry->get( 'model.settings' );
 
-		// Create event contributor role with the same capabilities
-		// as subscriber role, plus event managing capabilities
-		// if we have not created it yet.
-		if ( ! get_role( 'ai1ec_event_assistant' ) ) {
-			$caps = get_role( 'subscriber' )->capabilities;
-			$role = add_role(
-				'ai1ec_event_assistant',
-				'Event Contributor',
-				$caps
-			);
-			$role->add_cap( 'publish_ai1ec_events' );
-			$role->add_cap( 'edit_ai1ec_events' );
-			$role->add_cap( 'delete_ai1ec_event' );
-			$role->add_cap( 'read' );
-			unset( $caps, $role );
-		}
-
-		// Add event managing capabilities to administrator, editor, author.
-		// The last created capability is "manage_ai1ec_feeds", so check for
-		// that one.
-		$role = get_role( 'administrator' );
-		if ( is_object( $role ) && ! $role->has_cap( 'manage_ai1ec_feeds' ) ) {
-			$role_list = array( 'administrator', 'editor', 'author' );
-			foreach ( $role_list as $role_name ) {
-				$role = get_role( $role_name );
-				if ( null === $role || ! ( $role instanceof WP_Role ) ) {
-					continue;
-				}
-				// Read events.
-				$role->add_cap( 'read_ai1ec_event' );
-				// Edit events.
-				$role->add_cap( 'edit_ai1ec_event' );
-				$role->add_cap( 'edit_ai1ec_events' );
-				$role->add_cap( 'edit_others_ai1ec_events' );
-				$role->add_cap( 'edit_private_ai1ec_events' );
-				$role->add_cap( 'edit_published_ai1ec_events' );
-				// Delete events.
-				$role->add_cap( 'delete_ai1ec_event' );
-				$role->add_cap( 'delete_ai1ec_events' );
-				$role->add_cap( 'delete_others_ai1ec_events' );
-				$role->add_cap( 'delete_published_ai1ec_events' );
-				$role->add_cap( 'delete_private_ai1ec_events' );
-				// Publish events.
-				$role->add_cap( 'publish_ai1ec_events' );
-				// Read private events.
-				$role->add_cap( 'read_private_ai1ec_events' );
-				// Manage categories & tags.
-				$role->add_cap( 'manage_events_categories' );
-				// Manage calendar feeds.
-				$role->add_cap( 'manage_ai1ec_feeds' );
-
-				if ( 'administrator' === $role_name ) {
-					// Change calendar themes & manage calendar options.
-					$role->add_cap( 'switch_ai1ec_themes' );
-					$role->add_cap( 'manage_ai1ec_options' );
-				}
-			}
-		}
-
 		// ===============================
 		// = labels for custom post type =
 		// ===============================
@@ -101,7 +42,7 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 		// ================================
 		// = support for custom post type =
 		// ================================
-		$supports = array( 'title', 'editor', 'comments', 'custom-fields', 'thumbnail' );
+		$supports = array( 'title', 'editor', 'comments', 'custom-fields', 'thumbnail', 'author' );
 
 		// =============================
 		// = args for custom post type =
@@ -128,21 +69,8 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 			'show_in_menu'        => true,
 			'query_var'           => true,
 			'rewrite'             => $rewrite,
-			'capability_type'     => array( 'ai1ec_event', 'ai1ec_events' ),
-			'capabilities'        => array(
-				'read_post'               => 'read_ai1ec_event',
-				'edit_post'               => 'edit_ai1ec_event',
-				'edit_posts'              => 'edit_ai1ec_events',
-				'edit_others_posts'       => 'edit_others_ai1ec_events',
-				'edit_private_posts'      => 'edit_private_ai1ec_events',
-				'edit_published_posts'    => 'edit_published_ai1ec_events',
-				'delete_post'             => 'delete_ai1ec_event',
-				'delete_posts'            => 'delete_ai1ec_events',
-				'delete_others_posts'     => 'delete_others_ai1ec_events',
-				'delete_published_posts'  => 'delete_published_ai1ec_events',
-				'delete_private_posts'    => 'delete_private_ai1ec_events',
-				'publish_posts'           => 'publish_ai1ec_events',
-				'read_private_posts'      => 'read_private_ai1ec_events' ),
+			'map_meta_cap'        => true,
+			'capability_type'     => 'ai1ec_event',
 			'has_archive'         => $has_archive,
 			'hierarchical'        => false,
 			'menu_position'       => 5,
@@ -251,6 +179,75 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 		// = register custom post type for events =
 		// ========================================
 		register_post_type( AI1EC_POST_TYPE, $args );
+
+		// get event contributor if saved in the db
+		$contributor = get_role( 'ai1ec_event_assistant' );
+		// if it's present and has the wrong capability delete it.
+		if (
+			$contributor instanceOf WP_Role && 
+			$contributor->has_cap( 'publish_ai1ec_events' )
+		) {
+			remove_role( 'ai1ec_event_assistant' );
+			$contributor = false;
+		}
+		// Create event contributor role with the same capabilities
+		// as subscriber role, plus event managing capabilities
+		// if we have not created it yet.
+		if ( ! $contributor ) {
+			$caps = get_role( 'subscriber' )->capabilities;
+			$role = add_role(
+				'ai1ec_event_assistant',
+				'Event Contributor',
+				$caps
+			);
+			$role->add_cap( 'edit_ai1ec_events' );
+			$role->add_cap( 'read_ai1ec_events' );
+			$role->add_cap( 'delete_ai1ec_events' );
+			$role->add_cap( 'read' );
+			unset( $caps, $role );
+		}
+
+		// Add event managing capabilities to administrator, editor, author.
+		// The last created capability is "manage_ai1ec_feeds", so check for
+		// that one.
+		$role = get_role( 'administrator' );
+		if ( is_object( $role ) && ! $role->has_cap( 'manage_ai1ec_feeds' ) ) {
+			$role_list = array( 'administrator', 'editor', 'author' );
+			foreach ( $role_list as $role_name ) {
+				$role = get_role( $role_name );
+				if ( null === $role || ! ( $role instanceof WP_Role ) ) {
+					continue;
+				}
+				// Read events.
+				$role->add_cap( 'read_ai1ec_event' );
+				// Edit events.
+				$role->add_cap( 'edit_ai1ec_event' );
+				$role->add_cap( 'edit_ai1ec_events' );
+				$role->add_cap( 'edit_others_ai1ec_events' );
+				$role->add_cap( 'edit_private_ai1ec_events' );
+				$role->add_cap( 'edit_published_ai1ec_events' );
+				// Delete events.
+				$role->add_cap( 'delete_ai1ec_event' );
+				$role->add_cap( 'delete_ai1ec_events' );
+				$role->add_cap( 'delete_others_ai1ec_events' );
+				$role->add_cap( 'delete_published_ai1ec_events' );
+				$role->add_cap( 'delete_private_ai1ec_events' );
+				// Publish events.
+				$role->add_cap( 'publish_ai1ec_events' );
+				// Read private events.
+				$role->add_cap( 'read_private_ai1ec_events' );
+				// Manage categories & tags.
+				$role->add_cap( 'manage_events_categories' );
+				// Manage calendar feeds.
+				$role->add_cap( 'manage_ai1ec_feeds' );
+				if ( 'administrator' === $role_name ) {
+					// Change calendar themes & manage calendar options.
+					$role->add_cap( 'switch_ai1ec_themes' );
+					$role->add_cap( 'manage_ai1ec_options' );
+				}
+			}
+		}
+
 	}
 
 	/**

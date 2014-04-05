@@ -10,7 +10,7 @@
  * @subpackage AI1EC.View
  */
 class Ai1ec_View_Admin_Theme_Switching extends Ai1ec_View_Admin_Abstract {
-	
+
 	/* (non-PHPdoc)
 	 * @see Ai1ec_View_Admin_Abstract::display_page()
 	 */
@@ -57,14 +57,6 @@ class Ai1ec_View_Admin_Theme_Switching extends Ai1ec_View_Admin_Abstract {
 			AI1EC_PLUGIN_NAME . '-themes',
 			array( $this, 'display_page' )
 		);
-		if ( false !== $themes_page ) {
-			// Make copy of Themes page at its old location.
-			$submenu['themes.php'][] = array(
-				Ai1ec_I18n::__( 'Calendar Themes' ),
-				'switch_ai1ec_themes',
-				AI1EC_THEME_SELECTION_BASE_URL,
-			);
-		}
 	}
 
 	public function add_meta_box() {

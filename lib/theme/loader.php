@@ -15,7 +15,7 @@ class Ai1ec_Theme_Loader {
 	 * @var array contains the admin and theme paths.
 	 */
 	protected $_paths = array(
-		'admin' => array( AI1EC_ADMIN_PATH ),
+		'admin' => array( AI1EC_ADMIN_PATH => AI1EC_ADMIN_URL ),
 		'theme' => array(),
 	);
 
@@ -52,52 +52,61 @@ class Ai1ec_Theme_Loader {
 		$this->_registry         = $registry;
 		$option                  = $this->_registry->get( 'model.option' );
 		$theme                   = $option->get( 'ai1ec_current_theme' );
-		$active_theme            = $theme['stylesheet'];
 		$this->_legacy_theme     = (bool)$theme['legacy'];
-		$this->add_path_theme( $theme['theme_dir'] . DIRECTORY_SEPARATOR );
-		if ( AI1EC_DEFAULT_THEME_NAME !== $active_theme ) {
+
+		// Add default theme's directory/URL if it is not the active one.
+		if ( AI1EC_DEFAULT_THEME_NAME !== $theme['stylesheet'] ) {
 			$this->add_path_theme(
-				AI1EC_DEFAULT_THEME_PATH . DIRECTORY_SEPARATOR
+				AI1EC_DEFAULT_THEME_PATH . DIRECTORY_SEPARATOR,
+				AI1EC_THEMES_URL . '/' . AI1EC_DEFAULT_THEME_NAME
 			);
 		}
+		// Add active theme's directory/URL (later additions take priority).
+		$this->add_path_theme(
+			$theme['theme_dir'] . DIRECTORY_SEPARATOR,
+			$theme['theme_url'] . '/'
+		);
 	}
 
 	/**
-	 * Add theme loading path.
+	 * Add file search path to front of list.
 	 *
-	 * @param string $path   Absolute path to the template files directory.
 	 * @param string $target Name of path purpose, i.e. 'admin' or 'theme'.
+	 * @param string $path   Absolute path to the directory to search.
+	 * @param string $url    URL to the directory represented by $path.
 	 *
 	 * @return bool Success.
 	 */
-	public function add_path( $path, $target ) {
+	public function add_path( $target, $path, $url ) {
 		if ( ! isset( $this->_paths[$target] ) ) {
 			return false;
 		}
-		array_unshift( $this->_paths[$target], $path );
+		$this->_paths[$target] = array( $path => $url ) + $this->_paths[$target];
 		return true;
 	}
 
 	/**
-	 * Add admin templates files path.
+	 * Add admin files search path.
 	 *
 	 * @param string $path Path to admin template files.
+	 * @param string $url  URL to the directory represented by $path.
 	 *
 	 * @return bool Success.
 	 */
-	public function add_path_admin( $path ) {
-		return $this->add_path( $path, 'admin' );
+	public function add_path_admin( $path, $url ) {
+		return $this->add_path( 'admin', $path, $url );
 	}
 
 	/**
-	 * Add theme templates files path.
+	 * Add theme files search path.
 	 *
 	 * @param string $path Path to theme template files.
+	 * @param string $url  URL to the directory represented by $path.
 	 *
 	 * @return bool Success.
 	 */
-	public function add_path_theme( $path ) {
-		return $this->add_path( $path, 'theme' );
+	public function add_path_theme( $path, $url ) {
+		return $this->add_path( 'theme', $path, $url );
 	}
 
 	/**
@@ -107,18 +116,35 @@ class Ai1ec_Theme_Loader {
 	 * structure. If different extension is to be developed at some point in
 	 * time - this will have to be changed.
 	 *
-	 * @param string $path Absolute path to extensions directory.
+	 * @param string $path Absolute path to extension's directory.
+	 * @param string $url  URL to directory represented by $path.
 	 *
 	 * @return Ai1ec_Theme_Loader Instance of self for chaining.
 	 */
-	public function register_extension( $path ) {
+	public function register_extension( $path, $url ) {
+		$D = DIRECTORY_SEPARATOR; // For readability.
+
+		// Add extension's admin path.
 		$this->add_path_admin(
-			$path . DIRECTORY_SEPARATOR .'public' . DIRECTORY_SEPARATOR . 'admin' .
-			DIRECTORY_SEPARATOR
+			$path . $D .'public' . $D . 'admin' . $D,
+			$url . '/public/admin/'
 		);
+
+		// Add default theme to search paths unless it is the active theme.
+		$option = $this->_registry->get( 'model.option' );
+		$theme  = $option->get( 'ai1ec_current_theme' );
+		if ( AI1EC_DEFAULT_THEME_NAME !== $theme['stylesheet'] ) {
+			$this->add_path_theme(
+				$path . $D . 'public' . $D . AI1EC_THEME_FOLDER . $D .
+					AI1EC_DEFAULT_THEME_NAME . $D,
+				$url . '/public/' . AI1EC_THEME_FOLDER . '/' . AI1EC_DEFAULT_THEME_NAME
+			);
+		}
+		// Add extension's theme path(s) (takes priority over the above).
 		$this->add_path_theme(
-			$path . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'themes-ai1ec' .
-			DIRECTORY_SEPARATOR . AI1EC_DEFAULT_THEME_NAME . DIRECTORY_SEPARATOR
+			$path . $D . 'public' . $D . AI1EC_THEME_FOLDER . $D .
+				$theme['stylesheet'] . $D,
+			$url . '/public/' . AI1EC_THEME_FOLDER . '/' . $theme['stylesheet'] . '/'
 		);
 		return $this;
 	}
@@ -132,7 +158,7 @@ class Ai1ec_Theme_Loader {
 	 * @param array  $args            Map of variables to use in file.
 	 * @param bool   $is_admin        Set to true for admin-side views.
 	 * @param bool   $throw_exception Set to true to throw exceptions on error.
-	 * @param array  $paths           List of paths to use instead of  default.
+	 * @param array  $paths           For PHP & Twig files only: list of paths to use instead of default.
 	 *
 	 * @throws Ai1ec_Exception If File is not found or not possible to handle.
 	 *
@@ -151,6 +177,7 @@ class Ai1ec_Theme_Loader {
 		$dot_position = strrpos( $filename, '.' ) + 1;
 		$ext          = substr( $filename, $dot_position );
 		$file         = false;
+
 		switch ( $ext ) {
 			case 'less':
 			case 'css':
@@ -158,22 +185,25 @@ class Ai1ec_Theme_Loader {
 				$file     = $this->_registry->get(
 					'theme.file.less',
 					$filename,
-					$this->_paths['theme']
-				 );
-				break;
-			case 'png':
-				$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
-				$file  = $this->_registry->get(
-					'theme.file.png',
-					$filename,
-					$paths
+					array_keys( $this->_paths['theme'] ) // Values (URLs) not used for CSS
 				);
 				break;
+
+			case 'png':
+			case 'gif':
+			case 'jpg':
+				$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
+				$file  = $this->_registry->get(
+					'theme.file.image',
+					$filename,
+					$paths // Paths => URLs needed for images
+				);
+				break;
+
 			case 'php':
-				if ( null === $paths) {
-					$paths = $is_admin
-						? $this->_paths['admin']
-						: $this->_paths['theme'];
+				if ( null === $paths ) {
+					$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
+					$paths = array_keys( $paths ); // Values (URLs) not used for PHP
 				}
 				$args['is_legacy_theme'] = $this->_legacy_theme;
 				$file                    = $this->_registry->get(
@@ -183,18 +213,18 @@ class Ai1ec_Theme_Loader {
 					$args
 				);
 				break;
+
 			case 'twig':
-				if ( null === $paths) {
-					$paths = $is_admin
-						? $this->_paths['admin']
-						: $this->_paths['theme'];
+				if ( null === $paths ) {
+					$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
+					$paths = array_keys( $paths ); // Values (URLs) not used for Twig
 				}
 				if ( true === $this->_legacy_theme && ! $is_admin ) {
 					$filename = substr( $filename, 0, $dot_position - 1);
 					$file     = $this->_get_legacy_file(
 						$filename,
 						$args,
-						$this->_paths['theme']
+						$paths
 					);
 				} else {
 					$file = $this->_registry->get(
@@ -205,9 +235,13 @@ class Ai1ec_Theme_Loader {
 					);
 				}
 				break;
+
 			default:
 				throw new Ai1ec_Exception(
-					'We couldn\t find a suitable class for extension ' . $ext
+					sprintf(
+						Ai1ec_I18n::__( "We couldn't find a suitable loader for filename with extension '%s'" ),
+						$ext
+					)
 				);
 				break;
 		}
@@ -222,11 +256,12 @@ class Ai1ec_Theme_Loader {
 	}
 
 	/**
-	 * Tries to load a php file from the theme. if not present, it falls back to twig
+	 * Tries to load a PHP file from the theme. If not present, it falls back to
+	 * Twig.
 	 *
-	 * @param string $filename
-	 * @param array $args
-	 * @param array $paths
+	 * @param string $filename Filename to locate
+	 * @param array  $args     Args to pass to template
+	 * @param array  $paths    Array of paths to search
 	 *
 	 * @return Ai1ec_File_Abstract
 	 */
@@ -257,7 +292,7 @@ class Ai1ec_Theme_Loader {
 	 * This method whould be in a factory called by the object registry.
 	 * I leave it here for reference.
 	 *
-	 * @param array $paths
+	 * @param array $paths Array of paths to search
 	 *
 	 * @return Twig_Environment
 	 */
@@ -302,4 +337,17 @@ class Ai1ec_Theme_Loader {
 		return $this->_twig;
 	}
 
+	/**
+	 * Called during 'after_setup_theme' action. Runs theme's special
+	 * functions.php file, if present.
+	 */
+	public function execute_theme_functions() {
+		$option    = $this->_registry->get( 'model.option' );
+		$theme     = $option->get( 'ai1ec_current_theme' );
+		$functions = $theme['theme_dir'] . DIRECTORY_SEPARATOR . 'functions.php';
+
+		if ( file_exists( $functions ) ) {
+			include( $functions );
+		}
+	}
 }

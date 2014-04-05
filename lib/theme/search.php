@@ -18,7 +18,7 @@ class Ai1ec_Theme_Search extends Ai1ec_Base {
 
 	/**
 	 * Gets the currently available themes.
-	 * 
+	 *
 	 * @return array The currently available themes
 	 */
 	public function get_themes() {
@@ -35,7 +35,12 @@ class Ai1ec_Theme_Search extends Ai1ec_Base {
 			$theme_map = get_themes() + get_broken_themes();
 		}
 
-		add_filter( 'theme_root_uri', array( $this, 'get_root_uri_for_our_themes' ), 10, 3 );
+		add_filter(
+			'theme_root_uri',
+			array( $this, 'get_root_uri_for_our_themes' ),
+			10,
+			3
+		);
 		foreach ( $theme_map as $theme ) {
 			$theme->get_theme_root_uri();
 		}
@@ -46,29 +51,28 @@ class Ai1ec_Theme_Search extends Ai1ec_Base {
 
 	/**
 	 * Sets the correct uri for our core themes.
-	 * 
+	 *
 	 * @param string $theme_root_uri
 	 * @param string $site_url
 	 * @param string $stylesheet_or_template
-	 * 
+	 *
 	 * @return string
 	 */
-	public function get_root_uri_for_our_themes( $theme_root_uri, $site_url, $stylesheet_or_template ) {
-		$core_themes = array(
-			'gamma' => true,
-			'plana' => true,
-			'umbra' => true,
-			'vortex' => true,
-		);
-		if ( isset( $core_themes[$stylesheet_or_template] ) ) {
-			return AI1EC_URL .'/public/themes-ai1ec';
+	public function get_root_uri_for_our_themes(
+		$theme_root_uri,
+		$site_url,
+		$stylesheet_or_template
+	) {
+		$core_themes = explode( ',', AI1EC_CORE_THEMES );
+		if ( in_array( $stylesheet_or_template, $core_themes ) ) {
+			return AI1EC_URL .'/public/' . AI1EC_THEME_FOLDER;
 		}
 		return $theme_root_uri;
 	}
 
 	/**
 	 * Add core folders to scan and allow injection of other.
-	 * 
+	 *
 	 * @return array The folder to scan for themes
 	 */
 	public function get_theme_dirs() {
@@ -89,9 +93,9 @@ class Ai1ec_Theme_Search extends Ai1ec_Base {
 
 	/**
 	 * Replacecs global variables.
-	 * 
+	 *
 	 * @param array $variables_map
-	 * 
+	 *
 	 * @return array
 	 */
 	protected function _replace_search_globals( array $variables_map ) {
@@ -106,7 +110,7 @@ class Ai1ec_Theme_Search extends Ai1ec_Base {
 
 	/**
 	 * Set some globals to allow theme searching.
-	 * 
+	 *
 	 * @param array $directories
 	 */
 	protected function _pre_search( array $directories ) {
@@ -137,11 +141,11 @@ class Ai1ec_Theme_Search extends Ai1ec_Base {
 
 	/**
 	 * Filter the current themes by search.
-	 * 
+	 *
 	 * @param array $terms
 	 * @param array $features
 	 * @param bool $broken
-	 * 
+	 *
 	 * @return array
 	 */
 	public function filter_themes(
@@ -153,7 +157,7 @@ class Ai1ec_Theme_Search extends Ai1ec_Base {
 		if ( null === $theme_list ) {
 			$theme_list = $this->get_themes();
 		}
-		
+
 		foreach ( $theme_list as $key => $theme ) {
 			if (
 				( ! $broken && false !== $theme->errors() ) ||
@@ -169,11 +173,11 @@ class Ai1ec_Theme_Search extends Ai1ec_Base {
 
 	/**
 	 * Returns if the $theme is a match for the search.
-	 * 
+	 *
 	 * @param WP_Theme $theme
 	 * @param array $search
 	 * @param array $features
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public function theme_matches( $theme, array $search, array $features ) {

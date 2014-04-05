@@ -236,20 +236,25 @@ class Ai1ec_Theme_List extends WP_List_Table {
 				$tags           = $themes[$theme_name]['Tags'];
 				$thickbox_class = 'thickbox thickbox-preview';
 				$legacy         = $legacy ? '1' : '0';
+
+				// Generate theme activation link.
+				$activate_link  = admin_url( AI1EC_THEME_SELECTION_BASE_URL );
+				$activate_link  = add_query_arg(
+					array(
+						'ai1ec_action'     => 'activate_theme',
+						'ai1ec_theme_dir'  => $theme_dir,
+						'ai1ec_legacy'     => $legacy,
+						'ai1ec_stylesheet' => $stylesheet,
+						'ai1ec_theme_root' => $theme_root,
+						'ai1ec_theme_url'  => $theme_root_uri . '/' . $stylesheet,
+					),
+					$activate_link
+				);
 				$activate_link  = wp_nonce_url(
-					admin_url( AI1EC_THEME_SELECTION_BASE_URL ) .
-					"&amp;ai1ec_action=activate_theme&amp;ai1ec_theme_dir=" .
-					urlencode( $theme_dir ) .
-					"&amp;ai1ec_legacy=" .
-					urlencode( $legacy ) .
-					"&amp;ai1ec_stylesheet=" .
-					urlencode( $stylesheet ) .
-					"&amp;ai1ec_theme_root=" .
-					urlencode( $theme_root ) .
-					"&amp;ai1ec_theme_url=" .
-					urlencode( $theme_root_uri ),
+					$activate_link,
 					'switch-ai1ec_theme_' . $template
 				);
+
 				$activate_text  = esc_attr(
 					sprintf(
 						Ai1ec_I18n::__( 'Activate &#8220;%s&#8221;' ),

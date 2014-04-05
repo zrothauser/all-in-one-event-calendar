@@ -114,6 +114,16 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		);
 	}
 
+	// ===============
+	// = ADMIN URL   =
+	// ===============
+	if ( ! defined( 'AI1EC_ADMIN_URL' ) ) {
+		define(
+			'AI1EC_ADMIN_URL',
+			AI1EC_URL . '/public/admin/'
+		);
+	}
+
 	// ==============
 	// = CACHE PATH =
 	// ==============

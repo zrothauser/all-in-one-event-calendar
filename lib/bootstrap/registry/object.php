@@ -25,7 +25,7 @@ class Ai1ec_Registry_Object implements Ai1ec_Registry {
 
 	/**
 	 * Get the loader ( used by extensions )
-	 * 
+	 *
 	 * @return Ai1ec_Loader
 	 */
 	public function get_loader() {
@@ -53,7 +53,10 @@ class Ai1ec_Registry_Object implements Ai1ec_Registry {
 		if ( AI1EC_DEBUG ) {
 			$this->_loader->collect_classes( $path, $name );
 		}
-		$this->get( 'theme.loader' )->register_extension( $path );
+		$this->get( 'theme.loader' )->register_extension(
+			$path,
+			plugins_url( $name )
+		);
 		$this->_loader->register_extension_map( $path );
 		do_action( 'ai1ec_extension_loaded', $path, $name );
 		return $this;

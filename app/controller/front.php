@@ -246,8 +246,8 @@ class Ai1ec_Front_Controller {
 			$theme  = array(
 				'theme_dir'  => AI1EC_DEFAULT_THEME_PATH,
 				'theme_root' => AI1EC_DEFAULT_THEME_ROOT,
-				'theme_url'  => AI1EC_THEMES_URL . '/vortex',
-				'stylesheet' => 'vortex',
+				'theme_url'  => AI1EC_THEMES_URL . '/' . AI1EC_DEFAULT_THEME_NAME,
+				'stylesheet' => AI1EC_DEFAULT_THEME_NAME,
 				'legacy'     => false,
 			);
 			$update = true;
@@ -452,15 +452,15 @@ class Ai1ec_Front_Controller {
 			);
 			$dispatcher->register_action(
 				'admin_menu',
+				array( 'view.admin.theme-switching', 'add_page' )
+			);
+			$dispatcher->register_action(
+				'admin_menu',
 				array( 'view.admin.theme-options', 'add_page' )
 			);
 			$dispatcher->register_action(
 				'current_screen',
 				array( 'view.admin.theme-options', 'add_meta_box' )
-			);
-			$dispatcher->register_action(
-				'admin_menu',
-				array( 'view.admin.theme-switching', 'add_page' )
 			);
 			$dispatcher->register_action(
 				'admin_menu',
@@ -551,6 +551,10 @@ class Ai1ec_Front_Controller {
 			$dispatcher->register_shortcode(
 				'ai1ec',
 				array( 'view.calendar.shortcode', 'shortcode' )
+			);
+			$dispatcher->register_action(
+				'after_setup_theme',
+				array( 'theme.loader', 'execute_theme_functions' )
 			);
 		}
 	}

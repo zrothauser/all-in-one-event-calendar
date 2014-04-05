@@ -19,7 +19,7 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		if ( $cal->parse( $arguments['source'] ) ) {
 			$count = 0;
 			try {
-				$count = $this->_add_vcalendar_events_to_db(
+				$count = $this->add_vcalendar_events_to_db(
 					$cal,
 					$arguments
 				);
@@ -114,13 +114,15 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 	 * Process vcalendar instance - add events to database
 	 *
 	 * @param vcalendar $v              Calendar to retrieve data from
-	 * @param stdClass  $feed           Instance of feed (see Ai1ecIcs plugin)
-	 * @param string    $comment_status WP comment status: 'open' or 'closed'
-	 * @param int       $do_show_map    Map display status (DB boolean: 0 or 1)
+	 * @param array $args
+	 * @throws Ai1ec_Parse_Exception
+	 * @internal param \stdClass $feed Instance of feed (see Ai1ecIcs plugin)
+	 * @internal param string $comment_status WP comment status: 'open' or 'closed'
+	 * @internal param int $do_show_map Map display status (DB boolean: 0 or 1)
 	 *
 	 * @return int Count of events added to database
 	 */
-	protected function _add_vcalendar_events_to_db(
+	public function add_vcalendar_events_to_db(
 		vcalendar $v,
 		array $args
 	) {

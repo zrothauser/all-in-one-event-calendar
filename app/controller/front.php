@@ -544,7 +544,7 @@ class Ai1ec_Front_Controller {
 				array( 'view.admin.nav', 'plugin_action_links' )
 			);
 			$dispatcher->register_action(
-				'shutdown',
+				'admin_init',
 				array( 'robots.helper', 'install' )
 			);
 		} else { // ! is_admin()

@@ -37,6 +37,7 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 			'edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings',
 			'ai1ec-nonce'
 		);
+
 		if ( ! function_exists( 'request_filesystem_credentials' )  ) {
 			return;
 		}
@@ -111,9 +112,11 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 			);
 		}
 
+		$robots = array_merge( $current_rules, $custom_rules );
+
 		return implode(
 			PHP_EOL,
-			array_unique( array_merge( $current_rules, $custom_rules ) )
+			array_filter( array_unique( $robots ) )
 		);
 	}
 }

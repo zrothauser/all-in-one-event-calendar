@@ -552,6 +552,10 @@ class Ai1ec_Front_Controller {
 				'ai1ec',
 				array( 'view.calendar.shortcode', 'shortcode' )
 			);
+			$dispatcher->register_action(
+				'after_setup_theme',
+				array( 'theme.loader', 'execute_theme_functions' )
+			);
 		}
 	}
 

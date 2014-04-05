@@ -3,20 +3,20 @@
  * Theme URI: http://time.ly/
  * Author: Timely Network Inc
  * Author URI: http://time.ly/
- * Description: A skeleton theme. Copy these files to a new theme directory to build a new calendar theme.
+ * Description: A skeleton theme. Copy <strong>[wp-root]/wp-content/plugins/all-in-one-event-calendar/public/themes-ai1ec/gamma</strong> to <strong>[wp-root]/wp-content/<i>[your-theme-directory]</strong> to build your own calendar theme.
  * Version: 2.0.0-core
  * Tags: light, white, gray, blue
  */
 
 /*
-	========================================================
-	= New theme structure in All-in-One Event Calendar 1.9 =
-	========================================================
+	====================================================
+	= Theme structure in All-in-One Event Calendar 2.0 =
+	====================================================
 
-	As of 1.9, please do not place your custom CSS rules in this file. Instead,
-	place them in here:
+	Please do not place your custom CSS rules in this file. Instead, place them in
+	here:
 
-	  [wp_root]/themes-ai1ec/[your_theme_directory]/css/override.css
+	  [wp-content]/themes-ai1ec/[your_theme_directory]/css/override.css
 
 	Alternatively, for the more savvy designers, use the dynamic LESS stylesheet
 	language (http://lesscss.org/) to define your style rules, allowing you to
@@ -24,7 +24,7 @@
 	[wp_root]/themes-ai1ec/vortex/less/user_variables.php). Place your LESS code
 	in this file:
 
-	  [wp_root]/themes-ai1ec/[your_theme_directory]/less/override.less
+	  [wp-content]/themes-ai1ec/[your_theme_directory]/less/override.less
 
 	The style rules produced by these files will be applied *after* all the
 	default style rules of Vortex have been applied.
@@ -36,5 +36,5 @@
 
 	To find out more about the powerful theming engine, visit our help article:
 
-		http://help.time.ly/customer/portal/articles/803082
+		http://support.time.ly/calendar-theme-structure/
  */

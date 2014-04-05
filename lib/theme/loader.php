@@ -337,4 +337,17 @@ class Ai1ec_Theme_Loader {
 		return $this->_twig;
 	}
 
+	/**
+	 * Called during 'after_setup_theme' action. Runs theme's special
+	 * functions.php file, if present.
+	 */
+	public function execute_theme_functions() {
+		$option    = $this->_registry->get( 'model.option' );
+		$theme     = $option->get( 'ai1ec_current_theme' );
+		$functions = $theme['theme_dir'] . DIRECTORY_SEPARATOR . 'functions.php';
+
+		if ( file_exists( $functions ) ) {
+			include( $functions );
+		}
+	}
 }

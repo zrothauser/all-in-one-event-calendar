@@ -40,6 +40,11 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 				'action' => 'left',
 				'object' => null
 			),
+			'support' => array(
+				'screen' => $settings->get( 'settings_page' ),
+				'action' => 'right',
+				'object' => null
+			),
 			'action' =>
 				admin_url( '?controller=front&action=ai1ec_save_settings&plugin=' . AI1EC_PLUGIN_NAME ),
 		);
@@ -81,6 +86,38 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 			'left',
 			'default'
 		);
+		// Add the 'Timely' meta box.
+		add_meta_box(
+			'ai1ec-support',
+			Ai1ec_I18n::_x( 'Timely', 'meta box', AI1EC_PLUGIN_NAME ),
+			array( $this, 'support_meta_box' ),
+			$this->_registry->get( 'model.settings' )->get( 'settings_page' ),
+			'right',
+			'default'
+		);
+	}
+
+	/**
+	 * Renders the Timely blog meta box
+	 * 
+	 * @param mixed $object
+	 * @param mixed $box
+	 */
+	public function support_meta_box( $object, $box ) {
+		include_once( ABSPATH . WPINC . '/feed.php' );
+		// Initialize new feed
+		$newsItems = array();
+		$feed      = fetch_feed( AI1EC_RSS_FEED );
+		$newsItems = is_wp_error( $feed ) ? array() : $feed->get_items( 0, 5 );
+		$loader    = $this->_registry->get( 'theme.loader' );
+		$file      = $loader->get_file( 
+			'box_support.php',
+			array(
+				'news' => $newsItems,
+			), 
+			true 
+		);
+		$file->render();
 	}
 
 	/* (non-PHPdoc)

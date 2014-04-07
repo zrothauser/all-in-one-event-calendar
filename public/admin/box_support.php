@@ -11,10 +11,6 @@
 			<?php _e( 'Timely’s All-in-One Event Calendar is a<br />revolutionary new way to find and share events.', AI1EC_PLUGIN_NAME ); ?>
 		</h2>
 	</div>
-
-	<div class="ai1ec-support-placeholder">
-		<span class="ai1ec-loader-icon-small"></span>
-	</div>
 	<div class="ai1ec-news">
 		<h2><?php _e( 'Timely News', AI1EC_PLUGIN_NAME ); ?>
 			<small>

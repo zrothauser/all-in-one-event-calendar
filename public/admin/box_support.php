@@ -10,6 +10,11 @@
 		<h2>
 			<?php _e( 'Timely’s All-in-One Event Calendar is a<br />revolutionary new way to find and share events.', AI1EC_PLUGIN_NAME ); ?>
 		</h2>
+		<div class="ai1ec-support-placeholder">
+			<a class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg" href="http://time.ly/add-ons/"><?php _e( 'Get Add-ons', AI1EC_PLUGIN_NAME ); ?></a>
+			<a class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg" href="http://time.ly/support/"><?php _e( 'Support', AI1EC_PLUGIN_NAME ); ?></a>
+			<a class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg" href="http://time.ly/calendar/"><?php _e( 'Time.ly Events', AI1EC_PLUGIN_NAME ); ?></a>
+		</div>
 	</div>
 	<div class="ai1ec-news">
 		<h2><?php _e( 'Timely News', AI1EC_PLUGIN_NAME ); ?>

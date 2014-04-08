@@ -24,6 +24,10 @@ class Ai1ec_Theme_Compiler extends Ai1ec_Base {
 			'ai1ec_twig_environment',
 			array( $this, 'ai1ec_twig_environment' )
 		);
+		add_filter(
+			'ai1ec_twig_add_debug',
+			'__return_false'
+		);
 	}
 
 	/**

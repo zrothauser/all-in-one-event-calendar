@@ -348,7 +348,7 @@ class Ai1ec_Theme_Loader {
 			);
 
 			$this->_twig = new Twig_Environment( $loader, $environment );
-			if ( AI1EC_DEBUG ) {
+			if ( apply_filters( 'ai1ec_twig_add_debug', AI1EC_DEBUG ) ) {
 				$this->_twig->addExtension( new Twig_Extension_Debug() );
 			}
 

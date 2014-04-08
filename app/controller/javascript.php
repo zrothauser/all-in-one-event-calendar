@@ -293,12 +293,20 @@ class Ai1ec_Javascript_Controller {
 			// Load script for adding / modifying events
 			$script_to_load = self::ADD_NEW_EVENT_PAGE;
 		}
-		if( $this->_are_we_accessing_the_calendar_settings_page() === TRUE ) {
+		if ( $this->_are_we_accessing_the_calendar_settings_page() === TRUE ) {
 			$script_to_load = self::SETTINGS_PAGE;
 		}
 
-		if( false === $script_to_load ) {
+		if ( false === $script_to_load ) {
 			$script_to_load = apply_filters( 'ai1ec_backend_js', self::LOAD_ONLY_BACKEND_SCRIPTS );
+		}
+		if ( current_user_can( 'manage_options' ) && 
+			$this->_registry->get( 'model.settings' )->get( 'show_tracking_popup' )
+		) {
+			wp_enqueue_style( 'wp-pointer' );
+			wp_enqueue_script( 'jquery-ui' );
+			wp_enqueue_script( 'wp-pointer' );
+			wp_enqueue_script( 'utils' );
 		}
 
 		$this->add_link_to_render_js( $script_to_load, true );
@@ -414,6 +422,8 @@ class Ai1ec_Javascript_Controller {
 			// Start the week on this day in the date picker
 			'week_start_day'                 => $settings->get( 'week_start_day' ),
 			'blog_timezone'                  => $blog_timezone,
+			'show_tracking_popup'            => 
+				current_user_can( 'manage_options' ) && $settings->get( 'show_tracking_popup' ),
 		);
 		return $data;
 	}

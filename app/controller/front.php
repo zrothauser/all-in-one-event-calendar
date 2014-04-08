@@ -439,6 +439,11 @@ class Ai1ec_Front_Controller {
 				'wp_ajax_ai1ec_rrule_to_text',
 				array( 'view.admin.get-repeat-box', 'convert_rrule_to_text' )
 			);
+			// tracking opt in ai1ec_tracking
+			$dispatcher->register_action(
+				'wp_ajax_ai1ec_tracking',
+				array( 'controller.export', 'track_optin' )
+			);
 			$dispatcher->register_action(
 				'admin_enqueue_scripts',
 				array( 'css.admin', 'admin_enqueue_scripts' )

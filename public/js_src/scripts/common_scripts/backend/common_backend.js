@@ -162,6 +162,48 @@ define(
 		postboxes.add_postbox_toggles( ai1ec_config.page  );
 	}
 
+	// Send result after user clicked
+	var send_tracking = function( result ) {
+		var options = {
+			tracking : result,
+			action   : 'ai1ec_tracking',
+		};
+		$.post( ajaxurl, options );
+	}
+
+	// show the op in popup. Here i use jQuery and not $ as i must use Wordpress jQuery
+	var show_tracking_popup = function() {
+		var pointer_options = {
+			content:
+				"<h3>Help improve All In One Event Calendar<\/h3>" + "<p>Help us by sending some data<\/p>",
+			position:{ 
+				edge : "top", 
+				align : "center"
+			},
+			buttons: function ( event, t ) {
+				var button = 
+					$( '<a id="pointer-close" style="margin-left:5px;" class="button-secondary">' + 'Do not allow tracking' + '</a>' );
+				button.bind( 'click.pointer', function () {
+					t.element.pointer( 'close' );
+					}
+				);
+				return button;
+			},
+			close: function() {
+			}
+		}
+
+		jQuery( '#wpadminbar' ).pointer( pointer_options ).pointer( 'open' );
+		jQuery( '#pointer-close' ).after( '<a id="pointer-primary" class="button-primary">' + 'Allow tracking' + '</a>' );
+		jQuery( '#pointer-primary' ).click( function () {
+			send_tracking( true );
+			$( this ).closest( '.wp-pointer' ).remove();
+		} );
+		jQuery( '#pointer-close' ).click( function () {
+			send_tracking( false ); 
+		} );
+	};
+
 	var start = function() {
 		domReady( function() {
 			// Attach the export to Facebook functionality.
@@ -174,6 +216,9 @@ define(
 			handle_platform_mode();
 			// Initialize any popovers.
 			initialize_popovers();
+			if ( ai1ec_config.show_tracking_popup ) {
+				show_tracking_popup();
+			}
 		} );
 	};
 

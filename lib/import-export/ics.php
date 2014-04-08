@@ -298,12 +298,7 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 			// because EXDATE:date1,date2,date3 must be parsed
 			if( ! empty( $exdate_loc ) ) {
 				foreach ( explode( ',', $exdate_loc ) as $date ) {
-					// If the date is > 8 char that's a datetime, we just want the
-					// date part for the exclusion rules
-					if ( strlen( $date ) > 8 ) {
-						$date = substr( $date, 0, 8 );
-					}
-					$gmt_exdates[] = $this->_exception_dates_to( $date, true );
+					$gmt_exdates[] = substr( (string)$date, 0, 8 );
 				}
 			}
 			$exdate = implode( ',', $gmt_exdates );
@@ -864,42 +859,28 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		// We must also match the exact starting time
 		$exception_dates = $event->get( 'exception_dates' );
 		if ( ! empty( $exception_dates ) ) {
+			$params    = array( 'VALUE' => 'DATE' );
+			$use_dates = array();
 			foreach (
 				explode( ',', $exception_dates )
 				as $exdate
 			) {
-				if ( $event->is_allday() ) {
-					// the local date will be always something like 20121122T000000Z
-					// we just need the date
-					$exdate = substr(
-						$ai1ec_events_helper->_exception_dates_to( $exdate ),
-						0,
-						8
-					);
-					$e->setProperty( 'exdate', array( $exdate ), array( 'VALUE' => 'DATE' ) );
-				} else {
-					$params = array();
-					if( $tz ) {
-						$params["TZID"] = $tz;
-					}
-					$exdate = $ai1ec_events_helper->_exception_dates_to( $exdate );
-					// get only the date + T
-					$exdate = substr(
-						$exdate,
-						0,
-						9
-					);
-					// Take the time from
-					$exdate .= substr( $dtstartstring, 9 );
-					$e->setProperty(
-							'exdate',
-							array( $exdate ),
-							$params
-					);
-				}
+				$use_dates[] = $this->format_exception_date( $exdate );
 			}
+			$e->setProperty( 'exdate', $use_dates, $params );
 		}
 		return $calendar;
+	}
+
+	/**
+	 * Format exdate for export.
+	 *
+	 * @param string $exdate Previously written exdate.
+	 *
+	 * @return string Value to use when exporting.
+	 */
+	public function format_exception_date( $exdate ) {
+		return substr( $exdate, 0, 8 );
 	}
 
 	/**
@@ -927,15 +908,6 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		);
 		$value = addcslashes( $value, '\\' );
 		return $value;
-	}
-
-	/**
-	 * exception_dates_to function
-	 *
-	 * @return string
-	 **/
-	protected function _exception_dates_to( $exception_dates, $to_gmt = false ) {
-		// trigger_error( "need to implement this", E_USER_ERROR );
 	}
 
 	/**

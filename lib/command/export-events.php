@@ -83,20 +83,20 @@ class Ai1ec_Command_Export_Events extends Ai1ec_Command {
 		$args = array( 'do_not_export_as_calendar' => false );
 		$filter = array();
 		if ( $ai1ec_cat_ids ) {
-			$filter['cat_ids']  = Ai1ec_Number_Utility::convert_to_int_list(
+			$filter['cat_ids']  = Ai1ec_Primitive_Int::convert_to_int_list(
 				',',
 				$ai1ec_cat_ids
 			);
 		}
 		if ( $ai1ec_tag_ids ) {
-			$filter['tag_ids']  = Ai1ec_Number_Utility::convert_to_int_list(
+			$filter['tag_ids']  = Ai1ec_Primitive_Int::convert_to_int_list(
 				',',
 				$ai1ec_tag_ids
 			);
 		}
 		if ( $ai1ec_post_ids ) {
 			$args['do_not_export_as_calendar'] = true;
-			$filter['post_ids'] = Ai1ec_Number_Utility::convert_to_int_list(
+			$filter['post_ids'] = Ai1ec_Primitive_Int::convert_to_int_list(
 				',',
 				$ai1ec_post_ids
 			);
@@ -109,12 +109,32 @@ class Ai1ec_Command_Export_Events extends Ai1ec_Command {
 		$end    = $this->_registry->get( 'date.time', '+3 years' );
 		$search = $this->_registry->get( 'model.search' );
 		$export_controller = $this->_registry->get( 'controller.import-export' );
-		$events = $search->get_events_between( $start, $end, $filter );
 
-		$args['events'] = $events;
+		$args['events'] = $this->unique_events(
+			$search->get_events_between( $start, $end, $filter )
+		);
 		$ics = $export_controller->export_events( 'ics', $args );
 		return array( 'data' => $ics );
+	}
 
+	/**
+	 * Return unique events list.
+	 *
+	 * @param array $events List of Ai1ec_Event objects.
+	 *
+	 * @return array Unique Ai1ec_Events from input.
+	 */
+	public function unique_events( array $events ) {
+		$ids    = array();
+		$output = array();
+		foreach ( $events as $event ) {
+			$id = (int)$event->get( 'post_id' );
+			if ( ! isset( $ids[$id] ) ) {
+				$output[] = $event;
+				$ids[$id] = true;
+			}
+		}
+		return $output;
 	}
 
 }

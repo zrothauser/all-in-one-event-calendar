@@ -361,8 +361,9 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		foreach ( $add_defaults as $query => $default ) {
 			if ( empty( $view_args[$query] ) ) {
 				$setting = $settings->get( 'default_tags_categories' );
-
-				$view_args[$query] = $setting[$default];
+				if ( isset( $setting[$default] ) ) {
+					$view_args[$query] = $setting[$default];
+				}
 			}
 		}
 

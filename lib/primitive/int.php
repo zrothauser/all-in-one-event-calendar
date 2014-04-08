@@ -57,7 +57,7 @@ final class Ai1ec_Primitive_Int {
 	 */
 	static public function convert_to_int_list( $separator, $input ) {
 		return self::map_to_integer(
-			Ai1ec_Utility_Array::opt_explode( $separator, $input )
+			Ai1ec_Primitive_Array::opt_explode( $separator, $input )
 		);
 	}
 

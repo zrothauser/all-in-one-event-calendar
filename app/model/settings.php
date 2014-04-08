@@ -311,6 +311,10 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'type' => 'array',
 				'default'  => array(),
 			),
+			'show_tracking_popup' => array(
+				'type'    => 'bool',
+				'default' => true,
+			),
 			'calendar_page_id' => array(
 				'type' => 'mixed',
 				'renderer' => array(
@@ -703,7 +707,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 						'http://time.ly/event-search-calendar'
 					),
 				),
-				'default'  => true,
+				'default'  => false,
 			),
 			'legacy_options' => array(
 				'type'     => 'legacy_options',

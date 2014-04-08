@@ -154,4 +154,13 @@ class Ai1ec_Export_Controller extends Ai1ec_Base {
 		$xguard->release( $guard_name );
 	}
 
+	/**
+	 * Send stats if user agrees by clicking on the optin pointer
+	 */
+	public function track_optin() {
+		$send_stats = $_POST['tracking'] === 'true';
+		$settings = $this->_registry->get( 'model.settings' );
+		$settings->set( 'allow_statistics', $send_stats );
+		$settings->set( 'show_tracking_popup', false );
+	}
 }

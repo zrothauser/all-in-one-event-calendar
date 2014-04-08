@@ -160,8 +160,11 @@ class Ai1ec_Html_Element_Href {
 	private function add_or_remove_category_from_href( array $to_implode ) {
 		$array_key = $this->_current_array_key();
 		// Let's copy the origina cat_ids or tag_ids so we do not affect it
-		$copy = $this->args[$array_key];
-		$key = array_search( $this->term_id, $copy );
+		$copy      = array();
+		if ( isset( $this->args[$array_key] ) ) {
+			$copy  = (array)$this->args[$array_key];
+		}
+		$key       = array_search( $this->term_id, $copy );
 		// Let's check if we are already filtering for tags / categorys
 		if( isset( $to_implode[$array_key] ) ) {
 			if( $key !== false ) {

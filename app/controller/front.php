@@ -41,6 +41,7 @@ class Ai1ec_Front_Controller {
 	public function initialize( $ai1ec_loader ) {
 		ai1ec_start();
 		$this->_init( $ai1ec_loader );
+		$this->_compile_themes();
 		$this->_initialize_dispatcher();
 		$lessphp = $this->_registry->get( 'less.lessphp' );
 		$lessphp->initialize_less_variables_if_not_set();
@@ -881,6 +882,28 @@ class Ai1ec_Front_Controller {
 			) CHARACTER SET utf8;";
 
 		return $sql;
+	}
+
+	/**
+	 * Compile theme files for shipping.
+	 *
+	 * @return bool Whereas recompilation will happen.
+	 */
+	protected function _compile_themes() {
+		if (
+			! AI1EC_DEBUG ||
+			! isset( $_GET['ai1ec_recompile_templates'] ) ||
+			$_SERVER['REMOTE_ADDR'] !== $_SERVER['SERVER_ADDR']
+		) {
+			return false;
+		}
+		$compiler = $this->_registry->get( 'theme.compiler' );
+		add_action(
+			'plugins_loaded',
+			array( $compiler, 'generate' ),
+			PHP_INT_MAX
+		);
+		return true;
 	}
 
 }

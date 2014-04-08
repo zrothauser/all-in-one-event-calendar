@@ -289,6 +289,23 @@ class Ai1ec_Theme_Loader {
 	}
 
 	/**
+	 * Get Twig instance.
+	 *
+	 * @param bool $is_admin Set to true for admin views.
+	 * @param bool $refresh  Set to true to get fresh instance.
+	 *
+	 * @return Twig_Environment Configured Twig instance.
+	 */
+	public function get_twig_instance( $is_admin = false, $refresh = false ) {
+		if ( $refresh ) {
+			unset( $this->_twig );
+		}
+		$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
+		$paths = array_keys( $paths ); // Values (URLs) not used for Twig
+		return $this->_get_twig_instance( $paths );
+	}
+
+	/**
 	 * This method whould be in a factory called by the object registry.
 	 * I leave it here for reference.
 	 *
@@ -316,6 +333,7 @@ class Ai1ec_Theme_Loader {
 			$environment = array(
 				'cache'            => AI1EC_TWIG_CACHE_PATH,
 				'optimizations'    => -1,   // all
+				'auto_reload'      => false,
 			);
 			if ( AI1EC_DEBUG ) {
 				$environment += array(
@@ -324,9 +342,13 @@ class Ai1ec_Theme_Loader {
 				// auto_reload never worked well
 				$environment['cache'] = false;
 			}
+			$environment = apply_filters(
+				'ai1ec_twig_environment',
+				$environment
+			);
 
 			$this->_twig = new Twig_Environment( $loader, $environment );
-			if ( AI1EC_DEBUG ) {
+			if ( apply_filters( 'ai1ec_twig_add_debug', AI1EC_DEBUG ) ) {
 				$this->_twig->addExtension( new Twig_Extension_Debug() );
 			}
 

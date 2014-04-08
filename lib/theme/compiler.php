@@ -124,15 +124,75 @@ class Ai1ec_Theme_Compiler extends Ai1ec_Base {
 		$environment['debug']       = false;
 		$environment['cache']       = AI1EC_TWIG_CACHE_PATH;
 		$environment['auto_reload'] = true;
-		if (
-			! is_dir( $environment['cache'] ) &&
-			! mkdir( $environment['cache'], 0755, true )
-		) {
+		if ( ! $this->_check_dir( $environment['cache'] ) ) {
 			throw new Ai1ec_Bootstrap_Exception(
 				'Failed to create cache directory: ' . $environment['cache']
 			);
 		}
 		return $environment;
+	}
+
+	/**
+	 * Ensure cache directory pre-conditions.
+	 *
+	 * Before compilation starts cache directory must be empty but existing.
+	 * NOTE: it attempts to preserve `.gitignore` file in cache/ directory.
+	 *
+	 * @param string $cache_dir Directory to check.
+	 *
+	 * @return bool Validity.
+	 */
+	protected function _check_dir( $cache_dir ) {
+		$parent    = dirname( realpath( $cache_dir ) );
+		$gitignore = null;
+		$gitfile   = $parent . DIRECTORY_SEPARATOR . '.gitignore';
+		if ( is_file( $gitfile ) ) {
+			$gitignore = file_get_contents( $gitfile );
+		}
+		if ( ! $this->_prune_dir( $parent ) ) {
+			return false;
+		}
+		if ( mkdir( $cache_dir, 0755, true ) ) {
+			if ( null !== $gitignore ) {
+				file_put_contents( $gitfile, $gitignore );
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Remove directory and all it's contents.
+	 *
+	 * @param string $cache_dir Absolute path to remove.
+	 *
+	 * @return bool Success.
+	 */
+	protected function _prune_dir( $cache_dir ) {
+		if ( ! file_exists( $cache_dir ) ) {
+			return true;
+		}
+		$handle = opendir( $cache_dir );
+		if ( ! $handle ) {
+			return false;
+		}
+		while ( false !== ( $file = readdir( $handle ) ) ) {
+			if ( '.' === $file || '..' === $file ) {
+				continue;
+			}
+			$path = $cache_dir . DIRECTORY_SEPARATOR . $file;
+			if ( is_file( $path ) ) {
+				if ( ! unlink( $path ) ) {
+					return false;
+				}
+			} else {
+				if ( ! $this->_prune_dir( $path ) ) {
+					return false;
+				}
+			}
+		}
+		closedir( $handle );
+		return rmdir( $cache_dir );
 	}
 
 }

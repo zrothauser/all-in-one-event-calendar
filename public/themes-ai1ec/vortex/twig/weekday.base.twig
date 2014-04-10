@@ -122,11 +122,13 @@
 									height: {{ day_array.height }}px;
 									left: {{ day_array.indent * block( 'indent_multiplier' ) + block( 'indent_offset' ) }}px;
 									{{ event.get_runtime( 'color_style' ) }}
-									{% if event.get_runtime( 'faded_color' ) %}
-										{% set rgba1 = event.get_runtime( 'rgba_color ') | format( '0.05' ) %}
-										{% set rgba3 = event.get_runtime( 'rgba_color ') | format( '0.3' ) %}
-										border: 1px solid {{ event.get_runtime( 'faded_color ') }};
-										border-color: {{ event.get_runtime( 'rgba_color ') | format( '0.5' ) }};
+									{% set faded_color = event.get_runtime( 'faded_color' ) %}
+									{% set rgba_color  = event.get_runtime( 'rgba_color' ) %}
+									{% if faded_color is not empty %}
+										{% set rgba1 = rgba_color | format( '0.05' ) %}
+										{% set rgba3 = rgba_color | format( '0.3' ) %}
+										border: 1px solid {{ faded_color }};
+										border-color: {{ rgba_color | format( '0.5' ) }};
 										background-image: -webkit-linear-gradient( top, {{ rgba1 }}, {{ rgba3 }} 50px );
 										background-image: -moz-linear-gradient( top, {{ rgba1 }}, {{ rgba3 }} 50px );
 										background-image: -ms-linear-gradient( top, {{ rgba1 }}, {{ rgba3 }} 50px );

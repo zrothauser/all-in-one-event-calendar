@@ -25,10 +25,11 @@
 
 		<div class="ai1ec-time">
 			<div class="ai1ec-field-label">{{ 'When:' | __ }}</div>
-			<div class="ai1ec-field-value">{{ event | timespan | raw }}</div>
+			<div class="ai1ec-field-value">
+				{{ event | timespan | raw }}
+				{% include 'recurrence.twig' %}
+			</div>
 		</div>
-
-		{% include 'recurrence.twig' %}
 
 		{% if location is not empty %}
 			<div class="ai1ec-location">

@@ -17,7 +17,7 @@
 .ai1ec-single-event,
 .ai1ec-multi-event {
 	.ai1ec-event-details {
-		margin-bottom: @event-line-height * 0.6;
+		margin: @event-line-height * 0.6 0;
 		.ai1ec-row {
 			margin-bottom: @event-line-height * 0.2;
 		}
@@ -35,12 +35,10 @@
 			line-height: 1.4em;
 		}
 	}
-	.ai1ec-exclude {
-		.ai1ec-text-muted;
-		font-size: 0.9em;
-	}
-	.ai1ec-edit-instance-link {
-		font-size: 0.9em;
+	.ai1ec-recurrence.ai1ec-btn.ai1ec-disabled {
+    cursor: default;
+    .ai1ec-opacity( 1 );
+		pointer-events: auto;
 	}
 
 	// Categories & tags.
@@ -59,7 +57,7 @@
 	}
 	#ai1ec-gmap-canvas {
 		width: 100%;
-		height: 140px;
+		height: 200px;
 	}
 	.ai1ec-gmap-link {
 		bottom: -1px;
@@ -107,7 +105,7 @@
 	}
 }
 
-// Single event page.
+// Single event page only.
 .ai1ec-single-event {
 	position: relative;
 	font-size: @event-font-size;
@@ -142,6 +140,12 @@
 	}
 }
 
+// This appears in a tooltip, so cannot be wrapped by a class qualifier.
+.ai1ec-recurrence-exclude {
+	font-size: smaller;
+	color: @text-muted;
+}
+
 // Multi-event loop and event excerpts.
 .ai1ec-multi-event,
 .ai1ec-excerpt {
@@ -158,41 +162,11 @@
 
 // Footer.
 .ai1ec-event-footer {
-	.ai1ec-text-muted;
+	color: @text-muted;
 	clear: both;
 	font-size: 0.9em;
 }
 .ai1ec-ics-icon {
 	background: url('@{imgdir_default}/ics-icon.png') no-repeat right;
 	padding-right: 15px;
-}
-
-// ===========================
-// = Responsive declarations =
-// ===========================
-
-// Portrait/landscape phone/narrow desktop
-@media (max-width: @screen-sm-max) {
-	.ai1ec-single-event,
-	.ai1ec-multi-event,
-	.ai1ec-excerpt {
-		.ai1ec-btn-group > .ai1ec-btn {
-			display: block;
-			float: none;
-			margin-left: 0;
-			margin-top: -1px;
-			&:first-child {
-				margin-top: 0;
-				border-radius: 4px 4px 0 0;
-			}
-			&:last-child {
-				border-radius: 0 0 4px 4px;
-			}
-		}
-	}
-}
-
-// Hide the close button in the modal
-#ai1ec_subscribe_email_modal .ai1ec-btn-danger {
-	display: none;
 }

@@ -82,8 +82,12 @@
 	margin: 0;
 }
 .ai1ec-btn-group {
-	margin-bottom: 6px;
-	vertical-align: bottom;
+	.ai1ec-btn-toolbar & {
+		margin-bottom: 6px;
+		&.ai1ec-btn-group-xs {
+			margin-top: 3px;
+		}
+	}
 	> .ai1ec-btn-primary {
 		z-index: 3;
 	}
@@ -657,7 +661,7 @@ input.ai1ec-timepicker[readonly] {
 
 // No results styling.
 .ai1ec-no-results {
-	.ai1ec-text-muted;
+	color: @text-muted;
 }
 
 // Special formatting for paragraph text (as opposed to most application UI).

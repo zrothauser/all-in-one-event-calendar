@@ -47,35 +47,35 @@ class Ai1ec_View_Event_Ticket {
 		$contact = '';
 		if ( $event->get( 'contact_name' ) ) {
 			$contact .=
-			'<span class="ai1ec-contact-name">' .
+			'<div class="ai1ec-contact-name">' .
 			'<i class="ai1ec-fa ai1ec-fa-fw ai1ec-fa-user"></i> ' .
 			esc_html( $event->get( 'contact_name' ) ) .
-			'</span> ';
+			'</div> ';
 		}
 		if ( $event->get( 'contact_phone' ) ) {
 			$contact .=
-			'<span class="ai1ec-contact-phone">' .
+			'<div class="ai1ec-contact-phone">' .
 			'<i class="ai1ec-fa ai1ec-fa-fw ai1ec-fa-phone"></i> ' .
 			esc_html( $event->get( 'contact_phone' ) ) .
-			'</span> ';
+			'</div> ';
 		}
 		if ( $event->get( 'contact_email' ) ) {
 			$contact .=
-			'<span class="ai1ec-contact-email">' .
+			'<div class="ai1ec-contact-email">' .
 			'<a href="mailto:' . esc_attr( $event->get( 'contact_email' ) ) . '">' .
 			'<i class="ai1ec-fa ai1ec-fa-fw ai1ec-fa-envelope-o"></i> ' .
-			__( 'Email', AI1EC_PLUGIN_NAME ) . '</a></span> ';
+			__( 'Email', AI1EC_PLUGIN_NAME ) . '</a></div> ';
 		}
 		if ( $event->get( 'contact_url' ) ) {
 			$contact .=
-			'<span class="ai1ec-contact-url">' .
+			'<div class="ai1ec-contact-url">' .
 			'<a target="_blank" href="' . esc_attr( $event->get( 'contact_url' ) ) .
 			'"><i class="ai1ec-fa ai1ec-fa-fw ai1ec-fa-link"></i> ' .
 			apply_filters(
 				'ai1ec_contact_url',
 				__( 'Event website', AI1EC_PLUGIN_NAME )
 			) .
-			' <i class="ai1ec-fa ai1ec-fa-external-link"></i></a></span>';
+			' <i class="ai1ec-fa ai1ec-fa-external-link"></i></a></div>';
 		}
 		return $contact;
 	}

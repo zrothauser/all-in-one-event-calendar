@@ -41,35 +41,37 @@
 	</div>
 {% endif %}
 
-<div class="ai1ec-event-details ai1ec-clearfix">
+{% if map is empty %}
+	<div class="ai1ec-event-details ai1ec-clearfix">
+{% else %}
+	<div class="ai1ec-event-details ai1ec-row">
+		<div class="ai1ec-map ai1ec-col-sm-5 ai1ec-col-sm-push-7">
+			{{ map | raw }}
+		</div>
+		<div class="ai1ec-col-sm-7 ai1ec-col-sm-pull-5">
+{% endif %}
 
 	<div class="ai1ec-time ai1ec-row">
-		<div class="ai1ec-field-label ai1ec-col-sm-3">{{ 'When:' | __ }}</div>
-		<div class="ai1ec-field-value ai1ec-col-sm-9">{{ event | timespan | raw }}</div>
+		<div class="ai1ec-field-label ai1ec-col-sm-4 ai1ec-col-md-5">{{ 'When:' | __ }}</div>
+		<div class="ai1ec-field-value ai1ec-col-sm-8 ai1ec-col-md-7">
+			{{ event | timespan | raw }}
+			{% include 'recurrence.twig' %}
+		</div>
 	</div>
-
-	{% include 'recurrence.twig' %}
 
 	{% if location is not empty %}
 		<div class="ai1ec-location ai1ec-row">
-			<div class="ai1ec-field-label ai1ec-col-sm-3">{{ 'Where:' | __ }}</div>
-			<div class="ai1ec-field-value ai1ec-col-sm-9">
-				{% if map is not empty %}
-					<div class="ai1ec-row">
-						<div class="ai1ec-col-md-6">{{ location | raw }}</div>
-						<div class="ai1ec-map ai1ec-col-md-6">{{ map | raw }}</div>
-					</div>
-				{% else %}
-					{{ location | raw }}
-				{% endif %}
+			<div class="ai1ec-field-label ai1ec-col-sm-4 ai1ec-col-md-5">{{ 'Where:' | __ }}</div>
+			<div class="ai1ec-field-value ai1ec-col-sm-8 ai1ec-col-md-7">
+				{{ location | raw }}
 			</div>
 		</div>
 	{% endif %}
 
 	{% if event.get( 'cost' ) is not empty or event.is_free %}
 		<div class="ai1ec-cost ai1ec-row">
-			<div class="ai1ec-field-label ai1ec-col-sm-3">{{ 'Cost:' | __ }}</div>
-			<div class="ai1ec-field-value ai1ec-col-sm-9">
+			<div class="ai1ec-field-label ai1ec-col-sm-4 ai1ec-col-md-5">{{ 'Cost:' | __ }}</div>
+			<div class="ai1ec-field-value ai1ec-col-sm-8 ai1ec-col-md-7">
 				{{ event.is_free ? 'Free' | __ : event.get( 'cost' ) }}
 			</div>
 		</div>
@@ -77,18 +79,18 @@
 
 	{% if contact is not empty %}
 		<div class="ai1ec-contact ai1ec-row">
-			<div class="ai1ec-field-label ai1ec-col-sm-3">{{ 'Contact:' | __ }}</div>
-			<div class="ai1ec-field-value ai1ec-col-sm-9">{{ contact | raw }}</div>
+			<div class="ai1ec-field-label ai1ec-col-sm-4 ai1ec-col-md-5">{{ 'Contact:' | __ }}</div>
+			<div class="ai1ec-field-value ai1ec-col-sm-8 ai1ec-col-md-7">{{ contact | raw }}</div>
 		</div>
 	{% endif %}
 
 	{% if categories is not empty %}
 		<div class="ai1ec-categories ai1ec-row">
-			<div class="ai1ec-field-label ai1ec-col-sm-3 ai1ec-col-xs-1">
+			<div class="ai1ec-field-label ai1ec-col-sm-4 ai1ec-col-md-5 ai1ec-col-xs-1">
 				<i class="ai1ec-fa ai1ec-fa-folder-open ai1ec-tooltip-trigger"
 					title="{{ 'Categories' | __ | e('html_attr') }}"></i>
 			</div>
-			<div class="ai1ec-field-value ai1ec-col-sm-9 ai1ec-col-xs-10">
+			<div class="ai1ec-field-value ai1ec-col-sm-8 ai1ec-col-md-7 ai1ec-col-xs-10">
 				{{ categories | raw }}
 			</div>
 		</div>
@@ -96,17 +98,22 @@
 
 	{% if tags is not empty %}
 		<div class="ai1ec-tags ai1ec-row">
-			<div class="ai1ec-field-label ai1ec-col-sm-3 ai1ec-col-xs-1">
+			<div class="ai1ec-field-label ai1ec-col-sm-4 ai1ec-col-md-5 ai1ec-col-xs-1">
 				<i class="ai1ec-fa ai1ec-fa-tags ai1ec-tooltip-trigger"
 					title="{{ 'Tags' | __ | e('html_attr') }}"></i>
 			</div>
-			<div class="ai1ec-field-value ai1ec-col-sm-9 ai1ec-col-xs-10">
+			<div class="ai1ec-field-value ai1ec-col-sm-8 ai1ec-col-md-7 ai1ec-col-xs-10">
 				{{ tags | raw }}
 			</div>
 		</div>
 	{% endif %}
 
-</div>
+{% if map is empty %}
+	</div>{# /.ai1ec-event-details #}
+{% else %}
+		</div>{# /.ai1ec-col-sm-7 #}
+	</div>{# /.ai1ec-event-details.ai1ec-row #}
+{% endif %}
 
 {% if not hide_featured_image %}
 	{% if event.get_runtime( 'content_img_url' ) is empty %}

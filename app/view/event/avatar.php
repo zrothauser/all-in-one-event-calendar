@@ -55,8 +55,11 @@ class Ai1ec_View_Event_Avatar extends Ai1ec_Base {
 		$html = '<img src="' . $url . '" alt="' . $alt . '" ' . $size_attr . ' />';
 	
 		if ( $wrap_permalink ) {
-			$permalink = get_permalink( $event->get( 'post_id' ) ) . 
-				'&instance_id=' . $event->get( 'instance_id' );
+			$permalink = add_query_arg( 
+				'instance_id', 
+				$event->get( 'instance_id' ), 
+				get_permalink( $event->get( 'post_id' ) ) 
+			);
 			$html = '<a href="' . $permalink . '">' . $html . '</a>';
 		}
 	

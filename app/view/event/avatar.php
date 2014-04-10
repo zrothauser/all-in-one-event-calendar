@@ -35,7 +35,7 @@ class Ai1ec_View_Event_Avatar extends Ai1ec_Base {
 	) {
 		$source = $size = null;
 		$url = $this->get_event_avatar_url( $event, $fallback_order, $source, $size );
-	
+
 		if ( empty( $url ) ) {
 			return '';
 		}
@@ -55,7 +55,8 @@ class Ai1ec_View_Event_Avatar extends Ai1ec_Base {
 		$html = '<img src="' . $url . '" alt="' . $alt . '" ' . $size_attr . ' />';
 	
 		if ( $wrap_permalink ) {
-			$permalink = get_permalink( $event->get( 'post_id' ) ) . $event->get( 'instance_id' );
+			$permalink = get_permalink( $event->get( 'post_id' ) ) . 
+				'&instance_id=' . $event->get( 'instance_id' );
 			$html = '<a href="' . $permalink . '">' . $html . '</a>';
 		}
 	

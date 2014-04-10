@@ -9,7 +9,9 @@
  * @package    AI1EC
  * @subpackage AI1EC.Import-export
  */
-class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_Export_Engine {
+class Ai1ec_Ics_Import_Export_Engine
+	extends Ai1ec_Base
+	implements Ai1ec_Import_Export_Engine {
 
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Import_Export_Engine::import()
@@ -75,8 +77,8 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 	 * @staticvar string $format Cached format, to be returned
 	 */
 	public function get_uid_format() {
-		static $format = NULL;
-		if ( NULL === $format ) {
+		static $format = null;
+		if ( null === $format ) {
 			$site_url = parse_url( get_site_url() );
 			$format   = 'ai1ec-%d@' . $site_url['host'];
 			if ( isset( $site_url['path'] ) ) {
@@ -87,13 +89,11 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 	}
 
 	/**
-	 * _is_timeless method
-	 *
 	 * Check if date-time specification has no (empty) time component.
 	 *
-	 * @param array $datetime Datetime array returned by iCalcreator
+	 * @param array $datetime Datetime array returned by iCalcreator.
 	 *
-	 * @return bool Timelessness
+	 * @return bool Timelessness.
 	 */
 	protected function _is_timeless( array $datetime ) {
 		$timeless = true;
@@ -109,18 +109,18 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 	}
 
 	/**
-	 * add_vcalendar_events_to_db method
+	 * Process vcalendar instance - add events to database.
 	 *
-	 * Process vcalendar instance - add events to database
+	 * @param vcalendar $v    Calendar to retrieve data from.
+	 * @param array     $args Arbitrary arguments map.
 	 *
-	 * @param vcalendar $v              Calendar to retrieve data from
-	 * @param array $args
 	 * @throws Ai1ec_Parse_Exception
-	 * @internal param \stdClass $feed Instance of feed (see Ai1ecIcs plugin)
-	 * @internal param string $comment_status WP comment status: 'open' or 'closed'
-	 * @internal param int $do_show_map Map display status (DB boolean: 0 or 1)
 	 *
-	 * @return int Count of events added to database
+	 * @internal param stdClass $feed           Instance of feed (see Ai1ecIcs plugin).
+	 * @internal param string   $comment_status WP comment status: 'open' or 'closed'.
+	 * @internal param int      $do_show_map    Map display status (DB boolean: 0 or 1).
+	 *
+	 * @return int Count of events added to database.
 	 */
 	public function add_vcalendar_events_to_db(
 		vcalendar $v,
@@ -390,7 +390,9 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 				}
 				// Detect URL.
 				elseif ( false !== strpos( $el, '://' ) ) {
-					$data['contact_url']   = $el;
+					$data['contact_url']   = $this->_parse_legacy_loggable_url(
+						$el
+					);
 				}
 				// Detect phone number.
 				elseif ( preg_match( '/\d/', $el ) ) {
@@ -415,7 +417,9 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 				'venue'             => $venue,
 				'address'           => $address,
 				'cost'              => $cost,
-				'ticket_url'        => $ticket_url,
+				'ticket_url'        => $this->_parse_legacy_loggable_url(
+					$ticket_url
+				),
 				'show_map'          => $do_show_map,
 				'ical_feed_url'     => $feed->feed_url,
 				'ical_source_url'   => $e->getProperty( 'url' ),
@@ -489,6 +493,33 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		}
 
 		return $count;
+	}
+
+	/**
+	 * Convert loggable URL exported from legacy Ai1EC installation.
+	 *
+	 * @param string $loggable_url Likely loggable URL.
+	 *
+	 * @return string Non-loggable URL.
+	 */
+	protected function _parse_legacy_loggable_url( $loggable_url ) {
+		if ( 0 !== strpos( $loggable_url, AI1EC_REDIRECTION_SERVICE ) ) {
+			return $loggable_url; // it wasn't loggable URL
+		}
+		$value = base64_decode(
+			substr( $loggable_url, strlen( AI1EC_REDIRECTION_SERVICE ) )
+		);
+		$clear_url = null; // return empty if nothing is parseable
+		if ( // valid JSON structure remains
+			null !== ( $decoded = json_decode( $value, true ) ) &&
+			isset( $decoded['l'] )
+		) {
+			$clear_url = $decoded['l'];
+		} else if ( preg_match( '|"l"\s*:\s*"(.+?)","|', $value, $matches ) ) {
+			// reverting to dirty parsing as JSON is broken
+			$clear_url = stripslashes( $matches[1] );
+		} // no more else - impossible to parse anything
+		return $clear_url;
 	}
 
 	/**
@@ -736,7 +767,9 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		if ( $event->get( 'ticket_url' ) ) {
 			$e->setProperty(
 				'X-TICKETS-URL',
-				$this->_sanitize_value( $event->get( 'ticket_url' ) )
+				$this->_sanitize_value(
+					$event->get_nonloggable_url( $event->get( 'ticket_url' ) )
+				)
 			);
 		}
 
@@ -747,7 +780,7 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 			$event->get( 'contact_name' ),
 			$event->get( 'contact_phone' ),
 			$event->get( 'contact_email' ),
-			$event->get( 'contact_url' ),
+			$event->get_nonloggable_url( $event->get( 'contact_url' ) ),
 		);
 		$contact = array_filter( $contact );
 		$contact = implode( '; ', $contact );
@@ -947,4 +980,5 @@ class Ai1ec_Ics_Import_Export_Engine extends Ai1ec_Base implements Ai1ec_Import_
 		}
 		return $imported_terms;
 	}
+
 }

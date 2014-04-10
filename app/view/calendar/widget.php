@@ -261,7 +261,7 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		$args['show_calendar_button']      = $instance['show_calendar_button'];
 		$args['dates']                     = $dates;
 		$args['show_location_in_title']    = $settings->get( 'show_location_in_title' );
-		$args['show_year_in_agenda_dates'] = $settings->get( 'show_year_in_agenda_dates ' );
+		$args['show_year_in_agenda_dates'] = $settings->get( 'show_year_in_agenda_dates' );
 		$args['calendar_url']              = $html->create_href_helper_instance( $limit )->generate_href();
 		$args['subscribe_url']             = AI1EC_EXPORT_URL . $subscribe_filter;
 		$args['is_ticket_button_enabled']  = $is_ticket_button_enabled;

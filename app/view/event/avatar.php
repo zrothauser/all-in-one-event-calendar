@@ -30,11 +30,16 @@ class Ai1ec_View_Event_Avatar extends Ai1ec_Base {
 	public function get_event_avatar(
 		Ai1ec_Event $event,
 		$fallback_order = null,
-		$classes = '',
+		$classes        = '',
 		$wrap_permalink = true
 	) {
 		$source = $size = null;
-		$url = $this->get_event_avatar_url( $event, $fallback_order, $source, $size );
+		$url    = $this->get_event_avatar_url(
+			$event,
+			$fallback_order,
+			$source,
+			$size
+		);
 
 		if ( empty( $url ) ) {
 			return '';
@@ -42,35 +47,38 @@ class Ai1ec_View_Event_Avatar extends Ai1ec_Base {
 	
 		$url     = esc_attr( $url );
 		$classes = esc_attr( $classes );
-	
+
 		// Set the alt tag (helpful for SEO).
-		$alt = $event->get( 'post' )->post_title;
+		$alt      = $event->get( 'post' )->post_title;
 		$location = $this->_registry->get( 'view.event.location' )->get_short_location( $event );
 		if ( ! empty( $location ) ) {
 			$alt .= ' @ ' . $location;
 		}
-	
-		$alt = esc_attr( $alt );
+
+		$alt       = esc_attr( $alt );
 		$size_attr = $size[0] ? "width=\"$size[0]\" height=\"$size[1]\"" : "";
-		$html = '<img src="' . $url . '" alt="' . $alt . '" ' . $size_attr . ' />';
-	
+		$html      = '<img src="' . $url . '" alt="' . $alt . '" ' .
+			$size_attr . ' />';
+
 		if ( $wrap_permalink ) {
-			$permalink = add_query_arg( 
-				'instance_id', 
-				$event->get( 'instance_id' ), 
-				get_permalink( $event->get( 'post_id' ) ) 
+			$permalink = add_query_arg(
+				'instance_id',
+				$event->get( 'instance_id' ),
+				get_permalink( $event->get( 'post_id' ) )
 			);
 			$html = '<a href="' . $permalink . '">' . $html . '</a>';
 		}
-	
+
 		$classes .= ' ai1ec-' . $source;
-		$classes .= $size[0] > $size[1] ? ' ai1ec-landscape' : ' ai1ec-portrait';
-		$html = '<div class="ai1ec-event-avatar timely ' . $classes . '">' .
+		$classes .= ( $size[0] > $size[1] )
+			? ' ai1ec-landscape'
+			: ' ai1ec-portrait';
+		$html     = '<div class="ai1ec-event-avatar timely ' . $classes . '">' .
 			$html . '</div>';
-	
+
 		return $html;
 	}
-	
+
 	/**
 	 * Get the post's "avatar" image url according conditional fallback model.
 	 *

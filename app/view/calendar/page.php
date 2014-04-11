@@ -44,7 +44,9 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		} catch ( Ai1ec_Settings_Exception $exception ) {
 			// short-circuit and return error message
 			return '<div id="ai1ec-container"><div class="timely"><p>' .
-				Ai1ec_I18n::__( 'There was an error loading calendar. Please contact site administrator and inform him to configure calendar views.' ) .
+				Ai1ec_I18n::__(
+					'There was an error loading calendar. Please contact site administrator and inform him to configure calendar views.'
+				) .
 				'</p></div></div>';
 		}
 		$type       = $request->get( 'request_type' );
@@ -57,11 +59,11 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		$view_args  = $view_obj->get_extra_arguments( $view_args, $exact_date );
 		$view       = $view_obj->get_content( $view_args );
 		$args       = array(
-			'view' => $view,
-			'version' => AI1EC_VERSION,
+			'view'              => $view,
+			'version'           => AI1EC_VERSION,
 			'subscribe_buttons' => '',
 		);
-		$taxonomy = $this->_registry->get( 'view.calendar.taxonomy' );
+		$taxonomy   = $this->_registry->get( 'view.calendar.taxonomy' );
 		$categories = $taxonomy->get_html_for_categories(
 			$view_args
 		);

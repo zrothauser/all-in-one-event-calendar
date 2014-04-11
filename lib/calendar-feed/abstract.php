@@ -28,25 +28,37 @@ abstract class Ai1ec_Connector_Plugin extends Ai1ec_Base {
 	 * @var array
 	 */
 	protected $variables = array();
+
 	/**
 	 * Handles any action the plugin requires when the users makes a POST in the calendar feeds page.
 	 */
 	abstract public function handle_feeds_page_post();
+
+	/**
+	 * Get title to be used for tab human-identification.
+	 *
+	 * @return string Localized string.
+	 */
+	abstract public function get_tab_title();
+
 	/**
 	 * Renders the content of the tab, where all the action takes place.
 	 *
 	 */
 	abstract public function render_tab_content();
+
 	/**
 	 * Let the plugin display an admin notice if neede.
 	 *
 	 */
 	abstract public function display_admin_notices();
+
 	/**
 	 * Run the code that cleans up the DB and CRON functions the plugin has installed.
 	 *
 	 */
 	abstract public function run_uninstall_procedures();
+
 	/**
 	 * Renders the HTML for the tabbed navigation
 	 *
@@ -54,16 +66,16 @@ abstract class Ai1ec_Connector_Plugin extends Ai1ec_Base {
 	 *   Echoes the HTML string that act as tab header for the plugin
 	 */
 	public function render_tab_header() {
-
 		// Use the standard view helper
 		$args = array(
-			"title"  => __( $this->variables['title'], AI1EC_PLUGIN_NAME ),
-			"id"     => __( $this->variables['id'], AI1EC_PLUGIN_NAME ),
+			'title'  => $this->get_tab_title(),
+			'id'     => $this->variables['id'],
 		);
 		$loader = $this->_registry->get( 'theme.loader' );
-		$file = $loader->get_file( 'plugins/tab_header.php', $args, true );
+		$file   = $loader->get_file( 'plugins/tab_header.php', $args, true );
 		$file->render();
 	}
+
 	/**
 	 * Gets the settings for the Plugin from the settings object.
 	 *
@@ -133,13 +145,15 @@ abstract class Ai1ec_Connector_Plugin extends Ai1ec_Base {
 	public function plugin_settings_meta_box( $object, $box ) {
 		// Use the standard view helper
 		$plugin_settings = $this->generate_settings_array_for_admin_view();
-		$args = array(
-			"plugin_name"     => __( $this->variables['title'], AI1EC_PLUGIN_NAME ),
-			"plugin_settings" => $plugin_settings,
-			"plugin_info"     => isset( $this->variables['info'] ) ? __( $this->variables['info'], AI1EC_PLUGIN_NAME ) : NULL,
+		$args            = array(
+			'plugin_name'     => $this->get_tab_title(),
+			'plugin_settings' => $plugin_settings,
+			'plugin_info'     => isset( $this->variables['info'] )
+				? $this->variables['info']
+				: null,
 		);
 		// Make sure that there is something to render other than the Title.
-		if( ! empty( $args["plugin_settings"] ) ) {
+		if( ! empty( $args['plugin_settings'] ) ) {
 			$loader = $this->_registry->get( 'theme.loader' );
 			$file = $loader->get_file( 'plugins/general_plugin_settings.php', $args, true );
 			$file->render();
@@ -238,6 +252,7 @@ abstract class Ai1ec_Connector_Plugin extends Ai1ec_Base {
 			$this->render_closing_div_of_tab();
 		}
 	}
+
 	/**
 	 * Renders the opening div of the tab and set the active status if this tab is the active one
 	 *
@@ -245,12 +260,13 @@ abstract class Ai1ec_Connector_Plugin extends Ai1ec_Base {
 	 */
 	protected function render_opening_div_of_tab() {
 		$args = array(
-				"id"     => $this->variables['id']
+			'id' => $this->variables['id'],
 		);
 		$loader = $this->_registry->get( 'theme.loader' );
 		$file = $loader->get_file( 'plugins/render_opening_div.php', $args, true );
 		$file->render();
 	}
+
 	/**
 	 * This renders the closing div of the tab.
 	 */

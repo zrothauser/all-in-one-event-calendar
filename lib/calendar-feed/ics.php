@@ -26,9 +26,12 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	 *   id: The id used in the generation of the tab
 	 */
 	protected $variables = array(
-			"title" => "ICS",
-			"id"    => "ics"
+		'id' => 'ics',
 	);
+
+	public function get_tab_title() {
+		return Ai1ec_I18n::__( 'ICS' );
+	}
 
 	public function __construct( Ai1ec_Registry_Object $registry ) {
 		parent::__construct( $registry );

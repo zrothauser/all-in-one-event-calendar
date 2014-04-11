@@ -143,8 +143,8 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 		// ===========================
 		if( 'ai1ec_event' === $typenow ) {
 			if( ! array_key_exists( 'orderby', $query->query_vars ) ) {
-				$query->query_vars["orderby"] = 'ai1ec_event_date';
-				$query->query_vars["order"] = 'desc';
+				$query->query_vars['orderby'] = 'ai1ec_event_date';
+				$query->query_vars['order''] = 'desc';
 			}
 		}
 	}

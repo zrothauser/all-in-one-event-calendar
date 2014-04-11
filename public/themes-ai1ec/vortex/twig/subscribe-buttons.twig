@@ -15,7 +15,7 @@
 			{% endif %}
 		{% endif %}
 	</a>
-	{% set url = export_url | replace( ['webcal://', 'http://'] ) ~ url_args %}
+	{% set url = export_url | replace( {"webcal://": "http://"} ) ~ url_args %}
 	<a class="ai1ec-btn ai1ec-btn-default ai1ec-btn-sm ai1ec-subscribe-google
 			ai1ec-tooltip-trigger {{ button_classes }}"
 		target="_blank" data-placement="bottom"

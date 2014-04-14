@@ -54,6 +54,12 @@ class Ai1ec_Theme_Loader {
 		$theme                   = $option->get( 'ai1ec_current_theme' );
 		$this->_legacy_theme     = (bool)$theme['legacy'];
 
+		// Add active theme's directory/URL.
+		$this->add_path_theme(
+			$theme['theme_dir'] . DIRECTORY_SEPARATOR,
+			$theme['theme_url'] . '/'
+		);
+
 		// Add default theme's directory/URL if it is not the active one.
 		if ( AI1EC_DEFAULT_THEME_NAME !== $theme['stylesheet'] ) {
 			$this->add_path_theme(
@@ -61,11 +67,6 @@ class Ai1ec_Theme_Loader {
 				AI1EC_THEMES_URL . '/' . AI1EC_DEFAULT_THEME_NAME
 			);
 		}
-		// Add active theme's directory/URL (later additions take priority).
-		$this->add_path_theme(
-			$theme['theme_dir'] . DIRECTORY_SEPARATOR,
-			$theme['theme_url'] . '/'
-		);
 	}
 
 	/**
@@ -81,7 +82,7 @@ class Ai1ec_Theme_Loader {
 		if ( ! isset( $this->_paths[$target] ) ) {
 			return false;
 		}
-		$this->_paths[$target] = array( $path => $url ) + $this->_paths[$target];
+		$this->_paths[$target][$path] = $url;
 		return true;
 	}
 
@@ -133,6 +134,15 @@ class Ai1ec_Theme_Loader {
 		// Add default theme to search paths unless it is the active theme.
 		$option = $this->_registry->get( 'model.option' );
 		$theme  = $option->get( 'ai1ec_current_theme' );
+
+		// Add extension's theme path(s).
+		$this->add_path_theme(
+			$path . $D . 'public' . $D . AI1EC_THEME_FOLDER . $D .
+				$theme['stylesheet'] . $D,
+			$url . '/public/' . AI1EC_THEME_FOLDER . '/' . $theme['stylesheet'] . '/'
+		);
+
+
 		if ( AI1EC_DEFAULT_THEME_NAME !== $theme['stylesheet'] ) {
 			$this->add_path_theme(
 				$path . $D . 'public' . $D . AI1EC_THEME_FOLDER . $D .
@@ -140,12 +150,6 @@ class Ai1ec_Theme_Loader {
 				$url . '/public/' . AI1EC_THEME_FOLDER . '/' . AI1EC_DEFAULT_THEME_NAME
 			);
 		}
-		// Add extension's theme path(s) (takes priority over the above).
-		$this->add_path_theme(
-			$path . $D . 'public' . $D . AI1EC_THEME_FOLDER . $D .
-				$theme['stylesheet'] . $D,
-			$url . '/public/' . AI1EC_THEME_FOLDER . '/' . $theme['stylesheet'] . '/'
-		);
 		return $this;
 	}
 
@@ -174,7 +178,7 @@ class Ai1ec_Theme_Loader {
 		$dot_position = strrpos( $filename, '.' ) + 1;
 		$ext          = substr( $filename, $dot_position );
 		$file         = false;
-
+		fb($this->_paths);
 		switch ( $ext ) {
 			case 'less':
 			case 'css':

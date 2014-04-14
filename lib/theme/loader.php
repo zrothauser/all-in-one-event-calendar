@@ -261,7 +261,7 @@ class Ai1ec_Theme_Loader {
 				if ( null === $paths ) {
 					$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
 					$paths = array_keys( $paths ); // Values (URLs) not used for Twig
-				}error_log(print_r($paths, TRUE));
+				}
 				if ( true === $this->_legacy_theme && ! $is_admin ) {
 					$filename = substr( $filename, 0, $dot_position - 1);
 					$file     = $this->_get_legacy_file(

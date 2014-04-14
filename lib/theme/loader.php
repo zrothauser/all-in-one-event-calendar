@@ -35,6 +35,11 @@ class Ai1ec_Theme_Loader {
 	protected $_legacy_theme = false;
 
 	/**
+	 * @var bool
+	 */
+	protected $_child_theme = false;
+
+	/**
 	 * @return boolean
 	 */
 	public function is_legacy_theme() {
@@ -62,6 +67,7 @@ class Ai1ec_Theme_Loader {
 
 		// Add default theme's directory/URL if it is not the active one.
 		if ( AI1EC_DEFAULT_THEME_NAME !== $theme['stylesheet'] ) {
+			$this->_child_theme = true;
 			$this->add_path_theme(
 				AI1EC_DEFAULT_THEME_PATH . DIRECTORY_SEPARATOR,
 				AI1EC_THEMES_URL . '/' . AI1EC_DEFAULT_THEME_NAME
@@ -70,7 +76,9 @@ class Ai1ec_Theme_Loader {
 	}
 
 	/**
-	 * Add file search path to front of list.
+	 * Add file search path to list. The rule is that the first path to search is a child
+	 * theme, if active, then we put extensions in the middle and vortex core is the last
+	 * fallback 
 	 *
 	 * @param string $target Name of path purpose, i.e. 'admin' or 'theme'.
 	 * @param string $path   Absolute path to the directory to search.
@@ -78,9 +86,27 @@ class Ai1ec_Theme_Loader {
 	 *
 	 * @return bool Success.
 	 */
-	public function add_path( $target, $path, $url ) {
+	public function add_path( $target, $path, $url, $is_extension = false ) {
 		if ( ! isset( $this->_paths[$target] ) ) {
 			return false;
+		} 
+		if ( true === $is_extension ) {
+			if( true === $this->_child_theme ) {
+				$keys = array_keys( $this->_paths[$target] );
+				// Vortex is always the last one, so thake the path
+				$vortex_key = end( $keys );
+				// pop vortex from the array
+				$vortex_value = array_pop( $this->_paths[$target] );
+				// add the extension
+				$this->_paths[$target][$path] = $url;
+				// re add vortex to the end
+				$this->_paths[$target] = 
+					$this->_paths[$target] + array( $vortex_key => $vortex_value );
+			} else {
+				// prepend the extension to vortex
+				$this->_paths[$target] = array( $path => $url ) + $this->_paths[$target];
+			}
+			return true;
 		}
 		$this->_paths[$target][$path] = $url;
 		return true;
@@ -106,8 +132,8 @@ class Ai1ec_Theme_Loader {
 	 *
 	 * @return bool Success.
 	 */
-	public function add_path_theme( $path, $url ) {
-		return $this->add_path( 'theme', $path, $url );
+	public function add_path_theme( $path, $url, $is_extension = false ) {
+		return $this->add_path( 'theme', $path, $url, $is_extension );
 	}
 
 	/**
@@ -139,7 +165,8 @@ class Ai1ec_Theme_Loader {
 		$this->add_path_theme(
 			$path . $D . 'public' . $D . AI1EC_THEME_FOLDER . $D .
 				$theme['stylesheet'] . $D,
-			$url . '/public/' . AI1EC_THEME_FOLDER . '/' . $theme['stylesheet'] . '/'
+			$url . '/public/' . AI1EC_THEME_FOLDER . '/' . $theme['stylesheet'] . '/',
+			true
 		);
 
 
@@ -147,7 +174,8 @@ class Ai1ec_Theme_Loader {
 			$this->add_path_theme(
 				$path . $D . 'public' . $D . AI1EC_THEME_FOLDER . $D .
 					AI1EC_DEFAULT_THEME_NAME . $D,
-				$url . '/public/' . AI1EC_THEME_FOLDER . '/' . AI1EC_DEFAULT_THEME_NAME
+				$url . '/public/' . AI1EC_THEME_FOLDER . '/' . AI1EC_DEFAULT_THEME_NAME,
+				true
 			);
 		}
 		return $this;
@@ -178,7 +206,7 @@ class Ai1ec_Theme_Loader {
 		$dot_position = strrpos( $filename, '.' ) + 1;
 		$ext          = substr( $filename, $dot_position );
 		$file         = false;
-		fb($this->_paths);
+
 		switch ( $ext ) {
 			case 'less':
 			case 'css':

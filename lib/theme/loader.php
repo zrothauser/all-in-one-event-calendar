@@ -25,9 +25,9 @@ class Ai1ec_Theme_Loader {
 	protected $_registry;
 
 	/**
-	 * @var Twig_Environment Twig environment.
+	 * @var array Array of Twig environments.
 	 */
-	protected $_twig;
+	protected $_twig = array();
 
 	/**
 	 * @var bool
@@ -167,13 +167,10 @@ class Ai1ec_Theme_Loader {
 	public function get_file(
 		$filename,
 		$args            = array(),
-		$is_admin        = null,
+		$is_admin        = false,
 		$throw_exception = true,
 		array $paths     = null
 	) {
-		if ( null === $is_admin ) {
-			$is_admin = is_admin();
-		}
 		$dot_position = strrpos( $filename, '.' ) + 1;
 		$ext          = substr( $filename, $dot_position );
 		$file         = false;
@@ -231,7 +228,7 @@ class Ai1ec_Theme_Loader {
 						'theme.file.twig',
 						$filename,
 						$args,
-						$this->_get_twig_instance( $paths )
+						$this->_get_twig_instance( $paths, $is_admin )
 					);
 				}
 				break;
@@ -274,7 +271,7 @@ class Ai1ec_Theme_Loader {
 				'theme.file.twig',
 				$filename . '.twig',
 				$args,
-				$this->_get_twig_instance( $paths )
+				$this->_get_twig_instance( $paths, false )
 			);
 
 			// here file is a concrete class otherwise the exception is thrown
@@ -302,7 +299,7 @@ class Ai1ec_Theme_Loader {
 		}
 		$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
 		$paths = array_keys( $paths ); // Values (URLs) not used for Twig
-		return $this->_get_twig_instance( $paths );
+		return $this->_get_twig_instance( $paths, $is_admin );
 	}
 
 	/**
@@ -310,12 +307,13 @@ class Ai1ec_Theme_Loader {
 	 * I leave it here for reference.
 	 *
 	 * @param array $paths Array of paths to search
+	 * @param bool  $is_admin whether to use the admin or not admin Twig instance
 	 *
 	 * @return Twig_Environment
 	 */
-	protected function _get_twig_instance( array $paths ) {
-
-		if ( ! isset( $this->_twig ) ) {
+	protected function _get_twig_instance( array $paths, $is_admin ) {
+		$instance = $is_admin ? 'admin' : 'front';
+		if ( ! isset( $this->_twig[$instance] ) ) {
 
 			// Set up Twig environment.
 			$loader_path = array();
@@ -347,16 +345,16 @@ class Ai1ec_Theme_Loader {
 				$environment
 			);
 
-			$this->_twig = new Twig_Environment( $loader, $environment );
+			$this->_twig[$instance] = new Twig_Environment( $loader, $environment );
 			if ( apply_filters( 'ai1ec_twig_add_debug', AI1EC_DEBUG ) ) {
-				$this->_twig->addExtension( new Twig_Extension_Debug() );
+				$this->_twig[$instance]->addExtension( new Twig_Extension_Debug() );
 			}
 
 			$extension = $this->_registry->get( 'twig.ai1ec-extension' );
 			$extension->set_registry( $this->_registry );
-			$this->_twig->addExtension( $extension );
+			$this->_twig[$instance]->addExtension( $extension );
 		}
-		return $this->_twig;
+		return $this->_twig[$instance];
 	}
 
 	/**

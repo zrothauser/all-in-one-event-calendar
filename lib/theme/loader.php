@@ -30,14 +30,19 @@ class Ai1ec_Theme_Loader {
 	protected $_twig = array();
 
 	/**
-	 * @var bool
+	 * @var bool Whether this theme uses .php templates instead of .twig
 	 */
 	protected $_legacy_theme = false;
 
 	/**
-	 * @var bool
+	 * @var bool Whether this theme is a child of the default theme
 	 */
 	protected $_child_theme = false;
+
+	/**
+	 * @var bool Whether this theme is a core theme
+	 */
+	protected $_core_theme = false;
 
 	/**
 	 * @return boolean
@@ -59,56 +64,61 @@ class Ai1ec_Theme_Loader {
 		$theme                   = $option->get( 'ai1ec_current_theme' );
 		$this->_legacy_theme     = (bool)$theme['legacy'];
 
-		// Add active theme's directory/URL.
+		// Find out if this is a core theme.
+		$core_themes             = explode( ',', AI1EC_CORE_THEMES );
+		$this->_core_theme       = in_array( $theme['stylesheet'], $core_themes );
+
+		// Default theme's path is always the last in the list of paths to check,
+		// so add it first (path list is a stack).
 		$this->add_path_theme(
-			$theme['theme_dir'] . DIRECTORY_SEPARATOR,
-			$theme['theme_url'] . '/'
+			AI1EC_DEFAULT_THEME_PATH . DIRECTORY_SEPARATOR,
+			AI1EC_THEMES_URL . '/' . AI1EC_DEFAULT_THEME_NAME . '/'
 		);
 
-		// Add default theme's directory/URL if it is not the active one.
+		// If using a child theme, set flag and push its path to top of stack.
 		if ( AI1EC_DEFAULT_THEME_NAME !== $theme['stylesheet'] ) {
 			$this->_child_theme = true;
 			$this->add_path_theme(
-				AI1EC_DEFAULT_THEME_PATH . DIRECTORY_SEPARATOR,
-				AI1EC_THEMES_URL . '/' . AI1EC_DEFAULT_THEME_NAME
+				$theme['theme_dir'] . DIRECTORY_SEPARATOR,
+				$theme['theme_url'] . '/'
 			);
 		}
 	}
 
 	/**
-	 * Add file search path to list. The rule is that the first path to search is a child
-	 * theme, if active, then we put extensions in the middle and vortex core is the last
-	 * fallback 
+	 * Adds file search path to list. If an extension is adding this path, and
+	 * this is a custom child theme, inserts its path at the second index of the
+	 * list. Else pushes it onto the top of the stack.
 	 *
-	 * @param string $target Name of path purpose, i.e. 'admin' or 'theme'.
-	 * @param string $path   Absolute path to the directory to search.
-	 * @param string $url    URL to the directory represented by $path.
+	 * @param string $target       Name of path purpose, i.e. 'admin' or 'theme'.
+	 * @param string $path         Absolute path to the directory to search.
+	 * @param string $url          URL to the directory represented by $path.
+	 * @param string $is_extension Whether an extension is adding this page.
 	 *
 	 * @return bool Success.
 	 */
 	public function add_path( $target, $path, $url, $is_extension = false ) {
 		if ( ! isset( $this->_paths[$target] ) ) {
+			// Invalid target.
 			return false;
-		} 
-		if ( true === $is_extension ) {
-			if( true === $this->_child_theme ) {
-				$keys = array_keys( $this->_paths[$target] );
-				// Vortex is always the last one, so thake the path
-				$vortex_key = end( $keys );
-				// pop vortex from the array
-				$vortex_value = array_pop( $this->_paths[$target] );
-				// add the extension
-				$this->_paths[$target][$path] = $url;
-				// re add vortex to the end
-				$this->_paths[$target] = 
-					$this->_paths[$target] + array( $vortex_key => $vortex_value );
-			} else {
-				// prepend the extension to vortex
-				$this->_paths[$target] = array( $path => $url ) + $this->_paths[$target];
-			}
-			return true;
 		}
-		$this->_paths[$target][$path] = $url;
+
+		// New element to insert into associative array.
+		$new = array( $path => $url );
+
+		if (
+			true  === $is_extension &&
+			true  === $this->_child_theme &&
+			false === $this->_core_theme
+		) {
+			// Special case: extract first element into $head and insert $new after.
+			$head = array_splice( $this->_paths[$target], 0, 1 );
+		} else {
+			// Normal case: $new gets pushed to the top of the array.
+			$head = array();
+		}
+
+		$this->_paths[$target] = $head + $new + $this->_paths[$target];
 		return true;
 	}
 
@@ -127,8 +137,9 @@ class Ai1ec_Theme_Loader {
 	/**
 	 * Add theme files search path.
 	 *
-	 * @param string $path Path to theme template files.
-	 * @param string $url  URL to the directory represented by $path.
+	 * @param string $path         Path to theme template files.
+	 * @param string $url          URL to the directory represented by $path.
+	 * @param string $is_extension Whether an extension is adding this path.
 	 *
 	 * @return bool Success.
 	 */
@@ -157,24 +168,27 @@ class Ai1ec_Theme_Loader {
 			$url . '/public/admin/'
 		);
 
-		// Add default theme to search paths unless it is the active theme.
+		// Add extension's theme path(s).
 		$option = $this->_registry->get( 'model.option' );
 		$theme  = $option->get( 'ai1ec_current_theme' );
 
-		// Add extension's theme path(s).
+		// Default theme's path is always later in the list of paths to check,
+		// so add it first (path list is a stack).
 		$this->add_path_theme(
 			$path . $D . 'public' . $D . AI1EC_THEME_FOLDER . $D .
-				$theme['stylesheet'] . $D,
-			$url . '/public/' . AI1EC_THEME_FOLDER . '/' . $theme['stylesheet'] . '/',
+				AI1EC_DEFAULT_THEME_NAME . $D,
+			$url . '/public/' . AI1EC_THEME_FOLDER . '/' . AI1EC_DEFAULT_THEME_NAME .
+				'/',
 			true
 		);
 
-
-		if ( AI1EC_DEFAULT_THEME_NAME !== $theme['stylesheet'] ) {
+		// If using a core child theme, set flag and push its path to top of stack.
+		if ( true === $this->_child_theme && true === $this->_core_theme ) {
 			$this->add_path_theme(
 				$path . $D . 'public' . $D . AI1EC_THEME_FOLDER . $D .
-					AI1EC_DEFAULT_THEME_NAME . $D,
-				$url . '/public/' . AI1EC_THEME_FOLDER . '/' . AI1EC_DEFAULT_THEME_NAME,
+					$theme['stylesheet'] . $D,
+				$url . '/public/' . AI1EC_THEME_FOLDER . '/' . $theme['stylesheet'] .
+					'/',
 				true
 			);
 		}
@@ -247,7 +261,7 @@ class Ai1ec_Theme_Loader {
 				if ( null === $paths ) {
 					$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
 					$paths = array_keys( $paths ); // Values (URLs) not used for Twig
-				}
+				}error_log(print_r($paths, TRUE));
 				if ( true === $this->_legacy_theme && ! $is_admin ) {
 					$filename = substr( $filename, 0, $dot_position - 1);
 					$file     = $this->_get_legacy_file(

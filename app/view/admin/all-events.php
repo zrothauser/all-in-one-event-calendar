@@ -78,4 +78,74 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 		$columns["ai1ec_event_date"] = 'ai1ec_event_date';
 		return $columns;
 	}
+
+	/**
+	 * taxonomy_filter_restrict_manage_posts function
+	 *
+	 * Adds filter dropdowns for event categories and event tags
+	 *
+	 * @return void
+	 **/
+	function taxonomy_filter_restrict_manage_posts() {
+		global $typenow;
+	
+		// =============================================
+		// = add the dropdowns only on the events page =
+		// =============================================
+		if( $typenow === AI1EC_POST_TYPE ) {
+			$filters = get_object_taxonomies( $typenow );
+			foreach( $filters as $tax_slug ) {
+				$tax_obj = get_taxonomy( $tax_slug );
+				wp_dropdown_categories( array(
+				'show_option_all' => __( 'Show All ', AI1EC_PLUGIN_NAME ) . $tax_obj->label,
+				'taxonomy'        => $tax_slug,
+				'name'            => $tax_obj->name,
+				'orderby'         => 'name',
+				'selected'        => isset( $_GET[$tax_slug] ) ? $_GET[$tax_slug] : '',
+				'hierarchical'    => $tax_obj->hierarchical,
+				'show_count'      => true,
+				'hide_if_empty'   => true
+				));
+			}
+		}
+	}
+	
+	/**
+	 * taxonomy_filter_post_type_request function
+	 *
+	 * Adds filtering of events list by event tags and event categories
+	 *
+	 * @return void
+	 **/
+	function taxonomy_filter_post_type_request( $query ) {
+		global $pagenow, $typenow;
+		if( 'edit.php' === $pagenow ) {
+			$filters = get_object_taxonomies( $typenow );
+			foreach( $filters as $tax_slug ) {
+				$var = &$query->query_vars[$tax_slug];
+				if( isset( $var ) ) {
+					$term = null;
+	
+					if( is_numeric( $var ) ) {
+						$term = get_term_by( 'id', $var, $tax_slug );
+					} else {
+						$term = get_term_by( 'slug', $var, $tax_slug );
+					}
+	
+					if( isset( $term->slug ) ) {
+						$var = $term->slug;
+					}
+				}
+			}
+		}
+		// ===========================
+		// = Order by Event date ASC =
+		// ===========================
+		if( 'ai1ec_event' === $typenow ) {
+			if ( ! array_key_exists( 'orderby', $query->query_vars ) ) {
+				$query->query_vars['orderby'] = 'ai1ec_event_date';
+				$query->query_vars['order']   = 'desc';
+			}
+		}
+	}
 }

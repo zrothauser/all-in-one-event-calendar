@@ -444,6 +444,15 @@ class Ai1ec_Front_Controller {
 				'wp_ajax_ai1ec_tracking',
 				array( 'controller.export', 'track_optin' )
 			);
+			// taxonomy filter
+			$dispatcher->register_action(
+				'restrict_manage_posts',
+				array( 'view.admin.all-events', 'taxonomy_filter_restrict_manage_posts' )
+			);
+			$dispatcher->register_action(
+				'parse_query',
+				array( 'view.admin.all-events', 'taxonomy_filter_post_type_request' )
+			);
 			$dispatcher->register_action(
 				'admin_enqueue_scripts',
 				array( 'css.admin', 'admin_enqueue_scripts' )

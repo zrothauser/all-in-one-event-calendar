@@ -134,31 +134,7 @@ abstract class Ai1ec_Connector_Plugin extends Ai1ec_Base {
 		}
 		return FALSE;
 	}
-	/**
-	 * Displays the settings required for the plugin
-	 *
-	 * @param  $object
-	 *
-	 * @param array $box
-	 *
-	 */
-	public function plugin_settings_meta_box( $object, $box ) {
-		// Use the standard view helper
-		$plugin_settings = $this->generate_settings_array_for_admin_view();
-		$args            = array(
-			'plugin_name'     => $this->get_tab_title(),
-			'plugin_settings' => $plugin_settings,
-			'plugin_info'     => isset( $this->variables['info'] )
-				? $this->variables['info']
-				: null,
-		);
-		// Make sure that there is something to render other than the Title.
-		if( ! empty( $args['plugin_settings'] ) ) {
-			$loader = $this->_registry->get( 'theme.loader' );
-			$file = $loader->get_file( 'plugins/general_plugin_settings.php', $args, true );
-			$file->render();
-		}
-	}
+
 	/**
 	 * If the plugin settings are not set they will be initialized to ''
 	 *

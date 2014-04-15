@@ -101,14 +101,15 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 			$variables = $this->_registry->get( 'model.option' )->get(
 				self::DB_KEY_FOR_LESS_VARIABLES
 			);
-			// If they are not set in the db, get them from file.
-			// this happen when the user switched the theme and triggered a new parse.
+			// If they are not set in the DB, assume empty array to begin with.
 			if ( ! $variables ) {
-				$variables = $this->get_less_variable_data_from_config_file();
-			} else {
-				// inject extension variables
-				$variables = apply_filters( 'ai1ec_less_variables', $variables );
+				$variables = array();
 			}
+			// Union these with any that are required by the config file (in case they
+			// are not present).
+			$variables += $this->get_less_variable_data_from_config_file();
+			// Inject extension variables.
+			$variables = apply_filters( 'ai1ec_less_variables', $variables );
 		}
 		// convert the variables to key / value
 		$variables   = $this->convert_less_variables_for_parsing( $variables );
@@ -182,25 +183,34 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 	}
 
 	/**
-	 * Check if the option that stores the less variables is set, otherwise create it
-	 *
-	 * @param Ai1ec_Less_File $file
-	 * @internal param string $theme_path
+	 * Check LESS variables are stored in the options table and have all the
+	 * required variables; if not, create or update it.
 	 */
 	public function initialize_less_variables_if_not_set() {
 		$saved_variables = $this->_registry->get( 'model.option' )->get(
 			self::DB_KEY_FOR_LESS_VARIABLES
 		);
 
-		// If the key is not set, we create the variables
+		// If the no variables are saved in the database, start with an empty array.
 		if ( ! $saved_variables ) {
+			$saved_variables = array();
+		}
 
-			$variables_to_save = $this->get_less_variable_data_from_config_file();
+		// Generate default variable array from the config file, and union these
+		// with any saved variables to make sure all required variables are set.
+		$variables_to_save =
+			$saved_variables + $this->get_less_variable_data_from_config_file();
 
-			// do not store the description
-			foreach( $variables_to_save as $name => $attributes ) {
+		// Only process and save the variables to the database if new variables have
+		// been introduced.
+		$variable_diff = array_diff_key( $saved_variables, $variables_to_save );
+		if ( $variable_diff ) {
+			// We don't store the description in the database.
+			foreach ( $variables_to_save as $name => $attributes ) {
 				unset( $variables_to_save[$name]['description'] );
 			}
+
+			// Save the new/updated variable array back to the database.
 			$this->_registry->get( 'model.option' )->set(
 				self::DB_KEY_FOR_LESS_VARIABLES,
 				$variables_to_save

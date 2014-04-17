@@ -317,7 +317,7 @@ class Ai1ecdm_Datetime_Migration {
 		$update_particles = array();
 		foreach ( $columns as $column ) {
 			$name = $column . $this->_column_suffix;
-			$new_value = (in_array('start', $columns) && 'end' === $column) ? 'IFNULL(`start`, \'1970-01-01 00:00:00\')' : '\'1970-01-01 00:00:00\'';
+			$new_value = ( in_array( 'start', $columns ) && 'end' === $column ) ? 'IFNULL(`start`, \'1970-01-01 00:00:00\')' : '\'1970-01-01 00:00:00\'';
 			$update_particles[] = '`' . $name .
 				'` = UNIX_TIMESTAMP( IFNULL(`' . $column . '`, ' . $new_value . ' ))';
 		}

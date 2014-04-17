@@ -894,7 +894,7 @@ class Ai1ec_Front_Controller {
 		$sql .= "CREATE TABLE $table_name (
 			term_id bigint(20) NOT NULL,
 			term_color varchar(255) NOT NULL,
-			term_image varchar(255) NOT NULL,
+			term_image varchar(255) NULL DEFAULT NULL,
 			PRIMARY KEY  (term_id)
 			) CHARACTER SET utf8;";
 

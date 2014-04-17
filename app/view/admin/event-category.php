@@ -93,6 +93,9 @@ class Ai1ec_View_Admin_EventCategory extends Ai1ec_Base {
 		if ( ! empty( $_POST['ai1ec_category_image_url'] ) ) {
 			$tag_image_value = (string)$_POST['ai1ec_category_image_url'];
 		}
+		if ( isset( $_POST['ai1ec_category_image_url_remove'] ) ) {
+			$tag_image_value = null;
+		}
 
 		$db         = $this->_registry->get( 'dbi.dbi' );
 		$table_name = $db->get_table_name( 'ai1ec_event_category_meta' );

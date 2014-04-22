@@ -345,7 +345,9 @@ class Ai1ec_Date_Timezone extends Ai1ec_Base {
 				->get_current( 'ai1ec_timezone' );
 			$candidates[] = (string)$this->_registry->get( 'model.option' )
 				->get( 'timezone_string' );
-			$candidates = array_filter( $candidates );
+			$candidates[] = (string)$this->_registry->get( 'model.option' )
+				->get( 'gmt_offset' );
+			$candidates = array_filter( $candidates, 'strlen' );
 			foreach ( $candidates as $timezone ) {
 				$timezone = $this->get_name( $timezone );
 				if ( false !== $timezone ) {
@@ -379,8 +381,8 @@ class Ai1ec_Date_Timezone extends Ai1ec_Base {
 	 * @return string Timezone name to use
 	 */
 	public function get_name( $zone ) {
-		if ( empty( $zone ) ) {
-			$zone = 'UTC';
+		if ( is_numeric( $zone ) ) {
+			$zone = timezone_name_from_abbr( null, $zone * 3600, true );
 		}
 		if ( false === $this->_identifiers ) {
 			return $zone; // anything should do, as zones are not supported

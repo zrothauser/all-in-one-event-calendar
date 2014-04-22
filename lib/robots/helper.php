@@ -29,6 +29,12 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 	 * @return void
 	 */
 	public function install() {
+		// Avoid FTP credentials screen for no direct access to filesystem, 
+		// users who reported issues were concerned about questions of their FTP logins
+		if ( ! defined( 'FS_METHOD' ) ||
+ 				'direct' !== FS_METHOD ) {
+			return;			
+		}
 		$option   = $this->_registry->get( 'model.option' );
 		$settings = $this->_registry->get( 'model.settings' );
 		$robots   = $option->get( 'ai1ec_robots_txt' );
@@ -54,12 +60,15 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 			return;
 		}
 
-		$creds = request_filesystem_credentials( $url, '', false, false, null );
+		$creds = request_filesystem_credentials( $url, '', true, false, null );
 		if ( ! WP_Filesystem( $creds ) ) {
-			request_filesystem_credentials( $url, '', true, false, null );
+			return;
 		}
 
 		global $wp_filesystem;
+		if ( null === $wp_filesystem ) { // sometimes $wp_filesystem could be null
+ 			return;			
+		}
 		if ( $wp_filesystem->exists( $robots_file )
 				&& $wp_filesystem->is_readable( $robots_file )
 					&& $wp_filesystem->is_writable( $robots_file ) ) {

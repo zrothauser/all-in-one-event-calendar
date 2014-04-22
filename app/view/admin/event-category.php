@@ -93,6 +93,9 @@ class Ai1ec_View_Admin_EventCategory extends Ai1ec_Base {
 		if ( ! empty( $_POST['ai1ec_category_image_url'] ) ) {
 			$tag_image_value = (string)$_POST['ai1ec_category_image_url'];
 		}
+		if ( isset( $_POST['ai1ec_category_image_url_remove'] ) ) {
+			$tag_image_value = null;
+		}
 
 		$db         = $this->_registry->get( 'dbi.dbi' );
 		$table_name = $db->get_table_name( 'ai1ec_event_category_meta' );
@@ -178,9 +181,13 @@ class Ai1ec_View_Admin_EventCategory extends Ai1ec_Base {
 		$args  = array(
 			'image_src'    => $image,
 			'image_style'  => $style,
-			'section_name' => Ai1ec_I18n::__( 'Category Image' ),
-			'label'        => Ai1ec_I18n::__( 'Add Image' ),
-			'description'  => Ai1ec_I18n::__( 'Assign an optional image to the category. Recommended size: square, minimum 400&times;400 pixels.' ),
+			'section_name' => __( 'Category Image', AI1EC_PLUGIN_NAME ),
+			'label'        => __( 'Add Image', AI1EC_PLUGIN_NAME ),
+			'remove_label' => __( 'Remove Image', AI1EC_PLUGIN_NAME ),
+			'description'  => __(
+				'Assign an optional image to the category. Recommended size: square, minimum 400&times;400 pixels.',
+				AI1EC_PLUGIN_NAME
+			),
 			'edit'         => true,
 		);
 
@@ -202,12 +209,14 @@ class Ai1ec_View_Admin_EventCategory extends Ai1ec_Base {
 
 		// Category color
 		$args  = array(
-			'color'       => '',
-			'style'       => '',
-			'label'       => __( 'Category Color', AI1EC_PLUGIN_NAME ),
-			'description' => __(
+			'color'        => '',
+			'style'        => '',
+			'label'        => __( 'Category Color', AI1EC_PLUGIN_NAME ),
+			'remove_label' => __( 'Remove Image', AI1EC_PLUGIN_NAME ),
+			'description'  => __(
 				'Events in this category will be identified by this color',
-				AI1EC_PLUGIN_NAME ),
+				AI1EC_PLUGIN_NAME
+			),
 			'edit'        => false
 		);
 

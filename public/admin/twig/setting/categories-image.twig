@@ -12,6 +12,13 @@
             <input type="hidden" name="ai1ec_category_image_url" id="ai1ec_category_image_url" value="">
             <input class="button at-upload_image_button" type="button" id='ai1ec_category_image_uploader' value="{{ label }}">
 
+            {% if image_src %}
+            <p>
+                <input type="checkbox" style="width:auto;" name="ai1ec_category_image_url_remove" id="ai1ec_category_image_url_remove" value="1" />
+                <label for="ai1ec_category_image_url_remove">{{ remove_label }}</label>
+            </p>
+            {% endif %}
+
             <div class="desc-field">
                 <p class="description">
                     {{ description|raw }}

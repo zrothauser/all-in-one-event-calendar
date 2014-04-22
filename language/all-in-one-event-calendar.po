@@ -128,9 +128,9 @@ msgstr "Preselected calendar filters"
 
 #: app/model/settings.php:379
 msgid ""
-"To clear, hold ⌘/<abbr class=\"initialism\">CTRL</abbr> and click selection."
+"To clear, hold &#8984;/<abbr class=\"initialism\">CTRL</abbr> and click selection."
 msgstr ""
-"To clear, hold ⌘/<abbr class=\"initialism\">CTRL</abbr> and click selection."
+"To clear, hold &#8984;/<abbr class=\"initialism\">CTRL</abbr> and click selection."
 
 #: app/model/settings.php:394
 msgid "Default calendar start date (optional)"

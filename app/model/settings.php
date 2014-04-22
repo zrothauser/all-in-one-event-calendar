@@ -378,7 +378,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'item'  => 'viewing-events',
 					'label' => Ai1ec_I18n::__( 'Preselected calendar filters' ),
 					'help'  => Ai1ec_I18n::__(
-						'To clear, hold ⌘/<abbr class="initialism">CTRL</abbr> and click selection.'
+						'To clear, hold &#8984;/<abbr class="initialism">CTRL</abbr> and click selection.'
 					)
 				),
 				'default'  => array(

@@ -284,21 +284,22 @@ class Ai1ec_Database_Helper {
 			$result  = dbDelta( $queries );
 			$success = $this->_check_delta();
 		} catch ( Ai1ec_Database_Error $failure ) {
-			$message = Ai1ec_Helper_Factory::create_admin_message_instance(
-				'<p>' . __(
-					'Database update has failed. Please make sure, that database user, defined in <em>wp-config.php</em> has permissions, to make changes (<strong>ALTER TABLE</strong>) to the database.',
-					AI1EC_PLUGIN_NAME
-				) . '</p>',
-				__(
-					'Plug-in disabled due to unrecoverable database update error',
-					AI1EC_PLUGIN_NAME
-				)
-			);
-			$this->get_notices_helper()->add_renderable_children( $message );
+//			$message = Ai1ec_Helper_Factory::create_admin_message_instance(
+//				'<p>' . __(
+//					'Database update has failed. Please make sure, that database user, defined in <em>wp-config.php</em> has permissions, to make changes (<strong>ALTER TABLE</strong>) to the database.',
+//					AI1EC_PLUGIN_NAME
+//				) . '</p>',
+//				__(
+//					'Plug-in disabled due to unrecoverable database update error',
+//					AI1EC_PLUGIN_NAME
+//				)
+//			);
+//			$this->get_notices_helper()->add_renderable_children( $message );
 			if ( ! function_exists( 'deactivate_plugins' ) ) {
 				require ABSPATH . 'wp-admin/includes/plugin.php';
 			}
 			deactivate_plugins( AI1EC_PLUGIN_BASENAME, true );
+			throw $failure;
 		}
 		return $success;
 	}

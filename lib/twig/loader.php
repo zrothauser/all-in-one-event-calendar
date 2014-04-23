@@ -10,10 +10,23 @@
  * @subpackage AI1EC.Twig
  */
 class Ai1ec_Twig_Loader_Filesystem extends Twig_Loader_Filesystem {
-    public function getCacheKey( $name ) {
-        $cache_key = $this->findTemplate( $name );
-        $cache_key = str_replace( AI1EC_PATH, '', $cache_key ); // remove part of path and make it relative
-        $cache_key = str_replace( '/', '\\', $cache_key ); // make it namespace style (to avoid problems with Windows / Linux directory separator)
-        return $cache_key;
-    }
+
+	/**
+	 * Gets the cache key to use for the cache for a given template name.
+	 *
+	 * @param string $name The name of the template to load
+	 *
+	 * @return string The cache key
+	 *
+	 * @throws Twig_Error_Loader When $name is not found.
+	 */
+	public function getCacheKey( $name ) {
+		$cache_key = $this->findTemplate( $name );
+		// make path relative
+		$cache_key = str_replace( AI1EC_PATH, '', $cache_key );
+		// namespace style separators avoid OS colisions.
+		$cache_key = str_replace( '/', '\\', $cache_key );
+		return $cache_key;
+	}
+
 }

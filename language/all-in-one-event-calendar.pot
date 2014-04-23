@@ -114,7 +114,7 @@ msgstr ""
 
 #: app/model/settings.php:379
 msgid ""
-"To clear, hold ⌘/<abbr class=\"initialism\">CTRL</abbr> and click selection."
+"To clear, hold &#8984;/<abbr class=\"initialism\">CTRL</abbr> and click selection."
 msgstr ""
 
 #: app/model/settings.php:394

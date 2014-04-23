@@ -84,7 +84,7 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	}
 
 	/**
-	 * Convert an hour to timestamp.
+	 * Convert an hour to an Ai1ec_Date_Time object.
 	 *
 	 * @param int $hour
 	 *
@@ -96,7 +96,7 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	}
 
 	/**
-	 * Get the name of the weekday
+	 * Get the name of the weekday.
 	 *
 	 * @param int $unix_timestamp
 	 *
@@ -108,7 +108,7 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	}
 
 	/**
-	 * Get the name of the day
+	 * Get the name of the day.
 	 *
 	 * @param int $unix_timestamp
 	 *
@@ -120,7 +120,7 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	}
 
 	/**
-	 * Get the name of the month
+	 * Get the name of the month.
 	 *
 	 * @param int $unix_timestamp
 	 *
@@ -132,7 +132,7 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	}
 
 	/**
-	 * Get the name of the year
+	 * Get the date's year
 	 *
 	 * @param int $unix_timestamp
 	 *
@@ -140,11 +140,11 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	 */
 	public function year( $unix_timestamp ) {
 		return $this->_registry->get( 'date.time', $unix_timestamp )
-			->format_i18n( 'M' );
+			->format_i18n( 'Y' );
 	}
 
 	/**
-	 * Convert a timestamp to an int
+	 * Get URL of the given image file in the calendar theme's directory.
 	 *
 	 * @param int $unix_timestamp
 	 *
@@ -156,7 +156,7 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	}
 
 	/**
-	 * Convert a timestamp to a string using the desired format
+	 * Internationalize the given UNIX timestamp with the given format string.
 	 *
 	 * @param int $unix_timestamp
 	 * @param string $format

@@ -39,8 +39,8 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 			return;
 		}
 
-		$ftp_base_dir = defined( 'FTP_BASE' ) ? ( FTP_BASE . DIRECTORY_SEPARATOR ) : '';
-		$robots_file   =  $ftp_base_dir . 'robots.txt'; // we can't use ABSPATH for ftp, if ftp user is not chrooted they need to define FTP_BASE in wp-config.php
+		$ftp_base_dir  = defined( 'FTP_BASE' ) ? ( FTP_BASE . DIRECTORY_SEPARATOR ) : '';
+		$robots_file   = $ftp_base_dir . 'robots.txt'; // we can't use ABSPATH for ftp, if ftp user is not chrooted they need to define FTP_BASE in wp-config.php
 		$robots_txt    = array();
 		$is_installed  = false;
 		$current_rules = null;

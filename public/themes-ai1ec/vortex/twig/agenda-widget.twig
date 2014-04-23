@@ -1,4 +1,4 @@
-{{ args.before_widget }}
+{{ before_widget | raw }}
 
 {% if title is not empty %}
 	{{ ( before_title ~ title ~ after_title ) | raw }}
@@ -88,4 +88,4 @@
 
 </div>
 
-{{ args.after_widget }}
+{{ after_widget | raw }}

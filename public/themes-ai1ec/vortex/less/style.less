@@ -59,6 +59,7 @@
 
 // Utility classes
 @import "bootstrap/utilities.less";
+@import "bootstrap/responsive-utilities.less";
 
 // ===========
 // = Plugins =
@@ -159,6 +160,14 @@
 // Tooltips
 .ai1ec-tooltip {
 	margin: 0 !important;
+}
+
+// Responsive utilities.
+span.ai1ec-hidden-xs {
+	display: inline !important;
+  @media (max-width: @screen-xs-max) {
+  	display: none !important;
+  }
 }
 
 //

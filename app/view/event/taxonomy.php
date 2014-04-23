@@ -16,21 +16,28 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 	 */
 	public function get_color_style( Ai1ec_Event $event ) {
 		static $color_styles = array();
-		$id = $event->get( 'post_id' );
-		$categories = wp_get_post_terms(
+		$type                = $event->is_allday() || $event->is_multiday();
+		$id                  = $event->get( 'post_id' );
+		$categories          = wp_get_post_terms(
 			$id,
 			'events_categories'
 		);
-		if ( $categories && ! empty( $categories ) ) {
-			if ( ! isset( $color_styles[$categories[0]->term_id] ) )
-			$color_styles[$categories[0]->term_id] = $this->get_event_category_color_style(
-				$categories[0]->term_id,
-				$event->is_allday() || $event->is_multiday()
-			);
-			return $color_styles[$categories[0]->term_id];
+
+		// No specific styling for events not in categories.
+		if ( empty( $categories ) ) {
+			return '';
 		}
 
-		return '';
+		// If not yet cached, fetch and save style.
+		if ( ! isset( $color_styles[$categories[0]->term_id][$type] ) ) {
+			$color_styles[$categories[0]->term_id][$type] =
+				$this->get_event_category_color_style(
+					$categories[0]->term_id,
+					$type
+				);
+		}
+
+		return $color_styles[$categories[0]->term_id][$type];
 	}
 
 	/**
@@ -48,7 +55,7 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 		$taxonomy = $this->_registry->get( 'model.taxonomy' );
 		$color = $taxonomy->get_category_color( $term_id );
 		if ( ! is_null( $color ) && ! empty( $color ) ) {
-			if( $allday )
+			if ( $allday )
 				return 'background-color: ' . $color . ';';
 			else
 				return 'color: ' . $color . ' !important;';

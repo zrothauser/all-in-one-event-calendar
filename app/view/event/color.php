@@ -10,7 +10,7 @@
  * @subpackage AI1EC.View.Event
  */
 class Ai1ec_View_Event_Color extends Ai1ec_Base {
-	
+
 	/**
 	 * Faded version of event category color
 	 */
@@ -62,28 +62,28 @@ class Ai1ec_View_Event_Color extends Ai1ec_Base {
 		$taxonomy = $this->_registry->get( 'model.taxonomy' );
 		$color = $taxonomy->get_category_color( $term_id );
 		if( ! is_null( $color ) && ! empty( $color ) ) {
-	
+
 			$color1 = substr( $color, 1 );
 			$color2 = 'ffffff';
-	
+
 			$c1_p1 = hexdec( substr( $color1, 0, 2 ) );
 			$c1_p2 = hexdec( substr( $color1, 2, 2 ) );
 			$c1_p3 = hexdec( substr( $color1, 4, 2 ) );
-	
+
 			$c2_p1 = hexdec( substr( $color2, 0, 2 ) );
 			$c2_p2 = hexdec( substr( $color2, 2, 2 ) );
 			$c2_p3 = hexdec( substr( $color2, 4, 2 ) );
-	
+
 			$m_p1 = dechex( round( $c1_p1 * 0.5 + $c2_p1 * 0.5 ) );
 			$m_p2 = dechex( round( $c1_p2 * 0.5 + $c2_p2 * 0.5 ) );
 			$m_p3 = dechex( round( $c1_p3 * 0.5 + $c2_p3 * 0.5 ) );
-	
+
 			return '#' . $m_p1 . $m_p2 . $m_p3;
 		}
-	
+
 		return '';
 	}
-	
+
 	/**
 	 * Returns the rgba() format of the event's category color, with '%s' in place
 	 * of the opacity (to be substituted by sprintf).
@@ -101,7 +101,7 @@ class Ai1ec_View_Event_Color extends Ai1ec_Base {
 			$p3 = hexdec( substr( $color, 5, 2 ) );
 			return "rgba($p1, $p2, $p3, %s)";
 		}
-	
+
 		return '';
 	}
 }

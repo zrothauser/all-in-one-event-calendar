@@ -38,9 +38,9 @@ class Ai1ec_Template_Link_Helper {
 			defined( 'FORCE_SSL_ADMIN' ) &&
 			true === FORCE_SSL_ADMIN
 		) {
-			return get_home_url( null, '', 'https' );
+			return get_site_url( null, '', 'https' );
 		}
-		return get_home_url();
+		return get_site_url();
 	}
 
 	/**

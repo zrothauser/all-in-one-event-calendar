@@ -29,12 +29,6 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 	 * @return void
 	 */
 	public function install() {
-		// Avoid FTP credentials screen for no direct access to filesystem, 
-		// users who reported issues were concerned about questions of their FTP logins
-		if ( ! defined( 'FS_METHOD' ) ||
- 				'direct' !== FS_METHOD ) {
-			return;			
-		}
 		$option   = $this->_registry->get( 'model.option' );
 		$settings = $this->_registry->get( 'model.settings' );
 		$robots   = $option->get( 'ai1ec_robots_txt' );
@@ -45,7 +39,8 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 			return;
 		}
 
-		$robots_file   = ABSPATH . 'robots.txt';
+		$ftp_base_dir = defined( 'FTP_BASE' ) ? ( FTP_BASE . DIRECTORY_SEPARATOR ) : '';
+		$robots_file   =  $ftp_base_dir . 'robots.txt'; // we can't use ABSPATH for ftp, if ftp user is not chrooted they need to define FTP_BASE in wp-config.php
 		$robots_txt    = array();
 		$is_installed  = false;
 		$current_rules = null;
@@ -56,19 +51,45 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 			'ai1ec-nonce'
 		);
 
+		$redirect_url = admin_url( 'edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings&noredirect=1' );
+
 		if ( ! function_exists( 'request_filesystem_credentials' )  ) {
 			return;
 		}
-
-		$creds = request_filesystem_credentials( $url, '', true, false, null );
-		if ( ! WP_Filesystem( $creds ) ) {
-			return;
+		$type = get_filesystem_method();
+		if ( 'direct' === $type ) {
+		    $robots_file = ABSPATH . 'robots.txt'; // we have to use ABSPATH for direct
 		}
+
+		$creds = request_filesystem_credentials( $url, $type, false, false, null );
+
+		if ( ! WP_Filesystem( $creds ) ) {
+		    $error_v =  isset( $_POST['hostname'] ) ||
+				isset( $_POST['username'] ) ||
+				isset( $_POST['password'] ) ||
+				isset( $_POST['connection_type'] );
+		    if ( $error_v ) { // if credentials are given and we don't have access to wp filesystem show notice to user
+			// we need to show some info about error
+			// we could use request_filesystem_credentials with true error parameter but in this case
+			// second ftp credentials screen would appear
+			$notification = $this->_registry->get( 'notification.admin' );
+			$err_msg = Ai1ec_I18n::__( '<strong>ERROR:</strong> There was an error connecting to the server, Please verify the settings are correct.' );
+			$notification->store( $err_msg, 'error', 1 );
+			// we need to avoid infinity loop if FS_METHOD direct but robots.txt is not writable
+			if ( ! isset( $_REQUEST['noredirect'] ) ) {
+			    wp_redirect( $redirect_url );
+			}
+			exit;
+		    }
+		    return;
+		}
+
 
 		global $wp_filesystem;
 		if ( null === $wp_filesystem ) { // sometimes $wp_filesystem could be null
- 			return;			
+			return;
 		}
+		$redirect = false;
 		if ( $wp_filesystem->exists( $robots_file )
 				&& $wp_filesystem->is_readable( $robots_file )
 					&& $wp_filesystem->is_writable( $robots_file ) ) {
@@ -85,9 +106,16 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 
 			if ( $is_installed ) {
 				$robots_txt['is_installed'] = true;
+			} else {
+			    $err_msg = Ai1ec_I18n::__( '<strong>ERROR:</strong> There was an error storing <strong>robots.txt</strong> to the server, Please verify the settings and permissions are correct.' );
+			    $this->_registry->get( 'notification.admin' )->store( $err_msg, 'error' );
+			    $redirect = true;
 			}
 		} else {
 			$robots_txt['is_installed'] = false;
+			$err_msg = Ai1ec_I18n::__( '<strong>ERROR:</strong> There was an error storing <strong>robots.txt</strong> to the server. File does not exist or is not writable and readable.' );
+			$this->_registry->get( 'notification.admin' )->store( $err_msg, 'error' );
+			$redirect = true;
 		}
 
 		// Set Page ID
@@ -98,6 +126,12 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 
 		// Update settings textarea
 		$settings->set( 'edit_robots_txt', $custom_rules );
+
+		// we need to avoid infinity loop if FS_METHOD direct but robots.txt is not writable
+		if ( $redirect && ! isset( $_REQUEST['noredirect'] ) ) {
+		    wp_redirect( $redirect_url );
+		    exit;
+		}
 	}
 
 	/**

@@ -134,6 +134,7 @@ class Ai1ec_Export_Controller extends Ai1ec_Base {
 				->get_default_timezone(),
 			'privacy'        => $options->get( 'blog_public' ),
 			'plugin_version' => AI1EC_VERSION,
+			'addons'         => $this->_get_addons(),
 			'wp_filesystem'  => $fs_method,
 			'wp_debug'       => WP_DEBUG,
 			'ai1ec_debug'    => AI1EC_DEBUG,
@@ -152,6 +153,32 @@ class Ai1ec_Export_Controller extends Ai1ec_Base {
 
 		// Release lock
 		$xguard->release( $guard_name );
+	}
+
+	/**
+	 * Return a map of add-ons installed on site.
+	 *
+	 * Map contains following keys for each entry:
+	 *     - v - version of add-on;
+	 *     - u - plugin URI (if non-official add-on is used);
+	 *     - a - bool flag to indicate if plugin is active.
+	 *
+	 * @return array Map of add-ons.
+	 */
+	protected function _get_addons() {
+		$addons = array();
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+		$all_plugins = get_plugins();
+		foreach ( $all_plugins as $plugin => $options ) {
+			$addons[$plugin] = array(
+				'v' => $options['Version'],
+				'u' => $options['PluginURI'],
+				'a' => is_plugin_active( $plugin ),
+			);
+		}
+		return $addons;
 	}
 
 	/**

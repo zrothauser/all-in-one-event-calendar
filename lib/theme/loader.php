@@ -370,26 +370,12 @@ class Ai1ec_Theme_Loader {
 				}
 			}
 
-			$loader = new Twig_Loader_Filesystem( $loader_path );
+			$loader = new Ai1ec_Twig_Loader_Filesystem( $loader_path );
 			unset( $loader_path );
-			$option                        = $this->_registry->get( 'model.option' );
-			$option_cache_dir_is_writeable = (bool)$option->get( 'ai1ec_cache_writeable' ); // read cached option
-
-			// check in admin dashboard if cache path is writeable and save it as an option
-			if ( 'admin' === $instance ) {
-				$cache_dir_is_writeable = is_writable( AI1EC_TWIG_CACHE_PATH );
-				$cache_path             = ( $cache_dir_is_writeable ) ? AI1EC_TWIG_CACHE_PATH : false;
-				if ( $cache_dir_is_writeable !== $option_cache_dir_is_writeable ) {
-					$option->set( 'ai1ec_cache_writeable', $cache_dir_is_writeable );					
-				}
-                        } else {
-				// for frontend requests always use value from option
-				$cache_path = ( true === $option_cache_dir_is_writeable ) ? AI1EC_TWIG_CACHE_PATH : false; 
-                        }
 
 			// TODO: Add cache support.
 			$environment = array(
-				'cache'            => $cache_path,
+				'cache'            => AI1EC_TWIG_CACHE_PATH,
 				'optimizations'    => -1,   // all
 				'auto_reload'      => false,
 			);
@@ -405,7 +391,7 @@ class Ai1ec_Theme_Loader {
 				$environment
 			);
 
-			$this->_twig[$instance] = new Twig_Environment( $loader, $environment );
+			$this->_twig[$instance] = new Ai1ec_Twig_Environment( $loader, $environment );
 			if ( apply_filters( 'ai1ec_twig_add_debug', AI1EC_DEBUG ) ) {
 				$this->_twig[$instance]->addExtension( new Twig_Extension_Debug() );
 			}

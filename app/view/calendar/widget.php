@@ -110,7 +110,8 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		// Display theme
 		$this->_registry->get( 'theme.loader' )->get_file(
 			'agenda-widget-form.php',
-			$fields
+			$fields,
+			true
 		)->render();
 	}
 

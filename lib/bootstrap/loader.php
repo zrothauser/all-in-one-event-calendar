@@ -54,11 +54,6 @@ class Ai1ec_Loader {
 	protected $_registered     = array();
 
 	/**
-	 * @var string base of the plugin
-	 */
-	public static $_plugin_base;
-
-	/**
 	 * load method
 	 *
 	 * Load given class, via `require`, into memory

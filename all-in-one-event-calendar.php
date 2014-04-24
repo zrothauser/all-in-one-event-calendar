@@ -65,13 +65,31 @@ $ai1ec_exception_handler->set_prev_ex_handler( $prev_ex_handler );
 
 // Regular startup sequence starts here
 
-require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'lib' .
-	DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'loader.php';
 
-require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'lib' .
-	DIRECTORY_SEPARATOR . 'global-functions.php';
+
+$ai1ec_d = DIRECTORY_SEPARATOR;
+require $ai1ec_base_dir . $ai1ec_d . 'lib' .
+	$ai1ec_d . 'bootstrap' . $ai1ec_d . 'loader.php';
+
+require $ai1ec_base_dir . $ai1ec_d . 'lib' .
+	$ai1ec_d . 'global-functions.php';
+
+require $ai1ec_base_dir . $ai1ec_d . 'app' .
+	$ai1ec_d . 'controller' . $ai1ec_d . 'extension.php';
+
+require $ai1ec_base_dir . $ai1ec_d . 'app' .
+	$ai1ec_d . 'controller' . $ai1ec_d . 'extension-license.php';
+
+Ai1ec_Loader::$_plugin_base = plugin_basename( __FILE__ );
+
+register_activation_hook( __FILE__, array( 'Ai1ec_Loader', 'put_core_plugin_first' ) );
 
 $ai1ec_loader = new Ai1ec_Loader( $ai1ec_base_dir );
+
+add_filter(
+	'pre_update_option_active_plugins',
+	array( $ai1ec_loader, 'put_core_plugin_first_on_update' )
+);
 $ai1ec_loader->register_map(
 	$ai1ec_base_dir . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR .
 	'composer' . DIRECTORY_SEPARATOR . 'autoload_classmap.php'

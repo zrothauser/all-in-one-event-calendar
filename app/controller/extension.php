@@ -161,7 +161,7 @@ if ( ! class_exists( 'Ai1ec_Extension_Controller' ) ) {
 		 * Adds an option to the db to perform activation after the redirect
 		 * 
 		 */
-		public static function on_activation() {
+		public function on_activation() {
 			if ( ! current_user_can( 'activate_plugins' ) ) {
 				return;
 			}

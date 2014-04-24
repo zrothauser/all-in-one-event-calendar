@@ -59,55 +59,6 @@ class Ai1ec_Loader {
 	public static $_plugin_base;
 
 	/**
-	 * Plugin load first code is used with props to Ivan Weiler and cribbed shamelessly from 
-	 * his Wordpress FirePHP plugin  [http://inchoo.net/wordpress/wordpress-firephp-plugin/] 
-	 * via Chandima Cumaranatunge's Wordpress Logger plugin
-	 * [http://wordpress.org/extend/plugins/wordpress-logger/].
-	 *
-	 */
-	public static function put_core_plugin_first() {
-		$active_plugins = get_option( 'active_plugins' );
-	
-		$new_active_plugins = array();
-	
-		array_push( $new_active_plugins, self::$_plugin_base );
-	
-		foreach( $active_plugins as $plugin ) {
-			if( $plugin !== self::$_plugin_base ) {
-				$new_active_plugins[] = $plugin;
-			}
-		}
-		update_option( 'active_plugins', $new_active_plugins );
-	}
-
-	/**
-	 * Plugin load first code is used with props to Ivan Weiler and cribbed shamelessly from 
-	 * his Wordpress FirePHP plugin  [http://inchoo.net/wordpress/wordpress-firephp-plugin/] 
-	 * via Chandima Cumaranatunge's Wordpress Logger plugin
-	 * [http://wordpress.org/extend/plugins/wordpress-logger/].
-	 * 
-	 * @param array $newvalue
-	 * @return array
-	 */
-	public function put_core_plugin_first_on_update( $newvalue ){
-	
-		if ( ! in_array( self::$_plugin_base, $newvalue ) ) {
-			return $newvalue;
-		}
-	
-		$new_active_plugins = array();
-	
-		array_push( $new_active_plugins, self::$_plugin_base );
-	
-		foreach( $newvalue as $plugin ) {
-			if( $plugin !== self::$_plugin_base ) {
-				$new_active_plugins[] = $plugin;
-			}
-		}
-	
-		return $new_active_plugins;
-	}
-	/**
 	 * load method
 	 *
 	 * Load given class, via `require`, into memory

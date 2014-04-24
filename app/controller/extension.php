@@ -35,11 +35,6 @@ if ( ! class_exists( 'Ai1ec_Extension_Controller' ) ) {
 		 * @var array
 		 */
 		protected static $_schema;
-
-		/**
-		 * @var string the name of the option for the on_activation() hook
-		 */
-		protected $_activated_option;
 		
 		/**
 		 * Get the long name of the extension
@@ -99,9 +94,10 @@ if ( ! class_exists( 'Ai1ec_Extension_Controller' ) ) {
 		 */
 		public function __construct() {
 			global $wpdb;
-			self::$_schema           = $this->_get_schema( $wpdb->prefix );
-			$this->_activated_option = 'ai1ec_' . $this->get_machine_name() .
-				'_activated';
+			self::$_schema          = $this->_get_schema( $wpdb->prefix );
+			$settings               = $this->_get_settings();
+			$this->_settings        = $settings;
+			self::$_settings_static = $settings;
 		}
 
 		/**
@@ -117,56 +113,13 @@ if ( ! class_exists( 'Ai1ec_Extension_Controller' ) ) {
 				array( $this, 'on_deactivation' )
 			);
 
-			$settings = $this->_get_settings();
-			$this->_settings        = $settings;
-			self::$_settings_static = $settings;
-			// if we are reactivating, show the options
-			$option = $registry->get( 'model.option' );
-			if (
-				is_admin() &&
-				$option->get( $this->_activated_option )
-			) {
-				$db_version_variable = 'ai1ec_' . $this->get_machine_name() .
-					'_db_version';
-				$schema              = self::$_schema;
-				$version             = sha1( $schema['schema'] );
-				if (
-					! empty( $schema['schema'] ) &&
-					$option->get( $db_version_variable ) !== $version
-				) {
-					if (
-						$registry->get( 'database.helper' )->apply_delta(
-							$schema['schema']
-						)
-					) {
-						$option->set( $db_version_variable, $version );
-					} else {
-						throw new Ai1ec_Database_Update_Exception(
-							'Database upgrade for ' . $this->get_name() .
-							' failed'
-						);
-					}
-				}
-				$this->show_settings();
-				$option->delete( $this->_activated_option );
-			}
+			
+			$this->_install_schema( $registry );
 			$this->_register_actions( $registry->get( 'event.dispatcher' ) );
 			$this->_add_settings( $registry->get( 'model.settings' ) );
 			if ( method_exists( $this, 'initialize_licence_actions' ) ) {
 				$this->initialize_licence_actions();
 			}
-		}
-
-		/**
-		 * Adds an option to the db to perform activation after the redirect
-		 * 
-		 */
-		public function on_activation() {
-			if ( ! current_user_can( 'activate_plugins' ) ) {
-				return;
-			}
-			// there is a redirect after this call
-			add_option( $this->_activated_option, true );
 		}
 
 		/**
@@ -188,13 +141,12 @@ if ( ! class_exists( 'Ai1ec_Extension_Controller' ) ) {
 		/**
 		 * Show the settings
 		 */
-		public function show_settings() {
-			$settings = $this->_registry->get( 'model.settings' );
+		public function show_settings( Ai1ec_Registry_Object $registry ) {
+			$settings = $registry->get( 'model.settings' );
 			foreach ( $this->_settings as $name => $params ) {
 				$settings->show_option( $name, $params['renderer'] );
 			}
 			$settings->set( 'allow_statistics', true );
-			$settings->hide_option( 'allow_statistics' );
 		}
 
 		/**
@@ -241,6 +193,41 @@ if ( ! class_exists( 'Ai1ec_Extension_Controller' ) ) {
 					$renderer,
 					$this->get_version()
 				);
+			}
+		}
+		
+		/**
+		 * Check if the schema needs to be updated
+		 * 
+		 * @param Ai1ec_Registry_Object $registry
+		 * @throws Ai1ec_Database_Update_Exception
+		 */
+		protected function _install_schema( Ai1ec_Registry_Object $registry ) {
+			$option = $registry->get( 'model.option' );
+			$schema = self::$_schema;
+			if (
+				is_admin() &&
+				! empty( $schema['schema'] )
+			) {
+				$db_version_variable = 'ai1ec_' . $this->get_machine_name() .
+					'_db_version';
+				$version = sha1( $schema['schema'] );
+				if (
+					$option->get( $db_version_variable ) !== $version
+				) {
+					if (
+						$registry->get( 'database.helper' )->apply_delta(
+							$schema['schema']
+					)
+					) {
+						$option->set( $db_version_variable, $version );
+					} else {
+						throw new Ai1ec_Database_Update_Exception(
+							'Database upgrade for ' . $this->get_name() .
+							' failed'
+						);
+					}
+				}
 			}
 		}
 	}

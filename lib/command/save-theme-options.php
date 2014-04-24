@@ -16,13 +16,12 @@ class Ai1ec_Command_Save_Theme_Options extends Ai1ec_Command_Save_Abstract {
 	*/
 	public function do_execute() {
 		$variables = array();
-		// Handle updating of variables
+
+		// Handle updating of theme options.
 		if ( isset( $_POST[Ai1ec_View_Theme_Options::SUBMIT_ID] ) ) {
-			$_POST = stripslashes_deep( $_POST );
-			$variables = $this->_registry->get( 'model.option')->get(
-				Ai1ec_Less_Lessphp::DB_KEY_FOR_LESS_VARIABLES
-			);
-			$variables = apply_filters( 'ai1ec_less_variables', $variables );
+			$_POST     = stripslashes_deep( $_POST );
+			$lessphp   = $this->_registry->get( 'less.lessphp' );
+			$variables = $lessphp->get_saved_variables();
 			foreach ( $variables as $variable_name => $variable_params ) {
 				if ( isset( $_POST[$variable_name] ) ) {
 					// Avoid problems for those who are foolish enough to leave php.ini
@@ -30,8 +29,11 @@ class Ai1ec_Command_Save_Theme_Options extends Ai1ec_Command_Save_Abstract {
 					if ( get_magic_quotes_gpc() ) {
 						$_POST[$variable_name] = stripslashes( $_POST[$variable_name] );
 					}
-					if( Ai1ec_Less_Variable_Font::CUSTOM_FONT === $_POST[$variable_name] ) {
-						$_POST[$variable_name] = $_POST[$variable_name . Ai1ec_Less_Variable_Font::CUSTOM_FONT_ID_SUFFIX];
+					if (
+						Ai1ec_Less_Variable_Font::CUSTOM_FONT === $_POST[$variable_name]
+					) {
+						$_POST[$variable_name] = $_POST[$variable_name .
+							Ai1ec_Less_Variable_Font::CUSTOM_FONT_ID_SUFFIX];
 					}
 					// update the original array
 					$variables[$variable_name]['value'] = $_POST[$variable_name];
@@ -39,12 +41,13 @@ class Ai1ec_Command_Save_Theme_Options extends Ai1ec_Command_Save_Abstract {
 			}
 			$_POST = add_magic_quotes( $_POST );
 		}
-		// Handle reset of theme variables.
-		if ( isset( $_POST[Ai1ec_View_Theme_Options::RESET_ID] ) ) {
+		// Handle reset of theme options.
+		elseif ( isset( $_POST[Ai1ec_View_Theme_Options::RESET_ID] ) ) {
 			$lessphp = $this->_registry->get( 'less.lessphp' );
 			$variables = $lessphp->get_less_variable_data_from_config_file();
 			do_action( 'ai1ec_reset_less_variables' );
 		}
+
 		$css = $this->_registry->get( 'css.frontend' );
 
 		$css->update_variables_and_compile_css(
@@ -53,8 +56,9 @@ class Ai1ec_Command_Save_Theme_Options extends Ai1ec_Command_Save_Abstract {
 				$_POST[Ai1ec_View_Theme_Options::RESET_ID]
 			)
 		);
+
 		return array(
-			'url' => admin_url( 
+			'url' => admin_url(
 				'edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-edit-css'
 			),
 			'query_args' => array(),

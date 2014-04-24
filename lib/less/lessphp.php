@@ -56,7 +56,6 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 	public function __construct(
 		Ai1ec_Registry_Object $registry,
 		$default_theme_url = AI1EC_DEFAULT_THEME_URL
-
 	) {
 		parent::__construct( $registry );
 		$this->lessc = $this->_registry->get( 'lessc' );;
@@ -96,28 +95,18 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 	 * @return string
 	 */
 	public function parse_less_files( array $variables = null ) {
-		// If no variables are passed i get them from the db
-		if ( null === $variables ) {
-			$variables = $this->_registry->get( 'model.option' )->get(
-				self::DB_KEY_FOR_LESS_VARIABLES
-			);
-			// If they are not set in the DB, assume empty array to begin with.
-			if ( ! $variables ) {
-				$variables = array();
-			}
-			// Union these with any that are required by the config file (in case they
-			// are not present).
-			$variables += $this->get_less_variable_data_from_config_file();
-			// Inject extension variables.
-			$variables = apply_filters( 'ai1ec_less_variables', $variables );
+		// If no variables are passed, initialize from DB, config file, and
+		// extension injections in one call.
+		if ( empty( $variables ) ) {
+			$variables = $this->get_saved_variables( false );
 		}
 		// convert the variables to key / value
 		$variables   = $this->convert_less_variables_for_parsing( $variables );
 		// Inject additional constants from extensions.
 		$variables   = apply_filters( 'ai1ec_less_constants', $variables );
 
-		// Load the variable.less file to use
-		$this->load_less_variables_from_file();
+		// Load the static variables defined in the theme's variables.less file.
+		$this->load_static_theme_variables();
 		$loader      = $this->_registry->get( 'theme.loader' );
 
 		// Allow extensions to add their own LESS files.
@@ -183,37 +172,24 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 	}
 
 	/**
-	 * Check LESS variables are stored in the options table and have all the
-	 * required variables; if not, create or update it.
+	 * Check LESS variables are stored in the options table; if not, initialize
+	 * with defaults from config file and extensions.
 	 */
 	public function initialize_less_variables_if_not_set() {
-		$saved_variables = $this->_registry->get( 'model.option' )->get(
-			self::DB_KEY_FOR_LESS_VARIABLES
+		$variables = $this->_registry->get( 'model.option' )->get(
+			self::DB_KEY_FOR_LESS_VARIABLES,
+			array()
 		);
 
-		// If the no variables are saved in the database, start with an empty array.
-		if ( ! $saved_variables ) {
-			$saved_variables = array();
-		}
-
-		// Generate default variable array from the config file, and union these
-		// with any saved variables to make sure all required variables are set.
-		$variables_to_save =
-			$saved_variables + $this->get_less_variable_data_from_config_file();
-
-		// Only process and save the variables to the database if new variables have
-		// been introduced.
-		$variable_diff = array_diff_key( $saved_variables, $variables_to_save );
-		if ( $variable_diff ) {
-			// We don't store the description in the database.
-			foreach ( $variables_to_save as $name => $attributes ) {
-				unset( $variables_to_save[$name]['description'] );
-			}
+		if ( empty( $variables ) ) {
+			// Initialize variables with defaults from config file and extensions,
+			// omitting descriptions.
+			$variables = $this->get_saved_variables( false );
 
 			// Save the new/updated variable array back to the database.
 			$this->_registry->get( 'model.option' )->set(
 				self::DB_KEY_FOR_LESS_VARIABLES,
-				$variables_to_save
+				$variables
 			);
 		}
 	}
@@ -240,18 +216,16 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 	 */
 	public function update_less_variables_on_theme_update() {
 		// Get old variables from the DB.
-		$saved_variables = $this->get_saved_variables();
+		$saved_variables = $this->get_saved_variables( false );
 		// Get the new variables from file.
 		$new_variables = $this->get_less_variable_data_from_config_file();
-		foreach ( $new_variables as $variable_name => $variable_data ) {
-			unset( $variable_data['description'] );
+		foreach ( $new_variables as $name => $attributes ) {
 			// If the variable already exists, keep the old value.
-			if ( isset( $saved_variables[$variable_name] ) ) {
-				$variable_data['value'] = $saved_variables[$variable_name]['value'];
+			if ( isset( $saved_variables[$name] ) ) {
+				$new_variables[$name]['value'] = $saved_variables[$name]['value'];
 			}
-			$new_variables[$variable_name] = $variable_data;
 		}
-		// Wave the new variables to the DB.
+		// Save the new variables to the DB.
 		$this->_registry->get( 'model.option' )->set(
 			self::DB_KEY_FOR_LESS_VARIABLES,
 			$new_variables
@@ -259,34 +233,40 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 	}
 
 	/**
-	 * Get the data for the config from the parsed file.
+	 * Get the theme variables from the theme user_variables.php file; also inject
+	 * any other variables provided by extensions.
 	 *
-	 * @param Ai1ec_File_Less $file
 	 * @return array
 	 */
 	public function get_less_variable_data_from_config_file() {
-		$loader = $this->_registry->get( 'theme.loader' );
+		static $variables = null;
 
-		// load the file to parse using the usal convention
-		$file = $loader->get_file( 'less/user_variables.php', array(), false );
+		// Only fetch from file once per HTTP request.
+		if ( ! $variables ) {
+			// Load the file to parse using the theme loader to select the right file.
+			$loader = $this->_registry->get( 'theme.loader' );
+			$file = $loader->get_file( 'less/user_variables.php', array(), false );
 
-		// This variable is locate in the required file
-		$variables = $file->get_content();
-		// inject extension variables
-		$variables = apply_filters( 'ai1ec_less_variables', $variables );
+			// This variables are returned by evaluating the PHP file.
+			$variables = $file->get_content();
+			// Inject extension variables into this array.
+			$variables = apply_filters( 'ai1ec_less_variables', $variables );
+		}
+
 		return $variables;
 	}
 
 
 	/**
-	 * Convert the variables coming from the db to key value pairs used by the less parser
+	 * Drop extraneous attributes from variable array and convert to simple
+	 * key-value pairs required by the LESS parser.
 	 *
 	 * @param array $variables
 	 * @return array
 	 */
 	private function convert_less_variables_for_parsing( array $variables ) {
 		$converted_variables = array();
-		foreach( $variables as $variable_name => $variable_params ) {
+		foreach ( $variables as $variable_name => $variable_params ) {
 			$converted_variables[$variable_name] = $variable_params['value'];
 		}
 		return $converted_variables;
@@ -294,48 +274,59 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 
 
 	/**
-	 * Different themes need different variable.less files.
-	 * Here i use the usual fallback ( active theme first then vortex ) to load it unparsed
-	 *
+	 * Different themes need different variables.less files. This uses the theme
+	 * loader (searches active theme first, then default) to load it unparsed.
 	 */
-	private function load_less_variables_from_file() {
+	private function load_static_theme_variables() {
 		$loader = $this->_registry->get( 'theme.loader' );
 		$file = $loader->get_file( 'variables.less', array(), false );
 		$this->unparsed_variable_file = $file->get_content();
 	}
 
 	/**
-	 * a static method to get variables
+	 * Gets the saved variables from the database, and make sure all variables
+	 * are set correctly as required by config file and any extensions. Also
+	 * adds translations of variable descriptions as required at runtime.
 	 *
+	 * @param $with_description bool Whether to return variables with translated descriptions
 	 * @return array
 	 */
-	public function get_saved_variables() {
-		$variables = $this->_registry->get( 'model.option' )->get(
-			self::DB_KEY_FOR_LESS_VARIABLES
-		);
-		if ( ! $variables ) {
-			$variables = $this->get_less_variable_data_from_config_file();
-		} else {
-			// inject extension variables
-			$variables = apply_filters( 'ai1ec_less_variables', $variables );
-		}
+	public function get_saved_variables( $with_description = true ) {
 		// We don't store description in options table, so find it in current config
-		// file.
+		// file. Variables from extensions are already injected during this call.
 		$variables_from_config = $this->get_less_variable_data_from_config_file();
+
+		// Fetch current variable settings from options table.
+		$variables = $this->_registry->get( 'model.option' )->get(
+			self::DB_KEY_FOR_LESS_VARIABLES,
+			array()
+		);
+
+		// Generate default variable array from the config file, and union these
+		// with any saved variables to make sure all required variables are set.
+		$variables += $variables_from_config;
 
 		// Add the description at runtime so that it can be translated.
 		foreach ( $variables as $name => $attrs ) {
 			// Also filter out any legacy variables that are no longer found in
-			// current config file (exceptions thrown is this is not handled here).
+			// current config file (exceptions thrown if this is not handled here).
 			if ( ! isset( $variables_from_config[$name] ) ) {
 				unset( $variables[$name] );
 			}
-			// If description is available in config file, use it.
-			else if ( isset( $variables_from_config[$name]['description'] ) ) {
-				$variables[$name]['description'] =
-					$variables_from_config[$name]['description'];
+			else {
+				// If description is requested and is available in config file, use it.
+				if (
+					$with_description &&
+					isset( $variables_from_config[$name]['description'] )
+				) {
+					$variables[$name]['description'] =
+						$variables_from_config[$name]['description'];
+				} else {
+					unset( $variables[$name]['description'] );
+				}
 			}
 		}
+
 		return $variables;
 	}
 

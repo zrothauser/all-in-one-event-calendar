@@ -10,6 +10,13 @@
  * @subpackage AI1EC.Twig
  */
 class Ai1ec_Twig_Environment extends Twig_Environment {
+	
+	/**
+	 * @var Ai1ec_Registry_Object The registry Object.
+	 */
+	protected $_registry = null;
+	
+	protected $_notice_send = false;
 
 	/**
 	 * Loads a template by name.
@@ -71,6 +78,21 @@ class Ai1ec_Twig_Environment extends Twig_Environment {
 							$name
 						)
 					);
+					if ( ! $this->_notice_send ){
+						$notify = $this->_registry->get( 'notification.admin' );
+						/* @var $notify Ai1ec_Notification_Admin */
+						$message = Ai1ec_I18n::__( 'We have detected that it\'s impossible ' . 
+								'to write to cache directory (we tried to write to %s). ' . 
+								'This decreases your site performance. Please contact ' . 
+								'your site administrator to enable writes to this directory.' 
+								);
+						$message = sprintf( $message, $this->cache );
+						$notify->store( $message, 'error', 1 );
+						$this->_notice_send = true;
+						$options = $this->_registry->get( 'model.option' );
+						/* @var $options Ai1ec_Option */
+						$options->delete( 'ai1ec_twig_cache' );
+					}					
 				}
 			}
 		}
@@ -80,6 +102,17 @@ class Ai1ec_Twig_Environment extends Twig_Environment {
 		}
 
 		return $this->loadedTemplates[$cls] = new $cls( $this );
+	}
+	
+	/**
+	 * Set Ai1ec_Registry_Object
+	 * 
+	 * @param Ai1ec_Registry_Object $registry
+	 * 
+	 * @return void
+	 */
+	public function set_registry( Ai1ec_Registry_Object $registry ) {
+		$this->_registry = $registry;
 	}
 
 }

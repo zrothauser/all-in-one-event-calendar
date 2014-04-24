@@ -71,7 +71,14 @@ require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'lib' .
 require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'lib' .
 	DIRECTORY_SEPARATOR . 'global-functions.php';
 
+require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'app' .
+	DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'extension.php';
+
+require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'app' .
+	DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'extension-license.php';
+
 $ai1ec_loader = new Ai1ec_Loader( $ai1ec_base_dir );
+
 $ai1ec_loader->register_map(
 	$ai1ec_base_dir . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR .
 	'composer' . DIRECTORY_SEPARATOR . 'autoload_classmap.php'

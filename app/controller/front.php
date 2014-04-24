@@ -722,7 +722,9 @@ class Ai1ec_Front_Controller {
 	 * @return void Method does not return
 	 */
 	protected function _initialize_registry( $ai1ec_loader ) {
+		global $ai1ec_registry;
 		$this->_registry = new Ai1ec_Registry_Object( $ai1ec_loader );
+		$ai1ec_registry = $this->_registry;
 		Ai1ec_Time_Utility::set_registry( $this->_registry );
 	}
 

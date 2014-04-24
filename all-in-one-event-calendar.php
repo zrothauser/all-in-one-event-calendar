@@ -65,18 +65,17 @@ $ai1ec_exception_handler->set_prev_ex_handler( $prev_ex_handler );
 
 // Regular startup sequence starts here
 
-$ai1ec_d = DIRECTORY_SEPARATOR;
-require $ai1ec_base_dir . $ai1ec_d . 'lib' .
-	$ai1ec_d . 'bootstrap' . $ai1ec_d . 'loader.php';
+require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'lib' .
+	DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'loader.php';
 
-require $ai1ec_base_dir . $ai1ec_d . 'lib' .
-	$ai1ec_d . 'global-functions.php';
+require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'lib' .
+	DIRECTORY_SEPARATOR . 'global-functions.php';
 
-require $ai1ec_base_dir . $ai1ec_d . 'app' .
-	$ai1ec_d . 'controller' . $ai1ec_d . 'extension.php';
+require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'app' .
+	DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'extension.php';
 
-require $ai1ec_base_dir . $ai1ec_d . 'app' .
-	$ai1ec_d . 'controller' . $ai1ec_d . 'extension-license.php';
+require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'app' .
+	DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'extension-license.php';
 
 Ai1ec_Loader::$_plugin_base = plugin_basename( __FILE__ );
 

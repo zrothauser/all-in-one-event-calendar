@@ -63,7 +63,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// =================
 	// = Language Path =
 	// =================
-	if ( ! defined( 'AI1EC_LANGUAGE_PATHh' ) ) {
+	if ( ! defined( 'AI1EC_LANGUAGE_PATH' ) ) {
 		define(
 			'AI1EC_LANGUAGE_PATH',
 			AI1EC_PLUGIN_NAME . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR

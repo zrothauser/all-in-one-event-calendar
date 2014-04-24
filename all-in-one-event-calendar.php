@@ -77,8 +77,6 @@ require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'app' .
 require $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'app' .
 	DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'extension-license.php';
 
-Ai1ec_Loader::$_plugin_base = plugin_basename( __FILE__ );
-
 $ai1ec_loader = new Ai1ec_Loader( $ai1ec_base_dir );
 
 $ai1ec_loader->register_map(

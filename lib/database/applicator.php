@@ -195,7 +195,7 @@ class Ai1ec_Database_Applicator extends Ai1ec_Base {
 			if ( null === $type ) {
 				// first check so we need something to compare with
 				// strtolower for sure
-				$type = strlower( $c_type );
+				$type = strtolower( $c_type );
 			} else {
 				// compare types
 				// strtolower for sure

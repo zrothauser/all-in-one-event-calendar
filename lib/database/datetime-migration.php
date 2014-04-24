@@ -241,8 +241,15 @@ class Ai1ecdm_Datetime_Migration {
 		$tables  = array_keys( $this->_tables );
 		$renames = array();
 		foreach ( $tables as $table ) {
-			$modified  = $table . $this->_table_suffix;
-			$backup    = $table . '_' . date( 'Y_m_d' ) . '_' . getmypid();
+			$modified     = $table . $this->_table_suffix;
+			$backup       = $table . '_' . date( 'Y_m_d' ) . '_' . getmypid();
+			$count_suffix = 2;
+			// we should check if table exists to avoid db error code 1050
+			// about 48 tries should be enough
+			while ( $count_suffix <= 50 && $this->_is_table( $backup )) {
+				$backup = $table . '_' . date( 'Y_m_d' ) . '_' . getmypid() . 
+						'_' . $count_suffix++;
+			}
 			$renames[] = '`' . $table    . '` TO `' . $backup . '`';
 			$renames[] = '`' . $modified . '` TO `' . $table  . '`';
 		}
@@ -422,6 +429,15 @@ class Ai1ecdm_Datetime_Migration {
 			return false;
 		}
 		return true;
+	}
+	
+	/**
+	 * Return list of tables to be processed
+	 * 
+	 * @return array List of tables to be processed
+	 */
+	public function get_tables() {
+		return $this->_tables;
 	}
 
 	/**

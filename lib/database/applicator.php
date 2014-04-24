@@ -122,6 +122,98 @@ class Ai1ec_Database_Applicator extends Ai1ec_Base {
 		$result = $this->_db->get_col( $sql_query );
 		return $result;
 	}
+	
+	/**
+	 * check_db_consistency_for_date_migration method
+	 * 
+	 * Checks if plugin tables are ready for update and start and end columns
+	 * have the same type (datetime or unsigned int)
+	 * 
+	 * @param array $info Optional param to return details by reference
+	 * 
+	 * @return bool Success
+	 */
+	public function check_db_consistency_for_date_migration( 
+		array &$info = null 
+	) {
+		$db_migration = $this->_registry->get( 'database.datetime-migration' );
+		/* @var $db_migration Ai1ecdm_Datetime_Migration */
+		$tables       = $db_migration->get_tables();
+		if ( ! is_array( $tables ) ) {
+			return true;
+		}
+		
+		// for date migration purposes we can assume
+		// that all columns need to be the same type
+		$result = true;
+		foreach( $tables as $t_name => $t_columns ) {
+			if ( count( $t_columns ) < 2 ) {
+				continue;
+			}
+			$db_cols = $db_migration->get_columns( $t_name );
+			if ( ! $this->_check_single_table( 
+					$t_name, 
+					$db_cols, 
+					$t_columns, 
+					$info 
+					)
+				) {
+					$result = false;
+			}
+		}
+		return $result;
+	}
+	
+	/**
+	 * check_single_table method
+	 * 
+	 * Check if single table columns are the same type
+	 * 
+	 * @param string $t_name Table name for details purposes
+	 * 
+	 * @param array $db_cols Columns from database
+	 * 
+	 * @param array $t_columns Columns to check from DDL
+	 * 
+	 * @param array $info Check details
+	 * 
+	 * @return bool Success
+	 */
+	protected function _check_single_table( 
+		$t_name, 
+		array $db_cols, 
+		array $t_columns, 
+		array &$info = null 
+	) {
+		$type   = null;
+		$result = true;
+		
+		foreach ( $db_cols as $c_field => $c_type ) {
+			if ( ! in_array( $c_field, $t_columns ) ) {
+				continue;
+			}
+			if ( null === $type ) {
+				// first check so we need something to compare with
+				// strtolower for sure
+				$type = strlower( $c_type );
+			} else {
+				// compare types
+				// strtolower for sure
+				if ( strtolower( $c_type ) !== $type ) {
+					$result = false;
+					if ( null !== $info ) {
+						$info[] = sprintf(
+							Ai1ec_I18n::__(	
+							'Date columns in table %s have different types.' ),
+							$t_name
+						);
+					}
+					break;
+				} 
+			}
+		}
+		return $result;
+	}
 
 	/**
 	 * _table method

@@ -775,7 +775,15 @@ class Ai1ec_Front_Controller {
 		// If existing DB version is not consistent with current plugin's version,
 		// or does not exist, then create/update table structure using dbDelta().
 		if ( $option->get( 'ai1ec_db_version' ) != $version ) {
-
+			
+			$details = array();
+			if ( ! $this->_registry->get( 'database.applicator' )
+						->check_db_consistency_for_date_migration( $details ) 
+			) {
+				$message = implode( $details, '<br/>' ) . 
+					'<br/><strong>Please restore database from copy and try again.</strong>';
+				throw new Ai1ec_Database_Update_Exception( $message );
+			}
 			$this->_registry->get( 'database.applicator' )
 				->remove_instance_duplicates();
 

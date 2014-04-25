@@ -14,9 +14,7 @@ class Ai1ec_Twig_Environment extends Twig_Environment {
 	/**
 	 * @var Ai1ec_Registry_Object The registry Object.
 	 */
-	protected $_registry = null;
-	
-	protected $_notice_send = false;
+	protected $_registry = null;	
 
 	/**
 	 * Loads a template by name.
@@ -30,78 +28,16 @@ class Ai1ec_Twig_Environment extends Twig_Environment {
 	 * @throws Twig_Error_Syntax When an error occurred during compilation
 	 */
 	public function loadTemplate( $name, $index = null ) {
-		$cls = $this->getTemplateClass( $name, $index );
-
-		if ( isset( $this->loadedTemplates[$cls] ) ) {
-			return $this->loadedTemplates[$cls];
+		try {
+			return parent::loadTemplate( $name, $index );
+		} catch ( RuntimeException $excpt ) {
+			$message = Ai1ec_I18n::__(
+				'We detected that your cache directory (%s) is not writable. This will make your calendar slow. Please contact your web host or server administrator to make it writable by the web server.'
+			);
+			$message = sprintf( $message, $this->cache );
+			$this->_registry->get( 'notification.admin' )->store( $message, 'error', 1 );
+			$this->_registry->get( 'model.option' )->delete( 'ai1ec_twig_cache' );
 		}
-
-		if ( ! class_exists( $cls, false ) ) {
-			if ( false === $cache = $this->getCacheFilename( $name ) ) {
-				eval(
-					'?>' .
-					$this->compileSource(
-						$this->getLoader()->getSource( $name ),
-						$name
-					)
-				);
-			} else {
-				try {
-					if (
-						! is_file( $cache ) ||
-						(
-							$this->isAutoReload() &&
-							! $this->isTemplateFresh(
-								$name,
-								filemtime( $cache )
-							)
-						)
-					) {
-						$this->writeCacheFile(
-							$cache,
-							$this->compileSource(
-								$this->getLoader()->getSource( $name ),
-								$name
-							)
-						);
-					}
-					require_once $cache;
-				} catch ( Exception $e ) {
-					// compile source. If any exception is thrown this approach
-					// is to let plugin work even if there is no pre-compiled
-					// template or it needs to be recompiled if some error
-					// occurs
-					eval(
-						'?>' .
-						$this->compileSource(
-							$this->getLoader()->getSource( $name ),
-							$name
-						)
-					);
-					if ( ! $this->_notice_send ){
-						$notify = $this->_registry->get( 'notification.admin' );
-						/* @var $notify Ai1ec_Notification_Admin */
-						$message = Ai1ec_I18n::__( 'We have detected that it\'s impossible ' . 
-								'to write to cache directory (we tried to write to %s). ' . 
-								'This decreases your site performance. Please contact ' . 
-								'your site administrator to enable writes to this directory.' 
-								);
-						$message = sprintf( $message, $this->cache );
-						$notify->store( $message, 'error', 1 );
-						$this->_notice_send = true;
-						$options = $this->_registry->get( 'model.option' );
-						/* @var $options Ai1ec_Option */
-						$options->delete( 'ai1ec_twig_cache' );
-					}					
-				}
-			}
-		}
-
-		if ( !$this->runtimeInitialized ) {
-			$this->initRuntime();
-		}
-
-		return $this->loadedTemplates[$cls] = new $cls( $this );
 	}
 	
 	/**

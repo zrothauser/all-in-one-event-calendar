@@ -353,41 +353,62 @@ class Ai1ec_Theme_Loader {
 	 * 
 	 * @param array $suggestions
 	 * 
+	 * @param bool $rescan
+	 * 
 	 * @return mixed Cache directory or false
 	 */
-	public function get_cache_dir( array $suggestions = null ) {
+	public function get_cache_dir( array $suggestions = null, $rescan = false ) {
 		$options          = $this->_registry->get( 'model.option' );
 		/* @var $options Ai1ec_Option */
 		$ai1ec_twig_cache = $options->get( 'ai1ec_twig_cache' );
-		if ( null !== $ai1ec_twig_cache ) {
-			return $ai1ec_twig_cache;
+		if ( 
+				null !== $ai1ec_twig_cache && 
+				! 
+				( 
+					$rescan &&
+					empty( $ai1ec_twig_cache )
+				)
+				
+			) {
+			return ! empty( $ai1ec_twig_cache ) ? $ai1ec_twig_cache : false;
 		}
 		$path       = false;
+		$scan_dirs  = array( AI1EC_TWIG_CACHE_PATH );
 		$upload_dir = wp_upload_dir();
-		$scan_dirs  = array( 
-			AI1EC_TWIG_CACHE_PATH, 
-			$upload_dir['basedir'] . DIRECTORY_SEPARATOR . 'ai1ec_twig' 
-			);
-		
-		if ( null !== $suggestions ) {
-			$scan_dirs = array_merge( $suggestions, $scan_dirs );
+		if (
+			(
+				! isset( $upload_dir['error'] ) ||
+				! $upload_dir['error']
+			) &&
+			! is_wp_error( $upload_dir ) 
+		) {
+			$scan_dirs[] = $upload_dir['basedir'] . DIRECTORY_SEPARATOR . 'ai1ec_twig';
 		}
+		
+		$scan_dirs = array_merge( $scan_dirs, (array)$suggestions );
 		
 		foreach( $scan_dirs as $dir ) {
-			if ( 
-					( is_dir( $dir ) || 
-					mkdir( $dir, 0755, true ) ) && 
-					is_writable( $dir ) 
-				) {
+			if (
+				(
+					is_dir( $dir ) ||
+					mkdir( $dir, 0755, true )
+				) &&
+				is_writable( $dir )
+			) {
 					$path = $dir;
 					break;
-				}
+			}
 		}
 		
-		if ( false !== $path ) {
-			$options->set( 'ai1ec_twig_cache', $path );
+
+		$options->set( 'ai1ec_twig_cache', $path, true );
+		if ( false === $path ) {
+			$message = Ai1ec_I18n::__(
+				'We detected that your cache directory (%s) is not writable. This will make your calendar slow. Please contact your web host or server administrator to make it writable by the web server.'
+			);
+			$message = sprintf( $message, AI1EC_TWIG_CACHE_PATH );
+			$this->_registry->get( 'notification.admin' )->store( $message, 'error', 1 );
 		}
-		
 		return $path;
 	}
 
@@ -413,15 +434,11 @@ class Ai1ec_Theme_Loader {
 				}
 			}
 
-			$loader = new Ai1ec_Twig_Loader_Filesystem( $loader_path );
+			$loader = new Twig_Loader_Filesystem( $loader_path );
 			unset( $loader_path );
-			
-			$path   = $this->get_cache_dir();
-			$path   = ( false !== $path ) ? $path : AI1EC_TWIG_CACHE_PATH;
-			
 			// TODO: Add cache support.
 			$environment = array(
-				'cache'            => $path,
+				'cache'            => $this->get_cache_dir(),
 				'optimizations'    => -1,   // all
 				'auto_reload'      => false,
 			);

@@ -382,7 +382,25 @@ class Ai1ec_Date_Timezone extends Ai1ec_Base {
 	 */
 	public function get_name( $zone ) {
 		if ( is_numeric( $zone ) ) {
-			$zone = timezone_name_from_abbr( null, $zone * 3600, true );
+			$auto_zone = timezone_name_from_abbr( null, $zone * 3600, true );
+			if ( false === $auto_zone ) {
+				$auto_zone = timezone_name_from_abbr( null, ( (int) $zone ) * 3600, true );
+				if ( false === $auto_zone ) {
+					$auto_zone = 'UTC';
+					$this->_registry->get(
+						'notification.admin',
+						sprintf(
+							Ai1ec_I18n::__(
+								'Timezone %s is not recognized. Please use valid timezone name, until then events will be created in UTC timezone.'
+							),
+							'<a href="' . admin_url( 'options-general.php' ) .
+							'">' . Ai1ec_I18n::__( 'Settings' ) . '</a>'
+						),
+						'error'
+					);
+				}
+			}
+			$zone = $auto_zone;
 		}
 		if ( false === $this->_identifiers ) {
 			return $zone; // anything should do, as zones are not supported

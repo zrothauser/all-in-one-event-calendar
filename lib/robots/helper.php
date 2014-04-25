@@ -75,7 +75,7 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 				isset( $_POST['password'] ) ||
 				isset( $_POST['connection_type'] )
 			);
-		    if ( $error_v ) {
+			if ( $error_v ) {
 				// if credentials are given and we don't have access to
 				// wp filesystem show notice to user
 				// we could use request_filesystem_credentials with true error
@@ -92,8 +92,8 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 					wp_redirect( $redirect_url );
 				}
 				exit;
-		    }
-		    return;
+			}
+			return;
 		}
 
 		global $wp_filesystem;

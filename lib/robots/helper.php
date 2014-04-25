@@ -69,7 +69,7 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 		$creds = request_filesystem_credentials( $url, $type, false, false, null );
 
 		if ( ! WP_Filesystem( $creds ) ) {
-		    $error_v = (
+			$error_v = (
 				isset( $_POST['hostname'] ) ||
 				isset( $_POST['username'] ) ||
 				isset( $_POST['password'] ) ||

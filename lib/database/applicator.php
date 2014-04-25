@@ -124,14 +124,11 @@ class Ai1ec_Database_Applicator extends Ai1ec_Base {
 	}
 
 	/**
-	 * Check list of tables for consistency
+	 * Check list of tables for consistency.
 	 *
-	 * @param array $info Optional param to return details by reference
-	 *
-	 * @return array List of inconsistencies
+	 * @return array List of inconsistencies.
 	 */
-	public function check_db_consistency_for_date_migration()
-	{
+	public function check_db_consistency_for_date_migration() {
 		$db_migration = $this->_registry->get( 'database.datetime-migration' );
 		/* @var $db_migration Ai1ecdm_Datetime_Migration */
 		$tables       = $db_migration->get_tables();
@@ -146,27 +143,26 @@ class Ai1ec_Database_Applicator extends Ai1ec_Base {
 			if ( count( $t_columns ) < 2 ) {
 				continue;
 			}
-			$db_cols = $db_migration->get_columns( $t_name );
-			$col_errors = $this->_check_single_table(
+			$tbl_error = $this->_check_single_table(
 				$t_name,
-				$db_cols,
-				$t_columns,
-				$info
-				);
-			$info = array_merge( $info, $col_errors );
+				$db_migration->get_columns( $t_name ),
+				$t_columns
+			);
+			if ( null !== $tbl_error ) {
+				$info[] = $tbl_error;
+			}
 		}
 		return $info;
 	}
 
 	/**
-	 * Check if single table columns are the same type
+	 * Check if single table columns are the same type.
 	 *
-	 * @param string $t_name   Table name for details purposes
-	 * @param array $db_cols   Columns from database
-	 * @param array $t_columns Columns to check from DDL
-	 * @param array $info      Check details
+	 * @param string $t_name    Table name for details purposes.
+	 * @param array  $db_cols   Columns from database.
+	 * @param array  $t_columns Columns to check from DDL.
 	 *
-	 * @return array List of inconsistencies
+	 * @return string|null Inconsistency description, if any.
 	 */
 	protected function _check_single_table(
 		$t_name,
@@ -174,39 +170,31 @@ class Ai1ec_Database_Applicator extends Ai1ec_Base {
 		array $t_columns
 	) {
 		$type = null;
-		$info = array();
 		foreach ( $db_cols as $c_field => $c_type ) {
 			if ( ! in_array( $c_field, $t_columns ) ) {
 				continue;
 			}
 			if ( null === $type ) {
-				// first check so we need something to compare with
-				// strtolower for sure
 				$type = strtolower( $c_type );
 			}
-			// compare types
-			// strtolower for sure
 			if ( strtolower( $c_type ) !== $type ) {
-				$info[] = sprintf(
+				return sprintf(
 					Ai1ec_I18n::__(
 						'Date columns in table %s have different types.'
 					),
 					$t_name
 				);
-				break;
 			}
 		}
-		return $info;
+		return null;
 	}
 
 	/**
-	 * _table method
+	 * Get fully qualified table name, to use in queries.
 	 *
-	 * Get fully qualified table name, to use in queries
+	 * @param string $table Name of table, to convert.
 	 *
-	 * @param string $table Name of table, to convert
-	 *
-	 * @return string Qualified table name
+	 * @return string Qualified table name.
 	 */
 	protected function _table( $table ) {
 		$prefix = $this->_db->get_table_name( 'ai1ec_' );

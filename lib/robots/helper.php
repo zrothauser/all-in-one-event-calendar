@@ -119,12 +119,12 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 			if ( $is_installed ) {
 				$robots_txt['is_installed'] = true;
 			} else {
-			    $err_msg = Ai1ec_I18n::__(
+				$err_msg = Ai1ec_I18n::__(
 					'<strong>ERROR:</strong> There was an error storing <strong>robots.txt</strong> to the server, Please verify the settings and permissions are correct.'
 				);
-			    $this->_registry->get( 'notification.admin' )
+				$this->_registry->get( 'notification.admin' )
 					->store( $err_msg, 'error' );
-			    $redirect = true;
+				$redirect = true;
 			}
 		} else {
 			$robots_txt['is_installed'] = false;
@@ -148,8 +148,8 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 		// we need to avoid infinity loop if FS_METHOD direct
 		// and robots.txt is not writable
 		if ( $redirect && ! isset( $_REQUEST['noredirect'] ) ) {
-		    wp_redirect( $redirect_url );
-		    exit;
+			wp_redirect( $redirect_url );
+			exit;
 		}
 	}
 

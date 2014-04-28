@@ -17,10 +17,7 @@ class Ai1ec_Html_Setting_Cache extends Ai1ec_Html_Element_Settings {
 	public function render( $output = '' ) {
 		$file   = $this->_args['id'] . '.twig';
 		$method = 'get_' . $this->_args['id'] . '_args';
-		$args   = array();
-		if ( method_exists( $this, $method ) ) {
-			$args = array_merge( $args, $this->{$method}() );
-		}
+		$args   = $this->get_twig_cache_args();
 		$loader = $this->_registry->get( 'theme.loader' );
 		$file   = $loader->get_file( 'setting/' . $file, $args, true );
 		return parent::render( $file->get_content() );
@@ -40,10 +37,11 @@ class Ai1ec_Html_Setting_Cache extends Ai1ec_Html_Element_Settings {
 			'id'              => $this->_args['id'],
 			'label'           => $this->_args['renderer']['label'],
 			'text'            => array(
-				'refresh' => Ai1ec_I18n::__( 'Click to perform rescan' ),
-				'nocache' => Ai1ec_I18n::__( 'Cache is unavailable' ),
-				'okcache' => Ai1ec_I18n::__( 'Cache is available' ),
-				'rescan'  => Ai1ec_I18n::__( 'Rescanning cache... Please wait...' ),
+				'refresh' => Ai1ec_I18n::__( 'Check again' ),
+				'nocache' => Ai1ec_I18n::__( 'Templates cache is not writable' ),
+				'okcache' => Ai1ec_I18n::__( 'Templates cache is writable' ),
+				'rescan'  => Ai1ec_I18n::__( 'Checking...' ),
+				'title'   => Ai1ec_I18n::__( 'Performance Report' ),
 			),
 		);
 

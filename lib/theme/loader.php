@@ -351,19 +351,20 @@ class Ai1ec_Theme_Loader {
 	/**
 	 * Get cache dir for Twig.
 	 * 
-	 * @param array  $suggestions List of suggested directories to scan
-	 * @param string $rescan Set to rescan to force rescan
+	 * @param bool $rescan Set to true to force rescan
 	 * 
 	 * @return string|bool Cache directory or false
 	 */
-	public function get_cache_dir( array $suggestions = null, $rescan = '' ) {
+	public function get_cache_dir( $rescan = false ) {
 		$settings         = $this->_registry->get( 'model.settings' );
 		$ai1ec_twig_cache = $settings->get( 'twig_cache' );
 		if ( 
-				! empty( $ai1ec_twig_cache ) &&
-				'rescan' !== $rescan
-			) {
-			return ( AI1EC_CACHE_UNAVAILABLE === $ai1ec_twig_cache ) ? false : $ai1ec_twig_cache;
+			! empty( $ai1ec_twig_cache ) &&
+			false === $rescan
+		) {
+			return ( AI1EC_CACHE_UNAVAILABLE === $ai1ec_twig_cache )
+				? false
+				: $ai1ec_twig_cache;
 		}
 		$path       = false;
 		$scan_dirs  = array( AI1EC_TWIG_CACHE_PATH );
@@ -377,8 +378,6 @@ class Ai1ec_Theme_Loader {
 		) {
 			$scan_dirs[] = $upload_dir['basedir'] . DIRECTORY_SEPARATOR . 'ai1ec_twig';
 		}
-		
-		$scan_dirs = array_merge( $scan_dirs, (array)$suggestions );
 		
 		foreach ( $scan_dirs as $dir ) {
 			if (

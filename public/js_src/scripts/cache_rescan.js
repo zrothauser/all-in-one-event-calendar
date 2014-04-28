@@ -2,7 +2,8 @@ define(
 	[
 		'jquery_timely',
 		'domReady',
-		'scripts/setting/cache/cache_event_handlers'
+		'scripts/setting/cache/cache_event_handlers',
+		'external_libs/bootstrap/button'
 	],
 	function(
 		$,
@@ -14,7 +15,7 @@ define(
 
 	var attach_event_handlers = function() {
 		$( document )
-				.on( 'click', '#ai1ec_cache_rescan', cache_event_handlers.perform_rescan );
+				.on( 'click', '#ai1ec-button-refresh', cache_event_handlers.perform_rescan );
 	}
 
 	var start = function() {

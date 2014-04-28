@@ -18,12 +18,12 @@ class Ai1ec_Twig_Cache extends Ai1ec_Base {
 	 */
 	public function rescan() {
 		$cache_dir = $this->_registry->get( 'theme.loader' )
-				->get_cache_dir( null, 'rescan' );
+				->get_cache_dir( true );
 		$render_json    = $this->_registry->get(
 				'http.response.render.strategy.json'
 		);
 		$output['data'] = array(
-			'state' => false !== $cache_dir ? 1 : 0,
+			'state' => false !== $cache_dir,
 		);
 		$render_json->render( $output );
 	}

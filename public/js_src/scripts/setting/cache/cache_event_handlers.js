@@ -14,11 +14,9 @@ define(
 	 * User rescans cache.
 	 */
 	var perform_rescan = function() {
-		var $hideable    = $( '.ai1ec-twig-cache' ),
-			$rescan_info = $( '#ai1ec-twig-rescan-info' );
+		var $button = $( this );
 
-		$hideable.hide();
-		$rescan_info.show();
+		$button.button( 'loading' );
 		// Create the data to send,
 		var data = {
 			action: 'ai1ec_rescan_cache',
@@ -26,6 +24,7 @@ define(
 
 		// Make an AJAX call to cache rescan.
 		$.post( ajaxurl, data, ajax_handlers.handle_rescan_cache, 'json' );
+		return false;
 	};
 	return {
 		"perform_rescan" : perform_rescan

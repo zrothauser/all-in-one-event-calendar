@@ -176,20 +176,19 @@ http://vimeo.com/55904173
 == Changelog ==
 
 = Version 2.0.6 =
-* Initial public release of 2.0 on WordPress.org repository;
+* Initial public release of 2.0 on http://WordPress.org repository;
 * Restored ability to remove Category image;
+* Fixed licence keys activation;
 * Fixed issue where All-in-One Event Calendar JavaScript wasn't
 loading in some configurations;
-* Fixed issue where Event page layout was too tight;
+* Improved event page layout;
 * Fixed issue where Upcoming Events widget wasn't properly wrapped;
 * Fixed issue where migrating from versions prior to 1.10 caused
 events date time to have offset added in some cases;
-* Fixed issue where manual offset times were not recognized where
-possible;
+* Fixed issue where manual offset times were not recognized;
 * Fixed issue where upgrading was causing fatal errors in some cases;
-* Fixed issue where templates cache directory issues were not properly
-diagnosed;
-* Fixed licence keys activation.
+* Fixed issue where templates cache directory problems were not
+properly diagnosed.
 
 = Version 2.0.5 =
 * Restored translation files;

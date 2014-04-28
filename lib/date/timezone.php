@@ -345,7 +345,9 @@ class Ai1ec_Date_Timezone extends Ai1ec_Base {
 				->get_current( 'ai1ec_timezone' );
 			$candidates[] = (string)$this->_registry->get( 'model.option' )
 				->get( 'timezone_string' );
-			$candidates = array_filter( $candidates );
+			$candidates[] = (string)$this->_registry->get( 'model.option' )
+				->get( 'gmt_offset' );
+			$candidates   = array_filter( $candidates, 'strlen' );
 			foreach ( $candidates as $timezone ) {
 				$timezone = $this->get_name( $timezone );
 				if ( false !== $timezone ) {
@@ -355,8 +357,7 @@ class Ai1ec_Date_Timezone extends Ai1ec_Base {
 			}
 			if ( null === $default_timezone ) {
 				$default_timezone = 'UTC';
-				$this->_registry->get(
-					'notification.admin',
+				$this->_registry->get( 'notification.admin' )->store(
 					sprintf(
 						Ai1ec_I18n::__(
 							'Please select site timezone in %s <em>Timezone</em> dropdown menu.'
@@ -372,6 +373,40 @@ class Ai1ec_Date_Timezone extends Ai1ec_Base {
 	}
 
 	/**
+	 * Attempt to decode GMT offset to some Olsen timezone.
+	 *
+	 * @param float $zone GMT offset.
+	 *
+	 * @return string Valid Olsen timezone name (UTC is last resort).
+	 */
+	public function decode_gmt_timezone( $zone ) {
+		$auto_zone = timezone_name_from_abbr( null, $zone * 3600, true );
+		if ( false !== $auto_zone ) {
+			return $auto_zone;
+		}
+		$auto_zone = timezone_name_from_abbr(
+			null,
+			( (int) $zone ) * 3600,
+			true
+		);
+		if ( false !== $auto_zone ) {
+			return $auto_zone;
+		}
+		$this->_registry->get( 'notification.admin' )->store(
+			sprintf(
+				Ai1ec_I18n::__(
+					'Timezone "UTC%+d" is not recognized. Please %suse valid%s timezone name, until then events will be created in UTC timezone.'
+				),
+				$zone,
+				'<a href="' . admin_url( 'options-general.php' ) . '">',
+				'</a>'
+			),
+			'error'
+		);
+		return 'UTC';
+	}
+
+	/**
 	 * Get valid timezone name from input.
 	 *
 	 * @param string $zone Name to check/parse.
@@ -379,8 +414,20 @@ class Ai1ec_Date_Timezone extends Ai1ec_Base {
 	 * @return string Timezone name to use
 	 */
 	public function get_name( $zone ) {
-		if ( empty( $zone ) ) {
-			$zone = 'UTC';
+		if ( is_numeric( $zone ) ) {
+			$decoded_zone = $this->decode_gmt_timezone( $zone );
+			if ( 'UTC' !== $decoded_zone ) {
+				$message = sprintf(
+					Ai1ec_I18n::__(
+						'Selected timezone "UTC%+d" will be treated as %s.'
+					),
+					$zone,
+					$decoded_zone
+				);
+				$this->_registry->get( 'notification.admin' )
+					->store( $message );
+			}
+			$zone = $decoded_zone;
 		}
 		if ( false === $this->_identifiers ) {
 			return $zone; // anything should do, as zones are not supported

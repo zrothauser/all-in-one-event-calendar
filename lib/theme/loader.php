@@ -378,7 +378,7 @@ class Ai1ec_Theme_Loader {
 		) {
 			$scan_dirs[] = $upload_dir['basedir'] . DIRECTORY_SEPARATOR . 'ai1ec_twig';
 		}
-		
+
 		foreach ( $scan_dirs as $dir ) {
 			if (
 				(
@@ -391,7 +391,7 @@ class Ai1ec_Theme_Loader {
 					break;
 			}
 		}
-		
+
 		$settings->set(
 			'twig_cache',
 			false === $path ? AI1EC_CACHE_UNAVAILABLE : $path

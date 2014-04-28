@@ -723,7 +723,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'renderer' => array(
 					'class' => 'cache',
 					'tab'   => 'advanced',
-					'item'  => 'advanced',
+					'item'  => 'cache',
 					'label' => sprintf(
 						Ai1ec_I18n::__(
 							'Templates cache improves site performance'

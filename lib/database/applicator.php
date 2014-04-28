@@ -124,13 +124,77 @@ class Ai1ec_Database_Applicator extends Ai1ec_Base {
 	}
 
 	/**
-	 * _table method
+	 * Check list of tables for consistency.
 	 *
-	 * Get fully qualified table name, to use in queries
+	 * @return array List of inconsistencies.
+	 */
+	public function check_db_consistency_for_date_migration() {
+		$db_migration = $this->_registry->get( 'database.datetime-migration' );
+		/* @var $db_migration Ai1ecdm_Datetime_Migration */
+		$tables       = $db_migration->get_tables();
+		if ( ! is_array( $tables ) ) {
+			return array();
+		}
+
+		// for date migration purposes we can assume
+		// that all columns need to be the same type
+		$info = array();
+		foreach( $tables as $t_name => $t_columns ) {
+			if ( count( $t_columns ) < 2 ) {
+				continue;
+			}
+			$tbl_error = $this->_check_single_table(
+				$t_name,
+				$db_migration->get_columns( $t_name ),
+				$t_columns
+			);
+			if ( null !== $tbl_error ) {
+				$info[] = $tbl_error;
+			}
+		}
+		return $info;
+	}
+
+	/**
+	 * Check if single table columns are the same type.
 	 *
-	 * @param string $table Name of table, to convert
+	 * @param string $t_name    Table name for details purposes.
+	 * @param array  $db_cols   Columns from database.
+	 * @param array  $t_columns Columns to check from DDL.
 	 *
-	 * @return string Qualified table name
+	 * @return string|null Inconsistency description, if any.
+	 */
+	protected function _check_single_table(
+		$t_name,
+		array $db_cols,
+		array $t_columns
+	) {
+		$type = null;
+		foreach ( $db_cols as $c_field => $c_type ) {
+			if ( ! in_array( $c_field, $t_columns ) ) {
+				continue;
+			}
+			if ( null === $type ) {
+				$type = strtolower( $c_type );
+			}
+			if ( strtolower( $c_type ) !== $type ) {
+				return sprintf(
+					Ai1ec_I18n::__(
+						'Date columns in table %s have different types.'
+					),
+					$t_name
+				);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Get fully qualified table name, to use in queries.
+	 *
+	 * @param string $table Name of table, to convert.
+	 *
+	 * @return string Qualified table name.
 	 */
 	protected function _table( $table ) {
 		$prefix = $this->_db->get_table_name( 'ai1ec_' );

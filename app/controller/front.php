@@ -776,6 +776,15 @@ class Ai1ec_Front_Controller {
 		// or does not exist, then create/update table structure using dbDelta().
 		if ( $option->get( 'ai1ec_db_version' ) != $version ) {
 
+			$errors = $this->_registry->get( 'database.applicator' )
+				->check_db_consistency_for_date_migration() ;
+			if ( ! empty( $errors ) ) {
+				$message = Ai1ec_I18n::__(
+					'Your database is found to be corrupt. Likely previous update has failed. Please restore All-in-One Event Calendar tables from a backup and retry.<br>Following errors were found:<br>%s'
+				);
+				$message = sprintf( $message, implode( $errors, '<br>' ) );
+				throw new Ai1ec_Database_Update_Exception( $message );
+			}
 			$this->_registry->get( 'database.applicator' )
 				->remove_instance_duplicates();
 

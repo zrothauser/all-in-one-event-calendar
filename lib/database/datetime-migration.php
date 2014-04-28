@@ -425,6 +425,15 @@ class Ai1ecdm_Datetime_Migration {
 	}
 
 	/**
+	 * Return list of tables to be processed
+	 *
+	 * @return array List of tables to be processed
+	 */
+	public function get_tables() {
+		return $this->_tables;
+	}
+
+	/**
 	 * Check if given table exists.
 	 *
 	 * @param string $table Name of table to check.

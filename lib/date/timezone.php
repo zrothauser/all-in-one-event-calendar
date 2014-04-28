@@ -391,10 +391,11 @@ class Ai1ec_Date_Timezone extends Ai1ec_Base {
 						'notification.admin',
 						sprintf(
 							Ai1ec_I18n::__(
-								'Timezone %s is not recognized. Please use valid timezone name, until then events will be created in UTC timezone.'
+								'Timezone "%s" is not recognized. Please %s timezone name, until then events will be created in UTC timezone.'
 							),
+							$auto_zone . ( $zone < 0 ? $zone : '+' . $zone ),
 							'<a href="' . admin_url( 'options-general.php' ) .
-							'">' . Ai1ec_I18n::__( 'Settings' ) . '</a>'
+							'">' . Ai1ec_I18n::__( 'use valid' ) . '</a>'
 						),
 						'error'
 					);

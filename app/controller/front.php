@@ -562,6 +562,10 @@ class Ai1ec_Front_Controller {
 				'admin_init',
 				array( 'robots.helper', 'install' )
 			);
+			$dispatcher->register_action(
+				'wp_ajax_ai1ec_rescan_cache',
+				array( 'twig.cache', 'rescan' )
+			);
 		} else { // ! is_admin()
 			$dispatcher->register_shortcode(
 				'ai1ec',

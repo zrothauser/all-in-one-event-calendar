@@ -4,6 +4,8 @@ define(
 		"domReady",
 		"ai1ec_config",
 		"libs/utils",
+		'scripts/setting/cache/cache_event_handlers',
+		 'external_libs/bootstrap/button',
 		"libs/collapse_helper",
 		"external_libs/bootstrap/tab",
 		"external_libs/bootstrap/dropdown",
@@ -11,7 +13,7 @@ define(
 		"external_libs/bootstrap/tooltip",
 		"external_libs/jquery_cookie"
 	],
-	function( $, domReady, ai1ec_config, utils ) {
+	function( $, domReady, ai1ec_config, utils, cache_event_handlers ) {
 	"use strict";
 
 	var remove_feeds_postbox_if_all_values_are_empty = function() {
@@ -54,11 +56,6 @@ define(
 		}
 	};
 
-	/**
-	 * Initialize the license status indicator with API call.
-	 */
-	var init_license_status = function() {
-	};
 
 	var remove_gzip_button = function() {
 		$( '.ai1ec-gzip-causes-js-failure' ).remove();
@@ -84,7 +81,6 @@ define(
 	var start = function() {
 		// Perform DOM ready tasks.
 		domReady( function() {
-			init_license_status();
 			setup_disclaimer();
 			remove_gzip_button();
 
@@ -104,6 +100,8 @@ define(
 					evt.preventDefault();
 				}
 			);
+			$( document )
+						.on( 'click', '#ai1ec-button-refresh', cache_event_handlers.perform_rescan );
 
 			// Initialize datepicker and have it respond to changes in format settings.
 			var $exact_date = $('#exact_date');

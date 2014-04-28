@@ -451,4 +451,11 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		define( 'AI1EC_CACHE', true );
 	}
 
+	// A value identifying that cache is not available.
+	// Used in place of actual path for cache to use.
+	// Named constant allows reuse of a single typed variable.
+	if ( ! defined( 'AI1EC_CACHE_UNAVAILABLE' ) ) {
+		define( 'AI1EC_CACHE_UNAVAILABLE', 'AI1EC_CACHE_UNAVAILABLE' );
+	}
+
 }

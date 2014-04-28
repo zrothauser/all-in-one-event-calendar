@@ -56,6 +56,16 @@ class Ai1ec_Dbi {
 			array( $this, 'shutdown' )
 		);
 		$this->auto_debug();
+		$this->set_timezone();
+	}
+
+	/**
+	 * Set timezone to UTC to avoid conversion errors.
+	 *
+	 * @return void
+	 */
+	public function set_timezone() {
+		$this->_dbi->query( "SET time_zone = '+0:00'" );
 	}
 
 	/**

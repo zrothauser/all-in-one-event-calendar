@@ -23,9 +23,6 @@ class Ai1ec_Twig_Environment extends Twig_Environment {
 	 * @param integer $index The index if it is an embedded template
 	 *
 	 * @return Twig_TemplateInterface A template instance representing the given template name
-	 *
-	 * @throws Twig_Error_Loader When the template cannot be found
-	 * @throws Twig_Error_Syntax When an error occurred during compilation
 	 */
 	public function loadTemplate( $name, $index = null ) {
 		try {
@@ -35,8 +32,13 @@ class Ai1ec_Twig_Environment extends Twig_Environment {
 				'We detected that your cache directory (%s) is not writable. This will make your calendar slow. Please contact your web host or server administrator to make it writable by the web server.'
 			);
 			$message = sprintf( $message, $this->cache );
-			$this->_registry->get( 'notification.admin' )->store( $message, 'error', 1 );
-			$this->_registry->get( 'model.option' )->delete( 'ai1ec_twig_cache' );
+			$this->_registry->get( 'notification.admin' )
+					->store( $message, 'error', 1 );
+			$settings = $this->_registry->get( 'model.settings' );
+			/* @var $settings Ai1ec_Settings */
+			// used shutdown to store settings
+			// after this line exception occurs
+			$settings->set( 'twig_cache', '' )->shutdown();
 		}
 	}
 	

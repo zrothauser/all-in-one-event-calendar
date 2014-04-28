@@ -718,6 +718,20 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'type'    => 'string',
 				'default' => 'hourly',
 			),
+			'twig_cache' => array(
+				'type' => 'string',
+				'renderer' => array(
+					'class' => 'cache',
+					'tab'   => 'advanced',
+					'item'  => 'advanced',
+					'label' => sprintf(
+						Ai1ec_I18n::__(
+							'Templates cache improves site performance'
+						)
+					),
+				),
+				'default' => '',
+			)
 		);
 	}
 

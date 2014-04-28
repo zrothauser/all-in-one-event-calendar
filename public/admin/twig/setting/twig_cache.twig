@@ -1,0 +1,7 @@
+<div class="ai1ec-col-sm-12">
+	{{ label | raw }}&nbsp;
+	<i class="ai1ec-fa ai1ec-fa-check-circle ai1ec-twig-cache" title="{{ text.okcache }}"{% if cache_available == false %} style="display: none;"{% endif %}></i>
+	<i class="ai1ec-fa ai1ec-fa-warning ai1ec-twig-cache" title="{{ text.nocache }}"{% if cache_available == true %} style="display: none;"{% endif %}></i>
+	&nbsp;<i id="ai1ec_cache_rescan" class="ai1ec-fa ai1ec-fa-refresh ai1ec-twig-cache" title="{{ text.refresh }}" style="cursor: pointer;"></i>
+	<span id="ai1ec-twig-rescan-info" style="display: none;">{{ text.rescan }}</span>
+</div>

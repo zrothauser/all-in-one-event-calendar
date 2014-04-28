@@ -349,28 +349,21 @@ class Ai1ec_Theme_Loader {
 	}
 	
 	/**
-	 * Get cache dir for Twig
+	 * Get cache dir for Twig.
 	 * 
-	 * @param array $suggestions
+	 * @param array  $suggestions List of suggested directories to scan
+	 * @param string $rescan Set to rescan to force rescan
 	 * 
-	 * @param bool $rescan
-	 * 
-	 * @return mixed Cache directory or false
+	 * @return string|bool Cache directory or false
 	 */
-	public function get_cache_dir( array $suggestions = null, $rescan = false ) {
-		$options          = $this->_registry->get( 'model.option' );
-		/* @var $options Ai1ec_Option */
-		$ai1ec_twig_cache = $options->get( 'ai1ec_twig_cache' );
+	public function get_cache_dir( array $suggestions = null, $rescan = '' ) {
+		$settings         = $this->_registry->get( 'model.settings' );
+		$ai1ec_twig_cache = $settings->get( 'twig_cache' );
 		if ( 
-				null !== $ai1ec_twig_cache && 
-				! 
-				( 
-					$rescan &&
-					empty( $ai1ec_twig_cache )
-				)
-				
+				! empty( $ai1ec_twig_cache ) &&
+				'rescan' !== $rescan
 			) {
-			return ! empty( $ai1ec_twig_cache ) ? $ai1ec_twig_cache : false;
+			return ( AI1EC_CACHE_UNAVAILABLE === $ai1ec_twig_cache ) ? false : $ai1ec_twig_cache;
 		}
 		$path       = false;
 		$scan_dirs  = array( AI1EC_TWIG_CACHE_PATH );
@@ -387,7 +380,7 @@ class Ai1ec_Theme_Loader {
 		
 		$scan_dirs = array_merge( $scan_dirs, (array)$suggestions );
 		
-		foreach( $scan_dirs as $dir ) {
+		foreach ( $scan_dirs as $dir ) {
 			if (
 				(
 					is_dir( $dir ) ||
@@ -400,8 +393,10 @@ class Ai1ec_Theme_Loader {
 			}
 		}
 		
-
-		$options->set( 'ai1ec_twig_cache', $path, true );
+		$settings->set(
+			'twig_cache',
+			false === $path ? AI1EC_CACHE_UNAVAILABLE : $path
+		);
 		if ( false === $path ) {
 			$message = Ai1ec_I18n::__(
 				'We detected that your cache directory (%s) is not writable. This will make your calendar slow. Please contact your web host or server administrator to make it writable by the web server.'
@@ -454,7 +449,7 @@ class Ai1ec_Theme_Loader {
 				$environment
 			);
 
-			$ai1ec_twig_environment = new Ai1ec_Twig_Environment( 
+			$ai1ec_twig_environment = new Ai1ec_Twig_Environment(
 					$loader, 
 					$environment 
 				);

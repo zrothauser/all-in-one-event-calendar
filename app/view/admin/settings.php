@@ -51,6 +51,9 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 		$loader = $this->_registry->get( 'theme.loader' );
 		$file   = $loader->get_file( 'setting/page.twig', $args, true );
 		$file->render();
+		$js_uri = AI1EC_URL . '/public/' . AI1EC_JS_FOLDER . '/' . 'pages/cache_rescan.js';
+		$this->_registry->get( 'script.helper' )
+				->enqueue_script( 'ai1ec-cache-rescan', $js_uri );
 	}
 
 	/* (non-PHPdoc)

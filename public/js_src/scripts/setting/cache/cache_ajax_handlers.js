@@ -25,11 +25,11 @@ define(
 			$alert = AI1EC_UTILS.make_alert( response.message, 'error' );
 		} else {
 			if ('0' === response.state) {
-				$success.toggleClass( 'ai1ec-hide' );
-				$danger.toggleClass( 'ai1ec-hide' );
+				$success.toggleClass( 'ai1ec-hide', true );
+				$danger.toggleClass( 'ai1ec-hide', false );
 			} else {
-				$success.toggleClass( 'ai1ec-hide' );
-				$danger.toggleClass( 'ai1ec-hide' );
+				$success.toggleClass( 'ai1ec-hide', false );
+				$danger.toggleClass( 'ai1ec-hide', true );
 			}
 		}
 	};

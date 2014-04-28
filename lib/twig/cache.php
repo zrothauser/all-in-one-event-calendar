@@ -23,7 +23,7 @@ class Ai1ec_Twig_Cache extends Ai1ec_Base {
 				'http.response.render.strategy.json'
 		);
 		$output['data'] = array(
-			'state' => false !== $cache_dir,
+			'state' => (int)(false !== $cache_dir),
 		);
 		$render_json->render( $output );
 	}

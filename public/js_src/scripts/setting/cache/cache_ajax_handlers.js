@@ -15,9 +15,9 @@ define(
 	var handle_rescan_cache = function( response ) {
 		var $refresh_icon = $( '.ai1ec-fa-refresh' ),
 		    $rescan_info  = $( '#ai1ec-twig-rescan-info' ),
-			$warning_icon = $( '.ai1ec-fa-warning' ),
-			$success_icon = $( '.ai1ec-fa-check-circle' ),
-			$alert;
+		    $warning_icon = $( '.ai1ec-fa-warning' ),
+		    $success_icon = $( '.ai1ec-fa-check-circle' ),
+		    $alert;
 
 		$refresh_icon.show();
 		$rescan_info.hide();

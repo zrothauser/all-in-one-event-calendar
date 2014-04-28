@@ -181,7 +181,15 @@ http://vimeo.com/55904173
 * Fixed issue where All-in-One Event Calendar JavaScript wasn't
 loading in some configurations;
 * Fixed issue where Event page layout was too tight;
-* Fixed issue where Upcoming Events widget wasn't properly wrapped.
+* Fixed issue where Upcoming Events widget wasn't properly wrapped;
+* Fixed issue where migrating from versions prior to 1.10 caused
+events date time to have offset added in some cases;
+* Fixed issue where manual offset times were not recognized where
+possible;
+* Fixed issue where upgrading was causing fatal errors in some cases;
+* Fixed issue where templates cache directory issues were not properly
+diagnosed;
+* Fixed licence keys activation.
 
 = Version 2.0.5 =
 * Restored translation files;

@@ -55,7 +55,7 @@ define(
 			twentyfour_hour  : ai1ec_config.twentyfour_hour,
 			now              : now
 		};
-		console.log( ai1ec_config );
+
 		$.timespan( data );
 		// Retrieve the dates saved in the hidden field
 		var exdate  = $( "#ai1ec_exdate" ).val();

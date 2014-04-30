@@ -85,11 +85,14 @@ class Ai1ec_Dbi {
 	public function auto_debug() {
 		if (
 			AI1EC_DEBUG &&
-			! $this->_registry->get( 'http.request' )->is_ajax()
+			( 
+				$this->_registry->get( 'http.request' )->is_ajax() ||
+				( isset( $_GET['controller'] ) && 'ai1ec_exporter_controller' === $_GET['controller'] ) 
+			)
 		) {
-			$this->_log_enabled = true;
-		} else {
 			$this->disable_debug();
+		} else {
+			$this->_log_enabled = true;
 		}
 	}
 

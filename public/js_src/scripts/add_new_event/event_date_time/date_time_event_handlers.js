@@ -77,7 +77,7 @@ define(
 					rule += 'INTERVAL=' + interval_week + ';';
 				}
 				var week_days = $( 'input[name="ai1ec_weekly_date_select"]:first' ).val();
-				var wkst = $( '#ai1ec_weekly_date_select > li:first > input[type="hidden"]:first' ).val();
+				var wkst = $( '#ai1ec_weekly_date_select > div:first > input[type="hidden"]:first' ).val();
 				if( week_days.length > 0 ) {
 					rule += 'WKST=' + wkst + ';BYday=' + week_days + ';';
 				}

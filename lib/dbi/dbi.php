@@ -55,7 +55,7 @@ class Ai1ec_Dbi {
 		$this->_registry->get( 'controller.shutdown' )->register(
 			array( $this, 'shutdown' )
 		);
-		$this->auto_debug();
+		$this->_log_enabled = true;
 		$this->set_timezone();
 	}
 
@@ -75,25 +75,6 @@ class Ai1ec_Dbi {
 	 */
 	public function disable_debug() {
 		$this->_log_enabled = false;
-	}
-
-	/**
-	 * Automatically change debug flag.
-	 *
-	 * @return void
-	 */
-	public function auto_debug() {
-		if (
-			AI1EC_DEBUG &&
-			( 
-				$this->_registry->get( 'http.request' )->is_ajax() ||
-				( isset( $_GET['controller'] ) && 'ai1ec_exporter_controller' === $_GET['controller'] ) 
-			)
-		) {
-			$this->disable_debug();
-		} else {
-			$this->_log_enabled = true;
-		}
 	}
 
 	/**
@@ -380,7 +361,6 @@ class Ai1ec_Dbi {
 	 * @return void
 	 */
 	public function shutdown() {
-		$this->auto_debug();
 		if ( ! $this->_log_enabled ) {
 			return false;
 		}

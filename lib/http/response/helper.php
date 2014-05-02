@@ -52,11 +52,14 @@ class Ai1ec_Http_Response_Helper {
 	 *
 	 * @return bool True when gzip should be used
 	 */
-	static public function client_use_gzip() {
+	static public function client_use_gzip( Ai1ec_Registry_Object $registry ) {
 		if (
-			isset( $_SERVER['HTTP_ACCEPT_ENCODING'] ) &&
-			'identity' === $_SERVER['HTTP_ACCEPT_ENCODING'] ||
-			! extension_loaded( 'zlib' )
+			$registry->get( 'model.settings' )->get( 'disable_gzip_compression' ) ||
+			( 
+				isset( $_SERVER['HTTP_ACCEPT_ENCODING'] ) &&
+				'identity' === $_SERVER['HTTP_ACCEPT_ENCODING'] ||
+				! extension_loaded( 'zlib' )
+			)
 		) {
 			return false;
 		}

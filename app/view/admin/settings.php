@@ -173,7 +173,13 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 					'class'     => 'ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg',
 				),
 			),
-
+			'pre_tabs_markup'   => printf(
+				__(
+					'<div class="ai1ec-gzip-causes-js-failure">If the form below is not working please follow <a href="%s">this link</a>.</div>',
+					AI1EC_PLUGIN_NAME
+				),
+				add_query_arg( 'ai1ec_disable_gzip_compression', '1' )
+			)
 		);
 
 		$file = $loader->get_file( 'setting/bootstrap_tabs.twig', $args, true );

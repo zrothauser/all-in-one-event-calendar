@@ -156,12 +156,6 @@ define(
 		$( '.ai1ec-tooltip-toggle' ).tooltip( { container: 'body' } );
 	};
 
-	// If it was set in the backend, run the script
-	if( ai1ec_config.page !== '' ) {
-		$( '.if-js-closed' ).removeClass( 'if-js-closed' ).addClass( 'closed' );
-		postboxes.add_postbox_toggles( ai1ec_config.page  );
-	}
-
 	// Send result after user clicked
 	var send_tracking = function( result ) {
 		var options = {
@@ -176,12 +170,12 @@ define(
 		var pointer_options = {
 			content:
 				"<h3>Help improve All In One Event Calendar<\/h3>" + "<p>Help us by sending some data<\/p>",
-			position:{ 
-				edge : "top", 
+			position:{
+				edge : "top",
 				align : "center"
 			},
 			buttons: function ( event, t ) {
-				var button = 
+				var button =
 					$( '<a id="pointer-close" style="margin-left:5px;" class="button-secondary">' + 'Do not allow tracking' + '</a>' );
 				button.bind( 'click.pointer', function () {
 					t.element.pointer( 'close' );
@@ -200,7 +194,7 @@ define(
 			$( this ).closest( '.wp-pointer' ).remove();
 		} );
 		jQuery( '#pointer-close' ).click( function () {
-			send_tracking( false ); 
+			send_tracking( false );
 		} );
 	};
 

@@ -239,7 +239,6 @@ define(
 	var reposition_meta_box = function() {
 		$( '#ai1ec_event' )
 			.insertAfter( '#titlediv' );
-		$( '#post' ).addClass( 'ai1ec-visible' );
 	};
 
 	var start = function() {

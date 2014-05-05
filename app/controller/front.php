@@ -395,6 +395,10 @@ class Ai1ec_Front_Controller {
 			10,
 			2
 		);
+		$dispatcher->register_filter(
+			'ai1ec_dbi_debug',
+			array( 'http.request', 'debug_filter' )
+		);
 
 		// Category colors
 		$dispatcher->register_action(

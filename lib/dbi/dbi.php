@@ -55,7 +55,11 @@ class Ai1ec_Dbi {
 		$this->_registry->get( 'controller.shutdown' )->register(
 			array( $this, 'shutdown' )
 		);
-		$this->_log_enabled = true;
+		add_action(
+			'ai1ec_loaded',
+			array( $this, 'check_debug' ),
+			PHP_INT_MAX
+		);
 		$this->set_timezone();
 	}
 
@@ -75,6 +79,22 @@ class Ai1ec_Dbi {
 	 */
 	public function disable_debug() {
 		$this->_log_enabled = false;
+	}
+
+	/**
+	 * Only attempt to enable debug after all add-ons are loaded.
+	 *
+	 * @wp_hook ai1ec_loaded
+	 *
+	 * @uses apply_filters ai1ec_dbi_debug
+	 *
+	 * @return void
+	 */
+	public function check_debug() {
+		$this->_log_enabled = apply_filters(
+			'ai1ec_dbi_debug',
+			( false !== AI1EC_DEBUG )
+		);
 	}
 
 	/**

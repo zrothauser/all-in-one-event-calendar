@@ -395,9 +395,25 @@ class Ai1ec_Front_Controller {
 			10,
 			2
 		);
+
 		$dispatcher->register_filter(
 			'ai1ec_dbi_debug',
 			array( 'http.request', 'debug_filter' )
+		);
+		
+		// editing a child instance
+		if ( basename( $_SERVER['SCRIPT_NAME'] ) === 'post.php' ) {
+			$dispatcher->register_action( 
+				'admin_action_editpost', 
+				array( 'model.event.parent', 'admin_init_post' ) 
+			);
+		}
+		// post row action for parent/child 
+		$dispatcher->register_action(
+			'post_row_actions',
+			array( 'model.event.parent', 'post_row_actions' ),
+			10,
+			2
 		);
 
 		// Category colors

@@ -15,9 +15,58 @@
  */
 class Ai1ec_Event_Trashing extends Ai1ec_Base {
 
-	public function remove_childs( $post_id, $full_remove = false ) {
-		// to be filled when hierarchy is introduced
-		return true;
+	/**
+	 * Trash/untrash/deletes child posts
+	 * 
+	 * @param id $post_id
+	 * @param string $action
+	 */
+	protected function _manage_childs( $post_id, $action ) {
+		try {
+			$ai1ec_event = $this->_registry->get( 'model.event', $post_id );
+			if (
+				$ai1ec_event->get( 'post' ) &&
+					$ai1ec_event->get( 'recurrence_rules' )
+			) { 
+				// when untrashing also get trashed object
+				$children = $this->_registry->get( 'model.event.parent' )
+					->get_child_event_objects( $ai1ec_event->get( 'post_id' ), $action === 'untrash' );
+				fb($children);
+				$function = 'wp_' . $action . '_post';
+				foreach ( $children as $child ) {
+					$function( $child->get( 'post_id' ) );
+				}
+			}
+		} catch ( Ai1ec_Event_Not_Found $exception ) {
+			// ignore - not an event
+		}
+	}
+
+	/**
+	 * Trashes child posts
+	 * 
+	 * @param int $post_id
+	 */
+	public function trash_childs( $post_id ) {
+		$this->_manage_childs( $post_id, 'trash' );
+	}
+
+	/**
+	 * Delete child posts
+	 *
+	 * @param int $post_id
+	 */
+	public function delete_childs( $post_id ) {
+		$this->_manage_childs( $post_id, 'delete' );
+	}
+
+	/**
+	 * Untrashes child posts
+	 *
+	 * @param int $post_id
+	 */
+	public function untrash_childs( $post_id ) {
+		$this->_manage_childs( $post_id, 'untrash' );
 	}
 
 	/**
@@ -30,8 +79,7 @@ class Ai1ec_Event_Trashing extends Ai1ec_Base {
 	 * @return bool Success.
 	 */
 	public function trash( $post_id ) {
-		return $this->remove_childs( $post_id, false ) &&
-		$this->delete_cache( $post_id );
+		return $this->trash_childs( $post_id );
 	}
 
 	/**
@@ -44,8 +92,7 @@ class Ai1ec_Event_Trashing extends Ai1ec_Base {
 	 * @return bool Success.
 	 */
 	public function untrash( $post_id ) {
-		// to be filled when hierarchy is introduced
-		return true;
+		return $this->untrash_childs( $post_id );
 	}
 
 	/**
@@ -64,24 +111,11 @@ class Ai1ec_Event_Trashing extends Ai1ec_Base {
 		$where   = array( 'post_id' => (int)$post_id );
 		$format  = array( '%d' );
 		$dbi     = $this->_registry->get( 'dbi.dbi' );
-		$success = $this->remove_childs( $post_id, true );
-		$success &= $dbi->delete( 'ai1ec_events',          $where, $format );
-		$success &= $dbi->delete( 'ai1ec_event_instances', $where, $format );
+		$success = $this->delete_childs( $post_id );
+		$success = $dbi->delete( 'ai1ec_events', $where, $format );
+		$success = $this->_registry->get( 'model.event.instance' )->clean( $post_id );
 		unset( $where, $dbi );
-		return $success && $this->delete_cache( $post_id );
-	}
-
-	/**
-	 * Remove the cache for a specific event
-	 *
-	 * @param $event_id
-	 * @internal param $event_id
-	 *
-	 * @return boolean
-	 */
-	public function delete_cache( $event_id ) {
-		// to be added with cache introduction
-		return true;
+		return $success;
 	}
 
 }

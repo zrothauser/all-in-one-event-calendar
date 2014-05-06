@@ -892,13 +892,27 @@ class Ai1ec_Ics_Import_Export_Engine
 		// We must also match the exact starting time
 		$exception_dates = $event->get( 'exception_dates' );
 		if ( ! empty( $exception_dates ) ) {
+			$export_to_google = isset( $_GET['ai1ec_google_export'] );
 			$params    = array( 'VALUE' => 'DATE' );
+			if ( true === $export_to_google ) {
+				$params = array( 'TZID' => $tz );
+			}
 			$use_dates = array();
 			foreach (
 				explode( ',', $exception_dates )
 				as $exdate
 			) {
-				$use_dates[] = $this->format_exception_date( $exdate );
+				if ( true === $export_to_google ) {
+					// now the fun begins. If you export a timezone for DTSTART google
+					// wants the same START TIME. Because google wants the same format in DTSTART
+					// and in exclude dates. Fun reference, 
+					// here http://stackoverflow.com/questions/13662467/excluded-dates-from-a-recurring-events-are-not-excluded-when-imported-in-google
+					$date = $this->_registry->get( 'date.time', $exdate )->format( 'Ymd' ) . 
+						'T' . $event->get( 'start' )->format( 'His' );
+					$use_dates[] = trim( $date );
+				} else {
+					$use_dates[] = $this->format_exception_date( $exdate );
+				}
 			}
 			$e->setProperty( 'exdate', $use_dates, $params );
 		}

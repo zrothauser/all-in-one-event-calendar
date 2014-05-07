@@ -1866,8 +1866,8 @@ msgid "Support"
 msgstr "Support"
 
 #: public/admin/box_support.php:16
-msgid "Time.ly Events"
-msgstr "Time.ly Events"
+msgid "Timely Events"
+msgstr "Timely Events"
 
 #: public/admin/box_support.php:20
 msgid "Timely News"

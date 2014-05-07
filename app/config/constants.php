@@ -57,7 +57,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// = RSS FEED URL =
 	// ================
 	if ( ! defined( 'AI1EC_RSS_FEED' ) ) {
-		define( 'AI1EC_RSS_FEED',           'http://time.ly/feed/' );
+		define( 'AI1EC_RSS_FEED',           'http://time.ly/blog/feed/' );
 	}
 
 	// =================

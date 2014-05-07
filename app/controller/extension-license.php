@@ -73,32 +73,29 @@ abstract class Ai1ec_Base_License_Controller extends Ai1ec_Base_Extension_Contro
 		$old_licence = $old_options[$this->_licence]['value'];
 		$new_licence = $new_options[$this->_licence]['value'];
 
-		if ( $new_licence !== $old_licence && ! empty( $new_licence ) ) {
-			$license = trim( $new_licence );
-			// data to send in our API request
-			$api_params = array(
-				'edd_action' => 'activate_license',
-				'license'    => $license,
-				'item_name'  => urlencode( $this->get_name() ),// the name of our product in EDD,
-				'url'        => home_url()
-			);
+		$license = trim( $new_licence );
+		// data to send in our API request
+		$api_params = array(
+			'edd_action' => 'activate_license',
+			'license'    => $license,
+			'item_name'  => urlencode( $this->get_name() ),// the name of our product in EDD,
+			'url'        => home_url()
+		);
 
-			// Call the custom API.
-			$response = wp_remote_get( add_query_arg( $api_params, $this->_store ) );
+		// Call the custom API.
+		$response = wp_remote_get( add_query_arg( $api_params, $this->_store ) );
 
-			// make sure the response came back okay
-			if ( is_wp_error( $response ) ) {
-				return false;
-			}
-
-			// decode the license data
-			$license_data = json_decode( wp_remote_retrieve_body( $response ) );
-			// $license_data->license will be either "active" or "inactive"
-
-			$this->_registry->get( 'model.settings' )
-				->set( $this->_licence_status, $license_data->license );
-				
+		// make sure the response came back okay
+		if ( is_wp_error( $response ) ) {
+			return false;
 		}
+
+		// decode the license data
+		$license_data = json_decode( wp_remote_retrieve_body( $response ) );
+		// $license_data->license will be either "active" or "inactive"
+
+		$this->_registry->get( 'model.settings' )
+			->set( $this->_licence_status, $license_data->license );
 	}
 
 	/**

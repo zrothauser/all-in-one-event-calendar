@@ -1733,7 +1733,7 @@ msgid "Support"
 msgstr ""
 
 #: public/admin/box_support.php:16
-msgid "Time.ly Events"
+msgid "Timely Events"
 msgstr ""
 
 #: public/admin/box_support.php:20

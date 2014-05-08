@@ -31,7 +31,6 @@ class Ai1ec_Event_Trashing extends Ai1ec_Base {
 				// when untrashing also get trashed object
 				$children = $this->_registry->get( 'model.event.parent' )
 					->get_child_event_objects( $ai1ec_event->get( 'post_id' ), $action === 'untrash' );
-				fb($children);
 				$function = 'wp_' . $action . '_post';
 				foreach ( $children as $child ) {
 					$function( $child->get( 'post_id' ) );

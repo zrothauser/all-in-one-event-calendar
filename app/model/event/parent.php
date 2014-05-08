@@ -65,7 +65,7 @@ class Ai1ec_Event_Parent extends Ai1ec_Base {
 			if (
 				empty( $parent ) ||
 				'trash' === $parent->post_status
-				) {
+			) {
 				$parent_id = false;
 			} else {
 				$parent_id = $parent->ID;
@@ -97,7 +97,7 @@ class Ai1ec_Event_Parent extends Ai1ec_Base {
 		$objects = array();
 		foreach ( $childs as $child_id ) {
 			try {
-					$instance = $this->_registry->get( 'model.event', $child_id );
+				$instance = $this->_registry->get( 'model.event', $child_id );
 				if (
 					$include_trash ||
 					'trash' !== $instance->get( 'post' )->post_status

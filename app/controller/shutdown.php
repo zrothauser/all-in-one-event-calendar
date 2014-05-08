@@ -69,6 +69,7 @@ class Ai1ec_Shutdown_Controller {
 		foreach ( $this->_restorables as $name => $object ) {
 			unset( $object, $this->_restorables[$name] );
 		}
+		exit();
 	}
 
 	/**

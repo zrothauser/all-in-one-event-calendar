@@ -296,7 +296,7 @@ define(
 			var data = {
 				ai1ec : true
 			};
-			History.pushState( data, document.title, url );
+			History.pushState( data, document.title, decodeURI( url ) );
 		} else {
 			load_view( url, 'jsonp' );
 		}
@@ -306,7 +306,6 @@ define(
 	var handle_click_on_link_to_load_view = function( e ) {
 		var $el = $( this );
 		e.preventDefault();
-
 		load_view_according_to_datatype( $el.data( 'type' ), $el.attr( 'href' ) );
 	};
 

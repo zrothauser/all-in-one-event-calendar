@@ -83,7 +83,7 @@
 				<?php
 				$recurrence_attr = '';
 				if ( $parent_event_id || $instance_id ) :
-					$recurrence_attr = ' style="visibility: hidden; display: none;"';
+					$recurrence_attr = ' class="ai1ec-hide"';
 				endif;
 				?>
 				<tr<?php echo $recurrence_attr; ?>>

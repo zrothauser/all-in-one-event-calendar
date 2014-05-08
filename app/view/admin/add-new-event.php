@@ -335,7 +335,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			}
 			$children = $this->_registry->get( 'model.event.parent' )
 				->get_child_event_objects( $event->get( 'post_id' ) );
-			$args    = compact( 'parent', 'children' );
+			$args = compact( 'parent', 'children' );
 			$args['registry'] = $this->_registry;
 			
 			$boxes[] = $theme_loader->get_file(

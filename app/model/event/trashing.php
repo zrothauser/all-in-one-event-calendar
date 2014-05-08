@@ -21,7 +21,7 @@ class Ai1ec_Event_Trashing extends Ai1ec_Base {
 	 * @param id $post_id
 	 * @param string $action
 	 */
-	protected function _manage_childs( $post_id, $action ) {
+	protected function _manage_children( $post_id, $action ) {
 		try {
 			$ai1ec_event = $this->_registry->get( 'model.event', $post_id );
 			if (
@@ -47,8 +47,8 @@ class Ai1ec_Event_Trashing extends Ai1ec_Base {
 	 * 
 	 * @param int $post_id
 	 */
-	public function trash_childs( $post_id ) {
-		$this->_manage_childs( $post_id, 'trash' );
+	public function trash_children( $post_id ) {
+		$this->_manage_children( $post_id, 'trash' );
 	}
 
 	/**
@@ -56,8 +56,8 @@ class Ai1ec_Event_Trashing extends Ai1ec_Base {
 	 *
 	 * @param int $post_id
 	 */
-	public function delete_childs( $post_id ) {
-		$this->_manage_childs( $post_id, 'delete' );
+	public function delete_children( $post_id ) {
+		$this->_manage_children( $post_id, 'delete' );
 	}
 
 	/**
@@ -65,8 +65,8 @@ class Ai1ec_Event_Trashing extends Ai1ec_Base {
 	 *
 	 * @param int $post_id
 	 */
-	public function untrash_childs( $post_id ) {
-		$this->_manage_childs( $post_id, 'untrash' );
+	public function untrash_children( $post_id ) {
+		$this->_manage_children( $post_id, 'untrash' );
 	}
 
 	/**
@@ -79,7 +79,7 @@ class Ai1ec_Event_Trashing extends Ai1ec_Base {
 	 * @return bool Success.
 	 */
 	public function trash( $post_id ) {
-		return $this->trash_childs( $post_id );
+		return $this->trash_children( $post_id );
 	}
 
 	/**
@@ -92,7 +92,7 @@ class Ai1ec_Event_Trashing extends Ai1ec_Base {
 	 * @return bool Success.
 	 */
 	public function untrash( $post_id ) {
-		return $this->untrash_childs( $post_id );
+		return $this->untrash_children( $post_id );
 	}
 
 	/**
@@ -111,7 +111,7 @@ class Ai1ec_Event_Trashing extends Ai1ec_Base {
 		$where   = array( 'post_id' => (int)$post_id );
 		$format  = array( '%d' );
 		$dbi     = $this->_registry->get( 'dbi.dbi' );
-		$success = $this->delete_childs( $post_id );
+		$success = $this->delete_children( $post_id );
 		$success = $dbi->delete( 'ai1ec_events', $where, $format );
 		$success = $this->_registry->get( 'model.event.instance' )->clean( $post_id );
 		unset( $where, $dbi );

@@ -211,9 +211,11 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		// This will store each of the accordion tabs' markup, and passed as an
 		// argument to the final view.
 		$boxes = array();
-
-		$parent_event_id = $this->_registry->get( 'model.event.parent' )
-			->event_parent( $event->get( 'post_id' ) );
+		$parent_event_id = null;
+		if ( $event ) {
+			$parent_event_id = $this->_registry->get( 'model.event.parent' )
+				->event_parent( $event->get( 'post_id' ) );
+		}
 		// ===============================
 		// = Display event time and date =
 		// ===============================

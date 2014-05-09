@@ -377,19 +377,21 @@ define(
 
 			// Extend Datepicker behaviour without modifying the plugin.
 			var dp = $el.data( 'datepicker' );
-			// Flag datepicker as right-aligned.
-			dp.picker.addClass( 'ai1ec-right-aligned' );
-			// Replace the place() method so that it is right-aligned to trigger.
-			var place_orig = dp.place;
-			dp.place = function() {
-				place_orig.call( this );
-				var $el = this.component ? this.component : this.element;
-				var offset = $el.offset();
-				this.picker.css( {
-					left: 'auto',
-					right: $( document ).width() - offset.left - $el.outerWidth()
-				} );
-			};
+			// Flag datepicker as right-aligned if in a right-aligned component.
+			if ( $el.closest( '.ai1ec-pull-right' ).length > 0 ) {
+				dp.picker.addClass( 'ai1ec-right-aligned' );
+				// Replace the place() method so that it is right-aligned to trigger.
+				var place_orig = dp.place;
+				dp.place = function() {
+					place_orig.call( this );
+					var $el = this.component ? this.component : this.element;
+					var offset = $el.offset();
+					this.picker.css( {
+						left: 'auto',
+						right: $( document ).width() - offset.left - $el.outerWidth()
+					} );
+				};
+			}
 
 			// Attach event handlers.
 			$( document ).on( 'changeDate', '.ai1ec-minical-trigger',

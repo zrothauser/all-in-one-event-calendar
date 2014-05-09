@@ -170,12 +170,16 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	}
 
 	/**
-	 * @param array $args
+	 * Calls the get_*_pagination_links method for the current view type and
+	 * renders its result, returning the rendered pagination links.
+	 *
+	 * @param array  $args  Current request arguments
+	 * @param string $title Title to display in datepicker button
 	 * @return string
 	 */
-	protected function _get_pagination( array $args ) {
+	protected function _get_pagination( array $args, $title ) {
 		$method = 'get_' . $this->get_name() . '_pagination_links';
-		$pagination_links = $this->$method( $args );
+		$pagination_links = $this->$method( $args, $title );
 		$loader           = $this->_registry->get( 'theme.loader' );
 		$pagination_links = $loader->get_file(
 			'pagination.twig',

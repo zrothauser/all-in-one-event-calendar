@@ -145,47 +145,17 @@
 	width: 18px;
 }
 
-// Titles.
-h2.ai1ec-calendar-title {
-	color: @calendar-title-color !important;
-	float: left;
-	font-size: @font-size-base * 1.25 !important;
-	line-height: 18px !important;
-	margin: 8px 8px 6px 0 !important;
-	text-transform: uppercase;
-}
-
 // Overhead Nav Buttons
 .ai1ec-pagination {
-	margin-left: 5px;
 	> .ai1ec-btn {
-		font-size: @font-size-base * 0.85 !important;
+		font-size: @font-size-base * 0.9 !important;
+		line-height: @line-height-computed;
 		padding: 4px 9px;
 		text-transform: uppercase;
-		> i {
-			font-size: 12px;
-			line-height: 16px;
+		// Navigation title.
+		.ai1ec-calendar-title {
+			font-weight: bold;
 		}
-		&.ai1ec-prev-month,
-		&.ai1ec-next-month,
-		&.ai1ec-prev-year,
-		&.ai1ec-next-year {
-			> i {
-				font-size: 13px;
-			}
-		}
-		&.ai1ec-prev-month,
-		&.ai1ec-next-month {
-			min-width: 36px;
-		}
-		&.ai1ec-prev-year,
-		&.ai1ec-next-year {
-			min-width: 40px;
-		}
-	}
-	.ai1ec-icon-datepicker {
-		vertical-align: top;
-		margin: -2px -1px 0 !important;
 	}
 }
 

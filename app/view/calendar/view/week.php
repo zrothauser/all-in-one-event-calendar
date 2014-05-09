@@ -52,15 +52,13 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 			)
 		);
 
-		// Create pagination links.
-		$pagination_links = $this->_get_pagination( $args );
-
-
-		// Translators: "%s" below represents the week's start date.
+		// Create pagination links.	(Translators: '%s' = week's start date.)
 		$title = sprintf(
 			__( 'Week of %s', AI1EC_PLUGIN_NAME ),
 			$local_date->format_i18n( 'F j' )
 		);
+		$pagination_links = $this->_get_pagination( $args, $title );
+
 		$time_format = $this->_registry->get( 'model.option' )
 			->get( 'time_format', Ai1ec_I18n::__( 'g a' ) );
 
@@ -118,11 +116,12 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 	 * ['enabled'], CSS class ['class'], text ['text'] and value to assign to
 	 * link's href ['href'].
 	 *
-	 * @param array $args	Current request arguments
+	 * @param array  $args  Current request arguments
+	 * @param string $title Title to display in datepicker button
 	 *
 	 * @return array      Array of links
 	 */
-	protected function get_week_pagination_links( $args ) {
+	protected function get_week_pagination_links( $args, $title ) {
 		$links = array();
 
 		$orig_date = $args['exact_date'];
@@ -151,7 +150,8 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 		$factory = $this->_registry->get( 'factory.html' );
 		$links[] = $factory->create_datepicker_link(
 			$args,
-			$args['exact_date']
+			$args['exact_date'],
+			$title
 		);
 
 		// =============

@@ -49,21 +49,20 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			)
 		);
 		// Create pagination links.
-		$pagination_links = $this->_get_pagination( $args );
-
-		$title    = $local_date->format_i18n(
+		$title            = $local_date->format_i18n(
 			$this->_registry->get( 'model.option' )
 				->get( 'date_format', 'l, M j, Y' )
 		);
+		$pagination_links = $this->_get_pagination( $args, $title );
 
 		// Calculate today marker's position.
-		$now      = $date_system->current_time();
-		$midnight = $this->_registry->get( 'date.time', $now )
+		$now              = $date_system->current_time();
+		$midnight         = $this->_registry->get( 'date.time', $now )
 			->set_time( 0, 0, 0 );
-		$now      = $this->_registry->get( 'date.time', $now );
-		$now_text = $this->_registry->get( 'view.event.time' )
+		$now              = $this->_registry->get( 'date.time', $now );
+		$now_text         = $this->_registry->get( 'view.event.time' )
 			->get_short_time( $now );
-		$now      = $now->diff_sec( $midnight );
+		$now              = $now->diff_sec( $midnight );
 
 		$is_ticket_button_enabled = apply_filters( 'ai1ec_oneday_ticket_button', false );
 		$show_reveal_button       = apply_filters( 'ai1ec_oneday_reveal_button', false );
@@ -107,11 +106,12 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 	 * ['enabled'], CSS class ['class'], text ['text'] and value to assign to
 	 * link's href ['href'].
 	 *
-	 * @param array $args Current request arguments.
+	 * @param array  $args  Current request arguments.
+	 * @param string $title Title to display in datepicker button
 	 *
 	 * @return array Array of links.
 	 */
-	function get_oneday_pagination_links( $args ) {
+	function get_oneday_pagination_links( $args, $title ) {
 		$links = array();
 		$orig_date = $args['exact_date'];
 
@@ -138,7 +138,8 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		$factory = $this->_registry->get( 'factory.html' );
 		$links[] = $factory->create_datepicker_link(
 			$args,
-			$args['exact_date']
+			$args['exact_date'],
+			$title
 		);
 
 		// ============

@@ -56,9 +56,9 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 			$days_events
 		);
 		// Create pagination links.
-		$pagination_links = $this->_get_pagination( $args );
-
 		$title = $local_date->format_i18n( 'F Y' );
+		$pagination_links = $this->_get_pagination( $args, $title );
+
 		$is_ticket_button_enabled = apply_filters(
 			'ai1ec_month_ticket_button',
 			false
@@ -96,11 +96,12 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 	 * ['enabled'], CSS class ['class'], text ['text'] and value to assign to
 	 * link's href ['href'].
 	 *
-	 * @param array $args	Current request arguments
+	 * @param array  $args  Current request arguments
+	 * @param string $title Title to display in datepicker button
 	 *
 	 * @return array      Array of links
 	 */
-	function get_month_pagination_links( $args ) {
+	function get_month_pagination_links( $args, $title ) {
 		$links = array();
 
 		$local_date = $this->_registry
@@ -164,7 +165,8 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		$factory = $this->_registry->get( 'factory.html' );
 		$links[] = $factory->create_datepicker_link(
 			$args,
-			$args['exact_date']
+			$args['exact_date'],
+			$title
 		);
 
 		// ==============

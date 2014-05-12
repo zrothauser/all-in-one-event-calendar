@@ -81,9 +81,11 @@ class Ai1ec_Http_Request {
 
 		if (
 			$settings->get( 'disable_gzip_compression' ) ||
-			isset( $_SERVER['HTTP_ACCEPT_ENCODING'] ) &&
-			'identity' === $_SERVER['HTTP_ACCEPT_ENCODING'] ||
-			! extension_loaded( 'zlib' )
+			(
+				isset( $_SERVER['HTTP_ACCEPT_ENCODING'] ) &&
+				'identity' === $_SERVER['HTTP_ACCEPT_ENCODING'] ||
+				! extension_loaded( 'zlib' )
+			)
 		) {
 			return false;
 		}

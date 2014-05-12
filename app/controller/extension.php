@@ -79,12 +79,15 @@ abstract class Ai1ec_Base_Extension_Controller {
 	 */
 	public function check_compatibility( $ai1ec_version ) {
 		return version_compare(
-			$this->minimum_core_required(), 
 			$ai1ec_version,
+			$this->minimum_core_required(),
 			'>='
 		);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function minimum_core_required() {
 		return '2.0.7';
 	}

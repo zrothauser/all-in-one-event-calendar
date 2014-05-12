@@ -10,7 +10,7 @@
  * @subpackage AI1EC.Controller
  */
 abstract class Ai1ec_Base_Extension_Controller {
-	
+
 	/**
 	 * @var Ai1ec_Registry_Object
 	 */
@@ -70,6 +70,24 @@ abstract class Ai1ec_Base_Extension_Controller {
 		Ai1ec_Event_Dispatcher $dispatcher
 	);
 
+	/**
+	 * Perform the basic compatibility check. 
+	 * 
+	 * @param string $ai1ec_version
+	 * 
+	 * @return boolean
+	 */
+	public function check_compatibility( $ai1ec_version ) {
+		return version_compare(
+			$this->minimum_core_required(), 
+			$ai1ec_version,
+			'>='
+		);
+	}
+
+	public function minimum_core_required() {
+		return '2.0.7';
+	}
 	/**
 	 * Removes options when uninstalling the plugin.
 	 */

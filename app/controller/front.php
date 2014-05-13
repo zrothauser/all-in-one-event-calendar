@@ -578,10 +578,12 @@ class Ai1ec_Front_Controller {
 				'plugin_action_links_' . AI1EC_PLUGIN_BASENAME,
 				array( 'view.admin.nav', 'plugin_action_links' )
 			);
-			$dispatcher->register_action(
-				'admin_init',
-				array( 'robots.helper', 'install' )
-			);
+			if ( $this->_registry->get( 'robots.helper' )->pre_check() ) {
+				$dispatcher->register_action(
+					'admin_init',
+					array( 'robots.helper', 'install' )
+				);
+			}
 			$dispatcher->register_action(
 				'wp_ajax_ai1ec_rescan_cache',
 				array( 'twig.cache', 'rescan' )

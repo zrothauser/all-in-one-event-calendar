@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.0.6.2\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.0.6.3\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2014-05-12 16:16:44+00:00\n"
+"POT-Creation-Date: 2014-05-13 15:27:53+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -565,10 +565,9 @@ msgstr ""
 msgid "Save Settings"
 msgstr ""
 
-#: app/view/admin/settings.php:177
+#: app/view/admin/settings.php:178
 msgid ""
-"<div class=\"ai1ec-gzip-causes-js-failure\">If the form below is not working "
-"please follow <a href=\"%s\">this link</a>.</div>"
+"If the form below is not working please follow <a href=\"%s\">this link</a>."
 msgstr ""
 
 #: app/view/admin/theme-options.php:50 app/view/admin/theme-options.php:51
@@ -750,218 +749,6 @@ msgstr ""
 
 #: app/view/event/time.php:160
 msgid ", and "
-msgstr ""
-
-#: cache/twig/14/14/340e18cb8d14d82ac7e5827d0ebc22d4c122f3f55377628ee439cef60657.php:31
-msgid "Enabled"
-msgstr ""
-
-#: cache/twig/14/14/340e18cb8d14d82ac7e5827d0ebc22d4c122f3f55377628ee439cef60657.php:35
-msgid "Default"
-msgstr ""
-
-#: cache/twig/52/a0/17e67d20dd2f8b61fda191c165563d134d396c907c1a614bcb8c7501c81e.php:48
-msgid "Choose a date using calendar"
-msgstr ""
-
-#: cache/twig/64/80/840d3ed9630e9f0aa5fa68f67ce3de4a7b4b21e0be50c87ebea56c505da1.php:32
-msgid ""
-"Subscribe to this calendar in your personal calendar (iCal, Outlook, etc.)"
-msgstr ""
-
-#: cache/twig/64/80/840d3ed9630e9f0aa5fa68f67ce3de4a7b4b21e0be50c87ebea56c505da1.php:49
-msgid "Subscribe to filtered calendar"
-msgstr ""
-
-#: cache/twig/64/80/840d3ed9630e9f0aa5fa68f67ce3de4a7b4b21e0be50c87ebea56c505da1.php:55
-msgid "Subscribe"
-msgstr ""
-
-#: cache/twig/64/80/840d3ed9630e9f0aa5fa68f67ce3de4a7b4b21e0be50c87ebea56c505da1.php:80
-msgid "Subscribe to this calendar in your Google Calendar"
-msgstr ""
-
-#: cache/twig/64/80/840d3ed9630e9f0aa5fa68f67ce3de4a7b4b21e0be50c87ebea56c505da1.php:94
-msgid "Add to Google"
-msgstr ""
-
-#: cache/twig/a0/43/95a3f9f5062a7ed08df4edd35a1e23166998398abe4ac34f07bd89cf1a2c.php:31
-msgid "Add Your Feed"
-msgstr ""
-
-#: cache/twig/a0/43/95a3f9f5062a7ed08df4edd35a1e23166998398abe4ac34f07bd89cf1a2c.php:57
-#: public/admin/calendar_tasks.php:13
-msgid "Post Your Event"
-msgstr ""
-
-#: cache/twig/a2/a8/ef2397dea5a359296657edc6d8eb9f97c684ead9fc566e38db90d8afd1e9.php:39
-msgid "Clear tag filter"
-msgstr ""
-
-#: cache/twig/a2/a8/ef2397dea5a359296657edc6d8eb9f97c684ead9fc566e38db90d8afd1e9.php:45
-#: lib/html/element/setting/tags-categories.php:39
-msgid "Tags"
-msgstr ""
-
-#: cache/twig/c2/31/192f70ac4b5bbbb70bb1749e10ce2c65befa01f3b220c9877a05504e476d.php:39
-msgid "Clear category filter"
-msgstr ""
-
-#: cache/twig/c2/31/192f70ac4b5bbbb70bb1749e10ce2c65befa01f3b220c9877a05504e476d.php:45
-#: lib/html/element/setting/tags-categories.php:47
-msgid "Categories"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:26
-msgid "Embed the calendar using a shortcode"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:36
-msgid ""
-"Insert one of these shortcodes into your page body to embed the calendar "
-"into any arbitrary WordPress Page:"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:41
-msgid "Month view:"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:45
-msgid "Week view:"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:49
-msgid "Day view:"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:53
-msgid "Agenda view:"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:57
-msgid "Some Other view:"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:61
-msgid "Default view as per settings:"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:67
-msgid "Optional."
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:71
-msgid ""
-"Add options to display a filtered calender. (You can find out category and "
-"tag IDs by inspecting the URL of your filtered calendar page.)"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:77
-msgid "Filter by event category name/slug:"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:79
-msgid "Holidays"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:83
-msgid "Filter by event category names/slugs (separate names by comma):"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:85
-msgid "Lunar Cycles"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:87
-msgid "zodiac-date-ranges"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:91
-msgid "Filter by event category ID:"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:95
-msgid "Filter by event category IDs (separate IDs by comma):"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:100
-msgid "Filter by event tag name/slug:"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:102
-msgid "tips-and-tricks"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:106
-msgid "Filter by event tag names/slugs (separate names by comma):"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:108
-msgid "creative writing"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:110
-msgid "performing arts"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:114
-msgid "Filter by event tag ID:"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:118
-msgid "Filter by event tag IDs (separate IDs by comma):"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:123
-msgid "Filter by post ID:"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:127
-msgid "Filter by post IDs (separate IDs by comma):"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:133
-msgid "Warning:"
-msgstr ""
-
-#: cache/twig/ca/44/0aa661b1c953233505b2506f7ca2ef971ece252f191fef784ea217b3981b.php:137
-msgid ""
-"It is currently not supported to embed more than one calendar in the same "
-"page. Do not attempt to embed the calendar via shortcode in a page that "
-"already displays the calendar."
-msgstr ""
-
-#: cache/twig/cc/10/dc5dc5f1023bb6f4c34abec5e6d248d31528cd77edd057d783ded0650d7d.php:23
-msgid "Collapse All"
-msgstr ""
-
-#: cache/twig/cc/10/dc5dc5f1023bb6f4c34abec5e6d248d31528cd77edd057d783ded0650d7d.php:29
-msgid "Expand All"
-msgstr ""
-
-#: cache/twig/e8/70/2c6fd2a0133f36607cf92a43296fef11b5f520c2071953424829b55e5988.php:30
-msgid "There are no upcoming events to display at this time."
-msgstr ""
-
-#: cache/twig/e8/70/2c6fd2a0133f36607cf92a43296fef11b5f520c2071953424829b55e5988.php:130
-msgid "@ %s"
-msgstr ""
-
-#: cache/twig/e8/70/2c6fd2a0133f36607cf92a43296fef11b5f520c2071953424829b55e5988.php:149
-msgid "Edit"
-msgstr ""
-
-#: cache/twig/e8/70/2c6fd2a0133f36607cf92a43296fef11b5f520c2071953424829b55e5988.php:220
-msgid "Read more"
-msgstr ""
-
-#: cache/twig/e8/70/2c6fd2a0133f36607cf92a43296fef11b5f520c2071953424829b55e5988.php:239
-msgid "Categories:"
-msgstr ""
-
-#: cache/twig/e8/70/2c6fd2a0133f36607cf92a43296fef11b5f520c2071953424829b55e5988.php:258
-#: lib/theme/list.php:323 public/admin/themes.php:29
-msgid "Tags:"
 msgstr ""
 
 #: lib/calendar-feed/ics.php:33
@@ -1146,6 +933,14 @@ msgstr ""
 
 #: lib/html/element/setting/calendar-page-selector.php:114
 msgid "- Auto-Create New Page -"
+msgstr ""
+
+#: lib/html/element/setting/tags-categories.php:39
+msgid "Tags"
+msgstr ""
+
+#: lib/html/element/setting/tags-categories.php:47
+msgid "Categories"
 msgstr ""
 
 #: lib/less/variable/font.php:64
@@ -1393,6 +1188,10 @@ msgstr ""
 
 #: lib/theme/list.php:311
 msgid "All of this theme&#8217;s files are located in <code>%2$s</code>."
+msgstr ""
+
+#: lib/theme/list.php:323 public/admin/themes.php:29
+msgid "Tags:"
 msgstr ""
 
 #: lib/theme/loader.php:285
@@ -1751,6 +1550,10 @@ msgstr ""
 msgid ""
 "to the All-in-One Event Calendar by <a href=\"http://time.ly/\" target="
 "\"_blank\">Timely</a>"
+msgstr ""
+
+#: public/admin/calendar_tasks.php:13
+msgid "Post Your Event"
 msgstr ""
 
 #: public/admin/calendar_tasks.php:16
@@ -2171,9 +1974,9 @@ msgstr ""
 msgid "All-in-One Event Calendar by Time.ly"
 msgstr ""
 
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.0.6.2)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.0.6.3)  #-#-#-#-#
 #. Plugin URI of the plugin/theme
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.0.6.2)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.0.6.3)  #-#-#-#-#
 #. Author URI of the plugin/theme
 msgid "http://time.ly/"
 msgstr ""

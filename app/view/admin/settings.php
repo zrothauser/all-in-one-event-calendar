@@ -173,11 +173,12 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 					'class'     => 'ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg',
 				),
 			),
-			'pre_tabs_markup'   => printf(
-				__(
-					'<div class="ai1ec-gzip-causes-js-failure">If the form below is not working please follow <a href="%s">this link</a>.</div>',
-					AI1EC_PLUGIN_NAME
-				),
+			'pre_tabs_markup'   => sprintf(
+				'<div class="ai1ec-gzip-causes-js-failure">' .
+				Ai1ec_I18n::__(
+					'If the form below is not working please follow <a href="%s">this link</a>.'
+				) .
+				'</div>',
 				add_query_arg( 'ai1ec_disable_gzip_compression', '1' )
 			)
 		);

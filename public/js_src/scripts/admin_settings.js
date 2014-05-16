@@ -100,8 +100,11 @@ define(
 					evt.preventDefault();
 				}
 			);
-			$( document )
-						.on( 'click', '#ai1ec-button-refresh', cache_event_handlers.perform_rescan );
+			$( document ).on(
+				'click',
+				'#ai1ec-button-refresh',
+				cache_event_handlers.perform_rescan
+			);
 
 			// Initialize datepicker and have it respond to changes in format settings.
 			var $exact_date = $('#exact_date');
@@ -111,27 +114,31 @@ define(
 
 			// When a view is enabled, affect form state.
 			$( document ).on(
-				"click", '.ai1ec-admin-view-settings .ai1ec-toggle-view', function() {
-				var $this = $( this )
-				  , $tr = $this.closest( 'tr' );
+				"click",
+				'.ai1ec-admin-view-settings .ai1ec-toggle-view',
+				function() {
+					var $this    = $( this ),
+					    column   = $this.parent().index() + 1;
 
-				// Check to see if there are any siblings that are checked.
-				var is_one_box_checked = $( '.ai1ec-admin-view-settings .ai1ec-toggle-view:checked' ).length === 0;
-				// Check if this view is selected as the default via radio button
-				var is_selected_default = $tr.find( '.ai1ec-toggle-default-view:checked' ).length === 1;
-				// If either is true, prevent :checked state change (only for the
-				// Enabled column).
-				if ( ( is_one_box_checked === true || is_selected_default === true ) ) {
-					return false;
+					// If no other views are enabled, do not allow view to be disabled.
+					if (
+						0 ===
+						$this.closest( 'tr' ).siblings()
+							.find( 'td:nth-child(' + column + ') .ai1ec-toggle-view:checked' )
+							.length
+					) {
+						return false;
+					};
+
+					// If this view is the default, do not allow view to be disabled.
+					if (
+						$this.parent().next( 'td' ).find( '.ai1ec-toggle-default-view' )
+							.is( ':checked' )
+					) {
+						return false;
+					};
 				}
-			} );
-
-			// When clicking a radio button to select a default view
-			$( document ).on( "click", '.ai1ec-admin-view-settings .ai1ec-toggle-default-view', function () {
-				// Automatically set the associated checkbox property to :checked
-				$( this ).closest( 'tr' ).find( '.ai1ec-toggle-view:first' )
-					.prop( 'checked', true );
-			} );
+			);
 
 			// Select the text when element is clicked (only once).
 			$( document ).on( 'click', '.ai1ec-autoselect', function ( e ) {
@@ -171,6 +178,17 @@ define(
 			}
 			toggle_affix_options.apply(
 				$( '#affix_filter_menu' ).on( 'click', toggle_affix_options )[ 0 ]
+			);
+
+			// When clicking a radio button to select a default view, check the
+			// enabled checkbox for that view.
+			$( document ).on(
+				'click',
+				'.ai1ec-admin-view-settings .ai1ec-toggle-default-view',
+					function () {
+					$( this ).parent().prev( 'td' ).children( '.ai1ec-toggle-view' )
+						.prop( 'checked', true );
+				}
 			);
 
 			$( '#ai1ec_save_settings' ).on( 'click', validate_week_start_end );

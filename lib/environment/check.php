@@ -7,7 +7,7 @@
  * @since      2.0
  *
  * @package    AI1EC
- * @subpackage AI1EC.Css
+ * @subpackage AI1EC.Lib
  */
 class Ai1ec_Environment_Checks extends Ai1ec_Base {
 
@@ -33,10 +33,14 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 			$plugin_page !== AI1EC_PLUGIN_NAME . '-settings' &&
 			! empty( $notifications )
 		) {
-			$msg = sprintf(
-				Ai1ec_I18n::__( 'The plugin is installed, but has not been configured. <a href="%s">Click here to set it up now &raquo;</a>' ),
-				admin_url( AI1EC_SETTINGS_BASE_URL )
-			);
+			if ( current_user_can( 'manage_ai1ec_options' ) ) {
+				$msg = sprintf(
+					Ai1ec_I18n::__( 'The plugin is installed, but has not been configured. <a href="%s">Click here to set it up now &raquo;</a>' ),
+					admin_url( AI1EC_SETTINGS_BASE_URL )
+				);
+			} else {
+				$msg = Ai1ec_I18n::__( 'The plugin is installed, but has not been configured. Please log in as an Administrator to set it up.' );
+			}
 			$notification->store( $msg, 'updated', 2 );
 			return;
 		}

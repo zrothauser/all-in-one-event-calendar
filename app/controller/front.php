@@ -403,7 +403,7 @@ class Ai1ec_Front_Controller {
 		
 		// register ics cron action
 		$dispatcher->register_action(
-			self::HOOK_NAME,
+			Ai1ecIcsConnectorPlugin::HOOK_NAME,
 			array( 'calendar-feed.ics', 'cron' )
 		);
 		// editing a child instance

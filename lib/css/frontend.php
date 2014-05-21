@@ -121,8 +121,10 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	public function get_css_url() {
 		$time = $this->db_adapter->get( self::QUERY_STRING_PARAM );
 		$template_helper = $this->_registry->get( 'template.link.helper' );
-		return $template_helper->get_site_url() . "/?" . self::QUERY_STRING_PARAM .
-			"=$time";
+		return add_query_arg(
+			array( self::QUERY_STRING_PARAM => $time, ),
+			trailingslashit( $template_helper->get_site_url() )
+		);
 	}
 
 	/**

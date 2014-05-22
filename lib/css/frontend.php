@@ -261,7 +261,8 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	private function save_less_parse_time() {
 		$this->db_adapter->set(
 			self::QUERY_STRING_PARAM,
-			$this->_registry->get( 'date.system' )->current_time()
+			$this->_registry->get( 'date.system' )->current_time(),
+			true
 		);
 	}
 }

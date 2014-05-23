@@ -1599,7 +1599,7 @@ define(
 		contTemplate: '<tbody><tr><td colspan="7"></td></tr></tbody>',
 		footTemplate: '<tfoot><tr><th colspan="7" class="ai1ec-today"></th></tr><tr><th colspan="7" class="ai1ec-clear"></th></tr></tfoot>'
 	};
-	DPGlobal.template = '<div class="ai1ec-datepicker">'+
+	DPGlobal.template = '<div class="timely ai1ec-datepicker">'+
 							'<div class="ai1ec-datepicker-days">'+
 								'<table class=" ai1ec-table-condensed">'+
 									DPGlobal.headTemplate+

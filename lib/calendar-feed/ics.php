@@ -176,10 +176,6 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			$this->_registry->get( 'model.settings' )->get( 'ics_cron_freq' ),
 			AI1EC_CRON_VERSION
 		);
-		$this->_registry->get( 'event.dispatcher' )->register_action(
-			self::HOOK_NAME,
-			array( 'calendar-feed.ics', 'cron' )
-		);
 	}
 
 	/**

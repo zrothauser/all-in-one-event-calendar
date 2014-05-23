@@ -401,6 +401,11 @@ class Ai1ec_Front_Controller {
 			array( 'http.request', 'debug_filter' )
 		);
 		
+		// register ics cron action
+		$dispatcher->register_action(
+			Ai1ecIcsConnectorPlugin::HOOK_NAME,
+			array( 'calendar-feed.ics', 'cron' )
+		);
 		// editing a child instance
 		if ( basename( $_SERVER['SCRIPT_NAME'] ) === 'post.php' ) {
 			$dispatcher->register_action( 

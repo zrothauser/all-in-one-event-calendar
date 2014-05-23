@@ -288,7 +288,8 @@ class Ai1ec_Ics_Import_Export_Engine
 					if ( empty( $exd ) ) {
 						continue;
 					}
-					$exdate_array[] = trim( end( explode( ':', $exd ) ) );
+					$exploded = explode( ':', $exd );
+					$exdate_array[] = trim( end( $exploded ) );
 				}
 			}
 			// This is the local string.

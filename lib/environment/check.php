@@ -19,6 +19,13 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 	public function run_checks() {
 		global $plugin_page;
 
+		$role = get_role( 'administrator' );
+		if ( 
+			! is_object( $role ) ||
+			! $role->has_cap( 'manage_ai1ec_options' )
+		) {
+			return;
+		}
 		$settings      = $this->_registry->get( 'model.settings' );
 		$notification  = $this->_registry->get( 'notification.admin' );
 		$notifications = array();
@@ -28,24 +35,42 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 			$msg = Ai1ec_I18n::__( 'Select an option in the <strong>Calendar page</strong> dropdown list.' );
 			$notifications[] = $msg;
 		}
-
 		if (
 			$plugin_page !== AI1EC_PLUGIN_NAME . '-settings' &&
 			! empty( $notifications )
 		) {
-			if ( current_user_can( 'manage_ai1ec_options' ) ) {
+			if (
+				current_user_can( 'manage_ai1ec_options' ) ||
+				current_user_can( 'manage_options' )
+			) {
 				$msg = sprintf(
 					Ai1ec_I18n::__( 'The plugin is installed, but has not been configured. <a href="%s">Click here to set it up now &raquo;</a>' ),
 					admin_url( AI1EC_SETTINGS_BASE_URL )
 				);
+				$notification->store(
+					$msg,
+					'updated',
+					2,
+					array( Ai1ec_Notification_Admin::RCPT_ADMIN )
+				);
 			} else {
 				$msg = Ai1ec_I18n::__( 'The plugin is installed, but has not been configured. Please log in as an Administrator to set it up.' );
+				$notification->store(
+					$msg,
+					'updated',
+					2,
+					array( Ai1ec_Notification_Admin::RCPT_ALL )
+				);
 			}
-			$notification->store( $msg, 'updated', 2 );
 			return;
 		}
 		foreach ( $notifications as $msg ) {
-			$notification->store( $msg );
+			$notification->store(
+				$msg,
+				'updated',
+				2,
+				array( Ai1ec_Notification_Admin::RCPT_ADMIN )
+			);
 		}
 	}
 }

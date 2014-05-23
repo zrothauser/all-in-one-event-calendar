@@ -215,8 +215,9 @@ class Ai1ec_Localization_Helper {
 	 * @return string|null Effective language or NULL if none detected
 	 **/
 	public function get_language() {
+		global $sitepress;
 		// in legacy they were the same function. i keep this as maybe it's called somehwere.
-		return $this->get_default_language();
+		return $sitepress->get_current_language();
 	}
 
 	/**

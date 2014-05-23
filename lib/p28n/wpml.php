@@ -215,9 +215,7 @@ class Ai1ec_Localization_Helper {
 	 * @return string|null Effective language or NULL if none detected
 	 **/
 	public function get_language() {
-		global $sitepress;
-		// in legacy they were the same function. i keep this as maybe it's called somehwere.
-		return $sitepress->get_current_language();
+		return $this->get_current_language();
 	}
 
 	/**
@@ -234,12 +232,28 @@ class Ai1ec_Localization_Helper {
 	}
 
 	/**
+	 * Wrapper to accomodate new WPML version.
+	 *
+	 * @return Currently configured language, or default.
+	 */
+	public function get_current_language() {
+		global $sitepress;
+		if (
+			$this->is_wpml_active() &&
+			method_exists( $sitepress, 'get_current_language' )
+		) {
+			return $sitepress->get_current_language();
+		}
+		return $this->get_default_language();
+	}
+
+	/**
 	 * get_default_language function
 	 *
 	 * Return default (configured) site language
 	 *
 	 * @return string|null Default language or NULL if none detected
-	 **/
+	 */
 	public function get_default_language() {
 		global $sitepress, $q_config;
 		$language = NULL;

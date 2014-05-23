@@ -19,10 +19,16 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 	public function run_checks() {
 		global $plugin_page;
 
-		$role = get_role( 'administrator' );
+		$role         = get_role( 'administrator' );
+		$current_user = get_userdata( get_current_user_id() );
 		if ( 
 			! is_object( $role ) ||
-			! $role->has_cap( 'manage_ai1ec_options' )
+			! is_object( $current_user ) ||
+			! $role->has_cap( 'manage_ai1ec_options' ) ||
+			(
+				defined( 'DOING_AJAX' ) &&
+				DOING_AJAX
+			)
 		) {
 			return;
 		}
@@ -40,8 +46,7 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 			! empty( $notifications )
 		) {
 			if (
-				current_user_can( 'manage_ai1ec_options' ) ||
-				current_user_can( 'manage_options' )
+				$current_user->has_cap( 'manage_ai1ec_options' )
 			) {
 				$msg = sprintf(
 					Ai1ec_I18n::__( 'The plugin is installed, but has not been configured. <a href="%s">Click here to set it up now &raquo;</a>' ),

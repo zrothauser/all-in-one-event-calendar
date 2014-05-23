@@ -389,6 +389,7 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		);
 		$start_time = $start_time->format();
 		$end_time   = $end_time->format();
+		$this->_update_meta( $month_events );
 
 		foreach ( $month_events as $event ) {
 			$event_start = $event->get( 'start' )->format();

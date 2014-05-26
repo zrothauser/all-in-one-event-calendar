@@ -216,6 +216,7 @@ class Ai1ecdm_Datetime_Migration {
 			if (
 				! (
 					$this->drop_indices( $table, $name )
+					&& $this->perform_additional_actions( $table, $name )
 					&& $this->add_columns( $name, $columns )
 					&& $this->transform_dates( $name, $columns )
 					&& $this->replace_columns( $name, $columns )
@@ -431,6 +432,29 @@ class Ai1ecdm_Datetime_Migration {
 	 */
 	public function get_tables() {
 		return $this->_tables;
+	}
+
+	/**
+	 * Performs additional actions before db upgrade.
+	 * Deletes dates earlier than 1970-01-01.
+	 *
+	 * @param string $table Table name.
+	 * @param string $name  Table to perform actions.
+	 *
+	 * @return Bool Success.
+	 */
+	public function perform_additional_actions( $table, $name ) {
+		$query = null;
+		switch ( $table ) {
+			case $this->_dbi->get_table_name( 'ai1ec_event_instances' ):
+				$query = 'DELETE FROM ' . $this->_dbi->get_table_name( $name ) .
+				' WHERE `start` <= \'1970-01-01 00:00:00\'';
+			break;
+		}
+		if ( ! empty( $query ) ) {
+			return false !== $this->_dbi->query( $query );
+		}
+		return true;
 	}
 
 	/**

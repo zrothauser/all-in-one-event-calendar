@@ -216,7 +216,7 @@ class Ai1ecdm_Datetime_Migration {
 			if (
 				! (
 					$this->drop_indices( $table, $name )
-					&& $this->perform_additional_actions( $table, $name )
+					&& $this->out_of_bounds_fix( $table, $name )
 					&& $this->add_columns( $name, $columns )
 					&& $this->transform_dates( $name, $columns )
 					&& $this->replace_columns( $name, $columns )
@@ -435,26 +435,25 @@ class Ai1ecdm_Datetime_Migration {
 	}
 
 	/**
-	 * Performs additional actions before db upgrade.
-	 * Deletes dates earlier than 1970-01-01.
+	 * Delete events dated before or at `1970-01-01 00:00:00`.
 	 *
-	 * @param string $table Table name.
-	 * @param string $name  Table to perform actions.
+	 * @param string $table Original table.
+	 * @param string $name  Temporary table to replay changes onto.
 	 *
-	 * @return Bool Success.
+	 * @return bool Success.
 	 */
-	public function perform_additional_actions( $table, $name ) {
-		$query = null;
-		switch ( $table ) {
-			case $this->_dbi->get_table_name( 'ai1ec_event_instances' ):
-				$query = 'DELETE FROM ' . $this->_dbi->get_table_name( $name ) .
-				' WHERE `start` <= \'1970-01-01 00:00:00\'';
-			break;
+	public function out_of_bounds_fix( $table, $name ) {
+		static $instances = null;
+		if ( null === $instances ) {
+			$instances = $this->_dbi->get_table_name( 'ai1ec_event_instances' );
 		}
-		if ( ! empty( $query ) ) {
-			return false !== $this->_dbi->query( $query );
+		if ( $instances !== $table ) {
+			return true;
 		}
-		return true;
+		$query = 'DELETE FROM `' .
+			$this->_dbi->get_table_name( $name ) .
+			'` WHERE `start` <= \'1970-01-01 00:00:00\'';
+		return ( false !== $this->_dbi->query( $query ) );
 	}
 
 	/**

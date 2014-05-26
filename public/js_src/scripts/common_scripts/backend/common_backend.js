@@ -141,7 +141,17 @@ define(
 			.on( 'click', '.ai1ec-dismiss-license-warning',
 				event_handlers.dismiss_license_warning_handler )
 			.on( 'click', '.ai1ec-limit-by-cat, .ai1ec-limit-by-tag, .ai1ec-limit-by-event',
-				event_handlers.handle_multiselect_containers_widget_page );
+				event_handlers.handle_multiselect_containers_widget_page )
+			.on( 'click', '.ai1ec-dismissable', function() {
+				var data = {
+					action : 'ai1ec_dismiss_notice',
+					key    : $( this ).data( 'key' )
+				};
+				var button = this;
+				$.post( ajaxurl, data, function( response ) {
+					$( button ).closest( '.ai1ec_message' ).remove();
+				} );
+			} );
 	};
 
 	/**

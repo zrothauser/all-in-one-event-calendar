@@ -98,7 +98,6 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	if ( ! defined( 'AI1EC_URL' ) ) {
 		define( 'AI1EC_URL', $ai1ec_base_url );
 	}
-
 	// ===============
 	// = VENDOR PATH =
 	// ===============

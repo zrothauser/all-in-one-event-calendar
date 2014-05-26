@@ -228,4 +228,58 @@ class Ai1ec_Theme_Search extends Ai1ec_Base {
 		return true;
 	}
 
+	/**
+	 * Move passed themes to backup folder.
+	 * 
+	 * @param array $themes
+	 */
+	public function move_themes_to_backup( array $themes ) {
+		global $wp_filesystem;
+		$root = WP_CONTENT_DIR . DIRECTORY_SEPARATOR . AI1EC_THEME_FOLDER . DIRECTORY_SEPARATOR;
+		$backup = WP_CONTENT_DIR . DIRECTORY_SEPARATOR . AI1EC_THEME_FOLDER . '-obsolete' . DIRECTORY_SEPARATOR;
+		// this will also set $wp_filesystem global
+		$writable = $this->_registry->get( 'filesystem.checker')->is_writable( WP_CONTENT_DIR );
+		// this also means the access is 'direct'
+		$backup_dir_exists = false;
+
+		$errors = array(); 
+		if ( true === $writable ) {
+			if ( ! $wp_filesystem->is_dir( $backup ) ) {
+				$backup_dir_exists = $wp_filesystem->mkdir( $backup );
+				fb($backup_dir_exists);
+			} else {
+				$backup_dir_exists = true;
+			}
+		} else {
+			$message = __( 
+				"Put the message here to say that content folder is not writable",
+				AI1EC_PLUGIN_NAME
+			);
+			$errors[] = $message;
+		}
+		if ( true === $backup_dir_exists ) {
+			foreach ( $themes as $theme_dir ) {
+				if ( $wp_filesystem->is_dir( $root . $theme_dir ) ) {
+					$result = $wp_filesystem->move( $root . $theme_dir, $backup . $theme_dir );
+					if ( false === $result ) {
+						$message = __(
+							"Put the message here to say that we couldn't move theme",
+							AI1EC_PLUGIN_NAME
+						);
+						$errors[] = $message;
+					} 
+				}
+			}
+		}
+		if ( ! empty( $errors ) ) {
+			$notification = $this->_registry->get( 'notification.admin' );
+			$notification->store(
+				implode( '<br/>', $errors ),
+				'error',
+				2,
+				array( Ai1ec_Notification_Admin::RCPT_ALL ),
+				true
+			);
+		}
+	}
 }

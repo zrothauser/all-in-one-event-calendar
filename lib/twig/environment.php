@@ -39,7 +39,7 @@ class Ai1ec_Twig_Environment extends Twig_Environment {
 			// used shutdown to store settings
 			// after this line exception occurs
 			$type = ( is_writable( parent::getCache() ) ) ? 'AI1EC_CACHE_UNAVAILABLE' : '';
-			$settings->set( 'twig_cache', $type )->shutdown();
+			$settings->set( 'twig_cache', $type )->persist();
 		}
 	}
 

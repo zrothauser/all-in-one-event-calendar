@@ -240,7 +240,6 @@ class Ai1ec_Front_Controller {
 	protected function _add_default_theme_if_not_set() {
 		$option = $this->_registry->get( 'model.option' );
 		$theme  = $option->get( 'ai1ec_current_theme', array() );
-		$theme = 'vortex';
 		$update = false;
 		$default_theme  = array(
 			'theme_dir'  => AI1EC_DEFAULT_THEME_PATH,

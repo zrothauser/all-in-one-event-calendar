@@ -150,6 +150,10 @@ class Ai1ec_Notification_Admin extends Ai1ec_Notification {
 		return $this->write();
 	}
 
+	/**
+	 * Delete a notice from ajax call.
+	 * 
+	 */
 	public function dismiss_notice() {
 		$key = $_POST['key'];
 		foreach ( $this->_message_list as $dest ) {
@@ -162,11 +166,9 @@ class Ai1ec_Notification_Admin extends Ai1ec_Notification {
 
 	protected function _render_message( array $entity ) {
 		$importance = 0;
-		fb($entity);
 		if ( isset( $entity['importance'] ) ) {
 			$importance = ( (int)$entity['importance'] ) % 3;
 		}
-		fb($importance);
 		if ( $this->are_notices_available( $importance ) ) {
 			static $theme = null;
 			if ( null === $theme ) {

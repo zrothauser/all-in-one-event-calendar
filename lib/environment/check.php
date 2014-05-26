@@ -17,8 +17,6 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 	 * @return void Method does not return.
 	 */
 	public function run_checks() {
-		global $plugin_page;
-
 		$role         = get_role( 'administrator' );
 		$current_user = get_userdata( get_current_user_id() );
 		if ( 
@@ -32,13 +30,16 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 		) {
 			return;
 		}
+		global $plugin_page;
 		$settings      = $this->_registry->get( 'model.settings' );
 		$notification  = $this->_registry->get( 'notification.admin' );
 		$notifications = array();
 
 		// check if is set calendar page
 		if ( ! $settings->get( 'calendar_page_id' ) ) {
-			$msg = Ai1ec_I18n::__( 'Select an option in the <strong>Calendar page</strong> dropdown list.' );
+			$msg = Ai1ec_I18n::__(
+				'Select an option in the <strong>Calendar page</strong> dropdown list.'
+			);
 			$notifications[] = $msg;
 		}
 		if (
@@ -59,7 +60,9 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 					array( Ai1ec_Notification_Admin::RCPT_ADMIN )
 				);
 			} else {
-				$msg = Ai1ec_I18n::__( 'The plugin is installed, but has not been configured. Please log in as an Administrator to set it up.' );
+				$msg = Ai1ec_I18n::__(
+					'The plugin is installed, but has not been configured. Please log in as an Administrator to set it up.'
+				);
 				$notification->store(
 					$msg,
 					'updated',
@@ -78,4 +81,5 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 			);
 		}
 	}
+
 }

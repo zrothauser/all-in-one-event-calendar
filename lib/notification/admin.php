@@ -62,10 +62,7 @@ class Ai1ec_Notification_Admin extends Ai1ec_Notification {
 			return true;
 		}
 		$this->_message_list['_messages'][$msg_key] = $entity;
-		fb($recipients);
 		foreach ( $recipients as $rcpt ) {
-			fb( $rcpt );
-			fb( $this->_message_list );
 			if ( ! isset( $this->_message_list[$rcpt] ) ) {
 				continue;
 			}
@@ -135,7 +132,6 @@ class Ai1ec_Notification_Admin extends Ai1ec_Notification {
 							! isset( $this->_message_list['_messages'][$key]['persistent'] ) ||
 							false === $this->_message_list['_messages'][$key]['persistent'] 
 						) {
-							fb('delete');
 							unset( $this->_message_list['_messages'][$key] );
 							unset( $this->_message_list[$dst][$key] );
 						}

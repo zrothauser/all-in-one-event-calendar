@@ -246,7 +246,6 @@ class Ai1ec_Theme_Search extends Ai1ec_Base {
 		if ( true === $writable ) {
 			if ( ! $wp_filesystem->is_dir( $backup ) ) {
 				$backup_dir_exists = $wp_filesystem->mkdir( $backup );
-				fb($backup_dir_exists);
 			} else {
 				$backup_dir_exists = true;
 			}

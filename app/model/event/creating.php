@@ -179,6 +179,7 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 		$event->set( 'show_coordinates', $show_coordinates );
 		$event->set( 'longitude',        trim( $longitude ) );
 		$event->set( 'latitude',         trim( $latitude ) );
+		$event->set( 'ical_uid',         $this->get_uid( $event ) );
 
 		// let other extensions save their fields.
 		do_action( 'ai1ec_save_post', $event );
@@ -233,5 +234,27 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 			$instance_id
 		);
 		return $post_id;
+	}
+
+	/**
+	 * get_uid_format method
+	 *
+	 * Get format of UID, to be used for current site.
+	 * The generated format is cached in static variable within this function
+	 *
+	 * @return string Format to use when printing UIDs
+	 *
+	 * @staticvar string $format Cached format, to be returned
+	 */
+	public function get_uid( Ai1ec_Event $event ) {
+		static $format = null;
+		if ( null === $format ) {
+			$site_url = parse_url( get_site_url() );
+			$format   = 'ai1ec-%d@' . $site_url['host'];
+			if ( isset( $site_url['path'] ) ) {
+				$format .= $site_url['path'];
+			}
+		}
+		return sprintf( $format, $event->get( 'post_id' ) );
 	}
 }

@@ -103,10 +103,9 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		);
 		$output = array();
 		if ( $feed ) {
-			// flush the feed
-			$this->flush_ics_feed( false, $feed->feed_url );
-			$count    = 0;
-			$message  = false;
+
+			$count = 0;
+			$message = false;
 			// reimport the feed
 			$response = wp_remote_get(
 				$feed->feed_url,

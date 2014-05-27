@@ -460,22 +460,23 @@ class Ai1ec_Ics_Import_Export_Engine
 			// Create event object.
 			$event = $this->_registry->get( 'model.event', $data );
 
-			// TODO: when singular events change their times in an ICS feed from one
-			// import to another, the matching_event_id is null, which is wrong. We
-			// want to match that event that previously had a different time.
-			// However, we also want the function to NOT return a matching event in
-			// the case of recurring events, and different events with different
-			// RECURRENCE-IDs... ponder how to solve this.. may require saving the
-			// RECURRENCE-ID as another field in the database.
 			$recurrence = $event->get( 'recurrence_rules' );
-			$matching_event_id = $this->_registry->get( 'model.search' )
-				->get_matching_event_id(
-					$event->get( 'ical_uid' ),
-					$event->get( 'ical_feed_url' ),
-					$event->get( 'start' ),
-					! empty( $recurrence )
+			$search = $this->_registry->get( 'model.search' );
+			// first let's check by UID
+			$matching_event_id = $search
+				->get_matching_event_by_uid(
+					$event->get( 'ical_uid' )
 				);
-
+			// if no result, perform the legacy check.
+			if ( null === $matching_event_id ) {
+				$matching_event_id = $search
+					->get_matching_event_id(
+						$event->get( 'ical_uid' ),
+						$event->get( 'ical_feed_url' ),
+						$event->get( 'start' ),
+						! empty( $recurrence )
+					);
+			}
 			if ( null === $matching_event_id ) {
 				// =================================================
 				// = Event was not found, so store it and the post =
@@ -613,7 +614,11 @@ class Ai1ec_Ics_Import_Export_Engine
 		if ( $event->get( 'ical_uid' ) ) {
 			$uid = addcslashes( $event->get( 'ical_uid' ), "\\;,\n" );
 		} else {
-			$uid = sprintf( $this->get_uid_format(), $event->get( 'post_id' ) );
+			// if the uid is not set, create it and save it
+			$create_model = $this->_registry->get( 'model.event.creating' );
+			$uid = $create_model->get_uid( $event );
+			$event->set( 'ical_uid', $uid );
+			$event->save( true );
 		}
 		$e->setProperty( 'uid', $this->_sanitize_value( $uid ) );
 		$e->setProperty(
@@ -646,6 +651,13 @@ class Ai1ec_Ics_Import_Export_Engine
 					$size[1] . '" /></div>' . $content;
 		}
 		$e->setProperty( 'description', $this->_sanitize_value( $content ) );
+		$revision = (int)current(
+			array_keys(
+				wp_get_post_revisions( $event->get( 'post_id' ) )
+			)
+		);
+		$e->setProperty( 'sequence', $revision );
+
 
 		// =====================
 		// = Start & end times =

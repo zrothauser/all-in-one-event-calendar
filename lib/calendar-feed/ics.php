@@ -121,11 +121,19 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				! empty( $response['body'] )
 			) {
 				try {
+
 					$import_export = $this->_registry->get(
 						'controller.import-export'
 					);
-					$args                   = array();
-					$args['feed']           = $feed;
+
+					$search = $this->_registry->get( 'model.search' );
+					$events_in_db = $search->get_event_ids_for_feed( $feed->feed_url );
+					// flip the array. We will use keys to check events which are imported.
+					$events_in_db = array_flip( $events_in_db );
+					$args = array();
+					$args['events_in_db'] = $events_in_db;
+					$args['feed'] = $feed;
+
 					$args['comment_status'] = 'open';
 					if ( isset( $feed->comments_enabled ) && $feed->comments_enabled < 1 ) {
 						$args['comment_status'] = 'closed';
@@ -139,7 +147,13 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 						$args['do_show_map'] = 1;
 					}
 					$args['source'] = $response['body'];
-					$count = $import_export->import_events( 'ics', $args );
+					$result = $import_export->import_events( 'ics', $args );
+					$count = $result['count'];
+					// we must flip again the array to iterate over it
+					$events_to_delete = array_flip( $result['events_to_delete'] );
+					foreach ( $events_to_delete as $event_id ) {
+						wp_delete_post( $event_id, true );
+					}
 				} catch ( Ai1ec_Parse_Exception $e ) {
 					$message = "the provided feed didn't return valid ics data";
 				} catch ( Ai1ec_Engine_Not_Set_Exception $e ) {

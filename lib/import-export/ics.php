@@ -26,7 +26,7 @@ class Ai1ec_Ics_Import_Export_Engine
 		if ( $cal->parse( $arguments['source'] ) ) {
 			$count = 0;
 			try {
-				$count = $this->add_vcalendar_events_to_db(
+				$result = $this->add_vcalendar_events_to_db(
 					$cal,
 					$arguments
 				);
@@ -36,7 +36,7 @@ class Ai1ec_Ics_Import_Export_Engine
 					'" triggered error: ' . $exception->getMessage()
 				);
 			}
-			return $count;
+			return $result;
 		}
 		throw new Ai1ec_Parse_Exception( 'The passed string is not a valid ics feed' );
 	}
@@ -141,7 +141,7 @@ class Ai1ec_Ics_Import_Export_Engine
 		$comment_status = isset( $args['comment_status'] ) ? $args['comment_status'] : 'open';
 		$do_show_map    = isset( $args['do_show_map'] ) ? $args['do_show_map'] : 0;
 		$count = 0;
-
+		$events_in_db   = $args['events_in_db'];
 		$v->sort();
 		// Reverse the sort order, so that RECURRENCE-IDs are listed before the
 		// defining recurrence events, and therefore take precedence during
@@ -502,10 +502,17 @@ class Ai1ec_Ics_Import_Export_Engine
 				}
 
 			}
+			// if the event was already present , unset it from the array so it's not deleted
+			if ( isset( $events_in_db[$event->get( 'post_id' )] ) ) {
+				unset( $events_in_db[$event->get( 'post_id' )] );
+			}
 			$count++;
 		}
 
-		return $count;
+		return array(
+			'count'            =>$count,
+			'events_to_delete' => $events_in_db,
+		);
 	}
 
 	/**

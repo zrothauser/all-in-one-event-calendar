@@ -954,7 +954,7 @@ class Ai1ec_Ics_Import_Export_Engine
 				as $exdate
 			) {
 				$exdate = $this->_registry->get( 'date.time', $exdate )
-					->format( 'Ymd' );
+					->format_to_gmt( 'Ymd' );
 				$e->setProperty(
 					'exdate',
 					array( $exdate . $dt_suffix ),

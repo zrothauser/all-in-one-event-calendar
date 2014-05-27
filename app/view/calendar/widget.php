@@ -265,6 +265,7 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		$args['show_year_in_agenda_dates'] = $settings->get( 'show_year_in_agenda_dates' );
 		$args['calendar_url']              = $html->create_href_helper_instance( $limit )->generate_href();
 		$args['subscribe_url']             = AI1EC_EXPORT_URL . $subscribe_filter;
+		$args['subscribe_url_no_html']     = AI1EC_EXPORT_URL . '&no_html=true' . $subscribe_filter;
 		$args['is_ticket_button_enabled']  = $is_ticket_button_enabled;
 		$args['text_upcoming_events']      = __( 'There are no upcoming events.', AI1EC_PLUGIN_NAME );
 		$args['text_all_day']              = __( 'all-day', AI1EC_PLUGIN_NAME );

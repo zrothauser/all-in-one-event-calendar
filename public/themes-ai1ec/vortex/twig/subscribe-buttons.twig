@@ -1,7 +1,7 @@
 <div class="ai1ec-subscribe-container ai1ec-btn-group ai1ec-pull-left">
 	<a class="ai1ec-btn ai1ec-btn-default ai1ec-btn-sm ai1ec-subscribe
 			ai1ec-tooltip-trigger {{ button_classes }}"
-		data-placement="bottom"
+		data-placement="top"
 		href="{{ ( export_url ~ url_args ) | e('html_attr') }}"
 		title="{{ text_calendar }}" >
 		<i class="ai1ec-fa ai1ec-fa-plus"></i>
@@ -15,17 +15,37 @@
 			{% endif %}
 		{% endif %}
 	</a>
-	{% set url = export_url | replace( {"webcal://": "http://"} ) ~ url_args %}
-	<a class="ai1ec-btn ai1ec-btn-default ai1ec-btn-sm ai1ec-subscribe-google
-			ai1ec-tooltip-trigger {{ button_classes }}"
-		target="_blank" data-placement="bottom"
-		href="http://www.google.com/calendar/render?cid={{ url | url_encode | e('html_attr') }}"
-		title="{{ text_add_google }}" >
-		<i class="ai1ec-fa ai1ec-fa-google-plus ai1ec-fa-lg"></i>
-		{% if google_label is not empty %}
-			{{ google_label }}
-		{% else %}
-			{{ text_google }}
-		{% endif %}
+	<a class="ai1ec-btn ai1ec-btn-default ai1ec-dropdown-toggle ai1ec-btn-sm {{ button_classes }}" data-toggle="ai1ec-dropdown">
+		<span class="ai1ec-caret"></span>
+		<span class="ai1ec-sr-only"></span>
 	</a>
+	{% set url = export_url | replace( {"webcal://": "http://"} ) ~ url_args %}
+	<ul class="ai1ec-dropdown-menu" role="menu">
+		<li>
+			<a class="ai1ec-tooltip-trigger"
+				target="_blank" data-placement="top"
+				href="http://www.google.com/calendar/render?cid={{ url | url_encode | e('html_attr') }}"
+				title="{{ text_add_google }}" >
+				<i class="ai1ec-fa ai1ec-fa-google-plus ai1ec-fa-lg"></i>
+				{% if google_label is not empty %}
+					{{ google_label }}
+				{% else %}
+					{{ text_google }}
+				{% endif %}
+			</a>
+		</li>
+		<li>
+			<a class="ai1ec-tooltip-trigger"
+				data-placement="bottom"
+				href="{{ ( export_url_no_html ~ url_args ) | e('html_attr') }}"
+				title="{{ 'Subscribe to this calendar in your Outlook' | __ }}" >
+				<i class="ai1ec-fa ai1ec-fa-plus"></i>
+				{% if outlook_label is not empty %}
+					{{ outlook_label }}
+				{% else %}
+				{{ 'Add to Outlook' | __ }}
+				{% endif %}
+			</a>
+		</li>
+	</ul>
 </div>

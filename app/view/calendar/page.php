@@ -172,15 +172,15 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			return '';
 		}
 		$args = array(
-			'url_args'        => '',
-			'is_filtered'     => false,
-			'export_url'      => AI1EC_EXPORT_URL,
-			'text_calendar'   => __( 'Subscribe to this calendar in your personal calendar (iCal, Outlook, etc.)', AI1EC_PLUGIN_NAME ),
-			'text_filtered'   => __( 'Subscribe to filtered calendar', AI1EC_PLUGIN_NAME ),
-			'text_subscribe'  => __( 'Subscribe', AI1EC_PLUGIN_NAME ),
-			'text_add_google' => __( 'Subscribe to this calendar in your Google Calendar', AI1EC_PLUGIN_NAME ),
-			'text_google'     => __( 'Add to Google', AI1EC_PLUGIN_NAME ),
-
+			'url_args'           => '',
+			'is_filtered'        => false,
+			'export_url'         => AI1EC_EXPORT_URL,
+			'export_url_no_html' => AI1EC_EXPORT_URL . '&no_html=true',
+			'text_calendar'      => __( 'Subscribe to this calendar in your personal calendar (iCal, Outlook, etc.)', AI1EC_PLUGIN_NAME ),
+			'text_filtered'      => __( 'Subscribe to filtered calendar', AI1EC_PLUGIN_NAME ),
+			'text_subscribe'     => __( 'Subscribe', AI1EC_PLUGIN_NAME ),
+			'text_add_google'    => __( 'Subscribe to this calendar in your Google Calendar', AI1EC_PLUGIN_NAME ),
+			'text_google'        => __( 'Add to Google', AI1EC_PLUGIN_NAME ),
 		);
 		if ( ! empty( $view_args['cat_ids'] ) ) {
 			$args['url_args'] .= '&ai1ec_cat_ids=' .

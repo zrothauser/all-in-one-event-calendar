@@ -149,7 +149,7 @@ define(
 				};
 				var button = this;
 				$.post( ajaxurl, data, function( response ) {
-					$( button ).closest( '.ai1ec_message' ).remove();
+					$( button ).closest( '.ai1ec-message' ).remove();
 				} );
 			} );
 	};

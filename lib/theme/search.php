@@ -251,7 +251,7 @@ class Ai1ec_Theme_Search extends Ai1ec_Base {
 			}
 		} else {
 			$message = __( 
-				"Put the message here to say that content folder is not writable",
+				'Unable to move your old core themes from <code>wp-content/themes-ai1ec</code> to <code>wp-content/themes-ai1ec-obsolete</code> because your <code>wp-content</code> folder is not writable. Please manually remove your old core themes from <code>wp-content/themes-ai1ec</code>.',
 				AI1EC_PLUGIN_NAME
 			);
 			$errors[] = $message;
@@ -262,10 +262,10 @@ class Ai1ec_Theme_Search extends Ai1ec_Base {
 					$result = $wp_filesystem->move( $root . $theme_dir, $backup . $theme_dir );
 					if ( false === $result ) {
 						$message = __(
-							"Put the message here to say that we couldn't move theme",
+							'Failed to move your old core themes from <code>wp-content/themes-ai1ec/%s</code> to <code>wp-content/themes-ai1ec-obsolete/%s</code>. Please manually remove your old core themes from <code>wp-content/themes-ai1ec/%s</code>.',
 							AI1EC_PLUGIN_NAME
 						);
-						$errors[] = $message;
+						$errors[] = sprintf( $message, $theme_dir, $theme_dir, $theme_dir );
 					} 
 				}
 			}

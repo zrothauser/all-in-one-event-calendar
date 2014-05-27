@@ -43,6 +43,7 @@ class Ai1ec_Notification_Admin extends Ai1ec_Notification {
 	 * @param string $class      Message box class.
 	 * @param int    $importance Optional importance parameter for the message.
 	 * @param array  $recipients List of message recipients.
+	 * @param bool   $persistent If set to true, messages needs to be dismissed by user.
 	 *
 	 * @return bool Success.
 	 */

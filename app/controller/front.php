@@ -400,12 +400,6 @@ class Ai1ec_Front_Controller {
 			'ai1ec_dbi_debug',
 			array( 'http.request', 'debug_filter' )
 		);
-		
-		// register ics cron action
-		$dispatcher->register_action(
-			Ai1ecIcsConnectorPlugin::HOOK_NAME,
-			array( 'calendar-feed.ics', 'cron' )
-		);
 		// editing a child instance
 		if ( basename( $_SERVER['SCRIPT_NAME'] ) === 'post.php' ) {
 			$dispatcher->register_action( 
@@ -451,6 +445,12 @@ class Ai1ec_Front_Controller {
 		$dispatcher->register_action(
 			'widgets_init',
 			array( 'view.calendar.widget', 'register_widget' )
+		);
+
+		// register ICS cron action
+		$dispatcher->register_action(
+			Ai1ecIcsConnectorPlugin::HOOK_NAME,
+			array( 'calendar-feed.ics', 'cron' )
 		);
 
 		if ( is_admin() ) {

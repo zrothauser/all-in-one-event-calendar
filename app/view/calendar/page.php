@@ -181,6 +181,10 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			'text_subscribe'     => __( 'Subscribe', AI1EC_PLUGIN_NAME ),
 			'text_add_google'    => __( 'Subscribe to this calendar in your Google Calendar', AI1EC_PLUGIN_NAME ),
 			'text_google'        => __( 'Add to Google', AI1EC_PLUGIN_NAME ),
+			'outlook_label'      => __( 'Outlook', AI1EC_PLUGIN_NAME ),
+			'text_outlook'       => __( 'Subscribe to this calendar in your Outlook', AI1EC_PLUGIN_NAME ),
+			'text_outlook_add'   => __( 'Add to Outlook', AI1EC_PLUGIN_NAME ),
+			'tooltip_placement'  => 'left',
 		);
 		if ( ! empty( $view_args['cat_ids'] ) ) {
 			$args['url_args'] .= '&ai1ec_cat_ids=' .

@@ -646,17 +646,19 @@ class Ai1ec_Ics_Import_Export_Engine
 					strip_tags( $content )
 				)
 			);
-			$html_content = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">\n' .
-				'<HTML>\n<HEAD>\n<TITLE></TITLE>\n</HEAD>\n<BODY>' . $content .
-				'</BODY></HTML>';
-			$e->setProperty(
-				'X-ALT-DESC',
-				$this->_sanitize_value( $html_content ),
-				array(
-					'FMTTYPE' => 'text/html',
-				)
-			);
-			unset( $html_content );
+			if ( ! empty( $content ) ) {
+				$html_content = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">\n' .
+					'<HTML>\n<HEAD>\n<TITLE></TITLE>\n</HEAD>\n<BODY>' . $content .
+					'</BODY></HTML>';
+				$e->setProperty(
+					'X-ALT-DESC',
+					$this->_sanitize_value( $html_content ),
+					array(
+						'FMTTYPE' => 'text/html',
+					)
+				);
+				unset( $html_content );
+			}
 		} else {
 			$e->setProperty( 'description', $this->_sanitize_value( $content ) );
 		}

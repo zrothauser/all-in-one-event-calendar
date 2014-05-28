@@ -1,10 +1,28 @@
+{% if calendar_title is empty %}
+	{% set calendar_title = text_calendar %}
+{% endif %}
+{% if google_calendar_title is empty %}
+	{% set google_calendar_title = text_add_google %}
+{% endif %}
+{% if outlook_calendar_title is empty %}
+	{% set outlook_calendar_title = text_outlook %}
+{% endif %}
+{% if tooltip_placement is empty %}
+	{% set dp_calendar = 'top' %}
+	{% set dp_google   = 'top' %}
+	{% set dp_outlook  = 'bottom' %}
+{% else %}
+	{% set dp_calendar = tooltip_placement %}
+	{% set dp_google   = tooltip_placement %}
+	{% set dp_outlook  = tooltip_placement %}
+{% endif %}
 <div class="ai1ec-subscribe-container ai1ec-btn-group ai1ec-pull-left">
 	<a class="ai1ec-btn ai1ec-btn-default ai1ec-btn-sm ai1ec-subscribe
-			ai1ec-tooltip-trigger {{ button_classes }}"
-		data-placement="top"
-		href="{{ ( export_url ~ url_args ) | e('html_attr') }}"
-		title="{{ text_calendar }}" >
-		<i class="ai1ec-fa ai1ec-fa-plus"></i>
+	   ai1ec-tooltip-trigger {{ button_classes }}"
+	   data-placement="{{ dp_calendar }}"
+	   href="{{ ( export_url ~ url_args ) | e('html_attr') }}"
+	   title="{{ calendar_title }}" >
+		<i class="ai1ec-fa ai1ec-fa-plus ai1ec-fa-fw"></i>
 		{% if subscribe_label is not empty %}
 			{{ subscribe_label }}
 		{% else %}
@@ -14,8 +32,7 @@
 				{{ text_subscribe }}
 			{% endif %}
 		{% endif %}
-	</a>
-	<a class="ai1ec-btn ai1ec-btn-default ai1ec-dropdown-toggle ai1ec-btn-sm {{ button_classes }}" data-toggle="ai1ec-dropdown">
+	</a><a class="ai1ec-btn ai1ec-btn-default ai1ec-dropdown-toggle ai1ec-btn-sm {{ button_classes }}" data-toggle="ai1ec-dropdown">
 		<span class="ai1ec-caret"></span>
 		<span class="ai1ec-sr-only"></span>
 	</a>
@@ -23,10 +40,11 @@
 	<ul class="ai1ec-dropdown-menu" role="menu">
 		<li>
 			<a class="ai1ec-tooltip-trigger"
-				target="_blank" data-placement="top"
-				href="http://www.google.com/calendar/render?cid={{ url | url_encode | e('html_attr') }}"
-				title="{{ text_add_google }}" >
-				<i class="ai1ec-fa ai1ec-fa-google-plus ai1ec-fa-lg"></i>
+			   target="_blank"
+			   data-placement="{{ dp_google }}"
+			   href="http://www.google.com/calendar/render?cid={{ url | url_encode | e('html_attr') }}"
+			   title="{{ google_calendar_title }}" >
+				<i class="ai1ec-fa ai1ec-fa-google-plus ai1ec-fa-lg ai1ec-fa-fw"></i>
 				{% if google_label is not empty %}
 					{{ google_label }}
 				{% else %}
@@ -36,14 +54,14 @@
 		</li>
 		<li>
 			<a class="ai1ec-tooltip-trigger"
-				data-placement="bottom"
-				href="{{ ( export_url_no_html ~ url_args ) | e('html_attr') }}"
-				title="{{ 'Subscribe to this calendar in your Outlook' | __ }}" >
-				<i class="ai1ec-fa ai1ec-fa-plus"></i>
+			   data-placement="{{ dp_outlook }}"
+			   href="{{ ( export_url_no_html ~ url_args ) | e('html_attr') }}"
+			   title="{{ outlook_calendar_title }}" >
+				<i class="ai1ec-fa ai1ec-fa-plus ai1ec-fa-fw"></i>
 				{% if outlook_label is not empty %}
 					{{ outlook_label }}
 				{% else %}
-				{{ 'Add to Outlook' | __ }}
+					{{ text_outlook_add }}
 				{% endif %}
 			</a>
 		</li>

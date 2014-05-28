@@ -277,6 +277,9 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		$args['text_subscribe']            = __( 'Subscribe', AI1EC_PLUGIN_NAME );
 		$args['text_add_google']           = __( 'Subscribe to this calendar in your Google Calendar', AI1EC_PLUGIN_NAME );
 		$args['text_google']               = __( 'Add to Google', AI1EC_PLUGIN_NAME );
+		$args['outlook_label']             = __( 'Outlook', AI1EC_PLUGIN_NAME );
+		$args['text_outlook']              = __( 'Subscribe to this calendar in your Outlook', AI1EC_PLUGIN_NAME );
+		$args['text_outlook_add']          = __( 'Add to Outlook', AI1EC_PLUGIN_NAME );
 		$args['text_edit']                 = __( 'Edit', AI1EC_PLUGIN_NAME );
 		$args['text_venue_separator']      = __( '@ %s', AI1EC_PLUGIN_NAME );
 

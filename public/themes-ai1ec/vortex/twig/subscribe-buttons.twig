@@ -7,6 +7,9 @@
 {% if outlook_calendar_title is empty %}
 	{% set outlook_calendar_title = text_outlook %}
 {% endif %}
+{% if plaintext_calendar_title is empty %}
+	{% set plaintext_calendar_title = 'Use for Outlook, iCal, and other calendar readers that mangle rich-text events' | __ %}
+{% endif %}
 {% if tooltip_placement is empty %}
 	{% set dp_calendar = 'top' %}
 	{% set dp_google   = 'top' %}
@@ -56,12 +59,12 @@
 			<a class="ai1ec-tooltip-trigger"
 			   data-placement="{{ dp_outlook }}"
 			   href="{{ ( export_url_no_html ~ url_args ) | e('html_attr') }}"
-			   title="{{ outlook_calendar_title }}" >
+			   title="{{ plaintext_calendar_title }}" >
 				<i class="ai1ec-fa ai1ec-fa-plus ai1ec-fa-fw"></i>
-				{% if outlook_label is not empty %}
-					{{ outlook_label }}
+				{% if plaintext_label is not empty %}
+					{{ plaintext_label }}
 				{% else %}
-					{{ text_outlook_add }}
+					{{ 'Add as plain text' | __ }}
 				{% endif %}
 			</a>
 		</li>

@@ -105,7 +105,10 @@ define(
 		if ( $this.is( '.ai1ec-category .ai1ec-color-swatch' ) ) {
 			return;
 		}
-
+		if ( $this.is( '.ai1ec-tooltip-auto' ) ) {
+			params.placement = get_placement_function( $this, 250 );
+			console.log( params.placement );
+		}
 		$this.tooltip( params );
 		$this.tooltip( 'show' );
 	};
@@ -144,6 +147,42 @@ define(
 			$( 'body > .ai1ec-popup' ).remove();
 		}
 	};
+
+	var get_placement_function = function( element, width) {
+				var left,
+					right;
+
+				var $element = $(element);
+				var defaultPosition = $element.attr("data-placement");
+
+				var pos = $.extend({}, $element.offset(), {
+					width: element.offsetWidth,
+					height: element.offsetHeight
+				});
+
+				var testLeft = function() {
+					if (left === false) return false;
+					left = ( ( pos.left - width ) >= 0);
+					return left ? "left" : false;
+				};
+
+				var testRight = function() {
+					if (right === false) return false;
+					right = ( ( pos.left + width ) <= $(window).width() );
+					return right ? "right" : false;
+				};
+
+				switch (defaultPosition) {
+					case "top"    : return "top"; break;
+					case "bottom" : return "bottom"; break;
+					case "left"   : if ( testLeft() ) return "left";
+					case "right"  : if ( testRight() ) return "right";
+					default:
+						if ( testLeft() ) return "left";
+						if ( testRight() ) return "right";
+						return defaultPosition;
+				}
+		};
 
 	return {
 		handle_popover_over        : handle_popover_over,

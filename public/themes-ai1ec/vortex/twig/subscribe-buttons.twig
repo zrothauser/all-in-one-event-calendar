@@ -36,7 +36,7 @@
 	{% set url = export_url | replace( {"webcal://": "http://"} ) ~ url_args %}
 	<ul class="ai1ec-dropdown-menu" role="menu">
 		<li>
-			<a class="ai1ec-tooltip-trigger"
+			<a class="ai1ec-tooltip-trigger ai1ec-tooltip-auto"
 			   target="_blank"
 			   data-placement="left"
 			   href="{{ url | e('html_attr') }}"
@@ -50,7 +50,7 @@
 			</a>
 		</li>
 		<li>
-			<a class="ai1ec-tooltip-trigger"
+			<a class="ai1ec-tooltip-trigger ai1ec-tooltip-auto"
 			   target="_blank"
 			   data-placement="left"
 			   href="http://www.google.com/calendar/render?cid={{ url | url_encode | e('html_attr') }}"
@@ -64,7 +64,7 @@
 			</a>
 		</li>
 		<li>
-			<a class="ai1ec-tooltip-trigger"
+			<a class="ai1ec-tooltip-trigger ai1ec-tooltip-auto"
 			   target="_blank"
 			   data-placement="left"
 			   href="{{ ( export_url_no_html ~ url_args ) | e('html_attr') }}"
@@ -78,7 +78,7 @@
 			</a>
 		</li>
 		<li>
-			<a class="ai1ec-tooltip-trigger"
+			<a class="ai1ec-tooltip-trigger ai1ec-tooltip-auto"
 			   target="_blank"
 			   data-placement="left"
 			   href="{{ ( export_url_no_html ~ url_args ) | e('html_attr') }}"
@@ -92,7 +92,7 @@
 			</a>
 		</li>
 		<li>
-			<a class="ai1ec-tooltip-trigger"
+			<a class="ai1ec-tooltip-trigger ai1ec-tooltip-auto"
 			   data-placement="left"
 			   href="{{ ( export_url_no_html ~ url_args ) | e('html_attr') }}"
 			   title="{{ plaintext_calendar_title }}" >

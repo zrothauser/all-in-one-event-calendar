@@ -280,29 +280,6 @@ class Ai1ec_Event extends Ai1ec_Base {
 		}
 	}
 
-
-	/**
-	 * get_uid_format method
-	 *
-	 * Get format of UID, to be used for current site.
-	 * The generated format is cached in static variable within this function
-	 *
-	 * @return string uid
-	 *
-	 * @staticvar string $format Cached format
-	 */
-	public function get_uid() {
-		static $format = null;
-		if ( null === $format ) {
-			$site_url = parse_url( get_site_url() );
-			$format   = 'ai1ec-%d@' . $site_url['host'];
-			if ( isset( $site_url['path'] ) ) {
-				$format .= $site_url['path'];
-			}
-		}
-		return sprintf( $format, $this->get( 'post_id' ) );
-	}
-	
 	/**
 	 * Restore original URL from loggable event URL
 	 *
@@ -412,6 +389,28 @@ class Ai1ec_Event extends Ai1ec_Base {
 		}
 		$this->_entity->set( 'is_free', (bool)$is_free );
 		return (string)$cost;
+	}
+
+	/**
+	 * Get UID to be used for current event.
+	 *
+	 * The generated format is cached in static variable within this function
+	 * to re-use when generating UIDs for different entries.
+	 *
+	 * @return string Generated UID.
+	 *
+	 * @staticvar string $format Cached format.
+	 */
+	public function get_uid() {
+		static $format = null;
+		if ( null === $format ) {
+			$site_url = parse_url( get_site_url() );
+			$format   = 'ai1ec-%d@' . $site_url['host'];
+			if ( isset( $site_url['path'] ) ) {
+				$format .= $site_url['path'];
+			}
+		}
+		return sprintf( $format, $this->get( 'post_id' ) );
 	}
 
 	/**

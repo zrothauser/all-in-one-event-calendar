@@ -65,7 +65,6 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 			'style.less',
 			'event.less',
 			'calendar.less',
-			'override.less',
 		);
 	}
 
@@ -110,6 +109,7 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 
 		// Allow extensions to add their own LESS files.
 		$this->files = apply_filters( 'ai1ec_less_files', $this->files );
+		$this->files[] = 'override.less';
 
 		// Find out the active theme URL.
 		$option      = $this->_registry->get( 'model.option' );

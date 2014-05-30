@@ -92,9 +92,10 @@
 			</a>
 		</li>
 		<li>
+			{% set export_url_no_html_http = export_url_no_html | replace( {"webcal://": "http://"} ) %}
 			<a class="ai1ec-tooltip-trigger ai1ec-tooltip-auto"
 			   data-placement="left"
-			   href="{{ ( export_url_no_html ~ url_args ) | e('html_attr') }}"
+			   href="{{ ( export_url_no_html_http ~ url_args ) | e('html_attr') }}"
 			   title="{{ plaintext_calendar_title }}" >
 				<i class="ai1ec-fa ai1ec-fa-calendar ai1ec-fa-fw"></i>
 				{% if plaintext_label is not empty %}

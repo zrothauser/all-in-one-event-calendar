@@ -129,9 +129,9 @@ class Ai1ec_Notification_Admin extends Ai1ec_Notification {
 						$this->_render_message(
 							$this->_message_list['_messages'][$key]
 						);
-						if ( 
+						if (
 							! isset( $this->_message_list['_messages'][$key]['persistent'] ) ||
-							false === $this->_message_list['_messages'][$key]['persistent'] 
+							false === $this->_message_list['_messages'][$key]['persistent']
 						) {
 							unset( $this->_message_list['_messages'][$key] );
 							unset( $this->_message_list[$dst][$key] );

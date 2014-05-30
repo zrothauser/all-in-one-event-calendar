@@ -3,15 +3,15 @@
 			ai1ec-tooltip-trigger {{ button_classes }}"
 		data-placement="bottom"
 		href="{{ ( export_url ~ url_args ) | e('html_attr') }}"
-		title="{{ 'Subscribe to this calendar in your personal calendar (iCal, Outlook, etc.)' | __ }}" >
+		title="{{ text_calendar }}" >
 		<i class="ai1ec-fa ai1ec-fa-plus"></i>
 		{% if subscribe_label is not empty %}
 			{{ subscribe_label }}
 		{% else %}
 			{% if is_filtered %}
-				{{ 'Subscribe to filtered calendar' | __ }}
+				{{ text_filtered }}
 			{% else %}
-				{{ 'Subscribe' | __ }}
+				{{ text_subscribe }}
 			{% endif %}
 		{% endif %}
 	</a>
@@ -20,12 +20,12 @@
 			ai1ec-tooltip-trigger {{ button_classes }}"
 		target="_blank" data-placement="bottom"
 		href="http://www.google.com/calendar/render?cid={{ url | url_encode | e('html_attr') }}"
-		title="{{ 'Subscribe to this calendar in your Google Calendar' | __ }}" >
+		title="{{ text_add_google }}" >
 		<i class="ai1ec-fa ai1ec-fa-google-plus ai1ec-fa-lg"></i>
 		{% if google_label is not empty %}
 			{{ google_label }}
 		{% else %}
-			{{ 'Add to Google' | __ }}
+			{{ text_google }}
 		{% endif %}
 	</a>
 </div>

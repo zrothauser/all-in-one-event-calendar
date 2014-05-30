@@ -19,7 +19,7 @@ abstract class Ai1ec_Notification extends Ai1ec_Base {
 	/**
 	 * @var array A list of recipients.
 	 */
-	protected $recipients = array();
+	protected $_recipients = array();
 
 	/**
 	 * This function performs the actual sending of the message.

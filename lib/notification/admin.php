@@ -171,6 +171,7 @@ class Ai1ec_Notification_Admin extends Ai1ec_Notification {
 			if ( null === $theme ) {
 				$theme = $this->_registry->get( 'theme.loader' );
 			}
+			$entity['text_label'] = __( 'All-in-One Event Calendar', AI1EC_PLUGIN_NAME );
 			$file = $theme->get_file(
 				'notification/admin.twig',
 				$entity,

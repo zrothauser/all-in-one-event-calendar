@@ -266,6 +266,18 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		$args['calendar_url']              = $html->create_href_helper_instance( $limit )->generate_href();
 		$args['subscribe_url']             = AI1EC_EXPORT_URL . $subscribe_filter;
 		$args['is_ticket_button_enabled']  = $is_ticket_button_enabled;
+		$args['text_upcoming_events']      = __( 'There are no upcoming events.', AI1EC_PLUGIN_NAME );
+		$args['text_all_day']              = __( 'all-day', AI1EC_PLUGIN_NAME );
+		$args['text_view_calendar']        = __( 'View Calendar', AI1EC_PLUGIN_NAME );
+		$args['text_subscribe_label']      = __( 'Add', AI1EC_PLUGIN_NAME );
+		$args['text_google_label']         = __( 'Add', AI1EC_PLUGIN_NAME );
+		$args['text_calendar']             = __( 'Subscribe to this calendar in your personal calendar (iCal, Outlook, etc.)', AI1EC_PLUGIN_NAME );
+		$args['text_filtered']             = __( 'Subscribe to filtered calendar', AI1EC_PLUGIN_NAME );
+		$args['text_subscribe']            = __( 'Subscribe', AI1EC_PLUGIN_NAME );
+		$args['text_add_google']           = __( 'Subscribe to this calendar in your Google Calendar', AI1EC_PLUGIN_NAME );
+		$args['text_google']               = __( 'Add to Google', AI1EC_PLUGIN_NAME );
+		$args['text_edit']                 = __( 'Edit', AI1EC_PLUGIN_NAME );
+		$args['text_venue_separator']      = __( '@ %s', AI1EC_PLUGIN_NAME );
 
 		// Display theme
 		$this->_registry->get( 'theme.loader' )->get_file(

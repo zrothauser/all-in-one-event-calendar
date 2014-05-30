@@ -41,7 +41,7 @@
 			   data-placement="left"
 			   href="{{ url | e('html_attr') }}"
 			   title="{{ timely_calendar_title }}" >
-				<i class="ai1ec-fa ai1ec-fa-calendar ai1ec-fa-lg ai1ec-fa-fw"></i>
+				<i class="ai1ec-fa ai1ec-fa-lg ai1ec-fa-fw timely-icon-timely-logomark"></i>
 				{% if timely_label is not empty %}
 					{{ timely_label }}
 				{% else %}
@@ -96,7 +96,7 @@
 			   data-placement="left"
 			   href="{{ ( export_url_no_html ~ url_args ) | e('html_attr') }}"
 			   title="{{ plaintext_calendar_title }}" >
-				<i class="ai1ec-fa ai1ec-fa-plus ai1ec-fa-fw"></i>
+				<i class="ai1ec-fa ai1ec-fa-calendar ai1ec-fa-fw"></i>
 				{% if plaintext_label is not empty %}
 					{{ plaintext_label }}
 				{% else %}

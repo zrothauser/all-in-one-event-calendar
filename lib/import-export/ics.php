@@ -74,7 +74,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			$c = $this->_insert_event_in_calendar(
 					$event,
 					$c,
-					$export = true,
+					true,
 					$params
 				);
 		}

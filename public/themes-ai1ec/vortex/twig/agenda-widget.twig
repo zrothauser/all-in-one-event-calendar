@@ -48,12 +48,14 @@
 											{{ event.get_runtime( 'filtered_title' ) | truncate | raw }}
 											{% if show_location_in_title and event.get( 'venue' ) is not empty %}
 												<span class="ai1ec-event-location"
-													>{{ '@ %s' | format( event.get( 'venue' ) ) }}</span>
+													>{{ text_venue_separator | format( event.get( 'venue' ) ) }}</span>
 											{% endif %}
 										</span>
 									</a>
 
-									{% include 'event-popup.twig' %}
+									{% include 'event-popup.twig' with {
+									'text_venue_separator': text_venue_separator
+									} %}
 
 								</div>
 							{% endfor %} {# event in category #}

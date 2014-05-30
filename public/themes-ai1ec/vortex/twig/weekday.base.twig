@@ -57,7 +57,7 @@
 									{{ event.get_runtime( 'filtered_title' ) | raw }}
 									{% if show_location_in_title and event.get( 'venue' ) is not empty %}
 										<span class="ai1ec-event-location"
-											>{{ '@ %s' | format( event.get( 'venue' ) ) }}</span>
+											>{{ text_venue_separator | format( event.get( 'venue' ) ) }}</span>
 									{% endif %}
 								</span>
 							</div>
@@ -65,7 +65,8 @@
 
 						{% block event_popup %}
 							{% include 'event-popup.twig' with {
-								'popup_timespan': event.get( '_orig' ) | timespan( 'short' )
+								'popup_timespan': event.get( '_orig' ) | timespan( 'short' ),
+								'text_venue_separator': text_venue_separator
 								} %}
 						{% endblock event_popup %}
 
@@ -152,7 +153,7 @@
 										{{ event.get_runtime( 'filtered_title' ) | raw }}
 										{% if show_location_in_title and event.get( 'venue' ) is not empty %}
 											<span class="ai1ec-event-location"
-												>{{ '@ %s' | format( event.get( 'venue' ) ) }}</span>
+												>{{ text_venue_separator | format( event.get( 'venue' ) ) }}</span>
 										{% endif %}
 									</span>
 								</div>

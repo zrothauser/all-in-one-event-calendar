@@ -71,8 +71,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				),
 			),
 		);
-		// hold import lock for half an hour
-		if ( $this->_xguard->acquire( $cron_name, 1800 ) ) {
+		// hold import lock for 8 minutes
+		if ( $this->_xguard->acquire( $cron_name, 480 ) ) {
 			$output = $this->process_ics_feed_update( $ajax, $feed_id );
 		}
 		$this->_xguard->release( $cron_name );

@@ -78,28 +78,6 @@ class Ai1ec_Ics_Import_Export_Engine
 	}
 
 	/**
-	 * get_uid_format method
-	 *
-	 * Get format of UID, to be used for current site.
-	 * The generated format is cached in static variable within this function
-	 *
-	 * @return string Format to use when printing UIDs
-	 *
-	 * @staticvar string $format Cached format, to be returned
-	 */
-	public function get_uid_format() {
-		static $format = null;
-		if ( null === $format ) {
-			$site_url = parse_url( get_site_url() );
-			$format   = 'ai1ec-%d@' . $site_url['host'];
-			if ( isset( $site_url['path'] ) ) {
-				$format .= $site_url['path'];
-			}
-		}
-		return $format;
-	}
-
-	/**
 	 * Check if date-time specification has no (empty) time component.
 	 *
 	 * @param array $datetime Datetime array returned by iCalcreator.
@@ -464,8 +442,9 @@ class Ai1ec_Ics_Import_Export_Engine
 			$search = $this->_registry->get( 'model.search' );
 			// first let's check by UID
 			$matching_event_id = $search
-				->get_matching_event_by_uid(
-					$event->get( 'ical_uid' )
+				->get_matching_event_by_uid_and_url(
+					$event->get( 'ical_uid' ),
+					$event->get( 'ical_feed_url' )
 				);
 			// if no result, perform the legacy check.
 			if ( null === $matching_event_id ) {
@@ -503,9 +482,7 @@ class Ai1ec_Ics_Import_Export_Engine
 
 			}
 			// if the event was already present , unset it from the array so it's not deleted
-			if ( isset( $events_in_db[$event->get( 'post_id' )] ) ) {
-				unset( $events_in_db[$event->get( 'post_id' )] );
-			}
+			unset( $events_in_db[$event->get( 'post_id' )] );
 			$count++;
 		}
 
@@ -621,9 +598,7 @@ class Ai1ec_Ics_Import_Export_Engine
 		if ( $event->get( 'ical_uid' ) ) {
 			$uid = addcslashes( $event->get( 'ical_uid' ), "\\;,\n" );
 		} else {
-			// if the uid is not set, create it and save it
-			$create_model = $this->_registry->get( 'model.event.creating' );
-			$uid = $create_model->get_uid( $event );
+			$uid = $event->get_uid();
 			$event->set( 'ical_uid', $uid );
 			$event->save( true );
 		}

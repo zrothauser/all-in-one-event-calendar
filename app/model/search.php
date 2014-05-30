@@ -391,13 +391,14 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	 * 
 	 * @param string $uid
 	 */
-	public function get_matching_event_by_uid( $uid ) {
+	public function get_matching_event_by_uid_and_url( $uid, $url ) {
 		$dbi        = $this->_registry->get( 'dbi.dbi' );
 		$table_name = $dbi->get_table_name( 'ai1ec_events' );
 		$query      = 'SELECT `post_id` FROM ' . $table_name . '
 						WHERE
-						ical_uid = %s';
-		return $dbi->get_var( $dbi->prepare( $query, array( $uid ) ) );
+						ical_uid = %s AND
+						ical_feed_url = %s';
+		return $dbi->get_var( $dbi->prepare( $query, array( $uid, $url ) ) );
 	}
 
 	/**

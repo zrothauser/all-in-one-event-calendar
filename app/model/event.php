@@ -280,6 +280,29 @@ class Ai1ec_Event extends Ai1ec_Base {
 		}
 	}
 
+
+	/**
+	 * get_uid_format method
+	 *
+	 * Get format of UID, to be used for current site.
+	 * The generated format is cached in static variable within this function
+	 *
+	 * @return string uid
+	 *
+	 * @staticvar string $format Cached format
+	 */
+	public function get_uid() {
+		static $format = null;
+		if ( null === $format ) {
+			$site_url = parse_url( get_site_url() );
+			$format   = 'ai1ec-%d@' . $site_url['host'];
+			if ( isset( $site_url['path'] ) ) {
+				$format .= $site_url['path'];
+			}
+		}
+		return sprintf( $format, $this->get( 'post_id' ) );
+	}
+	
 	/**
 	 * Restore original URL from loggable event URL
 	 *
@@ -389,21 +412,6 @@ class Ai1ec_Event extends Ai1ec_Base {
 		}
 		$this->_entity->set( 'is_free', (bool)$is_free );
 		return (string)$cost;
-	}
-
-	/**
-	 * Return UID to use according to ICS rules.
-	 *
-	 * @return string UID event identifier.
-	 *
-	 * @staticvar string $_blog_url Base URL of blog, used as part of UID.
-	 */
-	public function get_uid() {
-		static $_blog_url = NULL;
-		if ( NULL === $_blog_url ) {
-			$_blog_url = bloginfo( 'url' );
-		}
-		return $this->get( 'post_id' ) . '@' . $_blog_url;
 	}
 
 	/**

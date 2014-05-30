@@ -108,6 +108,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			'text_read_more'            => __( 'Read more', AI1EC_PLUGIN_NAME ),
 			'text_categories'           => __( 'Categories:', AI1EC_PLUGIN_NAME ),
 			'text_tags'                 => __( 'Tags:', AI1EC_PLUGIN_NAME ),
+			'text_venue_separator'      => __( '@ %s', AI1EC_PLUGIN_NAME ),
 		);
 		if( $settings->get( 'ajaxify_events_in_web_widget' ) ) {
 			$args['data_type_events'] = $view_args['data_type'];

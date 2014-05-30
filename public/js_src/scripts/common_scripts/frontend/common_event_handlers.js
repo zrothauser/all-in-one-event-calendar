@@ -106,8 +106,7 @@ define(
 			return;
 		}
 		if ( $this.is( '.ai1ec-tooltip-auto' ) ) {
-			params.placement = get_placement_function( $this, 250 );
-			console.log( params.placement );
+			params.placement = get_placement_function( 250 );
 		}
 		$this.tooltip( params );
 		$this.tooltip( 'show' );
@@ -148,13 +147,13 @@ define(
 		}
 	};
 
-	var get_placement_function = function( element, width) {
+	var get_placement_function = function( width ) {
+		return function (tip, element) {
 				var left,
 					right;
 
 				var $element = $(element);
 				var defaultPosition = $element.attr("data-placement");
-
 				var pos = $.extend({}, $element.offset(), {
 					width: element.offsetWidth,
 					height: element.offsetHeight
@@ -182,7 +181,8 @@ define(
 						if ( testRight() ) return "right";
 						return defaultPosition;
 				}
-		};
+		}
+	};
 
 	return {
 		handle_popover_over        : handle_popover_over,

@@ -11,6 +11,17 @@
 	font-style: normal;
 }
 
+@font-face {
+	font-family: 'Timely Logo Icon';
+	src:url('@{timely-font-path}/timely-sub-icons.eot');
+	src:url('@{timely-font-path}/timely-sub-icons.eot?#iefix') format('embedded-opentype'),
+		url('@{timely-font-path}/timely-sub-icons.svg#Timely-Icons') format('svg'),
+		url('@{timely-font-path}/timely-sub-icons.woff') format('woff'),
+		url('@{timely-font-path}/timely-sub-icons.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
 /* Use the following CSS code if you want to have a class per icon */
 [class^="timely-icon-"]:before, [class*=" timely-icon-"]:before {
 	display: inline-block;
@@ -19,6 +30,32 @@
 	font-weight: normal;
 	speak: none;
 	vertical-align: baseline;
+}
+[class^="timely-sub-icon-"]:before, [class*=" timely-sub-icon-"]:before {
+	display: inline-block;
+	font-family: 'Timely Logo Icon';
+	font-style: normal;
+	font-weight: normal;
+	speak: none;
+	vertical-align: baseline;
+}
+.timely-sub-icon-calendar:before {
+	content: "\f073";
+}
+.timely-sub-icon-rss:before {
+	content: "\f09e";
+}
+.timely-sub-icon-google:before {
+	content: "\f0d5";
+}
+.timely-sub-icon-apple:before {
+	content: "\f179";
+}
+.timely-sub-icon-windows:before {
+	content: "\f17a";
+}
+.timely-sub-icon-timely:before {
+	content: "\21";
 }
 .timely-icon-timely-logomark:before {
 	content: "\21";

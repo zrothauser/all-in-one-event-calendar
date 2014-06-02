@@ -69,13 +69,10 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			'show_subscribe_buttons'  => ! $settings->get( 'turn_off_subscription_buttons' ),
 			'hide_featured_image'     => $settings->get( 'hide_featured_image' ),
 			'extra_buttons'           => $extra_buttons,
-			'text_add_event'          => __( 'Add this event to your favourite calendar program (iCal, Outlook, etc.)', AI1EC_PLUGIN_NAME ),
 			'text_add_calendar'       => __( 'Add to Calendar', AI1EC_PLUGIN_NAME ),
-			'text_add_google'         => __( 'Add this event to your Google Calendar', AI1EC_PLUGIN_NAME ),
-			'text_google'             => __( 'Add to Google', AI1EC_PLUGIN_NAME ),
-			'outlook_label'           => __( 'Outlook', AI1EC_PLUGIN_NAME ),
-			'text_outlook'            => __( 'Subscribe to this calendar in your Outlook', AI1EC_PLUGIN_NAME ),
-			'text_outlook_add'        => __( 'Add to Outlook', AI1EC_PLUGIN_NAME ),
+			'subscribe_buttons_text'  => $this->_registry
+				->get( 'view.calendar.subscribe-button' )
+				->get_labels(),
 			'text_when'               => __( 'When:', AI1EC_PLUGIN_NAME ),
 			'text_where'              => __( 'Where:', AI1EC_PLUGIN_NAME ),
 			'text_cost'               => __( 'Cost:', AI1EC_PLUGIN_NAME ),

@@ -1,24 +1,3 @@
-{% if calendar_title is empty %}
-	{% set calendar_title = text_calendar %}
-{% endif %}
-{% if timely_calendar_title is empty %}
-	{% set timely_calendar_title = 'Copy this URL for your own Timely calendar or click to add to your rich-text calendar' %}
-{% endif %}
-{% if google_calendar_title is empty %}
-	{% set google_calendar_title = text_add_google %}
-{% endif %}
-{% if outlook_calendar_title is empty %}
-	{% set outlook_calendar_title = text_outlook %}
-{% endif %}
-{% if outlook_calendar_title is empty %}
-	{% set outlook_calendar_title = 'Subscribe to this calendar in MS Outlook' | __ %}
-{% endif %}
-{% if apple_calendar_title is empty %}
-	{% set apple_calendar_title = 'Subscribe to this calendar in Apple Calendar/iCal' | __ %}
-{% endif %}
-{% if plaintext_calendar_title is empty %}
-	{% set plaintext_calendar_title = 'Subscribe to this calendar in another plain-text calendar' | __ %}
-{% endif %}
 <div class="ai1ec-subscribe-container ai1ec-btn-group ai1ec-pull-left">
 	<button type="button" class="ai1ec-btn ai1ec-btn-default ai1ec-btn-sm ai1ec-dropdown-toggle ai1ec-subscribe {{ button_classes }}" data-toggle="ai1ec-dropdown">
 		<i class="ai1ec-fa timely-sub-icon-rss ai1ec-fa-lg ai1ec-fa-fw"></i>
@@ -40,13 +19,9 @@
 			   target="_blank"
 			   data-placement="left"
 			   href="{{ url | e('html_attr') }}"
-			   title="{{ timely_calendar_title }}" >
+			   title="{{ text.title.timely }}" >
 				<i class="ai1ec-fa ai1ec-fa-lg ai1ec-fa-fw timely-sub-icon-timely"></i>
-				{% if timely_label is not empty %}
-					{{ timely_label }}
-				{% else %}
-					{{ 'Add to Timely Calendar' | __ }}
-				{% endif %}
+				{{ text.label.timely }}
 			</a>
 		</li>
 		<li>
@@ -54,13 +29,9 @@
 			   target="_blank"
 			   data-placement="left"
 			   href="http://www.google.com/calendar/render?cid={{ url | url_encode | e('html_attr') }}"
-			   title="{{ google_calendar_title }}" >
+			   title="{{ text.title.google }}" >
 				<i class="ai1ec-fa timely-sub-icon-google ai1ec-fa-lg ai1ec-fa-fw"></i>
-				{% if google_label is not empty %}
-					{{ google_label }}
-				{% else %}
-					{{ text_google }}
-				{% endif %}
+				{{ text.label.google }}
 			</a>
 		</li>
 		<li>
@@ -68,13 +39,9 @@
 			   target="_blank"
 			   data-placement="left"
 			   href="{{ ( export_url_no_html ~ url_args ) | e('html_attr') }}"
-			   title="{{ outlook_calendar_title }}" >
+			   title="{{ text.title.outlook }}" >
 				<i class="ai1ec-fa timely-sub-icon-windows ai1ec-fa-lg ai1ec-fa-fw"></i>
-				{% if outlook_label is not empty %}
-					{{ outlook_label }}
-				{% else %}
-					{{ 'Add to Outlook' | __ }}
-				{% endif %}
+				{{ text.label.outlook }}
 			</a>
 		</li>
 		<li>
@@ -82,13 +49,9 @@
 			   target="_blank"
 			   data-placement="left"
 			   href="{{ ( export_url_no_html ~ url_args ) | e('html_attr') }}"
-			   title="{{ apple_calendar_title }}" >
+			   title="{{ text.title.apple }}" >
 				<i class="ai1ec-fa timely-sub-icon-apple ai1ec-fa-lg ai1ec-fa-fw"></i>
-				{% if apple_label is not empty %}
-					{{ apple_label }}
-				{% else %}
-					{{ 'Add to Apple Calendar' | __ }}
-				{% endif %}
+				{{ text.label.apple }}
 			</a>
 		</li>
 		<li>
@@ -96,13 +59,9 @@
 			<a class="ai1ec-tooltip-trigger ai1ec-tooltip-auto"
 			   data-placement="left"
 			   href="{{ ( export_url_no_html_http ~ url_args ) | e('html_attr') }}"
-			   title="{{ plaintext_calendar_title }}" >
+			   title="{{ text.title.plaintext }}" >
 				<i class="ai1ec-fa timely-sub-icon-calendar ai1ec-fa-fw"></i>
-				{% if plaintext_label is not empty %}
-					{{ plaintext_label }}
-				{% else %}
-					{{ 'Add to other calendar' | __ }}
-				{% endif %}
+				{{ text.label.plaintext }}
 			</a>
 		</li>
 	</ul>

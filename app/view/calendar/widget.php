@@ -270,18 +270,12 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		$args['text_upcoming_events']      = __( 'There are no upcoming events.', AI1EC_PLUGIN_NAME );
 		$args['text_all_day']              = __( 'all-day', AI1EC_PLUGIN_NAME );
 		$args['text_view_calendar']        = __( 'View Calendar', AI1EC_PLUGIN_NAME );
-		$args['text_subscribe_label']      = __( 'Add', AI1EC_PLUGIN_NAME );
-		$args['text_google_label']         = __( 'Add', AI1EC_PLUGIN_NAME );
-		$args['text_calendar']             = __( 'Subscribe to this calendar in your personal calendar (iCal, Outlook, etc.)', AI1EC_PLUGIN_NAME );
-		$args['text_filtered']             = __( 'Subscribe to filtered calendar', AI1EC_PLUGIN_NAME );
-		$args['text_subscribe']            = __( 'Subscribe', AI1EC_PLUGIN_NAME );
-		$args['text_add_google']           = __( 'Subscribe to this calendar in your Google Calendar', AI1EC_PLUGIN_NAME );
-		$args['text_google']               = __( 'Add to Google', AI1EC_PLUGIN_NAME );
-		$args['outlook_label']             = __( 'Outlook', AI1EC_PLUGIN_NAME );
-		$args['text_outlook']              = __( 'Subscribe to this calendar in your Outlook', AI1EC_PLUGIN_NAME );
-		$args['text_outlook_add']          = __( 'Add to Outlook', AI1EC_PLUGIN_NAME );
 		$args['text_edit']                 = __( 'Edit', AI1EC_PLUGIN_NAME );
 		$args['text_venue_separator']      = __( '@ %s', AI1EC_PLUGIN_NAME );
+		$args['text_subscribe_label']      = __( 'Add', AI1EC_PLUGIN_NAME );
+		$args['subscribe_buttons_text']    = $this->_registry
+			->get( 'view.calendar.subscribe-button' )
+			->get_labels();
 
 		// Display theme
 		$this->_registry->get( 'theme.loader' )->get_file(

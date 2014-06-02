@@ -643,7 +643,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			$e->setProperty(
 				'description',
 				$this->_sanitize_value(
-					strip_tags( $content )
+					strip_tags( strip_shortcodes( $content ) )
 				)
 			);
 			if ( ! empty( $content ) ) {

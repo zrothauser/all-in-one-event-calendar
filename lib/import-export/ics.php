@@ -44,7 +44,7 @@ class Ai1ec_Ics_Import_Export_Engine
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Import_Export_Engine::export()
 	 */
-	public function export( array $arguments ) {
+	public function export( array $arguments, array $params = array() ) {
 		$c = new vcalendar();
 		$c->setProperty( 'calscale', 'GREGORIAN' );
 		$c->setProperty( 'method', 'PUBLISH' );
@@ -71,7 +71,12 @@ class Ai1ec_Ics_Import_Export_Engine
 		}
 		$this->_taxonomy_model->update_meta( $post_ids );
 		foreach ( $arguments['events'] as $event ) {
-			$c =$this->_insert_event_in_calendar( $event, $c, $export = true );
+			$c = $this->_insert_event_in_calendar(
+				$event,
+				$c,
+				true,
+				$params
+			);
 		}
 		$str = ltrim( $c->createCalendar() );
 		return $str;
@@ -578,16 +583,18 @@ class Ai1ec_Ics_Import_Export_Engine
 	 * Convert an event from a feed into a new Ai1ec_Event object and add it to
 	 * the calendar.
 	 *
-	 * @param Ai1ec_Event $event    Event object
-	 * @param vcalendar   $calendar Calendar object
-	 * @param bool        $export   States whether events are created for export
+	 * @param Ai1ec_Event $event    Event object.
+	 * @param vcalendar   $calendar Calendar object.
+	 * @param bool        $export   States whether events are created for export.
+	 * @param array       $params   Additional parameters for export.
 	 *
 	 * @return void
 	 */
 	protected function _insert_event_in_calendar(
 			Ai1ec_Event $event,
 			vcalendar $calendar,
-			$export = false
+			$export = false,
+			array $params = array()
 	) {
 
 		$tz  = $this->_registry->get( 'date.timezone' )
@@ -632,14 +639,35 @@ class Ai1ec_Ics_Import_Export_Engine
 					esc_attr( $img_url ) . '" width="' . $size[0] . '" height="' .
 					$size[1] . '" /></div>' . $content;
 		}
-		$e->setProperty( 'description', $this->_sanitize_value( $content ) );
+		if ( isset( $params['no_html'] ) && $params['no_html'] ) {
+			$e->setProperty(
+				'description',
+				$this->_sanitize_value(
+					strip_tags( strip_shortcodes( $content ) )
+				)
+			);
+			if ( ! empty( $content ) ) {
+				$html_content = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">\n' .
+					'<HTML>\n<HEAD>\n<TITLE></TITLE>\n</HEAD>\n<BODY>' . $content .
+					'</BODY></HTML>';
+				$e->setProperty(
+					'X-ALT-DESC',
+					$this->_sanitize_value( $html_content ),
+					array(
+						'FMTTYPE' => 'text/html',
+					)
+				);
+				unset( $html_content );
+			}
+		} else {
+			$e->setProperty( 'description', $this->_sanitize_value( $content ) );
+		}
 		$revision = (int)current(
 			array_keys(
 				wp_get_post_revisions( $event->get( 'post_id' ) )
 			)
 		);
 		$e->setProperty( 'sequence', $revision );
-
 
 		// =====================
 		// = Start & end times =
@@ -845,7 +873,7 @@ class Ai1ec_Ics_Import_Export_Engine
 		$exrule = array();
 		if ( ! empty( $exceptions ) ) {
 			$rules = array();
-			
+
 			foreach ( explode( ';', $exceptions ) as $v) {
 				if ( strpos( $v, '=' ) === false ) {
 					continue;

@@ -29,7 +29,7 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 
 		$subscribe_url = AI1EC_EXPORT_URL . '&ai1ec_post_ids=' .
 			$event->get( 'post_id' );
-		$subscribe_url = str_replace( 'webcal://', 'http://', $subscribe_url );
+
 		$event->set_runtime(
 			'tickets_url_label',
 			$ticket->get_tickets_url_label( $event, false )
@@ -62,16 +62,17 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			'contact'                 => $ticket->get_contact_html( $event ),
 			'back_to_calendar'        => $content->get_back_to_calendar_button_html(),
 			'subscribe_url'           => $subscribe_url,
+			'subscribe_url_no_html'   => $subscribe_url . '&no_html=true',
 			'edit_instance_url'       => null,
 			'edit_instance_text'      => null,
 			'google_url'              => 'http://www.google.com/calendar/render?cid=' . urlencode( $subscribe_url ),
 			'show_subscribe_buttons'  => ! $settings->get( 'turn_off_subscription_buttons' ),
 			'hide_featured_image'     => $settings->get( 'hide_featured_image' ),
 			'extra_buttons'           => $extra_buttons,
-			'text_add_event'          => __( 'Add this event to your favourite calendar program (iCal, Outlook, etc.)', AI1EC_PLUGIN_NAME ),
 			'text_add_calendar'       => __( 'Add to Calendar', AI1EC_PLUGIN_NAME ),
-			'text_add_google'         => __( 'Add this event to your Google Calendar', AI1EC_PLUGIN_NAME ),
-			'text_google'             => __( 'Add to Google', AI1EC_PLUGIN_NAME ),
+			'subscribe_buttons_text'  => $this->_registry
+				->get( 'view.calendar.subscribe-button' )
+				->get_labels(),
 			'text_when'               => __( 'When:', AI1EC_PLUGIN_NAME ),
 			'text_where'              => __( 'Where:', AI1EC_PLUGIN_NAME ),
 			'text_cost'               => __( 'Cost:', AI1EC_PLUGIN_NAME ),

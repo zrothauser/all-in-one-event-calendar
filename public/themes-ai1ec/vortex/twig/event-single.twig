@@ -25,21 +25,13 @@
 				</a>
 			{% endif %}
 			{% if show_subscribe_buttons %}
-				<a class="ai1ec-btn ai1ec-btn-default ai1ec-btn-sm ai1ec-subscribe
-					ai1ec-tooltip-trigger" href="{{ subscribe_url | e('html_attr') }}"
-					title="{{ text_add_event | e('html_attr') }}"
-					data-placement="left">
-					<i class="ai1ec-fa ai1ec-fa-plus ai1ec-fa-fw"></i>
-					<span class="ai1ec-hidden-xs">{{ text_add_calendar }}</span>
-				</a>
-				<a class="ai1ec-btn ai1ec-btn-default ai1ec-btn-sm
-					ai1ec-subscribe-google ai1ec-tooltip-trigger" target="_blank"
-					href="{{ google_url | e('html_attr') }}"
-					title="{{ text_add_google | e('html_attr') }}"
-					data-placement="left">
-					<i class="ai1ec-fa ai1ec-fa-google-plus ai1ec-fa-lg ai1ec-fa-fw"></i>
-					<span class="ai1ec-hidden-xs">{{ text_google }}</span>
-				</a>
+				{% include 'subscribe-buttons.twig' with {
+					'button_classes':         'ai1ec-btn-dropdown',
+					'export_url':             subscribe_url,
+					'export_url_no_html':     subscribe_url_no_html,
+					'subscribe_label':        text_add_calendar,
+					'text':                   subscribe_buttons_text
+				} %}
 			{% endif %}
 			{% if extra_buttons %}
 				{{ extra_buttons | raw }}

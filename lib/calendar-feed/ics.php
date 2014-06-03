@@ -296,8 +296,6 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			// update the feed
 			$this->update_ics_feed( $feed_id );
 		}
-		// Release lock
-		$xguard->release( $guard_name );
 	}
 
 	/**

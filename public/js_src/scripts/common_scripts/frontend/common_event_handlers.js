@@ -105,7 +105,9 @@ define(
 		if ( $this.is( '.ai1ec-category .ai1ec-color-swatch' ) ) {
 			return;
 		}
-
+		if ( $this.is( '.ai1ec-tooltip-auto' ) ) {
+			params.placement = get_placement_function( 250 );
+		}
 		$this.tooltip( params );
 		$this.tooltip( 'show' );
 	};
@@ -142,6 +144,46 @@ define(
 		// If an ancestor of element being entered is not a popup, hide any popup.
 		if ( $el.closest( '.ai1ec-popup' ).length === 0 ) {
 			$( 'body > .ai1ec-popup' ).remove();
+		}
+	};
+
+	var get_placement_function = function( width ) {
+		return function( tip, element ) {
+				var left, right;
+
+				var $element        = $( element );
+				var defaultPosition = $element.attr( 'data-placement' );
+				var pos             = $.extend( {}, $element.offset(), {
+					width:  element.offsetWidth,
+					height: element.offsetHeight
+				} );
+
+				var testLeft = function() {
+					if ( false === left ) {
+						return false;
+					}
+					left = ( ( pos.left - width ) >= 0 );
+					return left ? 'left' : false;
+				};
+
+				var testRight = function() {
+					if ( false === right ) {
+						return false;
+					}
+					right = ( ( pos.left + width ) <= $( window ).width() );
+					return right ? 'right' : false;
+				};
+
+				switch ( defaultPosition ) {
+					case 'top'    : return 'top'; break;
+					case 'bottom' : return 'bottom'; break;
+					case 'left'   : if ( testLeft() )  { return 'left'  };
+					case 'right'  : if ( testRight() ) { return 'right' };
+					default:
+						if ( testLeft() )  { return 'left'  };
+						if ( testRight() ) { return 'right' };
+						return defaultPosition;
+				}
 		}
 	};
 

@@ -2,13 +2,13 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.0.9.2\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.0.9.3\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2014-06-02 16:46:42+00:00\n"
+"POT-Creation-Date: 2014-06-03 08:10:08+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2014-06-02 19:46+0300\n"
+"PO-Revision-Date: 2014-06-03 11:10+0300\n"
 "Last-Translator: Timely <support@time.ly>\n"
 "Language-Team:\n"
 
@@ -173,14 +173,22 @@ msgid "Agenda pages show at most"
 msgstr "Agenda pages show at most"
 
 #: app/model/settings.php:419
+msgid "Week/Day view starts at"
+msgstr "Week/Day view starts at"
+
+#: app/model/settings.php:432
+msgid "Week/Day view ends at"
+msgstr "Week/Day view ends at"
+
+#: app/model/settings.php:445
 msgid "<strong>Word-wrap event stubs</strong> in Month view"
 msgstr "<strong>Word-wrap event stubs</strong> in Month view"
 
-#: app/model/settings.php:422
+#: app/model/settings.php:448
 msgid "Only applies to events that span a single day."
 msgstr "Only applies to events that span a single day."
 
-#: app/model/settings.php:434
+#: app/model/settings.php:460
 msgid ""
 "In <span class=\"ai1ec-tooltip-toggle\"\n"
 "\t\t\t\t\t\tdata-original-title=\"These include Agenda view,\n"
@@ -194,23 +202,23 @@ msgstr ""
 "\t\t\t\t\t\tAgenda-like views</span>, <strong>include all events\n"
 "\t\t\t\t\t\tfrom last day shown</strong>"
 
-#: app/model/settings.php:450
+#: app/model/settings.php:476
 msgid "Keep all events <strong>expanded</strong> in Agenda view"
 msgstr "Keep all events <strong>expanded</strong> in Agenda view"
 
-#: app/model/settings.php:462
+#: app/model/settings.php:488
 msgid "<strong>Show year</strong> in calendar date labels"
 msgstr "<strong>Show year</strong> in calendar date labels"
 
-#: app/model/settings.php:474
+#: app/model/settings.php:500
 msgid "<strong>Show location in event titles</strong> in calendar views"
 msgstr "<strong>Show location in event titles</strong> in calendar views"
 
-#: app/model/settings.php:486
+#: app/model/settings.php:512
 msgid "<strong>Exclude</strong> events from search results"
 msgstr "<strong>Exclude</strong> events from search results"
 
-#: app/model/settings.php:498
+#: app/model/settings.php:524
 msgid ""
 "Hide <strong>Subscribe</strong>/<strong>Add to Calendar</strong> buttons in "
 "calendar and single event views "
@@ -218,49 +226,49 @@ msgstr ""
 "Hide <strong>Subscribe</strong>/<strong>Add to Calendar</strong> buttons in "
 "calendar and single event views "
 
-#: app/model/settings.php:510
+#: app/model/settings.php:536
 msgid " Hide <strong>Google Maps</strong> until clicked"
 msgstr " Hide <strong>Google Maps</strong> until clicked"
 
-#: app/model/settings.php:522
+#: app/model/settings.php:548
 msgid " <strong>Hide featured image</strong> from event details page"
 msgstr " <strong>Hide featured image</strong> from event details page"
 
-#: app/model/settings.php:525
+#: app/model/settings.php:551
 msgid ""
 "Select this option if your theme already displays each post's featured image."
 msgstr ""
 "Select this option if your theme already displays each post's featured image."
 
-#: app/model/settings.php:545
+#: app/model/settings.php:571
 msgid "Input dates in this format"
 msgstr "Input dates in this format"
 
-#: app/model/settings.php:550
+#: app/model/settings.php:576
 msgid "Default (d/m/yyyy)"
 msgstr "Default (d/m/yyyy)"
 
-#: app/model/settings.php:554
+#: app/model/settings.php:580
 msgid "US (m/d/yyyy)"
 msgstr "US (m/d/yyyy)"
 
-#: app/model/settings.php:558
+#: app/model/settings.php:584
 msgid "ISO 8601 (yyyy-m-d)"
 msgstr "ISO 8601 (yyyy-m-d)"
 
-#: app/model/settings.php:562
+#: app/model/settings.php:588
 msgid "Dotted (m.d.yyyy)"
 msgstr "Dotted (m.d.yyyy)"
 
-#: app/model/settings.php:574
+#: app/model/settings.php:600
 msgid " Use <strong>24h time</strong> in time pickers"
 msgstr " Use <strong>24h time</strong> in time pickers"
 
-#: app/model/settings.php:585
+#: app/model/settings.php:611
 msgid "<strong>Disable address autocomplete</strong> function"
 msgstr "<strong>Disable address autocomplete</strong> function"
 
-#: app/model/settings.php:596
+#: app/model/settings.php:622
 msgid ""
 "Use the configured <strong>region</strong> (WordPress locale) to bias the "
 "address autocomplete function "
@@ -268,11 +276,11 @@ msgstr ""
 "Use the configured <strong>region</strong> (WordPress locale) to bias the "
 "address autocomplete function "
 
-#: app/model/settings.php:607
+#: app/model/settings.php:633
 msgid "Display <strong>Publish</strong> at bottom of Edit Event form"
 msgstr "Display <strong>Publish</strong> at bottom of Edit Event form"
 
-#: app/model/settings.php:618
+#: app/model/settings.php:644
 msgid ""
 " Show the old <strong>Post Your Event</strong> button above the calendar to "
 "privileged users"
@@ -280,7 +288,7 @@ msgstr ""
 " Show the old <strong>Post Your Event</strong> button above the calendar to "
 "privileged users"
 
-#: app/model/settings.php:621
+#: app/model/settings.php:647
 msgid ""
 "Install the <a target=\"_blank\" href=\"http://time.ly/\">Interactive "
 "Frontend Extension</a> for the <strong>frontend Post Your Event form</"
@@ -290,11 +298,11 @@ msgstr ""
 "Frontend Extension</a> for the <strong>frontend Post Your Event form</"
 "strong>."
 
-#: app/model/settings.php:633
+#: app/model/settings.php:659
 msgid "Move calendar into this DOM element"
 msgstr "Move calendar into this DOM element"
 
-#: app/model/settings.php:635
+#: app/model/settings.php:661
 msgid ""
 "Optional. Use this JavaScript-based shortcut to place the\n"
 "\t\t\t\t\t\tcalendar a DOM element other than the usual page content "
@@ -318,7 +326,7 @@ msgstr ""
 "\t\t\t\t\t\tAny existing markup found within the target will be replaced\n"
 "\t\t\t\t\t\tby the calendar."
 
-#: app/model/settings.php:654
+#: app/model/settings.php:680
 msgid ""
 "<strong>Skip <tt>in_the_loop()</tt> check </strong> that protects against "
 "multiple calendar output"
@@ -326,7 +334,7 @@ msgstr ""
 "<strong>Skip <tt>in_the_loop()</tt> check </strong> that protects against "
 "multiple calendar output"
 
-#: app/model/settings.php:657
+#: app/model/settings.php:683
 msgid ""
 "Try enabling this option if your calendar does not appear on the calendar "
 "page. It is needed for compatibility with a small number of themes that call "
@@ -336,11 +344,11 @@ msgstr ""
 "page. It is needed for compatibility with a small number of themes that call "
 "<tt>the_content()</tt> from outside of The Loop. Leave disabled otherwise."
 
-#: app/model/settings.php:669
+#: app/model/settings.php:695
 msgid "Disable <strong>gzip</strong> compression."
 msgstr "Disable <strong>gzip</strong> compression."
 
-#: app/model/settings.php:672
+#: app/model/settings.php:698
 msgid ""
 "Use this option if calendar is non-responsive. <a href=\"http://support.time."
 "ly/disable-gzip-compression/\">Read more</a> about the issue."
@@ -348,11 +356,11 @@ msgstr ""
 "Use this option if calendar is non-responsive. <a href=\"http://support.time."
 "ly/disable-gzip-compression/\">Read more</a> about the issue."
 
-#: app/model/settings.php:684
+#: app/model/settings.php:710
 msgid "Current <strong>robots.txt</strong> on this site"
 msgstr "Current <strong>robots.txt</strong> on this site"
 
-#: app/model/settings.php:688
+#: app/model/settings.php:714
 msgid ""
 "The Robot Exclusion Standard, also known as the Robots Exclusion Protocol "
 "or\n"
@@ -376,7 +384,7 @@ msgstr ""
 "\t\t\t\t\t\tYou can change it manually by editing <code>robots.txt</code> in "
 "your root WordPress directory."
 
-#: app/model/settings.php:705
+#: app/model/settings.php:731
 msgid ""
 "<strong>Publicize, promote, and share my events</strong> marked as public on "
 "the Timely network. (<a href=\"%s\" target=\"_blank\">Learn more »</a>)"
@@ -384,7 +392,7 @@ msgstr ""
 "<strong>Publicize, promote, and share my events</strong> marked as public on "
 "the Timely network. (<a href=\"%s\" target=\"_blank\">Learn more »</a>)"
 
-#: app/model/settings.php:728
+#: app/model/settings.php:754
 msgid "Templates cache improves site performance"
 msgstr "Templates cache improves site performance"
 
@@ -697,34 +705,63 @@ msgstr ""
 "There was an error loading calendar. Please contact site administrator and "
 "inform him to configure calendar views."
 
-#: app/view/calendar/page.php:178 app/view/calendar/widget.php:274
-msgid ""
-"Subscribe to this calendar in your personal calendar (iCal, Outlook, etc.)"
-msgstr ""
-"Subscribe to this calendar in your personal calendar (iCal, Outlook, etc.)"
-
-#: app/view/calendar/page.php:179 app/view/calendar/widget.php:275
+#: app/view/calendar/page.php:179
 msgid "Subscribe to filtered calendar"
 msgstr "Subscribe to filtered calendar"
 
-#: app/view/calendar/page.php:180 app/view/calendar/widget.php:276
+#: app/view/calendar/page.php:180
 msgid "Subscribe"
 msgstr "Subscribe"
 
-#: app/view/calendar/page.php:181 app/view/calendar/widget.php:277
+#: app/view/calendar/subscribe-button.php:22
+msgid "Add to Timely Calendar"
+msgstr "Add to Timely Calendar"
+
+#: app/view/calendar/subscribe-button.php:23
+msgid "Add to Google"
+msgstr "Add to Google"
+
+#: app/view/calendar/subscribe-button.php:24
+msgid "Add to Outlook"
+msgstr "Add to Outlook"
+
+#: app/view/calendar/subscribe-button.php:25
+msgid "Add to Apple Calendar"
+msgstr "Add to Apple Calendar"
+
+#: app/view/calendar/subscribe-button.php:26
+msgid "Add to other calendar"
+msgstr "Add to other calendar"
+
+#: app/view/calendar/subscribe-button.php:29
+msgid ""
+"Copy this URL for your own Timely calendar or click to add to your rich-text "
+"calendar"
+msgstr ""
+"Copy this URL for your own Timely calendar or click to add to your rich-text "
+"calendar"
+
+#: app/view/calendar/subscribe-button.php:30
 msgid "Subscribe to this calendar in your Google Calendar"
 msgstr "Subscribe to this calendar in your Google Calendar"
 
-#: app/view/calendar/page.php:182 app/view/calendar/widget.php:278
-#: app/view/event/single.php:74
-msgid "Add to Google"
-msgstr "Add to Google"
+#: app/view/calendar/subscribe-button.php:31
+msgid "Subscribe to this calendar in MS Outlook"
+msgstr "Subscribe to this calendar in MS Outlook"
+
+#: app/view/calendar/subscribe-button.php:32
+msgid "Subscribe to this calendar in Apple Calendar/iCal"
+msgstr "Subscribe to this calendar in Apple Calendar/iCal"
+
+#: app/view/calendar/subscribe-button.php:33
+msgid "Subscribe to this calendar in another plain-text calendar"
+msgstr "Subscribe to this calendar in another plain-text calendar"
 
 #: app/view/calendar/taxonomy.php:97
 msgid "Clear category filter"
 msgstr "Clear category filter"
 
-#: app/view/calendar/taxonomy.php:98 app/view/event/single.php:80
+#: app/view/calendar/taxonomy.php:98 app/view/event/single.php:81
 #: lib/html/element/setting/tags-categories.php:47
 msgid "Categories"
 msgstr "Categories"
@@ -733,7 +770,7 @@ msgstr "Categories"
 msgid "Clear tag filter"
 msgstr "Clear tag filter"
 
-#: app/view/calendar/taxonomy.php:100 app/view/event/single.php:81
+#: app/view/calendar/taxonomy.php:100 app/view/event/single.php:82
 #: lib/html/element/setting/tags-categories.php:39
 msgid "Tags"
 msgstr "Tags"
@@ -750,7 +787,7 @@ msgstr "Expand All"
 msgid "There are no upcoming events to display at this time."
 msgstr "There are no upcoming events to display at this time."
 
-#: app/view/calendar/view/agenda.php:107 app/view/calendar/widget.php:279
+#: app/view/calendar/view/agenda.php:107 app/view/calendar/widget.php:273
 msgid "Edit"
 msgstr "Edit"
 
@@ -768,7 +805,8 @@ msgid "Tags:"
 msgstr "Tags:"
 
 #: app/view/calendar/view/agenda.php:111 app/view/calendar/view/month.php:79
-#: app/view/calendar/view/week.php:102 app/view/calendar/widget.php:280
+#: app/view/calendar/view/oneday.php:92 app/view/calendar/view/week.php:102
+#: app/view/calendar/widget.php:274
 msgid "@ %s"
 msgstr "@ %s"
 
@@ -776,21 +814,21 @@ msgstr "@ %s"
 msgid "g a"
 msgstr "g a"
 
-#: app/view/calendar/view/week.php:61
-msgid "Week of %s"
-msgstr "Week of %s"
-
-#: app/view/calendar/view/week.php:99
+#: app/view/calendar/view/oneday.php:89 app/view/calendar/view/week.php:99
 msgid "Reveal full day"
 msgstr "Reveal full day"
 
-#: app/view/calendar/view/week.php:100
+#: app/view/calendar/view/oneday.php:90 app/view/calendar/view/week.php:100
 msgid "All-day"
 msgstr "All-day"
 
-#: app/view/calendar/view/week.php:101
+#: app/view/calendar/view/oneday.php:91 app/view/calendar/view/week.php:101
 msgid "Now:"
 msgstr "Now:"
+
+#: app/view/calendar/view/week.php:61
+msgid "Week of %s"
+msgstr "Week of %s"
 
 #: app/view/calendar/widget.php:29 app/view/calendar/widget.php:63
 msgid "Upcoming Events"
@@ -800,27 +838,27 @@ msgstr "Upcoming Events"
 msgid "All-in-One Event Calendar: Lists upcoming events in Agenda view"
 msgstr "All-in-One Event Calendar: Lists upcoming events in Agenda view"
 
-#: app/view/calendar/widget.php:269
+#: app/view/calendar/widget.php:270
 msgid "There are no upcoming events."
 msgstr "There are no upcoming events."
 
-#: app/view/calendar/widget.php:270 app/view/event/time.php:131
+#: app/view/calendar/widget.php:271 app/view/event/time.php:131
 msgid "all-day"
 msgstr "all-day"
 
-#: app/view/calendar/widget.php:271
+#: app/view/calendar/widget.php:272
 msgid "View Calendar"
 msgstr "View Calendar"
 
-#: app/view/calendar/widget.php:272 app/view/calendar/widget.php:273
+#: app/view/calendar/widget.php:275
 msgid "Add"
 msgstr "Add"
 
-#: app/view/event/content.php:33 app/view/event/single.php:75
+#: app/view/event/content.php:33 app/view/event/single.php:76
 msgid "When:"
 msgstr "When:"
 
-#: app/view/event/content.php:34 app/view/event/single.php:76
+#: app/view/event/content.php:34 app/view/event/single.php:77
 msgid "Where:"
 msgstr "Where:"
 
@@ -891,36 +929,27 @@ msgid "Event draft updated. <a target=\"_blank\" href=\"%s\">Preview event</a>"
 msgstr ""
 "Event draft updated. <a target=\"_blank\" href=\"%s\">Preview event</a>"
 
-#: app/view/event/single.php:71
-msgid "Add this event to your favourite calendar program (iCal, Outlook, etc.)"
-msgstr ""
-"Add this event to your favourite calendar program (iCal, Outlook, etc.)"
-
 #: app/view/event/single.php:72
 msgid "Add to Calendar"
 msgstr "Add to Calendar"
 
-#: app/view/event/single.php:73
-msgid "Add this event to your Google Calendar"
-msgstr "Add this event to your Google Calendar"
-
-#: app/view/event/single.php:77
+#: app/view/event/single.php:78
 msgid "Cost:"
 msgstr "Cost:"
 
-#: app/view/event/single.php:78
+#: app/view/event/single.php:79
 msgid "Contact:"
 msgstr "Contact:"
 
-#: app/view/event/single.php:79
+#: app/view/event/single.php:80
 msgid "Free"
 msgstr "Free"
 
-#: app/view/event/single.php:94
+#: app/view/event/single.php:95
 msgid "Edit this occurrence (%s)"
 msgstr "Edit this occurrence (%s)"
 
-#: app/view/event/single.php:112
+#: app/view/event/single.php:113
 msgid ""
 "This post was replicated from another site's <a class=\"ai1ec-ics-icon\" "
 "href=\"%s\" title=\"iCalendar feed\">calendar feed</a>."
@@ -928,7 +957,7 @@ msgstr ""
 "This post was replicated from another site's <a class=\"ai1ec-ics-icon\" "
 "href=\"%s\" title=\"iCalendar feed\">calendar feed</a>."
 
-#: app/view/event/single.php:113
+#: app/view/event/single.php:114
 msgid "View original post"
 msgstr "View original post"
 
@@ -1004,37 +1033,37 @@ msgid_plural "Imported %s events"
 msgstr[0] "Imported %s event"
 msgstr[1] "Imported %s events"
 
-#: lib/calendar-feed/ics.php:190 lib/calendar-feed/ics.php:611
+#: lib/calendar-feed/ics.php:190 lib/calendar-feed/ics.php:609
 msgid "Invalid ICS feed ID"
 msgstr "Invalid ICS feed ID"
 
-#: lib/calendar-feed/ics.php:334
+#: lib/calendar-feed/ics.php:332
 msgid "Categories (optional)"
 msgstr "Categories (optional)"
 
-#: lib/calendar-feed/ics.php:351
+#: lib/calendar-feed/ics.php:349
 msgid ""
 "Do you want to keep the events imported from the calendar or remove them?"
 msgstr ""
 "Do you want to keep the events imported from the calendar or remove them?"
 
-#: lib/calendar-feed/ics.php:357
+#: lib/calendar-feed/ics.php:355
 msgid "Removing ICS Feed"
 msgstr "Removing ICS Feed"
 
-#: lib/calendar-feed/ics.php:360
+#: lib/calendar-feed/ics.php:358
 msgid "Keep Events"
 msgstr "Keep Events"
 
-#: lib/calendar-feed/ics.php:363
+#: lib/calendar-feed/ics.php:361
 msgid "Remove Events"
 msgstr "Remove Events"
 
-#: lib/calendar-feed/ics.php:603
+#: lib/calendar-feed/ics.php:601
 msgid "Deleted %d events"
 msgstr "Deleted %d events"
 
-#: lib/calendar-feed/ics.php:638
+#: lib/calendar-feed/ics.php:636
 msgid "Feed deleted"
 msgstr "Feed deleted"
 
@@ -2429,9 +2458,9 @@ msgstr "Today background"
 msgid "All-in-One Event Calendar by Time.ly"
 msgstr "All-in-One Event Calendar by Time.ly"
 
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.0.9.2)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.0.9.3)  #-#-#-#-#
 #. Plugin URI of the plugin/theme
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.0.9.2)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.0.9.3)  #-#-#-#-#
 #. Author URI of the plugin/theme
 msgid "http://time.ly/"
 msgstr "http://time.ly/"

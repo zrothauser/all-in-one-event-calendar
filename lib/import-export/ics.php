@@ -72,11 +72,11 @@ class Ai1ec_Ics_Import_Export_Engine
 		$this->_taxonomy_model->update_meta( $post_ids );
 		foreach ( $arguments['events'] as $event ) {
 			$c = $this->_insert_event_in_calendar(
-					$event,
-					$c,
-					true,
-					$params
-				);
+				$event,
+				$c,
+				true,
+				$params
+			);
 		}
 		$str = ltrim( $c->createCalendar() );
 		return $str;

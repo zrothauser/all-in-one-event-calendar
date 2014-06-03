@@ -148,37 +148,40 @@ define(
 	};
 
 	var get_placement_function = function( width ) {
-		return function (tip, element) {
-				var left,
-					right;
+		return function( tip, element ) {
+				var left, right;
 
-				var $element = $(element);
-				var defaultPosition = $element.attr("data-placement");
-				var pos = $.extend({}, $element.offset(), {
-					width: element.offsetWidth,
+				var $element        = $( element );
+				var defaultPosition = $element.attr( 'data-placement' );
+				var pos             = $.extend( {}, $element.offset(), {
+					width:  element.offsetWidth,
 					height: element.offsetHeight
-				});
+				} );
 
 				var testLeft = function() {
-					if (left === false) return false;
-					left = ( ( pos.left - width ) >= 0);
-					return left ? "left" : false;
+					if ( false === left ) {
+						return false;
+					}
+					left = ( ( pos.left - width ) >= 0 );
+					return left ? 'left' : false;
 				};
 
 				var testRight = function() {
-					if (right === false) return false;
-					right = ( ( pos.left + width ) <= $(window).width() );
-					return right ? "right" : false;
+					if ( false === right ) {
+						return false;
+					}
+					right = ( ( pos.left + width ) <= $( window ).width() );
+					return right ? 'right' : false;
 				};
 
-				switch (defaultPosition) {
-					case "top"    : return "top"; break;
-					case "bottom" : return "bottom"; break;
-					case "left"   : if ( testLeft() ) return "left";
-					case "right"  : if ( testRight() ) return "right";
+				switch ( defaultPosition ) {
+					case 'top'    : return 'top'; break;
+					case 'bottom' : return 'bottom'; break;
+					case 'left'   : if ( testLeft() )  { return 'left'  };
+					case 'right'  : if ( testRight() ) { return 'right' };
 					default:
-						if ( testLeft() ) return "left";
-						if ( testRight() ) return "right";
+						if ( testLeft() )  { return 'left'  };
+						if ( testRight() ) { return 'right' };
 						return defaultPosition;
 				}
 		}

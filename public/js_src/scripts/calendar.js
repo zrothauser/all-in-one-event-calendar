@@ -168,12 +168,9 @@ define(
 			function() {
 				// Hide the button (no longer serves a purpose).
 				$( this ).fadeOut();
-				// check if it's oneday or week view
-				var $oneday_original = $( '.ai1ec-oneday-view-original' );
-				var $actual_table   = $( '.ai1ec-week-view-original' );
-				if ( $actual_table.length === 0 ) {
-					$actual_table = $oneday_original;
-				}
+				var $actual_table = $(
+					'.ai1ec-oneday-view-original, .ai1ec-week-view-original'
+				);
 				// Scroll window down the same amount that the upper portion of the
 				// table is being revealed.
 				var vertical_offset =
@@ -181,8 +178,10 @@ define(
 					$actual_table.offset().top;
 				$( window ).scrollTo( '+=' + vertical_offset + 'px', 400 );
 				// At the same time, expand height to reveal 1 full day (24 hours).
-				var height = 24 * 60;
-				$( '.tablescroll_wrapper' ).animate( { height: height + 'px' } );
+				var height = 24 * 60 + 2;
+				$( '.tablescroll_wrapper' )
+					.scrollTo( '-=' + vertical_offset + 'px', 400 )
+					.animate( { height: height + 'px' } );
 			}
 		);
 

@@ -110,7 +110,7 @@ class Ai1ec_Exception_Handler {
 	public function handle_exception( Exception $exception ) {
 		if ( defined( 'AI1EC_DEBUG' ) && true === AI1EC_DEBUG ) {
 			echo '<pre>';
-			var_dump( $exception );
+			var_dump( $exception->getMessage() );
 			echo '</pre>';
 			die();
 		}

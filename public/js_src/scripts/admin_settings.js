@@ -133,6 +133,22 @@ define(
 					.prop( 'checked', true );
 			} );
 
+			// Select the text when element is clicked
+			$( document ).on( 'click', '.ai1ec-autoselect', function () {
+				// Working with the text selection depending on the browser abilities.
+				var range;
+				if ( document.body.createTextRange ) {
+					range = document.body.createTextRange();
+					range.moveToElementText( this );
+					range.select();
+				} else if ( window.getSelection ) {
+					selection = window.getSelection();
+					range = document.createRange();
+					range.selectNodeContents( this );
+					selection.removeAllRanges();
+					selection.addRange( range );
+				}
+			});
 
 			$( '#ai1ec_save_settings' ).on( 'click', validate_week_start_end );
 			$( '#show_create_event_button' ).trigger( 'ready' );

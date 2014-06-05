@@ -133,8 +133,14 @@ define(
 					.prop( 'checked', true );
 			} );
 
-			// Select the text when element is clicked
+			// Select the text when element is clicked (only once).
 			$( document ).on( 'click', '.ai1ec-autoselect', function () {
+				// Lets do it only once. Perhaps, user wants to select just a part.
+				if ( $( this ).data( 'clicked' ) ) {
+					return;
+				} else {
+					$( this ).data( 'clicked' , true );
+				}
 				// Working with the text selection depending on the browser abilities.
 				var range;
 				if ( document.body.createTextRange ) {

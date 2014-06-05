@@ -135,7 +135,6 @@ define(
 
 			// Select the text when element is clicked (only once).
 			$( document ).on( 'click', '.ai1ec-autoselect', function ( e ) {
-				console.log(e);
 				// Lets do it only once. Perhaps, user wants to select just a part.
 				if ( $( this ).data( 'clicked' ) && e.originalEvent.detail < 2 ) {
 					return;

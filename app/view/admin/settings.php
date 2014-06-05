@@ -198,6 +198,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 	 * @return array
 	 */
 	protected function _get_tabs_to_show( array $plugin_settings, array $tabs ) {
+		$index = 0;
 		foreach ( $plugin_settings as $id => $setting ) {
 			// if the setting is shown
 			if ( isset ( $setting['renderer'] ) ) {
@@ -228,6 +229,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 				// render the settings
 				$tabs[$tab_to_use]['elements'][] = array(
 					'weight' => isset( $setting['renderer']['weight'] ) ? $setting['renderer']['weight'] : 10,
+					'index'  => $index++,
 					'html'   => $renderer->render(),
 				);
 				// if the settings has an item tab, set the item as active.
@@ -242,12 +244,9 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 		// now let's see what tabs to display.
 		foreach ( $tabs as $name => $tab ) {
 			// sort by weights
-			usort( $tab['elements'], function ( $a, $b ) {
-				if ( $a['weight'] == $b['weight'] ) {
-					return 0;
-				}
-				return ( $a['weight'] < $b['weight'] ) ? -1 : 1;
-			} );
+			if ( isset( $tab['elements'] ) ) {
+				asort( $tab['elements'] );
+			}
 			// if a tab has more than one item.
 			if ( isset( $tab['items'] ) ) {
 				// if no item is active, nothing is shown

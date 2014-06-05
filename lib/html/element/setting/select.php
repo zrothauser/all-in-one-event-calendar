@@ -15,10 +15,13 @@ class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 	 * @see Ai1ec_Html_Element_Settings::render()
 	 */
 	public function render( $output = '' ) {
-		if ( isset( $this->_args['renderer']['render_when_not_set'] ) ) {
-			$setting = $this->_registry->get( 'model.settings' )
-				->get( $this->_args['renderer']['render_when_not_set'] );
-			if ( empty( $setting ) ) {
+		if ( isset( $this->_args['renderer']['condition'] ) ) {
+			$callback = explode( ':', $this->_args['renderer']['condition'] );
+			$render = $this->_registry->dispatch(
+				$callback[0],
+				$callback[1]
+			);
+			if ( ! $render ) {
 				return '';
 			}
 		}

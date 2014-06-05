@@ -373,12 +373,12 @@ class Ai1ec_Settings extends Ai1ec_App {
 			'timezone_string' => array(
 				'type' => 'wp_option',
 				'renderer' => array(
-					'class'   => 'select',
-					'tab'     => 'viewing-events',
-					'item'    => 'viewing-events',
-					'label'   => Ai1ec_I18n::__( 'Timezone' ),
-					'options' => 'get_timezones',
-					'render_when_not_set' => 'timezone_string',
+					'class'     => 'select',
+					'tab'       => 'viewing-events',
+					'item'      => 'viewing-events',
+					'label'     => Ai1ec_I18n::__( 'Timezone' ),
+					'options'   => 'Ai1ec_Date_Timezone:get_timezones',
+					'condition' => 'Ai1ec_Date_Timezone:is_timezone_set',
 				),
 				'default'  => $this->_registry->get( 'model.option' )->get(
 					'timezone_string'

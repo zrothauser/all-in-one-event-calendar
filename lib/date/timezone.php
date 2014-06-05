@@ -450,6 +450,43 @@ class Ai1ec_Date_Timezone extends Ai1ec_Base {
 	}
 
 	/**
+	 * Check if timezone is set in wp_option
+	 * 
+	 */
+	public function is_timezone_set() {
+		$timezone = $this->_registry->get( 'model.option' )
+			->get( 'timezone_string' );
+		return empty( $timezone );
+	}
+
+	/**
+	 * Render options for select in settings
+	 * 
+	 * @return array
+	 */
+	public function get_timezones() {
+		$zones = DateTimeZone::listIdentifiers();
+		if (
+			empty( $zones )
+		) {
+			return array();
+		}
+		$options = array(
+			array(
+				'text'  => __( 'Choose Timezone', AI1EC_PLUGIN_NAME ),
+				'value' => '',
+			)
+		);
+		foreach ( $zones as $zone ) {
+			$options[] = array(
+				'text'  => $zone,
+				'value' => $zone,
+			);
+		}
+		
+		return $options;
+	}
+	/**
 	 * Guess valid timezone identifier from arbitrary input.
 	 *
 	 * @param string $meta_name Arbitrary input.

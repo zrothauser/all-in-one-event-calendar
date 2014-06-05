@@ -57,6 +57,10 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 							$method = '_handle_saving_' . $name;
 							$value  = $this->$method( $_POST[$name] );
 							break;
+						case 'wp_option';
+							// just save the corresponding wp_option
+							$this->_registry->get( 'model.option' )->set( $name, $_POST[$name] );
+							$value = null;
 					}
 				}
 			} else {

@@ -148,9 +148,9 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 			}
 		}
 		$variables['fontdir'] = '~"' . $theme['theme_url'] . '/font"';
-		$variables['fontdir_default'] = '~"' . $this->default_theme_url . '/font"';
+		$variables['fontdir_default'] = '~"' . $this->default_theme_url . 'font"';
 		$variables['imgdir'] = '~"' . $theme['theme_url'] . '/img"';
-		$variables['imgdir_default'] = '~"' . $this->default_theme_url . '/img"';
+		$variables['imgdir_default'] = '~"' . $this->default_theme_url . 'img"';
 
 		try {
 			$this->parsed_css = $this->lessc->parse(

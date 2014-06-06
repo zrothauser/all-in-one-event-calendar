@@ -17,7 +17,7 @@ class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 	public function render( $output = '' ) {
 		if ( isset( $this->_args['renderer']['condition'] ) ) {
 			$callback = explode( ':', $this->_args['renderer']['condition'] );
-			$render = $this->_registry->dispatch(
+			$render   = $this->_registry->dispatch(
 				$callback[0],
 				$callback[1]
 			);
@@ -43,7 +43,7 @@ class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 		}
 		foreach ( $options as $key => &$option ) {
 			// if the key is a string, it's an optgroup
-			if( is_string( $key ) ) {
+			if ( is_string( $key ) ) {
 				foreach ( $option as &$opt ) {
 					$opt = $this->_set_selected_value( $opt );
 				}
@@ -64,8 +64,11 @@ class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 	}
 
 	/**
-	 * @param array $option
-	 * @return array
+	 * Toggle `selected` attribute according to current selection.
+	 *
+	 * @param array $option Option being checked.
+	 *
+	 * @return array Optionally modified option entry.
 	 */
 	protected function _set_selected_value( array $option ) {
 		if ( $option['value'] === $this->_args['value'] ) {
@@ -75,6 +78,7 @@ class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 		}
 		return $option;
 	}
+
 	/**
 	 * Gets the options for the "Starting day of week" select.
 	 *

@@ -288,9 +288,10 @@ class Ai1ec_Exception_Handler {
 		}
 	}
 	/**
+	 * Had to add it as var_dump was locking my browser.
+	 *
 	 * Taken from http://www.leaseweblabs.com/2013/10/smart-alternative-phps-var_dump-function/
-	 * Had to add it as var_dump was locking my browser
-	 * 
+	 *
 	 * @param mixed $variable
 	 * @param int $strlen
 	 * @param int $width
@@ -308,11 +309,10 @@ class Ai1ec_Exception_Handler {
 		$i = 0, 
 		&$objects = array() 
 	) {
-		$search = array( "\0", "\a", "\b", "\f", "\n", "\r", "\t", "\v" );
+		$search  = array( "\0", "\a", "\b", "\f", "\n", "\r", "\t", "\v" );
 		$replace = array( '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v' );
-		
-		$string = '';
-		
+		$string  = '';
+
 		switch ( gettype( $variable ) ) {
 			case 'boolean' :
 				$string .= $variable ? 'true' : 'false';
@@ -340,78 +340,87 @@ class Ai1ec_Exception_Handler {
 					substr( $variable, 0, $strlen ), 
 					$count );
 				$variable = substr( $variable, 0, $strlen );
-				if ($len < $strlen)
+				if ( $len < $strlen ) {
 					$string .= '"' . $variable . '"';
-				else
+				} else {
 					$string .= 'string(' . $len . '): "' . $variable . '"...';
+				}
 				break;
 			case 'array' :
 				$len = count( $variable );
-				if ($i == $depth)
+				if ( $i == $depth ) {
 					$string .= 'array(' . $len . ') {...}';
-				elseif (! $len)
+				} elseif ( ! $len) {
 					$string .= 'array(0) {}';
-				else {
-					$keys = array_keys( $variable );
-					$spaces = str_repeat( ' ', $i * 2 );
+				} else {
+					$keys    = array_keys( $variable );
+					$spaces  = str_repeat( ' ', $i * 2 );
 					$string .= "array($len)\n" . $spaces . '{';
-					$count = 0;
+					$count   = 0;
 					foreach ( $keys as $key ) {
-						if ($count == $width) {
+						if ( $count == $width ) {
 							$string .= "\n" . $spaces . "  ...";
 							break;
 						}
 						$string .= "\n" . $spaces . "  [$key] => ";
 						$string .= $this->var_debug( 
-							$variable[$key], 
-							$strlen, 
-							$width, 
-							$depth, 
-							$i + 1, 
-							$objects );
+							$variable[$key],
+							$strlen,
+							$width,
+							$depth,
+							$i + 1,
+							$objects
+						);
 						$count ++;
 					}
 					$string .= "\n" . $spaces . '}';
 				}
 				break;
-			case 'object' :
+			case 'object':
 				$id = array_search( $variable, $objects, true );
-				if ($id !== false)
+				if ( $id !== false ) {
 					$string .= get_class( $variable ) . '#' . ( $id + 1 ) . ' {...}';
-			else if ($i == $depth)
-				$string .= get_class( $variable ) . ' {...}';
-			else {
-				$id = array_push( $objects, $variable );
-				$array = ( array ) $variable;
-				$spaces = str_repeat( ' ', $i * 2 );
-				$string .= get_class( $variable ) . "#$id\n" . $spaces . '{';
-				$properties = array_keys( $array );
-				foreach ( $properties as $property ) {
-					$name = str_replace( "\0", ':', trim( $property ) );
-					$string .= "\n" . $spaces . "  [$name] => ";
-					$string .= $this->var_debug( 
-						$array[$property], 
-						$strlen, 
-						$width, 
-						$depth, 
-						$i + 1, 
-						$objects );
+				} else if ( $i == $depth ) {
+					$string .= get_class( $variable ) . ' {...}';
+				} else {
+					$id = array_push( $objects, $variable );
+					$array = ( array ) $variable;
+					$spaces = str_repeat( ' ', $i * 2 );
+					$string .= get_class( $variable ) . "#$id\n" . $spaces . '{';
+					$properties = array_keys( $array );
+					foreach ( $properties as $property ) {
+						$name    = str_replace( "\0", ':', trim( $property ) );
+						$string .= "\n" . $spaces . "  [$name] => ";
+						$string .= $this->var_debug(
+							$array[$property],
+							$strlen,
+							$width,
+							$depth,
+							$i + 1,
+							$objects
+						);
+					}
+					$string .= "\n" . $spaces . '}';
 				}
-				$string .= "\n" . $spaces . '}';
-			}
-			break;
+				break;
 		}
-		
-		if ($i > 0)
+
+		if ( $i > 0 ) {
 			return $string;
-		
+		}
+
 		$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
-		do
-			$caller = array_shift( $backtrace ); while ( $caller &&
-			 ! isset( $caller['file'] ) );
-		if ($caller)
+		do {
+			$caller = array_shift( $backtrace );
+		} while (
+			$caller &&
+			! isset( $caller['file'] )
+		);
+		if ( $caller ) {
 			$string = $caller['file'] . ':' . $caller['line'] . "\n" . $string;
-		
-		echo nl2br(str_replace(' ','&nbsp;',htmlentities($string)));
+		}
+
+		echo nl2br( str_replace( ' ', '&nbsp;', htmlentities( $string ) ) );
 	}
+
 }

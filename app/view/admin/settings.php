@@ -227,9 +227,15 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 					);
 				}
 				// render the settings
+				$weight = 10;
+				if ( isset( $setting['renderer']['weight'] ) ) {
+					$weight = (int)$setting['renderer']['weight'];
+				}
+				// NOTICE: do NOT change order of two first
+				// elements {weight,index}, otherwise sorting will fail.
 				$tabs[$tab_to_use]['elements'][] = array(
-					'weight' => isset( $setting['renderer']['weight'] ) ? $setting['renderer']['weight'] : 10,
-					'index'  => $index++,
+					'weight' => $weight,
+					'index'  => ++$index,
 					'html'   => $renderer->render(),
 				);
 				// if the settings has an item tab, set the item as active.

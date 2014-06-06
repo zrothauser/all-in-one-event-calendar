@@ -18,7 +18,7 @@ class Ai1ec_Post_Content_Check extends Ai1ec_Base {
 	 *
 	 * @return void Method does not return.
 	 */
-	public function check_content( WP_Post &$post ) {
+	public function check_content( WP_Post $post ) {
 		if (
 			empty( $post->post_content ) &&
 			is_page() &&

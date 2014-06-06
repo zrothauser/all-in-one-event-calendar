@@ -164,7 +164,8 @@ define(
 					city = '',
 					postal_code = 0,
 					country = 0,
-					province = '';
+					province = '',
+					country_short;
 
 		for( var i = 0; i < result.address_components.length; i++ ) {
 			switch( result.address_components[i].types[0] ) {
@@ -184,6 +185,7 @@ define(
 					postal_code = result.address_components[i].long_name;
 					break;
 				case 'country':
+					country_short = result.address_components[i].short_name;
 					country = result.address_components[i].long_name;
 					break;
 			}
@@ -198,6 +200,7 @@ define(
 		$( '#ai1ec_province' ).val( province );
 		$( '#ai1ec_postal_code' ).val( postal_code );
 		$( '#ai1ec_country' ).val( country );
+		$( '#ai1ec_country_short' ).val( country_short );
 	};
 	/**
 	 * Updates the map taking the coordinates from the input fields

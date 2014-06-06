@@ -289,6 +289,7 @@ class Ai1ec_Exception_Handler {
 	}
 	/**
 	 * Taken from http://www.leaseweblabs.com/2013/10/smart-alternative-phps-var_dump-function/
+	 * Had to add it as var_dump was locking my browser
 	 * 
 	 * @param mixed $variable
 	 * @param int $strlen

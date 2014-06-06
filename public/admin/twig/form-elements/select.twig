@@ -1,13 +1,3 @@
-{% macro build_options( values = [] ) %}
-	{% for option in values %}
-		<option
-			value="{{ option.value }}"
-		{% for attribute, value in option.args %}
-			{{ attribute }}="{{ value }}"
-		{% endfor %}
-		>{{ option.text }}</option>
-	{% endfor %}
-{% endmacro %}
 {% macro select( id, name='', attributes = [], options = [] ) %}
 	{% if name == '' %}
 		{% set name = id %}

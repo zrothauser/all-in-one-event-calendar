@@ -453,7 +453,7 @@ class Ai1ec_Date_Timezone extends Ai1ec_Base {
 	 * Check if timezone is set in wp_option
 	 * 
 	 */
-	public function is_timezone_set() {
+	public function is_timezone_not_set() {
 		$timezone = $this->_registry->get( 'model.option' )
 			->get( 'timezone_string' );
 		return empty( $timezone );
@@ -496,6 +496,7 @@ class Ai1ec_Date_Timezone extends Ai1ec_Base {
 		
 		return $options;
 	}
+
 	/**
 	 * Guess valid timezone identifier from arbitrary input.
 	 *

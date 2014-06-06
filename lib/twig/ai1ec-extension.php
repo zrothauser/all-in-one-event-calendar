@@ -52,6 +52,12 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 		);
 	}
 
+	public function getTests() {
+		return array(
+			new Twig_SimpleTest( 'string', array( $this, 'is_string' ) ),
+		);
+	}
+
 	/**
 	 * Get HTML markup for the post's "avatar" image according conditional
 	 * fallback model.
@@ -81,6 +87,14 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 				$classes,
 				$wrap_permalink
 			);
+	}
+
+	/**
+	 * @param mixed $var
+	 * @return boolean
+	 */
+	public function is_string( $var ) {
+		return is_string( $var );
 	}
 
 	/**

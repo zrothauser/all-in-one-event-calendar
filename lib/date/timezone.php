@@ -471,15 +471,25 @@ class Ai1ec_Date_Timezone extends Ai1ec_Base {
 		) {
 			return array();
 		}
-		$options = array(
-			array(
-				'text'  => __( 'Choose Timezone', AI1EC_PLUGIN_NAME ),
-				'value' => '',
+		$manual =  __( 'Manual Offset', AI1EC_PLUGIN_NAME );
+		$options = array();
+		$options[$manual][] = array(
+			'text'  => __( 'Choose your timezone', AI1EC_PLUGIN_NAME ),
+			'value' => '',
+			'args'  => array(
+				'selected' => 'selected'
 			)
 		);
 		foreach ( $zones as $zone ) {
-			$options[] = array(
-				'text'  => $zone,
+			$exploded_zone = explode( '/', $zone );
+			if ( ! isset( $exploded_zone[1] ) ) {
+				$exploded_zone[1] = $exploded_zone[0];
+				$exploded_zone[0] = $manual;
+			}
+			$optgroup = $exploded_zone[0];
+			unset( $exploded_zone[0] );
+			$options[$optgroup][] = array(
+				'text'  => implode( '/', $exploded_zone ),
 				'value' => $zone,
 			);
 		}

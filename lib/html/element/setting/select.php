@@ -41,11 +41,14 @@ class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 				);
 			}
 		}
-		foreach ( $options as &$option ) {
-			if ( $option['value'] === $this->_args['value'] ) {
-				$option['args'] = array(
-					'selected' => 'selected',
-				);
+		foreach ( $options as $key => &$option ) {
+			// if the key is a string, it's an optgroup
+			if( is_string( $key ) ) {
+				foreach ( $option as &$opt ) {
+					$opt = $this->_set_selected_value( $opt );
+				}
+			} else {
+				$option = $this->_set_selected_value( $option );
 			}
 		}
 		$select_args = array();
@@ -60,6 +63,18 @@ class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 		return parent::render( $file->get_content() );
 	}
 
+	/**
+	 * @param array $option
+	 * @return array
+	 */
+	protected function _set_selected_value( array $option ) {
+		if ( $option['value'] === $this->_args['value'] ) {
+			$option['args'] = array(
+				'selected' => 'selected',
+			);
+		}
+		return $option;
+	}
 	/**
 	 * Gets the options for the "Starting day of week" select.
 	 *

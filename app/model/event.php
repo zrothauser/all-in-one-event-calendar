@@ -104,18 +104,16 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 * 
 	 * @param number $length
 	 */
-	public function set_all_day( $length = null ) {
+	public function set_all_day( $length = 1 ) {
 		// set allday as true
 		$this->set( 'allday', true );
-		if ( null !== $length ) {
-			$start = $this->get( 'start' );
-			// reset time component
-			$start->set_time( 0, 0, 0 );
-			$end = clone $start;
-			// set the correct length
-			$end->adjust_day( $length );
-			$this->set( 'end', $end );
-		}
+		$start = $this->get( 'start' );
+		// reset time component
+		$start->set_time( 0, 0, 0 );
+		$end = clone $start;
+		// set the correct length
+		$end->adjust_day( $length );
+		$this->set( 'end', $end );
 	}
 
 	/**

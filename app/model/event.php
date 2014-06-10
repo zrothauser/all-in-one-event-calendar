@@ -110,7 +110,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 		$start = $this->get( 'start' );
 		// reset time component
 		$start->set_time( 0, 0, 0 );
-		$end = clone $start;
+		$end   = $this->_registry->get( 'date.time', $start );
 		// set the correct length
 		$end->adjust_day( $length );
 		$this->set( 'end', $end );
@@ -122,7 +122,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 	public function set_no_end_time() {
 		$this->set( 'instant_event', true );
 		$start = $this->get( 'start' );
-		$end = clone $start;
+		$end   = $this->_registry->get( 'date.time', $start );
 		$end->set_time(
 			$start->format( 'H' ),
 			$start->format( 'i' ) + 30,
@@ -527,8 +527,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 		$table_name = $dbi->get_table_name( 'ai1ec_events' );
 		$post_id    = $columns['post_id'];
 
-		$event_end = $this->get( 'end' );
-		if ( empty( $end ) ) {
+		if ( $this->get( 'end' )->format() <= 0 ) {
 			$this->set_no_end_time();
 		}
 		if ( $post_id ) {

@@ -405,9 +405,12 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		$table_name = $dbi->get_table_name( 'ai1ec_events' );
 		$argv       = array( $uid, $url );
 		// fix issue where invalid feed URLs were assigned
-		$delete     = 'DELETE FROM `'. $table_name . '` WHERE `ical_uid` = %s' .
-			' AND `ical_feed_url` != %s';
-		$dbi->query( $dbi->prepare( $delete, $argv ) );
+		$delete     = 'SELECT `post_id` FROM `'. $table_name .
+			'` WHERE `ical_uid` = %s AND `ical_feed_url` != %s';
+		$post_ids   = $dbi->get_col( $dbi->prepare( $delete, $argv ) );
+		foreach ( $post_ids as $pid ) {
+			wp_delete_post( $pid, true );
+		}
 		// retrieve actual feed ID if any
 		$select = 'SELECT `post_id` FROM `' . $table_name .
 			'` WHERE `ical_uid` = %s';
@@ -422,9 +425,8 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	public function get_event_ids_for_feed( $feed_url ) {
 		$dbi        = $this->_registry->get( 'dbi.dbi' );
 		$table_name = $dbi->get_table_name( 'ai1ec_events' );
-		$query      = 'SELECT `post_id` FROM ' . $table_name . '
-						WHERE
-						ical_feed_url = %s';
+		$query      = 'SELECT `post_id` FROM ' . $table_name .
+						' WHERE ical_feed_url = %s';
 		return $dbi->get_col( $dbi->prepare( $query, array( $feed_url ) ) );
 	}
 

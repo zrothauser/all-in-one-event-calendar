@@ -11,6 +11,25 @@
  */
 abstract class Ai1ec_View_Admin_Abstract extends Ai1ec_Base {
 
+	protected $_page_id;
+
+	protected $_page_suffix;
+
+	public function __construct( Ai1ec_Registry_Object $registry ) {
+		parent::__construct( $registry );
+		$exploded_class = explode( '_', get_class( $this ) );
+		$this->_page_suffix = strtolower( end( $exploded_class ) );
+	}
+
+	public function get_url() {
+		add_query_arg(
+			array(
+				'post_type' => AI1EC_POST_TYPE,
+				'page'      => AI1EC_PLUGIN_NAME . '-' . $this->_page_suffix
+			),
+			get_admin_url() . 'edit.php'
+		);
+	}
 	/**
 	 * Adds the page to the correct menu.
 	 */

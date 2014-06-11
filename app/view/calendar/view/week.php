@@ -235,7 +235,7 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 
 				// If event falls on this day, make a copy.
 				if ( $evt_end > $day_start && $evt_start < $day_end ) {
-					$_evt = clone $evt;
+					$_evt = $evt->get_new_instance();
 					if ( $evt_start < $day_start ) {
 						// If event starts before this day, adjust copy's start time
 						$_evt->set( 'start', $day_start );

@@ -101,7 +101,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 
 	/**
 	 * Set the event is all day, during the specified number of days
-	 * 
+	 *
 	 * @param number $length
 	 */
 	public function set_all_day( $length = 1 ) {
@@ -713,6 +713,19 @@ class Ai1ec_Event extends Ai1ec_Base {
 		return $value;
 	}
 
+	/**
+	 * Returns copy instance of Ai1ec_Event
+	 *
+	 * @return Ai1ec_Event
+	 */
+	public function get_new_instance() {
+		$data = array();
+		foreach ( $this->_entity->list_properties() as $property ) {
+			$data[$property] = $this->get( $property );
+		}
+
+		return $this->_registry->get( 'model.event', $data );
+	}
 	/**
 	 * Decode timezone to use for event.
 	 *

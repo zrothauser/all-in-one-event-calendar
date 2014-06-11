@@ -714,9 +714,9 @@ class Ai1ec_Event extends Ai1ec_Base {
 	}
 
 	/**
-	 * Returns copy instance of Ai1ec_Event
+	 * Returns copy instance of Ai1ec_Event.
 	 *
-	 * @return Ai1ec_Event
+	 * @return Ai1ec_Event Result.
 	 */
 	public function get_new_instance() {
 		$data = array();

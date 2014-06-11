@@ -41,8 +41,6 @@ class Ai1ec_Event_Entity extends Ai1ec_Base {
 	 * Special value `registry` ({@see Ai1ec_Registry_Object}) is excluded.
 	 *
 	 * @return array List of accessible properties with their values.
-	 *
-	 * @staticvar array $known List of properties.
 	 */
 	public function get_properties_with_values() {
 		$values = array();

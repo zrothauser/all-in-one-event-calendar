@@ -52,9 +52,6 @@ class Ai1ec_Settings extends Ai1ec_App {
 			! isset( $this->_options[$option]['version'] ) ||
 			(string)$this->_options[$option]['version'] !== (string)$version
 		) {
-			if ( 'reset_on_version_change' === $type ) {
-				unset( $this->_options[$option] );
-			}
 			$this->_options[$option] = array(
 				'value'    => ( isset( $this->_options[$option] ) )
 					? $this->_options[$option]['value']
@@ -768,10 +765,6 @@ class Ai1ec_Settings extends Ai1ec_App {
 			'ics_cron_freq' => array(
 				'type'    => 'string',
 				'default' => 'hourly',
-			),
-			'flush_for_slug_change' => array(
-				'type'    => 'reset_on_version_change',
-				'default' => true,
 			),
 			'twig_cache' => array(
 				'type' => 'string',

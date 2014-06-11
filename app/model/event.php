@@ -719,12 +719,10 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 * @return Ai1ec_Event Result.
 	 */
 	public function get_new_instance() {
-		$data = array();
-		foreach ( $this->_entity->list_properties() as $property ) {
-			$data[$property] = $this->get( $property );
-		}
-
-		return $this->_registry->get( 'model.event', $data );
+		return $this->_registry->get(
+			'model.event',
+			$this->_entity->get_properties_with_values()
+		);
 	}
 	/**
 	 * Decode timezone to use for event.

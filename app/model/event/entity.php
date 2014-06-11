@@ -36,6 +36,27 @@ class Ai1ec_Event_Entity extends Ai1ec_Base {
 	}
 
 	/**
+	 * Get list of object properties with values.
+	 *
+	 * Special value `registry` ({@see Ai1ec_Registry_Object}) is excluded.
+	 *
+	 * @return array List of accessible properties with their values.
+	 *
+	 * @staticvar array $known List of properties.
+	 */
+	public function get_properties_with_values() {
+		$values = array();
+		foreach ( $this as $name => $value ) {
+			$name = substr( $name, 1 );
+			if ( 'registry' === $name ) {
+				continue;
+			}
+			$values[$name] = $value;
+		}
+		return $values;
+	}
+
+	/**
 	 * Change stored property.
 	 *
 	 * @param string $name  Name of property to change.

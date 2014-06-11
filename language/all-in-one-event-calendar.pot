@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.0.11.1\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.0.12\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2014-06-06 16:32:44+00:00\n"
+"POT-Creation-Date: 2014-06-11 07:28:05+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -940,7 +940,7 @@ msgstr ""
 msgid "Another import process in progress. Please try again later."
 msgstr ""
 
-#: lib/calendar-feed/ics.php:163
+#: lib/calendar-feed/ics.php:166
 msgid ""
 "We couldn't find a valid transport to fetch the calendar data.\n"
 "\t\t\t\t\tYou should set allow_url_fopen in php.ini as suggested in\n"
@@ -948,46 +948,46 @@ msgid ""
 "allow_url_fopen' target='_blank' >this</a> article"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:175
+#: lib/calendar-feed/ics.php:178
 msgid "No events were found"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:184
+#: lib/calendar-feed/ics.php:187
 msgid "Imported %s event"
 msgid_plural "Imported %s events"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/calendar-feed/ics.php:190 lib/calendar-feed/ics.php:609
+#: lib/calendar-feed/ics.php:193 lib/calendar-feed/ics.php:612
 msgid "Invalid ICS feed ID"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:332
+#: lib/calendar-feed/ics.php:335
 msgid "Categories (optional)"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:349
+#: lib/calendar-feed/ics.php:352
 msgid ""
 "Do you want to keep the events imported from the calendar or remove them?"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:355
+#: lib/calendar-feed/ics.php:358
 msgid "Removing ICS Feed"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:358
+#: lib/calendar-feed/ics.php:361
 msgid "Keep Events"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:361
+#: lib/calendar-feed/ics.php:364
 msgid "Remove Events"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:601
+#: lib/calendar-feed/ics.php:604
 msgid "Deleted %d events"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:636
+#: lib/calendar-feed/ics.php:639
 msgid "Feed deleted"
 msgstr ""
 
@@ -2325,9 +2325,9 @@ msgstr ""
 msgid "All-in-One Event Calendar by Time.ly"
 msgstr ""
 
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.0.11.1)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.0.12)  #-#-#-#-#
 #. Plugin URI of the plugin/theme
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.0.11.1)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.0.12)  #-#-#-#-#
 #. Author URI of the plugin/theme
 msgid "http://time.ly/"
 msgstr ""

@@ -45,13 +45,16 @@ class Ai1ec_Settings extends Ai1ec_App {
 		$value,
 		$type,
 		$renderer,
-		$version = '2.0a'
+		$version = '2.0.0'
 	) {
 		if (
 			! isset( $this->_options[$option] ) ||
 			! isset( $this->_options[$option]['version'] ) ||
 			(string)$this->_options[$option]['version'] !== (string)$version
 		) {
+			if ( 'reset_on_version_change' === $type ) {
+				unset( $this->_options[$option] );
+			}
 			$this->_options[$option] = array(
 				'value'    => ( isset( $this->_options[$option] ) )
 					? $this->_options[$option]['value']
@@ -272,6 +275,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 		) {
 			$this->_register_standard_values();
 			$this->_change_update_status( true );
+			$this->_perform_upgrade_actions();
 		} else if ( $values instanceof Ai1ec_Settings ) { // process legacy
 			$this->_register_standard_values();
 			$this->_parse_legacy( $values );
@@ -280,6 +284,13 @@ class Ai1ec_Settings extends Ai1ec_App {
 		$this->_registry->get( 'controller.shutdown' )->register(
 			array( $this, 'shutdown' )
 		);
+	}
+
+	/**
+	 * Do things needed on every plugin upgrade.
+	 */
+	protected function _perform_upgrade_actions() {
+		add_action( 'init', 'flush_rewrite_rules' );
 	}
 
 	/**
@@ -759,7 +770,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'default' => 'hourly',
 			),
 			'flush_for_slug_change' => array(
-				'type'    => 'bool',
+				'type'    => 'reset_on_version_change',
 				'default' => true,
 			),
 			'twig_cache' => array(

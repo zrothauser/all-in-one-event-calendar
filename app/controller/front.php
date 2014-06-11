@@ -212,6 +212,8 @@ class Ai1ec_Front_Controller {
 			$this->_initialize_schema();
 			// set the default theme if not set
 			$this->_add_default_theme_if_not_set();
+			// perform one time action on upgarding
+			$this->_perform_uprade();
 		} catch ( Ai1ec_Constants_Not_Set_Exception $e ) {
 			// This is blocking, throw it and disable the plugin
 			$exception = $e;
@@ -333,6 +335,17 @@ class Ai1ec_Front_Controller {
 		}
 		add_action( $action, array( $this, 'route_request' ) );
 		add_filter( 'ai1ec_registry', array( $this, 'return_registry' ) );
+	}
+
+	/**
+	 * Perform one time actions, usually on upgrade
+	 */
+	protected function _perform_uprade() {
+		$settings = $this->_registry->get( 'model.settings' );
+		if ( true === $settings->get( 'flush_for_slug_change' ) ) {
+			flush_rewrite_rules();
+			$settings->set( 'flush_for_slug_change', true );
+		}
 	}
 
 	/**

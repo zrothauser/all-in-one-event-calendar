@@ -758,6 +758,10 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'type'    => 'string',
 				'default' => 'hourly',
 			),
+			'flush_for_slug_change' => array(
+				'type'    => 'bool',
+				'default' => true,
+			),
 			'twig_cache' => array(
 				'type' => 'string',
 				'renderer' => array(

@@ -714,16 +714,14 @@ class Ai1ec_Event extends Ai1ec_Base {
 	}
 
 	/**
-	 * Returns copy instance of Ai1ec_Event.
+	 * Allow properties to be modified after cloning.
 	 *
-	 * @return Ai1ec_Event Result.
+	 * @return void
 	 */
-	public function get_new_instance() {
-		return $this->_registry->get(
-			'model.event',
-			$this->_entity->get_properties_with_values()
-		);
+	public function __clone() {
+		$this->_entity = clone $this->_entity;
 	}
+
 	/**
 	 * Decode timezone to use for event.
 	 *

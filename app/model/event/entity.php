@@ -36,22 +36,14 @@ class Ai1ec_Event_Entity extends Ai1ec_Base {
 	}
 
 	/**
-	 * Get list of object properties with values.
+	 * Handle cloning properly to resist property changes.
 	 *
-	 * Special value `registry` ({@see Ai1ec_Registry_Object}) is excluded.
-	 *
-	 * @return array List of accessible properties with their values.
+	 * @return void
 	 */
-	public function get_properties_with_values() {
-		$values = array();
-		foreach ( $this as $name => $value ) {
-			$name = substr( $name, 1 );
-			if ( 'registry' === $name ) {
-				continue;
-			}
-			$values[$name] = $value;
-		}
-		return $values;
+	public function __clone() {
+		$this->_start = $this->_registry->get( 'date.time', $this->_start );
+		$this->_end   = $this->_registry->get( 'date.time', $this->_end );
+		$this->_post  = clone $this->_post;
 	}
 
 	/**

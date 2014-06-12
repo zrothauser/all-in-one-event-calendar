@@ -117,11 +117,30 @@ class Ai1ec_Exception_Handler {
 		// if it's something we handle, handle it
 		$backtrace = '<br><br>' . nl2br( $exception );
 		if ( $exception instanceof $this->_exception_class ) {
-			// check if it has a methof for deatiled html
-			$message = method_exists( $exception, 'get_html_message' ) ?
+			$request_uri = '<br><br>Request Uri: ' . $_SERVER['REQUEST_URI'];
+			// check if it's a plugin instead of core
+			if ( $exception->plugin_to_disable() ) {
+				include_once ABSPATH . 'wp-admin/includes/plugin.php';
+				// deactivate the plugin. Fire handlers to hide options.
+				deactivate_plugins( $exception->plugin_to_disable() );
+				global $ai1ec_registry;
+				$ai1ec_registry->get( 'notification.admin' )
+					->store( 
+						$exception->get_disable_message() . $request_uri, 
+						'error',
+						2,
+						array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
+						true
+					);
+				$this->redirect();
+			} else {
+				// check if it has a methof for deatiled html
+				$message = method_exists( $exception, 'get_html_message' ) ?
 					$exception->get_html_message() :
 					$exception->getMessage();
-			$this->soft_deactivate_plugin( $message . $backtrace );
+				$this->soft_deactivate_plugin( $message . $backtrace . $request_uri );
+			}
+
 		}
 		// if it's a PHP error in our plugin files, deactivate and redirect
 		else if ( $exception instanceof $this->_error_exception_class ) {
@@ -157,7 +176,8 @@ class Ai1ec_Exception_Handler {
 		$errcontext
 	) {
 		// if the error is not in our plugin, let PHP handle things.
-		if ( false === strpos( $errfile, AI1EC_PLUGIN_NAME ) ) {
+		$position = strpos( $errfile, AI1EC_PLUGIN_NAME );
+		if ( false === $position ) {
 			if ( is_callable( $this->_prev_er_handler ) ) {
 				return call_user_func_array(
 					$this->_prev_er_handler,
@@ -181,6 +201,33 @@ class Ai1ec_Exception_Handler {
 			);
 			return error_log( $message, 0 );
 		}
+		// let's get the plugin folder
+		$tail = substr( $errfile, $position );
+		$exploded = explode( DIRECTORY_SEPARATOR, $tail );
+		$plugin_dir = $exploded[0];
+		// if the error doesn't belong to core, throw the plugin exception to trigger disabling
+		// of the plugin in the exception handler
+		if ( AI1EC_PLUGIN_NAME !== $plugin_dir ) {
+			$exc = implode(
+				array_map(
+					array( $this, 'return_first_char' ),
+					explode( '-', $plugin_dir )
+				)
+			);
+			// all plugins should implement an exception based on this convention
+			// which is the same convention we use for constants, only with just first letter uppercase
+			$exc = str_replace( 'aioec', 'Ai1ec', $exc ) . '_Exception';
+			if ( class_exists( $exc ) ) {
+				$message = sprintf(
+					'All-in-One Event Calendar: %s @ %s:%d #%d',
+					$errstr,
+					$errfile,
+					$errline,
+					$errno
+				);
+				throw new $exc( $message );
+			}
+		}
 		throw new Ai1ec_Error_Exception(
 			$errstr,
 			$errno,
@@ -190,6 +237,9 @@ class Ai1ec_Exception_Handler {
 		);
 	}
 
+	public function return_first_char( $name ) {
+		return $name[0];
+	}
 	/**
 	 * Perform what's needed to deactivate the plugin softly
 	 *

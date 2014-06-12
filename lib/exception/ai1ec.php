@@ -22,4 +22,7 @@ class Ai1ec_Exception extends Exception {
 		return $this->getMessage();
 	}
 
+	public function plugin_to_disable() {
+		return '';
+	}
 }

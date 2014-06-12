@@ -731,13 +731,13 @@ class Ai1ec_Ics_Import_Export_Engine
 			);
 
 
-			// $e->setProperty(
-			// 	'dtend',
-			// 	$this->_sanitize_value(
-			// 		$event->get( 'end' )->format( "Ymd\THis" )
-			// 	),
-			// 	$dtend
-			// );
+			$e->setProperty(
+				'dtend',
+				$this->_sanitize_value(
+					$event->get( 'end' )->format( "Ymd\THis" )
+				),
+				$dtend
+			);
 		}
 
 		// ========================

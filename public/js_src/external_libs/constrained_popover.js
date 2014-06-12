@@ -88,10 +88,10 @@ define(
 		    boundBottom,
 		    boundRight,
 		    newPos = {},
-		    $container = $( this.options.container == 'body' ? document : this.options.container );
+		    $container = $( 'body' === this.options.container  ? document : this.options.container );
 
 		if ( $container.length ) {
-			containerOffset = !! $container.offset() ? $container.offset() : { top: 0, left: 0 };
+			containerOffset = $container.offset() || { top: 0, left: 0 };
 
 			boundTop = containerOffset.top;
 			boundLeft = containerOffset.left;

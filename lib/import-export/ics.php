@@ -363,6 +363,12 @@ class Ai1ec_Ics_Import_Export_Engine
 			$ticket_url = $e->getProperty( 'X-TICKETS-URL' );
 			$ticket_url = $ticket_url ? $ticket_url[1] : '';
 
+			// =================
+			// = Instant Event =
+			// =================
+			$instant_event = $e->getProperty( 'X-INSTANT-EVENT' );
+			$instant_event = $instant_event ? 1 : 0;
+
 			// ===============================
 			// = Contact name, phone, e-mail =
 			// ===============================
@@ -410,6 +416,7 @@ class Ai1ec_Ics_Import_Export_Engine
 				'venue'             => $venue,
 				'address'           => $address,
 				'cost'              => $cost,
+				'instant_event'     => $instant_event,
 				'ticket_url'        => $this->_parse_legacy_loggable_url(
 					$ticket_url
 				),
@@ -724,13 +731,13 @@ class Ai1ec_Ics_Import_Export_Engine
 			);
 
 
-			$e->setProperty(
-				'dtend',
-				$this->_sanitize_value(
-					$event->get( 'end' )->format( "Ymd\THis" )
-				),
-				$dtend
-			);
+			// $e->setProperty(
+			// 	'dtend',
+			// 	$this->_sanitize_value(
+			// 		$event->get( 'end' )->format( "Ymd\THis" )
+			// 	),
+			// 	$dtend
+			// );
 		}
 
 		// ========================
@@ -804,6 +811,15 @@ class Ai1ec_Ics_Import_Export_Engine
 				$this->_sanitize_value(
 					$event->get_nonloggable_url( $event->get( 'ticket_url' ) )
 				)
+			);
+		}
+		// =================
+		// = Instant Event =
+		// =================
+		if ( $event->get( 'instant_event' ) ) {
+			$e->setProperty(
+				'X-INSTANT-EVENT',
+				$this->_sanitize_value( $event->get( 'instant_event' ) )
 			);
 		}
 

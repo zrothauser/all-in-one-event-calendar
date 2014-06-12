@@ -11,16 +11,32 @@
  */
 abstract class Ai1ec_View_Admin_Abstract extends Ai1ec_Base {
 
+	/**
+	 * @var string
+	 */
 	protected $_page_id;
 
+	/**
+	 * @var string
+	 */
 	protected $_page_suffix;
 
+	/**
+	 * Standard constructor
+	 * 
+	 * @param Ai1ec_Registry_Object $registry
+	 */
 	public function __construct( Ai1ec_Registry_Object $registry ) {
 		parent::__construct( $registry );
 		$exploded_class = explode( '_', get_class( $this ) );
 		$this->_page_suffix = strtolower( end( $exploded_class ) );
 	}
 
+	/**
+	 * Get the url of the page
+	 * 
+	 * @return string
+	 */
 	public function get_url() {
 		return add_query_arg(
 			array(
@@ -30,6 +46,7 @@ abstract class Ai1ec_View_Admin_Abstract extends Ai1ec_Base {
 			get_admin_url() . 'edit.php'
 		);
 	}
+
 	/**
 	 * Adds the page to the correct menu.
 	 */

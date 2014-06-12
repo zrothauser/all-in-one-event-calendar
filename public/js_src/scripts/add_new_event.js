@@ -16,7 +16,8 @@ define(
 		'external_libs/bootstrap/collapse',
 		'external_libs/bootstrap/modal',
 		'external_libs/bootstrap/alert',
-		'external_libs/bootstrap/tab'
+		'external_libs/bootstrap/tab',
+		'external_libs/select2'
 	],
 	function (
 		$,
@@ -295,6 +296,12 @@ define(
 			.insertAfter( '#ai1ec_event_inline_alert' );
 		$( '#post' ).addClass( 'ai1ec-visible' );
 	};
+	/**
+	 * Initialize Select2 for timezones.
+	 */
+	var init_timezones_select = function() {
+		$('#timezone-select').select2();
+	};
 
 	var start = function() {
 		// Initialize the page. We do this before domReady so we start loading other
@@ -304,8 +311,10 @@ define(
 			init_collapsibles();
 			// Reposition event details meta box.
 			reposition_meta_box();
-			// Attach the event handlers
+			// Attach the event handlers.
 			attach_event_handlers();
+			// Initialize Select2 for timezones.
+			init_timezones_select();
 		} );
 	};
 

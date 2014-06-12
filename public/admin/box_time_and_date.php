@@ -77,7 +77,7 @@
 						</label>
 					</td>
 					<td>
-						<select name="ai1ec_timezone_name">
+						<select name="ai1ec_timezone_name" id="timezone-select">
 							<option value=""><?php _e( 'Choose your time zone', AI1EC_PLUGIN_NAME ); ?></option>
 						<?php foreach ( $timezones_list as $group => $timezones ) : ?>
 							<optgroup label="<?php echo $group;?>">

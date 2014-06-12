@@ -22,7 +22,7 @@ abstract class Ai1ec_View_Admin_Abstract extends Ai1ec_Base {
 	}
 
 	public function get_url() {
-		add_query_arg(
+		return add_query_arg(
 			array(
 				'post_type' => AI1EC_POST_TYPE,
 				'page'      => AI1EC_PLUGIN_NAME . '-' . $this->_page_suffix

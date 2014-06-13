@@ -101,6 +101,87 @@ class Ai1ec_Exception_Handler {
 	}
 
 	/**
+	 * Return add-on, which caused the exception or null if it was Core.
+	 *
+	 * Relies on `plugin_to_disable` method which may be implemented by
+	 * an exception. If it returns non empty value - it is returned.
+	 *
+	 * @param Exception $exception Actual exception which was thrown.
+	 *
+	 * @return string|null Add-on identifier (plugin url), or null.
+	 */
+	public function is_caused_by_addon( Exception $exception ) {
+		$addon = null;
+		if ( method_exists( $exception, 'plugin_to_disable' ) ) {
+			$addon = $exception->plugin_to_disable();
+			if ( empty( $addon ) ) {
+				$addon = null;
+			}
+		}
+		if ( null === $addon ) {
+			$position   = strlen( dirname( AI1EC_PATH ) ) + 1;
+			$length     = strlen( AI1EC_PLUGIN_NAME );
+			$trace_list = $exception->getTrace();
+			array_unshift(
+				$trace_list,
+				array( 'file' => $exception->getFile() )
+			);
+			foreach ( $trace_list as $trace ) {
+				if (
+					! isset( $trace['file'] ) ||
+					! isset( $trace['file'][$position] )
+				) {
+					continue;
+				}
+				$file = substr(
+					$trace['file'],
+					$position,
+					strpos( $trace['file'], '/', $position ) - $position
+				);
+				if ( 0 === strncmp( AI1EC_PLUGIN_NAME, $file, $length ) ) {
+					if ( AI1EC_PLUGIN_NAME !== $file ) {
+						$addon = $file . '/' . $file . '.php';
+					}
+				}
+			}
+		}
+		if ( 'core' === strtolower( $addon ) ) {
+			return null;
+		}
+		return $addon;
+	}
+
+	/**
+	 * Get tag-line for disabling.
+	 *
+	 * Extracts plugin name from file.
+	 *
+	 * @param string $addon Name of disabled add-on.
+	 *
+	 * @return string Message to display before full trace.
+	 */
+	public function get_disabled_line( $addon ) {
+		$file = dirname( AI1EC_PATH ) . DIRECTORY_SEPARATOR . $addon;
+		$line = '';
+		if (
+			is_file( $file ) &&
+			preg_match(
+				'|Plugin Name:\s*(.+)|',
+				file_get_contents( $file ),
+				$matches
+			)
+		) {
+			$line = '<h4>' .
+				sprintf(
+					__( 'Disabled add-on "%s" due to an error' ),
+					__( trim( $matches[1] ), dirname( $addon ) )
+				) .
+				'</h4>';
+		}
+		return $line;
+	}
+
+	/**
 	 * Global exceptions handling method
 	 *
 	 * @param Exception $exception Previously thrown exception to handle
@@ -117,16 +198,21 @@ class Ai1ec_Exception_Handler {
 		// if it's something we handle, handle it
 		$backtrace = '<br><br>' . nl2br( $exception );
 		if ( $exception instanceof $this->_exception_class ) {
-			$request_uri = '<br><br>Request Uri: ' . $_SERVER['REQUEST_URI'];
 			// check if it's a plugin instead of core
-			if ( $exception->plugin_to_disable() ) {
+			$disable_addon = $this->is_caused_by_addon( $exception );
+			$message       = method_exists( $exception, 'get_html_message' )
+				? $exception->get_html_message()
+				: $exception->getMessage();
+			$message .= $backtrace .
+				'<br><br>Request Uri: ' . $_SERVER['REQUEST_URI'];
+			if ( null !== $disable_addon ) {
 				include_once ABSPATH . 'wp-admin/includes/plugin.php';
 				// deactivate the plugin. Fire handlers to hide options.
-				deactivate_plugins( $exception->plugin_to_disable() );
+				deactivate_plugins( $disable_addon );
 				global $ai1ec_registry;
 				$ai1ec_registry->get( 'notification.admin' )
 					->store( 
-						$exception->get_disable_message() . $request_uri, 
+						$this->get_disabled_line( $disable_addon ) . $message,
 						'error',
 						2,
 						array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
@@ -135,10 +221,7 @@ class Ai1ec_Exception_Handler {
 				$this->redirect();
 			} else {
 				// check if it has a methof for deatiled html
-				$message = method_exists( $exception, 'get_html_message' ) ?
-					$exception->get_html_message() :
-					$exception->getMessage();
-				$this->soft_deactivate_plugin( $message . $backtrace . $request_uri );
+				$this->soft_deactivate_plugin( $message );
 			}
 
 		}

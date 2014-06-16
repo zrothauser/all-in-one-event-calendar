@@ -19,7 +19,11 @@ class Ai1ec_Post_Content_Check extends Ai1ec_Base {
 	 * @return void Method does not return.
 	 */
 	public function check_content( $post ) {
-		if ( ! $post instanceof WP_Post ) {
+		if (
+			null === $post ||
+			! is_object( $post ) ||
+			! isset( $post->post_content )
+		) {
 			return;
 		}
 		if (

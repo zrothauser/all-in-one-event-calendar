@@ -77,7 +77,6 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 				if ( ! isset( $_REQUEST['noredirect'] ) ) {
 					Ai1ec_Http_Response_Helper::redirect( $redirect_url );
 				}
-				exit;
 			}
 			return;
 		}
@@ -123,7 +122,6 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 		// and robots.txt is not writable
 		if ( $redirect && ! isset( $_REQUEST['noredirect'] ) ) {
 			Ai1ec_Http_Response_Helper::redirect( $redirect_url );
-			exit;
 		}
 	}
 

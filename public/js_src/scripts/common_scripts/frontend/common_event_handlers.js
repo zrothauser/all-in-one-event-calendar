@@ -1,6 +1,7 @@
 define(
 	[
-		"jquery_timely"
+		"jquery_timely",
+		"external_libs/bootstrap/affix",
 	],
 	function( $ ) {
 	"use strict"; // jshint ;_;
@@ -186,7 +187,7 @@ define(
 				}
 		}
 	};
-
+	
 	return {
 		handle_popover_over        : handle_popover_over,
 		handle_popover_out         : handle_popover_out,

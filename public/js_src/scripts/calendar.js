@@ -225,14 +225,16 @@ define(
 				$toggle.each( function () {
 					$( this )
 						.contents()
-						    .eq( -3 )
-						      .wrap( '<div class="ai1ec-hidden" />' );
+							.eq( -3 )
+								// Hide dropdown captions.
+								.wrap( '<div class="ai1ec-hidden" />' );
 				});
 			},
 			show_hidden_toggle_text = function () {
 				$toggle
 					.find( '.ai1ec-hidden' )
 						.contents()
+							// Remove hidden Div and show the caption.
 							.unwrap();
 			},
 			height_with_margins = function ( $object ) {
@@ -241,11 +243,13 @@ define(
 					+ parseInt( $object.css( 'margin-bottom' ) );
 			},
 			reinitialize = function () {
+				// We probably have new buttons here, so find them again.
 				$buttons = $calendar.find( '.ai1ec-btn-toolbar' );
 				$toggle = $toolbar.find( '.ai1ec-dropdown-toggle' );
 				$toolbar
 					.trigger( 'ai1ec-affix-top.bs.affix' )
 					.data( {
+						// Toolbar's original height might have changed.
 						'original_height' : height_with_margins( $toolbar )
 					} )
 					.filter( '.ai1ec-affix' )
@@ -254,7 +258,8 @@ define(
 
 		$toolbar
 			.data( {
-				'original_height' :  height_with_margins( $toolbar )
+				// Let's remember the original height.
+				'original_height':	 height_with_margins( $toolbar )
 			} )
 			.css( 'width', $calendar.width() )
 			.affix( {
@@ -263,26 +268,29 @@ define(
 					bottom: 0
 				}
 			} )
+			// Toolbar is affixed.
 			.on( 'ai1ec-affix.bs.affix', function () {
 				$buttons
 					.hide()
 					.appendTo( $toolbar )
-					.show() // We have its full height here but the fade-in process is not finished yet.
+					.show() // A trick to get real height while fade-in is still in process.
 					.css( 'opacity', 0 )
 					.animate( {
 						opacity: 1
 					}, 200 );
-
+				
 				$view_container
 					.data( 'original_margin_top', $view_container.css( 'margin-top' ) )
 					.css( 'margin-top', $toolbar.data( 'original_height' ) );
 					
+				// If Toolbar can't fit all the elements, hide the dropdown's captions.
 				if ( $toolbar.height() > $toolbar.data( 'original_height' ) ) {
 					hide_toggle_text();
 				} else {
 					show_hidden_toggle_text();
 				}
 			} )
+			// Toolbar is not affixed.
 			.on( 'ai1ec-affix-top.bs.affix', function () {
 				$buttons
 					.hide()

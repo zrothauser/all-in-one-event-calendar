@@ -45,7 +45,7 @@ define(
 	 * (this is also called at the end of load_view()).
 	 */
 	var initialize_view = function() {
-
+		
 		// Get the dropdown menu link of the active view.
 		var $selected_view =
 			$('#ai1ec-view-dropdown .ai1ec-dropdown-menu .ai1ec-active a');
@@ -84,6 +84,9 @@ define(
 
 		// Execute any registered hooks from extensions.
 		$( '#ai1ec-calendar-view-container' ).trigger( 'initialize_view.ai1ec' );
+		
+		// Trigger Affix event.
+		$('.ai1ec-calendar-toolbar').trigger('ai1ec-affix.reinit');
 	};
 
 	/**
@@ -103,6 +106,9 @@ define(
 		}
 		// Destroy any visible tooltips or popovers.
 		$( '.ai1ec-tooltip.ai1ec-in, .ai1ec-popup' ).remove();
+		
+		// Destroy toolbar if affixed.
+		$('.ai1ec-calendar-toolbar .ai1ec-btn-toolbar').remove();
 	};
 
 	var get_cal_state = function() {

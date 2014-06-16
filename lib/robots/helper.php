@@ -75,7 +75,7 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 				// we need to avoid infinity loop if FS_METHOD direct
 				// and robots.txt is not writable
 				if ( ! isset( $_REQUEST['noredirect'] ) ) {
-					wp_redirect( $redirect_url );
+					Ai1ec_Http_Response_Helper::redirect( $redirect_url );
 				}
 				exit;
 			}
@@ -122,7 +122,7 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 		// we need to avoid infinity loop if FS_METHOD direct
 		// and robots.txt is not writable
 		if ( $redirect && ! isset( $_REQUEST['noredirect'] ) ) {
-			wp_redirect( $redirect_url );
+			Ai1ec_Http_Response_Helper::redirect( $redirect_url );
 			exit;
 		}
 	}

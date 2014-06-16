@@ -415,7 +415,6 @@ class Ai1ec_Front_Controller {
 			10,
 			2
 		);
-
 		// Category colors
 		$dispatcher->register_action(
 			'events_categories_add_form_fields',

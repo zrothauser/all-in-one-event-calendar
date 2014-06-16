@@ -20,9 +20,7 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 		$option   = $this->_registry->get( 'model.option' );
 		$settings = $this->_registry->get( 'model.settings' );
 		$robots   = $option->get( 'ai1ec_robots_txt' );
-
 		if ( isset( $robots['page_id'] ) &&
-				! empty( $robots['is_installed'] ) &&
 					$robots['page_id'] == $settings->get( 'calendar_page_id' ) ) {
 			return;
 		}
@@ -34,7 +32,7 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 		$robots_txt    = array();
 		$is_installed  = false;
 		$current_rules = null;
-		$custom_rules  = $this->rules( null, null );
+		$custom_rules  = $this->rules( '', false );
 
 		$url = wp_nonce_url(
 			'edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings',
@@ -97,33 +95,21 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 			$current_rules = $wp_filesystem->get_contents( $robots_file );
 
 			// Update robots.txt
-			$custom_rules = $this->rules( $current_rules, null );
-			$is_installed = $wp_filesystem->put_contents(
-				$robots_file,
-				$custom_rules,
-				FS_CHMOD_FILE
-			);
-
-			if ( $is_installed ) {
-				$robots_txt['is_installed'] = true;
-			} else {
-				$err_msg = Ai1ec_I18n::__(
-					'<strong>ERROR:</strong> There was an error storing <strong>robots.txt</strong> to the server, Please verify the settings and permissions are correct.'
-				);
-				$this->_registry->get( 'notification.admin' )
-					->store( $err_msg, 'error' );
-				$redirect = true;
-			}
-		} else {
-			$robots_txt['is_installed'] = false;
+			$custom_rules = $this->rules( $current_rules, false );
+		} 
+		$robots_txt['is_installed'] = $wp_filesystem->put_contents(
+			$robots_file,
+			$custom_rules,
+			FS_CHMOD_FILE
+		);
+		if ( false === $robots_txt['is_installed'] ) {
 			$err_msg = Ai1ec_I18n::__(
-				'<strong>ERROR:</strong> There was an error storing <strong>robots.txt</strong> to the server. File does not exist or is not writable and readable.'
+				'<strong>ERROR:</strong> There was an error storing <strong>robots.txt</strong> to the server, the file could not be written.'
 			);
 			$this->_registry->get( 'notification.admin' )
 				->store( $err_msg, 'error' );
 			$redirect = true;
 		}
-
 		// Set Page ID
 		$robots_txt['page_id'] = $settings->get( 'calendar_page_id' );
 
@@ -148,7 +134,7 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 	 * @param  string $public Public flag
 	 * @return array
 	 */
-	public function rules( $output, $public ) {
+	public function rules( $output = '', $echo = true ) {
 		// Current rules
 		$current_rules = array_map(
 			'trim',
@@ -175,10 +161,13 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 		}
 
 		$robots = array_merge( $current_rules, $custom_rules );
-
-		return implode(
+		$robots = implode(
 			PHP_EOL,
 			array_filter( array_unique( $robots ) )
 		);
+		if ( true === $echo ) {
+			echo $robots;
+		}
+		return $robots;
 	}
 }

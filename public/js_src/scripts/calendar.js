@@ -210,6 +210,98 @@ define(
 	};
 
 	/**
+	 * Affixed toolbar.
+	 * Uses Bootstrap Affix plugin.
+	 * @param  {object} $calendar jQuery object
+	 */
+	var initialize_affixed_toolbar = function ( $calendar ) {
+		var 
+			$toolbar = $calendar.find( '.ai1ec-calendar-toolbar' ),
+			$buttons = $calendar.find( '.ai1ec-btn-toolbar' ),
+			$toggle = $toolbar.find( '.ai1ec-dropdown-toggle' ),
+			$view_container = $calendar.find( '#ai1ec-calendar-view-container' ),
+			$wpadminbar = $( '#wpadminbar' ),
+			hide_toggle_text = function () {
+				$toggle.each( function () {
+					$( this )
+						.contents()
+						    .eq( -3 )
+						      .wrap( '<div class="ai1ec-hidden" />' );
+				});
+			},
+			show_hidden_toggle_text = function () {
+				$toggle
+					.find( '.ai1ec-hidden' )
+						.contents()
+							.unwrap();
+			},
+			height_with_margins = function ( $object ) {
+				return $object.outerHeight()
+					+ parseInt( $object.css( 'margin-top' ) )
+					+ parseInt( $object.css( 'margin-bottom' ) );
+			},
+			reinitialize = function () {
+				$buttons = $calendar.find( '.ai1ec-btn-toolbar' );
+				$toggle = $toolbar.find( '.ai1ec-dropdown-toggle' );
+				$toolbar
+					.trigger( 'ai1ec-affix-top.bs.affix' )
+					.data( {
+						'original_height' : height_with_margins( $toolbar )
+					} )
+					.filter( '.ai1ec-affix' )
+						.trigger( 'ai1ec-affix.bs.affix' );
+			};
+
+		$toolbar
+			.data( {
+				'original_height' :  height_with_margins( $toolbar )
+			} )
+			.css( 'width', $calendar.width() )
+			.affix( {
+				offset: {
+					top: $toolbar.offset().top - ( ai1ec_config.affix_offset_top || 0 ) - $wpadminbar.height(),
+					bottom: 0
+				}
+			} )
+			.on( 'ai1ec-affix.bs.affix', function () {
+				$buttons
+					.hide()
+					.appendTo( $toolbar )
+					.show() // We have its full height here but the fade-in process is not finished yet.
+					.css( 'opacity', 0 )
+					.animate( {
+						opacity: 1
+					}, 200 );
+
+				$view_container
+					.data( 'original_margin_top', $view_container.css( 'margin-top' ) )
+					.css( 'margin-top', $toolbar.data( 'original_height' ) );
+					
+				if ( $toolbar.height() > $toolbar.data( 'original_height' ) ) {
+					hide_toggle_text();
+				} else {
+					show_hidden_toggle_text();
+				}
+			} )
+			.on( 'ai1ec-affix-top.bs.affix', function () {
+				$buttons
+					.hide()
+					.insertAfter( '.ai1ec-calendar-title' )
+					.show()
+					.css( 'opacity', 0 )
+					.animate( {
+						opacity: 1
+					}, 200 );
+					
+				$view_container
+					.css( 'margin-top', $view_container.data( 'original_margin_top' ) );
+
+				show_hidden_toggle_text();
+			} )
+			.on( 'ai1ec-affix.reinit', reinitialize );
+	};
+
+	/**
 	 * Start calendar page.
 	 */
 	var start = function() {
@@ -222,6 +314,11 @@ define(
 			attach_event_handlers();
 			// Initialize the calendar view for the first time.
 			load_views.initialize_view();
+			
+			// Affixed toolbar.
+			if( ai1ec_config.affix_toolbar || 1 ) {
+				initialize_affixed_toolbar( $('#ai1ec-calendar') );
+			}
 		} );
 	};
 

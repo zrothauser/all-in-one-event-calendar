@@ -217,54 +217,139 @@ define(
 	var initialize_affixed_toolbar = function ( $calendar ) {
 		var 
 			$toolbar = $calendar.find( '.ai1ec-calendar-toolbar' ),
+			// Calendar navigation buttons
 			$buttons = $calendar.find( '.ai1ec-btn-toolbar' ),
 			$toggle = $toolbar.find( '.ai1ec-dropdown-toggle' ),
-			$view_container = $calendar.find( '#ai1ec-calendar-view-container' ),
+			$view = $calendar.find( '#ai1ec-calendar-view' ),
 			$wpadminbar = $( '#wpadminbar' ),
+			initial_toolbar_offset = $toolbar.offset().top,
+			resize_timer = null,
+			// Returns current Bootsrap window mode
+			get_window_mode = function () {
+				return mode = $('#ai1ec-bs-modes div:visible:first').text();
+			},
+			// Create elements to monitor Bootstrap's responsive breakouts.
+			create_bs_modes = function () {
+				var 
+					modes = [ 'xs', 'sm', 'md', 'lg' ],
+					$modes = $( '<div id="ai1ec-bs-modes"></div>');
+	
+				for ( var i in modes ) {
+					$( '<div class="ai1ec-device-' + modes[ i ] +' ai1ec-visible-' + modes[ i ] + '">' + modes[ i ] +'</div>' )
+						.appendTo( $modes );
+				}
+				$modes.appendTo( 'body' );
+			},
+			// Returns offset value from user setting depending on the window width.
+			settings_offset = function () {
+				return parseInt( ai1ec_config[ 'affix_vertical_offset_' +  get_window_mode() ] || 0 );
+			},
+			// Hide dropdown captions to save some space.
 			hide_toggle_text = function () {
 				$toggle.each( function () {
 					$( this )
 						.contents()
 							.eq( -3 )
-								// Hide dropdown captions.
 								.wrap( '<div class="ai1ec-hidden" />' );
 				});
 			},
+			// Remove hidden Div and show the caption.
 			show_hidden_toggle_text = function () {
 				$toggle
 					.find( '.ai1ec-hidden' )
 						.contents()
-							// Remove hidden Div and show the caption.
 							.unwrap();
 			},
-			height_with_margins = function ( $object ) {
-				return $object.outerHeight()
-					+ parseInt( $object.css( 'margin-top' ) )
-					+ parseInt( $object.css( 'margin-bottom' ) );
+			// Calculate margin for smooth scrolling.
+			get_margin_top = function () {
+				return 
+					$toolbar.height() 
+					+ parseInt( $toolbar.css( 'margin-top' ) ) 
+					+ parseInt( $toolbar.css( 'margin-bottom' ) );
 			},
+			// That is only important when admin bar is not fixed.
+			set_toolbar_offset = function () {
+				var offset = 0;
+				if ( 'fixed' === $wpadminbar.css( 'position' ) ) {
+					offset = $wpadminbar.height();
+				}
+				$toolbar.css( 'top', offset + settings_offset() + 'px' );
+			},
+			// If we get more height then it was before - try to minimize the dropdowns.
+			// If it doesn't help - keep them as before.
+			resize_dropdowns = function () {
+				// If Toolbar can't fit all the elements, hide the dropdown's captions.
+				if ( $toolbar.height()  > $toolbar.data( 'original_height' ) ) {
+					hide_toggle_text();
+					// If it doesn't help show them.
+					if ( $toolbar.height() > $toolbar.data( 'original_height' ) ) {
+						show_hidden_toggle_text();
+					}
+				} else {
+					show_hidden_toggle_text();
+				}
+			},
+			// This method is needed when content is updated.
 			reinitialize = function () {
 				// We probably have new buttons here, so find them again.
 				$buttons = $calendar.find( '.ai1ec-btn-toolbar' );
 				$toggle = $toolbar.find( '.ai1ec-dropdown-toggle' );
 				$toolbar
 					.trigger( 'ai1ec-affix-top.bs.affix' )
+					.find( '.ai1ec-btn-toolbar' )
+						.hide()
+						.end()
 					.data( {
 						// Toolbar's original height might have changed.
-						'original_height' : height_with_margins( $toolbar )
+						'original_height': get_margin_top()
 					} )
+					.find( '.ai1ec-btn-toolbar' )
+						.show()
+						.end()
 					.filter( '.ai1ec-affix' )
 						.trigger( 'ai1ec-affix.bs.affix' );
+			},
+			// Process toolbar on resize.
+			on_resize = function () {
+				if ( $toolbar.hasClass( 'ai1ec-affix' ) ) {
+					$toolbar.addClass( 'ai1ec-was-affixed' );
+				}
+				$toolbar
+					.removeClass( 'ai1ec-affix' )
+					.css( 'width', $calendar.width() )
+					.find( '.ai1ec-btn-toolbar' )
+						.hide()
+						.end()
+					.data( {
+						// Let's remember the original height.
+						'original_height': get_margin_top()
+					} );
+					
+				set_toolbar_offset();
+				initial_toolbar_offset = $toolbar.offset().top;
+				$toolbar
+					.filter( '.ai1ec-was-affixed' )
+						.addClass( 'ai1ec-affix' )
+						.removeClass( 'ai1ec-was-affixed' )
+						.find( '.ai1ec-btn-toolbar' )
+							.show();
+
+				resize_timer = null;
 			};
 
 		$toolbar
 			.data( {
 				// Let's remember the original height.
-				'original_height':	 height_with_margins( $toolbar )
+				'original_height': get_margin_top()
 			} )
 			.css( 'width', $calendar.width() )
 			.affix( {
 				offset: {
-					top: $toolbar.offset().top - ( ai1ec_config.affix_offset_top || 0 ) - $wpadminbar.height(),
+					top: function () {
+						return initial_toolbar_offset 
+							- ( 'fixed' === $wpadminbar.css( 'position' ) ? $wpadminbar.height() : 0 )
+							- settings_offset();
+					},
 					bottom: 0
 				}
 			} )
@@ -278,17 +363,10 @@ define(
 					.animate( {
 						opacity: 1
 					}, 200 );
-				
-				$view_container
-					.data( 'original_margin_top', $view_container.css( 'margin-top' ) )
-					.css( 'margin-top', $toolbar.data( 'original_height' ) );
-					
-				// If Toolbar can't fit all the elements, hide the dropdown's captions.
-				if ( $toolbar.height() > $toolbar.data( 'original_height' ) ) {
-					hide_toggle_text();
-				} else {
-					show_hidden_toggle_text();
-				}
+
+				resize_dropdowns();
+				set_toolbar_offset();
+				$view.css( 'margin-top' , $toolbar.data( 'original_height' ) + 'px');
 			} )
 			// Toolbar is not affixed.
 			.on( 'ai1ec-affix-top.bs.affix', function () {
@@ -300,13 +378,25 @@ define(
 					.animate( {
 						opacity: 1
 					}, 200 );
-					
-				$view_container
-					.css( 'margin-top', $view_container.data( 'original_margin_top' ) );
 
 				show_hidden_toggle_text();
+				set_toolbar_offset();
+				$view.css( 'margin-top' , 0 );
 			} )
-			.on( 'ai1ec-affix.reinit', reinitialize );
+			// This event fires when a new content was loaded.
+			.on( 'ai1ec-affix.reinit', reinitialize )
+			.filter( '.ai1ec-affix' )
+				.trigger( 'ai1ec-affix.bs.affix' );
+
+		// Recalc width and offset on resize.
+		// Timer is used to reduce calculations.
+		$( window ).on( 'resize.affix', function () {
+			clearTimeout( resize_timer )
+			resize_timer = setTimeout( on_resize , 400 );
+		} );
+		
+		// Detect Bootstrap modes.
+		create_bs_modes();
 	};
 
 	/**
@@ -324,7 +414,7 @@ define(
 			load_views.initialize_view();
 			
 			// Affixed toolbar.
-			if( ai1ec_config.affix_toolbar || 1 ) {
+			if( ai1ec_config.affix_filter_menu ) {
 				initialize_affixed_toolbar( $('#ai1ec-calendar') );
 			}
 		} );

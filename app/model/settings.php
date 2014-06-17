@@ -448,7 +448,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'append'    => 'hrs',
 					'validator' => 'numeric',
 				),
-				'default'  => 8,
+				'default'  => 9,
 			),
 			'week_view_ends_at' => array(
 				'type' => 'int',
@@ -565,6 +565,70 @@ class Ai1ec_Settings extends Ai1ec_App {
 					)
 				),
 				'default'  => false,
+			),
+			'affix_filter_menu' => array(
+				'type' => 'bool',
+				'renderer' => array(
+					'class' => 'checkbox',
+					'tab'   => 'viewing-events',
+					'item'  => 'viewing-events',
+					'label' => Ai1ec_I18n::__(
+						' <strong>Affix filter menu</strong> to top of window when it scrolls out of view'
+					),
+				),
+				'default'  => false,
+			),
+			'affix_vertical_offset_md' => array(
+				'type' => 'int',
+				'renderer' => array(
+					'class'     => 'input',
+					'tab'       => 'viewing-events',
+					'item'      => 'viewing-events',
+					'label'     => Ai1ec_I18n::__( 'Offset affixed filter bar vertically by' ),
+					'type'      => 'append',
+					'append'    => 'pixels',
+					'validator' => 'numeric',
+				),
+				'default'  => 0,
+			),
+			'affix_vertical_offset_lg' => array(
+				'type' => 'int',
+				'renderer' => array(
+					'class'     => 'input',
+					'tab'       => 'viewing-events',
+					'item'      => 'viewing-events',
+					'label'     => Ai1ec_I18n::__( '(Wide screens only, ≥ 1200px) Offset affixed filter bar vertically by' ),
+					'type'      => 'append',
+					'append'    => 'pixels',
+					'validator' => 'numeric',
+				),
+				'default'  => 0,
+			),
+			'affix_vertical_offset_sm' => array(
+				'type' => 'int',
+				'renderer' => array(
+					'class'     => 'input',
+					'tab'       => 'viewing-events',
+					'item'      => 'viewing-events',
+					'label'     => Ai1ec_I18n::__( '(Tablets only, < 980px) Offset affixed filter bar vertically by' ),
+					'type'      => 'append',
+					'append'    => 'pixels',
+					'validator' => 'numeric',
+				),
+				'default'  => 0,
+			),
+			'affix_vertical_offset_xs' => array(
+				'type' => 'int',
+				'renderer' => array(
+					'class'     => 'input',
+					'tab'       => 'viewing-events',
+					'item'      => 'viewing-events',
+					'label'     => Ai1ec_I18n::__( '(Phones only, < 768px) Offset affixed filter bar vertically by' ),
+					'type'      => 'append',
+					'append'    => 'pixels',
+					'validator' => 'numeric',
+				),
+				'default'  => 0,
 			),
 			'hide_featured_image' => array(
 				'type' => 'bool',

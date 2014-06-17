@@ -45,7 +45,7 @@
 	// Affixed toolbar.
 	&.ai1ec-affix {
 		z-index: 1000;
-		top: 31px;
+		top: 0;
 		border-top-left-radius: 0;
 		border-top-right-radius: 0;
 		transition: all 0.2s;
@@ -53,12 +53,13 @@
 		.ai1ec-btn-group-xs {
 			margin-top: 11px;
 		}
-		.ai1ec-contribution-buttons {
-			margin-top: 3px;
-			margin-left: 6px;
-			transition: margin-top 0.2s;
-		}
 	}
+}
+// Hidden elements to detect current window mode.
+#ai1ec-bs-modes {
+	width: 0;
+	height: 0;
+	overflow: hidden;
 }
 
 // Trigger display of dropdown menus on hover on desktop devices only.

@@ -88,15 +88,15 @@ define(
 		    boundBottom,
 		    boundRight,
 		    newPos = {},
-		    $container = $( this.options.container );
+		    $container = $( 'body' === this.options.container  ? document : this.options.container );
 
 		if ( $container.length ) {
-			containerOffset = $container.offset()
+			containerOffset = $container.offset() || { top: 0, left: 0 };
 
-			boundTop = containerOffset.top
-			boundLeft = containerOffset.left
-			boundBottom = boundTop + $container.height()
-			boundRight = boundLeft + $container.width()
+			boundTop = containerOffset.top;
+			boundLeft = containerOffset.left;
+			boundBottom = boundTop + $container.height();
+			boundRight = boundLeft + $container.width();
 
 			// Constrain y-axis overflow
 			if ( pos.top + ( pos.height / 2 ) < boundTop ) {

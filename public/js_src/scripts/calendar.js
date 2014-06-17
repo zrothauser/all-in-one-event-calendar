@@ -392,7 +392,7 @@ define(
 		// Timer is used to reduce calculations.
 		$( window ).on( 'resize.affix', function () {
 			clearTimeout( resize_timer )
-			resize_timer = setTimeout( on_resize , 400 );
+			resize_timer = setTimeout( on_resize , 200 );
 		} );
 		
 		// Detect Bootstrap modes.

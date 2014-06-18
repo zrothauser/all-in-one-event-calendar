@@ -187,7 +187,7 @@ define(
 				}
 		}
 	};
-	
+
 	return {
 		handle_popover_over        : handle_popover_over,
 		handle_popover_out         : handle_popover_out,

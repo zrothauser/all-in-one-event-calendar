@@ -448,7 +448,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'append'    => 'hrs',
 					'validator' => 'numeric',
 				),
-				'default'  => 9,
+				'default'  => 8,
 			),
 			'week_view_ends_at' => array(
 				'type' => 'int',

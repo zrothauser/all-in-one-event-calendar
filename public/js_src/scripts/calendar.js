@@ -232,7 +232,7 @@ define(
 			create_bs_modes = function () {
 				var 
 					modes = [ 'xs', 'sm', 'md', 'lg' ],
-					$modes = $( '<div id="ai1ec-bs-modes"></div>');
+					$modes = $( '<div id="ai1ec-bs-modes"></div>' );
 	
 				for ( var i in modes ) {
 					$( '<div class="ai1ec-device-' + modes[ i ] +' ai1ec-visible-' + modes[ i ] + '">' + modes[ i ] +'</div>' )
@@ -259,13 +259,6 @@ define(
 					.find( '.ai1ec-hidden' )
 						.contents()
 							.unwrap();
-			},
-			// Calculate margin for smooth scrolling.
-			get_margin_top = function () {
-				return 
-					$toolbar.height() 
-					+ parseInt( $toolbar.css( 'margin-top' ) ) 
-					+ parseInt( $toolbar.css( 'margin-bottom' ) );
 			},
 			// That is only important when admin bar is not fixed.
 			set_toolbar_offset = function () {
@@ -301,7 +294,7 @@ define(
 						.end()
 					.data( {
 						// Toolbar's original height might have changed.
-						'original_height': get_margin_top()
+						'original_height': $toolbar.height()
 					} )
 					.find( '.ai1ec-btn-toolbar' )
 						.show()
@@ -322,7 +315,7 @@ define(
 						.end()
 					.data( {
 						// Let's remember the original height.
-						'original_height': get_margin_top()
+						'original_height': $toolbar.height()
 					} );
 					
 				set_toolbar_offset();
@@ -340,7 +333,7 @@ define(
 		$toolbar
 			.data( {
 				// Let's remember the original height.
-				'original_height': get_margin_top()
+				'original_height': $toolbar.height()
 			} )
 			.css( 'width', $calendar.width() )
 			.affix( {
@@ -353,8 +346,10 @@ define(
 					bottom: 0
 				}
 			} )
-			// Toolbar is affixed.
+			// Toolbar is affixed. Event is thrown by Bootstrap.
 			.on( 'ai1ec-affix.bs.affix', function () {
+				// Offset before moving the buttons.
+				var offset = $view.offset().top;
 				$buttons
 					.hide()
 					.appendTo( $toolbar )
@@ -362,13 +357,23 @@ define(
 					.css( 'opacity', 0 )
 					.animate( {
 						opacity: 1
-					}, 200 );
-
+					}, 300 );
+					
 				resize_dropdowns();
 				set_toolbar_offset();
-				$view.css( 'margin-top' , $toolbar.data( 'original_height' ) + 'px');
+				// Set the offset to compensate the space occupied by toolbar.
+				$view
+					.css( 'margin-top' , $toolbar.data( 'original_height' )  + 'px' )
+					.css( 'margin-top' , $toolbar.data( 'original_height' ) + $view.offset().top - offset + 'px' );
+					
+				// In case toolbar increased its height.	
+				if ( $toolbar.height() > $toolbar.data( 'original_height' ) ) {
+					$view.css( 'margin-top', 
+						parseInt( $view.css( 'margin-top' ) ) 
+						- ( $toolbar.outerHeight( true ) - $toolbar.data( 'original_height' ) ) + 'px' );
+				}
 			} )
-			// Toolbar is not affixed.
+			// Toolbar is not affixed. Event is thrown by Bootstrap.
 			.on( 'ai1ec-affix-top.bs.affix', function () {
 				$buttons
 					.hide()
@@ -377,22 +382,23 @@ define(
 					.css( 'opacity', 0 )
 					.animate( {
 						opacity: 1
-					}, 200 );
+					}, 300 );
 
 				show_hidden_toggle_text();
 				set_toolbar_offset();
 				$view.css( 'margin-top' , 0 );
+				$toolbar.data( 'original_height',  $toolbar.height() );
 			} )
 			// This event fires when a new content was loaded.
 			.on( 'ai1ec-affix.reinit', reinitialize )
 			.filter( '.ai1ec-affix' )
 				.trigger( 'ai1ec-affix.bs.affix' );
 
-		// Recalc width and offset on resize.
+		// Recalc. width and offset on resize.
 		// Timer is used to reduce calculations.
 		$( window ).on( 'resize.affix', function () {
 			clearTimeout( resize_timer )
-			resize_timer = setTimeout( on_resize , 200 );
+			resize_timer = setTimeout( on_resize , 100 );
 		} );
 		
 		// Detect Bootstrap modes.

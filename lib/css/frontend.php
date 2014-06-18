@@ -230,7 +230,6 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 			// If we want to force a recompile, we throw an exception.
 			if( $this->preview_mode === true || self::PARSE_LESS_FILES_AT_EVERY_REQUEST === true ) {
 				throw new Ai1ec_Cache_Not_Set_Exception();
-				fb('not set');
 			}else {
 				// This throws an exception if the key is not set
 				$css = $this->persistance_context->get_data_from_persistence();

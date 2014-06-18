@@ -45,7 +45,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 		$value,
 		$type,
 		$renderer,
-		$version = '2.0a'
+		$version = '2.0.0'
 	) {
 		if (
 			! isset( $this->_options[$option] ) ||
@@ -264,6 +264,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 				$test_version = $values['calendar_page_id']['version'];
 			}
 		}
+		$upgrade = false;
 		if ( // process meta updates changes
 			empty( $values ) || (
 				false !== $test_version &&
@@ -272,14 +273,26 @@ class Ai1ec_Settings extends Ai1ec_App {
 		) {
 			$this->_register_standard_values();
 			$this->_change_update_status( true );
+			$upgrade = true;
 		} else if ( $values instanceof Ai1ec_Settings ) { // process legacy
 			$this->_register_standard_values();
 			$this->_parse_legacy( $values );
 			$this->_change_update_status( true );
+			$upgrade = true;
+		}
+		if ( true === $upgrade ) {
+			$this->_perform_upgrade_actions();
 		}
 		$this->_registry->get( 'controller.shutdown' )->register(
 			array( $this, 'shutdown' )
 		);
+	}
+
+	/**
+	 * Do things needed on every plugin upgrade.
+	 */
+	protected function _perform_upgrade_actions() {
+		add_action( 'init', 'flush_rewrite_rules' );
 	}
 
 	/**

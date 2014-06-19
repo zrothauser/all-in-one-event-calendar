@@ -1,6 +1,7 @@
 {% if available_views | length > 1 %}
-	<li class="ai1ec-views-dropdown ai1ec-dropdown">
-		<a class="ai1ec-dropdown-toggle" data-toggle="ai1ec-dropdown">
+	<div class="ai1ec-views-dropdown ai1ec-btn-group ai1ec-pull-right">
+		<a class="ai1ec-btn ai1ec-btn-default ai1ec-dropdown-toggle"
+			data-toggle="ai1ec-dropdown">
 			<i class="ai1ec-icon-{{ current_view }} ai1ec-view-icon"></i>
 			{{ view_names[current_view] }}
 			<span class="ai1ec-caret"></span>
@@ -19,5 +20,5 @@
 				</div>
 			{% endfor %}
 		</div>
-	</li>
+	</div>
 {% endif %}

@@ -427,7 +427,7 @@ class Ai1ec_Javascript_Controller {
 			'show_tracking_popup'            =>
 				current_user_can( 'manage_options' ) && $settings->get( 'show_tracking_popup' ),
 		);
-		return $data;
+		return apply_filters( 'ai1ec_js_translations', $data );
 	}
 
 	/**

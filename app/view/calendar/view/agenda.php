@@ -66,8 +66,8 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$title = "$start_month $start_year – $end_month $end_year";
 		}
 
-		// Create pagination links.
-		$pagination_links = '';
+		// Create navigation bar if requested.
+		$navigation = '';
 		$loader = $this->_registry->get( 'theme.loader' );
 		if ( ! $view_args['no_navigation'] ) {
 			$pagination_links = $this->_get_agenda_like_pagination_links(
@@ -87,6 +87,24 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 				),
 				false
 			)->get_content();
+
+			// Get HTML for navigation bar.
+			$nav_args = array(
+				'no_navigation'    => $view_args['no_navigation'],
+				'pagination_links' => $pagination_links,
+				'views_dropdown'   => $view_args['views_dropdown'],
+			);
+			// Add extra buttons to Agenda view's nav bar if events were returned.
+			if ( $type === 'agenda' && $dates ) {
+				$button_args = array(
+					'text_collapse_all' => __( 'Collapse All', AI1EC_PLUGIN_NAME ),
+					'text_expand_all'   => __( 'Expand All', AI1EC_PLUGIN_NAME ),
+				);
+				$nav_args['after_pagination'] = $loader
+					->get_file( 'agenda-buttons.twig', $button_args, false )
+					->get_content();
+			}
+			$navigation = $this->_get_navigation( $nav_args );
 		}
 
 		$is_ticket_button_enabled = apply_filters( 'ai1ec_' . $type . '_ticket_button', false );
@@ -98,13 +116,11 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			'expanded'                  => $settings->get( 'agenda_events_expanded' ),
 			'show_location_in_title'    => $settings->get( 'show_location_in_title' ),
 			'page_offset'               => $view_args['page_offset'],
-			'pagination_links'          => $pagination_links,
+			'navigation'                => $navigation,
 			'post_ids'                  => join( ',', $view_args['post_ids'] ),
 			'data_type'                 => $view_args['data_type'],
 			'data_type_events'          => '',
 			'is_ticket_button_enabled'  => $is_ticket_button_enabled,
-			'text_collapse_all'         => __( 'Collapse All', AI1EC_PLUGIN_NAME ),
-			'text_expand_all'           => __( 'Expand All', AI1EC_PLUGIN_NAME ),
 			'text_upcoming_events'      => __( 'There are no upcoming events to display at this time.', AI1EC_PLUGIN_NAME ),
 			'text_edit'                 => __( 'Edit', AI1EC_PLUGIN_NAME ),
 			'text_read_more'            => __( 'Read more', AI1EC_PLUGIN_NAME ),
@@ -112,23 +128,9 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			'text_tags'                 => __( 'Tags:', AI1EC_PLUGIN_NAME ),
 			'text_venue_separator'      => __( '@ %s', AI1EC_PLUGIN_NAME ),
 		);
-		if( $settings->get( 'ajaxify_events_in_web_widget' ) ) {
+		if ( $settings->get( 'ajaxify_events_in_web_widget' ) ) {
 			$args['data_type_events'] = $view_args['data_type'];
 		}
-		// Add extra buttons to Agenda view if events were returned.
-		if ( $type === 'agenda' && $dates ) {
-			$args['after_pagination'] =
-				$loader->get_file( 'agenda-buttons.twig', $args, false )->get_content();
-		}
-		$navigation = '';
-		if ( true !== $view_args['no_navigation'] ) {
-			$navigation = $loader->get_file(
-				'navigation.twig',
-				$args,
-				false
-			)->get_content();
-		}
-		$args['navigation'] = $navigation;
 
 		// Allow child views to modify arguments passed to template.
 		$args = $this->get_extra_template_arguments( $args );

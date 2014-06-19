@@ -77,7 +77,6 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			'show_location_in_title'   => $settings->get( 'show_location_in_title' ),
 			'now_top'                  => $now,
 			'now_text'                 => $now_text,
-			'pagination_links'         => $pagination_links,
 			'time_format'              => $time_format,
 			'done_allday_label'        => false,// legacy
 			'done_grid'                => false,// legacy
@@ -90,11 +89,18 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			'text_now_label'           => __( 'Now:', AI1EC_PLUGIN_NAME ),
 			'text_venue_separator'     => __( '@ %s', AI1EC_PLUGIN_NAME ),
 		);
+		if ( $settings->get( 'ajaxify_events_in_web_widget' ) ) {
+			$view_args['data_type_events'] = $args['data_type'];
+		}
 
 		// Add navigation if requested.
-		$view_args['pagination_links'] = $pagination_links;
-		// Add navigation if requested.
-		$view_args['navigation'] = $this->_get_navigation( $args['no_navigation'], $view_args );
+		$view_args['navigation'] = $this->_get_navigation(
+			array(
+				'no_navigation'    => $args['no_navigation'],
+				'pagination_links' => $pagination_links,
+				'views_dropdown'   => $args['views_dropdown'],
+			)
+		);
 
 		return $this->_get_view( $view_args );
 	}

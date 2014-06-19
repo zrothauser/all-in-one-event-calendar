@@ -37,7 +37,7 @@
 		padding: 0 !important;
 	}
 	.ai1ec-btn-group {
-		margin: 8px 0 8px 3px;
+		margin: 11px 0 11px 3px;
 	}
 	.timely & .ai1ec-nav-pills > li > a {
 		border-radius: 0;
@@ -70,23 +70,14 @@
 
 // Views dropdown.
 .ai1ec-views-dropdown {
-	.ai1ec-dropdown-menu a {
-		line-height: 20px;
-	}
 	// Icons
 	i {
 		font-size: 1.9em;
 		line-height: 0.75em;
 		vertical-align: -37%;
 	}
-	a img {
-		border: 0 !important;
-		padding: 0 !important;
-		margin: -4px 0 !important;
-		float: none !important;
-		position: static !important;
-		vertical-align: middle;
-		background: none !important;
+	.ai1ec-dropdown-menu {
+		min-width: 0;
 	}
 }
 
@@ -132,31 +123,20 @@
 	}
 }
 
-// Minical navigation.
-.ai1ec-minical-trigger {
-	padding-left: 6px;
-	padding-right: 6px;
-}
-.ai1ec-icon-datepicker {
-	.ai1ec-opacity( 0.75 );
-	filter: none\9; // IE8 renders semi-opaque PNGs terribly
-	display: inline-block;
-	height: 18px;
-	width: 18px;
-}
-
-// Overhead Nav Buttons
+// Overhead nav buttons.
 .ai1ec-pagination {
 	> .ai1ec-btn {
-		font-size: @font-size-base * 0.9 !important;
-		line-height: @line-height-computed;
-		padding: 4px 9px;
 		text-transform: uppercase;
-		// Navigation title.
-		.ai1ec-calendar-title {
-			font-weight: bold;
-		}
 	}
+}
+.ai1ec-minical-trigger {
+	font-weight: bold !important;
+	i {
+		vertical-align: baseline;
+	}
+}
+.ai1ec-agenda-buttons {
+	margin-right: 5px;
 }
 
 // Print button.

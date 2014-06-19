@@ -150,19 +150,19 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	}
 
 	/**
-	 * Get the navigation html
+	 * Gets the navigation bar HTML.
 	 *
-	 * @param bool $no_navigation
-	 * @param array $view_args
+	 * @param array $nav_args Args for the navigation bar template, including
+	 *                        'no_navigation' which determines whether to show it
 	 * @return string
 	 */
-	protected function _get_navigation( $no_navigation, array $view_args ) {
+	protected function _get_navigation( array $nav_args ) {
 		$loader = $this->_registry->get( 'theme.loader' );
 		$navigation = '';
-		if ( true !== $no_navigation ) {
+		if ( true !== $nav_args['no_navigation'] ) {
 			$navigation = $loader->get_file(
 				'navigation.twig',
-				$view_args,
+				$nav_args,
 				false
 			)->get_content();
 		}

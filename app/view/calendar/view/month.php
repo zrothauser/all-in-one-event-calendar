@@ -71,7 +71,6 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 			'cell_array'               => $cell_array,
 			'show_location_in_title'   => $settings->get( 'show_location_in_title' ),
 			'month_word_wrap'          => $settings->get( 'month_word_wrap' ),
-			'pagination_links'         => $pagination_links,
 			'post_ids'                 => join( ',', $args['post_ids'] ),
 			'data_type'                => $args['data_type'],
 			'data_type_events'         => '',
@@ -83,7 +82,13 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		}
 
 		// Add navigation if requested.
-		$view_args['navigation'] = $this->_get_navigation( $args['no_navigation'], $view_args );
+		$view_args['navigation'] = $this->_get_navigation(
+			array(
+				'no_navigation'    => $args['no_navigation'],
+				'pagination_links' => $pagination_links,
+				'views_dropdown'   => $args['views_dropdown'],
+			)
+		);
 
 		return $this->_get_view( $view_args );
 	}

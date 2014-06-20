@@ -157,8 +157,12 @@ define(
 			});
 
 			// Show or hide additional options.
-			var toggle_affix_options = function () {
-				var $next_groups = $( this ).closest( '.ai1ec-form-group' ).nextAll( '.ai1ec-form-group' ).slice( 0, 4 );
+			var toggle_affix_options = function() {
+				var $next_groups = $( this )
+					.closest( '.ai1ec-form-group' )
+						.nextAll( '.ai1ec-form-group' )
+						.slice( 0, 4 );
+
 				if ( $( this ).prop( 'checked' ) ) {
 					$next_groups.show();
 				} else {

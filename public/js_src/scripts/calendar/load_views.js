@@ -86,7 +86,7 @@ define(
 		$( '#ai1ec-calendar-view-container' ).trigger( 'initialize_view.ai1ec' );
 		
 		// Trigger Affix event.
-		$('.ai1ec-calendar-toolbar').trigger('ai1ec-affix.reinit');
+		$( '.ai1ec-calendar-toolbar' ).trigger( 'ai1ec-affix.reinit' );
 	};
 
 	/**
@@ -108,7 +108,7 @@ define(
 		$( '.ai1ec-tooltip.ai1ec-in, .ai1ec-popup' ).remove();
 		
 		// Destroy toolbar if affixed.
-		$('.ai1ec-calendar-toolbar .ai1ec-btn-toolbar').remove();
+		$( '.ai1ec-calendar-toolbar .ai1ec-btn-toolbar' ).remove();
 	};
 
 	var get_cal_state = function() {

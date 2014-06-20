@@ -1,9 +1,9 @@
 define(
-		[
-		 "jquery_timely",
-		 "ai1ec_config"
-		 ],
-		 function( $, ai1ec_config ) {
+	[
+		'jquery_timely',
+		'ai1ec_config'
+	],
+	function( $, ai1ec_config ) {
 	"use strict"; // jshint ;_;
 
 	/**
@@ -12,7 +12,7 @@ define(
 	 * @param  {object} $calendar jQuery object
 	 */
 	var initialize_affixed_toolbar = function( $calendar ) {
-		var 
+		var
 			$toolbar = $calendar.find( '.ai1ec-calendar-toolbar' ),
 			// Calendar navigation buttons
 			$buttons = $calendar.find( '.ai1ec-btn-toolbar' ),
@@ -28,13 +28,13 @@ define(
 			},
 			// Create elements to monitor Bootstrap's responsive breakouts.
 			create_bs_modes = function() {
-				var 
+				var
 					modes = [ 'xs', 'sm', 'md', 'lg' ],
 					$modes = $( '<div id="ai1ec-bs-modes"></div>' );
-	
+
 				for ( var i in modes ) {
-					$( '<div class="ai1ec-device-' 
-						+ modes[ i ] +' ai1ec-visible-' + modes[ i ] + '">' 
+					$( '<div class="ai1ec-device-'
+						+ modes[ i ] +' ai1ec-visible-' + modes[ i ] + '">'
 						+ modes[ i ] +'</div>' )
 						.appendTo( $modes );
 				}
@@ -42,7 +42,7 @@ define(
 			},
 			// Returns offset value from user setting depending on the window width.
 			settings_offset = function() {
-				return parseInt( 
+				return parseInt(
 					ai1ec_config[ 'affix_vertical_offset_' +  get_window_mode() ] || 0
 				);
 			},
@@ -76,7 +76,7 @@ define(
 			},
 			// Recalculate offset for the BS affix plugin.
 			update_offset = function() {
-				offset = initial_toolbar_offset 
+				offset = initial_toolbar_offset
 					- ( 'fixed' === $wpadminbar.css( 'position' ) ? $wpadminbar.height() : 0 )
 					- settings_offset();
 			},
@@ -130,7 +130,7 @@ define(
 						// Let's remember the original height.
 						'original_height': $toolbar.height()
 					} );
-					
+
 				set_toolbar_offset();
 				initial_toolbar_offset = $toolbar.offset().top;
 				$toolbar
@@ -171,7 +171,7 @@ define(
 					.animate( {
 						opacity: 1
 					}, 300 );
-					
+
 				resize_dropdowns();
 				set_toolbar_offset();
 				// Set the offset to compensate the space occupied by toolbar.
@@ -179,11 +179,11 @@ define(
 					.css( 'margin-top' , $toolbar.data( 'original_height' ) + 'px' )
 					.css( 'margin-top' , $toolbar.data( 'original_height' )
 						+ $view.offset().top - offset + 'px' );
-					
-				// In case toolbar increased its height.	
+
+				// In case toolbar increased its height.
 				if ( $toolbar.height() > $toolbar.data( 'original_height' ) ) {
-					$view.css( 'margin-top', 
-						parseInt( $view.css( 'margin-top' ) ) 
+					$view.css( 'margin-top',
+						parseInt( $view.css( 'margin-top' ) )
 						- ( $toolbar.outerHeight( true )
 						- $toolbar.data( 'original_height' ) ) + 'px' );
 				}
@@ -220,6 +220,6 @@ define(
 	};
 
 	return {
-		initialize_affixed_toolbar : initialize_affixed_toolbar
+		initialize_affixed_toolbar: initialize_affixed_toolbar
 	};
 } );

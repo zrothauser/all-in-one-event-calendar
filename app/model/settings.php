@@ -597,7 +597,9 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'class'     => 'input',
 					'tab'       => 'viewing-events',
 					'item'      => 'viewing-events',
-					'label'     => Ai1ec_I18n::__( '(Wide screens only, ≥ 1200px) Offset affixed filter bar vertically by' ),
+					'label'     =>
+						'<i class="ai1ec-fa ai1ec-fa-lg ai1ec-fa-fw ai1ec-fa-desktop"></i> ' .
+						Ai1ec_I18n::__( 'Wide screens only (≥ 1200px)' ),
 					'type'      => 'append',
 					'append'    => 'pixels',
 					'validator' => 'numeric',
@@ -610,7 +612,9 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'class'     => 'input',
 					'tab'       => 'viewing-events',
 					'item'      => 'viewing-events',
-					'label'     => Ai1ec_I18n::__( '(Tablets only, < 980px) Offset affixed filter bar vertically by' ),
+					'label'     =>
+						'<i class="ai1ec-fa ai1ec-fa-lg ai1ec-fa-fw ai1ec-fa-tablet"></i> ' .
+						Ai1ec_I18n::__( 'Tablets only (< 980px)' ),
 					'type'      => 'append',
 					'append'    => 'pixels',
 					'validator' => 'numeric',
@@ -623,7 +627,9 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'class'     => 'input',
 					'tab'       => 'viewing-events',
 					'item'      => 'viewing-events',
-					'label'     => Ai1ec_I18n::__( '(Phones only, < 768px) Offset affixed filter bar vertically by' ),
+					'label'     =>
+						'<i class="ai1ec-fa ai1ec-fa-lg ai1ec-fa-fw ai1ec-fa-mobile"></i> ' .
+						Ai1ec_I18n::__( 'Phones only (< 768px)' ),
 					'type'      => 'append',
 					'append'    => 'pixels',
 					'validator' => 'numeric',

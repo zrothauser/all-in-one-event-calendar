@@ -42,7 +42,27 @@
 	.timely & .ai1ec-nav-pills > li > a {
 		border-radius: 0;
 	}
+	// Affixed toolbar.
+	&.ai1ec-affix {
+		z-index: @zindex-navbar-fixed;
+		top: 0;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+		.ai1ec-transition( border-radius 0.3s );
+		.ai1ec-transition( box-shadow 0.4s );
+		.ai1ec-box-shadow( 0 3px 12px rgba( 0, 0, 0, 0.2 ) );
+		.ai1ec-btn-group-xs {
+			margin-top: 11px;
+		}
+	}
 }
+// Hidden elements to detect current window mode.
+#ai1ec-bs-modes {
+	width: 0;
+	height: 0;
+	overflow: hidden;
+}
+
 // Trigger display of dropdown menus on hover on desktop devices only.
 .no-touch .ai1ec-calendar-toolbar .ai1ec-dropdown:hover > .ai1ec-dropdown-menu {
 	display: block;

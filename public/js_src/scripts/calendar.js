@@ -5,6 +5,7 @@ define(
 		"scripts/calendar/print",
 		"scripts/calendar/agenda_view",
 		"scripts/calendar/month_view",
+		"scripts/calendar/calendar-affix",
 		"ai1ec_calendar",
 		"ai1ec_config",
 		"scripts/common_scripts/frontend/common_frontend",
@@ -16,7 +17,7 @@ define(
 		'external_libs/jquery_cookie',
 	],
 	function( $, load_views, print, agenda_view,
-		month_view, ai1ec_calendar, ai1ec_config, common_frontend,
+		month_view, affix, ai1ec_calendar, ai1ec_config, common_frontend,
 		AI1EC_UTILS, select2_multiselect_helper ) {
 	"use strict"; // jshint ;_;
 
@@ -222,6 +223,11 @@ define(
 			attach_event_handlers();
 			// Initialize the calendar view for the first time.
 			load_views.initialize_view();
+			
+			// Affixed toolbar.
+			if ( ai1ec_config.affix_filter_menu ) {
+				affix.initialize_affixed_toolbar( $( '#ai1ec-calendar' ) );
+			}
 		} );
 	};
 

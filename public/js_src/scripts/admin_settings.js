@@ -156,6 +156,23 @@ define(
 				}
 			});
 
+			// Show or hide additional options.
+			var toggle_affix_options = function() {
+				var $next_groups = $( this )
+					.closest( '.ai1ec-form-group' )
+						.nextAll( '.ai1ec-form-group' )
+						.slice( 0, 4 );
+
+				if ( $( this ).prop( 'checked' ) ) {
+					$next_groups.show();
+				} else {
+					$next_groups.hide();
+				}
+			}
+			toggle_affix_options.apply(
+				$( '#affix_filter_menu' ).on( 'click', toggle_affix_options )[ 0 ]
+			);
+
 			$( '#ai1ec_save_settings' ).on( 'click', validate_week_start_end );
 			$( '#show_create_event_button' ).trigger( 'ready' );
 		} );

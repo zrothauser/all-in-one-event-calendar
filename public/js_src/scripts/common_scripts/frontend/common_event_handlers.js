@@ -1,6 +1,7 @@
 define(
 	[
-		"jquery_timely"
+		"jquery_timely",
+		"external_libs/bootstrap/affix",
 	],
 	function( $ ) {
 	"use strict"; // jshint ;_;

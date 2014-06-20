@@ -426,6 +426,11 @@ class Ai1ec_Javascript_Controller {
 			'blog_timezone'                  => $blog_timezone,
 			'show_tracking_popup'            =>
 				current_user_can( 'manage_options' ) && $settings->get( 'show_tracking_popup' ),
+			'affix_filter_menu'              => $settings->get( 'affix_filter_menu' ),
+			'affix_vertical_offset_md'       => $settings->get( 'affix_vertical_offset_md' ),
+			'affix_vertical_offset_lg'       => $settings->get( 'affix_vertical_offset_lg' ),
+			'affix_vertical_offset_sm'       => $settings->get( 'affix_vertical_offset_sm' ),
+			'affix_vertical_offset_xs'       => $settings->get( 'affix_vertical_offset_xs' ),
 		);
 		return apply_filters( 'ai1ec_js_translations', $data );
 	}

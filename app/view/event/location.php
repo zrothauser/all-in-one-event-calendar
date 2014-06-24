@@ -131,10 +131,7 @@ class Ai1ec_View_Event_Location extends Ai1ec_Base {
 	public function get_gmap_url( Ai1ec_Event $event ) {
 		$loc = $this->_registry->get( 'p28n.wpml' );
 		$location = $this->get_latlng( $event );
-		if ( $location ) {
-			$location .= $event->get( 'venue' ) ? '' : ' (' . $event->get( 'venue' ) . ')';
-		} else {
-			// Otherwise use the address
+		if ( ! $location ) {
 			$location = $event->get( 'address' );
 		}
 

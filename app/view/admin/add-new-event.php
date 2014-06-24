@@ -312,7 +312,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 					->get_child_event_objects( $event->get( 'post_id' ) );
 				$args = compact( 'parent', 'children' );
 				$args['registry'] = $this->_registry;
-					
+
 				$boxes[] = $theme_loader->get_file(
 					'box_event_children.php',
 					$args,
@@ -330,6 +330,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		echo $theme_loader
 			->get_file( 'add_new_event_meta_box.php', $args, true )
 			->get_content();
+		$this->_render_modal_window( 'ai1ec-new-event-modal' );
 	}
 
 	/**

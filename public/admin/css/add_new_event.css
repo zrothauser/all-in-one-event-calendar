@@ -66,6 +66,11 @@
 	width: 5.5em;
 }
 
+.timely .ai1ec-input-warn {
+	border-color: red;
+	background-color: #f5f5f5;
+}
+
 /* Recurrence fields */
 #ai1ec_repeat_text a, #ai1ec_exclude_text a {
 	text-decoration: none;

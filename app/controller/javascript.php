@@ -406,8 +406,14 @@ class Ai1ec_Javascript_Controller {
 			'error_message_not_entered_long' => Ai1ec_I18n::__(
 				'When the "Input coordinates" checkbox is checked, "Longitude" is a required field.'
 			),
-			'url_not_valid'                  => Ai1ec_I18n::__(
-				'The URL you have entered seems to be invalid. Please remember that URLs must start with either "http://" or "https://".'
+			'ai1ec_contact_url_not_valid'         => Ai1ec_I18n::__(
+				'The URL you have entered in the Organizer Contact Info &gt; External URL seems to be invalid.'
+			),
+			'ai1ec_ticket_url_not_valid'           => Ai1ec_I18n::__(
+				'The URL you have entered in the Event Cost and Tickets &gt; Buy Tickets URL seems to be invalid.'
+			),
+			'general_url_not_valid'          => Ai1ec_I18n::__(
+				'Please remember that URLs must start with either "http://" or "https://".'
 			),
 			'language'                       => $this->_registry->get( 'p28n.wpml' )->get_lang(),
 			'ajax_url'                       => $ajax_url,

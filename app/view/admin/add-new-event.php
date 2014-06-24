@@ -350,5 +350,4 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		}
 		return $input;
 	}
-
 }

@@ -353,7 +353,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 	/**
 	 * Renders Bootstrap inline alert.
 	 *
-	 * @param WP_Post $post
+	 * @param WP_Post $post Post object.
 	 *
 	 * @return void Method does not return.
 	 */

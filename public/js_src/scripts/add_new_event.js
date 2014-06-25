@@ -204,10 +204,10 @@ define(
 			if ( '' !== url ) {
 				var urlPattern = /(http|https):\/\//;
 				if ( ! urlPattern.test( url ) ) {
-					$( this ).closest('.ai1ec-panel-collapse').parent()
-						.find('.ai1ec-panel-heading .ai1ec-fa-warning')
-						.removeClass('ai1ec-hidden').parent()
-						.css('color', 'rgb(255, 79, 79)' );
+					$( this ).closest( '.ai1ec-panel-collapse' ).parent()
+						.find( '.ai1ec-panel-heading .ai1ec-fa-warning' )
+						.removeClass( 'ai1ec-hidden' ).parent()
+						.css( 'color', 'rgb(255, 79, 79)' );
 					if ( ! show_warning ) {
 						$( this ).closest( '.ai1ec-panel-collapse' )
 							.collapse( 'show' );

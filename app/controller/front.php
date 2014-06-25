@@ -554,6 +554,10 @@ class Ai1ec_Front_Controller {
 				array( 'view.admin.add-new-event', 'event_meta_box_container' )
 			);
 			$dispatcher->register_action(
+				'edit_form_after_title',
+				array( 'view.admin.add-new-event', 'event_inline_alert' )
+			);
+			$dispatcher->register_action(
 				'save_post',
 				array( 'model.event.creating', 'save_post' ),
 				10,

@@ -162,8 +162,8 @@ define(
 		} else {
 			info_text = notices;
 		}
-		$( '#ai1ec-new-event-modal .ai1ec-modal-body').html( info_text );
-		$( '#ai1ec-new-event-modal' ).modal();
+		$( '#ai1ec_event_inline_alert').html( info_text );
+		$( '#ai1ec_event_inline_alert' ).removeClass( 'ai1ec-hidden' );
 		submit_event.preventDefault();
 		// Just in case, hide the ajax spinner and remove the disabled status
 		$( '#publish, #ai1ec_bottom_publish' ).removeClass(
@@ -196,15 +196,26 @@ define(
 		var warnings     = [];
 		$( '#ai1ec_ticket_url, #ai1ec_contact_url' ).each( function () {
 			var url = this.value;
+			$( this ).removeClass( 'ai1ec-input-warn' );
+			$( this ).closest('.ai1ec-panel-collapse').parent()
+				.find('.ai1ec-panel-heading .ai1ec-fa-warning')
+				.addClass('ai1ec-hidden').parent()
+				.css('color', '' );
 			if ( '' !== url ) {
 				var urlPattern = /(http|https):\/\//;
 				if ( ! urlPattern.test( url ) ) {
+					$( this ).closest('.ai1ec-panel-collapse').parent()
+						.find('.ai1ec-panel-heading .ai1ec-fa-warning')
+						.removeClass('ai1ec-hidden').parent()
+						.css('color', 'rgb(255, 79, 79)' );
+					if ( ! show_warning ) {
+						$( this ).closest( '.ai1ec-panel-collapse' )
+							.collapse( 'show' );
+					}
 					show_warning = true;
 					var text = $( this ).attr( 'id' ) + '_not_valid';
 					warnings.push( ai1ec_config[text] );
 					$( this ).addClass( 'ai1ec-input-warn' );
-				} else {
-					$( this ).removeClass( 'ai1ec-input-warn' );
 				}
 			}
 		} );
@@ -259,7 +270,7 @@ define(
 	 */
 	var reposition_meta_box = function() {
 		$( '#ai1ec_event' )
-			.insertAfter( '#titlediv' );
+			.insertAfter( '#ai1ec_event_inline_alert' );
 		$( '#post' ).addClass( 'ai1ec-visible' );
 	};
 

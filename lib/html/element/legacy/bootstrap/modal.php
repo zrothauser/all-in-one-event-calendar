@@ -24,11 +24,6 @@ class Ai1ec_Bootstrap_Modal extends Ai1ec_Html_Element {
 	/**
 	 * @var string
 	 */
-	private $classic_close_text;
-
-	/**
-	 * @var string
-	 */
 	private $body_text;
 
 	/**
@@ -72,10 +67,6 @@ class Ai1ec_Bootstrap_Modal extends Ai1ec_Html_Element {
 		$this->header_text = $header_text;
 	}
 
-	public function set_classic_close_button_text( $text ) {
-		$this->classic_close_text = $text;
-	}
-
 	/**
 	 * @return string
 	 */
@@ -106,10 +97,6 @@ class Ai1ec_Bootstrap_Modal extends Ai1ec_Html_Element {
 		return isset( $this->delete_button_text ) ? "<a href='#' class='ai1ec-btn remove ai1ec-btn-danger ai1ec-btn-lg'>{$this->delete_button_text}</a>" : '';
 	}
 
-	private function render_classic_close_button_if_present() {
-		return isset( $this->classic_close_text ) ? "<a href='#' class='ai1ec-btn ai1ec-btn-danger ai1ec-btn-lg' data-dismiss='ai1ec-modal' aria-hidden='true'>{$this->classic_close_text}</a>" : '';
-	}
-
 	/**
 	 * @return string
 	 */
@@ -118,7 +105,6 @@ class Ai1ec_Bootstrap_Modal extends Ai1ec_Html_Element {
 		$id                  = $this->render_id_if_present();
 		$remove_event_button = $this->render_remove_button_if_present();
 		$keep_event_button   = $this->render_keep_button_if_present();
-		$close_button        = $this->render_classic_close_button_if_present();
 		$body                = $this->body_text;
 		$classes             = implode( ' ', $this->classes );
 		$html = <<<HTML
@@ -136,7 +122,6 @@ class Ai1ec_Bootstrap_Modal extends Ai1ec_Html_Element {
 			<div class="ai1ec-modal-footer">
 				$remove_event_button
 				$keep_event_button
-				$close_button
 			</div>
 		</div>
 	</div>

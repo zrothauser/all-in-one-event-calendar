@@ -39,11 +39,15 @@ class Ai1ec_Settings_View extends Ai1ec_App {
 		if ( isset( $enabled_views[$view['name']] ) ) {
 			return;
 		}
+		// Copy relevant settings to local view array; account for possible missing
+		// mobile settings during upgrade (assign defaults).
 		$enabled_views[$view['name']] = array(
 			'enabled'        => $view['enabled'],
 			'default'        => $view['default'],
-			'enabled_mobile' => $view['enabled_mobile'],
-			'default_mobile' => $view['default_mobile'],
+			'enabled_mobile' => isset( $view['enabled_mobile'] ) ?
+			                    $view['enabled_mobile'] : $view['enabled'],
+			'default_mobile' => isset( $view['default_mobile'] ) ?
+			                    $view['default_mobile'] : $view['default'],
 			'longname'       => $view['longname'],
 		);
 		$this->_set( $enabled_views );

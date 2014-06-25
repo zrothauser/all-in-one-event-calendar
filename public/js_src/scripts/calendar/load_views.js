@@ -317,7 +317,7 @@ define(
 	var handle_state_change = function( e ) {
 		var
 			state = History.getState(),
-			$calendar = $( '.ai1ec-main-container:first' );
+			$calendar = $( '.ai1ec-calendar:first' );
 
 		if( state.data.ai1ec !== undefined && true === state.data.ai1ec ||
 				true === previously_pushed_state ) {
@@ -347,7 +347,7 @@ define(
 	var handle_click_on_link_to_load_view = function( e ) {
 		var 
 			$el = $( this )
-			$calendar = $el.closest( '.ai1ec-main-container' );
+			$calendar = $el.closest( '.ai1ec-calendar' );
 
 		e.preventDefault();
 		load_view_according_to_datatype(
@@ -409,7 +409,7 @@ define(
 	var handle_minical_change_date = function( e ) {
 		var url,
 		    $el = $( this ),
-		    $calendar = $el.closest( '.ai1ec-main-container' ),
+		    $calendar = $el.closest( '.ai1ec-calendar' ),
 		    date;
 
 		$el.datepicker( 'hide' );
@@ -448,7 +448,7 @@ define(
 
 	// Handle clearing filter
 	var clear_filters = function() {
-		var $calendar = $( this ).closest( '.ai1ec-main-container' );
+		var $calendar = $( this ).closest( '.ai1ec-calendar' );
 		load_view_according_to_datatype(
 				$calendar,
 				$( this ).data( 'type' ),

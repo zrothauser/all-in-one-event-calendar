@@ -55,7 +55,7 @@ define(
 	var handle_multiday_enter = function() {
 		var
 			id = $( this ).data( 'instanceId' ),
-			$calendar = $( this ).closest( '.ai1ec-main-container' );
+			$calendar = $( this ).closest( '.ai1ec-calendar' );
 
 		$calendar.find( '.ai1ec-event-instance-id-' + id ).addClass( 'ai1ec-hover' );
 	};
@@ -67,7 +67,7 @@ define(
 	var handle_multiday_leave = function() {
 		var
 			id = $( this ).data( 'instanceId' ),
-			$calendar = $( this ).closest( '.ai1ec-main-container' );
+			$calendar = $( this ).closest( '.ai1ec-calendar' );
 
 		$calendar
 			.find( '.ai1ec-event-instance-id-' + id )
@@ -81,7 +81,7 @@ define(
 	var handle_raise_enter = function() {
 		var
 			$this = $( this ),
-			$calendar = $this.closest( '.ai1ec-main-container' ),
+			$calendar = $this.closest( '.ai1ec-calendar' ),
 			id = $this.data( 'instanceId' );
 
 		$this.delay( 500 ).queue( function() {
@@ -98,7 +98,7 @@ define(
 	var handle_raise_leave = function( e ) {
 		var
 			$this = $( this ),
-			$calendar = $this.closest( '.ai1ec-main-container' ),
+			$calendar = $this.closest( '.ai1ec-calendar' ),
 			id = $this.data( 'instanceId' ),
 			$target = $( e.toElement || e.relatedTarget );
 		// Don't cancel the effect if moving onto a clone of the same instance.
@@ -195,7 +195,7 @@ define(
 		// Handle click on reveal full day button.
 		$( document ).on( 'click',      '.ai1ec-reveal-full-day button',
 			function() {
-				var $calendar = $( this ).closest( '.ai1ec-main-container' );
+				var $calendar = $( this ).closest( '.ai1ec-calendar' );
 				// Hide the button (no longer serves a purpose).
 				$( this ).fadeOut();
 				var $actual_table = $calendar.find(
@@ -251,15 +251,15 @@ define(
 
 			attach_event_handlers();
 			// Initialize the calendar view for the first time.
-			$( '.ai1ec-main-container' ).each( function() {
+			$( '.ai1ec-calendar' ).each( function() {
 				load_views.initialize_view( $( this ) );
 			} );
 
 			// Affixed toolbar.
 			if ( ai1ec_config.affix_filter_menu
-				&& 1 === $( '.ai1ec-main-container' ).length
+				&& 1 === $( '.ai1ec-calendar' ).length
 			) {
-				affix.initialize_affixed_toolbar( $( '.ai1ec-main-container' ) );
+				affix.initialize_affixed_toolbar( $( '.ai1ec-calendar' ) );
 			}
 		} );
 	};

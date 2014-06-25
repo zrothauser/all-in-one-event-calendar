@@ -18,7 +18,7 @@ define(
 		// get the calendar html
 		var $body = $( 'body' )
 		  , $html = $( 'html' )
-		  , view = $( this ).closest( '.ai1ec-main-container' ).html()
+		  , view = $( this ).closest( '.ai1ec-calendar' ).html()
 		  , body = $body.html();
 		// Remove all scripts tag otherwise they are reapplied when the
 		// html is used.

@@ -162,7 +162,7 @@ define(
 		} else {
 			info_text = notices;
 		}
-		$( '#ai1ec_event_inline_alert').html( info_text );
+		$( '#ai1ec_event_inline_alert' ).html( info_text );
 		$( '#ai1ec_event_inline_alert' ).removeClass( 'ai1ec-hidden' );
 		submit_event.preventDefault();
 		// Just in case, hide the ajax spinner and remove the disabled status
@@ -197,10 +197,10 @@ define(
 		$( '#ai1ec_ticket_url, #ai1ec_contact_url' ).each( function () {
 			var url = this.value;
 			$( this ).removeClass( 'ai1ec-input-warn' );
-			$( this ).closest('.ai1ec-panel-collapse').parent()
-				.find('.ai1ec-panel-heading .ai1ec-fa-warning')
-				.addClass('ai1ec-hidden').parent()
-				.css('color', '' );
+			$( this ).closest( '.ai1ec-panel-collapse' ).parent()
+				.find( '.ai1ec-panel-heading .ai1ec-fa-warning' )
+				.addClass( 'ai1ec-hidden' ).parent()
+				.css( 'color', '' );
 			if ( '' !== url ) {
 				var urlPattern = /(http|https):\/\//;
 				if ( ! urlPattern.test( url ) ) {

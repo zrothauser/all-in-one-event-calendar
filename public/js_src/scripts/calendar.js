@@ -35,7 +35,7 @@ define(
 				// Do it this way to automatically generate HTML entities
 				$title.text( ai1ec_calendar.title );
 			}
-			var $calendar = $( '#ai1ec-container' )
+			var $calendar = $( '.ai1ec-main-container:first' )
 				.detach()
 				.before( $title );
 

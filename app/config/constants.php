@@ -142,6 +142,16 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	}
 
 	// ==============
+	// = CACHE URL =
+	// ==============
+	if ( ! defined( 'AI1EC_CACHE_URL' ) ) {
+		define(
+		'AI1EC_CACHE_URL',
+		AI1EC_URL . '/cache/'
+		);
+	}
+
+	// ==============
 	// = TWIG CACHE PATH =
 	// ==============
 	if ( ! defined( 'AI1EC_TWIG_CACHE_PATH' ) ) {

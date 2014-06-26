@@ -18,7 +18,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 
 	const KEY_FOR_PERSISTANCE               = 'ai1ec_parsed_css';
 	/**
-	 * @var Ai1ec_Css_Persistence_Helper
+	 * @var Ai1ec_Persistence_Context
 	 */
 	private $persistance_context;
 
@@ -33,28 +33,38 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	private $db_adapter;
 
 	/**
-	 * @var boolean
-	 */
-	private $preview_mode;
-
-	/**
 	 * @var Ai1ec_Template_Adapter
 	 */
 	private $template_adapter;
 
 	public function __construct(
-		Ai1ec_Registry_Object $registry,
-		$preview_mode = false
+		Ai1ec_Registry_Object $registry
 	) {
 		parent::__construct( $registry );
 		$this->persistance_context = $this->_registry->get(
 			'cache.strategy.persistence-context',
 			self::KEY_FOR_PERSISTANCE,
-			AI1EC_CACHE_PATH
+			AI1EC_CACHE_PATH,
+			true
 		);
+		if ( ! $this->persistance_context->is_file_cache() ) {
+			$this->_registry->get( 'notification.admin' )
+				->store(
+					sprintf(
+						__(
+							'Cache folder is not writable. For this reason compiled CSS is stored in the db and performance is hampered. Please make folder [%s] writable',
+							AI1EC_PLUGIN_NAME
+						),
+						AI1EC_CACHE_PATH
+					),
+					'error',
+					2,
+					Ai1ec_Notification_Admin::RCPT_ADMIN,
+					true
+				);
+		}
 		$this->lessphp_controller  = $this->_registry->get( 'less.lessphp' );
 		$this->db_adapter          = $this->_registry->get( 'model.option' );
-		$this->preview_mode        = $preview_mode;
 	}
 
 	/**
@@ -108,8 +118,8 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	 * @throws Ai1ec_Cache_Write_Exception
 	 */
 	public function update_persistence_layer( $css ) {
-		$this->persistance_context->write_data_to_persistence( $css );
-		$this->save_less_parse_time();
+		$filename = $this->persistance_context->write_data_to_persistence( $css );
+		$this->save_less_parse_time( $filename );
 	}
 
 
@@ -119,7 +129,13 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	 * @return string
 	 */
 	public function get_css_url() {
-		$time = (int) $this->db_adapter->get( self::QUERY_STRING_PARAM );
+		
+		$saved_par = $this->db_adapter->get( self::QUERY_STRING_PARAM );
+		fb($saved_par);
+		if ( is_string( $saved_par ) ) {
+			return $saved_par;
+		}
+		$time = (int) $saved_par;
 		$template_helper = $this->_registry->get( 'template.link.helper' );
 		return add_query_arg(
 			array( self::QUERY_STRING_PARAM => $time, ),
@@ -131,13 +147,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	 * Create the link that will be added to the frontend
 	 */
 	public function add_link_to_html_for_frontend() {
-		$preview = '';
-		if( true === $this->preview_mode ) {
-			// bypass browser caching of the css
-			$now = strtotime( 'now' );
-			$preview = "&preview=1&nocache={$now}&ai1ec_stylesheet=" . $_GET['ai1ec_stylesheet'];
-		}
-		$url = $this->get_css_url() . $preview;
+		$url = $this->get_css_url();
 		wp_enqueue_style( 'ai1ec_style', $url, array(), AI1EC_VERSION );
 	}
 
@@ -248,6 +258,23 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 				$this->update_persistence_layer( $css );
 				return $css;
 			} catch ( Ai1ec_Cache_Write_Exception $e ) {
+				if ( ! self::PARSE_LESS_FILES_AT_EVERY_REQUEST ) {
+					$this->_registry->get( 'notification.admin' )
+						->store(
+							sprintf( 
+								__(
+									'Css files are being parsed on every request. This is really bad for performance reasons. Here is the exception message. %s',
+									AI1EC_PLUGIN_NAME
+								),
+								$e->getMessage()
+							),
+							'error',
+							2,
+							Ai1ec_Notification_Admin::RCPT_ADMIN,
+							true
+						);
+				}
+
 				// If something is really broken, still return the css.
 				// This means we parse it every time. This should never happen.
 				return $css;
@@ -258,10 +285,11 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	/**
 	 * Save the compile time to the db so that we can use it to build the link
 	 */
-	private function save_less_parse_time() {
+	private function save_less_parse_time( $data = false ) {
+		$to_save = is_string( $data ) ? AI1EC_CACHE_URL . $data : $this->_registry->get( 'date.system' )->current_time();
 		$this->db_adapter->set(
 			self::QUERY_STRING_PARAM,
-			$this->_registry->get( 'date.system' )->current_time(),
+			$to_save,
 			true
 		);
 	}

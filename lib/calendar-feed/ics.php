@@ -502,11 +502,13 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$entry = apply_filters( 'ai1ec_ics_feed_entry', $entry );
 		if ( is_wp_error( $entry ) ) {
 			$output = array(
-				"error" => 1,
-				"message" => $entry->get_error_message()
+				'error'   => true,
+				'message' => $entry->get_error_message()
 			);
-			echo json_encode( $output );
-			Ai1ec_Http_Response_Helper::stop( 0 );
+			$json_strategy = $this->_registry->get(
+				'http.response.render.strategy.json'
+			);
+			$json_strategy->render( array( 'data' => $output ) );
 		}
 
 		$format = array( '%s', '%s', '%s', '%d', '%d', '%d'
@@ -544,12 +546,13 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$output = $file->get_content();
 
 		$output = array(
-			"error" => 0,
-			"message" =>
-			stripslashes( $output )
+			'error' => false,
+			'message' => stripslashes( $output )
 		);
-		echo json_encode( $output );
-		Ai1ec_Http_Response_Helper::stop( 0 );
+		$json_strategy = $this->_registry->get(
+			'http.response.render.strategy.json'
+		);
+		$json_strategy->render( array( 'data' => $output ) );
 	}
 
 	/**
@@ -563,7 +566,10 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			if ( $output['error'] === false ) {
 				$this->delete_ics_feed( false, $ics_id );
 			}
-			echo json_encode( $output );
+			$json_strategy = $this->_registry->get(
+				'http.response.render.strategy.json'
+			);
+			$json_strategy->render( array( 'data' => $output ) );
 		} else {
 			$this->delete_ics_feed( true, $ics_id );
 		}
@@ -647,7 +653,10 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'ics_id'  => $ics_id,
 		);
 		if ( $ajax ) {
-			echo json_encode( $output );
+			$json_strategy = $this->_registry->get(
+				'http.response.render.strategy.json'
+			);
+			$json_strategy->render( array( 'data' => $output ) );
 		}
 	}
 

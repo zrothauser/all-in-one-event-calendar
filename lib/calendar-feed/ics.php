@@ -158,15 +158,13 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 						wp_delete_post( $event_id, true );
 					}
 				} catch ( Ai1ec_Parse_Exception $e ) {
-					$message = "the provided feed didn't return valid ics data";
+					$message = "The provided feed didn't return valid ics data";
 				} catch ( Ai1ec_Engine_Not_Set_Exception $e ) {
-					$message = "ics import is not supported on this install.";
+					$message = "ICS import is not supported on this install.";
 				}
 			} else {
 				$message = __(
-					"We couldn't find a valid transport to fetch the calendar data.
-					You should set allow_url_fopen in php.ini as suggested in
-					<a href='http://forums.hostdime.com/showthread.php?8620-PHP-allow_url_fopen' target='_blank' >this</a> article",
+					"We couldn't find a valid transport to fetch the calendar data. You should set allow_url_fopen in php.ini as suggested in <a href='http://forums.hostdime.com/showthread.php?8620-PHP-allow_url_fopen' target='_blank' >this</a> article",
 					AI1EC_PLUGIN_NAME
 				);
 			}
@@ -501,6 +499,15 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'keep_tags_categories' => Ai1ec_Primitive_Int::db_bool(
 				$_REQUEST['keep_tags_categories'] )
 		);
+		$entry = apply_filters( 'ai1ec_ics_feed_entry', $entry );
+		if ( is_wp_error( $entry ) ) {
+			$output = array(
+				"error" => 1,
+				"message" => $entry->get_error_message()
+			);
+			echo json_encode( $output );
+			Ai1ec_Http_Response_Helper::stop( 0 );
+		}
 
 		$format = array( '%s', '%s', '%s', '%d', '%d', '%d'
 		);
@@ -542,7 +549,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			stripslashes( $output )
 		);
 		echo json_encode( $output );
-		exit();
+		Ai1ec_Http_Response_Helper::stop( 0 );
 	}
 
 	/**

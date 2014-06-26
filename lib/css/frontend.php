@@ -131,7 +131,6 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	public function get_css_url() {
 		
 		$saved_par = $this->db_adapter->get( self::QUERY_STRING_PARAM );
-		fb($saved_par);
 		if ( is_string( $saved_par ) ) {
 			return $saved_par;
 		}

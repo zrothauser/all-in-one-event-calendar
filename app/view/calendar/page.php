@@ -222,12 +222,17 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		$available_views = array();
 		$enabled_views   = (array)$settings->get( 'enabled_views', array() );
 		$view_names      = array();
+		$mode            = wp_is_mobile() ? '_mobile' : '';
 		foreach ( $enabled_views as $key => $val ) {
 			$view_names[$key] = $val['longname'];
-			$view_enabled = 'view_' . $key . '_enabled';
+			// Find out if view is enabled in requested mode (mobile or desktop). If
+			// no mode-specific setting is available, fall back to desktop setting.
+			$view_enabled = isset( $enabled_views[$key]['enabled' . $mode] ) ?
+				$enabled_views[$key]['enabled' . $mode] :
+				$enabled_views[$key]['enabled'];
 			$values = array();
 			$options = $view_args;
-			if ( $enabled_views[$key]['enabled'] === true ) {
+			if ( $view_enabled ) {
 				if ( $view instanceof Ai1ec_Calendar_View_Agenda ) {
 					if (
 						isset( $options['exact_date'] ) &&

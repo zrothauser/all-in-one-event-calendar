@@ -47,7 +47,9 @@ class Ai1ec_Settings extends Ai1ec_App {
 		$renderer,
 		$version = '2.0.0'
 	) {
-		if (
+		if ( 'deprecated' === $type ) {
+			unset( $this->_options[$option] );
+		} else if (
 			! isset( $this->_options[$option] ) ||
 			! isset( $this->_options[$option]['version'] ) ||
 			(string)$this->_options[$option]['version'] !== (string)$version
@@ -731,14 +733,8 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'default'  => false,
 			),
 			'show_publish_button' => array(
-				'type' => 'bool',
-				'renderer' => array(
-					'class' => 'checkbox',
-					'tab'   => 'editing-events',
-					'label' => Ai1ec_I18n::__(
-						'Display <strong>Publish</strong> at bottom of Edit Event form'
-					)
-				),
+				'type'     => 'deprecated',
+				'renderer' => null,
 				'default'  => false,
 			),
 			'show_create_event_button' => array(

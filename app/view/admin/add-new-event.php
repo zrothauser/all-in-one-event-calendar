@@ -293,31 +293,6 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		$boxes[] = $theme_loader
 			->get_file( 'box_event_contact.php', $args, true )
 			->get_content();
-		// ==================
-		// = Publish button =
-		// ==================
-		$publish_button = '';
-		if (
-			$this->_registry->get( 'model.settings' )
-				->get( 'show_publish_button' )
-		) {
-			$args             = array();
-			$post_type_object = get_post_type_object(
-				get_post()->post_type
-			);
-			if ( current_user_can( $post_type_object->cap->publish_posts ) ) {
-				$args['button_value'] = is_null( $event )
-					? Ai1ec_I18n::__( 'Publish' )
-					: Ai1ec_I18n::__( 'Update' );
-			} else {
-				$args['button_value'] = Ai1ec_I18n::__( 'Submit for Review' );
-			}
-
-			$boxes[] = $theme_loader
-				->get_file( 'box_publish_button.php', $args, true )
-				->get_content();
-
-		}
 
 		// ==========================
 		// = Parent/Child relations =
@@ -351,7 +326,6 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		// Display the final view of the meta box.
 		$args = array(
 			'boxes'          => $boxes,
-			'publish_button' => $publish_button,
 		);
 		echo $theme_loader
 			->get_file( 'add_new_event_meta_box.php', $args, true )

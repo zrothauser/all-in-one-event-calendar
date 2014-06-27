@@ -85,7 +85,7 @@ define(
 				);
 			});
 
-			$( '#widgetField span:first' ).html( _span_html.join( ', ' ) );
+			$( '#ai1ec_exclude-dates-input' ).val( _span_html.join( ', ' ) );
 		} else {
 			// Set as default date shown today
 			dp_date = new Date( ai1ec_config.now * 1000 );
@@ -96,7 +96,7 @@ define(
 			flat: true,
 			calendars: 3,
 			mode: 'multiple',
-			start: 1,
+			starts: ai1ec_config.week_start_day,
 			date: dp_date,
 			onChange: function( formated ) {
 				formated = formated.toString();
@@ -108,18 +108,42 @@ define(
 						formatted_date.push( calendrical_functions.formatDate( new Date( v ), ai1ec_config.date_format ) );
 						exdate += v.replace( /-/g, '' ) + 'T000000Z,';
 					});
-					$( '#widgetField span' ).html( formatted_date.join( ', ' ) );
+					$( '#ai1ec_exclude-dates-input' ).val( formatted_date.join( ', ' ) );
 					exdate = exdate.slice( 0, exdate.length - 1 );
 					$( "#ai1ec_exdate" ).val( exdate );
 				} else {
 					$( "#ai1ec_exdate" ).val( '' );
 				}
+			},
+			prev: '«',
+			next: '»',
+			// Ignore clicking on month name.
+			month_link_inactive: true,
+			locale: {
+				daysMin: ai1ec_config.day_names.split( ',' ),
+				months: ai1ec_config.month_names.split( ',' )
 			}
 		});
 		if( _clear_dp ) {
 			$( '#widgetCalendar' ).DatePickerClear();
 		}
-		$( '#widgetCalendar div.datepicker' ).css( 'position', 'absolute' );
+		// Make it readonly.
+		$( '#ai1ec_exclude-dates-input' )
+			.on( 'keydown', function() {
+				return false;
+			});
+		// Hide datepicker if clicked outside.
+		$( document )
+			.on( 'mousedown.exclude', function( e ) {
+				var $container = $( '#widgetCalendar' ),
+					$input = $( '#ai1ec_exclude-dates-input' );
+
+				if ( ! $container.is( e.target )
+					&& ! $input.is( e.target )
+					&& 0 === $container.has( e.target ).length ) {
+					$( '#widgetCalendar' ).hide();
+				}
+			});
 	};
 
 	/**
@@ -227,7 +251,7 @@ define(
 		date_time_event_handlers.execute_pseudo_handlers();
 
 		// Initialize showing/hiding of the exclude dates widget.
-		$( '#widgetField > a, #widgetField > span, #ai1ec_exclude_date_label' ).on( 'click', date_time_event_handlers.handle_animation_of_calendar_widget );
+		$( '#widgetField > a, #widgetField input' ).on( 'click', date_time_event_handlers.handle_animation_of_calendar_widget );
 
 		// Free checkbox.
 		$( '#ai1ec_is_free' ).on( 'change', event_cost.handle_change_is_free );

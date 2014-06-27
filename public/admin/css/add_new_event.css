@@ -313,45 +313,16 @@
 #datepicker-widget {
 	position: relative;
 }
-#widgetField {
-	width: 290px;
-	height: 26px;
-	background: url(../img/field.png);
-	overflow: hidden;
-	position: relative;
-}
-#widgetField a 	{
-	display: block;
-	position: absolute;
-	width: 26px;
-	height: 26px;
-	top: 0;
-	right: 0;
-	text-decoration: none;
-	text-indent: -3000px;
-}
-#widgetField span	{
-	font-size: 12px;
-	font-weight: bold;
-	color: #000;
-	position: absolute;
-	top: 0;
-	height: 26px;
-	line-height: 26px;
-	left: 5px;
-	width: 250px;
-	text-align: center;
-	cursor: pointer;
-}
 #widgetCalendar {
 	position: absolute;
 	top: 26px;
 	left: 0;
-	height: 0px;
+	height: 186px;
 	overflow: hidden;
-	width: 588px;
-	background: #B9B9B9;
+	width: 648px !important;
+	background: #FFFFFF;
 	z-index: 2;
+	display: none;
 }
 #widgetCalendar .datepicker {
 	position: absolute;
@@ -369,8 +340,14 @@
 #widgetCalendar .datepickerBorderBR {
 	background: transparent !important;
 }
-#widgetCalendar .datepicker a:hover{
-	color: #b6f063;
+#widgetCalendar .ai1ec-datepicker-week,
+#widgetCalendar .ai1ec-datepicker-header-week {
+	display: none;
+}
+#widgetField input {
+	width: 320px;
+	padding-right: 24px;
+	background-position: 99% 40%;
 }
 .ai1ec-info-text {
 	font-size: 10px;

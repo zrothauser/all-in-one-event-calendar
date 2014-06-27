@@ -315,10 +315,8 @@ define(
 	};
 
 	var handle_animation_of_calendar_widget = function( e ) {
-		// On the first run it will be undefined, so we set it to false
-		var state = $( this ).data( 'state' ) === undefined ? false : $( this ).data( 'state' );
-		$('#widgetCalendar').stop().animate( { height: state ? 0 : $( '#widgetCalendar div.datepicker' ).get( 0 ).offsetHeight }, 500 );
-		$( this ).data( 'state', ! state );
+		// Just toggle the visibility.
+		$('#widgetCalendar').toggle();
 		return false;
 	};
 

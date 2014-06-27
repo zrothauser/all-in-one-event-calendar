@@ -19,11 +19,11 @@ define(
 								'<thead>',
 									'<tr>',
 										'<th class="datepickerGoPrev"><a href="#"><span><%=prev%></span></a></th>',
-										'<th colspan="6" class="datepickerMonth"><a href="#"><span></span></a></th>',
+										'<th colspan="5" class="datepickerMonth"><a href="#"><span></span></a></th>',
 										'<th class="datepickerGoNext"><a href="#"><span><%=next%></span></a></th>',
 									'</tr>',
 									'<tr class="datepickerDoW">',
-										'<th><span><%=week%></span></th>',
+										'<th class="ai1ec-datepicker-header-week"><span><%=week%></span></th>',
 										'<th><span><%=day1%></span></th>',
 										'<th><span><%=day2%></span></th>',
 										'<th><span><%=day3%></span></th>',
@@ -39,7 +39,7 @@ define(
 						days: [
 							'<tbody class="datepickerDays">',
 								'<tr>',
-									'<th class="datepickerWeek"><a href="#"><span><%=weeks[0].week%></span></a></th>',
+									'<th class="datepickerWeek ai1ec-datepicker-week"><a href="#"><span><%=weeks[0].week%></span></a></th>',
 									'<td class="<%=weeks[0].days[0].classname%>"><a href="#"><span><%=weeks[0].days[0].text%></span></a></td>',
 									'<td class="<%=weeks[0].days[1].classname%>"><a href="#"><span><%=weeks[0].days[1].text%></span></a></td>',
 									'<td class="<%=weeks[0].days[2].classname%>"><a href="#"><span><%=weeks[0].days[2].text%></span></a></td>',
@@ -49,7 +49,7 @@ define(
 									'<td class="<%=weeks[0].days[6].classname%>"><a href="#"><span><%=weeks[0].days[6].text%></span></a></td>',
 								'</tr>',
 								'<tr>',
-									'<th class="datepickerWeek"><a href="#"><span><%=weeks[1].week%></span></a></th>',
+									'<th class="datepickerWeek ai1ec-datepicker-week"><a href="#"><span><%=weeks[1].week%></span></a></th>',
 									'<td class="<%=weeks[1].days[0].classname%>"><a href="#"><span><%=weeks[1].days[0].text%></span></a></td>',
 									'<td class="<%=weeks[1].days[1].classname%>"><a href="#"><span><%=weeks[1].days[1].text%></span></a></td>',
 									'<td class="<%=weeks[1].days[2].classname%>"><a href="#"><span><%=weeks[1].days[2].text%></span></a></td>',
@@ -59,7 +59,7 @@ define(
 									'<td class="<%=weeks[1].days[6].classname%>"><a href="#"><span><%=weeks[1].days[6].text%></span></a></td>',
 								'</tr>',
 								'<tr>',
-									'<th class="datepickerWeek"><a href="#"><span><%=weeks[2].week%></span></a></th>',
+									'<th class="datepickerWeek ai1ec-datepicker-week"><a href="#"><span><%=weeks[2].week%></span></a></th>',
 									'<td class="<%=weeks[2].days[0].classname%>"><a href="#"><span><%=weeks[2].days[0].text%></span></a></td>',
 									'<td class="<%=weeks[2].days[1].classname%>"><a href="#"><span><%=weeks[2].days[1].text%></span></a></td>',
 									'<td class="<%=weeks[2].days[2].classname%>"><a href="#"><span><%=weeks[2].days[2].text%></span></a></td>',
@@ -69,7 +69,7 @@ define(
 									'<td class="<%=weeks[2].days[6].classname%>"><a href="#"><span><%=weeks[2].days[6].text%></span></a></td>',
 								'</tr>',
 								'<tr>',
-									'<th class="datepickerWeek"><a href="#"><span><%=weeks[3].week%></span></a></th>',
+									'<th class="datepickerWeek ai1ec-datepicker-week"><a href="#"><span><%=weeks[3].week%></span></a></th>',
 									'<td class="<%=weeks[3].days[0].classname%>"><a href="#"><span><%=weeks[3].days[0].text%></span></a></td>',
 									'<td class="<%=weeks[3].days[1].classname%>"><a href="#"><span><%=weeks[3].days[1].text%></span></a></td>',
 									'<td class="<%=weeks[3].days[2].classname%>"><a href="#"><span><%=weeks[3].days[2].text%></span></a></td>',
@@ -79,7 +79,7 @@ define(
 									'<td class="<%=weeks[3].days[6].classname%>"><a href="#"><span><%=weeks[3].days[6].text%></span></a></td>',
 								'</tr>',
 								'<tr>',
-									'<th class="datepickerWeek"><a href="#"><span><%=weeks[4].week%></span></a></th>',
+									'<th class="datepickerWeek ai1ec-datepicker-week"><a href="#"><span><%=weeks[4].week%></span></a></th>',
 									'<td class="<%=weeks[4].days[0].classname%>"><a href="#"><span><%=weeks[4].days[0].text%></span></a></td>',
 									'<td class="<%=weeks[4].days[1].classname%>"><a href="#"><span><%=weeks[4].days[1].text%></span></a></td>',
 									'<td class="<%=weeks[4].days[2].classname%>"><a href="#"><span><%=weeks[4].days[2].text%></span></a></td>',
@@ -89,7 +89,7 @@ define(
 									'<td class="<%=weeks[4].days[6].classname%>"><a href="#"><span><%=weeks[4].days[6].text%></span></a></td>',
 								'</tr>',
 								'<tr>',
-									'<th class="datepickerWeek"><a href="#"><span><%=weeks[5].week%></span></a></th>',
+									'<th class="datepickerWeek ai1ec-datepicker-week"><a href="#"><span><%=weeks[5].week%></span></a></th>',
 									'<td class="<%=weeks[5].days[0].classname%>"><a href="#"><span><%=weeks[5].days[0].text%></span></a></td>',
 									'<td class="<%=weeks[5].days[1].classname%>"><a href="#"><span><%=weeks[5].days[1].text%></span></a></td>',
 									'<td class="<%=weeks[5].days[2].classname%>"><a href="#"><span><%=weeks[5].days[2].text%></span></a></td>',
@@ -160,7 +160,7 @@ define(
 							tblCal = cal.find('table').eq(i+1);
 							switch (tblCal[0].className) {
 								case 'datepickerViewDays':
-									dow = formatDate(date, 'B, Y');
+									dow = formatDate(date, 'B Y');
 									break;
 								case 'datepickerViewMonths':
 									dow = date.getFullYear();
@@ -487,7 +487,10 @@ define(
 									fillIt = true;
 									changed = true;
 									options.lastSel = false;
-								} else if (parentEl.hasClass('datepickerMonth')) {
+								} else if (parentEl.hasClass('datepickerMonth')) { 
+									if ( options.month_link_inactive ){
+										return false;
+									}
 									tmp.addMonths(tblIndex - Math.floor(options.calendars/2));
 									switch (tblEl.get(0).className) {
 										case 'datepickerViewDays':
@@ -689,7 +692,7 @@ define(
 					};
 				return {
 					init: function(options){
-						options = $.extend({}, defaults, options||{});
+						options = $.extend(true, {}, defaults, options || {});
 						extendDate(options.locale);
 						options.calendars = Math.max(1, parseInt(options.calendars,10)||1);
 						options.mode = /single|multiple|range/.test(options.mode) ? options.mode : 'single';

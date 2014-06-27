@@ -135,8 +135,9 @@
 					<td>
 						<div id="datepicker-widget">
 							<div id="widgetField">
-								<span></span>
-								<a href="#"><?php _e( 'Select date range', AI1EC_PLUGIN_NAME ); ?></a>
+								<input type="text" class="ai1ec-date-input ai1ec-form-control"
+									autocomplete="off"
+									id="ai1ec_exclude-dates-input">
 							</div>
 							<div id="widgetCalendar"></div>
 						</div>

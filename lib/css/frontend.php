@@ -129,17 +129,19 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	 * @return string
 	 */
 	public function get_css_url() {
-		
+		// get what's saved. I t could be false, a int or a string.
+		// if it's false or a int, use PHP to render CSS
 		$saved_par = $this->db_adapter->get( self::QUERY_STRING_PARAM );
-		if ( is_string( $saved_par ) ) {
-			return $saved_par;
+		if ( empty( $saved_par )  || is_numeric( $saved_par ) ) {
+			$time = (int) $saved_par;
+			$template_helper = $this->_registry->get( 'template.link.helper' );
+			return add_query_arg(
+				array( self::QUERY_STRING_PARAM => $time, ),
+				trailingslashit( $template_helper->get_site_url() )
+			);
 		}
-		$time = (int) $saved_par;
-		$template_helper = $this->_registry->get( 'template.link.helper' );
-		return add_query_arg(
-			array( self::QUERY_STRING_PARAM => $time, ),
-			trailingslashit( $template_helper->get_site_url() )
-		);
+		// otherwise return the string
+		return $saved_par;
 	}
 
 	/**
@@ -237,7 +239,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	private function get_compiled_css() {
 		try {
 			// If we want to force a recompile, we throw an exception.
-			if( $this->preview_mode === true || self::PARSE_LESS_FILES_AT_EVERY_REQUEST === true ) {
+			if( self::PARSE_LESS_FILES_AT_EVERY_REQUEST === true ) {
 				throw new Ai1ec_Cache_Not_Set_Exception();
 			}else {
 				// This throws an exception if the key is not set
@@ -245,14 +247,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 				return $css;
 			}
 		} catch ( Ai1ec_Cache_Not_Set_Exception $e ) {
-			// If we are in preview mode we force a recompile and we pass the variables.
-			if( $this->preview_mode ) {
-				return $this->lessphp_controller->parse_less_files(
-					$this->lessphp_controller->get_less_variable_data_from_config_file()
-				);
-			} else {
-				$css = $this->lessphp_controller->parse_less_files();
-			}
+			$css = $this->lessphp_controller->parse_less_files();
 			try {
 				$this->update_persistence_layer( $css );
 				return $css;
@@ -285,7 +280,9 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	 * Save the compile time to the db so that we can use it to build the link
 	 */
 	private function save_less_parse_time( $data = false ) {
-		$to_save = is_string( $data ) ? AI1EC_CACHE_URL . $data : $this->_registry->get( 'date.system' )->current_time();
+		$to_save = is_string( $data ) ? 
+			AI1EC_CACHE_URL . $data : 
+			$this->_registry->get( 'date.system' )->current_time();
 		$this->db_adapter->set(
 			self::QUERY_STRING_PARAM,
 			$to_save,

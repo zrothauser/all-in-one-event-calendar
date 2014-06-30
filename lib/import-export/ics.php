@@ -363,12 +363,6 @@ class Ai1ec_Ics_Import_Export_Engine
 			$ticket_url = $e->getProperty( 'X-TICKETS-URL' );
 			$ticket_url = $ticket_url ? $ticket_url[1] : '';
 
-			// =================
-			// = Instant Event =
-			// =================
-			$instant_event = $e->getProperty( 'X-INSTANT-EVENT' );
-			$instant_event = $instant_event ? 1 : 0;
-
 			// ===============================
 			// = Contact name, phone, e-mail =
 			// ===============================
@@ -416,7 +410,6 @@ class Ai1ec_Ics_Import_Export_Engine
 				'venue'             => $venue,
 				'address'           => $address,
 				'cost'              => $cost,
-				'instant_event'     => $instant_event,
 				'ticket_url'        => $this->_parse_legacy_loggable_url(
 					$ticket_url
 				),
@@ -447,6 +440,12 @@ class Ai1ec_Ics_Import_Export_Engine
 
 			// Create event object.
 			$event = $this->_registry->get( 'model.event', $data );
+
+			// Instant Event
+			$is_instant = $e->getProperty( 'X-INSTANT-EVENT' );
+			if ( $is_instant ) {
+				$event->set_no_end_time();
+			}
 
 			$recurrence = $event->get( 'recurrence_rules' );
 			$search = $this->_registry->get( 'model.search' );
@@ -816,10 +815,10 @@ class Ai1ec_Ics_Import_Export_Engine
 		// =================
 		// = Instant Event =
 		// =================
-		if ( $event->get( 'instant_event' ) ) {
+		if ( $event->is_instant() ) {
 			$e->setProperty(
 				'X-INSTANT-EVENT',
-				$this->_sanitize_value( $event->get( 'instant_event' ) )
+				$this->_sanitize_value( $event->is_instant() )
 			);
 		}
 

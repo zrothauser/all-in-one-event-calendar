@@ -174,6 +174,13 @@
 	display: inline-block;
 }
 
+label[for=edit_robots_txt] {
+	width: 210px;
+	text-align: left;
+}
+#edit_robots_txt {
+	width: 420px;
+}
 /* ICS Feeds */
 
 .ai1ec-feed-comments-enabled,

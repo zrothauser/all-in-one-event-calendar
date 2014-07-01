@@ -312,7 +312,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 					->get_child_event_objects( $event->get( 'post_id' ) );
 				$args = compact( 'parent', 'children' );
 				$args['registry'] = $this->_registry;
-					
+
 				$boxes[] = $theme_loader->get_file(
 					'box_event_children.php',
 					$args,
@@ -348,6 +348,25 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			unset( $input[$autosave_key] );
 		}
 		return $input;
+	}
+
+	/**
+	 * Renders Bootstrap inline alert.
+	 *
+	 * @param WP_Post $post Post object.
+	 *
+	 * @return void Method does not return.
+	 */
+	public function event_inline_alert( $post ) {
+		if (
+			! isset( $post->post_type ) ||
+			AI1EC_POST_TYPE != $post->post_type
+		) {
+			return;
+		}
+		$theme_loader = $this->_registry->get( 'theme.loader' );
+		echo $theme_loader->get_file( 'box_inline_warning.php', null, true )
+			->get_content();
 	}
 
 }

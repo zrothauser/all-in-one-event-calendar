@@ -209,7 +209,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$dates[$timestamp]['href'] = $href_for_date;
 		}
 		// Flag today
-		$today = $this->_registry->get( 'date.time' )
+		$today = $this->_registry->get( 'date.time', 'now', 'sys.default' )
 			->set_time( 0, 0, 0 )
 			->format();
 		if ( isset( $dates[$today] ) ) {

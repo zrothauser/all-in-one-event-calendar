@@ -257,7 +257,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 						->store(
 							sprintf( 
 								__(
-									'Css files are being parsed on every request. This is really bad for performance reasons. Here is the exception message. %s',
+									'Your CSS is being compiled on every request, which causes your calendar to perform slowly. The following error occurred: %s',
 									AI1EC_PLUGIN_NAME
 								),
 								$e->getMessage()

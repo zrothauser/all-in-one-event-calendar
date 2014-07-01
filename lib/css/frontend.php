@@ -52,7 +52,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 				->store(
 					sprintf(
 						__(
-							'Cache folder is not writable. For this reason compiled CSS is stored in the db and performance is hampered. Please make folder [%s] writable',
+							'Cache folder, <code>%s</code>, is not writable. Your calendar will perform more slowly until you make this folder writable by the web server.',
 							AI1EC_PLUGIN_NAME
 						),
 						AI1EC_CACHE_PATH

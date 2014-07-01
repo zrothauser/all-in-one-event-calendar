@@ -1062,12 +1062,8 @@ msgid "Another import process in progress. Please try again later."
 msgstr ""
 
 #: lib/calendar-feed/ics.php:166
-msgid ""
-"We couldn't find a valid transport to fetch the calendar data.\n"
-"\t\t\t\t\tYou should set allow_url_fopen in php.ini as suggested in\n"
-"\t\t\t\t\t<a href='http://forums.hostdime.com/showthread.php?8620-PHP-"
-"allow_url_fopen' target='_blank' >this</a> article"
-msgstr ""
+msgid "We couldn't find a valid transport to fetch the calendar data."
+msgstr "We couldn't find a valid transport to fetch the calendar data."
 
 #: lib/calendar-feed/ics.php:178
 msgid "No events were found"

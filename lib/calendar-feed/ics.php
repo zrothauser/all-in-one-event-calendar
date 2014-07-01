@@ -164,7 +164,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				}
 			} else {
 				$message = __(
-					"We couldn't find a valid transport to fetch the calendar data. You should set allow_url_fopen in php.ini as suggested in <a href='http://forums.hostdime.com/showthread.php?8620-PHP-allow_url_fopen' target='_blank' >this</a> article",
+					"We couldn't find a valid transport to fetch the calendar data.",
 					AI1EC_PLUGIN_NAME
 				);
 			}

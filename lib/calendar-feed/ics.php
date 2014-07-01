@@ -490,11 +490,11 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$feed_categories = empty( $_REQUEST['feed_category'] ) ? '' : implode(
 			',', $_REQUEST['feed_category'] );
 		$entry = array( 'feed_url' => $_REQUEST['feed_url'],
-			'feed_category' => $feed_categories,
-			'feed_tags' => $_REQUEST['feed_tags'],
-			'comments_enabled' => Ai1ec_Primitive_Int::db_bool(
+			'feed_category'        => $feed_categories,
+			'feed_tags'            => $_REQUEST['feed_tags'],
+			'comments_enabled'     => Ai1ec_Primitive_Int::db_bool(
 				$_REQUEST['comments_enabled'] ),
-			'map_display_enabled' => Ai1ec_Primitive_Int::db_bool(
+			'map_display_enabled'  => Ai1ec_Primitive_Int::db_bool(
 				$_REQUEST['map_display_enabled'] ),
 			'keep_tags_categories' => Ai1ec_Primitive_Int::db_bool(
 				$_REQUEST['keep_tags_categories'] )
@@ -508,33 +508,37 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			$json_strategy = $this->_registry->get(
 				'http.response.render.strategy.json'
 			);
-			$json_strategy->render( array( 'data' => $output ) );
+			return $json_strategy->render( array( 'data' => $output ) );
 		}
 
-		$format = array( '%s', '%s', '%s', '%d', '%d', '%d'
-		);
-
-		$res = $db->insert( $table_name, $entry, $format );
-		$feed_id = $db->get_insert_id();
-
+		$format     = array( '%s', '%s', '%s', '%d', '%d', '%d' );
+		$res        = $db->insert( $table_name, $entry, $format );
+		$feed_id    = $db->get_insert_id();
 		$categories = array();
 
 		if ( ! empty( $_REQUEST['feed_category'] ) ) {
 			foreach ( $_REQUEST['feed_category'] as $cat_id ) {
 				$feed_category = get_term( $cat_id, 'events_categories' );
-				$categories[] = $feed_category->name;
+				$categories[]  = $feed_category->name;
 			}
 		}
 
-		$args = array( 'feed_url' => $_REQUEST['feed_url'],
-			'event_category' => implode( ', ', $categories ),
-			'tags' => str_replace( ',', ', ', $_REQUEST['feed_tags'] ),
-			'feed_id' => $feed_id,
-			'comments_enabled' => (bool) intval( $_REQUEST['comments_enabled'] ),
-			'map_display_enabled' => (bool) intval(
+		$args = array(
+			'feed_url'             => $_REQUEST['feed_url'],
+			'event_category'       => implode( ', ', $categories ),
+			'tags'                 => str_replace(
+				',',
+				', ',
+				$_REQUEST['feed_tags']
+			),
+			'feed_id'              => $feed_id,
+			'comments_enabled'     => (bool) intval(
+				$_REQUEST['comments_enabled']
+			),
+			'map_display_enabled'  => (bool) intval(
 				$_REQUEST['map_display_enabled']
 			),
-			'events' => 0,
+			'events'               => 0,
 			'keep_tags_categories' => (bool) intval(
 				$_REQUEST['keep_tags_categories']
 			)
@@ -552,7 +556,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$json_strategy = $this->_registry->get(
 			'http.response.render.strategy.json'
 		);
-		$json_strategy->render( array( 'data' => $output ) );
+		return $json_strategy->render( array( 'data' => $output ) );
 	}
 
 	/**
@@ -569,7 +573,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			$json_strategy = $this->_registry->get(
 				'http.response.render.strategy.json'
 			);
-			$json_strategy->render( array( 'data' => $output ) );
+			return $json_strategy->render( array( 'data' => $output ) );
 		} else {
 			$this->delete_ics_feed( true, $ics_id );
 		}
@@ -656,7 +660,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			$json_strategy = $this->_registry->get(
 				'http.response.render.strategy.json'
 			);
-			$json_strategy->render( array( 'data' => $output ) );
+			return $json_strategy->render( array( 'data' => $output ) );
 		}
 	}
 

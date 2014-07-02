@@ -172,7 +172,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				);
 			} else {
 				$message = __(
-					"We couldn't find a valid transport to fetch the calendar data.",
+					"We couldn't fetch the calendar data, please check that provided URL is valid and contains iCalendar resource.",
 					AI1EC_PLUGIN_NAME
 				);
 			}

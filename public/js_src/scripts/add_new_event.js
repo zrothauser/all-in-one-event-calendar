@@ -85,7 +85,7 @@ define(
 				);
 			});
 
-			$( '#ai1ec_exclude-dates-input' ).val( _span_html.join( ', ' ) );
+			$( '#ai1ec_exclude-dates-input' ).text( _span_html.join( ', ' ) );
 		} else {
 			// Set as default date shown today
 			dp_date = new Date( ai1ec_config.now * 1000 );
@@ -108,7 +108,7 @@ define(
 						formatted_date.push( calendrical_functions.formatDate( new Date( v ), ai1ec_config.date_format ) );
 						exdate += v.replace( /-/g, '' ) + 'T000000Z,';
 					});
-					$( '#ai1ec_exclude-dates-input' ).val( formatted_date.join( ', ' ) );
+					$( '#ai1ec_exclude-dates-input' ).text( formatted_date.join( ', ' ) );
 					exdate = exdate.slice( 0, exdate.length - 1 );
 					$( "#ai1ec_exdate" ).val( exdate );
 				} else {
@@ -127,19 +127,14 @@ define(
 		if( _clear_dp ) {
 			$( '#widgetCalendar' ).DatePickerClear();
 		}
-		// Make it readonly.
-		$( '#ai1ec_exclude-dates-input' )
-			.on( 'keydown', function() {
-				return false;
-			});
 		// Hide datepicker if clicked outside.
 		$( document )
 			.on( 'mousedown.exclude', function( e ) {
 				var $container = $( '#widgetCalendar' ),
-					$input = $( '#ai1ec_exclude-dates-input' );
+					$link = $( '#ai1ec_exclude-dates-input' );
 
 				if ( ! $container.is( e.target )
-					&& ! $input.is( e.target )
+					&& ! $link.is( e.target )
 					&& 0 === $container.has( e.target ).length ) {
 					$( '#widgetCalendar' ).hide();
 				}
@@ -283,7 +278,7 @@ define(
 		date_time_event_handlers.execute_pseudo_handlers();
 
 		// Initialize showing/hiding of the exclude dates widget.
-		$( '#widgetField > a, #widgetField input' ).on( 'click', date_time_event_handlers.handle_animation_of_calendar_widget );
+		$( '#widgetField > a' ).on( 'click', date_time_event_handlers.handle_animation_of_calendar_widget );
 
 		// Free checkbox.
 		$( '#ai1ec_is_free' ).on( 'change', event_cost.handle_change_is_free );

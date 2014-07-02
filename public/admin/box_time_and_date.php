@@ -135,9 +135,7 @@
 					<td>
 						<div id="datepicker-widget">
 							<div id="widgetField">
-								<input type="text" class="ai1ec-date-input ai1ec-form-control"
-									autocomplete="off"
-									id="ai1ec_exclude-dates-input">
+								<a href="javascript:void(0)" class="" id="ai1ec_exclude-dates-input"></a>
 							</div>
 							<div id="widgetCalendar"></div>
 						</div>

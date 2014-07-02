@@ -162,6 +162,14 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				} catch ( Ai1ec_Engine_Not_Set_Exception $e ) {
 					$message = "ICS import is not supported on this install.";
 				}
+			} else if ( is_wp_error( $response ) ) {
+				$message = sprintf(
+					__(
+						'We failed to fetch calendar data due to an error: %s',
+						AI1EC_PLUGIN_NAME
+					),
+					$response->get_error_message()
+				);
 			} else {
 				$message = __(
 					"We couldn't find a valid transport to fetch the calendar data.",

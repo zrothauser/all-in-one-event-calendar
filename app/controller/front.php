@@ -614,6 +614,10 @@ class Ai1ec_Front_Controller {
 				array( 'post.content', 'check_content' ),
 				PHP_INT_MAX
 			);
+			$dispatcher->register_action(
+				'send_headers',
+				array( 'request.redirect', 'handle_categories_and_tags' )
+			);
 		}
 	}
 	/**

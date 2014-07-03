@@ -441,6 +441,12 @@ class Ai1ec_Ics_Import_Export_Engine
 			// Create event object.
 			$event = $this->_registry->get( 'model.event', $data );
 
+			// Instant Event
+			$is_instant = $e->getProperty( 'X-INSTANT-EVENT' );
+			if ( $is_instant ) {
+				$event->set_no_end_time();
+			}
+
 			$recurrence = $event->get( 'recurrence_rules' );
 			$search = $this->_registry->get( 'model.search' );
 			// first let's check by UID
@@ -804,6 +810,15 @@ class Ai1ec_Ics_Import_Export_Engine
 				$this->_sanitize_value(
 					$event->get_nonloggable_url( $event->get( 'ticket_url' ) )
 				)
+			);
+		}
+		// =================
+		// = Instant Event =
+		// =================
+		if ( $event->is_instant() ) {
+			$e->setProperty(
+				'X-INSTANT-EVENT',
+				$this->_sanitize_value( $event->is_instant() )
 			);
 		}
 

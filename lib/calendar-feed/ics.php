@@ -165,14 +165,14 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			} else if ( is_wp_error( $response ) ) {
 				$message = sprintf(
 					__(
-						'We failed to fetch calendar data due to an error: %s',
+						'A system error has prevented calendar data from being fetched. Something is preventing the plugin from functioning correctly. This message should provide a clue: %s',
 						AI1EC_PLUGIN_NAME
 					),
 					$response->get_error_message()
 				);
 			} else {
 				$message = __(
-					"We couldn't fetch the calendar data, please check that provided URL is valid and contains iCalendar resource.",
+					"Calendar data could not be fetched. If your URL is valid and contains an iCalendar resource, this is likely the result of a temporary server error and time may resolve this issue",
 					AI1EC_PLUGIN_NAME
 				);
 			}

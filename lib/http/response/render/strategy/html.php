@@ -9,7 +9,7 @@
  * @subpackage AI1EC.Http.Response.Render.Strategy
  */
 class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
-	
+
 	/**
 	 * @var string the event html.
 	 */
@@ -19,7 +19,7 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 	 * @var string The html for the footer of the event.
 	 */
 	protected $_html_footer;
-	
+
 	public function render( array $params ) {
 		$this->_html = $params['data'];
 		if ( isset( $params['is_event'] ) ) {
@@ -33,7 +33,7 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 		// page content filters (some themes are overly ambitious here)
 		add_filter( 'the_content', array( $this, 'append_content' ), PHP_INT_MAX - 1 );
 	}
-	
+
 	/**
 	 * Append locally generated content to normal page content. By default,
 	 * first checks if we are in The Loop before outputting to prevent multiple
@@ -44,7 +44,7 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 	 */
 	public function append_content( $content ) {
 		$settings = $this->_registry->get( 'model.settings' );
-	
+
 		// Include any admin-provided page content in the placeholder specified in
 		// the calendar theme template.
 		if ( $settings->get( 'skip_in_the_loop_check' ) || in_the_loop() ) {
@@ -70,8 +70,8 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 	public function event_content( $content ) {
 
 		// if we have modified the content, we return the modified version.
-		$to_return = $this->_html . '<div class="description">' . 
-			$content . '</div>';
+		$to_return = $this->_html .
+			'<div class="description">' . $content . '</div>';
 		if ( isset( $this->_html_footer ) ) {
 			$to_return .= $this->_html_footer;
 		}
@@ -82,23 +82,22 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 			$content
 		);
 	}
-	
+
 	/**
 	 * Add microformats class to title
-	 * 
+	 *
 	 * @param string $title
 	 */
 	public function event_title( $title ) {
 		if ( true === $this->_registry->get( 'acl.aco' )->is_our_post_type() ) {
-			$title =  '<span class="summary">' . 
-				$title . '</span>';
+			$title =  '<span class="summary">' . $title . '</span>';
 		}
 		return $title;
 	}
-	
+
 	/**
 	 * Add vevent class to post
-	 * 
+	 *
 	 * @param array $classes
 	 * @return array
 	 */

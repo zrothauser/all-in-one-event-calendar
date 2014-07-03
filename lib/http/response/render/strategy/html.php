@@ -68,7 +68,8 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 	function event_content( $content ) {
 
 		// if we have modified the content, we return the modified version.
-		$to_return = $this->_html . $content;
+		$to_return = $this->_html . '<div class="description">' . 
+			$content . '</div>';
 		if ( isset( $this->_html_footer ) ) {
 			$to_return .= $this->_html_footer;
 		}

@@ -55,7 +55,11 @@ class Ai1ec_Acl_Aco {
 	 *
 	 * @return boolean
 	 */
-	public function is_our_post_type( $post = null ) {
+	public function is_our_post_type( $post_to_check = null ) {
+		if ( null === $post_to_check ) {
+			global $post;
+			$post_to_check = $post;
+		}
 		return get_post_type( $post ) === AI1EC_POST_TYPE;
 	}
 

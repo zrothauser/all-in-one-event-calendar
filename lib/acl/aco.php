@@ -60,7 +60,7 @@ class Ai1ec_Acl_Aco {
 			global $post;
 			$post_to_check = $post;
 		}
-		return get_post_type( $post ) === AI1EC_POST_TYPE;
+		return get_post_type( $post_to_check ) === AI1EC_POST_TYPE;
 	}
 
 }

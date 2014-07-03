@@ -25,6 +25,8 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 		if ( isset( $params['is_event'] ) ) {
 			// Filter event post content, in single- and multi-post views
 			add_filter( 'the_content', array( $this, 'event_content' ), PHP_INT_MAX - 1 );
+			add_filter( 'the_title',   array( $this, 'event_title' ), PHP_INT_MAX - 1 );
+			add_filter( 'post_class',  array( $this, 'post_class' ), PHP_INT_MAX - 1 );
 			return;
 		}
 		// Replace page content - make sure it happens at (almost) the very end of
@@ -65,7 +67,7 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 	 *
 	 * @return string         Post/Page content
 	 **/
-	function event_content( $content ) {
+	public function event_content( $content ) {
 
 		// if we have modified the content, we return the modified version.
 		$to_return = $this->_html . '<div class="description">' . 
@@ -79,5 +81,31 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 			$to_return,
 			$content
 		);
+	}
+	
+	/**
+	 * Add microformats class to title
+	 * 
+	 * @param string $title
+	 */
+	public function event_title( $title ) {
+		if ( true === $this->_registry->get( 'acl.aco' )->is_our_post_type() ) {
+			$title =  '<span class="summary">' . 
+				$title . '</span>';
+		}
+		return $title;
+	}
+	
+	/**
+	 * Add vevent class to post
+	 * 
+	 * @param array $classes
+	 * @return array
+	 */
+	public function post_class( $classes ) {
+		if ( true === $this->_registry->get( 'acl.aco' )->is_our_post_type() ) {
+			$classes[] = 'vevent';
+		}
+		return $classes;
 	}
 }

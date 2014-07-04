@@ -154,13 +154,13 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		array $variables    = null,
 		$update_persistence = false
 	) {
-		// Reset the parse time to force a browser reload of the CSS, whether we are
-		// updating persistence or not.
-		$this->save_less_parse_time();
 		$notification = $this->_registry->get( 'notification.admin' );
 		try {
 			// Try to parse the css
 			$css = $this->lessphp_controller->parse_less_files( $variables );
+			// Reset the parse time to force a browser reload of the CSS, whether we are
+			// updating persistence or not. Do it here to be sure files compile ok.
+			$this->save_less_parse_time();
 			if ( $update_persistence ) {
 				$this->update_persistence_layer( $css );
 			} else {

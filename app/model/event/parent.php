@@ -224,7 +224,11 @@ class Ai1ec_Event_Parent extends Ai1ec_Base {
 	}
 
 	/**
-	 * Handles instances saving and switching if needed.
+	 * Handles instances saving and switching if needed. If original event
+	 * and created event have different start dates proceed in old style
+	 * otherwise find next instance, switch original start date to next
+	 * instance start date. If there are no next instances mark event as
+	 * non recurring. Filter also exception dates if are past.
 	 *
 	 * @param Ai1ec_Event $created_event  Created event object.
 	 * @param Ai1ec_Event $original_event Original event object.
@@ -257,10 +261,6 @@ class Ai1ec_Event_Parent extends Ai1ec_Base {
 			$original_event->save( true );
 			return;
 		}
-		$next_instances_count = $this->_count_next_instances(
-			$original_event->get( 'post_id' ),
-			$instance_id
-		);
 		$original_event->set(
 			'start',
 			$this->_registry->get( 'date.time', $next_instance->get( 'start' ) )
@@ -277,8 +277,12 @@ class Ai1ec_Event_Parent extends Ai1ec_Base {
 		$rules_info       = $this->_registry->get( 'recurrence.rule' )
 			->build_recurrence_rules_array( $recurrence_rules );
 		if ( isset( $rules_info['COUNT'] ) ) {
-			$rules_info['COUNT'] = (int)$next_instances_count + count( $edates );
-			$rules               = '';
+			$next_instances_count = $this->_count_next_instances(
+				$original_event->get( 'post_id' ),
+				$instance_id
+			);
+			$rules_info['COUNT']  = (int)$next_instances_count + count( $edates );
+			$rules                = '';
 			if ( $rules_info['COUNT'] <= 1 ) {
 				$rules_info = array();
 			}
@@ -297,7 +301,7 @@ class Ai1ec_Event_Parent extends Ai1ec_Base {
 	 * Returns next instance.
 	 *
 	 * @param int $post_id     Post ID.
-	 * @param int $instance_id Instance ID/
+	 * @param int $instance_id Instance ID.
 	 *
 	 * @return null|Ai1ec_Event Result.
 	 */
@@ -326,7 +330,7 @@ class Ai1ec_Event_Parent extends Ai1ec_Base {
 	 * Counts future instances.
 	 *
 	 * @param int $post_id     Post ID.
-	 * @param int $instance_id Instance ID/
+	 * @param int $instance_id Instance ID.
 	 *
 	 * @return int Result.
 	 */
@@ -354,12 +358,11 @@ class Ai1ec_Event_Parent extends Ai1ec_Base {
 	 */
 	protected function _filter_exception_dates( Ai1ec_Event $event ) {
 		$start           = (int)$event->get( 'start' )->format();
-		$end             = (int)$event->get( 'end' );
 		$exception_dates = explode( ',', $event->get( 'exception_dates' ) );
 		$dates           = array();
 		foreach ( $exception_dates as $date ) {
 			$ex_date = (int)$this->_registry->get( 'date.time', $date )->format();
-			if ( $ex_date > $start && $ex_date < $end ) {
+			if ( $ex_date > $start ) {
 				$dates[] = $date;
 			}
 		}

@@ -129,11 +129,9 @@ class Ai1ec_Event_Parent extends Ai1ec_Base {
 			$post_id     = $this->_registry->get( 'model.event.creating' )
 				->create_duplicate_post();
 			if ( false !== $post_id ) {
-				$created_event  = $this->_registry->get( 'model.event', $post_id );
-				$original_event = $this->_registry->get( 'model.event', $old_post_id );
 				$this->_handle_instances(
-					$created_event,
-					$original_event,
+					$this->_registry->get( 'model.event', $post_id ),
+					$this->_registry->get( 'model.event', $old_post_id ),
 					$instance_id
 				);
 				$this->_registry->get( 'model.event.instance' )->clean(
@@ -251,7 +249,6 @@ class Ai1ec_Event_Parent extends Ai1ec_Base {
 			);
 			return;
 		}
-		// find next instance
 		$next_instance = $this->_find_next_instance(
 			$original_event->get( 'post_id' ),
 			$instance_id
@@ -271,8 +268,6 @@ class Ai1ec_Event_Parent extends Ai1ec_Base {
 		);
 		$edates = $this->_filter_exception_dates( $original_event );
 		$original_event->set( 'exception_dates', implode( ',', $edates ) );
-		// we need to change also number of occurencies if there is set to
-		// number not dates.
 		$recurrence_rules = $original_event->get( 'recurrence_rules' );
 		$rules_info       = $this->_registry->get( 'recurrence.rule' )
 			->build_recurrence_rules_array( $recurrence_rules );

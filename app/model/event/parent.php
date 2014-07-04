@@ -54,14 +54,14 @@ class Ai1ec_Event_Parent extends Ai1ec_Base {
 		if ( null === ( $parent_id = $parents->get( $current_id ) ) ) {
 			$db = $this->_registry->get( 'dbi.dbi' );
 			/* @var $db Ai1ec_Dbi */
-			$query      = '
+			$query  = '
 				SELECT parent.ID, parent.post_status
 				FROM
 					' . $db->get_table_name( 'posts' ) . ' AS child
 					INNER JOIN ' . $db->get_table_name( 'posts' ) . ' AS parent
 						ON ( parent.ID = child.post_parent )
 				WHERE child.ID = ' . $current_id;
-			$parent     = $db->get_row( $query );
+			$parent = $db->get_row( $query );
 			if (
 				empty( $parent ) ||
 				'trash' === $parent->post_status
@@ -93,9 +93,9 @@ class Ai1ec_Event_Parent extends Ai1ec_Base {
 		$parent_id = (int)$parent_id;
 		$sql_query = 'SELECT ID FROM ' . $db->get_table_name( 'posts' ) .
 			' WHERE post_parent = ' . $parent_id;
-		$childs    = (array)$db->get_col( $sql_query );
-		$objects = array();
-		foreach ( $childs as $child_id ) {
+		$children  = (array)$db->get_col( $sql_query );
+		$objects   = array();
+		foreach ( $children as $child_id ) {
 			try {
 				$instance = $this->_registry->get( 'model.event', $child_id );
 				if (
@@ -126,13 +126,7 @@ class Ai1ec_Event_Parent extends Ai1ec_Base {
 		) {
 			$old_post_id = $_POST['post_ID'];
 			$instance_id = $_POST['ai1ec_instance_id'];
-			$v = $this->_count_next_instances( $old_post_id, $instance_id );
-			if (
-				0 === $v
-			) {
-				return;
-			}
-			$post_id = $this->_registry->get( 'model.event.creating' )
+			$post_id     = $this->_registry->get( 'model.event.creating' )
 				->create_duplicate_post();
 			if ( false !== $post_id ) {
 				$created_event  = $this->_registry->get( 'model.event', $post_id );
@@ -216,8 +210,8 @@ class Ai1ec_Event_Parent extends Ai1ec_Base {
 	 * @return bool Success
 	 */
 	public function add_exception_date( $post_id, Ai1ec_Date_Time $date ) {
-		$event        = $this->_registry->get( 'model.event', $post_id );
-		$dates_list   = explode( ',', $event->get( 'exception_dates' ) );
+		$event      = $this->_registry->get( 'model.event', $post_id );
+		$dates_list = explode( ',', $event->get( 'exception_dates' ) );
 		if ( empty( $dates_list[0] ) ) {
 			unset( $dates_list[0] );
 		}
@@ -269,24 +263,26 @@ class Ai1ec_Event_Parent extends Ai1ec_Base {
 		);
 		$original_event->set(
 			'start',
-			$this->_registry->get( 'date.time', $next_instance->get( 'start') )
+			$this->_registry->get( 'date.time', $next_instance->get( 'start' ) )
 		);
 		$original_event->set(
 			'end',
-			$this->_registry->get( 'date.time', $next_instance->get( 'end') )
+			$this->_registry->get( 'date.time', $next_instance->get( 'end' ) )
 		);
+		$edates = $this->_filter_exception_dates( $original_event );
+		$original_event->set( 'exception_dates', implode( ',', $edates ) );
 		// we need to change also number of occurencies if there is set to
 		// number not dates.
 		$recurrence_rules = $original_event->get( 'recurrence_rules' );
 		$rules_info       = $this->_registry->get( 'recurrence.rule' )
 			->build_recurrence_rules_array( $recurrence_rules );
 		if ( isset( $rules_info['COUNT'] ) ) {
-			$rules_info['COUNT'] = (int)$rules_info['COUNT'] - 1;
+			$rules_info['COUNT'] = (int)$next_instances_count + count( $edates );
 			$rules               = '';
-			if ( 1 === $rules_info['COUNT'] ) {
+			if ( $rules_info['COUNT'] <= 1 ) {
 				$rules_info = array();
 			}
-			foreach ( $rules_info as $key=> $value ) {
+			foreach ( $rules_info as $key => $value ) {
 				$rules .= $key . '=' . $value . ';';
 			}
 			$original_event->set(
@@ -306,10 +302,10 @@ class Ai1ec_Event_Parent extends Ai1ec_Base {
 	 * @return null|Ai1ec_Event Result.
 	 */
 	protected function _find_next_instance( $post_id, $instance_id ) {
-		$dbi             = $this->_registry->get( 'dbi.dbi' );
-		$table_instances = $dbi->get_table_name( 'ai1ec_event_instances' );
-		$table_posts     = $dbi->get_table_name( 'posts' );
-		$query = $dbi->prepare(
+		$dbi              = $this->_registry->get( 'dbi.dbi' );
+		$table_instances  = $dbi->get_table_name( 'ai1ec_event_instances' );
+		$table_posts      = $dbi->get_table_name( 'posts' );
+		$query            = $dbi->prepare(
 			'SELECT i.id FROM ' . $table_instances . ' i JOIN ' .
 			$table_posts . ' p ON (p.ID = i.post_id) ' .
 			'WHERE i.post_id = %d AND i.id > %d ' .
@@ -347,5 +343,26 @@ class Ai1ec_Event_Parent extends Ai1ec_Base {
 			$instance_id
 		);
 		return (int)$dbi->get_var( $query );
+	}
+
+	/**
+	 * Filters past or out of range exception dates.
+	 *
+	 * @param Ai1ec_Event $event Event.
+	 *
+	 * @return array Filtered exception dates.
+	 */
+	protected function _filter_exception_dates( Ai1ec_Event $event ) {
+		$start           = (int)$event->get( 'start' )->format();
+		$end             = (int)$event->get( 'end' );
+		$exception_dates = explode( ',', $event->get( 'exception_dates' ) );
+		$dates           = array();
+		foreach ( $exception_dates as $date ) {
+			$ex_date = (int)$this->_registry->get( 'date.time', $date )->format();
+			if ( $ex_date > $start && $ex_date < $end ) {
+				$dates[] = $date;
+			}
+		}
+		return $dates;
 	}
 }

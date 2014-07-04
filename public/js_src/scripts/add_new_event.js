@@ -84,12 +84,14 @@ define(
 					)
 				);
 			});
-
-			$( '#ai1ec_exclude-dates-input' ).text( _span_html.join( ', ' ) );
+			$( '#ai1ec_exclude-dates-input' )
+				.text(  _span_html.join( ', ' ) );
 		} else {
 			// Set as default date shown today
 			dp_date = new Date( ai1ec_config.now * 1000 );
 			_clear_dp = true;
+			$( '#ai1ec_exclude-dates-input' )
+				.text(  $( '#ai1ec_exclude-dates-input' ).data( 'placeholder' ) );
 		}
 
 		$( '#widgetCalendar' ).DatePicker({
@@ -113,6 +115,7 @@ define(
 					$( "#ai1ec_exdate" ).val( exdate );
 				} else {
 					$( "#ai1ec_exdate" ).val( '' );
+					$( '#ai1ec_exclude-dates-input' ).text( $( '#ai1ec_exclude-dates-input' ).data( 'placeholder' ) );
 				}
 			},
 			prev: '«',

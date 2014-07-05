@@ -48,6 +48,23 @@ class Ai1ec_Localization_Helper {
 	}
 
 	/**
+	 * get_region function
+	 *
+	 * Returns the ISO-3166 part of the configured locale as a ccTLD.
+	 * Used for region biasing in the geo autocomplete plugin.
+	 *
+	 * @return string
+	 **/
+	public function get_region() {
+		$locale = explode( '_', get_locale() );
+	
+		$region = ( isset( $locale[1] ) && $locale[1] != '' ) ? strtolower( $locale[1] ) : '';
+	
+		// Primary ccTLD for United Kingdom is uk.
+		return ( $region == 'gb' ) ? 'uk' : $region;
+	}
+
+	/**
 	 * get_wpml_translations_of_page method
 	 *
 	 * Get an array of pages, that are translations of current page, or which

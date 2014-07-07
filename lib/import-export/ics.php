@@ -137,6 +137,7 @@ class Ai1ec_Ics_Import_Export_Engine
 		// Fetch default timezone in case individual properties don't define it
 		$timezone = $v->getProperty( 'X-WR-TIMEZONE' );
 		$timezone = (string)$timezone[1];
+		$messages = array();
 		// go over each event
 		while ( $e = $v->getComponent( 'vevent' ) ) {
 			// Event data array.
@@ -469,7 +470,15 @@ class Ai1ec_Ics_Import_Export_Engine
 				// =================================================
 				// = Event was not found, so store it and the post =
 				// =================================================
-				$event->save();
+				$limit_events = apply_filters( 'ai1ec_limit_new_event', null );
+				if ( empty( $limit_events ) ) {
+					$event->save();
+					$count++;
+				} else {
+					if ( ! in_array( $limit_events, $messages ) ) {
+						$messages[] = $limit_events;
+					}
+				}
 			} else {
 				// ======================================================
 				// = Event was found, let's store the new event details =
@@ -487,17 +496,18 @@ class Ai1ec_Ics_Import_Export_Engine
 					$event->set( 'post_id', $matching_event_id );
 					$event->set( 'post',    $post );
 					$event->save( true );
+					$count++;
 				}
 
 			}
 			// if the event was already present , unset it from the array so it's not deleted
 			unset( $events_in_db[$event->get( 'post_id' )] );
-			$count++;
 		}
 
 		return array(
-			'count'            =>$count,
+			'count'            => $count,
 			'events_to_delete' => $events_in_db,
+			'messages'         => $messages,
 		);
 	}
 

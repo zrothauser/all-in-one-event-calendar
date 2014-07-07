@@ -592,7 +592,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 		$instance_model = $this->_registry->get( 'model.event.instance' );
 		$instance_model->recreate( $this );
 
-		do_action( 'ai1ec_event_saved', $post_id, $this );
+		do_action( 'ai1ec_event_saved', $post_id, $this, $update );
 		return $post_id;
 	}
 

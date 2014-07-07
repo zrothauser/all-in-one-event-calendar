@@ -494,6 +494,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	 *
 	 */
 	public function add_ics_feed() {
+		check_ajax_referer( 'ai1ec_ics_feed_nonce', 'nonce' );
 		$db = $this->_registry->get( 'dbi.dbi' );
 		$table_name = $db->get_table_name( 'ai1ec_event_feeds' );
 

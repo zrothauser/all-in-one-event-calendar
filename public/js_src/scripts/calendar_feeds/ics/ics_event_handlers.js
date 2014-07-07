@@ -60,6 +60,7 @@ define(
 			    	.is( ':checked' ) ? 1 : 0,
 			    data = {
 			    	action:               'ai1ec_add_ics',
+			    	nonce:                ai1ec_config.calendar_feeds_nonce,
 			    	feed_url:             url,
 			    	feed_category:        $( '#ai1ec_feed_category' ).val(),
 			    	feed_tags:            $( '#ai1ec_feed_tags' ).val(),

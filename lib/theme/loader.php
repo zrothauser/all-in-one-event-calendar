@@ -12,6 +12,11 @@
 class Ai1ec_Theme_Loader {
 
 	/**
+	 * @const string Prefix for theme arguments filter name.
+	 */
+	const ARGS_FILTER_PREFIX = 'ai1ec_theme_args_';
+
+	/**
 	 * @var array contains the admin and theme paths.
 	 */
 	protected $_paths = array(
@@ -244,6 +249,11 @@ class Ai1ec_Theme_Loader {
 				break;
 
 			case 'php':
+				$args = apply_filters(
+					self::ARGS_FILTER_PREFIX . $filename,
+					$args,
+					$is_admin
+				);
 				if ( null === $paths ) {
 					$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
 					$paths = array_keys( $paths ); // Values (URLs) not used for PHP
@@ -258,6 +268,11 @@ class Ai1ec_Theme_Loader {
 				break;
 
 			case 'twig':
+				$args = apply_filters(
+					self::ARGS_FILTER_PREFIX . $filename,
+					$args,
+					$is_admin
+				);
 				if ( null === $paths ) {
 					$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
 					$paths = array_keys( $paths ); // Values (URLs) not used for Twig
@@ -347,18 +362,18 @@ class Ai1ec_Theme_Loader {
 		$paths = array_keys( $paths ); // Values (URLs) not used for Twig
 		return $this->_get_twig_instance( $paths, $is_admin );
 	}
-	
+
 	/**
 	 * Get cache dir for Twig.
-	 * 
+	 *
 	 * @param bool $rescan Set to true to force rescan
-	 * 
+	 *
 	 * @return string|bool Cache directory or false
 	 */
 	public function get_cache_dir( $rescan = false ) {
 		$settings         = $this->_registry->get( 'model.settings' );
 		$ai1ec_twig_cache = $settings->get( 'twig_cache' );
-		if ( 
+		if (
 			! empty( $ai1ec_twig_cache ) &&
 			false === $rescan
 		) {
@@ -374,7 +389,7 @@ class Ai1ec_Theme_Loader {
 				! isset( $upload_dir['error'] ) ||
 				! $upload_dir['error']
 			) &&
-			! is_wp_error( $upload_dir ) 
+			! is_wp_error( $upload_dir )
 		) {
 			$scan_dirs[] = $upload_dir['basedir'] . DIRECTORY_SEPARATOR . 'ai1ec_twig';
 		}
@@ -449,11 +464,11 @@ class Ai1ec_Theme_Loader {
 			);
 
 			$ai1ec_twig_environment = new Ai1ec_Twig_Environment(
-					$loader, 
-					$environment 
+					$loader,
+					$environment
 				);
 			$ai1ec_twig_environment->set_registry( $this->_registry );
-			
+
 			$this->_twig[$instance] = $ai1ec_twig_environment;
 			if ( apply_filters( 'ai1ec_twig_add_debug', AI1EC_DEBUG ) ) {
 				$this->_twig[$instance]->addExtension( new Twig_Extension_Debug() );

@@ -100,6 +100,7 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 			$options['enabled_mobile'] =
 				isset( $_POST['view_' . $view . '_enabled_mobile'] );
 			$options['default_mobile'] =
+				isset( $_POST['default_calendar_view_mobile'] ) &&
 				$_POST['default_calendar_view_mobile'] === $view;
 		}
 		return $enabled_views;

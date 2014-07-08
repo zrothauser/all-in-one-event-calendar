@@ -22,7 +22,6 @@ class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 	 * @return string Replacement for shortcode entry
 	 */
 	public function shortcode( $atts, $content = '', $tag = 'ai1ec' ) {
-
 		$settings_view   = $this->_registry->get( 'model.settings-view' );
 		$view_names_list = array_keys( $settings_view->get_all() );
 		$default_view    = $settings_view->get_default();

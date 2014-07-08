@@ -245,7 +245,7 @@ class Ai1ec_Theme_Loader {
 
 			case 'php':
 				$args = apply_filters(
-					'ai1ec-theme-load-' . $filename,
+					'ai1ec-theme-args-' . $filename,
 					$args,
 					$is_admin
 				);
@@ -264,7 +264,7 @@ class Ai1ec_Theme_Loader {
 
 			case 'twig':
 				$args = apply_filters(
-					'ai1ec-theme-load-' . $filename,
+					'ai1ec-theme-args-' . $filename,
 					$args,
 					$is_admin
 				);

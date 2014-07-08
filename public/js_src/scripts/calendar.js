@@ -100,12 +100,13 @@ define(
 			$this = $( this ),
 			$calendar = $this.closest( '.ai1ec-calendar' ),
 			id = $this.data( 'instanceId' ),
-			$target = $( e.toElement || e.relatedTarget );
+			$target = $( e.toElement || e.relatedTarget ),
+			$instance_el = $calendar.find( '.ai1ec-event-instance-id-' + id );
+
 		// Don't cancel the effect if moving onto a clone of the same instance.
-		if ( $target.is( $calendar.find( '.ai1ec-event-instance-id-' + id ) ) ||
-			$target.parent().is(
-				$calendar.find( '.ai1ec-event-instance-id-' + id )
-			)
+		if (
+			$target.is( $instance_el ) ||
+			$target.parent().is( $instance_el )
 		) {
 			return;
 		}

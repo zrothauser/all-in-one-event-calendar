@@ -162,9 +162,17 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				} catch ( Ai1ec_Engine_Not_Set_Exception $e ) {
 					$message = "ICS import is not supported on this install.";
 				}
+			} else if ( is_wp_error( $response ) ) {
+				$message = sprintf(
+					__(
+						'A system error has prevented calendar data from being fetched. Something is preventing the plugin from functioning correctly. This message should provide a clue: %s',
+						AI1EC_PLUGIN_NAME
+					),
+					$response->get_error_message()
+				);
 			} else {
 				$message = __(
-					"We couldn't find a valid transport to fetch the calendar data. You should set allow_url_fopen in php.ini as suggested in <a href='http://forums.hostdime.com/showthread.php?8620-PHP-allow_url_fopen' target='_blank' >this</a> article",
+					"Calendar data could not be fetched. If your URL is valid and contains an iCalendar resource, this is likely the result of a temporary server error and time may resolve this issue",
 					AI1EC_PLUGIN_NAME
 				);
 			}

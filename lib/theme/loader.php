@@ -12,6 +12,11 @@
 class Ai1ec_Theme_Loader {
 
 	/**
+	 * @const string Prefix for theme arguments filter name.
+	 */
+	const ARGS_FILTER_PREFIX = 'ai1ec_theme_args_';
+
+	/**
 	 * @var array contains the admin and theme paths.
 	 */
 	protected $_paths = array(
@@ -245,7 +250,7 @@ class Ai1ec_Theme_Loader {
 
 			case 'php':
 				$args = apply_filters(
-					'ai1ec-theme-args-' . $filename,
+					self::ARGS_FILTER_PREFIX . $filename,
 					$args,
 					$is_admin
 				);
@@ -264,7 +269,7 @@ class Ai1ec_Theme_Loader {
 
 			case 'twig':
 				$args = apply_filters(
-					'ai1ec-theme-args-' . $filename,
+					self::ARGS_FILTER_PREFIX . $filename,
 					$args,
 					$is_admin
 				);

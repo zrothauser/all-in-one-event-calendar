@@ -527,7 +527,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 		$table_name = $dbi->get_table_name( 'ai1ec_events' );
 		$post_id    = $columns['post_id'];
 
-		if ( $this->get( 'end' )->format() <= 0 ) {
+		if ( $this->get( 'end' )->is_empty() ) {
 			$this->set_no_end_time();
 		}
 		if ( $post_id ) {

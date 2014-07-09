@@ -233,7 +233,8 @@ define(
 						data: query,
 						method : 'get',
 						success: function( data ) {
-
+							// show the subscribe button ( used in the super widget )
+							$( '.ai1ec-subscribe-container' ).show();
 							// Do required cleanup of existing view.
 							destroy_view( $calendar );
 

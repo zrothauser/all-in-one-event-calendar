@@ -13,7 +13,13 @@ define(
 	 */
 	var initialize_affixed_toolbar = function( $calendar ) {
 		var
-			$toolbar = $calendar.find( '.ai1ec-calendar-toolbar' ),
+			$toolbar = $calendar.find( '.ai1ec-calendar-toolbar' );
+
+		// No use without a toolbar.
+		if ( ! $toolbar.length ) {
+			return false;
+		}
+		var 
 			// Calendar navigation buttons
 			$buttons = $calendar.find( '.ai1ec-btn-toolbar' ),
 			$toggle = $toolbar.find( '.ai1ec-dropdown-toggle' ),

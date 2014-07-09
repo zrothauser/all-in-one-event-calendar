@@ -19,12 +19,14 @@ define(
 					.slideToggle( 300 );
 	};
 	var collapse_all = function() {
-		$( '.ai1ec-expanded .ai1ec-event-toggle')
+		var $calendar = $( this ).closest( '.ai1ec-calendar' );
+		$calendar.find( '.ai1ec-expanded .ai1ec-event-toggle')
 			.click();
 	};
 
 	var expand_all = function() {
-		$( '.ai1ec-event:not(.ai1ec-expanded) .ai1ec-event-toggle')
+		var $calendar = $( this ).closest( '.ai1ec-calendar' );
+		$calendar.find( '.ai1ec-event:not(.ai1ec-expanded) .ai1ec-event-toggle')
 			.click();
 	};
 	return {

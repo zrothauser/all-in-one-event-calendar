@@ -32,9 +32,10 @@ define(
 			// If none found, create one
 			if( ! $title.length ) {
 				$title = $( '<h1 class="page-title"></h1>' );
-				$title.text( ai1ec_calendar.title ); // Do it this way to automatically generate HTML entities
+				// Do it this way to automatically generate HTML entities
+				$title.text( ai1ec_calendar.title );
 			}
-			var $calendar = $( '#ai1ec-container' )
+			var $calendar = $( '.ai1ec-main-container:first' )
 				.detach()
 				.before( $title );
 
@@ -52,8 +53,11 @@ define(
 	 * to its clones.
 	 */
 	var handle_multiday_enter = function() {
-		var id = $( this ).data( 'instanceId' );
-		$( '.ai1ec-event-instance-id-' + id ).addClass( 'ai1ec-hover' );
+		var
+			id = $( this ).data( 'instanceId' ),
+			$calendar = $( this ).closest( '.ai1ec-calendar' );
+
+		$calendar.find( '.ai1ec-event-instance-id-' + id ).addClass( 'ai1ec-hover' );
 	};
 
 	/**
@@ -61,8 +65,13 @@ define(
 	 * from its clones.
 	 */
 	var handle_multiday_leave = function() {
-		var id = $( this ).data( 'instanceId' );
-		$( '.ai1ec-event-instance-id-' + id ).removeClass( 'ai1ec-hover' );
+		var
+			id = $( this ).data( 'instanceId' ),
+			$calendar = $( this ).closest( '.ai1ec-calendar' );
+
+		$calendar
+			.find( '.ai1ec-event-instance-id-' + id )
+				.removeClass( 'ai1ec-hover' );
 	};
 
 	/**
@@ -70,10 +79,15 @@ define(
 	 * on this event and all its multiday clones.
 	 */
 	var handle_raise_enter = function() {
-		var $this = $( this ),
-				id = $this.data( 'instanceId' );
+		var
+			$this = $( this ),
+			$calendar = $this.closest( '.ai1ec-calendar' ),
+			id = $this.data( 'instanceId' );
+
 		$this.delay( 500 ).queue( function() {
-			$( '.ai1ec-event-instance-id-' + id ).addClass( 'ai1ec-raised' );
+			$calendar
+				.find( '.ai1ec-event-instance-id-' + id )
+					.addClass( 'ai1ec-raised' );
 		} );
 	};
 
@@ -82,15 +96,21 @@ define(
 	 * event and all its multiday clones.
 	 */
 	var handle_raise_leave = function( e ) {
-		var $this = $( this ),
-				id = $this.data( 'instanceId' ),
-				$target = $( e.toElement || e.relatedTarget );
+		var
+			$this = $( this ),
+			$calendar = $this.closest( '.ai1ec-calendar' ),
+			id = $this.data( 'instanceId' ),
+			$target = $( e.toElement || e.relatedTarget ),
+			$instance_el = $calendar.find( '.ai1ec-event-instance-id-' + id );
+
 		// Don't cancel the effect if moving onto a clone of the same instance.
-		if ( $target.is( '.ai1ec-event-instance-id-' + id ) ||
-				 $target.parent().is( '.ai1ec-event-instance-id-' + id ) ) {
+		if (
+			$target.is( $instance_el ) ||
+			$target.parent().is( $instance_el )
+		) {
 			return;
 		}
-		$( '.ai1ec-event-instance-id-' + id )
+		$calendar.find( '.ai1ec-event-instance-id-' + id )
 			.clearQueue()
 			.removeClass( 'ai1ec-raised' );
 	};
@@ -135,11 +155,20 @@ define(
 		// = Agenda view =
 		// ===============
 		// Register click handlers for Agenda View event title
-		$( document ).on( 'click', '.ai1ec-agenda-view .ai1ec-event-header', agenda_view.toggle_event );
+		$( document ).on( 'click',
+			'.ai1ec-agenda-view .ai1ec-event-header',
+			 agenda_view.toggle_event
+		);
 
 		// Register click handlers for expand/collapse all buttons
-		$( document ).on( 'click', '#ai1ec-agenda-expand-all', agenda_view.expand_all );
-		$( document ).on( 'click', '#ai1ec-agenda-collapse-all', agenda_view.collapse_all );
+		$( document ).on( 'click',
+			'#ai1ec-agenda-expand-all',
+			agenda_view.expand_all
+		);
+		$( document ).on( 'click',
+			'#ai1ec-agenda-collapse-all',
+			agenda_view.collapse_all
+		);
 
 		// =============
 		// = All views =
@@ -167,20 +196,21 @@ define(
 		// Handle click on reveal full day button.
 		$( document ).on( 'click',      '.ai1ec-reveal-full-day button',
 			function() {
+				var $calendar = $( this ).closest( '.ai1ec-calendar' );
 				// Hide the button (no longer serves a purpose).
 				$( this ).fadeOut();
-				var $actual_table = $(
+				var $actual_table = $calendar.find(
 					'.ai1ec-oneday-view-original, .ai1ec-week-view-original'
 				);
 				// Scroll window down the same amount that the upper portion of the
 				// table is being revealed.
 				var vertical_offset =
-					$( '.tablescroll_wrapper' ).offset().top -
+					$calendar.find( '.tablescroll_wrapper' ).offset().top -
 					$actual_table.offset().top;
 				$( window ).scrollTo( '+=' + vertical_offset + 'px', 400 );
 				// At the same time, expand height to reveal 1 full day (24 hours).
 				var height = 24 * 60 + 2;
-				$( '.tablescroll_wrapper' )
+				$calendar.find( '.tablescroll_wrapper' )
 					.scrollTo( '-=' + vertical_offset + 'px', 400 )
 					.animate( { height: height + 'px' } );
 			}
@@ -222,11 +252,15 @@ define(
 
 			attach_event_handlers();
 			// Initialize the calendar view for the first time.
-			load_views.initialize_view();
-			
+			$( '.ai1ec-calendar' ).each( function() {
+				load_views.initialize_view( $( this ) );
+			} );
+
 			// Affixed toolbar.
-			if ( ai1ec_config.affix_filter_menu ) {
-				affix.initialize_affixed_toolbar( $( '#ai1ec-calendar' ) );
+			if ( ai1ec_config.affix_filter_menu
+				&& 1 === $( '.ai1ec-calendar' ).length
+			) {
+				affix.initialize_affixed_toolbar( $( '.ai1ec-calendar' ) );
 			}
 		} );
 	};

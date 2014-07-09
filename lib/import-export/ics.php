@@ -470,9 +470,8 @@ class Ai1ec_Ics_Import_Export_Engine
 				// =================================================
 				// = Event was not found, so store it and the post =
 				// =================================================
-					if ( ! is_wp_error( $event->save() ) ) {
-						$count++;
-					}
+					$event->save();
+					$count++;
 			} else {
 				// ======================================================
 				// = Event was found, let's store the new event details =

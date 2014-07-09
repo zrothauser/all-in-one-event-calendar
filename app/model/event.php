@@ -110,7 +110,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 		$start = $this->get( 'start' );
 		// reset time component
 		$start->set_time( 0, 0, 0 );
-		$end   = $this->_registry->get( 'date.time', $start );
+		$end = $this->_registry->get( 'date.time', $start );
 		// set the correct length
 		$end->adjust_day( $length );
 		$this->set( 'end', $end );
@@ -181,8 +181,8 @@ class Ai1ec_Event extends Ai1ec_Base {
 				'\' could not be retrieved from the database.'
 			);
 		}
-		$post_id    = (int)$post_id;
-		$dbi        = $this->_registry->get( 'dbi.dbi' );
+		$post_id = (int)$post_id;
+		$dbi     = $this->_registry->get( 'dbi.dbi' );
 
 		$left_join  = '';
 		$select_sql = '
@@ -220,12 +220,12 @@ class Ai1ec_Event extends Ai1ec_Base {
 		';
 
 		if ( false !== $instance && is_numeric( $instance ) ) {
-			$select_sql .= ", IF( aei.start IS NOT NULL, aei.start, e.start ) as start," .
-						   "  IF( aei.start IS NOT NULL, aei.end,   e.end )   as end ";
+			$select_sql .= ', IF( aei.start IS NOT NULL, aei.start, e.start ) as start,' .
+						   '  IF( aei.start IS NOT NULL, aei.end,   e.end )   as end ';
 
 			$instance = (int)$instance;
 			$this->set( 'instance_id', $instance );
-			$left_join = 	'LEFT JOIN ' . $dbi->get_table_name( 'ai1ec_event_instances' ) .
+			$left_join = 'LEFT JOIN ' . $dbi->get_table_name( 'ai1ec_event_instances' ) .
 				' aei ON aei.id = ' . $instance . ' AND e.post_id = aei.post_id ';
 		} else {
 			$select_sql .= ', e.start as start, e.end as end, e.allday ';
@@ -521,12 +521,13 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 * @return int            The post_id of the new or existing event.
 	 */
 	function save( $update = false ) {
-		$limit_events = apply_filters( 'ai1ec_limit_new_event', null );
-		if (
-			! $update &&
-			is_wp_error( $limit_events )
-		) {
-			return $limit_events;
+		if ( ! $update ) {
+			$response = apply_filters( 'ai1ec_event_save_new', $this );
+			if ( is_wp_error( $response ) ) {
+				throw new Ai1ec_Event_Create_Exception(
+					'Failed to create event: ' . $response->get_error_message()
+				);
+			}
 		}
 
 		$dbi        = $this->_registry->get( 'dbi.dbi' );
@@ -571,7 +572,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 			$this->set( 'post_id', $post_id );
 			$columns['post_id'] = $post_id;
 
-			$taxonomy   = $this->_registry->get(
+			$taxonomy = $this->_registry->get(
 				'model.event.taxonomy',
 				$post_id
 			);

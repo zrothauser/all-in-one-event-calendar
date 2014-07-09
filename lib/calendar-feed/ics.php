@@ -82,15 +82,6 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			);
 			return $render_json->render( $output );
 		}
-		if ( isset( $output['data']['limit_reached'] ) ) {
-			$this->_registry->get( 'notification.admin' )->store(
-				$output['data']['message'],
-				'updated',
-				0,
-				array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
-				true
-			);
-		}
 		return $output;
 	}
 
@@ -115,7 +106,6 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 			$count    = 0;
 			$message  = false;
-			$messages = array();
 			// reimport the feed
 			$response = wp_remote_get(
 				$feed->feed_url,
@@ -164,7 +154,6 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					$count  = $result['count'];
 					// we must flip again the array to iterate over it
 					$events_to_delete = array_flip( $result['events_to_delete'] );
-					$messages         = $result['messages'];
 					foreach ( $events_to_delete as $event_id ) {
 						wp_delete_post( $event_id, true );
 					}
@@ -203,11 +192,6 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 						'error'       => false,
 						'message'     => sprintf( _n( 'Imported %s event', 'Imported %s events', $count, AI1EC_PLUGIN_NAME ), $count ),
 				);
-				if ( ! empty( $messages ) ) {
-					$output['data']['message'] .= '. ' .
-						implode( '. ', $messages );
-					$output['data']['limit_reached'] = true;
-				}
 			}
 		} else {
 			$output['data'] = array(

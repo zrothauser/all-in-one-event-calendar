@@ -124,7 +124,7 @@ class Ai1ec_Ics_Import_Export_Engine
 		$comment_status = isset( $args['comment_status'] ) ? $args['comment_status'] : 'open';
 		$do_show_map    = isset( $args['do_show_map'] ) ? $args['do_show_map'] : 0;
 		$count = 0;
-		$events_in_db   = $args['events_in_db'];
+		$events_in_db   = isset( $args['events_in_db'] ) ? $args['events_in_db'] : 0;
 		$v->sort();
 		// Reverse the sort order, so that RECURRENCE-IDs are listed before the
 		// defining recurrence events, and therefore take precedence during
@@ -470,15 +470,9 @@ class Ai1ec_Ics_Import_Export_Engine
 				// =================================================
 				// = Event was not found, so store it and the post =
 				// =================================================
-				$limit_events = apply_filters( 'ai1ec_limit_new_event', null );
-				if ( empty( $limit_events ) ) {
-					$event->save();
-					$count++;
-				} else {
-					if ( ! in_array( $limit_events, $messages ) ) {
-						$messages[] = $limit_events;
+					if ( ! is_wp_error( $event->save() ) ) {
+						$count++;
 					}
-				}
 			} else {
 				// ======================================================
 				// = Event was found, let's store the new event details =

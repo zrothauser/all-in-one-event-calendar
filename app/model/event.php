@@ -521,6 +521,14 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 * @return int            The post_id of the new or existing event.
 	 */
 	function save( $update = false ) {
+		$limit_events = apply_filters( 'ai1ec_limit_new_event', null );
+		if (
+			! $update &&
+			is_wp_error( $limit_events )
+		) {
+			return $limit_events;
+		}
+
 		$dbi        = $this->_registry->get( 'dbi.dbi' );
 		$columns    = $this->prepare_store_entity();
 		$format     = $this->prepare_store_format( $columns );

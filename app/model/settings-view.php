@@ -108,7 +108,10 @@ class Ai1ec_Settings_View extends Ai1ec_App {
 		$enabled_views = $this->_get();
 		$default       = null;
 		// Check mobile settings first, if in mobile mode.
-		if ( wp_is_mobile() ) {
+		if (
+			! $this->_registry->get( 'compatibility.cli' )->is_cli() &&
+			wp_is_mobile()
+		) {
 			foreach ( $enabled_views as $view => $details ) {
 				if (
 					isset( $details['default_mobile'] ) &&

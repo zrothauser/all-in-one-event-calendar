@@ -401,6 +401,10 @@ class Ai1ec_Front_Controller {
 			'ai1ec_dbi_debug',
 			array( 'http.request', 'debug_filter' )
 		);
+		$dispatcher->register_filter(
+			'ai1ec_dbi_debug',
+			array( 'compatibility.cli', 'disable_db_debug' )
+		);
 		// editing a child instance
 		if ( basename( $_SERVER['SCRIPT_NAME'] ) === 'post.php' ) {
 			$dispatcher->register_action(

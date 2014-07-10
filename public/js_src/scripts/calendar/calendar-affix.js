@@ -21,7 +21,9 @@ define(
 		}
 		var 
 			// Calendar navigation buttons
-			$buttons = $calendar.find( '.ai1ec-btn-toolbar' ),
+			$buttons = $calendar.find( '.ai1ec-views-dropdown' )
+				.closest( 'div.ai1ec-clearfix' )
+					.css( 'clear', 'both' ),
 			$toggle = $toolbar.find( '.ai1ec-dropdown-toggle' ),
 			$view = $calendar.find( '#ai1ec-calendar-view' ),
 			$wpadminbar = $( '#wpadminbar' ),
@@ -103,19 +105,28 @@ define(
 			// This method is needed when content is updated.
 			reinitialize = function() {
 				// We probably have new buttons here, so find them again.
-				$buttons = $calendar.find( '.ai1ec-btn-toolbar' );
+				$calendar
+					.find( '.ai1ec-affix .ai1ec-views-dropdown' )
+						.closest( 'div.ai1ec-clearfix' )
+							.remove();
+				$buttons = $calendar.find( '.ai1ec-views-dropdown' )
+					.closest( 'div.ai1ec-clearfix' );
 				$toggle = $toolbar.find( '.ai1ec-dropdown-toggle' );
 				$toolbar
 					.trigger( 'ai1ec-affix-top.bs.affix' )
-					.find( '.ai1ec-btn-toolbar' )
-						.hide()
+					.find( '.ai1ec-views-dropdown' )
+						.closest( 'div.ai1ec-clearfix' )
+							.hide()
+							.end()
 						.end()
 					.data( {
 						// Toolbar's original height might have changed.
 						'original_height': $toolbar.height()
 					} )
-					.find( '.ai1ec-btn-toolbar' )
-						.show()
+					.find( '.ai1ec-views-dropdown' )
+						.closest( 'div.ai1ec-clearfix' )
+							.show()
+							.end()
 						.end()
 					.filter( '.ai1ec-affix' )
 						.trigger( 'ai1ec-affix.bs.affix' );
@@ -176,34 +187,25 @@ define(
 					.css( 'opacity', 0 )
 					.animate( {
 						opacity: 1
-					}, 300 );
-
+					}, 400 );
 				resize_dropdowns();
 				set_toolbar_offset();
 				// Set the offset to compensate the space occupied by toolbar.
 				$view
-					.css( 'margin-top' , $toolbar.data( 'original_height' ) + 'px' )
-					.css( 'margin-top' , $toolbar.data( 'original_height' )
-						+ $view.offset().top - offset + 'px' );
-
-				// In case toolbar increased its height.
-				if ( $toolbar.height() > $toolbar.data( 'original_height' ) ) {
-					$view.css( 'margin-top',
-						parseInt( $view.css( 'margin-top' ) )
-						- ( $toolbar.outerHeight( true )
-						- $toolbar.data( 'original_height' ) ) + 'px' );
-				}
+					.css( 'margin-top' , $toolbar.outerHeight( true )
+						+ parseInt( $toolbar.css( 'margin-bottom' ) ) + 'px'
+					);
 			} )
 			// Toolbar is not affixed. Event is thrown by Bootstrap.
 			.on( 'ai1ec-affix-top.bs.affix', function() {
+				$buttons.hide();
+				$view.prepend( $buttons );
 				$buttons
-					.hide()
-					.insertAfter( '.ai1ec-calendar-title' )
 					.show()
 					.css( 'opacity', 0 )
 					.animate( {
 						opacity: 1
-					}, 300 );
+					}, 400 );
 
 				show_hidden_toggle_text();
 				set_toolbar_offset();

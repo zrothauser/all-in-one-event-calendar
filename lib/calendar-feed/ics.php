@@ -104,8 +104,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$output = array();
 		if ( $feed ) {
 
-			$count = 0;
-			$message = false;
+			$count    = 0;
+			$message  = false;
 			// reimport the feed
 			$response = wp_remote_get(
 				$feed->feed_url,
@@ -161,6 +161,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					$message = "The provided feed didn't return valid ics data";
 				} catch ( Ai1ec_Engine_Not_Set_Exception $e ) {
 					$message = "ICS import is not supported on this install.";
+				} catch ( Ai1ec_Event_Create_Exception $e ) {
+					$message = $e->getMessage();
 				}
 			} else if ( is_wp_error( $response ) ) {
 				$message = sprintf(

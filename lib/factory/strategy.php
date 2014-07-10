@@ -56,11 +56,12 @@ class Ai1ec_Factory_Strategy extends Ai1ec_Base {
 	 */
 	public function create_persistence_context(
 		$key_for_persistance,
-		$cache_directory = null
+		$cache_directory = null,
+		$skip_small_bits = false
 	) {
 		return new Ai1ec_Persistence_Context(
 			$key_for_persistance,
-			$this->create_cache_strategy_instance( $cache_directory )
+			$this->create_cache_strategy_instance( $cache_directory, $skip_small_bits )
 		);
 	}
 

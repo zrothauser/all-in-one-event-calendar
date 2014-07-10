@@ -44,8 +44,9 @@ class Ai1ec_Cache_Strategy_File extends Ai1ec_Cache_Strategy {
 	 *
 	 */
 	public function write_data( $filename, $value ) {
-		$filename = $this->_safe_file_name( $filename );
+		$filename = $this->_safe_file_name( $filename ) . '.css';
 		$value    = maybe_serialize( $value );
+
 		$result = $this->_registry->get( 'filesystem.checker' )->put_contents(
 			$this->cache_dir . $filename,
 			$value
@@ -55,6 +56,7 @@ class Ai1ec_Cache_Strategy_File extends Ai1ec_Cache_Strategy {
 				$this->cache_dir . $filename . '\'';
 			throw new Ai1ec_Cache_Write_Exception( $message );
 		}
+		return $filename;
 	}
 
 	/**

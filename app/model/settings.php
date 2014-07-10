@@ -661,15 +661,6 @@ class Ai1ec_Settings extends Ai1ec_App {
 				),
 				'default'  => false,
 			),
-			'embedding' => array(
-				'type' => 'html',
-				'renderer' => array(
-					'class' => 'html',
-					'tab'   => 'viewing-events',
-					'item'  => 'embedded-views',
-				),
-				'default'  => null,
-			),
 			'input_date_format' => array(
 				'type' => 'string',
 				'renderer' => array(
@@ -750,6 +741,15 @@ class Ai1ec_Settings extends Ai1ec_App {
 					),
 				),
 				'default'  => false,
+			),
+			'embedding' => array(
+				'type' => 'html',
+				'renderer' => array(
+					'class' => 'html',
+					'tab'   => 'advanced',
+					'item'  => 'embedded-views',
+				),
+				'default'  => null,
 			),
 			'calendar_css_selector' => array(
 				'type' => 'string',

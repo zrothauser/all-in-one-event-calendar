@@ -93,6 +93,8 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 			}
 			return true;
 		}
+		
+		// other actions need the nonce to be verified
 
 		// duplicate single post
 		if (
@@ -100,6 +102,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 			$_REQUEST['action'] === 'duplicate_post_save_as_new_post' &&
 			! empty( $_REQUEST['post'] )
 		) {
+			check_admin_referer( 'ai1ec_clone_'. $_REQUEST['post'] );
 
 			$this->_posts[] = array(
 				'status' => '',
@@ -114,6 +117,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 			$_REQUEST['action'] === 'duplicate_post_save_as_new_post_draft' &&
 			! empty( $_REQUEST['post'] )
 		) {
+			check_admin_referer( 'ai1ec_clone_'. $_REQUEST['post'] );
 			$this->_posts[] = array(
 				'status' => 'draft',
 				'post'   => get_post( $_REQUEST['post'] )

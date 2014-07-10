@@ -180,7 +180,10 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 					'If the form below is not working please follow <a href="%s">this link</a>.'
 				) .
 				'</div>',
-				add_query_arg( 'ai1ec_disable_gzip_compression', '1' )
+				wp_nonce_url( 
+					add_query_arg( 'ai1ec_disable_gzip_compression', '1' ), 
+					'ai1ec_disable_gzip_compression'
+				)
 			)
 		);
 

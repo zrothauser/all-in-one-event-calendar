@@ -375,6 +375,7 @@ class Ai1ec_Javascript_Controller {
 			->get( 'gmt_offset' );
 
 		$data            = array(
+			'calendar_feeds_nonce'           => wp_create_nonce( 'ai1ec_ics_feed_nonce'),
 			// ICS feed error messages
 			'duplicate_feed_message'         => esc_html(
 				Ai1ec_I18n::__( 'This feed is already being imported.' )

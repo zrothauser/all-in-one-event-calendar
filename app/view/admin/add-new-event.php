@@ -36,7 +36,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 	 *
 	 * @return void
 	 */
-	public function meta_box_view() {
+	public function meta_box_view( $post ) {
 
 		$theme_loader         = $this->_registry->get( 'theme.loader' );
 		$empty_event          = $this->_registry->get( 'model.event' );
@@ -52,6 +52,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		$start            = $this->_registry->get( 'date.time' );
 		$end              = $this->_registry->get( 'date.time', '+1 hour' );
 		$timezone_name    = null;
+		$timezones_list   = $this->_registry->get( 'date.timezone' )->get_timezones( true );
 		$show_map         = false;
 		$google_map       = '';
 		$venue            = '';
@@ -188,14 +189,23 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		}
 
 		// Time zone; display if set.
-		$timezone = '';
+		$timezone        = '';
+		$timezone_string = null;
+		$date_timezone   = $this->_registry->get( 'date.timezone' );
 
-		$timezone_string = $this->_registry->get( 'date.timezone' )
-			->get_default_timezone();
+		if (
+			! empty( $timezone_name ) &&
+			$local_name = $date_timezone->get_name( $timezone_name )
+		) {
+			$timezone_string = $local_name;
+		}
+		if ( null === $timezone_string ) {
+			$timezone_string = $date_timezone->get_default_timezone();
+		}
 
 		if ( $timezone_string ) {
 			$timezone = $this->_registry->get( 'date.system' )
-				->get_gmt_offset_expr();
+				->get_gmt_offset_expr( $timezone_string );
 		}
 
 		if ( empty( $timezone_name ) ) {
@@ -204,8 +214,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			 * exposed to user in some mean. It's possible to use named const.
 			 * `'sys.default'` only when passing value to date.time library.
 			 */
-			$timezone_name = $this->_registry->get( 'date.timezone' )
-				->get_default_timezone();
+			$timezone_name = $date_timezone->get_default_timezone();
 		}
 
 		// This will store each of the accordion tabs' markup, and passed as an
@@ -236,6 +245,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			'exdate'             => $exdate,
 			'parent_event_id'    => $parent_event_id,
 			'instance_id'        => $instance_id,
+			'timezones_list'     => $timezones_list,
 		);
 
 		$boxes[] = $theme_loader

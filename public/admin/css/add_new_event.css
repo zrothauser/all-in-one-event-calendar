@@ -384,3 +384,8 @@
 	padding: 0;
 	width: 0;
 }
+
+#s2id_timezone-select {
+	width: 172px;
+	margin: 0;
+}

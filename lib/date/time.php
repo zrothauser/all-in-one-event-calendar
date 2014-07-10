@@ -338,15 +338,15 @@ class Ai1ec_Date_Time {
 	 * @return bool True if seems like UNIX timestamp.
 	 */
 	public function is_timestamp( $time ) {
+		// '20001231T001559Z'
+		if ( isset( $time{8} ) && 'T' === $time{8} ) {
+			return false;
+		}
 		if ( (string)(int)$time !== (string)$time ) {
 			return false;
 		}
 		// 1000..2459 are treated as hours, 2460..9999 - as years
-		if ( $time <= 999 ) {
-			return true;
-		}
-		// '20001231T001559Z'
-		if ( isset( $time{8} ) || 'T' === $time{8} ) {
+		if ( $time > 999 && $time < 2460 ) {
 			return false;
 		}
 		return true;

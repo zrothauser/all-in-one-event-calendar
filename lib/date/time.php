@@ -301,6 +301,7 @@ class Ai1ec_Date_Time {
 	 */
 	public function set_date_time( $time = 'now', $timezone = 'UTC' ) {
 		if ( $time instanceof self ) {
+			$this->_is_empty           = $time->_is_empty;
 			$this->_date_time          = clone $time->_date_time;
 			$this->_preferred_timezone = $time->_preferred_timezone;
 			if ( 'UTC' !== $timezone && $timezone ) {

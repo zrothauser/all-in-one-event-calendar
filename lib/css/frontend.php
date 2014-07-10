@@ -225,7 +225,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	 * If we are in preview mode, recompile the css using the theme present in the url.
 	 *
 	 */
-	private function get_compiled_css() {
+	public function get_compiled_css() {
 		try {
 			// If we want to force a recompile, we throw an exception.
 			if( $this->preview_mode === true || self::PARSE_LESS_FILES_AT_EVERY_REQUEST === true ) {

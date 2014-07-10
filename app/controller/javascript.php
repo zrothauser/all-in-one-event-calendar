@@ -193,7 +193,7 @@ class Ai1ec_Javascript_Controller {
 		}
 
 		// Create the config object for Require.js.
-		$require_config = $this->_create_require_js_config_object();
+		$require_config = $this->create_require_js_config_object();
 
 		// Load Require.js script.
 		$require = file_get_contents( $js_path . 'require.js' );
@@ -515,7 +515,7 @@ class Ai1ec_Javascript_Controller {
 	 *
 	 * @return string
 	 */
-	private function _create_require_js_config_object() {
+	public function create_require_js_config_object() {
 		$js_url    = AI1EC_ADMIN_THEME_JS_URL;
 		$version   = AI1EC_VERSION;
 		$namespace = self::REQUIRE_NAMESPACE;

@@ -58,7 +58,8 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		$default_theme_url = AI1EC_DEFAULT_THEME_URL
 	) {
 		parent::__construct( $registry );
-		$this->lessc = $this->_registry->get( 'lessc' );;
+		$this->lessc = $this->_registry->get( 'lessc' );
+		$this->lessc->setFormatter( 'compressed' );
 		$this->default_theme_url = $this->sanitize_default_theme_url( $default_theme_url );
 		$this->parsed_css = '';
 		$this->files = array(

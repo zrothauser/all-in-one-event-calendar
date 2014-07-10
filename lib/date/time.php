@@ -115,10 +115,15 @@ class Ai1ec_Date_Time {
 	/**
 	 * Create JavaScript ready date/time information string.
 	 *
+	 * @param bool $event_timezone Set to true to format in event timezone.
+	 *
 	 * @return string JavaScript date/time string.
 	 */
-	public function format_to_javascript() {
-		return $this->format( 'Y-m-d\TH:i:s' );
+	public function format_to_javascript( $event_timezone = false ) {
+		$event_timezone = ( $event_timezone )
+			? $this->get_timezone()
+			: null;
+		return $this->format( 'Y-m-d\TH:i:s', $event_timezone );
 	}
 
 	/**

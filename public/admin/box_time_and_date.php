@@ -50,7 +50,7 @@
 						<input type="hidden"
 							name="ai1ec_start_time"
 							id="ai1ec_start-time"
-							value="<?php echo $start->format_to_javascript(); ?>">
+							value="<?php echo $start->format_to_javascript( true ); ?>">
 					</td>
 				</tr>
 				<tr>
@@ -67,7 +67,7 @@
 						<input type="hidden"
 							name="ai1ec_end_time"
 							id="ai1ec_end-time"
-							value="<?php echo $end->format_to_javascript(); ?>">
+							value="<?php echo $end->format_to_javascript( true ); ?>">
 					</td>
 				</tr>
 				<tr>

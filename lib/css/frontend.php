@@ -52,14 +52,14 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 				->store(
 					sprintf(
 						__(
-							'Cache folder, <code>%s</code>, is not writable. Your calendar will perform more slowly until you make this folder writable by the web server.',
+							'Cache directory, <code>%s</code>, is not writable. Your calendar will perform more slowly until you make this directory writable by the web server.',
 							AI1EC_PLUGIN_NAME
 						),
 						AI1EC_CACHE_PATH
 					),
 					'error',
 					2,
-					Ai1ec_Notification_Admin::RCPT_ADMIN,
+					array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
 					true
 				);
 		}

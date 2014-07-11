@@ -137,10 +137,6 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 		$tabs = array(
 			'viewing-events' => array(
 				'name' => Ai1ec_I18n::__( 'Viewing Events' ),
-				'items' => array(
-					'viewing-events'  => Ai1ec_I18n::__( 'Viewing Events' ),
-					'embedded-views' => Ai1ec_I18n::__( 'Embedded Views' ),
-				),
 			),
 			'editing-events' => array(
 				'name' => Ai1ec_I18n::__( 'Adding/Editing Events' ),
@@ -148,10 +144,11 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 			'advanced' => array(
 				'name' => Ai1ec_I18n::__( 'Advanced' ),
 				'items' => array(
-					'advanced' => Ai1ec_I18n::__( 'Advanced Settings' ),
-					'email'    => Ai1ec_I18n::__( 'Email Templates' ),
-					'apis'     => Ai1ec_I18n::__( 'External Services' ),
-					'cache'    => Ai1ec_I18n::__( 'Cache Report' ),
+					'advanced'       => Ai1ec_I18n::__( 'Advanced Settings' ),
+					'embedded-views' => Ai1ec_I18n::__( 'Shortcodes' ),
+					'email'          => Ai1ec_I18n::__( 'Email Templates' ),
+					'apis'           => Ai1ec_I18n::__( 'External Services' ),
+					'cache'          => Ai1ec_I18n::__( 'Cache Report' ),
 				)
 			),
 		);

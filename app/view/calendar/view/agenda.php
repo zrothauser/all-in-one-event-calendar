@@ -50,20 +50,25 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		);
 
 		// Generate title of view based on date range month & year.
-		$range_start = $results['date_first'] ? $results['date_first'] : $this->_registry->get( 'date.time', $timestamp );
-		$range_end   = $results['date_last']  ? $results['date_last'] : $this->_registry->get( 'date.time', $timestamp );
-		$range_start = $this->_registry->get( 'date.time', $range_start );
-		$range_end   = $this->_registry->get( 'date.time', $range_end );
-		$start_year  = $range_start->format_i18n( 'Y' );
-		$end_year    = $range_end->format_i18n( 'Y' );
-		$start_month = $range_start->format_i18n( 'F' );
-		$end_month   = $range_end->format_i18n( 'F' );
+		$range_start       = $results['date_first'] ? $results['date_first'] : $this->_registry->get( 'date.time', $timestamp );
+		$range_end         = $results['date_last']  ? $results['date_last'] : $this->_registry->get( 'date.time', $timestamp );
+		$range_start       = $this->_registry->get( 'date.time', $range_start );
+		$range_end         = $this->_registry->get( 'date.time', $range_end );
+		$start_year        = $range_start->format_i18n( 'Y' );
+		$end_year          = $range_end->format_i18n( 'Y' );
+		$start_month       = $range_start->format_i18n( 'F' );
+		$start_month_short = $range_start->format_i18n( 'M' );
+		$end_month         = $range_end->format_i18n( 'F' );
+		$end_month_short   = $range_end->format_i18n( 'M' );
 		if ( $start_year === $end_year && $start_month === $end_month ) {
 			$title = "$start_month $start_year";
+			$title_short = "$start_month_short $start_year";
 		} elseif ( $start_year === $end_year ) {
 			$title = "$start_month – $end_month $end_year";
+			$title_short = "$start_month_short – $end_month_short $end_year";
 		} else {
 			$title = "$start_month $start_year – $end_month $end_year";
+			$title_short = "$start_month_short $start_year – $end_month_short $end_year";
 		}
 
 		// Create navigation bar if requested.
@@ -76,7 +81,8 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 				$results['next'],
 				$results['date_first'],
 				$results['date_last'],
-				$title
+				$title,
+				$title_short
 			);
 
 			$pagination_links = $loader->get_file(
@@ -233,21 +239,25 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 	 *
 	 * @param array $args Current request arguments
 	 *
-	 * @param bool     $prev   Whether there are more events before the current page
-	 * @param bool     $next   Whether there are more events after the current page
+	 * @param bool     $prev         Whether there are more events before
+	 *                               the current page
+	 * @param bool     $next         Whether there are more events after
+	 *                               the current page
 	 * @param int|null $date_first
 	 * @param int|null $date_last
-	 * @param string   $title  Title to display in datepicker button
+	 * @param string   $title        Title to display in datepicker button
+	 * @param string   $title_short  Short month names.
 	 *
 	 * @return array      Array of links
 	 */
 	protected function _get_agenda_like_pagination_links(
 		$args,
-		$prev       = false,
-		$next       = false,
-		$date_first = null,
-		$date_last  = null,
-		$title      = ''
+		$prev        = false,
+		$next        = false,
+		$date_first  = null,
+		$date_last   = null,
+		$title       = '',
+		$title_short = ''
 	) {
 
 		$links = array();
@@ -275,7 +285,8 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		$links[] = $factory->create_datepicker_link(
 			$args,
 			$date_first->format_to_gmt(),
-			$title
+			$title,
+			$title_short
 		);
 
 		$args['page_offset'] = 1;

@@ -264,7 +264,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 							),
 							'error',
 							2,
-							Ai1ec_Notification_Admin::RCPT_ADMIN,
+							array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
 							true
 						);
 				}

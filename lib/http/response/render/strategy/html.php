@@ -92,9 +92,6 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 	 *               In that case do not render the extra markup
 	 */
 	public function event_title( $title, $post_id, $is_view = false ) {
-		if ( true === $is_view ) {
-			return $title;
-		}
 		if ( false === $is_view && true === $this->_registry->get( 'acl.aco' )->is_our_post_type() ) {
 			$title =  '<span class="summary">' . $title . '</span>';
 		}

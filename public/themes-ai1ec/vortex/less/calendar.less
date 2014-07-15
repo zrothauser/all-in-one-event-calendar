@@ -131,9 +131,21 @@
 		text-transform: uppercase;
 	}
 }
-.ai1ec-calendar-title {
+.ai1ec-calendar-title,
+.ai1ec-calendar-title-short {
 	font-size: @font-size-base;
 	line-height: 1em;
+}
+.ai1ec-calendar-title-short {
+	display: none;
+}
+@media screen and ( max-width: @screen-xs-max ) {
+	.ai1ec-calendar-title {
+		display: none;
+	}
+	.ai1ec-calendar-title-short {
+		display: inline;
+	}
 }
 .ai1ec-minical-trigger {
 	font-weight: bold !important;

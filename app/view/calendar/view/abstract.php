@@ -213,7 +213,8 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 			apply_filters(
 				'the_title',
 				$event->get( 'post' )->post_title,
-				$event->get( 'post_id' )
+				$event->get( 'post_id' ),
+				true
 			)
 		);
 

@@ -25,7 +25,7 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 		if ( isset( $params['is_event'] ) ) {
 			// Filter event post content, in single- and multi-post views
 			add_filter( 'the_content', array( $this, 'event_content' ), PHP_INT_MAX - 1 );
-			add_filter( 'the_title',   array( $this, 'event_title' ), PHP_INT_MAX - 1 );
+			add_filter( 'the_title',   array( $this, 'event_title' ), PHP_INT_MAX - 1, 3 );
 			add_filter( 'post_class',  array( $this, 'post_class' ), PHP_INT_MAX - 1 );
 			return;
 		}
@@ -87,9 +87,15 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 	 * Add microformats class to title
 	 *
 	 * @param string $title
+	 * @param id     $post_id
+	 * @param bool   $is_view is the filter called from a calendar view?
+	 *               In that case do not render the extra markup
 	 */
-	public function event_title( $title ) {
-		if ( true === $this->_registry->get( 'acl.aco' )->is_our_post_type() ) {
+	public function event_title( $title, $post_id, $is_view = false ) {
+		if ( true === $is_view ) {
+			return $title;
+		}
+		if ( false === $is_view && true === $this->_registry->get( 'acl.aco' )->is_our_post_type() ) {
 			$title =  '<span class="summary">' . $title . '</span>';
 		}
 		return $title;

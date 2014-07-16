@@ -100,7 +100,7 @@ class Ai1ec_Request_Parser extends Ai1ec_Abstract_Query {
 		$this->add_rule( 'exact_date',    false, 'string', null, false );
 		// This is the type of the request: Standard, json or jsonp
 		$this->add_rule( 'request_type',  false, 'string', 'html', false );
-		// This is the format of the request. For now it's html but if we implement templates it could be json
+		// This is the format of the request.
 		$this->add_rule( 'request_format',false, 'string', 'html', false );
 		// The callback function for jsonp calls
 		$this->add_rule( 'callback',      false, 'string', null, false );

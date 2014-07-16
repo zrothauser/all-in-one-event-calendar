@@ -47,6 +47,9 @@
 			},
 			{
 				name: "scripts/common_scripts/page_ready"
+			},
+			{
+				name: "external_libs/twig"
 			}
 	],
 	namespace: 'timely', // Set the namespace.

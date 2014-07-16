@@ -359,6 +359,11 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		define( 'AI1EC_EVENT_PLATFORM', false );
 	}
 
+	// Use frontend rendering.
+	if ( ! defined( 'AI1EC_USE_FRONTEND_RENDERING' ) ) {
+		define( 'AI1EC_USE_FRONTEND_RENDERING', true );
+	}
+
 	// If i choose to use the calendar url as the base for events permalinks,
 	// i must specify another name for the events archive.
 	if ( ! defined( 'AI1EC_ALTERNATIVE_ARCHIVE_URL' ) ) {

@@ -150,11 +150,13 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 
 		$file = $loader->get_file( $type . '.twig', $args, false );
 
-		return apply_filters(
-			'ai1ec_get_' . $type . '_view',
-			$file->get_content(),
-			$view_args
-		);
+		return 'json' === $view_args['request_format'] && AI1EC_USE_FRONTEND_RENDERING
+			? json_encode( $args )
+			: apply_filters(
+				'ai1ec_get_' . $type . '_view',
+				$file->get_content(),
+				$view_args
+			);
 	}
 
 	/* (non-PHPdoc)
@@ -224,8 +226,35 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$this->_add_runtime_properties( $event );
 			// Add the event.
 			$category = $event->is_allday() ? 'allday' : 'notallday';
-			$dates[$timestamp]['events'][$category][] = $event;
+			$event_props = array();
+			$event_props['filtered_title']     = $event->get_runtime( 'filtered_title' );
+			$event_props['venue']              = $event->get_runtime( 'venue' );
+			// $event_props]['edit_post_link'] = $event->get_runtime( 'edit_post_link' );
+			$event_props['post_id']            = $event->get_runtime( 'post_id' );
+			$event_props['instance_id']        = $event->get_runtime( 'instance_id' );
+			$event_props['content_img_url']    = $event->get_runtime( 'content_img_url' );
+			$event_props['filtered_content']   = $event->get_runtime( 'filtered_content' );
+			$event_props['ticket_url']         = $event->get_runtime( 'ticket_url' );
+			$event_props['instance_permalink'] = $event->get_runtime( 'instance_permalink' );
+			$event_props['categories_html']    = $event->get_runtime( 'categories_html' );
+			$event_props['tags_html']          = $event->get_runtime( 'tags_html' );
+			$event_props['timespan_short']     = $event->_registry->
+				get( 'view.event.time' )->get_timespan_html( $event, 'short' );
+			$event_props['avatar']             = $event->_registry->
+				get( 'view.event.avatar' )->get_event_avatar(
+					$event,
+					[
+					'post_thumbnail',
+					'location_avatar',
+					'category_avatar'
+					], 'alignleft'
+				);
+			$dates[$timestamp]['events'][$category][] = $event_props;
 			$dates[$timestamp]['href'] = $href_for_date;
+			$dates[$timestamp]['day'] = $this->_registry->get( 'date.time', $timestamp )->format_i18n( 'j' );
+			$dates[$timestamp]['weekday'] = $this->_registry->get( 'date.time', $timestamp )->format_i18n( 'D' );
+			$dates[$timestamp]['month'] = $this->_registry->get( 'date.time', $timestamp )->format_i18n( 'M' );
+			$dates[$timestamp]['year'] = $this->_registry->get( 'date.time', $timestamp )->format_i18n( 'Y' );
 		}
 		$this->_registry->get( 'controller.content-filter' )
 			->restore_the_content_filters();
@@ -273,6 +302,9 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 
 		$links = array();
 
+		if ( AI1EC_USE_FRONTEND_RENDERING ) {
+				$args['request_format'] = 'json';
+			}
 		$args['page_offset'] = -1;
 		$args['time_limit']  = $this->_registry
 			->get( 'date.time', $date_first )->set_time(

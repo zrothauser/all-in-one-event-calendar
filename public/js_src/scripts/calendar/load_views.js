@@ -11,6 +11,8 @@ define(
 		"ai1ec_config",
 		"scripts/common_scripts/frontend/common_frontend",
 		"libs/select2_multiselect_helper",
+		"external_libs/twig",
+		"agenda",
 		"external_libs/jquery_history",
 		"external_libs/jquery.tablescroller",
 		"external_libs/jquery.scrollTo",
@@ -28,11 +30,12 @@ define(
 		ai1ec_calendar,
 		ai1ec_config,
 		common_frontend,
-		select2_multiselect_helper
+		select2_multiselect_helper,
+		twig,
+		agenda
 	) {
 
 	"use strict"; // jshint ;_;
-
 	$.cookie.json = true;
 	var save_filter_view_cookie = 'ai1ec_saved_filter';
 	// the initial value is determined by the visibility of the save view button
@@ -286,20 +289,22 @@ define(
 											.replaceWith( data.save_view_btngroup );
 							}
 							are_filters_set = data.are_filters_set;
-
-							// Animate vertical height of container between HTML replacement
 							var $container = $calendar.find( '.ai1ec-calendar-view-container' );
 							$container.height( $container.height() );
-							var new_height =
-								$calendar.find( '.ai1ec-calendar-view' )
-									.html( data.html )
-									.height();
+							// Render template or just replace if already rendered.
+							$calendar.find( '.ai1ec-calendar-view' )
+								.html( 
+									hash.match( /request_format\~json/ )
+									? agenda.render( $.parseJSON( data.html ) )
+									: data.html
+								);
+							// Animate vertical height of container between HTML replacement
+							var new_height = $calendar.find( '.ai1ec-calendar-view' ).height();
 							$container.animate( { height: new_height }, { complete: function() {
 								// Restore height to automatic upon animation completion for
 								// proper page layout.
 								$container.height( 'auto' );
 							} } );
-
 							// Hide loader
 							$calendar.find( '.ai1ec-calendar-view-loading' ).fadeOut( 'fast' );
 							$calendar.find( '.ai1ec-calendar-view' ).fadeTo( 'fast', 1.0 );

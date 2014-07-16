@@ -31,9 +31,9 @@ class Ai1ec_Factory_Strategy extends Ai1ec_Base {
 			$engine = $this->_registry->get( 'cache.strategy.apc' );
 		} else if (
 			NULL !== $cache_directory &&
-			$this->_is_cache_dir_writable( $cache_directory )
+			$cache_folder = $this->_get_writable_cache_dir( $cache_directory )
 		) {
-			$engine = $this->_registry->get( 'cache.strategy.file', $cache_directory );
+			$engine = $this->_registry->get( 'cache.strategy.file', $cache_folder );
 		} else if ( true !== $skip_small_bits ) {
 			$engine = $this->_registry->get(
 				'cache.strategy.db',
@@ -63,6 +63,29 @@ class Ai1ec_Factory_Strategy extends Ai1ec_Base {
 			$key_for_persistance,
 			$this->create_cache_strategy_instance( $cache_directory, $skip_small_bits )
 		);
+	}
+
+	/**
+	 * Get a writable folder if possible, falling back on wp_upload_fir
+	 * 
+	 * @param string $cache_directory
+	 * @return boolean|string
+	 */
+	protected function _get_writable_cache_dir( $cache_directory ) {
+		$writable_folder = $cache_directory;
+		if ( ! $this->_is_cache_dir_writable( $cache_directory ) ) {
+			$filesystem = $this->_registry->get( 'filesystem.checker' );
+			$wp_upload_folder = $filesystem->get_upload_dir_if_available();
+			// if upload folder is not writable
+			if ( '' === $wp_upload_folder ||
+				! $this->_is_cache_dir_writable( $wp_upload_folder ) 
+			) {
+				return false;
+			} else {
+				$writable_folder = $wp_upload_folder;
+			}
+		}
+		return $writable_folder;
 	}
 
 	/**

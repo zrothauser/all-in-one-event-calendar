@@ -42,4 +42,23 @@ class Ai1ec_Filesystem_Checker {
 			$content
 		);
 	}
+	
+	/**
+	 * Get he upload folder from Wordpress is available
+	 * 
+	 * @return string the folder to use or ''
+	 */
+	public function get_upload_dir_if_available() {
+		$upload_dir = wp_upload_dir();
+		if (
+		(
+			! isset( $upload_dir['error'] ) ||
+			! $upload_dir['error']
+		) &&
+			! is_wp_error( $upload_dir )
+		) {
+			return $upload_dir['basedir'] . DIRECTORY_SEPARATOR . 'ai1ec_twig';
+		}
+		return '';
+	}
 }

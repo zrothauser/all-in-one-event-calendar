@@ -303,8 +303,8 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		$links = array();
 
 		if ( AI1EC_USE_FRONTEND_RENDERING ) {
-				$args['request_format'] = 'json';
-			}
+			$args['request_format'] = 'json';
+		}
 		$args['page_offset'] = -1;
 		$args['time_limit']  = $this->_registry
 			->get( 'date.time', $date_first )->set_time(

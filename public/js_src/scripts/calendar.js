@@ -173,6 +173,7 @@ define(
 		// =============
 		// = All views =
 		// =============
+
 		// Register navigation click handlers
 		$( document ).on( 'click',      'a.ai1ec-load-view',
 			load_views.handle_click_on_link_to_load_view
@@ -248,6 +249,7 @@ define(
 			if( ai1ec_config.use_select2 ) {
 				initialize_select2();
 			}
+
 			attach_event_handlers();
 			// Initialize the calendar view for the first time.
 			$( '.ai1ec-calendar' ).each( function() {

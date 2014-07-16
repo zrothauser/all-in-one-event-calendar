@@ -71,10 +71,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			$dropdown_args['exact_date'] = $exact_date;
 		}
 		$views_dropdown =
-			$this->get_html_for_views_dropdown(
-				$dropdown_args,
-				$view_obj
-			);
+			$this->get_html_for_views_dropdown( $dropdown_args, $view_obj );
 		// Add views dropdown markup to view args.
 		$view_args['views_dropdown'] = $views_dropdown;
 
@@ -413,7 +410,6 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		if ( 0 === strncmp( $action, 'ai1ec_', 6 ) ) {
 			$action = substr( $action, 6 );
 		}
-<<<<<<< HEAD
 		$view_args = $request->get_dict(
 			apply_filters(
 				'ai1ec_view_args_for_view',
@@ -426,16 +422,6 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				)
 			)
 		);
-
-=======
-		$view_args = $request->get_dict( array(
-			'post_ids',
-			'auth_ids',
-			'cat_ids',
-			'tag_ids',
-			'events_limit',
-		) );
->>>>>>> AIOEC-1853 #comment Proof-of-concept approach of client side rendering
 		$add_defaults = array(
 			'cat_ids' => 'categories',
 			'tag_ids' => 'tags',

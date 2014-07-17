@@ -381,19 +381,13 @@ class Ai1ec_Theme_Loader {
 				? false
 				: $ai1ec_twig_cache;
 		}
-		$path       = false;
-		$scan_dirs  = array( AI1EC_TWIG_CACHE_PATH );
-		$upload_dir = wp_upload_dir();
-		if (
-			(
-				! isset( $upload_dir['error'] ) ||
-				! $upload_dir['error']
-			) &&
-			! is_wp_error( $upload_dir )
-		) {
-			$scan_dirs[] = $upload_dir['basedir'] . DIRECTORY_SEPARATOR . 'ai1ec_twig';
+		$path          = false;
+		$scan_dirs     = array( AI1EC_TWIG_CACHE_PATH );
+		$filesystem    = $this->_registry->get( 'filesystem.checker' );
+		$upload_folder = $filesystem->get_upload_dir_if_available();
+		if ( '' !== $upload_folder ) {
+			$scan_dirs[] = $upload_folder;
 		}
-
 		foreach ( $scan_dirs as $dir ) {
 			if (
 				(

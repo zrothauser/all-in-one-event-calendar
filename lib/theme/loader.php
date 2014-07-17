@@ -389,15 +389,9 @@ class Ai1ec_Theme_Loader {
 			$scan_dirs[] = $upload_folder;
 		}
 		foreach ( $scan_dirs as $dir ) {
-			if (
-				(
-					is_dir( $dir ) ||
-					@mkdir( $dir, 0755, true ) /* avoid throwing an error */
-				) &&
-				is_writable( $dir )
-			) {
-					$path = $dir;
-					break;
+			if ( $this->_is_dir_writable( $dir ) ) {
+				$path = $dir;
+				break;
 			}
 		}
 
@@ -488,4 +482,32 @@ class Ai1ec_Theme_Loader {
 			include( $functions );
 		}
 	}
+
+	/**
+	 * Safe checking for directory writeability.
+	 *
+	 * @param string $dir Path of likely directory.
+	 *
+	 * @return bool Writeability.
+	 */
+	private function _is_dir_writable( $dir ) {
+		$stack = array(
+			dirname( dirname( $dir ) ),
+			dirname( $dir ),
+			$dir,
+		);
+		foreach ( $stack as $element ) {
+			if ( is_dir( $element )  ) {
+				continue;
+			}
+			if ( ! is_writable( dirname( $element ) ) ) {
+				return false;
+			}
+			if ( ! mkdir( $dir, 0755, true ) ) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 }

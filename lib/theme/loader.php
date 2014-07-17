@@ -398,7 +398,7 @@ class Ai1ec_Theme_Loader {
 			if (
 				(
 					is_dir( $dir ) ||
-					mkdir( $dir, 0755, true )
+					@mkdir( $dir, 0755, true ) /* avoid throwing an error */
 				) &&
 				is_writable( $dir )
 			) {

@@ -51,14 +51,15 @@ class Ai1ec_Filesystem_Checker {
 	public function get_upload_dir_if_available() {
 		$upload_dir = wp_upload_dir();
 		if (
-		(
-			! isset( $upload_dir['error'] ) ||
-			! $upload_dir['error']
-		) &&
+			(
+				! isset( $upload_dir['error'] ) ||
+				! $upload_dir['error']
+			) &&
 			! is_wp_error( $upload_dir )
 		) {
-			return $upload_dir['basedir'] . DIRECTORY_SEPARATOR . 'ai1ec_twig';
+			return $upload_dir['basedir'] . 'ai1ec_twig';
 		}
 		return '';
 	}
+
 }

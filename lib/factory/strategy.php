@@ -75,7 +75,7 @@ class Ai1ec_Factory_Strategy extends Ai1ec_Base {
 		$writable_folder = $cache_directory;
 		if ( ! $this->_is_cache_dir_writable( $cache_directory ) ) {
 			$filesystem = $this->_registry->get( 'filesystem.checker' );
-			$wp_upload_folder = $filesystem->get_upload_dir_if_available();
+			$wp_upload_folder = $filesystem->get_ai1ec_static_dir_if_available();
 			// if upload folder is not writable
 			if ( '' === $wp_upload_folder ||
 				! $this->_is_cache_dir_writable( $wp_upload_folder ) 

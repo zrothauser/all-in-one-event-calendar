@@ -36,26 +36,53 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	 * @var Ai1ec_Template_Adapter
 	 */
 	private $template_adapter;
+	
+	/**
+	 * Possible paths/url for file cache
+	 * 
+	 * @var array
+	 */
+	protected $_cache_paths = array();
+
+	/**
+	 * @var array which have been checked and are not writable
+	 */
+	protected $_folders_not_writable = array();
 
 	public function __construct(
 		Ai1ec_Registry_Object $registry
 	) {
 		parent::__construct( $registry );
+		$this->_cache_paths[] = array( 
+			'path' => AI1EC_CACHE_PATH,
+			'url'  => AI1EC_CACHE_URL
+		);
+		$filesystem = $this->_registry->get( 'filesystem.checker' );
+		$wp_static_folder = $filesystem->get_ai1ec_static_dir_if_available();
+		if ( '' !== $wp_static_folder ) {
+			$this->_cache_paths[] = array(
+				'path' => $wp_static_folder,
+				'url'  => content_url() . '/ai1ec_static/'
+			);
+		}
 		$this->persistance_context = $this->_registry->get(
 			'cache.strategy.persistence-context',
 			self::KEY_FOR_PERSISTANCE,
-			AI1EC_CACHE_PATH,
+			$this->_cache_paths,
 			true
 		);
 		if ( ! $this->persistance_context->is_file_cache() ) {
+			foreach ( $this->_cache_paths as $cache_path ) {
+				$this->_folders_not_writable[] = $cache_path['path'];
+			}
 			$this->_registry->get( 'notification.admin' )
 				->store(
 					sprintf(
 						__(
-							'Cache directory, <code>%s</code>, is not writable. Your calendar will perform more slowly until you make this directory writable by the web server.',
+							'Cache folders, <code>%s</code>, are not writable. Your calendar will perform more slowly until you make this directory writable by the web server.',
 							AI1EC_PLUGIN_NAME
 						),
-						AI1EC_CACHE_PATH
+						implode( '<br/>', $this->_folders_not_writable )
 					),
 					'error',
 					2,
@@ -67,6 +94,23 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		$this->db_adapter          = $this->_registry->get( 'model.option' );
 	}
 
+	/**
+	 * 
+	 * Get if file cache is enabled
+	 * @return boolean
+	 */
+	public function is_file_cache_enabled() {
+		return $this->persistance_context->is_file_cache();
+	}
+
+	/**
+	 * Get folders which are not writable
+	 * 
+	 * @return array
+	 */
+	public function get_folders_not_writable() {
+		return $this->_folders_not_writable;
+	}
 	/**
 	 * Renders the css for our frontend.
 	 *
@@ -119,7 +163,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	 */
 	public function update_persistence_layer( $css ) {
 		$filename = $this->persistance_context->write_data_to_persistence( $css );
-		$this->save_less_parse_time( $filename );
+		$this->save_less_parse_time( $filename['url'] );
 	}
 
 
@@ -281,7 +325,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	 */
 	private function save_less_parse_time( $data = false ) {
 		$to_save = is_string( $data ) ? 
-			AI1EC_CACHE_URL . $data : 
+			$data : 
 			$this->_registry->get( 'date.system' )->current_time();
 		$this->db_adapter->set(
 			self::QUERY_STRING_PARAM,

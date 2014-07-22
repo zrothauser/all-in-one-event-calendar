@@ -10,13 +10,9 @@
  */
 class Ai1ec_Filesystem_Checker {
 
+
 	public function __construct() {
 		include_once ABSPATH . 'wp-admin/includes/file.php';
-		// If for some reason the include doesn't work as expected just return false.
-		if( ! function_exists( 'WP_Filesystem' ) ) {
-			return false;
-		}
-		WP_Filesystem();
 	}
 	/**
 	 * check if the path is writable. To make the check .
@@ -26,6 +22,7 @@ class Ai1ec_Filesystem_Checker {
 	 */
 	public function is_writable( $path ) {
 		global $wp_filesystem;
+
 		// try without credentials 
 		$writable = WP_Filesystem( false, $path );
 		// We consider the directory as writable if it uses the direct transport,
@@ -121,6 +118,7 @@ class Ai1ec_Filesystem_Checker {
 	 */
 	public function get_ai1ec_static_dir_if_available() {
 		global $wp_filesystem;
+		WP_Filesystem();
 		$content_dir = $wp_filesystem->wp_content_dir();
 		$static_dir = trailingslashit( $content_dir . 'ai1ec_static' );
 		if ( ! $wp_filesystem->is_dir( $static_dir ) ) {

@@ -110,6 +110,20 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 				'?controller=front&action=ai1ec_save_theme_options&plugin=' . AI1EC_PLUGIN_NAME
 		);
 
+		$frontend = $this->_registry->get( 'css.frontend' );
+		if( ! $frontend->is_file_cache_enabled() ) {
+			$message = __( 
+				'File cache is not enabled on this server, for this reason theme customization is disabled. 
+				The following folders were checked: %s. <br/> 
+				If only one folder was checked, try to create a folder "ai1ec_static" in wordpress content dir and make it writable by your webserver.
+				If your webserver only allows ftp access, please define the constants FTP_PASS, FTP_HOST and FTP_USER. <br/>
+				If your webserver only allows ssh access, please define the constants FTP_PUBKEY, FTP_HOST and FTP_PRIKEY. <br/>
+				You could also define constant FS_METHOD as "direct" but this could cause secuirty issues on not properly configured servers.<br/>
+				You can reado more on this on the <a href="http://codex.wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants" target="_BLANK">Wordpress Codex</a>'
+			);
+			$args['no_file_cache'] = sprintf( $message, $frontend->get_folders_not_writable() );
+			
+		}
 
 		$loader = $this->_registry->get( 'theme.loader' );
 

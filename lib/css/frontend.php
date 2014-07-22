@@ -28,7 +28,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	private $lessphp_controller;
 
 	/**
-	 * @var Ai1ec_Wordpress_Db_Adapter
+	 * @var Ai1ec_Option
 	 */
 	private $db_adapter;
 
@@ -132,13 +132,13 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		// get what's saved. I t could be false, a int or a string.
 		// if it's false or a int, use PHP to render CSS
 		$saved_par = $this->db_adapter->get( self::QUERY_STRING_PARAM );
-		if ( empty( $saved_par )  || is_numeric( $saved_par ) ) {
-			$time = (int) $saved_par;
-			$template_helper = $this->_registry->get( 'template.link.helper' );
-			return add_query_arg(
-				array( self::QUERY_STRING_PARAM => $time, ),
-				trailingslashit( $template_helper->get_site_url() )
-			);
+		// if it's empty it's a new install probably. Return static css.
+		// if it's numeric, just consider it a new install
+		if ( empty( $saved_par ) || is_numeric( $saved_par ) ) {
+			if ( is_numeric( $saved_par ) ) {
+				$this->db_adapter->delete( self::QUERY_STRING_PARAM );
+			}
+			return AI1EC_URL . '/public/themes-ai1ec/vortex/css/ai1ec_parsed_css.css';
 		}
 		// otherwise return the string
 		return $saved_par;

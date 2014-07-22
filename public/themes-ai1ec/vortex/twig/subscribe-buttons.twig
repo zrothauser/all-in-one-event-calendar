@@ -5,6 +5,7 @@
 			ai1ec-subscribe {{ button_classes }}"
 		data-toggle="ai1ec-dropdown">
 		<i class="ai1ec-fa ai1ec-icon-rss ai1ec-fa-lg ai1ec-fa-fw"></i>
+		<span class="ai1ec-hidden-xs-inline-block">
 		{% if subscribe_label is not empty %}
 			{{ subscribe_label }}
 		{% else %}
@@ -14,10 +15,11 @@
 				{{ text_subscribe }}
 			{% endif %}
 		{% endif %}
-		<span class="ai1ec-caret"></span>
+		</span>
+		<span class="ai1ec-hidden-xs-inline-block ai1ec-caret"></span>
 	</button>
 	{% set url = export_url | replace( {"webcal://": "http://"} ) ~ url_args %}
-	<ul class="ai1ec-dropdown-menu" role="menu">
+	<ul class="ai1ec-dropdown-menu ai1ec-xs-pull-right" role="menu">
 		<li>
 			<a class="ai1ec-tooltip-trigger ai1ec-tooltip-auto"
 			   target="_blank"

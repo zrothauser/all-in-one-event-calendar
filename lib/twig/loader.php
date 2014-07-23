@@ -4,7 +4,7 @@
  * Wrapper for Twig_Loader_Filesystem
  *
  * @author     Time.ly Network Inc.
- * @since      2.0
+ * @since      2.1
  *
  * @package    AI1EC
  * @subpackage AI1EC.Twig

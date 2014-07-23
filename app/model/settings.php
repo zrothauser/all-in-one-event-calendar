@@ -648,6 +648,18 @@ class Ai1ec_Settings extends Ai1ec_App {
 				),
 				'default'  => 0,
 			),
+			'strict_compatibility_content_filtering' => array(
+				'type' => 'bool',
+				'renderer' => array(
+					'class' => 'checkbox',
+					'tab'   => 'viewing-events',
+					'item'  => 'viewing-events',
+					'label' => Ai1ec_I18n::__(
+						' Strict compatibility content filtering'
+					),
+				),
+				'default'  => false,
+			),
 			'hide_featured_image' => array(
 				'type' => 'bool',
 				'renderer' => array(

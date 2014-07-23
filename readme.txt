@@ -142,7 +142,7 @@ http://vimeo.com/55904173
 
 == Frequently Asked Questions ==
 
-[**See the FAQ on our Support Page »**](http://support.time.ly/faq/)
+[**Learn more with our detailed documentation »**](http://time.ly/support/)
 
 = Shortcodes =
 

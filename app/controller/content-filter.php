@@ -17,12 +17,16 @@ class Ai1ec_Controller_Content_Filter extends Ai1ec_Base {
 	 */
 	protected $_content_filter;
 
-	protected $_strict_compatibility_content_filtering = null;
+	/**
+	 * Setting _strict_compatibility_content_filtering.
+	 * @var bool
+	 */
+	protected $_strict_compatibility_content_filtering;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Ai1ec_Registry_Object $registry
+	 * @param Ai1ec_Registry_Object $registry Registry object.
 	 *
 	 * @return void Method does not return.
 	 */

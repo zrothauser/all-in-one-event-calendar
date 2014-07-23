@@ -27,7 +27,7 @@ class Ai1ec_Content_Filters extends Ai1ec_Base {
 	/**
 	 * Clears all the_content filters excluding few defaults.
 	 *
-	 * @global type $wp_filter
+	 * @global array $wp_filter
 	 *
 	 * @return Ai1ec_Content_Filters This class.
 	 */
@@ -45,14 +45,13 @@ class Ai1ec_Content_Filters extends Ai1ec_Base {
 		add_filter( 'the_content', 'convert_chars' );
 		add_filter( 'the_content', 'wpautop' );
 		$this->_filters_the_content_cleared = true;
-		wp_mail( 'lp@xlt.pl', __METHOD__, date( 'Y-m-d H:i:s' ) );
 		return $this;
 	}
 
 	/**
 	 * Restores the_content filters.
 	 *
-	 * @global type $wp_filter
+	 * @global array $wp_filter
 	 *
 	 * @return Ai1ec_Content_Filters This class.
 	 */
@@ -65,7 +64,6 @@ class Ai1ec_Content_Filters extends Ai1ec_Base {
 			return $this;
 		}
 		$wp_filter['the_content'] = $this->_filters_the_content;
-		wp_mail( 'lp@xlt.pl', __METHOD__, date( 'Y-m-d H:i:s' ) );
 		return $this;
 	}
 }

@@ -655,7 +655,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'tab'   => 'viewing-events',
 					'item'  => 'viewing-events',
 					'label' => Ai1ec_I18n::__(
-						' Strict compatibility content filtering'
+						'Strict compatibility content filtering'
 					),
 				),
 				'default'  => false,

@@ -118,13 +118,15 @@ class Ai1ec_Filesystem_Checker {
 	 */
 	public function get_ai1ec_static_dir_if_available() {
 		global $wp_filesystem;
+		// reset the filesystem to it's standard.
 		WP_Filesystem();
 		$content_dir = $wp_filesystem->wp_content_dir();
 		$static_dir = trailingslashit( $content_dir . 'ai1ec_static' );
-		if ( ! $wp_filesystem->is_dir( $static_dir ) ) {
-			if ( ! $wp_filesystem->mkdir( $static_dir ) ) {
-				return '';
-			}
+		if ( 
+			! $wp_filesystem->is_dir( $static_dir ) && 
+			! $wp_filesystem->mkdir( $static_dir ) 
+		) {
+			return '';
 		}
 		return $static_dir;
 	}

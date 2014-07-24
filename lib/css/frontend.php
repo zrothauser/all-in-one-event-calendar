@@ -79,10 +79,10 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 				->store(
 					sprintf(
 						__(
-							'Cache folders, <code>%s</code>, are not writable. Your calendar will perform more slowly until you make this directory writable by the web server.',
+							'Cache directories, <code>%s</code>, are not writable. Your calendar will perform more slowly until you make this directory writable by the web server.',
 							AI1EC_PLUGIN_NAME
 						),
-						implode( '<br/>', $this->_folders_not_writable )
+						implode( '</code><code>', $this->_folders_not_writable )
 					),
 					'error',
 					2,
@@ -321,15 +321,12 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	}
 
 	/**
-	 * Save the compile time to the db so that we can use it to build the link
+	 * Save the path to the CSS file or false to load standard CSS
 	 */
 	private function save_less_parse_time( $data = false ) {
-		$to_save = is_string( $data ) ? 
-			$data : 
-			$this->_registry->get( 'date.system' )->current_time();
 		$this->db_adapter->set(
 			self::QUERY_STRING_PARAM,
-			$to_save,
+			$data,
 			true
 		);
 	}

@@ -111,17 +111,21 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 		);
 
 		$frontend = $this->_registry->get( 'css.frontend' );
+
 		if( ! $frontend->is_file_cache_enabled() ) {
 			$message = __( 
-				'File cache is not enabled on this server, for this reason theme customization is disabled. 
-				The following folders were checked: %s. <br/> 
-				If only one folder was checked, try to create a folder "ai1ec_static" in wordpress content dir and make it writable by your webserver.
+				'Theme customization has been disabled because the file cache is not enabled on this server.
+				We tried creating a cache directory in the following folders: %s. <br/> 
+				If only one folder is listed above, try to create the folder <code>ai1ec_static</code> under WordPress\'s <code>wp-content</code> folder and make it writable by your web server.
 				If your webserver only allows ftp access, please define the constants FTP_PASS, FTP_HOST and FTP_USER. <br/>
 				If your webserver only allows ssh access, please define the constants FTP_PUBKEY, FTP_HOST and FTP_PRIKEY. <br/>
-				You could also define constant FS_METHOD as "direct" but this could cause secuirty issues on not properly configured servers.<br/>
-				You can reado more on this on the <a href="http://codex.wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants" target="_BLANK">Wordpress Codex</a>'
+				You could also define constant FS_METHOD as "direct" but this could cause security issues on not properly configured servers.<br/>
+				You can read more on this on the <a href="http://codex.wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants" target="_BLANK">Wordpress Codex</a>'
 			);
-			$args['no_file_cache'] = sprintf( $message, $frontend->get_folders_not_writable() );
+			$args['no_file_cache'] = sprintf( 
+				$message, 
+				implode( '<br/>', $frontend->get_folders_not_writable() )
+			);
 			
 		}
 

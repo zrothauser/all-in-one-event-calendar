@@ -117,10 +117,10 @@ class Ai1ec_View_Theme_Options extends Ai1ec_View_Admin_Abstract {
 				'Theme customization has been disabled because the file cache is not enabled on this server.
 				We tried creating a cache directory in the following folders: %s. <br/> 
 				If only one folder is listed above, try to create the folder <code>ai1ec_static</code> under WordPress\'s <code>wp-content</code> folder and make it writable by your web server.
-				If your webserver only allows ftp access, please define the constants FTP_PASS, FTP_HOST and FTP_USER. <br/>
-				If your webserver only allows ssh access, please define the constants FTP_PUBKEY, FTP_HOST and FTP_PRIKEY. <br/>
-				You could also define constant FS_METHOD as "direct" but this could cause security issues on not properly configured servers.<br/>
-				You can read more on this on the <a href="http://codex.wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants" target="_BLANK">Wordpress Codex</a>'
+				If your web server only allows FTP access, please define the constants FTP_PASS, FTP_HOST, and FTP_USER.
+				If your web server only allows SSH access, please define the constants <code>FTP_PUBKEY</code>, <code>FTP_HOST</code>, and <code>FTP_PRIKEY</code>.
+				You could also define the constant <code>FS_METHOD</code> as <code>\'direct\'</code>, but this could cause security issues on improperly configured servers.
+				You can read more about this on the <a href="http://codex.wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants" target="_BLANK">Wordpress Codex</a>'
 			);
 			$args['no_file_cache'] = sprintf( 
 				$message, 

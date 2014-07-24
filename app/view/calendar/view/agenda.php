@@ -29,11 +29,14 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 
 		// Get events, then classify into date array
 		$per_page_setting = $type . '_events_per_page';
-		$search = $this->_registry->get( 'model.search' );
-		$settings = $this->_registry->get( 'model.settings' );
+		$search           = $this->_registry->get( 'model.search' );
+		$settings         = $this->_registry->get( 'model.settings' );
+		$events_limit     = is_numeric( $view_args['events_limit'] )
+			? $view_args['events_limit']
+			: $settings->get( $per_page_setting );
 		$results = $search->get_events_relative_to(
 			$timestamp,
-			$settings->get( $per_page_setting ),
+			$events_limit,
 			$view_args['page_offset'],
 			array(
 				'post_ids' => $view_args['post_ids'],

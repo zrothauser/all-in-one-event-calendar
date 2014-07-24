@@ -262,7 +262,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 		// get old attachments
 		$attachments = get_posts(
 			array(
-				'post_type' => 'attachment',
+				'post_type'   => 'attachment',
 				'numberposts' => -1,
 				'post_status' => null,
 				'post_parent' => $post->ID,

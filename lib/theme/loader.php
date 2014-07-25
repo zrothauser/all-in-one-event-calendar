@@ -384,7 +384,7 @@ class Ai1ec_Theme_Loader {
 		$path          = false;
 		$scan_dirs     = array( AI1EC_TWIG_CACHE_PATH );
 		$filesystem    = $this->_registry->get( 'filesystem.checker' );
-		$upload_folder = $filesystem->get_upload_dir_if_available();
+		$upload_folder = $filesystem->get_ai1ec_static_dir_if_available();
 		if ( '' !== $upload_folder ) {
 			$scan_dirs[] = $upload_folder;
 		}

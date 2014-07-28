@@ -147,4 +147,17 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 		}
 	}
 
+	/**
+	 * Handle saving default_featured_events_tag option.
+	 *
+	 * @return array Value.
+	 */
+	protected function _handle_saving_default_featured_events_tags() {
+		return array(
+			'featured_events_tags' => isset( $_POST['default_featured_events_tags'] )
+				? $_POST['default_featured_events_tags']
+				: array(),
+		);
+	}
+
 }

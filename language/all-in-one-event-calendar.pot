@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.1.0.5-beta\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.1.0.6-beta\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2014-07-23 21:04:49+00:00\n"
+"POT-Creation-Date: 2014-07-28 18:04:25+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -612,39 +612,62 @@ msgctxt "meta box"
 msgid "Calendar Theme Options"
 msgstr ""
 
-#: app/view/admin/theme-options.php:132
-msgid "General"
-msgstr ""
-
-#: app/view/admin/theme-options.php:135
-msgid "Tables"
-msgstr ""
-
-#: app/view/admin/theme-options.php:138
-msgid "Buttons"
-msgstr ""
-
-#: app/view/admin/theme-options.php:141
-msgid "Forms"
-msgstr ""
-
-#: app/view/admin/theme-options.php:144
-msgid "Calendar general"
-msgstr ""
-
-#: app/view/admin/theme-options.php:147
-msgid "Month/week/day view"
+#: app/view/admin/theme-options.php:116
+msgid ""
+"Theme customization has been disabled because the file cache is not enabled "
+"on this server.\n"
+"\t\t\t\tWe tried creating a cache directory in the following folders: %s. "
+"<br/> \n"
+"\t\t\t\tIf only one folder is listed above, try to create the folder "
+"<code>ai1ec_static</code> under WordPress's <code>wp-content</code> folder "
+"and make it writable by your web server.\n"
+"\t\t\t\tIf your web server only allows FTP access, please define the "
+"constants <code>FTP_PASS</code>, <code>FTP_HOST</code>, and <code>FTP_USER</"
+"code>.\n"
+"\t\t\t\tIf your web server only allows SSH access, please define the "
+"constants <code>FTP_PUBKEY</code>, <code>FTP_HOST</code>, and "
+"<code>FTP_PRIKEY</code>.\n"
+"\t\t\t\tYou could also define the constant <code>FS_METHOD</code> as "
+"<code>'direct'</code>, but this could cause security issues on improperly "
+"configured servers.\n"
+"\t\t\t\tYou can read more about this on the <a href=\"http://codex.wordpress."
+"org/Editing_wp-config.php#WordPress_Upgrade_Constants\" target=\"_BLANK"
+"\">Wordpress Codex</a>."
 msgstr ""
 
 #: app/view/admin/theme-options.php:150
-msgid "Agenda view"
+msgid "General"
+msgstr ""
+
+#: app/view/admin/theme-options.php:153
+msgid "Tables"
+msgstr ""
+
+#: app/view/admin/theme-options.php:156
+msgid "Buttons"
+msgstr ""
+
+#: app/view/admin/theme-options.php:159
+msgid "Forms"
+msgstr ""
+
+#: app/view/admin/theme-options.php:162
+msgid "Calendar general"
+msgstr ""
+
+#: app/view/admin/theme-options.php:165
+msgid "Month/week/day view"
 msgstr ""
 
 #: app/view/admin/theme-options.php:168
+msgid "Agenda view"
+msgstr ""
+
+#: app/view/admin/theme-options.php:186
 msgid "Save Options"
 msgstr ""
 
-#: app/view/admin/theme-options.php:176
+#: app/view/admin/theme-options.php:194
 msgid "Reset to Defaults"
 msgstr ""
 
@@ -1173,41 +1196,41 @@ msgstr ""
 msgid "Clone to Draft"
 msgstr ""
 
-#: lib/command/clone.php:179
+#: lib/command/clone.php:181
 msgid ""
 "<p>The event <strong>%s</strong> was cloned succesfully. <a href=\"%s\">Edit "
 "cloned event</a></p>"
 msgstr ""
 
-#: lib/css/frontend.php:54
+#: lib/css/frontend.php:81
 msgid ""
-"Cache directory, <code>%s</code>, is not writable. Your calendar will "
+"Cache directories, <code>%s</code>, are not writable. Your calendar will "
 "perform more slowly until you make this directory writable by the web server."
 msgstr ""
 
-#: lib/css/frontend.php:182
+#: lib/css/frontend.php:226
 msgid ""
 "The LESS file compiled correctly but there was an error while saving the "
 "generated CSS to persistence."
 msgstr ""
 
-#: lib/css/frontend.php:188
+#: lib/css/frontend.php:232
 msgid ""
 "<p><strong>There was an error while compiling CSS.</strong> The message "
 "returned was: <em>%s</em></p>"
 msgstr ""
 
-#: lib/css/frontend.php:216
+#: lib/css/frontend.php:260
 msgid ""
 "Theme options were successfully reset to their default values. <a "
 "href='%s'>Visit site</a>"
 msgstr ""
 
-#: lib/css/frontend.php:223
+#: lib/css/frontend.php:267
 msgid "Theme options were updated successfully. <a href='%s'>Visit site</a>"
 msgstr ""
 
-#: lib/css/frontend.php:259
+#: lib/css/frontend.php:303
 msgid ""
 "Your CSS is being compiled on every request, which causes your calendar to "
 "perform slowly. The following error occurred: %s"
@@ -2460,9 +2483,9 @@ msgstr ""
 msgid "All-in-One Event Calendar by Time.ly"
 msgstr ""
 
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.0.5-beta)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.0.6-beta)  #-#-#-#-#
 #. Plugin URI of the plugin/theme
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.0.5-beta)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.0.6-beta)  #-#-#-#-#
 #. Author URI of the plugin/theme
 msgid "http://time.ly/"
 msgstr ""

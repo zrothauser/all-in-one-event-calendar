@@ -51,11 +51,25 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 							break;
 						case 'array':
 							$method = '_handle_saving_' . $name;
-							$value  = $this->$method();
+							if ( method_exists( $this, $method ) ) {
+								$value = $this->$method();
+							}
+							$value = apply_filters(
+								'ai1ec' . $method,
+								$value,
+								$_REQUEST
+							);
 							break;
 						case 'mixed':
 							$method = '_handle_saving_' . $name;
-							$value  = $this->$method( $_POST[$name] );
+							if ( method_exists( $this, $method ) ) {
+								$value = $this->$method( $_POST[$name] );
+							}
+							$value = apply_filters(
+								'ai1ec' . $method,
+								$value,
+								$_REQUEST
+							);
 							break;
 						case 'wp_option': // set the corresponding WP option
 							$this->_registry->get( 'model.option' )
@@ -146,18 +160,4 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 			return (int)$calendar_page;
 		}
 	}
-
-	/**
-	 * Handle saving default_featured_events_tag option.
-	 *
-	 * @return array Value.
-	 */
-	protected function _handle_saving_default_featured_events_tags() {
-		return array(
-			'featured_events_tags' => isset( $_POST['default_featured_events_tags'] )
-				? $_POST['default_featured_events_tags']
-				: array(),
-		);
-	}
-
 }

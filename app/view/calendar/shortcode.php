@@ -100,6 +100,8 @@ class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 			'request_type'   => 'jsonp',
 			'shortcode'      => 'true',
 			'events_limit'   => ( null !== $events_limit )
+			// definition above casts values as array, so we take first element,
+			// as there won't be others
 				? $events_limit[0]
 				: null,
 		);

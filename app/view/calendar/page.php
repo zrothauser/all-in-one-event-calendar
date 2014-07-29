@@ -378,6 +378,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			'auth_ids',
 			'cat_ids',
 			'tag_ids',
+			'events_limit',
 		) );
 
 		$add_defaults = array(

@@ -51,6 +51,7 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 							break;
 						case 'array':
 							$method = '_handle_saving_' . $name;
+							$value  = null;
 							if ( method_exists( $this, $method ) ) {
 								$value = $this->$method();
 							}
@@ -62,6 +63,7 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 							break;
 						case 'mixed':
 							$method = '_handle_saving_' . $name;
+							$value  = null;
 							if ( method_exists( $this, $method ) ) {
 								$value = $this->$method( $_POST[$name] );
 							}

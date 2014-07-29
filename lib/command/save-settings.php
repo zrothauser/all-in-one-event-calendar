@@ -22,6 +22,7 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 			isset( $_POST['default_categories'] )
 		);
 		$_POST['enabled_views'] = true;
+		do_action( 'ai1ec_before_save_settings', $_POST );
 		foreach ( $options as $name => $data ) {
 			$value = null;
 			if ( isset( $_POST[$name] ) ) {

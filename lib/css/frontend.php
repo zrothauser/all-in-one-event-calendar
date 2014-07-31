@@ -138,16 +138,8 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 			$etag !== stripslashes( $_SERVER['HTTP_IF_NONE_MATCH'] )
 		) {
 			// compress data if possible
-			$compatibility_ob = $this->_registry->get( 'compatibility.ob' );
-			if ( $this->_registry->get( 'http.request' )->client_use_gzip() ) {
-				$compatibility_ob->start( 'ob_gzhandler' );
-				header( 'Content-Encoding: gzip' );
-			} else {
-				$compatibility_ob->start();
-			}
-			$content = $this->get_compiled_css();
-			echo $content;
-			$compatibility_ob->end_flush();
+			$this->_registry->get( 'compatibility.ob' )
+				->gzip_if_possible( $this->get_compiled_css() );
 		} else {
 			// Not modified!
 			status_header( 304 );
@@ -178,11 +170,22 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		$saved_par = $this->db_adapter->get( self::QUERY_STRING_PARAM );
 		// if it's empty it's a new install probably. Return static css.
 		// if it's numeric, just consider it a new install
-		if ( empty( $saved_par ) || is_numeric( $saved_par ) ) {
-			if ( is_numeric( $saved_par ) ) {
-				$this->db_adapter->delete( self::QUERY_STRING_PARAM );
-			}
+		if ( empty( $saved_par ) ) {
 			return AI1EC_URL . '/public/themes-ai1ec/vortex/css/ai1ec_parsed_css.css';
+		}
+		if ( is_numeric( $saved_par ) ) {
+			if ( $this->_registry->get( 'model.settings' )->get( 'render_css_as_link' ) ) {
+				$time = (int) $saved_par;
+				$template_helper = $this->_registry->get( 'template.link.helper' );
+				return add_query_arg(
+					array( self::QUERY_STRING_PARAM => $time, ),
+					trailingslashit( $template_helper->get_site_url() )
+				);
+			} else {
+				add_action( 'wp_head', array( $this, 'echo_css' ) );
+				return '';
+			}
+
 		}
 		// otherwise return the string
 		return $saved_par;
@@ -193,7 +196,15 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	 */
 	public function add_link_to_html_for_frontend() {
 		$url = $this->get_css_url();
-		wp_enqueue_style( 'ai1ec_style', $url, array(), AI1EC_VERSION );
+		if ( '' !== $url ) {
+			wp_enqueue_style( 'ai1ec_style', $url, array(), AI1EC_VERSION );
+		}
+	}
+
+	public function echo_css() {
+		echo '<style>';
+		echo $this->get_compiled_css();
+		echo '</style>';
 	}
 
 	/**
@@ -324,9 +335,12 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	 * Save the path to the CSS file or false to load standard CSS
 	 */
 	private function save_less_parse_time( $data = false ) {
+		$to_save = is_string( $data ) ?
+					$data :
+					$this->_registry->get( 'date.system' )->current_time();
 		$this->db_adapter->set(
 			self::QUERY_STRING_PARAM,
-			$data,
+			$to_save,
 			true
 		);
 	}

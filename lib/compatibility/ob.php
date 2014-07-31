@@ -70,14 +70,16 @@ class Ai1ec_Compatibility_OutputBuffer extends Ai1ec_Base {
 	 * @param string $string
 	 */
 	public function gzip_if_possible( $string ) {
-		if ( $this->_registry->get( 'http.request' )->client_use_gzip() ) {
+		$gzip = $this->_registry->get( 'http.request' )->client_use_gzip();
+		// only use output buffering for gzip.
+		if ( $gzip ) {
 			$this->start( 'ob_gzhandler' );
 			header( 'Content-Encoding: gzip' );
-		} else {
-			$this->start();
 		}
 		echo $string;
-		$this->end_flush();
+		if ( $gzip ) {
+			$this->end_flush();
+		}
 	}
 
 	/**

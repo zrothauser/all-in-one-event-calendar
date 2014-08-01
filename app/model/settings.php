@@ -797,7 +797,22 @@ class Ai1ec_Settings extends Ai1ec_App {
 						'Disable <strong>gzip</strong> compression.'
 					),
 					'help'  => Ai1ec_I18n::__(
-						'Use this option if calendar is non-responsive. <a href="http://support.time.ly/disable-gzip-compression/">Read more</a> about the issue.'
+						'Use this option if calendar is unresponsive. <a href="http://support.time.ly/disable-gzip-compression/">Read more</a> about the issue. (From version 2.1 onwards, gzip is disabled by default for maximum compatibility.)'
+					),
+				),
+				'default'  => true,
+			),
+			'render_css_as_link' => array(
+				'type' => 'bool',
+				'renderer' => array(
+					'class' => 'checkbox',
+					'tab'   => 'advanced',
+					'item'  => 'advanced',
+					'label' => Ai1ec_I18n::__(
+						'<strong>Link CSS</strong> in <code>&lt;head&gt;</code> section when file cache is unavailable.'
+					),
+					'help'  => Ai1ec_I18n::__(
+						'Use this option if file cache is unavailable and you would prefer to serve CSS as a link rather than have it output inline.'
 					),
 				),
 				'default'  => false,

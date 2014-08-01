@@ -30,11 +30,12 @@ class Ai1ec_Factory_Strategy extends Ai1ec_Base {
 		if ( true !== $skip_small_bits && Ai1ec_Cache_Strategy_Apc::is_available() ) {
 			$engine = $this->_registry->get( 'cache.strategy.apc' );
 		} else if (
+			false === AI1EC_DISABLE_FILE_CACHE &&
 			null !== $cache_dirs &&
 			$cache_dir = $this->_get_writable_cache_dir( $cache_dirs )
 		) {
 			$engine = $this->_registry->get( 'cache.strategy.file', $cache_dir );
-		} else if ( true !== $skip_small_bits ) {
+		} else if ( true === $skip_small_bits ) {
 			$engine = $this->_registry->get(
 				'cache.strategy.db',
 				$this->_registry->get( 'model.option' )

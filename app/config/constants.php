@@ -459,6 +459,10 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	if ( ! defined( 'AI1EC_CACHE' ) ) {
 		define( 'AI1EC_CACHE', true );
 	}
+	
+	if ( ! defined( 'AI1EC_DISABLE_FILE_CACHE' ) ) {
+		define( 'AI1EC_DISABLE_FILE_CACHE', false );
+	}
 
 	// A value identifying that cache is not available.
 	// Used in place of actual path for cache to use.

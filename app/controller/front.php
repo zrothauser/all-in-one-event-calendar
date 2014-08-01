@@ -32,6 +32,11 @@ class Ai1ec_Front_Controller {
 	protected $_request;
 
 	/**
+	 * @var array
+	 */
+	protected $_default_theme;
+
+	/**
 	 * Initialize the controller.
 	 *
 	 * @param Ai1ec_Loader $ai1ec_loader Instance of Ai1EC classes loader
@@ -39,6 +44,14 @@ class Ai1ec_Front_Controller {
 	 * @return void
 	 */
 	public function initialize( $ai1ec_loader ) {
+		// Initialize default theme.
+		$this->_default_theme = array(
+			'theme_dir'  => AI1EC_DEFAULT_THEME_PATH,
+			'theme_root' => AI1EC_DEFAULT_THEME_ROOT,
+			'theme_url'  => AI1EC_THEMES_URL . '/' . AI1EC_DEFAULT_THEME_NAME,
+			'stylesheet' => AI1EC_DEFAULT_THEME_NAME,
+			'legacy'     => false,
+		);
 		ai1ec_start();
 		$this->_init( $ai1ec_loader );
 		$this->_compile_themes();
@@ -49,6 +62,15 @@ class Ai1ec_Front_Controller {
 			->register( 'ai1ec_stop' );
 		add_action( 'plugins_loaded', array( $this, 'register_extensions' ), 1 );
 		add_action( 'init', array( $lessphp, 'invalidate_css_cache_if_requested' ) );
+	}
+
+	/**
+	 * Let other objects access default theme
+	 * 
+	 * @return array
+	 */
+	public function get_default_theme() {
+		return $this->_default_theme;
 	}
 
 	/**
@@ -241,16 +263,9 @@ class Ai1ec_Front_Controller {
 		$option = $this->_registry->get( 'model.option' );
 		$theme  = $option->get( 'ai1ec_current_theme', array() );
 		$update = false;
-		$default_theme  = array(
-			'theme_dir'  => AI1EC_DEFAULT_THEME_PATH,
-			'theme_root' => AI1EC_DEFAULT_THEME_ROOT,
-			'theme_url'  => AI1EC_THEMES_URL . '/' . AI1EC_DEFAULT_THEME_NAME,
-			'stylesheet' => AI1EC_DEFAULT_THEME_NAME,
-			'legacy'     => false,
-		);
 		// Theme setting is undefined; default to Vortex.
 		if ( empty( $theme ) ) {
-			$theme  = $default_theme;
+			$theme  = $this->_default_theme;
 			$update = true;
 		}
 		// Legacy settings; in 1.x the active theme was stored as a bare string,
@@ -273,7 +288,7 @@ class Ai1ec_Front_Controller {
 			if ( ! is_dir( $root . DIRECTORY_SEPARATOR . $theme_name ) ) {
 				// It's missing; something is wrong with this theme. Reset theme to
 				// Vortex and warn the user accordingly.
-				$option->set( 'ai1ec_current_theme', $default_theme );
+				$option->set( 'ai1ec_current_theme', $this->_default_theme );
 				$notification = $this->_registry->get( 'notification.admin' );
 				$notification->store(
 					sprintf(

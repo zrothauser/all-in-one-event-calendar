@@ -431,7 +431,7 @@ class Ai1ec_Theme_Loader {
 				}
 			}
 
-			$loader = new Twig_Loader_Filesystem( $loader_path );
+			$loader = new Ai1ec_Twig_Loader_Filesystem( $loader_path );
 			unset( $loader_path );
 			// TODO: Add cache support.
 			$environment = array(

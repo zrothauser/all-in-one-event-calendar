@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.1.0.6-beta\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.1.0.7-rc1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2014-07-28 18:04:25+00:00\n"
+"POT-Creation-Date: 2014-08-01 15:16:01+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,19 +24,19 @@ msgstr ""
 msgid "Licences"
 msgstr ""
 
-#: app/controller/front.php:280
+#: app/controller/front.php:295
 msgid ""
 "Your active calendar theme could not be properly initialized. The default "
 "theme has been activated instead. Please visit %s and try reactivating your "
 "theme manually."
 msgstr ""
 
-#: app/controller/front.php:284 app/view/admin/theme-switching.php:54
+#: app/controller/front.php:299 app/view/admin/theme-switching.php:54
 #: app/view/admin/theme-switching.php:55
 msgid "Calendar Themes"
 msgstr ""
 
-#: app/controller/front.php:832
+#: app/controller/front.php:847
 msgid ""
 "Your database is found to be corrupt. Likely previous update has failed. "
 "Please restore All-in-One Event Calendar tables from a backup and retry."
@@ -334,15 +334,28 @@ msgstr ""
 
 #: app/model/settings.php:799
 msgid ""
-"Use this option if calendar is non-responsive. <a href=\"http://support.time."
-"ly/disable-gzip-compression/\">Read more</a> about the issue."
+"Use this option if calendar is unresponsive. <a href=\"http://support.time."
+"ly/disable-gzip-compression/\">Read more</a> about the issue. (From version "
+"2.1 onwards, gzip is disabled by default for maximum compatibility.)"
 msgstr ""
 
 #: app/model/settings.php:811
+msgid ""
+"<strong>Link CSS</strong> in <code>&lt;head&gt;</code> section when file "
+"cache is unavailable."
+msgstr ""
+
+#: app/model/settings.php:814
+msgid ""
+"Use this option if file cache is unavailable and you would prefer to serve "
+"CSS as a link rather than have it output inline."
+msgstr ""
+
+#: app/model/settings.php:826
 msgid "Current <strong>robots.txt</strong> on this site"
 msgstr ""
 
-#: app/model/settings.php:815
+#: app/model/settings.php:830
 msgid ""
 "The Robot Exclusion Standard, also known as the Robots Exclusion Protocol "
 "or\n"
@@ -356,13 +369,13 @@ msgid ""
 "your root WordPress directory."
 msgstr ""
 
-#: app/model/settings.php:832
+#: app/model/settings.php:847
 msgid ""
 "<strong>Publicize, promote, and share my events</strong> marked as public on "
 "the Timely network. (<a href=\"%s\" target=\"_blank\">Learn more »</a>)"
 msgstr ""
 
-#: app/model/settings.php:855
+#: app/model/settings.php:870
 msgid "Templates cache improves site performance"
 msgstr ""
 
@@ -612,62 +625,39 @@ msgctxt "meta box"
 msgid "Calendar Theme Options"
 msgstr ""
 
-#: app/view/admin/theme-options.php:116
-msgid ""
-"Theme customization has been disabled because the file cache is not enabled "
-"on this server.\n"
-"\t\t\t\tWe tried creating a cache directory in the following folders: %s. "
-"<br/> \n"
-"\t\t\t\tIf only one folder is listed above, try to create the folder "
-"<code>ai1ec_static</code> under WordPress's <code>wp-content</code> folder "
-"and make it writable by your web server.\n"
-"\t\t\t\tIf your web server only allows FTP access, please define the "
-"constants <code>FTP_PASS</code>, <code>FTP_HOST</code>, and <code>FTP_USER</"
-"code>.\n"
-"\t\t\t\tIf your web server only allows SSH access, please define the "
-"constants <code>FTP_PUBKEY</code>, <code>FTP_HOST</code>, and "
-"<code>FTP_PRIKEY</code>.\n"
-"\t\t\t\tYou could also define the constant <code>FS_METHOD</code> as "
-"<code>'direct'</code>, but this could cause security issues on improperly "
-"configured servers.\n"
-"\t\t\t\tYou can read more about this on the <a href=\"http://codex.wordpress."
-"org/Editing_wp-config.php#WordPress_Upgrade_Constants\" target=\"_BLANK"
-"\">Wordpress Codex</a>."
-msgstr ""
-
-#: app/view/admin/theme-options.php:150
+#: app/view/admin/theme-options.php:133
 msgid "General"
 msgstr ""
 
-#: app/view/admin/theme-options.php:153
+#: app/view/admin/theme-options.php:136
 msgid "Tables"
 msgstr ""
 
-#: app/view/admin/theme-options.php:156
+#: app/view/admin/theme-options.php:139
 msgid "Buttons"
 msgstr ""
 
-#: app/view/admin/theme-options.php:159
+#: app/view/admin/theme-options.php:142
 msgid "Forms"
 msgstr ""
 
-#: app/view/admin/theme-options.php:162
+#: app/view/admin/theme-options.php:145
 msgid "Calendar general"
 msgstr ""
 
-#: app/view/admin/theme-options.php:165
+#: app/view/admin/theme-options.php:148
 msgid "Month/week/day view"
 msgstr ""
 
-#: app/view/admin/theme-options.php:168
+#: app/view/admin/theme-options.php:151
 msgid "Agenda view"
 msgstr ""
 
-#: app/view/admin/theme-options.php:186
+#: app/view/admin/theme-options.php:169
 msgid "Save Options"
 msgstr ""
 
-#: app/view/admin/theme-options.php:194
+#: app/view/admin/theme-options.php:177
 msgid "Reset to Defaults"
 msgstr ""
 
@@ -749,38 +739,38 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
-#: app/view/calendar/view/agenda.php:106
+#: app/view/calendar/view/agenda.php:109
 msgid "Collapse All"
 msgstr ""
 
-#: app/view/calendar/view/agenda.php:107
+#: app/view/calendar/view/agenda.php:110
 msgid "Expand All"
 msgstr ""
 
-#: app/view/calendar/view/agenda.php:130
+#: app/view/calendar/view/agenda.php:133
 #: cache/twig/85/1e/7bfc6f173af53c3186c80a3237c80f1a2cbbe9307029c7a052378f9a918f.php:30
 msgid "There are no upcoming events to display at this time."
 msgstr ""
 
-#: app/view/calendar/view/agenda.php:131 app/view/calendar/widget.php:273
+#: app/view/calendar/view/agenda.php:134 app/view/calendar/widget.php:273
 #: cache/twig/85/1e/7bfc6f173af53c3186c80a3237c80f1a2cbbe9307029c7a052378f9a918f.php:116
 msgid "Edit"
 msgstr ""
 
-#: app/view/calendar/view/agenda.php:132
+#: app/view/calendar/view/agenda.php:135
 msgid "Read more"
 msgstr ""
 
-#: app/view/calendar/view/agenda.php:133
+#: app/view/calendar/view/agenda.php:136
 msgid "Categories:"
 msgstr ""
 
-#: app/view/calendar/view/agenda.php:134 lib/theme/list.php:323
+#: app/view/calendar/view/agenda.php:137 lib/theme/list.php:323
 #: public/admin/themes.php:29
 msgid "Tags:"
 msgstr ""
 
-#: app/view/calendar/view/agenda.php:135 app/view/calendar/view/month.php:78
+#: app/view/calendar/view/agenda.php:138 app/view/calendar/view/month.php:78
 #: app/view/calendar/view/oneday.php:90 app/view/calendar/view/week.php:101
 #: app/view/calendar/widget.php:274
 #: cache/twig/85/1e/7bfc6f173af53c3186c80a3237c80f1a2cbbe9307029c7a052378f9a918f.php:153
@@ -1081,7 +1071,7 @@ msgid ""
 msgstr ""
 
 #: cache/twig/31/41/6a842b873aa15c2afe2fd664e027ecf1ba867877537f21b06052271bb848.php:133
-#: lib/html/element/setting/html.php:64
+#: lib/html/element/setting/html.php:65
 msgid "Warning:"
 msgstr ""
 
@@ -1208,29 +1198,29 @@ msgid ""
 "perform more slowly until you make this directory writable by the web server."
 msgstr ""
 
-#: lib/css/frontend.php:226
+#: lib/css/frontend.php:237
 msgid ""
 "The LESS file compiled correctly but there was an error while saving the "
 "generated CSS to persistence."
 msgstr ""
 
-#: lib/css/frontend.php:232
+#: lib/css/frontend.php:243
 msgid ""
 "<p><strong>There was an error while compiling CSS.</strong> The message "
 "returned was: <em>%s</em></p>"
 msgstr ""
 
-#: lib/css/frontend.php:260
+#: lib/css/frontend.php:271
 msgid ""
 "Theme options were successfully reset to their default values. <a "
 "href='%s'>Visit site</a>"
 msgstr ""
 
-#: lib/css/frontend.php:267
+#: lib/css/frontend.php:278
 msgid "Theme options were updated successfully. <a href='%s'>Visit site</a>"
 msgstr ""
 
-#: lib/css/frontend.php:303
+#: lib/css/frontend.php:314
 msgid ""
 "Your CSS is being compiled on every request, which causes your calendar to "
 "perform slowly. The following error occurred: %s"
@@ -1423,7 +1413,11 @@ msgstr ""
 msgid "Filter by event tag names/slugs (separate names by comma):"
 msgstr ""
 
-#: lib/html/element/setting/html.php:65
+#: lib/html/element/setting/html.php:64
+msgid "Limit number of events per page:"
+msgstr ""
+
+#: lib/html/element/setting/html.php:66
 msgid ""
 "It is currently not supported to embed more than one calendar in the same "
 "page. Do not attempt to embed the calendar via shortcode in a page that "
@@ -2483,9 +2477,9 @@ msgstr ""
 msgid "All-in-One Event Calendar by Time.ly"
 msgstr ""
 
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.0.6-beta)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.0.7-rc1)  #-#-#-#-#
 #. Plugin URI of the plugin/theme
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.0.6-beta)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.0.7-rc1)  #-#-#-#-#
 #. Author URI of the plugin/theme
 msgid "http://time.ly/"
 msgstr ""

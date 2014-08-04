@@ -295,6 +295,8 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 */
 	protected function _perform_upgrade_actions() {
 		add_action( 'init', 'flush_rewrite_rules' );
+		$this->_registry->get( 'model.option' )
+			->set( 'ai1ec_invalidate_css_cache', true );
 	}
 
 	/**

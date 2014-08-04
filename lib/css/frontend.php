@@ -257,7 +257,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	 * @param boolean $resetting are we resetting or updating variables?
 	 */
 	public function update_variables_and_compile_css( array $variables, $resetting ) {
-		$no_parse_errors = $this->invalidate_cache( $variables, true );
+		$no_parse_errors = $this->invalidate_cache( $variables );
 		$notification    = $this->_registry->get( 'notification.admin' );
 
 		if ( $no_parse_errors ) {

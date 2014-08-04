@@ -211,7 +211,7 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 
 		if ( $option->get( 'ai1ec_invalidate_css_cache' ) ) {
 			$css_controller = $this->_registry->get( 'css.frontend' );
-			$css_controller->invalidate_cache( null, false );
+			$css_controller->invalidate_cache( null, true );
 			$option->delete( 'ai1ec_invalidate_css_cache' );
 		}
 	}

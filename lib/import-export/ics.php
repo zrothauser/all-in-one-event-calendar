@@ -285,8 +285,8 @@ class Ai1ec_Ics_Import_Export_Engine
 					$excpt_timezone = $timezone;
 					$excpt_date     = null;
 					foreach ( $exploded as $particle ) {
-						if ( ';TZID=' === substr( $particle, 0, 5 ) ) {
-							$excpt_timezone = substr( $particle, 5 );
+						if ( ';TZID=' === substr( $particle, 0, 6 ) ) {
+							$excpt_timezone = substr( $particle, 6 );
 						} else {
 							$excpt_date = trim( $particle );
 						}

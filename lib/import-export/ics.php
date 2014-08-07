@@ -961,6 +961,8 @@ class Ai1ec_Ics_Import_Export_Engine
 				explode( ',', $exception_dates )
 				as $exdate
 			) {
+				// date-time string in EXDATES is formatted as 'Ymd\THis\Z', that
+				// means - in UTC timezone, thus we use `format_to_gmt` here.
 				$exdate = $this->_registry->get( 'date.time', $exdate )
 					->format_to_gmt( 'Ymd' );
 				$e->setProperty(

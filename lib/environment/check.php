@@ -84,7 +84,7 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 		$option  = $this->_registry->get( 'model.option' );
 		$rewrite = $option->get( 'ai1ec_force_flush_rewrite_rules' );
 		if (
-			true != $rewrite ||
+			! $rewrite ||
 			! is_object( $wp_rewrite ) ||
 			! isset( $wp_rewrite->rules ) ||
 			0 === count( $wp_rewrite->rules )

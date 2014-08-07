@@ -297,7 +297,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 		$this->_registry->get( 'model.option' )
 			->set( 'ai1ec_force_flush_rewrite_rules', true, true );
 		$this->_registry->get( 'model.option' )
-			->set( 'ai1ec_invalidate_css_cache', true );
+			->set( 'ai1ec_invalidate_css_cache', true, true );
 	}
 
 	/**

@@ -292,7 +292,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			// because EXDATE:date1,date2,date3 must be parsed
 			if( ! empty( $exdate_loc ) ) {
 				foreach ( explode( ',', $exdate_loc ) as $date ) {
-					$gmt_exdates[] = substr( (string)$date, 0, 8 );
+					$gmt_exdates[] = substr( (string)$date, 0, 8 ) . 'T000000Z';
 				}
 			}
 			$exdate = implode( ',', $gmt_exdates );

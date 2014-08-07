@@ -294,7 +294,8 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 * Do things needed on every plugin upgrade.
 	 */
 	protected function _perform_upgrade_actions() {
-		add_action( 'init', 'flush_rewrite_rules' );
+		$this->_registry->get( 'model.option' )
+			->set( 'ai1ec_invalidate_rewrtite_rules', true, true );
 		$this->_registry->get( 'model.option' )
 			->set( 'ai1ec_invalidate_css_cache', true );
 	}

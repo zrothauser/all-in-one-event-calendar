@@ -611,7 +611,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'item'      => 'viewing-events',
 					'label'     =>
 						'<i class="ai1ec-fa ai1ec-fa-lg ai1ec-fa-fw ai1ec-fa-desktop"></i> ' .
-						Ai1ec_I18n::__( 'Wide screens only (≥ 1200px)' ),
+						Ai1ec_I18n::__( 'Wide screens only (&#8805; 1200px)' ),
 					'type'      => 'append',
 					'append'    => 'pixels',
 					'validator' => 'numeric',

@@ -295,7 +295,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 */
 	protected function _perform_upgrade_actions() {
 		$this->_registry->get( 'model.option' )
-			->set( 'ai1ec_invalidate_rewrtite_rules', true, true );
+			->set( 'ai1ec_force_rewrite_rules', true, true );
 		$this->_registry->get( 'model.option' )
 			->set( 'ai1ec_invalidate_css_cache', true );
 	}

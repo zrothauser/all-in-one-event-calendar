@@ -82,7 +82,7 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 		}
 		global $wp_rewrite;
 		$option  = $this->_registry->get( 'model.option' );
-		$rewrite = $option->get( 'ai1ec_invalidate_rewrtite_rules' );
+		$rewrite = $option->get( 'ai1ec_force_rewrite_rules' );
 		if (
 			true != $rewrite ||
 			! is_object( $wp_rewrite ) ||
@@ -92,7 +92,7 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 			return;
 		}
 		$this->_registry->get( 'rewrite.helper' )->flush_rewrite_rules();
-		$option->set( 'ai1ec_invalidate_rewrtite_rules', false, true );
+		$option->set( 'ai1ec_force_rewrite_rules', false, true );
 	}
 
 }

@@ -70,6 +70,8 @@ class Ai1ec_Ics_Import_Export_Engine
 			$post_ids[] = $event->get( 'post_id' );
 		}
 		$this->_taxonomy_model->update_meta( $post_ids );
+		$this->_registry->get( 'controller.content-filter' )
+			->clear_the_content_filters();
 		foreach ( $arguments['events'] as $event ) {
 			$c = $this->_insert_event_in_calendar(
 				$event,
@@ -78,6 +80,8 @@ class Ai1ec_Ics_Import_Export_Engine
 				$params
 			);
 		}
+		$this->_registry->get( 'controller.content-filter' )
+			->restore_the_content_filters();
 		$str = ltrim( $c->createCalendar() );
 		return $str;
 	}
@@ -643,7 +647,13 @@ class Ai1ec_Ics_Import_Export_Engine
 				)
 			)
 		);
-		$content = apply_filters( 'the_content', $event->get( 'post' )->post_content );
+		$content = apply_filters(
+			'ai1ec_the_content',
+			apply_filters(
+				'the_content',
+				$event->get( 'post' )->post_content
+			)
+		);
 		$content = str_replace(']]>', ']]&gt;', $content);
 		$content = html_entity_decode( $content, ENT_QUOTES, 'UTF-8' );
 		// Prepend featured image if available.

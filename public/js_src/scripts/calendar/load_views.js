@@ -373,7 +373,8 @@ define(
 			// Initialize this view's minical datepicker.
 			$el.datepicker( {
 				todayBtn: 'linked',
-				todayHighlight: true
+				todayHighlight: true,
+				language: $el.data('lang')
 			} );
 
 			// Extend Datepicker behaviour without modifying the plugin.

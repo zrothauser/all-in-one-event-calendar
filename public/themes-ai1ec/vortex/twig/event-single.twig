@@ -60,8 +60,8 @@
 			{{ event | timespan | raw }}
 			{% include 'recurrence.twig' %}
 		</div>
-		<div class="ai1ec-hidden" class="dtstart">{{ event.get( 'start' ) }}</div>
-		<div class="ai1ec-hidden" class="dtend">{{ event.get( 'end' ) }}</div>
+		<div class="ai1ec-hidden dtstart">{{ event.get( 'start' ) }}</div>
+		<div class="ai1ec-hidden dtend">{{ event.get( 'end' ) }}</div>
 	</div>
 
 	{% if location is not empty %}

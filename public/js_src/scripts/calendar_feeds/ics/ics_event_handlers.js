@@ -69,7 +69,7 @@ define(
 			    	comments_enabled:     enable_comments,
 			    	map_display_enabled:  show_map,
 			    	keep_tags_categories: keep_tags_categories,
-					keep_old_events:      keep_old_events,
+				keep_old_events:      keep_old_events,
 			    };
 
 			// Make an AJAX call to save the new feed.

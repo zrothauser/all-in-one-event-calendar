@@ -65,6 +65,13 @@
 			<?php _e( 'Import any tags/categories provided by feed, in addition those selected above', AI1EC_PLUGIN_NAME ); ?>
 		</label>
 	</div>
+	<div class="ai1ec-feed-keep-old-events">
+		<label for="ai1ec_keep_old_events">
+			<input type="checkbox" name="ai1ec_keep_old_events"
+				id="ai1ec_keep_old_events" value="1">
+			<?php _e( 'Keep old events', AI1EC_PLUGIN_NAME ); ?>
+		</label>
+	</div>
 	<div class="ai1ec-pull-right">
 		<button type="button" id="ai1ec_add_new_ics"
 			class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-sm"

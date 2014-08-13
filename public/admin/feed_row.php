@@ -52,6 +52,16 @@
 		}
 		?></strong>
 	</div>
+	<div class="ai1ec-feed-keep-old-events">
+		<?php _e( 'Keep old events', AI1EC_PLUGIN_NAME ); ?>:
+		<strong><?php
+		if ( $keep_old_events ) {
+			_e( 'Yes', AI1EC_PLUGIN_NAME );
+		} else {
+			_e( 'No',  AI1EC_PLUGIN_NAME );
+		}
+		?></strong>
+	</div>
 	<div class="ai1ec-btn-group ai1ec-pull-right">
 		<button type="button"
 			class="ai1ec-btn ai1ec-btn-sm ai1ec-btn-default ai1ec-text-primary

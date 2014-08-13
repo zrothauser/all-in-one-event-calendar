@@ -52,8 +52,8 @@
 		}
 		?></strong>
 	</div>
-	<div class="ai1ec-feed-keep-tags-categories">
-		<?php _e( 'Keep old events.', AI1EC_PLUGIN_NAME ); ?>:
+	<div class="ai1ec-feed-keep-old-events">
+		<?php _e( 'Keep old events', AI1EC_PLUGIN_NAME ); ?>:
 		<strong><?php
 		if ( $keep_old_events ) {
 			_e( 'Yes', AI1EC_PLUGIN_NAME );

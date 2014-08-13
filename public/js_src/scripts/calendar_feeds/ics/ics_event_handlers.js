@@ -58,6 +58,8 @@ define(
 			    	.is( ':checked' ) ? 1 : 0,
 			    keep_tags_categories = $( '#ai1ec_add_tag_categories' )
 			    	.is( ':checked' ) ? 1 : 0,
+				keep_old_events = $( '#ai1ec_keep_old_events' )
+			    	.is( ':checked' ) ? 1 : 0,
 			    data = {
 			    	action:               'ai1ec_add_ics',
 			    	nonce:                ai1ec_config.calendar_feeds_nonce,
@@ -66,7 +68,8 @@ define(
 			    	feed_tags:            $( '#ai1ec_feed_tags' ).val(),
 			    	comments_enabled:     enable_comments,
 			    	map_display_enabled:  show_map,
-			    	keep_tags_categories: keep_tags_categories
+			    	keep_tags_categories: keep_tags_categories,
+					keep_old_events:   keep_old_events,
 			    };
 
 			// Make an AJAX call to save the new feed.

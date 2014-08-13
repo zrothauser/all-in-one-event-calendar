@@ -280,13 +280,14 @@ class Ai1ec_Ics_Import_Export_Engine
 			if ( $exdates = $e->createExdate() ){
 				// We may have two formats:
 				// one exdate with many dates ot more EXDATE rules
-				$exdates = explode( 'EXDATE', $exdates );
+				$exdates      = explode( 'EXDATE', $exdates );
+				$def_timezone = $this->_get_import_timezone( $timezone );
 				foreach ( $exdates as $exd ) {
 					if ( empty( $exd ) ) {
 						continue;
 					}
 					$exploded       = explode( ':', $exd );
-					$excpt_timezone = $timezone;
+					$excpt_timezone = $def_timezone;
 					$excpt_date     = null;
 					foreach ( $exploded as $particle ) {
 						if ( ';TZID=' === substr( $particle, 0, 6 ) ) {
@@ -541,6 +542,22 @@ class Ai1ec_Ics_Import_Export_Engine
 			$clear_url = stripslashes( $matches[1] );
 		} // no more else - impossible to parse anything
 		return $clear_url;
+	}
+
+	/**
+	 * Parse importable feed timezone to sensible value.
+	 *
+	 * @param string $def_timezone Timezone value from feed.
+	 *
+	 * @return string Valid timezone name to use.
+	 */
+	protected function _get_import_timezone( $def_timezone ) {
+		$parser   = $this->_registry->get( 'date.timezone' );
+		$timezone = $parser->get_name( $def_timezone );
+		if ( false === $timezone ) {
+			return 'sys.default';
+		}
+		return $timezone;
 	}
 
 	/**

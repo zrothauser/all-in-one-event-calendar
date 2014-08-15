@@ -400,11 +400,7 @@ class Ai1ec_Theme_Loader {
 			false === $path ? AI1EC_CACHE_UNAVAILABLE : $path
 		);
 		if ( false === $path ) {
-			$message = Ai1ec_I18n::__(
-				'We detected that your cache directory (%s) is not writable. This will make your calendar slow. Please contact your web host or server administrator to make it writable by the web server.'
-			);
-			$message = sprintf( $message, AI1EC_TWIG_CACHE_PATH );
-			$this->_registry->get( 'notification.admin' )->store( $message, 'error', 1 );
+			/* @TODO: move this to Settings -> Advanced -> Cache and provide a nice message */
 		}
 		return $path;
 	}

@@ -77,7 +77,7 @@
 			class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-sm"
 			data-loading-text="<?php echo esc_attr(
 				'<i class="ai1ec-fa ai1ec-fa-spinner ai1ec-fa-spin ai1ec-fa-fw"></i> ' .
-				__( 'Please wait…', AI1EC_PLUGIN_NAME ) ); ?>">
+				__( 'Please wait&#8230;', AI1EC_PLUGIN_NAME ) ); ?>">
 			<i class="ai1ec-fa ai1ec-fa-plus"></i>
 			<?php _e( 'Add new subscription', AI1EC_PLUGIN_NAME ) ?>
 		</button>

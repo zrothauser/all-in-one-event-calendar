@@ -876,7 +876,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'item'  => 'advanced',
 					'label' => sprintf(
 						Ai1ec_I18n::__(
-							'<strong>Publicize, promote, and share my events</strong> marked as public on the Timely network. (<a href="%s" target="_blank">Learn more »</a>)'
+							'<strong>Publicize, promote, and share my events</strong> marked as public on the Timely network. (<a href="%s" target="_blank">Learn more &#187;</a>)'
 						),
 						'http://time.ly/event-search-calendar'
 					),

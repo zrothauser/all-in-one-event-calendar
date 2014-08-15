@@ -274,6 +274,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 			)
 		) {
 			$this->_register_standard_values();
+			$this->_update_name_translations();
 			$this->_change_update_status( true );
 			$upgrade = true;
 		} else if ( $values instanceof Ai1ec_Settings ) { // process legacy
@@ -928,6 +929,22 @@ class Ai1ec_Settings extends Ai1ec_App {
 				AI1EC_VERSION
 			);
 		}
+	}
+
+	/**
+	 * Update translated strings, after introduction of `_noop` functions.
+	 *
+	 * @return void
+	 */
+	protected function _update_name_translations() {
+		$translations = $this->_standard_options['enabled_views']['default'];
+		$current      = $this->get( 'enabled_views' );
+		foreach ( $current as $key => $view ) {
+			if ( isset( $translations[$key] ) ) {
+				$current[$key]['longname'] = $translations[$key]['longname'];
+			}
+		}
+		$this->set( 'enabled_views', $current );
 	}
 
 	/**

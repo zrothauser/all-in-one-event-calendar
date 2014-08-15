@@ -71,7 +71,7 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 
 		// if we have modified the content, we return the modified version.
 		$to_return = $this->_html .
-			'<div class="description">' . $content . '</div>';
+			'<div class="p-description">' . $content . '</div>';
 		if ( isset( $this->_html_footer ) ) {
 			$to_return .= $this->_html_footer;
 		}
@@ -96,7 +96,7 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 			false === $is_view &&
 			true  === $this->_registry->get( 'acl.aco' )->is_our_post_type()
 		) {
-			$title =  '<span class="summary">' . $title . '</span>';
+			$title = '<span class="p-summary">' . $title . '</span>';
 		}
 		return $title;
 	}
@@ -109,7 +109,7 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 	 */
 	public function post_class( $classes ) {
 		if ( true === $this->_registry->get( 'acl.aco' )->is_our_post_type() ) {
-			$classes[] = 'vevent';
+			$classes[] = 'h-event';
 		}
 		return $classes;
 	}

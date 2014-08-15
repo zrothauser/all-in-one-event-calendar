@@ -371,28 +371,44 @@ class Ai1ec_Settings extends Ai1ec_App {
 						'default'        => true,
 						'enabled_mobile' => true,
 						'default_mobile' => true,
-						'longname'       => Ai1ec_I18n::__( 'Agenda' ),
+						'longname'       => _n_noop(
+							'Agenda',
+							'Agenda',
+							AI1EC_PLUGIN_NAME
+						),
 					),
 					'oneday' => array(
 						'enabled'        => true,
 						'default'        => false,
 						'enabled_mobile' => true,
 						'default_mobile' => false,
-						'longname'       => Ai1ec_I18n::__( 'Day' ),
+						'longname'       => _n_noop(
+							'Day',
+							'Day',
+							AI1EC_PLUGIN_NAME
+						),
 					),
 					'month' => array(
 						'enabled'        => true,
 						'default'        => false,
 						'enabled_mobile' => true,
 						'default_mobile' => false,
-						'longname'       => Ai1ec_I18n::__( 'Month' ),
+						'longname'       => _n_noop(
+							'Month',
+							'Month',
+							AI1EC_PLUGIN_NAME
+						),
 					),
 					'week' => array(
 						'enabled'        => true,
 						'default'        => false,
 						'enabled_mobile' => true,
 						'default_mobile' => false,
-						'longname'       => Ai1ec_I18n::__( 'Week' ),
+						'longname'       => _n_noop(
+							'Week',
+							'Week',
+							AI1EC_PLUGIN_NAME
+						),
 					),
 				),
 			),

@@ -68,7 +68,7 @@
 				ai1ec_update_ics"
 			data-loading-text="<?php echo esc_attr(
 				'<i class="ai1ec-fa ai1ec-fa-refresh ai1ec-fa-spin ai1ec-fa-fw"></i> ' .
-				__( 'Refreshing…', AI1EC_PLUGIN_NAME ) ); ?>">
+				__( 'Refreshing&#8230;', AI1EC_PLUGIN_NAME ) ); ?>">
 			<i class="ai1ec-fa ai1ec-fa-refresh ai1ec-fa-fw"></i>
 			<?php _e( 'Refresh', AI1EC_PLUGIN_NAME ); ?>
 		</button>
@@ -77,7 +77,7 @@
 				ai1ec_delete_ics"
 			data-loading-text="<?php echo esc_attr(
 				'<i class="ai1ec-fa ai1ec-fa-spinner ai1ec-fa-spin ai1ec-fa-fw"></i> ' .
-				__( 'Removing…', AI1EC_PLUGIN_NAME ) ); ?>">
+				__( 'Removing&#8230;', AI1EC_PLUGIN_NAME ) ); ?>">
 			<i class="ai1ec-fa ai1ec-fa-times ai1ec-fa-fw"></i>
 			<?php _e( 'Remove', AI1EC_PLUGIN_NAME ); ?>
 		</button>

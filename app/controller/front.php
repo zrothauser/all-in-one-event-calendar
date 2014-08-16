@@ -393,6 +393,11 @@ class Ai1ec_Front_Controller {
 			10,
 			2
 		);
+		$dispatcher->register_action(
+			'plugins_loaded',
+			array( 'theme.loader', 'clean_cache_on_upgrade' ),
+			PHP_INT_MAX
+		);
 		$dispatcher->register_filter(
 			'get_the_excerpt',
 			array( 'view.event.content', 'event_excerpt' ),

@@ -185,7 +185,6 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			'export_url_no_html'      => AI1EC_EXPORT_URL . '&no_html=true',
 			'text_filtered'           => __( 'Subscribe to filtered calendar', AI1EC_PLUGIN_NAME ),
 			'text_subscribe'          => __( 'Subscribe', AI1EC_PLUGIN_NAME ),
-			'text_tooltip'            => __( 'Subscribe in your personal calendar', AI1EC_PLUGIN_NAME ),
 			'text'                    => $this->_registry
 				->get( 'view.calendar.subscribe-button' )
 				->get_labels(),

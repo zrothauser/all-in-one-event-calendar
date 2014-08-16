@@ -2,13 +2,13 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.1.2.4\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.1.2.5\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2014-08-16 15:18:44+00:00\n"
+"POT-Creation-Date: 2014-08-16 15:37:41+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2014-08-16 18:18+0300\n"
+"PO-Revision-Date: 2014-08-16 18:37+0300\n"
 "Last-Translator: Timely <support@time.ly>\n"
 "Language-Team:\n"
 
@@ -818,6 +818,8 @@ msgid "Clear category filter"
 msgstr "Clear category filter"
 
 #: app/view/calendar/taxonomy.php:98 app/view/event/single.php:83
+#: cache/twig/37/14/fa01bbe4d4ffa4f03a4cba6fb9acbd490824785b969c9e705534675c60f5.php:28
+#: cache/twig/37/14/fa01bbe4d4ffa4f03a4cba6fb9acbd490824785b969c9e705534675c60f5.php:32
 #: lib/html/element/setting/tags-categories.php:47
 msgid "Categories"
 msgstr "Categories"
@@ -827,6 +829,8 @@ msgid "Clear tag filter"
 msgstr "Clear tag filter"
 
 #: app/view/calendar/taxonomy.php:100 app/view/event/single.php:84
+#: cache/twig/82/b0/255fefe74fca92677a6a96c9e569117eabff494d93e0b5f6b38cdaaea0b0.php:28
+#: cache/twig/82/b0/255fefe74fca92677a6a96c9e569117eabff494d93e0b5f6b38cdaaea0b0.php:32
 #: lib/html/element/setting/tags-categories.php:39
 msgid "Tags"
 msgstr "Tags"
@@ -840,10 +844,14 @@ msgid "Expand All"
 msgstr "Expand All"
 
 #: app/view/calendar/view/agenda.php:133
+#: cache/twig/26/62/4a4f92c0d3894cd5eb735508b4c009471e957872345c3b56f7b41ef3ea7e.php:30
+#: cache/twig/e9/0f/cb1f091e9b4127585185e68c26f1b9d6d847e0152d264f92b621d5ec2944.php:34
 msgid "There are no upcoming events to display at this time."
 msgstr "There are no upcoming events to display at this time."
 
 #: app/view/calendar/view/agenda.php:134 app/view/calendar/widget.php:273
+#: cache/twig/26/62/4a4f92c0d3894cd5eb735508b4c009471e957872345c3b56f7b41ef3ea7e.php:116
+#: cache/twig/e9/0f/cb1f091e9b4127585185e68c26f1b9d6d847e0152d264f92b621d5ec2944.php:122
 msgid "Edit"
 msgstr "Edit"
 
@@ -863,6 +871,7 @@ msgstr "Tags:"
 #: app/view/calendar/view/agenda.php:138 app/view/calendar/view/month.php:78
 #: app/view/calendar/view/oneday.php:90 app/view/calendar/view/week.php:101
 #: app/view/calendar/widget.php:274
+#: cache/twig/e9/0f/cb1f091e9b4127585185e68c26f1b9d6d847e0152d264f92b621d5ec2944.php:135
 msgid "@ %s"
 msgstr "@ %s"
 
@@ -994,10 +1003,12 @@ msgid "Cost:"
 msgstr "Cost:"
 
 #: app/view/event/single.php:81
+#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:94
 msgid "Contact:"
 msgstr "Contact:"
 
 #: app/view/event/single.php:82
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:449
 msgid "Free"
 msgstr "Free"
 
@@ -1058,6 +1069,300 @@ msgstr " – "
 #: app/view/event/time.php:160
 msgid ", and "
 msgstr ", and "
+
+#: cache/twig/06/37/d929bcaa80c8f95cc2e341066aa553f8bc8d62a627a097e42516253258f7.php:31
+msgid "Add Your Feed"
+msgstr "Add Your Feed"
+
+#: cache/twig/06/37/d929bcaa80c8f95cc2e341066aa553f8bc8d62a627a097e42516253258f7.php:57
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:23
+#: cache/twig/86/2f/5bd0aae3cdc2eb247965d6758532defae4940dfe30c68378e622f1d1148c.php:23
+#: public/admin/calendar_tasks.php:13
+msgid "Post Your Event"
+msgstr "Post Your Event"
+
+#: cache/twig/18/30/85a17f9b9e35d729b272a84af56351043ae57c0e25ae062d84849d0350cc.php:20
+msgid "Posterboard view:"
+msgstr "Posterboard view:"
+
+#: cache/twig/18/30/85a17f9b9e35d729b272a84af56351043ae57c0e25ae062d84849d0350cc.php:24
+msgid "Stream view:"
+msgstr "Stream view:"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:49
+msgid "The %s field is required."
+msgstr "The %s field is required."
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:87
+msgid "Date (required)"
+msgstr "Date (required)"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:103
+msgid "Time"
+msgstr "Time"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:115
+msgid "Add time"
+msgstr "Add time"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:141
+msgid "End date"
+msgstr "End date"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:158
+msgid "End time"
+msgstr "End time"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:173
+msgid "Add end date"
+msgstr "Add end date"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:179
+msgid "Add end date/time"
+msgstr "Add end date/time"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:192
+msgid "Time zone:"
+msgstr "Time zone:"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:246
+msgid "Venue name (required)"
+msgstr "Venue name (required)"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:253
+msgid "Venue name"
+msgstr "Venue name"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:272
+msgid "Address (required)"
+msgstr "Address (required)"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:279
+msgid "Address"
+msgstr "Address"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:300
+msgid "Include map"
+msgstr "Include map"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:363
+msgid "Description (required)"
+msgstr "Description (required)"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:370
+#: public/admin/box_eventbrite.php:42
+msgid "Description"
+msgstr "Description"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:389
+msgid "Organizer name (required)"
+msgstr "Organizer name (required)"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:396
+msgid "Organizer name"
+msgstr "Organizer name"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:410
+msgid "Organizer email (required)"
+msgstr "Organizer email (required)"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:417
+msgid "Organizer email"
+msgstr "Organizer email"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:435
+#: public/admin/box_event_cost.php:17
+msgid "Cost"
+msgstr "Cost"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:457
+msgid "Registration URL"
+msgstr "Registration URL"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:473
+msgid "Phone number (required)"
+msgstr "Phone number (required)"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:480
+msgid "Phone number"
+msgstr "Phone number"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:494
+msgid "External website URL (required)"
+msgstr "External website URL (required)"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:501
+msgid "External website URL"
+msgstr "External website URL"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:521
+msgid "Image:"
+msgstr "Image:"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:539
+msgid "Select image"
+msgstr "Select image"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:545
+msgid "Change"
+msgstr "Change"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:554
+#: public/admin/feed_row.php:82
+msgid "Remove"
+msgstr "Remove"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:572
+#: cache/twig/8a/b3/a406d66e131df0ce2cd5f806db207bd6b5c7b1b0a7d4aea4080218183ebd.php:80
+msgid "Verification words"
+msgstr "Verification words"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:581
+#: cache/twig/8a/b3/a406d66e131df0ce2cd5f806db207bd6b5c7b1b0a7d4aea4080218183ebd.php:89
+msgid "Loading reCAPTCHA..."
+msgstr "Loading reCAPTCHA..."
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:596
+msgid ""
+"You must check the checkbox stating you agree to the posting rules to submit "
+"the event."
+msgstr ""
+"You must check the checkbox stating you agree to the posting rules to submit "
+"the event."
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:613
+msgid ""
+"I have read and agreed that this event conforms to the <a %s>posting rules</"
+"a>"
+msgstr ""
+"I have read and agreed that this event conforms to the <a %s>posting rules</"
+"a>"
+
+#: cache/twig/7a/11/8b4d92f97f1deee45684469b3beb98e214e0d5a32c9a259b9bcf81a41145.php:640
+msgid "Submit Event"
+msgstr "Submit Event"
+
+#: cache/twig/86/2f/5bd0aae3cdc2eb247965d6758532defae4940dfe30c68378e622f1d1148c.php:56
+msgid "Post Another"
+msgstr "Post Another"
+
+#: cache/twig/8a/b3/a406d66e131df0ce2cd5f806db207bd6b5c7b1b0a7d4aea4080218183ebd.php:27
+msgid "Add Your Calendar Feed"
+msgstr "Add Your Calendar Feed"
+
+#: cache/twig/8a/b3/a406d66e131df0ce2cd5f806db207bd6b5c7b1b0a7d4aea4080218183ebd.php:43
+msgid ""
+"If you know of an event feed you think belongs in this calendar, paste its "
+"iCalendar (.ics) feed’s URL below. If approved, its events will be added to "
+"this calendar."
+msgstr ""
+"If you know of an event feed you think belongs in this calendar, paste its "
+"iCalendar (.ics) feed’s URL below. If approved, its events will be added to "
+"this calendar."
+
+#: cache/twig/8a/b3/a406d66e131df0ce2cd5f806db207bd6b5c7b1b0a7d4aea4080218183ebd.php:52
+msgid "Paste your calendar’s iCalendar (.ics) feed URL"
+msgstr "Paste your calendar’s iCalendar (.ics) feed URL"
+
+#: cache/twig/8a/b3/a406d66e131df0ce2cd5f806db207bd6b5c7b1b0a7d4aea4080218183ebd.php:68
+msgid "Enter your e-mail address"
+msgstr "Enter your e-mail address"
+
+#: cache/twig/8a/b3/a406d66e131df0ce2cd5f806db207bd6b5c7b1b0a7d4aea4080218183ebd.php:104
+msgid "Get Your Own Calendar"
+msgstr "Get Your Own Calendar"
+
+#: cache/twig/8a/b3/a406d66e131df0ce2cd5f806db207bd6b5c7b1b0a7d4aea4080218183ebd.php:117
+msgid ""
+"If you already have your own <a href=\"http://wordpress.org/\" target="
+"\"_blank\">WordPress</a> website, it’s easy to install your own <strong>All-"
+"in-One Event Calendar from Timely</strong>:"
+msgstr ""
+"If you already have your own <a href=\"http://wordpress.org/\" target="
+"\"_blank\">WordPress</a> website, it’s easy to install your own <strong>All-"
+"in-One Event Calendar from Timely</strong>:"
+
+#: cache/twig/8a/b3/a406d66e131df0ce2cd5f806db207bd6b5c7b1b0a7d4aea4080218183ebd.php:123
+msgid ""
+"Browse to <a href=\"http://time.ly/get-your-own-calendar\" target=\"_blank"
+"\">time.ly/get-your-own-calendar</a>."
+msgstr ""
+"Browse to <a href=\"http://time.ly/get-your-own-calendar\" target=\"_blank"
+"\">time.ly/get-your-own-calendar</a>."
+
+#: cache/twig/8a/b3/a406d66e131df0ce2cd5f806db207bd6b5c7b1b0a7d4aea4080218183ebd.php:127
+msgid ""
+"Download the <em>free</em> <strong>All-in-One Event Calendar</strong> plugin."
+msgstr ""
+"Download the <em>free</em> <strong>All-in-One Event Calendar</strong> plugin."
+
+#: cache/twig/8a/b3/a406d66e131df0ce2cd5f806db207bd6b5c7b1b0a7d4aea4080218183ebd.php:131
+msgid "Log into your WordPress dashboard."
+msgstr "Log into your WordPress dashboard."
+
+#: cache/twig/8a/b3/a406d66e131df0ce2cd5f806db207bd6b5c7b1b0a7d4aea4080218183ebd.php:135
+msgid ""
+"Browse to <strong>Plugins</strong> &gt; <strong>Add New</strong> &gt; "
+"<strong>Upload</strong>."
+msgstr ""
+"Browse to <strong>Plugins</strong> &gt; <strong>Add New</strong> &gt; "
+"<strong>Upload</strong>."
+
+#: cache/twig/8a/b3/a406d66e131df0ce2cd5f806db207bd6b5c7b1b0a7d4aea4080218183ebd.php:139
+msgid ""
+"Choose the .zip file you just downloaded, and click <strong>Install Now</"
+"strong>."
+msgstr ""
+"Choose the .zip file you just downloaded, and click <strong>Install Now</"
+"strong>."
+
+#: cache/twig/8a/b3/a406d66e131df0ce2cd5f806db207bd6b5c7b1b0a7d4aea4080218183ebd.php:145
+msgid ""
+"That’s it! You’ll have your own <strong>All-in-One Calendar</strong> up and "
+"running within minutes."
+msgstr ""
+"That’s it! You’ll have your own <strong>All-in-One Calendar</strong> up and "
+"running within minutes."
+
+#: cache/twig/8a/b3/a406d66e131df0ce2cd5f806db207bd6b5c7b1b0a7d4aea4080218183ebd.php:151
+msgid ""
+"For help or for more information, please visit <a href=\"http://support.time."
+"ly/\" target=\"_blank\">Timely Support</a>."
+msgstr ""
+"For help or for more information, please visit <a href=\"http://support.time."
+"ly/\" target=\"_blank\">Timely Support</a>."
+
+#: cache/twig/8a/b3/a406d66e131df0ce2cd5f806db207bd6b5c7b1b0a7d4aea4080218183ebd.php:164
+msgid "Submit for review"
+msgstr "Submit for review"
+
+#: cache/twig/dc/78/b950182efb8f436b144938fb0dc48cf395d7daabe20293234dbcf2b26545.php:37
+msgid "Excludes: "
+msgstr "Excludes: "
+
+#: cache/twig/dc/78/b950182efb8f436b144938fb0dc48cf395d7daabe20293234dbcf2b26545.php:48
+msgid "Repeats"
+msgstr "Repeats"
+
+#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:173
+msgid "Seating capacity:"
+msgstr "Seating capacity:"
+
+#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:190
+msgid "Handicap accessible"
+msgstr "Handicap accessible"
+
+#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:205
+msgid "Parking:"
+msgstr "Parking:"
+
+#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:241
+msgid "Email Venue"
+msgstr "Email Venue"
+
+#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:259
+msgid "Visit Website"
+msgstr "Visit Website"
 
 #: lib/calendar-feed/ics.php:38
 msgid "ICS"
@@ -1876,10 +2181,6 @@ msgstr "External URL:"
 msgid "Event cost and Tickets"
 msgstr "Event cost and Tickets"
 
-#: public/admin/box_event_cost.php:17
-msgid "Cost"
-msgstr "Cost"
-
 #: public/admin/box_event_cost.php:35
 msgid "Free event"
 msgstr "Free event"
@@ -1955,10 +2256,6 @@ msgstr ""
 #: public/admin/box_eventbrite.php:32
 msgid "Name"
 msgstr "Name"
-
-#: public/admin/box_eventbrite.php:42
-msgid "Description"
-msgstr "Description"
 
 #: public/admin/box_eventbrite.php:53
 msgid "Type"
@@ -2153,10 +2450,6 @@ msgstr ""
 "to the All-in-One Event Calendar by <a href=\"http://time.ly/\" target="
 "\"_blank\">Timely</a>"
 
-#: public/admin/calendar_tasks.php:13
-msgid "Post Your Event"
-msgstr "Post Your Event"
-
 #: public/admin/calendar_tasks.php:16
 msgid "Add a new event to the calendar."
 msgstr "Add a new event to the calendar."
@@ -2248,10 +2541,6 @@ msgstr "Refresh"
 #: public/admin/feed_row.php:80
 msgid "Removing&#8230;"
 msgstr "Removing&#8230;"
-
-#: public/admin/feed_row.php:82
-msgid "Remove"
-msgstr "Remove"
 
 #: public/admin/import.php:6
 msgid "Successfully imported events:"
@@ -2579,9 +2868,9 @@ msgstr "Today background"
 msgid "All-in-One Event Calendar by Time.ly"
 msgstr "All-in-One Event Calendar by Time.ly"
 
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.2.4)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.2.5)  #-#-#-#-#
 #. Plugin URI of the plugin/theme
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.2.4)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.2.5)  #-#-#-#-#
 #. Author URI of the plugin/theme
 msgid "http://time.ly/"
 msgstr "http://time.ly/"

@@ -417,6 +417,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				'comments_enabled',
 				'map_display_enabled',
 				'keep_tags_categories',
+				'keep_old_events',
 			)
 		);
 
@@ -453,6 +454,9 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				),
 				'keep_tags_categories' => (bool) intval(
 						$row->keep_tags_categories
+				),
+				'keep_old_events'      => (bool) intval(
+						$row->keep_old_events
 				),
 			);
 			$html .= $theme_loader->get_file( 'feed_row.php', $args, true )

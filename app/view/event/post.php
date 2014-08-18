@@ -80,11 +80,8 @@ class Ai1ec_View_Event_Post extends Ai1ec_Base {
 			'#<\s*script[^>]*>.+<\s*/\s*script\s*>#x',
 			'',
 			apply_filters(
-				'ai1ec_the_content',
-				apply_filters(
-					'the_content',
-					$event->get( 'post' )->post_content
-				)
+				'the_excerpt',
+				$event->get( 'post' )->post_content
 			)
 		);
 		$text           = strip_shortcodes( $text );

@@ -11,6 +11,9 @@
  */
 class Ai1ec_Environment_Checks extends Ai1ec_Base {
 
+	const EV_VERSION = '1.1.0';
+	const EV_NAME    = 'all-in-one-event-calendar-extended-views/all-in-one-event-calendar-extended-views.php';
+
 	/**
 	 * Runs checks for necessary config options.
 	 *
@@ -95,4 +98,43 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 		$option->set( 'ai1ec_force_flush_rewrite_rules', false );
 	}
 
+	/**
+	 * Add hooks for add-on obsolete checks.
+	 *
+	 * @param Ai1ec_Event_Dispatcher $dispatcher Dispatcher.
+	 *
+	 * @return void Method does not return.
+	 */
+	public function check_addons_activation( $plugin ) {
+		switch ( $plugin ) {
+			case self::EV_NAME:
+				$this->extended_views_activation();
+				break;
+		}
+	}
+
+	/**
+	 * Performs Extended Views version check.
+	 *
+	 * @return void Method does not return.
+	 */
+	public function extended_views_activation() {
+		$ev_data = get_plugin_data(
+			WP_PLUGIN_DIR . DIRECTORY_SEPARATOR .
+			'all-in-one-event-calendar-extended-views' . DIRECTORY_SEPARATOR .
+			'all-in-one-event-calendar-extended-views.php'
+		);
+		if ( ! isset( $ev_data['Version'] ) ) {
+			return;
+		}
+		$version = $ev_data['Version'];
+		if ( -1 === version_compare( $version, self::EV_VERSION ) ) {
+			$message = sprintf(
+				Ai1ec_I18n::__( 'Addon %s needs to be at least in version %s' ),
+				$ev_data['Name'],
+				self::EV_VERSION
+			);
+			throw new Ai1ec_Outdated_Addon_Exception( $message, self::EV_NAME );
+		}
+	}
 }

@@ -626,6 +626,10 @@ class Ai1ec_Front_Controller {
 				'admin_init',
 				array( 'environment.check', 'run_checks' )
 			);
+			$dispatcher->register_action(
+				'activated_plugin',
+				array( 'environment.check', 'check_addons_activation' )
+			);
 		} else { // ! is_admin()
 			$dispatcher->register_shortcode(
 				'ai1ec',

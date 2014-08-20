@@ -13,6 +13,7 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 
 	const EV_VERSION = '1.1.0';
 	const EV_NAME    = 'all-in-one-event-calendar-extended-views/all-in-one-event-calendar-extended-views.php';
+	const CORE_NAME  = 'all-in-one-event-calendar/all-in-one-event-calendar.php';
 
 	/**
 	 * Runs checks for necessary config options.
@@ -99,17 +100,31 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 	}
 
 	/**
-	 * Add hooks for add-on obsolete checks.
+	 * Checks for add-on versions.
 	 *
-	 * @param Ai1ec_Event_Dispatcher $dispatcher Dispatcher.
+	 * @param string $plugin Plugin name.
 	 *
 	 * @return void Method does not return.
 	 */
 	public function check_addons_activation( $plugin ) {
 		switch ( $plugin ) {
 			case self::EV_NAME:
-				$this->extended_views_activation();
+				$this->_extended_views_activation();
 				break;
+			case self::CORE_NAME:
+				$this->_check_active_addons();
+				break;
+		}
+	}
+
+	/**
+	 * Checks all Time.ly addons.
+	 *
+	 * @return void Method does not return.
+	 */
+	protected function _check_active_addons() {
+		if ( is_plugin_active( self::EV_NAME ) ) {
+			$this->_extended_views_activation( true );
 		}
 	}
 
@@ -118,7 +133,7 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 	 *
 	 * @return void Method does not return.
 	 */
-	public function extended_views_activation() {
+	protected function _extended_views_activation( $core = false ) {
 		$ev_data = get_plugin_data(
 			WP_PLUGIN_DIR . DIRECTORY_SEPARATOR .
 			'all-in-one-event-calendar-extended-views' . DIRECTORY_SEPARATOR .
@@ -134,7 +149,18 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 				$ev_data['Name'],
 				self::EV_VERSION
 			);
-			throw new Ai1ec_Outdated_Addon_Exception( $message, self::EV_NAME );
+			if ( ! $core ) {
+				throw new Ai1ec_Outdated_Addon_Exception( $message, self::EV_NAME );
+			} else {
+				deactivate_plugins( self::EV_NAME );
+				$this->_registry->get( 'notification.admin' )->store(
+					$message,
+					'error',
+					0,
+					array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
+					true
+				);
+			}
 		}
 	}
 }

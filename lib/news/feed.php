@@ -35,7 +35,7 @@ class Ai1ec_News_Feed extends Ai1ec_Base {
 			) {
 				$file = new SimplePie_File( AI1EC_RSS_FEED );
 				$feed = new SimplePie();
-				$feed->set_raw_data($file->body);
+				$feed->set_raw_data( $file->body );
 				$feed->init();
 				$result = is_wp_error( $feed )
 					? array()

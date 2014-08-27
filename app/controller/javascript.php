@@ -438,6 +438,7 @@ class Ai1ec_Javascript_Controller {
 			'affix_vertical_offset_lg'       => $settings->get( 'affix_vertical_offset_lg' ),
 			'affix_vertical_offset_sm'       => $settings->get( 'affix_vertical_offset_sm' ),
 			'affix_vertical_offset_xs'       => $settings->get( 'affix_vertical_offset_xs' ),
+			'calendar_page_id'               => $settings->get( 'calendar_page_id' ),
 			'region'                         => ( $settings->get( 'geo_region_biasing' ) ) ? $locale->get_region() : '',
 		);
 		return apply_filters( 'ai1ec_js_translations', $data );

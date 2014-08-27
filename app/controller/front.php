@@ -65,7 +65,7 @@ class Ai1ec_Front_Controller {
 
 	/**
 	 * Let other objects access default theme
-	 * 
+	 *
 	 * @return array
 	 */
 	public function get_default_theme() {
@@ -282,7 +282,10 @@ class Ai1ec_Front_Controller {
 				$url  = AI1EC_THEMES_URL . '/' . $theme_name;
 			}
 			// if it's from 1.x, move folders to avoid confusion
-			$this->_registry->get( 'theme.search' )->move_themes_to_backup( $core_themes );
+			if ( apply_filters( 'ai1ec_move_themes_to_backup', true ) ) {
+				$this->_registry->get( 'theme.search' )
+					->move_themes_to_backup( $core_themes );
+			}
 			// Ensure existence of theme directory.
 			if ( ! is_dir( $root . DIRECTORY_SEPARATOR . $theme_name ) ) {
 				// It's missing; something is wrong with this theme. Reset theme to

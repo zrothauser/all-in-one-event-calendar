@@ -388,10 +388,12 @@ class Ai1ec_Theme_Loader {
 		}
 		$path          = false;
 		$scan_dirs     = array( AI1EC_TWIG_CACHE_PATH );
-		$filesystem    = $this->_registry->get( 'filesystem.checker' );
-		$upload_folder = $filesystem->get_ai1ec_static_dir_if_available();
-		if ( '' !== $upload_folder ) {
-			$scan_dirs[] = $upload_folder;
+		if ( apply_filters( 'ai1ec_check_static_dir', true ) ) {
+			$filesystem    = $this->_registry->get( 'filesystem.checker' );
+			$upload_folder = $filesystem->get_ai1ec_static_dir_if_available();
+			if ( '' !== $upload_folder ) {
+				$scan_dirs[] = $upload_folder;
+			}
 		}
 		foreach ( $scan_dirs as $dir ) {
 			if ( $this->_is_dir_writable( $dir ) ) {
@@ -416,6 +418,9 @@ class Ai1ec_Theme_Loader {
 	 * @return void Method doesn't return
 	 */
 	public function clean_cache_on_upgrade() {
+		if ( ! apply_filters( 'ai1ec_clean_cache_on_upgrade', true ) ) {
+			return;
+		}
 		$model_option = $this->_registry->get( 'model.option' );
 		if ( $model_option->get( self::OPTION_FORCE_CLEAN, false ) ) {
 			$model_option->set( self::OPTION_FORCE_CLEAN, false );

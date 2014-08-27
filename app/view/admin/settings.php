@@ -51,7 +51,9 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 		$loader = $this->_registry->get( 'theme.loader' );
 		$file   = $loader->get_file( 'setting/page.twig', $args, true );
 		$file->render();
-		$this->_registry->get( 'robots.helper' )->install();
+		if ( apply_filters( 'ai1ec_robots_install', true ) ) {
+			$this->_registry->get( 'robots.helper' )->install();
+		}
 	}
 
 	/* (non-PHPdoc)

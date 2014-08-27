@@ -36,10 +36,10 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	 * @var Ai1ec_Template_Adapter
 	 */
 	private $template_adapter;
-	
+
 	/**
 	 * Possible paths/url for file cache
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $_cache_paths = array();
@@ -53,17 +53,19 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		Ai1ec_Registry_Object $registry
 	) {
 		parent::__construct( $registry );
-		$this->_cache_paths[] = array( 
+		$this->_cache_paths[] = array(
 			'path' => AI1EC_CACHE_PATH,
 			'url'  => AI1EC_CACHE_URL
 		);
-		$filesystem = $this->_registry->get( 'filesystem.checker' );
-		$wp_static_folder = $filesystem->get_ai1ec_static_dir_if_available();
-		if ( '' !== $wp_static_folder ) {
-			$this->_cache_paths[] = array(
-				'path' => $wp_static_folder,
-				'url'  => content_url() . '/ai1ec_static/'
-			);
+		if ( apply_filters( 'ai1ec_check_static_dir', true ) ) {
+			$filesystem = $this->_registry->get( 'filesystem.checker' );
+			$wp_static_folder = $filesystem->get_ai1ec_static_dir_if_available();
+			if ( '' !== $wp_static_folder ) {
+				$this->_cache_paths[] = array(
+					'path' => $wp_static_folder,
+					'url'  => content_url() . '/ai1ec_static/'
+				);
+			}
 		}
 		$this->persistance_context = $this->_registry->get(
 			'cache.strategy.persistence-context',
@@ -79,7 +81,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	}
 
 	/**
-	 * 
+	 *
 	 * Get if file cache is enabled
 	 * @return boolean
 	 */
@@ -89,7 +91,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 
 	/**
 	 * Get folders which are not writable
-	 * 
+	 *
 	 * @return array
 	 */
 	public function get_folders_not_writable() {
@@ -294,7 +296,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 				if ( ! self::PARSE_LESS_FILES_AT_EVERY_REQUEST ) {
 					$this->_registry->get( 'notification.admin' )
 						->store(
-							sprintf( 
+							sprintf(
 								__(
 									'Your CSS is being compiled on every request, which causes your calendar to perform slowly. The following error occurred: %s',
 									AI1EC_PLUGIN_NAME

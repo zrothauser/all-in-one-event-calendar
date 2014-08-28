@@ -157,15 +157,19 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		// if it's empty it's a new install probably. Return static css.
 		// if it's numeric, just consider it a new install
 		if ( empty( $saved_par ) ) {
-			return AI1EC_URL . '/public/themes-ai1ec/vortex/css/ai1ec_parsed_css.css';
+			return Ai1ec_Http_Response_Helper::remove_protocols(
+				 AI1EC_URL . '/public/themes-ai1ec/vortex/css/ai1ec_parsed_css.css'
+			);
 		}
 		if ( is_numeric( $saved_par ) ) {
 			if ( $this->_registry->get( 'model.settings' )->get( 'render_css_as_link' ) ) {
 				$time = (int) $saved_par;
 				$template_helper = $this->_registry->get( 'template.link.helper' );
-				return add_query_arg(
-					array( self::QUERY_STRING_PARAM => $time, ),
-					trailingslashit( $template_helper->get_site_url() )
+				return Ai1ec_Http_Response_Helper::remove_protocols(
+					add_query_arg(
+						array( self::QUERY_STRING_PARAM => $time, ),
+						trailingslashit( $template_helper->get_site_url() )
+					)
 				);
 			} else {
 				add_action( 'wp_head', array( $this, 'echo_css' ) );
@@ -174,7 +178,9 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 
 		}
 		// otherwise return the string
-		return $saved_par;
+		return Ai1ec_Http_Response_Helper::remove_protocols( 
+			$saved_par
+		);
 	}
 
 	/**

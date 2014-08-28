@@ -106,6 +106,8 @@ class Ai1ec_Request_Parser extends Ai1ec_Abstract_Query {
 		$this->add_rule( 'callback',      false, 'string', null, false );
 		// Whether to include navigation controls
 		$this->add_rule( 'no_navigation' ,false, 'string', false, false );
+		// whether to display the filter bar in the super widget
+		$this->add_rule( 'display_filters' ,false, 'string', false, false );
 		$this->add_rule( 'applying_filters' ,false, 'string', false, false );
 		$this->add_rule( 'shortcode' ,false, 'string', false, false );
 		$this->add_rule( 'events_limit', false, 'int', null, false );

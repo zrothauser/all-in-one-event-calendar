@@ -122,7 +122,8 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				'tags'                         => $tags,
 				'contribution_buttons'         => apply_filters(
 					'ai1ec_contribution_buttons',
-					''
+					'',
+					$type
 				),
 				'show_dropdowns'               => apply_filters(
 					'ai1ec_show_dropdowns',
@@ -145,10 +146,6 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 					$empty
 				),
 			);
-			// Frontend forms are not allowed in SW yet
-			if ( 'jsonp' === $type ) {
-				$filter_args['contribution_buttons'] = '';
-			}
 
 			$filter_menu   = $loader->get_file(
 				'filter-menu.twig',

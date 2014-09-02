@@ -48,7 +48,11 @@ class Ai1ec_Router extends Ai1ec_Base {
 			$filter_set = false;
 			$ai1ec_settings = $this->_registry->get( 'model.settings' );
 			// check if something in the filters is set
-			foreach ( Ai1ec_Cookie_Utility::$types as $type ) {
+			$types          = apply_filters(
+				'ai1ec_filter_types',
+				Ai1ec_Cookie_Utility::$types
+			);
+			foreach ( $types as $type ) {
 				if ( ! empty( $view_args[$type] ) ) {
 					$filter_set = true;
 					break;

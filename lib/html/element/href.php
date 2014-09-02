@@ -45,6 +45,11 @@ class Ai1ec_Html_Element_Href {
 	private $is_author;
 
 	/**
+	 * @var boolean
+	 */
+	private $is_custom_filter;
+
+	/**
 	 * @var array the arguments to parse
 	 */
 	private $args;
@@ -63,6 +68,11 @@ class Ai1ec_Html_Element_Href {
 	 * @var boolean
 	 */
 	private $pretty_permalinks_enabled;
+
+	/**
+	 * @var string
+	 */
+	private $uri_particle = null;
 
 	/**
 	 * @param boolean $pretty_permalinks_enabled
@@ -85,6 +95,12 @@ class Ai1ec_Html_Element_Href {
 	public function __construct( array $args, $calendar ) {
 		$this->args = $args;
 		$this->calendar_page = $calendar;
+		if ( isset( $args['_extra_used_parameters'] ) ) {
+			$this->used_paramaters = array_merge(
+				$this->used_paramaters,
+				$args['_extra_used_parameters']
+			);
+		}
 	}
 
 	/**
@@ -127,7 +143,12 @@ class Ai1ec_Html_Element_Href {
 					$value;
 			}
 		}
-		if ( $this->is_category || $this->is_tag || $this->is_author ) {
+		if (
+			$this->is_category ||
+			$this->is_tag ||
+			$this->is_author ||
+			$this->is_custom_filter
+		) {
 			$to_implode = $this->add_or_remove_category_from_href(
 				$to_implode
 			);
@@ -150,6 +171,19 @@ class Ai1ec_Html_Element_Href {
 	}
 
 	/**
+	 * Sets that class is used for custom filter.
+	 *
+	 * @param bool   $value        Expected true or false.
+	 * @param string $uri_particle URI particle identifier.
+	 *
+	 * @return void Method does not return.
+	 */
+	public function set_custom_filter( $value, $uri_particle = null ) {
+		$this->is_custom_filter = $value;
+		$this->uri_particle     = $uri_particle;
+	}
+
+	/**
 	 * Perform some extra manipulation for filter href. Basically if the current
 	 * category is part of the filter, the href will not contain it (because
 	 * clicking on it will actually mean "remove that one from the filter")
@@ -159,7 +193,10 @@ class Ai1ec_Html_Element_Href {
 	 * @return array
 	 */
 	private function add_or_remove_category_from_href( array $to_implode ) {
-		$array_key = $this->_current_array_key();
+		$array_key = $this->uri_particle;
+		if ( null === $this->uri_particle ) {
+			$array_key = $this->_current_array_key();
+		}
 		// Let's copy the origina cat_ids or tag_ids so we do not affect it
 		$copy      = array();
 		if ( isset( $this->args[$array_key] ) ) {

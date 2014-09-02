@@ -249,30 +249,28 @@ define(
 								$calendar
 									.find( '.ai1ec-category-filter' )
 										.replaceWith( data.categories );
-								if( ai1ec_config.use_select2 ) {
-									select2_multiselect_helper
-										.init( $calendar.find( '.ai1ec-category-filter' ) );
-								}
 							}
 							// Update authors
 							if( typeof data.authors === 'string' ) {
 								$calendar
 									.find( '.ai1ec-author-filter' )
 										.replaceWith( data.authors );
-								if( ai1ec_config.use_select2 ) {
-									select2_multiselect_helper
-										.init( $calendar.find( '.ai1ec-author-filter' ) );
-								}
 							}
 							// Tags
 							if( typeof data.tags === 'string' ) {
 								$calendar
 									.find( '.ai1ec-tag-filter' )
 										.replaceWith( data.tags );
-								if( ai1ec_config.use_select2 ) {
-									select2_multiselect_helper
-										.init( $calendar.find( '.ai1ec-tag-filter' ) );
-								}
+							}
+							// Custom filters
+							if( typeof data.custom_filters === 'string' ) {
+								$parent = $calendar
+									.find( 'li.ai1ec-custom-filter' ).parent();
+								console.log( $parent );
+								$calendar
+									.find( 'li.ai1ec-custom-filter' )
+									.remove();
+								$parent.append( data.custom_filters );
 							}
 							// And the "Subscribe buttons"
 							if( typeof data.subscribe_buttons === 'string' ) {

@@ -111,6 +111,22 @@ class Ai1ec_Request_Parser extends Ai1ec_Abstract_Query {
 		$this->add_rule( 'applying_filters' ,false, 'string', false, false );
 		$this->add_rule( 'shortcode' ,false, 'string', false, false );
 		$this->add_rule( 'events_limit', false, 'int', null, false );
+		$rules = apply_filters( 'ai1ec_request_parser_rules', array() );
+		if (
+			empty( $rules ) ||
+			! is_array( $rules )
+		) {
+			return;
+		}
+		foreach ( $rules as $rule ) {
+			$this->add_rule(
+				$rule['field'],
+				$rule['mandatory'],
+				$rule['type'],
+				$rule['value'],
+				$rule['separator']
+			);
+		}
 	}
 
 	/**

@@ -91,14 +91,16 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		// Get HTML for view itself.
 		$view       = $view_obj->get_content( $view_args );
 
+		$router = $this->_registry->get( 'routing.router' );
+		$are_filters_set = $router->is_at_least_one_filter_set_in_request(
+			$view_args
+		);
 		if (
 			( $view_args['no_navigation'] || $type !== 'html' ) &&
-			'true' !== $shortcode
+			'true' !== $shortcode &&
+			'true' !== $request->get( 'display_filters' ) // option to show filters in the super widget
 		) {
-			$router = $this->_registry->get( 'routing.router' );
-			$are_filters_set = $router->is_at_least_one_filter_set_in_request(
-				$view_args
-			);
+			
 			// send data both for json and jsonp as shortcodes are jsonp
 			return array(
 				'html'               => $view,
@@ -120,7 +122,8 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				'tags'                         => $tags,
 				'contribution_buttons'         => apply_filters(
 					'ai1ec_contribution_buttons',
-					''
+					'',
+					$type
 				),
 				'show_dropdowns'               => apply_filters(
 					'ai1ec_show_dropdowns',
@@ -161,7 +164,19 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			);
 
 			$calendar = $loader->get_file( 'calendar.twig', $calendar_args, false );
-			return $calendar->get_content();
+			// if it's just html, only the calendar html must be returned.
+			if ( 'html' === $type ) {
+				return $calendar->get_content();
+			}
+			// send data both for json and jsonp as shortcodes are jsonp
+			return array(
+				'html'               => $calendar->get_content(),
+				'categories'         => $categories,
+				'tags'               => $tags,
+				'views_dropdown'     => $views_dropdown,
+				'subscribe_buttons'  => $subscribe_buttons,
+				'are_filters_set'    => $are_filters_set,
+			);
 		}
 	}
 

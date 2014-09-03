@@ -227,6 +227,11 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				implode( ',', $view_args['post_ids'] );
 			$args['is_filtered'] = true;
 		}
+		$args = apply_filters(
+			'ai1ec_subscribe_buttons_arguments',
+			$args,
+			$view_args
+		);
 		$localization = $this->_registry->get( 'p28n.wpml' );
 		if (
 			NULL !== ( $use_lang = $localization->get_language() )

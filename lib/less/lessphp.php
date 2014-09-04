@@ -104,10 +104,10 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		$variables   = $this->convert_less_variables_for_parsing( $variables );
 		// Inject additional constants from extensions if not compiling core only.
 		if ( false === $compile_core ) {
-			
+
 			$variables   = apply_filters( 'ai1ec_less_constants', $variables );
 		}
-		
+
 
 		// Load the static variables defined in the theme's variables.less file.
 		$this->load_static_theme_variables();
@@ -158,10 +158,22 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 				$this->lessc->addImportDir( $dir );
 			}
 		}
-		$variables['fontdir'] = '~"' . $theme['theme_url'] . '/font"';
-		$variables['fontdir_default'] = '~"' . $this->default_theme_url . 'font"';
-		$variables['imgdir'] = '~"' . $theme['theme_url'] . '/img"';
-		$variables['imgdir_default'] = '~"' . $this->default_theme_url . 'img"';
+		$variables['fontdir'] = '~"' .
+			Ai1ec_Http_Response_Helper::remove_protocols(
+				$theme['theme_url']
+			) . '/font"';
+		$variables['fontdir_default'] = '~"' .
+			Ai1ec_Http_Response_Helper::remove_protocols(
+				$this->default_theme_url
+			) . 'font"';
+		$variables['imgdir'] = '~"' .
+			Ai1ec_Http_Response_Helper::remove_protocols(
+				$theme['theme_url']
+			) . '/img"';
+		$variables['imgdir_default'] = '~"' .
+			Ai1ec_Http_Response_Helper::remove_protocols(
+				$this->default_theme_url
+			) . 'img"';
 		if ( true === $compile_core ) {
 			$variables['fontdir'] = '~"../font"';
 			$variables['fontdir_default'] = '~"../font"';

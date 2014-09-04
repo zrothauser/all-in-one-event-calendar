@@ -1,58 +1,94 @@
 <?php
 
 /**
- * The Saas Infrastructure news feed importer.
+ * RSS feed importer.
  *
  * @author     Time.ly Network Inc.
- * @since      2.0
+ * @since      2.1
  *
  * @package    AI1EC
  * @subpackage AI1EC.News
  */
-class Ai1ec_News_Feed extends Ai1ec_Base {
+class Ai1ec_News_Feed {
 
 	/**
-	 * Imports feed from Time.ly website.
+	 * Import RSS feed.
 	 *
-	 * @return array Results.
+	 * @param int    $limit Number of entries to fetch.
+	 * @param string $feed  URI of RSS feed to import.
+	 *
+	 * @return array RSS feed entries.
 	 */
-	public function import_feed( $limit = 5 ) {
-		try {
-			include_once(
-					ABSPATH . WPINC . DIRECTORY_SEPARATOR . 'class-simplepie.php'
-				);
-			include_once(
-				ABSPATH . WPINC . DIRECTORY_SEPARATOR .'SimplePie'
-				. DIRECTORY_SEPARATOR .'File.php'
-			);
-			$result = get_transient( 'ai1ec_rss_feed' );
-			if (
-				false === $result ||
-				(
-					defined( 'AI1EC_DEBUG' ) &&
-					AI1EC_DEBUG
-				)
-			) {
-				$file = new SimplePie_File( AI1EC_RSS_FEED );
-				$feed = new SimplePie();
-				$feed->set_raw_data( $file->body );
-				$feed->init();
-				$result = is_wp_error( $feed )
-					? array()
-					: $feed->get_items( 0, $limit );
-				$expiration = apply_filters(
-					'wp_feed_cache_transient_lifetime',
-					12 * HOUR_IN_SECONDS,
-					AI1EC_RSS_FEED
-				);
-				if ( empty( $result ) ) {
-					$expiration = 1 * HOUR_IN_SECONDS;
-				}
-				set_transient( 'ai1ec_rss_feed', $result, $expiration );
-			}
-			return $result;
-		} catch ( Exception $exc ) {
-			return array();
+	public function import_feed( $limit = 5, $feed = AI1EC_RSS_FEED ) {
+        $cache  = $this->get_transient_name( $feed );
+        $result = get_transient( $cache );
+		if ( false === $result || AI1EC_DEBUG ) {
+            $result     = $this->fetch_feed( $limit, $feed );
+            $expiration = $this->get_expiration( $feed );
+			set_transient( $cache, $result, $expiration );
 		}
+        return $result;
 	}
+
+	/**
+	 * Fetch feed w/o caching.
+	 *
+	 * @param int    $limit Number of entries to fetch.
+	 * @param string $feed  URI of RSS feed to import.
+	 *
+	 * @return array List of feed entries.
+	 */
+    public function fetch_feed( $feed, $limit ) {
+		include_once(
+				ABSPATH . WPINC . DIRECTORY_SEPARATOR . 'class-simplepie.php'
+			);
+		include_once(
+			ABSPATH . WPINC . DIRECTORY_SEPARATOR .'SimplePie'
+			. DIRECTORY_SEPARATOR .'File.php'
+		);
+        $result = array();
+        try {
+			$file = new SimplePie_File( AI1EC_RSS_FEED );
+			$feed = new SimplePie();
+			$feed->set_raw_data( $file->body );
+			$feed->init();
+			if ( ! is_wp_error( $feed ) ) {
+				$result = $feed->get_items( 0, $limit );
+            }
+        } catch ( Exception $exception ) {} // discard
+        return $result;
+    }
+
+	/**
+	 * Get name to be used for transient.
+	 *
+	 * @param string $feed URI of feed to get transien name for.
+	 *
+	 * @return string Transient name to use.
+	 */
+    public function get_transient_name( $feed ) {
+        return ( AI1EC_RSS_FEED === $feed )
+            ? 'ai1ec_rss_feed' :
+            'ai1ec_rss_' . substr( md5( $feed ), 5, 8 );
+    }
+
+	/**
+	 * Get expiration time (in seconds) for feed.
+	 *
+	 * @param string $feed URI of feed to get transien name for.
+	 *
+	 * @return int Number of seconds to keep cached feed output.
+	 */
+    public function get_expiration( $feed ) {
+		$expiration = apply_filters(
+			'wp_feed_cache_transient_lifetime',
+			12 * HOUR_IN_SECONDS,
+			$feed
+		);
+		if ( empty( $result ) ) {
+			$expiration = 1 * HOUR_IN_SECONDS;
+		}
+        return $expiration;
+    }
+
 }

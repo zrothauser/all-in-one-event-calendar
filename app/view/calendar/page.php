@@ -109,6 +109,12 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				'views_dropdown'     => $views_dropdown,
 				'subscribe_buttons'  => $subscribe_buttons,
 				'are_filters_set'    => $are_filters_set,
+				'custom_filters'     => apply_filters(
+					'ai1ec_custom_filters_html',
+					'',
+					$view_args,
+					$request
+				),
 			);
 
 		} else {
@@ -145,6 +151,8 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 					'ai1ec_save_view_btngroup',
 					$empty
 				),
+				'view_args'                    => $view_args,
+				'request'                      => $request,
 			);
 
 			$filter_menu   = $loader->get_file(
@@ -219,6 +227,11 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				implode( ',', $view_args['post_ids'] );
 			$args['is_filtered'] = true;
 		}
+		$args = apply_filters(
+			'ai1ec_subscribe_buttons_arguments',
+			$args,
+			$view_args
+		);
 		$localization = $this->_registry->get( 'p28n.wpml' );
 		if (
 			NULL !== ( $use_lang = $localization->get_language() )
@@ -394,13 +407,18 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		if ( 0 === strncmp( $action, 'ai1ec_', 6 ) ) {
 			$action = substr( $action, 6 );
 		}
-		$view_args = $request->get_dict( array(
-			'post_ids',
-			'auth_ids',
-			'cat_ids',
-			'tag_ids',
-			'events_limit',
-		) );
+		$view_args = $request->get_dict(
+			apply_filters(
+				'ai1ec_view_args_for_view',
+				array(
+					'post_ids',
+					'auth_ids',
+					'cat_ids',
+					'tag_ids',
+					'events_limit',
+				)
+			)
+		);
 
 		$add_defaults = array(
 			'cat_ids' => 'categories',
@@ -431,6 +449,10 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		$view_args['action'] = $action;
 
 		$view_args['request'] = $request;
+		$view_args            = apply_filters(
+			'ai1ec_view_args_array',
+			$view_args
+		);
 		if ( null === $exact_date ) {
 			$href = $this->_registry->get( 'html.element.href', $view_args )
 				->generate_href();

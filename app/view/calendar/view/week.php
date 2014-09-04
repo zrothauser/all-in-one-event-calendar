@@ -44,11 +44,15 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 
 		$cell_array = $this->get_week_cell_array(
 			$local_date,
-			array(
-				'cat_ids'  => $args['cat_ids'],
-				'tag_ids'  => $args['tag_ids'],
-				'post_ids' => $args['post_ids'],
-				'auth_ids' => $args['auth_ids'],
+			apply_filters(
+				'ai1ec_get_events_relative_to_filter',
+				array(
+					'cat_ids'  => $args['cat_ids'],
+					'tag_ids'  => $args['tag_ids'],
+					'post_ids' => $args['post_ids'],
+					'auth_ids' => $args['auth_ids'],
+				),
+				$view_args
 			)
 		);
 

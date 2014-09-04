@@ -2,6 +2,9 @@
 	<ul class="ai1ec-nav ai1ec-nav-pills ai1ec-pull-left ai1ec-filters">
 		{{ categories | raw }}
 		{{ tags | raw }}
+		{% if additional_filters is defined %}
+		{{ additional_filters | raw }}
+		{% endif %}
 	</ul>
   <div class="ai1ec-pull-right">
   	{{ contribution_buttons | raw }}

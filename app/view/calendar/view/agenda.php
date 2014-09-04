@@ -38,11 +38,15 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$timestamp,
 			$events_limit,
 			$view_args['page_offset'],
-			array(
-				'post_ids' => $view_args['post_ids'],
-				'auth_ids' => $view_args['auth_ids'],
-				'cat_ids'  => $view_args['cat_ids'],
-				'tag_ids'  => $view_args['tag_ids'],
+			apply_filters(
+				'ai1ec_get_events_relative_to_filter',
+				array(
+					'post_ids' => $view_args['post_ids'],
+					'auth_ids' => $view_args['auth_ids'],
+					'cat_ids'  => $view_args['cat_ids'],
+					'tag_ids'  => $view_args['tag_ids'],
+				),
+				$view_args
 			),
 			$view_args['time_limit']
 		);

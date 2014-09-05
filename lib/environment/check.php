@@ -145,6 +145,15 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 	/**
 	 * Performs Extended Views version check.
 	 *
+	 * @param string $addon       Addon identifier.
+	 * @param string $min_version Minimum required version.
+	 * @param bool   $core        If set to true Core deactivates active and
+	 *                            outdated addons when it is activated. If set
+	 *                            false it means that addon activation process
+	 *                            called this method and it's enough to throw
+	 *                            and exception and allow exception handler
+	 *                            to deactivate addon with proper notices.
+	 *
 	 * @return void Method does not return.
 	 */
 	protected function _plugin_activation(

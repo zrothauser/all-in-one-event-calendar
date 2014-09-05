@@ -11,9 +11,16 @@
  */
 class Ai1ec_Environment_Checks extends Ai1ec_Base {
 
-	const EV_VERSION = '1.1.0';
-	const EV_NAME    = 'all-in-one-event-calendar-extended-views/all-in-one-event-calendar-extended-views.php';
-	const CORE_NAME  = 'all-in-one-event-calendar/all-in-one-event-calendar.php';
+	const CORE_NAME = 'all-in-one-event-calendar/all-in-one-event-calendar.php';
+
+	/**
+	 * List of dependencies.
+	 *
+	 * @var array
+	 */
+	protected $_addons = array(
+		'all-in-one-event-calendar-extended-views/all-in-one-event-calendar-extended-views.php' => '1.1.0',
+	);
 
 	/**
 	 * Runs checks for necessary config options.
@@ -108,11 +115,16 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 	 */
 	public function check_addons_activation( $plugin ) {
 		switch ( $plugin ) {
-			case self::EV_NAME:
-				$this->_extended_views_activation();
-				break;
 			case self::CORE_NAME:
 				$this->_check_active_addons();
+				break;
+			default:
+				$min_version = isset( $this->_addons[$plugin] )
+				? $this->_addons[$plugin]
+				: null;
+				if ( null !== $min_version ) {
+					$this->_plugin_activation( $plugin, $min_version );
+				}
 				break;
 		}
 	}
@@ -123,8 +135,10 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 	 * @return void Method does not return.
 	 */
 	protected function _check_active_addons() {
-		if ( is_plugin_active( self::EV_NAME ) ) {
-			$this->_extended_views_activation( true );
+		foreach ( $this->_addons as $addon => $version ) {
+			if ( is_plugin_active( $addon ) ) {
+				$this->_plugin_activation( $addon, $version, true );
+			}
 		}
 	}
 
@@ -133,26 +147,28 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 	 *
 	 * @return void Method does not return.
 	 */
-	protected function _extended_views_activation( $core = false ) {
+	protected function _plugin_activation(
+		$addon,
+		$min_version,
+		$core = false
+	) {
 		$ev_data = get_plugin_data(
-			WP_PLUGIN_DIR . DIRECTORY_SEPARATOR .
-			'all-in-one-event-calendar-extended-views' . DIRECTORY_SEPARATOR .
-			'all-in-one-event-calendar-extended-views.php'
+			WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $addon
 		);
 		if ( ! isset( $ev_data['Version'] ) ) {
 			return;
 		}
 		$version = $ev_data['Version'];
-		if ( -1 === version_compare( $version, self::EV_VERSION ) ) {
+		if ( -1 === version_compare( $version, $min_version ) ) {
 			$message = sprintf(
 				Ai1ec_I18n::__( 'Addon %s needs to be at least in version %s' ),
 				$ev_data['Name'],
-				self::EV_VERSION
+				$min_version
 			);
 			if ( ! $core ) {
-				throw new Ai1ec_Outdated_Addon_Exception( $message, self::EV_NAME );
+				throw new Ai1ec_Outdated_Addon_Exception( $message, $addon );
 			} else {
-				deactivate_plugins( self::EV_NAME );
+				deactivate_plugins( $addon );
 				$this->_registry->get( 'notification.admin' )->store(
 					$message,
 					'error',

@@ -4,7 +4,7 @@ Tags: calendar, events, ics, ics feed, wordpress ical importer, google
 calendar, ical, iCalendar, all-in-one, events sync, events widget,
 calendar widget
 Requires WorPress at least: 3.5
-Tested up to: 3.9.1
+Tested up to: 4.0
 Stable tag: 2.1.4
 License: GNU General Public License, version 3 (GPL-3.0)
 

@@ -5,27 +5,24 @@
  *
  * A widget that displays the next X upcoming events (similar to Agenda view).
  */
-class Ai1ec_View_Admin_Widget extends WP_Widget {
+class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 
-	/**
-	 * @var Ai1ec_Registry_Object
-	 */
-	protected $_registry = null;
+	protected $_css_loaded = false;
+	
+	public function get_id() {
+		return 'ai1ec_agenda_widget';
+	}
+	public static function register_widget() {
+		register_widget( 'Ai1ec_View_Admin_Widget' );
+	}
 
 	/**
 	 * Constructor for widget.
 	 */
 	public function __construct() {
-		// Set registry
-		$this->_registry = apply_filters( 'ai1ec_registry', false );
-
-		// Load CSS in front-end.
-		if ( ! is_admin() ) {
-			$this->_registry->get( 'css.frontend' )->add_link_to_html_for_frontend();
-		}
 
 		parent::__construct(
-			'ai1ec_agenda_widget',
+			$this->get_id(),
 			__( 'Upcoming Events', AI1EC_PLUGIN_NAME ),
 			array(
 				'description' => __( 'All-in-One Event Calendar: Lists upcoming events in Agenda view', AI1EC_PLUGIN_NAME ),
@@ -34,13 +31,25 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		);
 	}
 
-	/**
-	 * Register widget current WP instance.
-	 *
-	 * @return Ai1ec_View_Admin_Widget
-	 */
-	public function register_widget() {
-		return register_widget( __CLASS__ );
+	public function register_javascript_widget( $id_base ) {
+		$this->_registry->get( 'controller.javascript-widget' )
+			->add_widget( $id_base, 'view.calendar.widget' );
+	}
+	public function get_defaults() {
+		return array(
+			'title'                  => __( 'Upcoming Events', AI1EC_PLUGIN_NAME ),
+			'events_seek_type'       => 'events',
+			'events_per_page'        => 10,
+			'days_per_page'          => 10,
+			'show_subscribe_buttons' => true,
+			'show_calendar_button'   => true,
+			'hide_on_calendar_page'  => true,
+			'limit_by_cat'           => false,
+			'limit_by_tag'           => false,
+			'event_cat_ids'          => array(),
+			'event_tag_ids'          => array(),
+			'link_for_days'          => true,
+		);
 	}
 
 	/* (non-PHPdoc)
@@ -59,19 +68,7 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 	 * @return void
 	 */
 	public function form( $instance ) {
-		$default = array(
-			'title'                  => __( 'Upcoming Events', AI1EC_PLUGIN_NAME ),
-			'events_seek_type'       => 'events',
-			'events_per_page'        => 10,
-			'days_per_page'          => 10,
-			'show_subscribe_buttons' => true,
-			'show_calendar_button'   => true,
-			'hide_on_calendar_page'  => true,
-			'limit_by_cat'           => false,
-			'limit_by_tag'           => false,
-			'event_cat_ids'          => array(),
-			'event_tag_ids'          => array(),
-		);
+		$default = $this->get_defaults();
 		$instance = wp_parse_args( (array) $instance, $default );
 
 		// Get available cats, tags, events to allow user to limit widget to certain categories
@@ -173,17 +170,15 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 
 		return $instance;
 	}
-
-	/**
-	 * Widget function.
-	 *
-	 * Outputs the given instance of the widget to the front-end.
-	 *
-	 * @param  array $args     Display arguments passed to the widget
-	 * @param  array $instance The settings for this widget instance
-	 * @return void
-	 */
-	public function widget( $args, $instance ) {
+	
+	public function add_js() {
+		$this->_registry->get( 'controller.javascript' )->add_link_to_render_js(
+			Ai1ec_Javascript_Controller::LOAD_ONLY_FRONTEND_SCRIPTS,
+			false
+		);
+	}
+	
+	public function get_content( array $args_for_widget ) {
 		$type       = $this->get_name();
 		$agenda     = $this->_registry->get(
 			'view.calendar.view.agenda',
@@ -193,53 +188,38 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 		$search     = $this->_registry->get( 'model.search' );
 		$settings   = $this->_registry->get( 'model.settings' );
 		$html       = $this->_registry->get( 'factory.html' );
-		$javascript = $this->_registry->get( 'controller.javascript' );
-
-		$javascript->add_link_to_render_js(
-			Ai1ec_Javascript_Controller::LOAD_ONLY_FRONTEND_SCRIPTS,
-			false
-		);
-		$defaults = array(
-			'hide_on_calendar_page'  => true,
-			'event_cat_ids'          => array(),
-			'event_tag_ids'          => array(),
-			'events_per_page'        => 10,
-			'days_per_page'          => 10,
-			'events_seek_type'       => 'events',
-		);
-		$instance = wp_parse_args( $instance, $defaults );
-
-		if ( $instance['hide_on_calendar_page'] &&
+		
+		if ( $args_for_widget['hide_on_calendar_page'] &&
 			is_page( $settings->get( 'calendar_page_id' ) ) ) {
 			return;
 		}
-
+		
 		// Add params to the subscribe_url for filtering by Limits (category, tag)
 		$subscribe_filter  = '';
-		$subscribe_filter .= $instance['event_cat_ids'] ? '&ai1ec_cat_ids=' . join( ',', $instance['event_cat_ids'] ) : '';
-		$subscribe_filter .= $instance['event_tag_ids'] ? '&ai1ec_tag_ids=' . join( ',', $instance['event_tag_ids'] ) : '';
-
+		$subscribe_filter .= $args_for_widget['event_cat_ids'] ? '&ai1ec_cat_ids=' . join( ',', $args_for_widget['event_cat_ids'] ) : '';
+		$subscribe_filter .= $args_for_widget['event_tag_ids'] ? '&ai1ec_tag_ids=' . join( ',', $args_for_widget['event_tag_ids'] ) : '';
+		
 		// Get localized time
 		$timestamp = $time->format_to_gmt();
-
+		
 		// Set $limit to the specified category/tag
 		$limit = array(
-			'cat_ids'   => $instance['event_cat_ids'],
-			'tag_ids'   => $instance['event_tag_ids'],
+			'cat_ids'   => $args_for_widget['event_cat_ids'],
+			'tag_ids'   => $args_for_widget['event_tag_ids'],
 		);
-
+		
 		// Get events, then classify into date array
 		// JB: apply seek check here
-		$seek_days  = ( 'days' === $instance['events_seek_type'] );
-		$seek_count = $instance['events_per_page'];
+		$seek_days  = ( 'days' === $args_for_widget['events_seek_type'] );
+		$seek_count = $args_for_widget['events_per_page'];
 		$last_day   = false;
 		if ( $seek_days ) {
-			$seek_count = $instance['days_per_page'] * 5;
+			$seek_count = $args_for_widget['days_per_page'] * 5;
 			$last_day   = strtotime(
-				'+' . $instance['days_per_page'] . ' days'
+				'+' . $args_for_widget['days_per_page'] . ' days'
 			);
 		}
-
+		
 		$event_results = $search->get_events_relative_to(
 			$timestamp,
 			$seek_count,
@@ -253,35 +233,49 @@ class Ai1ec_View_Admin_Widget extends WP_Widget {
 				}
 			}
 		}
-
+		
 		$dates                    = $agenda->get_agenda_like_date_array( $event_results['events'] );
 		$is_ticket_button_enabled = apply_filters( 'ai1ec_' . $type . '_ticket_button', false );
-
-		$args['title']                     = $instance['title'];
-		$args['show_subscribe_buttons']    = $instance['show_subscribe_buttons'];
-		$args['show_calendar_button']      = $instance['show_calendar_button'];
-		$args['dates']                     = $dates;
-		$args['show_location_in_title']    = $settings->get( 'show_location_in_title' );
-		$args['show_year_in_agenda_dates'] = $settings->get( 'show_year_in_agenda_dates' );
-		$args['calendar_url']              = $html->create_href_helper_instance( $limit )->generate_href();
-		$args['subscribe_url']             = AI1EC_EXPORT_URL . $subscribe_filter;
-		$args['subscribe_url_no_html']     = AI1EC_EXPORT_URL . '&no_html=true' . $subscribe_filter;
-		$args['is_ticket_button_enabled']  = $is_ticket_button_enabled;
-		$args['text_upcoming_events']      = __( 'There are no upcoming events.', AI1EC_PLUGIN_NAME );
-		$args['text_all_day']              = __( 'all-day', AI1EC_PLUGIN_NAME );
-		$args['text_view_calendar']        = __( 'View Calendar', AI1EC_PLUGIN_NAME );
-		$args['text_edit']                 = __( 'Edit', AI1EC_PLUGIN_NAME );
-		$args['text_venue_separator']      = __( '@ %s', AI1EC_PLUGIN_NAME );
-		$args['text_subscribe_label']      = __( 'Add', AI1EC_PLUGIN_NAME );
-		$args['subscribe_buttons_text']    = $this->_registry
+		
+		$args_for_widget['dates']                     = $dates;
+		// load CSS just once for all widgets
+		if ( false === $this->_css_loaded ) {
+			$args_for_widget['css']                   = $this->_registry->get( 'css.frontend' )->get_compiled_css();
+			$this->_css_loaded = true;
+		}
+		$args_for_widget['show_location_in_title']    = $settings->get( 'show_location_in_title' );
+		$args_for_widget['show_year_in_agenda_dates'] = $settings->get( 'show_year_in_agenda_dates' );
+		$args_for_widget['calendar_url']              = $html->create_href_helper_instance( $limit )->generate_href();
+		$args_for_widget['subscribe_url']             = AI1EC_EXPORT_URL . $subscribe_filter;
+		$args_for_widget['subscribe_url_no_html']     = AI1EC_EXPORT_URL . '&no_html=true' . $subscribe_filter;
+		$args_for_widget['is_ticket_button_enabled']  = $is_ticket_button_enabled;
+		$args_for_widget['text_upcoming_events']      = __( 'There are no upcoming events.', AI1EC_PLUGIN_NAME );
+		$args_for_widget['text_all_day']              = __( 'all-day', AI1EC_PLUGIN_NAME );
+		$args_for_widget['text_view_calendar']        = __( 'View Calendar', AI1EC_PLUGIN_NAME );
+		$args_for_widget['text_edit']                 = __( 'Edit', AI1EC_PLUGIN_NAME );
+		$args_for_widget['text_venue_separator']      = __( '@ %s', AI1EC_PLUGIN_NAME );
+		$args_for_widget['text_subscribe_label']      = __( 'Add', AI1EC_PLUGIN_NAME );
+		$args_for_widget['subscribe_buttons_text']    = $this->_registry
 			->get( 'view.calendar.subscribe-button' )
 			->get_labels();
-
 		// Display theme
-		$this->_registry->get( 'theme.loader' )->get_file(
+		return $this->_registry->get( 'theme.loader' )->get_file(
 			'agenda-widget.twig',
-			$args
-		)->render();
+			$args_for_widget
+		)->get_content();
+	}
+
+	public function get_js_widget_configurable_defaults() {
+		$def = $this->get_defaults();
+		unset( $def['title'] );
+		unset( $def['link_for_days'] );
+		return $def;
+	}
+
+	public function javascript_widget( $args ) {
+		$args['show_calendar_button'] = false;
+		$args['link_for_days']        = false;
+		return parent::javascript_widget( $args );
 	}
 
 	/**

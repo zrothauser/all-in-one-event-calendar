@@ -330,6 +330,16 @@ class Ai1ec_Front_Controller {
 			array( $this, 'initialize_router' ),
 			PHP_INT_MAX - 1
 		);
+		add_action(
+			'widgets_init',
+			array( 'Ai1ec_View_Admin_Widget', 'register_widget' )
+		);
+		if ( isset( $_GET[Ai1ec_Controller_Javascript_Widget::WIDGET_PARAMETER] ) ) {
+			$this->_registry->get( 'event.dispatcher' )->register_action(
+				'init',
+				array( 'controller.javascript-widget', 'render_js_widget' )
+			);
+		}
 		// Route the request.
 		$action = 'template_redirect';
 		if ( is_admin() ) {
@@ -454,10 +464,6 @@ class Ai1ec_Front_Controller {
 			array( 'view.admin.event-category', 'manage_events_categories_custom_column' ),
 			10,
 			3
-		);
-		$dispatcher->register_action(
-			'widgets_init',
-			array( 'view.calendar.widget', 'register_widget' )
 		);
 
 		// register ICS cron action

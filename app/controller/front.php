@@ -512,6 +512,10 @@ class Ai1ec_Front_Controller {
 			);
 			$dispatcher->register_action(
 				'admin_menu',
+				array( 'view.admin.add-ons', 'add_page' )
+			);
+			$dispatcher->register_action(
+				'admin_menu',
 				array( 'view.admin.theme-switching', 'add_page' )
 			);
 			$dispatcher->register_action(

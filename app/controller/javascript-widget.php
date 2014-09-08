@@ -53,8 +53,6 @@ class Ai1ec_Controller_Javascript_Widget extends Ai1ec_Base {
 	public function render_js_widget() {
 		$widget = $_GET[self::WIDGET_PARAMETER];
 		$widget_class = null;
-		fb($this->_widgets);
-		fb($widget);
 		if ( isset( $this->_widgets[$widget] ) ) {
 			$widget_class = $this->_widgets[$widget];
 		}

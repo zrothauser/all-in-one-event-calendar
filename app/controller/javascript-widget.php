@@ -51,22 +51,22 @@ class Ai1ec_Controller_Javascript_Widget extends Ai1ec_Base {
 	 * Renders everything that's needed for the embedded widget.
 	 */
 	public function render_js_widget() {
-		$widget = $_GET[self::WIDGET_PARAMETER];
-		$widget_class = null;
-		if ( isset( $this->_widgets[$widget] ) ) {
-			$widget_class = $this->_widgets[$widget];
-		}
-		if ( null === $widget_class ) {
-			return;
-		}
-		$widget_instance = $this->_registry->get( $widget_class );
 		if ( isset( $_GET['render'] ) && 'true' === $_GET['render'] ) {
+			$widget = $_GET[self::WIDGET_PARAMETER];
+			$widget_class = null;
+			if ( isset( $this->_widgets[$widget] ) ) {
+				$widget_class = $this->_widgets[$widget];
+			}
+			if ( null === $widget_class ) {
+				return;
+			}
+			$widget_instance = $this->_registry->get( $widget_class );
 			$this->render_content( $widget_instance );
 		}
-		$this->render_javascript( $widget_instance );
+		$this->render_javascript();
 	}
 	
-	public function render_javascript( Ai1ec_Embeddable $widget_instance ) {
+	public function render_javascript() {
 		header( 'Content-Type: application/javascript' );
 		header(
 			'Expires: ' . gmdate( 'D, d M Y H:i:s', time() + 31536000 ) . ' GMT'

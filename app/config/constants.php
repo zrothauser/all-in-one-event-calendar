@@ -361,7 +361,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 
 	// Use frontend rendering.
 	if ( ! defined( 'AI1EC_USE_FRONTEND_RENDERING' ) ) {
-		define( 'AI1EC_USE_FRONTEND_RENDERING', true );
+		define( 'AI1EC_USE_FRONTEND_RENDERING', false );
 	}
 
 	// If i choose to use the calendar url as the base for events permalinks,

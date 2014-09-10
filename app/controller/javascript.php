@@ -572,7 +572,7 @@ JSC;
 		if( true === is_page( $this->_settings->get( 'calendar_page_id' ) ) ) {
 			$is_calendar_page = self::TRUE_PARAM;
 		}
-		fb($page);
+
 		$url = add_query_arg(
 			array(
 				// Add the page to load

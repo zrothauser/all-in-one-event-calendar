@@ -229,7 +229,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$event_props = array();
 			$event_props['filtered_title']     = $event->get_runtime( 'filtered_title' );
 			$event_props['venue']              = $event->get_runtime( 'venue' );
-			// $event_props]['edit_post_link'] = $event->get_runtime( 'edit_post_link' );
+			$event_props['edit_post_link']     = $event->get_runtime( 'edit_post_link' );
 			$event_props['post_id']            = $event->get_runtime( 'post_id' );
 			$event_props['instance_id']        = $event->get_runtime( 'instance_id' );
 			$event_props['content_img_url']    = $event->get_runtime( 'content_img_url' );
@@ -247,11 +247,15 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 					'alignleft'
 				);
 			$dates[$timestamp]['events'][$category][] = $event_props;
-			$dates[$timestamp]['href'] = $href_for_date;
-			$dates[$timestamp]['day'] = $this->_registry->get( 'date.time', $timestamp )->format_i18n( 'j' );
-			$dates[$timestamp]['weekday'] = $this->_registry->get( 'date.time', $timestamp )->format_i18n( 'D' );
-			$dates[$timestamp]['month'] = $this->_registry->get( 'date.time', $timestamp )->format_i18n( 'M' );
-			$dates[$timestamp]['year'] = $this->_registry->get( 'date.time', $timestamp )->format_i18n( 'Y' );
+			$dates[$timestamp]['href']                = $href_for_date;
+			$dates[$timestamp]['day']                 = $this->_registry->
+				get( 'date.time', $timestamp )->format_i18n( 'j' );
+			$dates[$timestamp]['weekday']             = $this->_registry->
+				get( 'date.time', $timestamp )->format_i18n( 'D' );
+			$dates[$timestamp]['month']               = $this->_registry->
+				get( 'date.time', $timestamp )->format_i18n( 'M' );
+			$dates[$timestamp]['year']                = $this->_registry->
+				get( 'date.time', $timestamp )->format_i18n( 'Y' );
 		}
 		$this->_registry->get( 'controller.content-filter' )
 			->restore_the_content_filters();

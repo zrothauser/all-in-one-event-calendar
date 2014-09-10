@@ -51,7 +51,7 @@ class Ai1ec_View_Add_Ons extends Ai1ec_View_Admin_Abstract {
 			<p><?php echo Ai1ec_I18n::__( 'These add-ons extend the functionality of All In One Event Calendar.' ); ?></p>
 			<?php
 				if ( false === ( $cache = get_transient( 'ai1ec_addons_listxx' ) ) ) {
-					$feed = wp_remote_get( 'http://localhost/?action=addons_list', array( 'sslverify' => false ) );
+					$feed = wp_remote_get( 'https://time.ly/?action=addons_list', array( 'sslverify' => false ) );
 					if ( ! is_wp_error( $feed ) ) {
 						if ( isset( $feed['body'] ) && strlen( $feed['body'] ) > 0 ) {
 							$cache = wp_remote_retrieve_body( $feed );

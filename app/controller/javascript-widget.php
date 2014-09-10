@@ -20,6 +20,10 @@ class Ai1ec_Controller_Javascript_Widget extends Ai1ec_Base {
 		$this->_widgets[$widget_id] = $widget_class;
 	}
 
+	public function get_widgets() {
+		return $this->_widgets;
+	}
+
 	/**
 	 * Adds Super Widget JS to admin screen.
 	 *

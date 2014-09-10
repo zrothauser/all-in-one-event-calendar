@@ -7,11 +7,21 @@
  */
 class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 
+	/**
+	 * @var boolean
+	 */
 	protected $_css_loaded = false;
 	
+	/**
+	 * @return string
+	 */
 	public function get_id() {
 		return 'ai1ec_agenda_widget';
 	}
+
+	/**
+	 * Register the widget class.
+	 */
 	public static function register_widget() {
 		register_widget( 'Ai1ec_View_Admin_Widget' );
 	}
@@ -31,10 +41,16 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 		);
 	}
 
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Embeddable::register_javascript_widget()
+	 */
 	public function register_javascript_widget( $id_base ) {
 		$this->_registry->get( 'controller.javascript-widget' )
 			->add_widget( $id_base, 'view.calendar.widget' );
 	}
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Embeddable::get_defaults()
+	 */
 	public function get_defaults() {
 		return array(
 			'title'                  => __( 'Upcoming Events', AI1EC_PLUGIN_NAME ),
@@ -46,9 +62,86 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 			'hide_on_calendar_page'  => true,
 			'limit_by_cat'           => false,
 			'limit_by_tag'           => false,
-			'event_cat_ids'          => array(),
-			'event_tag_ids'          => array(),
+			'cat_ids'                => array(),
+			'tag_ids'                => array(),
 			'link_for_days'          => true,
+		);
+	}
+
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Embeddable::get_configurable_for_widget_creation()
+	 */
+	public function get_configurable_for_widget_creation() {
+		$defaults = $this->get_js_widget_configurable_defaults();
+		return array(
+			'events_seek_type' => array(
+				'renderer' => array(
+					'class'   => 'select',
+					'label'   => __(
+						'Choose how to limit the upcoming events',
+						AI1ECSW_PLUGIN_NAME
+					),
+					'options' => array(
+						array(
+							'text'  => __(
+								'Events',
+								AI1ECSW_PLUGIN_NAME
+							),
+							'value' => 'events'
+						),
+						array(
+							'text'  => __(
+								'Days',
+								AI1ECSW_PLUGIN_NAME
+							),
+							'value' => 'days'
+						),
+					),
+				),
+				'value' => $defaults['events_seek_type']
+			),
+			'events_per_page' => array(
+				'renderer' => array(
+					'class'     => 'input',
+					'label'     => Ai1ec_I18n::__( 'Number of events to show' ),
+					'type'      => 'append',
+					'append'    => 'events',
+				),
+				'value'  => $defaults['events_per_page'],
+			),
+			'days_per_page' => array(
+				'renderer' => array(
+					'class'     => 'input',
+					'label'     => Ai1ec_I18n::__( 'Number of days to show' ),
+					'type'      => 'append',
+					'append'    => 'days',
+				),
+				'value'  => $defaults['days_per_page'],
+			),
+			'upcoming_widgets_default_tags_categories' => array(
+				'renderer' => array(
+					'class' => 'tags-categories',
+					'label' => __(
+						'Show events filtered for the following tags/categories',
+						AI1ECSW_PLUGIN_NAME
+					),
+					'help'  => __(
+						'To clear, hold &#8984;/<abbr class="initialism">CTRL</abbr> and click selection.',
+						AI1ECSW_PLUGIN_NAME
+					)
+				),
+				'value' => array(
+					'categories' => array(),
+					'tags'       => array(),
+				),
+			),
+			'show_subscribe_buttons' => array(
+				'renderer' => array(
+					'class'     => 'checkbox',
+					'label'     => Ai1ec_I18n::__( 'Show the subscribe button in the widget' ),
+				),
+				'value'  => $defaults['show_subscribe_buttons'],
+			),
 		);
 	}
 
@@ -56,7 +149,7 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 	 * @see Ai1ec_Calendar_View_Abstract::get_name()
 	*/
 	public function get_name() {
-		return 'widget';
+		return 'Upcoming Events';
 	}
 
 	/**
@@ -86,12 +179,12 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 			'hide_on_calendar_page'  => array('value'   => $instance['hide_on_calendar_page']),
 			'limit_by_cat'           => array('value'   => $instance['limit_by_cat']),
 			'limit_by_tag'           => array('value'   => $instance['limit_by_tag']),
-			'event_cat_ids'          => array(
-			                                  'value'   => (array)$instance['event_cat_ids'],
+			'cat_ids'          => array(
+			                                  'value'   => (array)$instance['cat_ids'],
 			                                  'options' => $events_categories
 			                                 ),
-			'event_tag_ids'          => array(
-			                                  'value'   => (array)$instance['event_tag_ids'],
+			'tag_ids'          => array(
+			                                  'value'   => (array)$instance['tag_ids'],
 			                                  'options' => $events_tags
 			                                 ),
 		);
@@ -145,32 +238,35 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 
 		// For limits, set the limit to False if no IDs were selected, or set the respective IDs to empty if "limit by" was unchecked
 		$instance['limit_by_cat'] = false;
-		$instance['event_cat_ids'] = array();
-		if ( isset( $new_instance['event_cat_ids'] ) && $new_instance['event_cat_ids'] != false ) {
+		$instance['cat_ids'] = array();
+		if ( isset( $new_instance['cat_ids'] ) && $new_instance['cat_ids'] != false ) {
 			$instance['limit_by_cat'] = true;
 		}
 		if ( isset( $new_instance['limit_by_cat'] ) && $new_instance['limit_by_cat'] != false ) {
 			$instance['limit_by_cat'] = true;
 		}
-		if ( isset( $new_instance['event_cat_ids'] ) && $instance['limit_by_cat'] === true ) {
-			$instance['event_cat_ids'] = $new_instance['event_cat_ids'];
+		if ( isset( $new_instance['cat_ids'] ) && $instance['limit_by_cat'] === true ) {
+			$instance['cat_ids'] = $new_instance['cat_ids'];
 		}
 
 		$instance['limit_by_tag'] = false;
-		$instance['event_tag_ids'] = array();
-		if ( isset( $new_instance['event_tag_ids'] ) && $new_instance['event_tag_ids'] != false ) {
+		$instance['tag_ids'] = array();
+		if ( isset( $new_instance['tag_ids'] ) && $new_instance['tag_ids'] != false ) {
 			$instance['limit_by_tag'] = true;
 		}
 		if ( isset( $new_instance['limit_by_tag'] ) && $new_instance['limit_by_tag'] != false ) {
 			$instance['limit_by_tag'] = true;
 		}
-		if ( isset( $new_instance['event_tag_ids'] ) && $instance['limit_by_tag'] === true ) {
-			$instance['event_tag_ids'] = $new_instance['event_tag_ids'];
+		if ( isset( $new_instance['tag_ids'] ) && $instance['limit_by_tag'] === true ) {
+			$instance['tag_ids'] = $new_instance['tag_ids'];
 		}
 
 		return $instance;
 	}
 	
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Embeddable::add_js()
+	 */
 	public function add_js() {
 		$this->_registry->get( 'controller.javascript' )->add_link_to_render_js(
 			Ai1ec_Javascript_Controller::LOAD_ONLY_FRONTEND_SCRIPTS,
@@ -178,8 +274,10 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 		);
 	}
 	
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Embeddable::get_content()
+	 */
 	public function get_content( array $args_for_widget ) {
-		$type       = $this->get_name();
 		$agenda     = $this->_registry->get(
 			'view.calendar.view.agenda',
 			$this->_registry->get( 'http.request.parser' )
@@ -196,16 +294,23 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 		
 		// Add params to the subscribe_url for filtering by Limits (category, tag)
 		$subscribe_filter  = '';
-		$subscribe_filter .= $args_for_widget['event_cat_ids'] ? '&ai1ec_cat_ids=' . join( ',', $args_for_widget['event_cat_ids'] ) : '';
-		$subscribe_filter .= $args_for_widget['event_tag_ids'] ? '&ai1ec_tag_ids=' . join( ',', $args_for_widget['event_tag_ids'] ) : '';
+		if ( ! is_array( $args_for_widget['cat_ids'] ) ) {
+			$args_for_widget['cat_ids'] = explode( ',', $args_for_widget['cat_ids'] );
+		}
+		
+		if ( ! is_array( $args_for_widget['cat_ids'] ) ) {
+			$args_for_widget['tag_ids'] = explode( ',', $args_for_widget['tag_ids'] );
+		}
+		$subscribe_filter .= $args_for_widget['cat_ids'] ? '&ai1ec_cat_ids=' . join( ',', $args_for_widget['cat_ids'] ) : '';
+		$subscribe_filter .= $args_for_widget['tag_ids'] ? '&ai1ec_tag_ids=' . join( ',', $args_for_widget['tag_ids'] ) : '';
 		
 		// Get localized time
 		$timestamp = $time->format_to_gmt();
 		
 		// Set $limit to the specified category/tag
 		$limit = array(
-			'cat_ids'   => $args_for_widget['event_cat_ids'],
-			'tag_ids'   => $args_for_widget['event_tag_ids'],
+			'cat_ids'   => $args_for_widget['cat_ids'],
+			'tag_ids'   => $args_for_widget['tag_ids'],
 		);
 		
 		// Get events, then classify into date array
@@ -235,7 +340,7 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 		}
 		
 		$dates                    = $agenda->get_agenda_like_date_array( $event_results['events'] );
-		$is_ticket_button_enabled = apply_filters( 'ai1ec_' . $type . '_ticket_button', false );
+
 		
 		$args_for_widget['dates']                     = $dates;
 		// load CSS just once for all widgets
@@ -248,7 +353,6 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 		$args_for_widget['calendar_url']              = $html->create_href_helper_instance( $limit )->generate_href();
 		$args_for_widget['subscribe_url']             = AI1EC_EXPORT_URL . $subscribe_filter;
 		$args_for_widget['subscribe_url_no_html']     = AI1EC_EXPORT_URL . '&no_html=true' . $subscribe_filter;
-		$args_for_widget['is_ticket_button_enabled']  = $is_ticket_button_enabled;
 		$args_for_widget['text_upcoming_events']      = __( 'There are no upcoming events.', AI1EC_PLUGIN_NAME );
 		$args_for_widget['text_all_day']              = __( 'all-day', AI1EC_PLUGIN_NAME );
 		$args_for_widget['text_view_calendar']        = __( 'View Calendar', AI1EC_PLUGIN_NAME );
@@ -265,6 +369,9 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 		)->get_content();
 	}
 
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Embeddable::get_js_widget_configurable_defaults()
+	 */
 	public function get_js_widget_configurable_defaults() {
 		$def = $this->get_defaults();
 		unset( $def['title'] );
@@ -272,6 +379,9 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 		return $def;
 	}
 
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Embeddable::javascript_widget()
+	 */
 	public function javascript_widget( $args ) {
 		$args['show_calendar_button'] = false;
 		$args['link_for_days']        = false;

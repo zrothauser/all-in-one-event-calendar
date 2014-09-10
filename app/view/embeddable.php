@@ -40,7 +40,20 @@ abstract class Ai1ec_Embeddable extends WP_Widget {
 	abstract public function register_javascript_widget( $id_base );
 	
 
+	/**
+	 * Return options needed for thw "Widget creator page
+	 * 
+	 * @return array
+	 */
+	abstract public function get_configurable_for_widget_creation();
 
+	/**
+	 * The human-readable name of the widget.
+	 * 
+	 * @return string
+	 */
+	abstract public function get_name();
+	
 	/**
 	 * Register widget class with current WP instance.
 	 * This must be static as otherwise the class would be instantiated twice,

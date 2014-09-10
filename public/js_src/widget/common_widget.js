@@ -11,7 +11,6 @@ require(
 			
 			var create_url = function( data ) {
 				var configurable = config.javascript_widgets[data.widget];
-				console.log(configurable);
 				var url = config.site_url + '?ai1ec_js_widget=' + data.widget + '&render=true';
 				$.each( configurable, function( el, i ) {
 					if ( undefined !== data[el] ) {

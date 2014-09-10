@@ -623,6 +623,24 @@ class Ai1ec_Front_Controller {
 				'activated_plugin',
 				array( 'environment.check', 'check_addons_activation' )
 			);
+			// Widget Creator
+			$dispatcher->register_action(
+				'admin_enqueue_scripts',
+				array( 'css.admin.super-widget', 'admin_enqueue_scripts' )
+			);
+			$dispatcher->register_action(
+				'current_screen',
+				array( 'view.admin.super-widget', 'add_meta_box' )
+			);
+			$dispatcher->register_action(
+				'admin_menu',
+				array( 'view.admin.super-widget', 'add_page' )
+			);
+			$dispatcher->register_filter(
+				'ai1ec_backend_js',
+				array( 'javascript.super-widget', 'add_backend_js' )
+			);
+			
 		} else { // ! is_admin()
 			$dispatcher->register_shortcode(
 				'ai1ec',

@@ -290,6 +290,9 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 					$val['longname'],
 					1
 				);
+				if ( AI1EC_USE_FRONTEND_RENDERING ) {
+					$options['request_format'] = 'json';
+				}
 				$href = $this->_registry->get( 'html.element.href', $options );
 				$values['href'] = $href->generate_href();
 				$available_views[$key] = $values;
@@ -419,7 +422,6 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				)
 			)
 		);
-
 		$add_defaults = array(
 			'cat_ids' => 'categories',
 			'tag_ids' => 'tags',
@@ -439,6 +441,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			$type
 		);
 
+		$view_args['request_format'] = $request->get( 'request_format' );
 		$exact_date = $this->get_exact_date( $request );
 
 		$view_args['no_navigation'] = $request

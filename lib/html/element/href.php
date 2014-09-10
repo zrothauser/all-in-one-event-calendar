@@ -27,6 +27,7 @@ class Ai1ec_Html_Element_Href {
 		'post_ids',
 		'tag_ids',
 		'events_limit',
+		'request_format',
 	);
 
 	/**

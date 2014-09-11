@@ -9,7 +9,7 @@
  * @package    AI1ECSW
  * @subpackage AI1ECSW.View
  */
-class Ai1ecsw_View_SuperWidget extends Ai1ec_View_Admin_Abstract {
+class Ai1ecsw_View_Widegt_Creator extends Ai1ec_View_Admin_Abstract {
 
 	/**
 	 * Adds page to the menu.
@@ -38,7 +38,7 @@ class Ai1ecsw_View_SuperWidget extends Ai1ec_View_Admin_Abstract {
 		$this->_registry->get( 'css.admin' )->admin_enqueue_scripts(
 			'ai1ec_event_page_all-in-one-event-calendar-settings'
 		);
-		$this->_registry->get( 'css.admin.super-widget' )->process_enqueue(
+		$this->_registry->get( 'css.admin' )->process_enqueue(
 			array(
 				array( 'style', 'super-widget.css', ),
 			)
@@ -79,6 +79,13 @@ class Ai1ecsw_View_SuperWidget extends Ai1ec_View_Admin_Abstract {
 		);
 	}
 
+	/**
+	 * Renders the settings
+	 * 
+	 * @param array $settings
+	 * 
+	 * @return array 
+	 */
 	public function get_html_from_settings( array $settings ) {
 		$named_elements = array();
 		foreach ( $settings as $id => $setting ) {
@@ -100,6 +107,8 @@ class Ai1ecsw_View_SuperWidget extends Ai1ec_View_Admin_Abstract {
 	public function display_meta_box( $object, $box )  {
 		$widgets = $this->_registry->get( 'controller.javascript-widget' )
 			->get_widgets();
+		// this is just for the Super Widget which doesn't fully implement Ai1ec_Embeddable
+		$widgets = apply_filters( 'ai1ec_widget_creators_widgets', $widgets );
 		$tabs = array();
 		foreach ( $widgets as $widget_id => $widget_class ) {
 			$widget = $this->_registry->get( $widget_class );
@@ -110,14 +119,6 @@ class Ai1ecsw_View_SuperWidget extends Ai1ec_View_Admin_Abstract {
 				)
 			);
 		}
-		$tabs['ai1ec-superwidget'] = array(
-			'name' => 'Full Calendar',
-			'elements' => $this->get_html_from_settings(
-				$this->_get_additional_settings()
-			)
-		);
-
-
 
 		$loader = $this->_registry->get( 'theme.loader' );
 		$file   = $loader->get_file(
@@ -137,115 +138,5 @@ class Ai1ecsw_View_SuperWidget extends Ai1ec_View_Admin_Abstract {
 		$file->render();
 	}
 
-	/**
-	 * Returns additional settings which are not settings but are used for
-	 * rendering purposes.
-	 *
-	 * @return array Settings.
-	 */
-	protected function _get_additional_settings() {
-		return array(
-			'no_navigation' => array(
-				'renderer' => array(
-					'class'   => 'select',
-					'label'   => __(
-						'Navigation bar',
-						AI1ECSW_PLUGIN_NAME
-					),
-					'options' => array(
-						array(
-							'text'  => __(
-								'With Calendar',
-								AI1ECSW_PLUGIN_NAME
-							),
-							'value' => ''
-						),
-						array(
-							'text'  => __(
-								'No navigation bar',
-								AI1ECSW_PLUGIN_NAME
-							),
-							'value' => 'true'
-						),
-					),
-				),
-				'value' => 'calendar',
-			),
-			'display_filters' => array(
-				'renderer' => array(
-					'class' => 'select',
-					'label' => __(
-						'Filter bar',
-						AI1ECSW_PLUGIN_NAME
-					),
-					'options' => array(
-						array(
-							'text'  => __(
-								'With Calendar',
-								AI1ECSW_PLUGIN_NAME
-							),
-							'value' => 'true'
-						),
-						array(
-							'text'  => __(
-								'No filter bar',
-								AI1ECSW_PLUGIN_NAME
-							),
-							'value' => ''
-						),
-					),
-				),
-				'value' => '',
-			),
-			'superwidget_display_type' => array(
-				'renderer' => array(
-					'class' => 'select',
-					'label' => Ai1ec_I18n::__(
-						'Display type'
-					),
-					'options' => array(
-						array(
-							'text'  => __( 'Default', AI1ECSW_PLUGIN_NAME ),
-							'value' => ''
-						),
-						array(
-							'text'  => __( 'Agenda', AI1ECSW_PLUGIN_NAME ),
-							'value' => 'agenda'
-						),
-						array(
-							'text'  => __( 'Day', AI1ECSW_PLUGIN_NAME ),
-							'value' => 'oneday'
-						),
-						array(
-							'text'  => __( 'Month', AI1ECSW_PLUGIN_NAME ),
-							'value' => 'month'
-						),
-						array(
-							'text'  => __( 'Week', AI1ECSW_PLUGIN_NAME ),
-							'value' => 'week'
-						),
-					),
-				),
-				'value' => '',
-			),
-			'action' => array(
-				'renderer' => array(
-					'class' => 'tags-categories',
-					'label' => __(
-						'Preselected calendar filters',
-						AI1ECSW_PLUGIN_NAME
-					),
-					'help'  => __(
-						'To clear, hold &#8984;/<abbr class="initialism">CTRL</abbr> and click selection.',
-						AI1ECSW_PLUGIN_NAME
-					)
-				),
-				'value' => array(
-					'categories' => array(),
-					'tags'       => array(),
-				),
-			),
-		);
-	}
 
 }

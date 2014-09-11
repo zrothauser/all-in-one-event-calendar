@@ -630,15 +630,11 @@ class Ai1ec_Front_Controller {
 			);
 			$dispatcher->register_action(
 				'current_screen',
-				array( 'view.admin.super-widget', 'add_meta_box' )
+				array( 'view.admin.widget-creator', 'add_meta_box' )
 			);
 			$dispatcher->register_action(
 				'admin_menu',
-				array( 'view.admin.super-widget', 'add_page' )
-			);
-			$dispatcher->register_filter(
-				'ai1ec_backend_js',
-				array( 'javascript.super-widget', 'add_backend_js' )
+				array( 'view.admin.widget-creator', 'add_page' )
 			);
 			
 		} else { // ! is_admin()

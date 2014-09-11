@@ -309,6 +309,17 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			$this->_registry->get( 'date.system' )->current_time()
 		)->format( 'Y-m-d' );
 
+		//var_dump($all_events[$day_start_ts]['allday']); die(1);
+		foreach ( $all_events[$day_start_ts]['allday'] as $i => $evt ) {
+			$all_events[$day_start_ts]['allday'][$i] = array(
+				'filtered_title' => $evt->get_runtime( 'filtered_title' ),
+				'instance_id'    => $evt->get( 'instance_id' ),
+				'post_id'        => $evt->get( 'post_id' ),
+				'is_multiday'    => $evt->get( 'is_multiday' ),
+				'color_style'    => $evt->get_runtime( 'color_style' ),
+			);
+		}
+
 		$days[$day_start_ts] = array(
 			'today'     => 0 === strcmp(
 				$today_ymd,

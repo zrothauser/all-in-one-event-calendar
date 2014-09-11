@@ -93,19 +93,6 @@ class Ai1ec_Front_Controller {
 	}
 
 	/**
-	 * Perform actions needed when our plugin is activated.
-	 *
-	 * @wp_hook activate_all-in-one-event-calendar/all-in-one-event-calendar.php
-	 *
-	 * @return void
-	 */
-	public function activation_hook() {
-		$this->_registry->get( 'app' )->register_post_type();
-		// Flush rewrite rules.
-		$this->_registry->get( 'rewrite' )->check_rewrites();
-	}
-
-	/**
 	 * Execute commands if our plugin must handle the request.
 	 *
 	 * @wp_hook init
@@ -626,6 +613,10 @@ class Ai1ec_Front_Controller {
 				'admin_init',
 				array( 'environment.check', 'run_checks' )
 			);
+			$dispatcher->register_action(
+				'activated_plugin',
+				array( 'environment.check', 'check_addons_activation' )
+			);
 		} else { // ! is_admin()
 			$dispatcher->register_shortcode(
 				'ai1ec',
@@ -771,19 +762,6 @@ class Ai1ec_Front_Controller {
 				'Some CRON function might not have been installed'
 			);
 		}
-	}
-
-	/**
-	 * Register the activation hook for the plugin.
-	 *
-	 * @return void
-	 */
-	protected function _register_activation_hook() {
-		// register_activation_hook
-		register_activation_hook(
-			AI1EC_PLUGIN_NAME . '/' . AI1EC_PLUGIN_NAME . '.php',
-			array( $this, 'activation_hook' )
-		);
 	}
 
 	/**

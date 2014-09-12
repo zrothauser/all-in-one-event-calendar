@@ -74,6 +74,10 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		$time_format              = $this->_registry->get( 'model.option' )
 			->get( 'time_format', Ai1ec_I18n::__( 'g a' ) );
 
+		$hours = array();
+		for ( $i = 0; $i < 24; $i ++ ) {
+			$hours[] = $this->_registry->get( 'twig.ai1ec-extension')->hour_to_datetime( $i )->format_i18n( $time_format );
+		}
 		$view_args = array(
 			'title'                    => $title,
 			'type'                     => 'oneday',
@@ -92,6 +96,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			'text_all_day'             => __( 'All-day', AI1EC_PLUGIN_NAME ),
 			'text_now_label'           => __( 'Now:', AI1EC_PLUGIN_NAME ),
 			'text_venue_separator'     => __( '@ %s', AI1EC_PLUGIN_NAME ),
+			'hours'                    => $hours,
 		);
 		if ( $settings->get( 'ajaxify_events_in_web_widget' ) ) {
 			$view_args['data_type_events'] = $args['data_type'];
@@ -327,6 +332,10 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			),
 			'allday'    => $all_events[$day_start_ts]['allday'],
 			'notallday' => $notallday,
+			'day'       => $this->_registry->
+				get( 'date.time', $day_start_ts )->format_i18n( 'j' ),
+			'weekday'   => $this->_registry->
+				get( 'date.time', $day_start_ts )->format_i18n( 'D' ),
 		);
 
 		return apply_filters(

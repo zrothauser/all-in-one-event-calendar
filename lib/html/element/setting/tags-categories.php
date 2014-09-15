@@ -87,6 +87,8 @@ class Ai1ec_Html_Setting_Tags_Categories extends Ai1ec_Html_Element_Settings {
 			'attributes' => array(
 				'class'    => 'ai1ec-form-control',
 				'multiple' => 'multiple',
+				// for Widget creator
+				'data-id'  => 'tags' === $type ? 'tag_ids' : 'cat_ids',
 			),
 		);
 		return $loader->get_file( 'setting/select.twig', $args, true )

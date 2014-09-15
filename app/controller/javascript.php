@@ -58,6 +58,8 @@ class Ai1ec_Javascript_Controller {
 	// settings page
 	const SETTINGS_PAGE = 'admin_settings.js';
 
+	//widget creator page
+	CONST WIDGET_CREATOR = 'widget-creator.js';
 	/**
 	 * @var Ai1ec_Registry_Object
 	 */
@@ -77,6 +79,7 @@ class Ai1ec_Javascript_Controller {
 		self::SETTINGS_PAGE       => true,
 		self::EVENT_PAGE_JS       => true,
 		self::CALENDAR_PAGE_JS    => true,
+		self::WIDGET_CREATOR      => true,
 	);
 
 	/**
@@ -296,7 +299,9 @@ class Ai1ec_Javascript_Controller {
 		if ( $this->_are_we_accessing_the_calendar_settings_page() === TRUE ) {
 			$script_to_load = self::SETTINGS_PAGE;
 		}
-
+		if ( true === $this->_are_we_creating_widgets() ) {
+			$script_to_load = self::WIDGET_CREATOR;
+		}
 		if ( false === $script_to_load ) {
 			$script_to_load = apply_filters( 'ai1ec_backend_js', self::LOAD_ONLY_BACKEND_SCRIPTS );
 		}
@@ -440,6 +445,8 @@ class Ai1ec_Javascript_Controller {
 			'affix_vertical_offset_xs'       => $settings->get( 'affix_vertical_offset_xs' ),
 			'calendar_page_id'               => $settings->get( 'calendar_page_id' ),
 			'region'                         => ( $settings->get( 'geo_region_biasing' ) ) ? $locale->get_region() : '',
+			'site_url'                       => trailingslashit( get_site_url() ),
+			'javascript_widgets'             => array(),
 		);
 		return apply_filters( 'ai1ec_js_translations', $data );
 	}
@@ -565,6 +572,7 @@ JSC;
 		if( true === is_page( $this->_settings->get( 'calendar_page_id' ) ) ) {
 			$is_calendar_page = self::TRUE_PARAM;
 		}
+
 		$url = add_query_arg(
 			array(
 				// Add the page to load
@@ -632,12 +640,18 @@ JSC;
 	 * @return boolean TRUE if we are accessing the settings page FALSE otherwise
 	 */
 	private function _are_we_accessing_the_calendar_settings_page() {
-		$path_details = pathinfo( $_SERVER["SCRIPT_NAME"] );
+		$path_details = pathinfo( $_SERVER['SCRIPT_NAME'] );
 		$page = isset( $_GET['page'] ) ? $_GET['page'] : '';
 		return $path_details['basename'] === 'edit.php' &&
 				$page === AI1EC_PLUGIN_NAME . '-settings';
 	}
 
+	protected function _are_we_creating_widgets() {
+		$path_details = pathinfo( $_SERVER['SCRIPT_NAME'] );
+		$page = isset( $_GET['page'] ) ? $_GET['page'] : '';
+		return $path_details['basename'] === 'edit.php' &&
+			$page === AI1EC_PLUGIN_NAME . '-widget-creator';
+	}
 	/**
 	 * Check if we are editing less variables
 	 *

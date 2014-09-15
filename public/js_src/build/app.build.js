@@ -49,6 +49,9 @@
 				name: "scripts/common_scripts/page_ready"
 			},
 			{
+				name: "scripts/widget-creator"
+			},
+			{
 				name: "external_libs/twig"
 			}
 	],

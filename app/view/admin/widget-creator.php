@@ -131,7 +131,7 @@ class Ai1ecsw_View_Widegt_Creator extends Ai1ec_View_Admin_Abstract {
 				'full_calendar_title' => __( 'Full Calendar', AI1ECSW_PLUGIN_NAME ),
 				'full_calendar_text'  => __( 'Use this option to embed this widget into a remote webpage (for example, a static HTML page hosted on a different server).', AI1ECSW_PLUGIN_NAME ),
 				'paste_text'          => __( 'Paste this code onto your site:', AI1ECSW_PLUGIN_NAME ),
-				'updated_code_text'   => __( 'Code will update when you change settings below. Learn more <a href="%s">here</a>.', AI1ECSW_PLUGIN_NAME )
+				'updated_code_text'   => __( 'Code will update when you change settings. Learn more <a href="%s">here</a>.', AI1ECSW_PLUGIN_NAME )
 			),
 			true
 		);

@@ -503,10 +503,6 @@ class Ai1ec_Front_Controller {
 				array( 'view.admin.all-events', 'taxonomy_filter_post_type_request' )
 			);
 			$dispatcher->register_action(
-				'admin_enqueue_scripts',
-				array( 'css.admin', 'admin_enqueue_scripts' )
-			);
-			$dispatcher->register_action(
 				'admin_menu',
 				array( 'view.admin.calendar-feeds', 'add_page' )
 			);
@@ -626,7 +622,7 @@ class Ai1ec_Front_Controller {
 			// Widget Creator
 			$dispatcher->register_action(
 				'admin_enqueue_scripts',
-				array( 'css.admin.super-widget', 'admin_enqueue_scripts' )
+				array( 'css.admin', 'admin_enqueue_scripts' )
 			);
 			$dispatcher->register_action(
 				'current_screen',

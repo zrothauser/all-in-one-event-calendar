@@ -227,22 +227,25 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			// Add the event.
 			$category = $event->is_allday() ? 'allday' : 'notallday';
 			$event_props = array();
-			$event_props['filtered_title']     = $event->get_runtime( 'filtered_title' );
-			$event_props['venue']              = $event->get_runtime( 'venue' );
-			$event_props['edit_post_link']     = $event->get_runtime( 'edit_post_link' );
-			$event_props['post_id']            = $event->get_runtime( 'post_id' );
-			$event_props['instance_id']        = $event->get_runtime( 'instance_id' );
-			$event_props['content_img_url']    = $event->get_runtime( 'content_img_url' );
-			$event_props['filtered_content']   = $event->get_runtime( 'filtered_content' );
-			$event_props['ticket_url']         = $event->get_runtime( 'ticket_url' );
-			$event_props['instance_permalink'] = $event->get_runtime( 'instance_permalink' );
-			$event_props['categories_html']    = $event->get_runtime( 'categories_html' );
-			$event_props['tags_html']          = $event->get_runtime( 'tags_html' );
-			$event_props['post_excerpt']       = $event->get_runtime( 'post_excerpt' );
-			$event_props['short_start_time']   = $event->get_runtime( 'short_start_time' );
-			$event_props['timespan_short']     = $event->_registry->
+			$event_props['post_id']             = $event->get( 'post_id' );
+			$event_props['instance_id']         = $event->get( 'instance_id' );
+			$event_props['venue']               = $event->get( 'venue' );
+			$event_props['ticket_url']          = $event->get( 'ticket_url' );
+			$event_props['filtered_title']      = $event->get_runtime( 'filtered_title' );
+			$event_props['edit_post_link']      = $event->get_runtime( 'edit_post_link' );
+			$event_props['content_img_url']     = $event->get_runtime( 'content_img_url' );
+			$event_props['filtered_content']    = $event->get_runtime( 'filtered_content' );
+			$event_props['ticket_url_label']    = $event->get_runtime( 'ticket_url_label' );
+			$event_props['instance_permalink']  = $event->get_runtime( 'instance_permalink' );
+			$event_props['categories_html']     = $event->get_runtime( 'categories_html' );
+			$event_props['category_bg_color']   = $event->get_runtime( 'category_bg_color' );
+			$event_props['category_text_color'] = $event->get_runtime( 'category_text_color' );
+			$event_props['tags_html']           = $event->get_runtime( 'tags_html' );
+			$event_props['post_excerpt']        = $event->get_runtime( 'post_excerpt' );
+			$event_props['short_start_time']    = $event->get_runtime( 'short_start_time' );
+			$event_props['timespan_short']      = $event->_registry->
 				get( 'view.event.time' )->get_timespan_html( $event, 'short' );
-			$event_props['avatar']             = $event->_registry->
+			$event_props['avatar']              = $event->_registry->
 				get( 'view.event.avatar' )->get_event_avatar(
 					$event,
 					array( 'post_thumbnail', 'location_avatar', 'category_avatar' ),

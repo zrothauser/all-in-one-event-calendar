@@ -447,6 +447,12 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		define( 'AI1EC_ADMIN_THEME_IMG_URL',  AI1EC_URL . '/public/admin/' . AI1EC_IMG_FOLDER );
 	}
 
+	// ====================
+	// = Add-ons list URL =
+	// ====================
+	if ( ! defined( 'AI1EC_TIMELY_ADDONS_URI' ) ) {
+		define( 'AI1EC_TIMELY_ADDONS_URI', 'https://time.ly/?action=addons_list' );
+	}
 
 	// Enable All-in-One-Event-Calendar to work in debug mode, which means,
 	// that cache is ignored, extra output may appear at places, etc.

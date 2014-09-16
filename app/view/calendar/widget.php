@@ -79,20 +79,20 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 					'class'   => 'select',
 					'label'   => __(
 						'Choose how to limit the upcoming events',
-						AI1ECSW_PLUGIN_NAME
+						AI1EC_PLUGIN_NAME
 					),
 					'options' => array(
 						array(
 							'text'  => __(
 								'Events',
-								AI1ECSW_PLUGIN_NAME
+								AI1EC_PLUGIN_NAME
 							),
 							'value' => 'events'
 						),
 						array(
 							'text'  => __(
 								'Days',
-								AI1ECSW_PLUGIN_NAME
+								AI1EC_PLUGIN_NAME
 							),
 							'value' => 'days'
 						),
@@ -123,11 +123,11 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 					'class' => 'tags-categories',
 					'label' => __(
 						'Show events filtered for the following tags/categories',
-						AI1ECSW_PLUGIN_NAME
+						AI1EC_PLUGIN_NAME
 					),
 					'help'  => __(
 						'To clear, hold &#8984;/<abbr class="initialism">CTRL</abbr> and click selection.',
-						AI1ECSW_PLUGIN_NAME
+						AI1EC_PLUGIN_NAME
 					)
 				),
 				'value' => array(

@@ -11,7 +11,7 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 	 * @var boolean
 	 */
 	protected $_css_loaded = false;
-	
+
 	/**
 	 * @return string
 	 */
@@ -263,7 +263,7 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 
 		return $instance;
 	}
-	
+
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Embeddable::add_js()
 	 */
@@ -273,7 +273,7 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 			false
 		);
 	}
-	
+
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Embeddable::get_content()
 	 */
@@ -286,33 +286,33 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 		$search     = $this->_registry->get( 'model.search' );
 		$settings   = $this->_registry->get( 'model.settings' );
 		$html       = $this->_registry->get( 'factory.html' );
-		
+
 		if ( $args_for_widget['hide_on_calendar_page'] &&
 			is_page( $settings->get( 'calendar_page_id' ) ) ) {
 			return;
 		}
-		
+
 		// Add params to the subscribe_url for filtering by Limits (category, tag)
 		$subscribe_filter  = '';
 		if ( ! is_array( $args_for_widget['cat_ids'] ) ) {
 			$args_for_widget['cat_ids'] = explode( ',', $args_for_widget['cat_ids'] );
 		}
-		
-		if ( ! is_array( $args_for_widget['cat_ids'] ) ) {
+
+		if ( ! is_array( $args_for_widget['tag_ids'] ) ) {
 			$args_for_widget['tag_ids'] = explode( ',', $args_for_widget['tag_ids'] );
 		}
 		$subscribe_filter .= $args_for_widget['cat_ids'] ? '&ai1ec_cat_ids=' . join( ',', $args_for_widget['cat_ids'] ) : '';
 		$subscribe_filter .= $args_for_widget['tag_ids'] ? '&ai1ec_tag_ids=' . join( ',', $args_for_widget['tag_ids'] ) : '';
-		
+
 		// Get localized time
 		$timestamp = $time->format_to_gmt();
-		
+
 		// Set $limit to the specified category/tag
 		$limit = array(
 			'cat_ids'   => $args_for_widget['cat_ids'],
 			'tag_ids'   => $args_for_widget['tag_ids'],
 		);
-		
+
 		// Get events, then classify into date array
 		// JB: apply seek check here
 		$seek_days  = ( 'days' === $args_for_widget['events_seek_type'] );
@@ -324,7 +324,7 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 				'+' . $args_for_widget['days_per_page'] . ' days'
 			);
 		}
-		
+
 		$event_results = $search->get_events_relative_to(
 			$timestamp,
 			$seek_count,
@@ -338,10 +338,10 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 				}
 			}
 		}
-		
+
 		$dates                    = $agenda->get_agenda_like_date_array( $event_results['events'] );
 
-		
+
 		$args_for_widget['dates']                     = $dates;
 		// load CSS just once for all widgets
 		if ( false === $this->_css_loaded ) {

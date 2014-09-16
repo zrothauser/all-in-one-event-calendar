@@ -21,8 +21,8 @@ class Ai1ecsw_View_Widegt_Creator extends Ai1ec_View_Admin_Abstract {
 	public function add_page() {
 		add_submenu_page(
 			AI1EC_ADMIN_BASE_URL,
-			__( 'Widget Creator', AI1ECSW_PLUGIN_NAME ),
-			__( 'Widget Creator', AI1ECSW_PLUGIN_NAME ),
+			__( 'Widget Creator', AI1EC_PLUGIN_NAME ),
+			__( 'Widget Creator', AI1EC_PLUGIN_NAME ),
 			'manage_ai1ec_feeds',
 			AI1EC_PLUGIN_NAME . '-widget-creator',
 			array( $this, 'display_page' )
@@ -46,7 +46,7 @@ class Ai1ecsw_View_Widegt_Creator extends Ai1ec_View_Admin_Abstract {
 		$args = array(
 			'title' => __(
 				'Widget Creator',
-				AI1ECSW_PLUGIN_NAME
+				AI1EC_PLUGIN_NAME
 			),
 			'metabox' => array(
 				'screen' => 'ai1ec-super-widget',
@@ -71,7 +71,7 @@ class Ai1ecsw_View_Widegt_Creator extends Ai1ec_View_Admin_Abstract {
 	public function add_meta_box() {
 		add_meta_box(
 			'ai1ec-widget-creator',
-			_x( 'Widget Creator', 'meta box', AI1ECSW_PLUGIN_NAME ),
+			_x( 'Widget Creator', 'meta box', AI1EC_PLUGIN_NAME ),
 			array( $this, 'display_meta_box' ),
 			'ai1ec-super-widget',
 			'left',
@@ -126,12 +126,12 @@ class Ai1ecsw_View_Widegt_Creator extends Ai1ec_View_Admin_Abstract {
 			array(
 				'tabs'            => $tabs,
 				'siteurl'             => trailingslashit( get_site_url() ),
-				'common_info'         => __( 'Use this tool to generate code snippets you can place on your site to embed the calendar and widgets.', AI1ECSW_PLUGIN_NAME ),
-				'preview'             => __( 'Preview:', AI1ECSW_PLUGIN_NAME ),
-				'full_calendar_title' => __( 'Full Calendar', AI1ECSW_PLUGIN_NAME ),
-				'full_calendar_text'  => __( 'Use this option to embed this widget into a remote webpage (for example, a static HTML page hosted on a different server).', AI1ECSW_PLUGIN_NAME ),
-				'paste_text'          => __( 'Paste this code onto your site:', AI1ECSW_PLUGIN_NAME ),
-				'updated_code_text'   => __( 'Code will update when you change settings. Learn more <a href="%s">here</a>.', AI1ECSW_PLUGIN_NAME )
+				'common_info'         => __( 'Use this tool to generate code snippets you can place on your site to embed the calendar and widgets.', AI1EC_PLUGIN_NAME ),
+				'preview'             => __( 'Preview:', AI1EC_PLUGIN_NAME ),
+				'full_calendar_title' => __( 'Full Calendar', AI1EC_PLUGIN_NAME ),
+				'full_calendar_text'  => __( 'Use this option to embed this widget into a remote webpage (for example, a static HTML page hosted on a different server).', AI1EC_PLUGIN_NAME ),
+				'paste_text'          => __( 'Paste this code onto your site:', AI1EC_PLUGIN_NAME ),
+				'updated_code_text'   => __( 'Code will update when you change settings. Learn more <a href="%s">here</a>.', AI1EC_PLUGIN_NAME )
 			),
 			true
 		);

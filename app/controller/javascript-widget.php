@@ -46,7 +46,7 @@ class Ai1ec_Controller_Javascript_Widget extends Ai1ec_Base {
 	public function add_js_translation( array $data ) {
 		$data['set_calendar_page'] = __( 
 			'You must choose the Calendar page before using the Super Widget',
-			AI1ECSW_PLUGIN_NAME
+			AI1EC_PLUGIN_NAME
 		);
 		return $data;
 	}

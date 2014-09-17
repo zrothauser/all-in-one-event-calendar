@@ -76,7 +76,9 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 
 		$hours = array();
 		for ( $i = 0; $i < 24; $i ++ ) {
-			$hours[] = $this->_registry->get( 'twig.ai1ec-extension')->hour_to_datetime( $i )->format_i18n( $time_format );
+			$hours[] = $this->_registry
+				->get( 'twig.ai1ec-extension')->hour_to_datetime( $i )
+				->format_i18n( $time_format );
 		}
 		$view_args = array(
 			'title'                    => $title,
@@ -281,7 +283,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 
 		$notallday = array();
 		$evt_stack = array( 0 ); // Stack to keep track of indentation
-		foreach ( $all_events[$day_start_ts]['notallday'] as $evt ) {
+		foreach ( $all_events[$day_start_ts]['notallday'] as $i => $evt ) {
 			// Calculate top and bottom edges of current event
 			$top    = (int)(
 				$evt->get( 'start' )->diff_sec( $loc_start_time ) / 60
@@ -305,7 +307,6 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 				'top'    => $top,
 				'height' => $bottom - $top,
 				'indent' => $indent,
-				'event'  => $evt,
 			);
 		}
 
@@ -314,15 +315,40 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			$this->_registry->get( 'date.system' )->current_time()
 		)->format( 'Y-m-d' );
 
-		//var_dump($all_events[$day_start_ts]['allday']); die(1);
-		foreach ( $all_events[$day_start_ts]['allday'] as $i => $evt ) {
-			$all_events[$day_start_ts]['allday'][$i] = array(
-				'filtered_title' => $evt->get_runtime( 'filtered_title' ),
-				'instance_id'    => $evt->get( 'instance_id' ),
-				'post_id'        => $evt->get( 'post_id' ),
-				'is_multiday'    => $evt->get( 'is_multiday' ),
-				'color_style'    => $evt->get_runtime( 'color_style' ),
-			);
+		foreach ( array( 'allday', 'notallday' ) as $event_type ) {
+			foreach ( $all_events[$day_start_ts][$event_type] as $i => $evt ) {
+				$all_events[$day_start_ts][$event_type][$i] = array(
+					'filtered_title'   => $evt->get_runtime( 'filtered_title' ),
+					'post_excerpt'     => $evt->get_runtime( 'post_excerpt' ),
+					'color_style'      => $evt->get_runtime( 'color_style' ),
+					'category_colors'  => $evt->get_runtime( 'category_colors' ),
+					'permalink'        => $evt->get_runtime( 'instance_permalink' ),
+					'ticket_url_label' => $evt->get_runtime( 'ticket_url_label' ),
+					'edit_post_link'   => $evt->get_runtime( 'edit_post_link' ),
+					'faded_color'      => $evt->get_runtime( 'faded_color' ),
+					'rgba_color'       => $evt->get_runtime( 'rgba_color' ),
+					'short_start_time' => $evt->get_runtime( 'short_start_time' ),
+					'instance_id'      => $evt->get( 'instance_id' ),
+					'post_id'          => $evt->get( 'post_id' ),
+					'is_multiday'      => $evt->get( 'is_multiday' ),
+					'venue'            => $evt->get( 'venue' ),
+					'ticket_url'       => $evt->get( 'ticket_url' ),
+					'start_truncated'  => $evt->get( 'start_truncated' ),
+					'end_truncated'  => $evt->get( 'end_truncated' ),
+					'popup_timespan'   => $this->_registry
+						->get( 'twig.ai1ec-extension')->timespan( $evt, 'short' ),
+					'avatar'           => $this->_registry
+						->get( 'twig.ai1ec-extension')->avatar( $evt, [
+						'post_thumbnail',
+						'content_img',
+						'location_avatar',
+						'category_avatar'
+						] ),
+				);
+				if ( 'notallday' === $event_type) {
+					$notallday[$i]['event'] = $all_events[$day_start_ts][$event_type][$i];
+				}
+			}
 		}
 
 		$days[$day_start_ts] = array(

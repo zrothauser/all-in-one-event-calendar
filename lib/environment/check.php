@@ -41,6 +41,7 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 		) {
 			return;
 		}
+		do_action( 'ai1ec_env_check' );
 		global $plugin_page;
 		$settings      = $this->_registry->get( 'model.settings' );
 		$notification  = $this->_registry->get( 'notification.admin' );

@@ -269,7 +269,6 @@ define(
 							if( typeof data.custom_filters === 'string' ) {
 								$parent = $calendar
 									.find( 'li.ai1ec-custom-filter' ).parent();
-								console.log( $parent );
 								$calendar
 									.find( 'li.ai1ec-custom-filter' )
 									.remove();

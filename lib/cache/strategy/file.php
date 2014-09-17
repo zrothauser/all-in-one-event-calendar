@@ -30,7 +30,6 @@ class Ai1ec_Cache_Strategy_File extends Ai1ec_Cache_Strategy {
 	 *
 	 */
 	public function get_data( $file ) {
-		$extension = $this->_get_extension_for_file( $file );
 		$file = $this->_safe_file_name( $file );
 		if ( ! file_exists( $this->_cache_dir . $file ) ) {
 			throw new Ai1ec_Cache_Not_Set_Exception(

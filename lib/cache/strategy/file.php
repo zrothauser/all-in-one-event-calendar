@@ -30,6 +30,7 @@ class Ai1ec_Cache_Strategy_File extends Ai1ec_Cache_Strategy {
 	 *
 	 */
 	public function get_data( $file ) {
+		$extension = $this->_get_extension_for_file( $file );
 		$file = $this->_safe_file_name( $file );
 		if ( ! file_exists( $this->_cache_dir . $file ) ) {
 			throw new Ai1ec_Cache_Not_Set_Exception(
@@ -47,7 +48,7 @@ class Ai1ec_Cache_Strategy_File extends Ai1ec_Cache_Strategy {
 	 *
 	 */
 	public function write_data( $filename, $value ) {
-		$filename = $this->_safe_file_name( $filename ) . '.css';
+		$filename = $this->_safe_file_name( $filename );
 		$value    = maybe_serialize( $value );
 
 		$result = $this->_registry->get( 'filesystem.checker' )->put_contents(
@@ -104,6 +105,23 @@ class Ai1ec_Cache_Strategy_File extends Ai1ec_Cache_Strategy {
 	}
 
 	/**
+	 * Get the extension for the file if required
+	 * 
+	 * @param string $file
+	 * 
+	 * @return string
+	 */
+	protected function _get_extension_for_file( $file ) {
+		$extensions = array(
+			'ai1ec_parsed_css' => '.css'
+		);
+		if ( isset( $extensions[$file] ) ) {
+			return $extensions[$file];
+		}
+		return '';
+	}
+	
+	/**
 	 * _safe_file_name method
 	 *
 	 * Generate safe file name for any storage case.
@@ -114,6 +132,7 @@ class Ai1ec_Cache_Strategy_File extends Ai1ec_Cache_Strategy {
 	 */
 	protected function _safe_file_name( $file ) {
 		static $prefix = NULL;
+		$extension = $this->_get_extension_for_file( $file );
 		if ( NULL === $prefix ) {
 			$prefix = substr( md5( site_url() ), 0, 8 );
 		}
@@ -128,7 +147,7 @@ class Ai1ec_Cache_Strategy_File extends Ai1ec_Cache_Strategy {
 		if ( 0 !== strncmp( $file, $prefix, 8 ) ) {
 			$file = $prefix . '_' . $file;
 		}
-		return $file;
+		return $file . $extension;
 	}
 
 }

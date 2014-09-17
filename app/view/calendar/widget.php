@@ -287,8 +287,9 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 		$settings   = $this->_registry->get( 'model.settings' );
 		$html       = $this->_registry->get( 'factory.html' );
 
+		$is_calendar_page = is_page( $settings->get( 'calendar_page_id' ) );
 		if ( $args_for_widget['hide_on_calendar_page'] &&
-			is_page( $settings->get( 'calendar_page_id' ) ) ) {
+			$is_calendar_page ) {
 			return;
 		}
 
@@ -343,8 +344,9 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 
 
 		$args_for_widget['dates']                     = $dates;
-		// load CSS just once for all widgets
-		if ( false === $this->_css_loaded ) {
+		// load CSS just once for all widgets. 
+		// Do not load it on the calendar page as it's already loaded.
+		if ( false === $this->_css_loaded && ! $is_calendar_page ) {
 			$args_for_widget['css']                   = $this->_registry->get( 'css.frontend' )->get_compiled_css();
 			$this->_css_loaded = true;
 		}

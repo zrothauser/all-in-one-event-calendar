@@ -79,7 +79,7 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 						case 'wp_option': // set the corresponding WP option
 							$this->_registry->get( 'model.option' )
 								->set( $name, $_POST[$name], true );
-							$value = null;
+							$value = (string)$_POST[$name];
 					}
 				}
 			} else {

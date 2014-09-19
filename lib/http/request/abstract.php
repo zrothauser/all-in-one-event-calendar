@@ -140,23 +140,6 @@ abstract class Ai1ec_Abstract_Query extends Ai1ec_Base implements arrayaccess {
 	}
 
 	/**
-	 * Get raw value from request.
-	 *
-	 * @param array $name Name of value to pull.
-	 *
-	 * @return array Raw value.
-	 */
-	public function get_raw( $name ) {
-		if ( ! $this->_ready ) {
-			return false;
-		}
-		if ( ! isset( $this->_request[$name] ) ) {
-			return false;
-		}
-		return $this->_request[$name];
-	}
-
-	/**
 	 * Check if the request is empry ( that means we are accessing the calendare page without parameters )
 	 *
 	 * @return boolean

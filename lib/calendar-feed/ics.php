@@ -150,7 +150,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 						$args['do_show_map'] = 1;
 					}
 					$args['source'] = $response['body'];
-					do_action( 'ai1ec_ics_before_import' );
+					do_action( 'ai1ec_ics_before_import', $args );
 					$result = $import_export->import_events( 'ics', $args );
 					do_action( 'ai1ec_ics_after_import' );
 					$count  = $result['count'];

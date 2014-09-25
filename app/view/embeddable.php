@@ -116,6 +116,8 @@ abstract class Ai1ec_Embeddable extends WP_Widget {
 	}
 
 	/**
+	 * Renders shortcode
+	 * 
 	 * @param array $atts
 	 * @param string $content
 	 */
@@ -127,6 +129,8 @@ abstract class Ai1ec_Embeddable extends WP_Widget {
 	}
 
 	/**
+	 * Renders js widget
+	 * 
 	 * @param array $args
 	 */
 	public function javascript_widget( $args ) {

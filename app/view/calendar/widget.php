@@ -348,7 +348,7 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 		// Do not load it on the calendar page as it's already loaded.
 		if ( false === $this->_css_loaded && ! $is_calendar_page ) {
 			if ( true === $remote ) {
-				$args_for_widget['css']                   = $this->_registry->get( 'css.frontend' )->get_compiled_css();
+				$args_for_widget['css'] = $this->_registry->get( 'css.frontend' )->get_compiled_css();
 			} else {
 				$this->_registry->get( 'css.frontend' )->add_link_to_html_for_frontend();
 			}

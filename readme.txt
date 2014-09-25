@@ -3,7 +3,7 @@ Contributors: hubrik, vtowel, yani.iliev, nicolapeluchetti, jbutkus, lpawlik, ba
 Tags: calendar, events, ics, ics feed, wordpress ical importer, google
 calendar, ical, iCalendar, all-in-one, events sync, events widget,
 calendar widget
-Requires WorPress at least: 3.5
+Requires WordPress at least: 3.5
 Tested up to: 4.0
 Stable tag: 2.1.5
 License: GNU General Public License, version 3 (GPL-3.0)
@@ -21,7 +21,7 @@ with the rest of the world.
 
 Our calendar system combines a clean visual design, solid
 architectural patterns and a powerful set of features to create the
-most advanced calendar system available for WordPress. 
+most advanced calendar system available for WordPress.
 
 Download the free Core edition at [time.ly](http://time.ly/) and
 choose from 3 custom designed themes for your Calendar, or develop
@@ -34,7 +34,7 @@ and more.
 * Made plugin modular, allowing users to install extensions for
 required features.
 * Improved performance by delaying resources initialization until
-needed. 
+needed.
 * Implemented new theme layer using Twig
 (http://twig.sensiolabs.org/), which will allow the Calendar to render
 new views in JavaScript.
@@ -65,7 +65,7 @@ to underlying database.
 new filter types on demand.
 * Improved internationalization support with respect to WordPress and
 3rd party plugins behaviour.
-* Updated to Bootstrap 3 for better performance and responsiveness. 
+* Updated to Bootstrap 3 for better performance and responsiveness.
 * Moved Front End Event Submission, Superwidget, Platform Mode,
 Posterboard, Stream View, Agenda View, Facebook and Twitter to
 extensions. Please view their release notes for details.
@@ -183,7 +183,7 @@ from accidentally removing files that do not belong to the plugin
 * Added possibility to keep old events during ICS feeds update
 * Made subscribe dropdown button mobile friendly
 * Implemented microformats 2 improving SEO and reducing theme and plugin
-conflicts 
+conflicts
 * Improved compatibility with JetPack - sharing elements no longer
 appear on empty pop-over elements
 * Enabled translation of some previously untranslatable strings
@@ -934,7 +934,7 @@ event
 
 = 2.0 =
 I you believe you are missing functionality, please visit our site and
-download the correspoding Add-on. 
+download the correspoding Add-on.
 
 = 1.0.3 =
 When upgrading to from below `1.0.3` you must reactivate the plugin.

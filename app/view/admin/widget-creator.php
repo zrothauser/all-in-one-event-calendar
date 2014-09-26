@@ -126,11 +126,11 @@ class Ai1ecsw_View_Widegt_Creator extends Ai1ec_View_Admin_Abstract {
 			array(
 				'tabs'            => $tabs,
 				'siteurl'             => trailingslashit( get_site_url() ),
-				'common_info'         => __( 'Use this tool to generate code snippets you can place on your site to embed new calendar and widgets.', AI1EC_PLUGIN_NAME ),
+				'common_info'         => __( 'Use this tool to generate code snippets you can place on your site to embed new calendars and widgets.', AI1EC_PLUGIN_NAME ),
 				'preview'             => __( 'Preview:', AI1EC_PLUGIN_NAME ),
 				'full_calendar_title' => __( 'Full Calendar', AI1EC_PLUGIN_NAME ),
 				'paste_text'          => __( 'Paste this code onto your site:', AI1EC_PLUGIN_NAME ),
-				'updated_code_text'   => __( 'This code will update to reflect changes made to the settings. Changing settings will not effect previously embedded widgets.', AI1EC_PLUGIN_NAME )
+				'updated_code_text'   => __( 'This code will update to reflect changes made to the settings. Changing settings will not affect previously embedded widgets.', AI1EC_PLUGIN_NAME )
 			),
 			true
 		);

@@ -20,7 +20,7 @@
 		{% endif %}
 	</span>
 
-	
+
 	{% if event.edit_post_link is not empty %}
 		<a class="post-edit-link" href="{{ event.edit_post_link | raw }}">
 			<i class="ai1ec-fa ai1ec-fa-pencil"></i> {{ text_edit }}
@@ -29,13 +29,13 @@
 
 	<div class="ai1ec-event-time">
 		{% if popup_timespan is empty %}
-			{{ event.timespan_short }}
+			{{ event.timespan_short | raw }}
 		{% else %}
 			{{ popup_timespan | raw }}
 		{% endif %}
 	</div>
 
-	{{ event.avatar }}
+	{{ event.avatar | raw }}
 
 	{% if event.post_excerpt is not empty %}
 		<div class="ai1ec-popup-excerpt">{{ event.post_excerpt | raw }}</div>

@@ -191,7 +191,7 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 
 		// Replace font placeholders
 		$this->parsed_css = preg_replace_callback(
-			'/__AI1EC_BASE64_FONT_(.+?)__/',
+			'/__BASE64_FONT_([^_]+)_(.+)__/',
 			array( $this, 'load_font_base64' ),
 			$this->parsed_css
 		);
@@ -321,15 +321,14 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		// Find out the active theme URL.
 		$option = $this->_registry->get( 'model.option' );
 		$theme  = $option->get( 'ai1ec_current_theme' );
-		$fonts  = apply_filters( 'ai1ec_font_dir', array(
-			$theme['theme_dir'] . DIRECTORY_SEPARATOR . 'font',
+		$dirs   = apply_filters( 'ai1ec_font_dirs', array(
+			'AI1EC' => $theme['theme_dir'] . DIRECTORY_SEPARATOR . 'font',
 		) );
-		foreach ( $fonts as $path ) {
-			$font_file = $path . DIRECTORY_SEPARATOR . $matches[1];
-			if ( file_exists( $font_file ) ) {
-				return base64_encode( file_get_contents( $font_file ) );
-			}
+		$font_file = $dirs[$matches[1]] . DIRECTORY_SEPARATOR . $matches[2];
+		if ( file_exists( $font_file ) ) {
+			return base64_encode( file_get_contents( $font_file ) );
 		}
+		return '';
 	}
 
 	/**

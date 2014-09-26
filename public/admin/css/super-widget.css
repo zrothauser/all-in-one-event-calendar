@@ -3,6 +3,9 @@
 	height: 350px;
 }
 #ai1ec-superwidget-code {
-	height: 121px;
+	height: 140px;
 	white-space: normal;
+}
+#ai1ec-super_widget .ai1ec-nav {
+	margin-bottom: 8px;
 }

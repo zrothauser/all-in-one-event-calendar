@@ -1,6 +1,6 @@
 <div id="ai1ec-super_widget" class="ai1ec-collapse ai1ec-in">
 	<p>{{ common_info | raw }}</p>
-	<div class="ai1ec-col-md-6">
+	<div class="ai1ec-col-12">
 		<ul class="ai1ec-nav ai1ec-nav-pills" role="tablist">
 			{% for id, data in tabs %}
 				<li >
@@ -11,6 +11,8 @@
 				</li>
 			{% endfor %}
 		</ul>
+	</div>
+	<div class="ai1ec-col-md-6">
 		<div class="ai1ec-tab-content">
 			{% for id, data in tabs %}
 				<div class="ai1ec-tab-pane" id="{{ id }}">
@@ -23,9 +25,6 @@
 		</div>
 	</div>
 	<div class="ai1ec-col-md-6">
-		<p class="ai1ec-prose">
-			{{ full_calendar_text | raw }}
-		</p>
 		<p><strong>{{ paste_text | raw }}</strong></p>
 		<pre id="ai1ec-superwidget-code" class="ai1ec-autoselect"
 			data-url="{{ siteurl | e('html_attr') }}?ai1ec_super_widget" data-widget-url="{{ siteurl | e('html_attr') }}?ai1ec_js_widget"></pre>

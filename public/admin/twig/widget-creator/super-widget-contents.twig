@@ -1,15 +1,17 @@
 <div id="ai1ec-super_widget" class="ai1ec-collapse ai1ec-in">
 	<p>{{ common_info | raw }}</p>
-	<ul class="ai1ec-nav ai1ec-col-12 ai1ec-nav-pills" role="tablist">
-		{% for id, data in tabs %}
-			<li >
-				<a href="#{{ id | e('html_attr') }}" data-toggle="ai1ec-tab" >
-					<i class="ai1ec-fa ai1ec-fa-calendar ai1ec-fa-lg ai1ec-fa-fw"></i>
-					{{ data.name | raw }}
-				</a>
-			</li>
-		{% endfor %}
-	</ul>
+	<div class="ai1ec-col-12">
+		<ul class="ai1ec-nav ai1ec-nav-pills" role="tablist">
+			{% for id, data in tabs %}
+				<li >
+					<a href="#{{ id | e('html_attr') }}" data-toggle="ai1ec-tab" >
+						<i class="ai1ec-fa ai1ec-fa-calendar ai1ec-fa-lg ai1ec-fa-fw"></i>
+						{{ data.name | raw }}
+					</a>
+				</li>
+			{% endfor %}
+		</ul>
+	</div>
 	<div class="ai1ec-col-md-6">
 		<div class="ai1ec-tab-content">
 			{% for id, data in tabs %}

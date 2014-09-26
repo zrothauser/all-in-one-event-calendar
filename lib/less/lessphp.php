@@ -188,6 +188,20 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		} catch ( Exception $e ) {
 			throw $e;
 		}
+
+		// Replace font placeholders
+		$this->parsed_css = preg_replace_callback(
+			'/__AI1EC_BASE64_FONT_(.+?)__/',
+			function ($matches) use ($theme) {
+				$font = $theme['theme_dir'] . DIRECTORY_SEPARATOR
+											. 'font'
+											. DIRECTORY_SEPARATOR
+											. $matches[1];
+				return base64_encode( file_get_contents( $font ) );
+			},
+			$this->parsed_css
+		);
+
 		return $this->parsed_css;
 	}
 

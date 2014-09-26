@@ -321,12 +321,15 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		// Find out the active theme URL.
 		$option = $this->_registry->get( 'model.option' );
 		$theme  = $option->get( 'ai1ec_current_theme' );
-		$font   = $theme['theme_dir']
-					. DIRECTORY_SEPARATOR
-					. 'font'
-					. DIRECTORY_SEPARATOR
-					. $matches[1];
-		return base64_encode( file_get_contents( $font ) );
+		$fonts  = apply_filters( 'ai1ec_font_dir', array(
+			$theme['theme_dir'] . DIRECTORY_SEPARATOR . 'font',
+		) );
+		foreach ( $fonts as $path ) {
+			$font_file = $path . DIRECTORY_SEPARATOR . $matches[1];
+			if ( file_exists( $font_file ) ) {
+				return base64_encode( file_get_contents( $font_file ) );
+			}
+		}
 	}
 
 	/**

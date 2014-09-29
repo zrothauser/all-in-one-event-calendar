@@ -248,7 +248,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$event_props['avatar']              = $event->_registry->
 				get( 'view.event.avatar' )->get_event_avatar(
 					$event,
-					array( 'post_thumbnail', 'location_avatar', 'category_avatar' ),
+					array( 'post_thumbnail', 'content_img', 'location_avatar', 'category_avatar' ),
 					'alignleft'
 				);
 			$dates[$timestamp]['events'][$category][] = $event_props;

@@ -12,8 +12,8 @@ define(
 		"scripts/common_scripts/frontend/common_frontend",
 		"libs/select2_multiselect_helper",
 		"external_libs/twig",
-		"twigjs/agenda",
-		"twigjs/oneday",
+		"agenda",
+		"oneday",
 		"external_libs/jquery_history",
 		"external_libs/jquery.tablescroller",
 		"external_libs/jquery.scrollTo",
@@ -300,7 +300,7 @@ define(
 								if ( 'agenda' === view_type ){
 									renderer = agenda;
 								}
-								if ( 'oneday' === view_type ){
+								if ( 'oneday' === view_type || 'week' === view_type ){
 									renderer = oneday;
 								}
 							}

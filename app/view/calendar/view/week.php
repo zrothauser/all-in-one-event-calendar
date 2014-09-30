@@ -83,6 +83,13 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 		$is_ticket_button_enabled = apply_filters( 'ai1ec_week_ticket_button', false );
 		$show_reveal_button       = apply_filters( 'ai1ec_week_reveal_button', false );
 
+		$hours = array();
+		for ( $i = 0; $i < 24; $i ++ ) {
+			$hours[] = $this->_registry
+				->get( 'twig.ai1ec-extension')->hour_to_datetime( $i )
+				->format_i18n( $time_format );
+		}
+
 		$view_args = array(
 			'title'                    => $title,
 			'type'                     => 'week',
@@ -103,6 +110,9 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 			'text_all_day'             => __( 'All-day', AI1EC_PLUGIN_NAME ),
 			'text_now_label'           => __( 'Now:', AI1EC_PLUGIN_NAME ),
 			'text_venue_separator'     => __( '@ %s', AI1EC_PLUGIN_NAME ),
+			'hours'                    => $hours,
+			'indent_multiplier'        => 8,
+			'indent_offset'            => 0,
 		);
 		if ( $settings->get( 'ajaxify_events_in_web_widget' ) ) {
 			$view_args['data_type_events'] = $args['data_type'];
@@ -117,7 +127,12 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 			)
 		);
 
-		return $this->_get_view( $view_args );
+		return 
+			'json' === $args['request_format'] 
+			&& AI1EC_USE_FRONTEND_RENDERING 
+			&& $this->_registry->get( 'http.request' )->is_ajax()
+			? json_encode( $view_args )
+			: $this->_get_view( $view_args );
 	}
 
 	/**
@@ -336,6 +351,43 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 				);
 			}
 
+			foreach ( array( 'allday', 'notallday' ) as $event_type ) {
+				foreach ( $all_events[$day_date][$event_type] as $i => $evt ) {
+					$all_events[$day_date][$event_type][$i] = array(
+						'filtered_title'   => $evt->get_runtime( 'filtered_title' ),
+						'post_excerpt'     => $evt->get_runtime( 'post_excerpt' ),
+						'color_style'      => $evt->get_runtime( 'color_style' ),
+						'category_colors'  => $evt->get_runtime( 'category_colors' ),
+						'permalink'        => $evt->get_runtime( 'instance_permalink' ),
+						'ticket_url_label' => $evt->get_runtime( 'ticket_url_label' ),
+						'edit_post_link'   => $evt->get_runtime( 'edit_post_link' ),
+						'faded_color'      => $evt->get_runtime( 'faded_color' ),
+						'rgba_color'       => $evt->get_runtime( 'rgba_color' ),
+						'short_start_time' => $evt->get_runtime( 'short_start_time' ),
+						'instance_id'      => $evt->get( 'instance_id' ),
+						'post_id'          => $evt->get( 'post_id' ),
+						'is_multiday'      => $evt->get( 'is_multiday' ),
+						'venue'            => $evt->get( 'venue' ),
+						'ticket_url'       => $evt->get( 'ticket_url' ),
+						'start_truncated'  => $evt->get( 'start_truncated' ),
+						'end_truncated'  => $evt->get( 'end_truncated' ),
+						'popup_timespan'   => $this->_registry
+							->get( 'twig.ai1ec-extension')->timespan( $evt, 'short' ),
+						'avatar'           => $this->_registry
+							->get( 'twig.ai1ec-extension')->avatar( $evt, [
+							'post_thumbnail',
+							'content_img',
+							'location_avatar',
+							'category_avatar'
+							] ),
+					);
+					if ( 'notallday' === $event_type) {
+						$notallday[$i]['event'] = $all_events[$day_date][$event_type][$i];
+					}
+				}
+			}
+
+
 			$days[$day_date] = array(
 				'today'     =>
 					$day_date_ob->format( 'Y' ) == $now->format( 'Y' ) &&
@@ -344,6 +396,10 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 				'allday'    => $all_events[$day_date]['allday'],
 				'notallday' => $notallday,
 				'href'      => $href_for_date,
+				'day'       => $this->_registry->
+					get( 'date.time', $day_date )->format_i18n( 'j' ),
+				'weekday'   => $this->_registry->
+					get( 'date.time', $day_date )->format_i18n( 'D' ),
 			);
 		}
 

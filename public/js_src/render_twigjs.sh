@@ -21,6 +21,14 @@ then
 	mv \
 		oneday.twig.js \
 		oneday.js
+	twigjs \
+		--output ../js_src/ \
+		--module amd \
+		--twig 'external_libs/twig", "month' \
+		../themes-ai1ec/vortex/twig/month.twig
+	mv \
+		month.twig.js \
+		month.js
 	exit 0
 else
 

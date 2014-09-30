@@ -87,7 +87,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			'cell_array'               => $cell_array,
 			'show_location_in_title'   => $settings->get( 'show_location_in_title' ),
 			'now_top'                  => $now,
-			'now_text'                 => $now_text,
+			'now_text'                 => $now_text,                
 			'time_format'              => $time_format,
 			'done_allday_label'        => false,// legacy
 			'done_grid'                => false,// legacy

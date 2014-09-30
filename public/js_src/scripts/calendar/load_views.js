@@ -13,7 +13,8 @@ define(
 		"libs/select2_multiselect_helper",
 		"external_libs/twig",
 		"agenda",
-		"oneday",
+		"oneday", // Also used for Week view.
+		"month",
 		"external_libs/jquery_history",
 		"external_libs/jquery.tablescroller",
 		"external_libs/jquery.scrollTo",
@@ -34,7 +35,8 @@ define(
 		select2_multiselect_helper,
 		twig,
 		agenda,
-		oneday
+		oneday,
+		month
 	) {
 
 	"use strict"; // jshint ;_;
@@ -302,6 +304,9 @@ define(
 								}
 								if ( 'oneday' === view_type || 'week' === view_type ){
 									renderer = oneday;
+								}
+								if ( 'month' === view_type ){
+									renderer = month;
 								}
 							}
 							$calendar.find( '.ai1ec-calendar-view' )

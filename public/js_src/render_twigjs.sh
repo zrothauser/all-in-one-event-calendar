@@ -6,21 +6,21 @@ if [[ $? -eq 0 ]]
 then
 
 	twigjs \
-		--output ../js_src/ \
+		--output ../js_src/twigjs/ \
 		--module amd \
 		--twig 'external_libs/twig", "agenda' \
 		../themes-ai1ec/vortex/twig/agenda.twig
 	mv \
-		agenda.twig.js \
-		agenda.js
+		twigjs/agenda.twig.js \
+		twigjs/agenda.js
 	twigjs \
-		--output ../js_src/ \
+		--output ../js_src/twigjs \
 		--module amd \
 		--twig 'external_libs/twig", "oneday' \
 		../themes-ai1ec/vortex/twig/oneday.twig
 	mv \
-		oneday.twig.js \
-		oneday.js
+		twigjs/oneday.twig.js \
+		twigjs/oneday.js
 	exit 0
 else
 

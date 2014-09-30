@@ -374,12 +374,12 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 						'popup_timespan'   => $this->_registry
 							->get( 'twig.ai1ec-extension')->timespan( $evt, 'short' ),
 						'avatar'           => $this->_registry
-							->get( 'twig.ai1ec-extension')->avatar( $evt, [
+							->get( 'twig.ai1ec-extension')->avatar( $evt, array(
 							'post_thumbnail',
 							'content_img',
 							'location_avatar',
 							'category_avatar'
-							] ),
+							) ),
 					);
 					if ( 'notallday' === $event_type) {
 						$notallday[$i]['event'] = $all_events[$day_date][$event_type][$i];

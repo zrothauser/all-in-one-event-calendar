@@ -12,8 +12,8 @@ define(
 		"scripts/common_scripts/frontend/common_frontend",
 		"libs/select2_multiselect_helper",
 		"external_libs/twig",
-		"agenda",
-		"oneday",
+		"twigjs/agenda",
+		"twigjs/oneday",
 		"external_libs/jquery_history",
 		"external_libs/jquery.tablescroller",
 		"external_libs/jquery.scrollTo",
@@ -292,13 +292,25 @@ define(
 							are_filters_set = data.are_filters_set;
 							var $container = $calendar.find( '.ai1ec-calendar-view-container' );
 							$container.height( $container.height() );
+
 							// Render template or just replace if already rendered.
+							var renderer;
+							if ( hash.match( /request_format\~json/ ) ){
+								var view_type =  $.parseJSON( data.html ).type;
+								if ( 'agenda' === view_type ){
+									renderer = agenda;
+								}
+								if ( 'oneday' === view_type ){
+									renderer = oneday;
+								}
+							}
 							$calendar.find( '.ai1ec-calendar-view' )
 								.html( 
-									hash.match( /request_format\~json/ )
-									? oneday.render( $.parseJSON( data.html ) )
+									renderer
+									? renderer.render( $.parseJSON( data.html ) )
 									: data.html
 								);
+
 							// Animate vertical height of container between HTML replacement
 							var new_height = $calendar.find( '.ai1ec-calendar-view' ).height();
 							$container.animate( { height: new_height }, { complete: function() {

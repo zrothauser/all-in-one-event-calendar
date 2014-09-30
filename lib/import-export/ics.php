@@ -139,9 +139,11 @@ class Ai1ec_Ics_Import_Export_Engine
 		// Maybe use $v->selectComponents(), which takes into account recurrence
 
 		// Fetch default timezone in case individual properties don't define it
-		$timezone = $v->getProperty( 'X-WR-TIMEZONE' );
-		$timezone = (string)$timezone[1];
-		$messages = array();
+		$timezone       = $v->getProperty( 'X-WR-TIMEZONE' );
+		$timezone       = (string)$timezone[1];
+		$messages       = array();
+		$local_timezone = $this->_registry->get( 'date.timezone' )
+			->get_default_timezone();
 		// go over each event
 		while ( $e = $v->getComponent( 'vevent' ) ) {
 			// Event data array.
@@ -233,14 +235,17 @@ class Ai1ec_Ics_Import_Export_Engine
 			if ( ! empty( $ms_allday ) && $ms_allday[1] == 'TRUE' ) {
 				$allday = true;
 			}
-
-			$start = $this->_time_array_to_datetime( $start, $timezone );
-			$end   = $this->_time_array_to_datetime( $end,   $timezone );
+			$event_timezone = $timezone;
+			if ( $allday ) {
+				$event_timezone = $local_timezone;
+			}
+			$start = $this->_time_array_to_datetime( $start, $event_timezone );
+			$end   = $this->_time_array_to_datetime( $end,   $event_timezone );
 
 			if ( false === $start || false === $end ) {
 				throw new Ai1ec_Parse_Exception(
 					'Failed to parse one or more dates given timezone "' .
-					var_export( $timezone, true ) . '"'
+					var_export( $event_timezone, true ) . '"'
 				);
 				continue;
 			}
@@ -281,7 +286,7 @@ class Ai1ec_Ics_Import_Export_Engine
 				// We may have two formats:
 				// one exdate with many dates ot more EXDATE rules
 				$exdates      = explode( 'EXDATE', $exdates );
-				$def_timezone = $this->_get_import_timezone( $timezone );
+				$def_timezone = $this->_get_import_timezone( $event_timezone );
 				foreach ( $exdates as $exd ) {
 					if ( empty( $exd ) ) {
 						continue;

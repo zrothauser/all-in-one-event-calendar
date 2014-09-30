@@ -47,10 +47,10 @@
 							<div class="ai1ec-event"
 								 style="{{ event.color_style | e( 'html_attr' ) }}">
 								<span class="ai1ec-event-title">
-									{{ event.filtered_title }}
-									{% if show_location_in_title and event.get( 'venue' ) is not empty %}
+									{{ event.filtered_title | raw }}
+									{% if show_location_in_title and event.venue %}
 										<span class="ai1ec-event-location"
-											>{{ text_venue_separator | format( event.get( 'venue' ) ) }}</span>
+											>{{ text_venue_separator | format( event.venue ) }}</span>
 									{% endif %}
 								</span>
 							</div>

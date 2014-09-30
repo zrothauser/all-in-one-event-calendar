@@ -80,6 +80,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 				->get( 'twig.ai1ec-extension')->hour_to_datetime( $i )
 				->format_i18n( $time_format );
 		}
+
 		$view_args = array(
 			'title'                    => $title,
 			'type'                     => 'oneday',
@@ -113,7 +114,13 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			)
 		);
 
-		return $this->_get_view( $view_args );
+		return 
+			'json' === $args['request_format'] 
+			&& AI1EC_USE_FRONTEND_RENDERING 
+			&& $this->_registry->get( 'http.request' )->is_ajax()
+			? json_encode( $view_args )
+			: $this->_get_view( $view_args );
+
 	}
 
 	/**
@@ -283,7 +290,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 
 		$notallday = array();
 		$evt_stack = array( 0 ); // Stack to keep track of indentation
-		foreach ( $all_events[$day_start_ts]['notallday'] as $i => $evt ) {
+		foreach ( $all_events[$day_start_ts]['notallday'] as $evt ) {
 			// Calculate top and bottom edges of current event
 			$top    = (int)(
 				$evt->get( 'start' )->diff_sec( $loc_start_time ) / 60
@@ -350,7 +357,6 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 				}
 			}
 		}
-
 		$days[$day_start_ts] = array(
 			'today'     => 0 === strcmp(
 				$today_ymd,

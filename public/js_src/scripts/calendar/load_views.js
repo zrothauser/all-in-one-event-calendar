@@ -13,6 +13,7 @@ define(
 		"libs/select2_multiselect_helper",
 		"external_libs/twig",
 		"agenda",
+		"oneday",
 		"external_libs/jquery_history",
 		"external_libs/jquery.tablescroller",
 		"external_libs/jquery.scrollTo",
@@ -32,7 +33,8 @@ define(
 		common_frontend,
 		select2_multiselect_helper,
 		twig,
-		agenda
+		agenda,
+		oneday
 	) {
 
 	"use strict"; // jshint ;_;
@@ -294,7 +296,7 @@ define(
 							$calendar.find( '.ai1ec-calendar-view' )
 								.html( 
 									hash.match( /request_format\~json/ )
-									? agenda.render( $.parseJSON( data.html ) )
+									? oneday.render( $.parseJSON( data.html ) )
 									: data.html
 								);
 							// Animate vertical height of container between HTML replacement

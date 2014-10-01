@@ -94,10 +94,8 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 			)
 		);
 
-		return 
-			'json' === $args['request_format'] 
-			&& AI1EC_USE_FRONTEND_RENDERING 
-			&& $this->_registry->get( 'http.request' )->is_ajax()
+		return
+			Ai1ec_Http_Response_Helper::is_json_required( $args['request_format'] )
 			? json_encode( $view_args )
 			: $this->_get_view( $view_args );
 	}
@@ -335,36 +333,35 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 				$settings->get( 'input_date_format' )
 			);
 			$events = array();
-			for( $ii = 0; $ii < count( $days_events[$i] ); $ii++ ){
-				$evt = $days_events[$i][$ii];
+			foreach ( $days_events[$i] as $evt ){
 				$events[] = array(
-						'filtered_title'   => $evt->get_runtime( 'filtered_title' ),
-						'post_excerpt'     => $evt->get_runtime( 'post_excerpt' ),
-						'color_style'      => $evt->get_runtime( 'color_style' ),
-						'category_colors'  => $evt->get_runtime( 'category_colors' ),
-						'permalink'        => $evt->get_runtime( 'instance_permalink' ),
-						'ticket_url_label' => $evt->get_runtime( 'ticket_url_label' ),
-						'edit_post_link'   => $evt->get_runtime( 'edit_post_link' ),
-						'short_start_time' => $evt->get_runtime( 'short_start_time' ),
-						'multiday_end_day' => $evt->get_runtime( 'multiday_end_day' ),
-						'short_start_time' => $evt->get_runtime( 'short_start_time' ),
-						'instance_id'      => $evt->get( 'instance_id' ),
-						'post_id'          => $evt->get( 'post_id' ),
-						'is_multiday'      => $evt->get( 'is_multiday' ),
-						'venue'            => $evt->get( 'venue' ),
-						'ticket_url'       => $evt->get( 'ticket_url' ),
-						'start_truncated'  => $evt->get( 'start_truncated' ),
-						'end_truncated'    => $evt->get( 'end_truncated' ),
-						'popup_timespan'   => $this->_registry
-							->get( 'twig.ai1ec-extension')->timespan( $evt, 'short' ),
-						'avatar'           => $this->_registry
-							->get( 'twig.ai1ec-extension')->avatar( $evt, array(
-							'post_thumbnail',
-							'content_img',
-							'location_avatar',
-							'category_avatar'
-							) ),
-					);
+					'filtered_title'   => $evt->get_runtime( 'filtered_title' ),
+					'post_excerpt'     => $evt->get_runtime( 'post_excerpt' ),
+					'color_style'      => $evt->get_runtime( 'color_style' ),
+					'category_colors'  => $evt->get_runtime( 'category_colors' ),
+					'permalink'        => $evt->get_runtime( 'instance_permalink' ),
+					'ticket_url_label' => $evt->get_runtime( 'ticket_url_label' ),
+					'edit_post_link'   => $evt->get_runtime( 'edit_post_link' ),
+					'short_start_time' => $evt->get_runtime( 'short_start_time' ),
+					'multiday_end_day' => $evt->get_runtime( 'multiday_end_day' ),
+					'short_start_time' => $evt->get_runtime( 'short_start_time' ),
+					'instance_id'      => $evt->get( 'instance_id' ),
+					'post_id'          => $evt->get( 'post_id' ),
+					'is_multiday'      => $evt->get( 'is_multiday' ),
+					'venue'            => $evt->get( 'venue' ),
+					'ticket_url'       => $evt->get( 'ticket_url' ),
+					'start_truncated'  => $evt->get( 'start_truncated' ),
+					'end_truncated'    => $evt->get( 'end_truncated' ),
+					'popup_timespan'   => $this->_registry
+						->get( 'twig.ai1ec-extension')->timespan( $evt, 'short' ),
+					'avatar'           => $this->_registry
+						->get( 'twig.ai1ec-extension')->avatar( $evt, array(
+						'post_thumbnail',
+						'content_img',
+						'location_avatar',
+						'category_avatar'
+						) ),
+				);
 			}
 			$weeks[$week][] = array(
 				'date' => $i,

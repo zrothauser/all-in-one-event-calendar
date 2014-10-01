@@ -116,10 +116,8 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			)
 		);
 
-		return 
-			'json' === $args['request_format'] 
-			&& AI1EC_USE_FRONTEND_RENDERING 
-			&& $this->_registry->get( 'http.request' )->is_ajax()
+		return
+			Ai1ec_Http_Response_Helper::is_json_required( $args['request_format'] )
 			? json_encode( $view_args )
 			: $this->_get_view( $view_args );
 
@@ -290,43 +288,16 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			$all_events[$day_start_ts]['notallday'] = array();
 		}
 
-		$notallday = array();
-		$evt_stack = array( 0 ); // Stack to keep track of indentation
-		foreach ( $all_events[$day_start_ts]['notallday'] as $evt ) {
-			// Calculate top and bottom edges of current event
-			$top    = (int)(
-				$evt->get( 'start' )->diff_sec( $loc_start_time ) / 60
-			);
-			$bottom = min(
-				$top + ( $evt->get_duration() / 60 ),
-				1440
-			);
-
-			// While there's more than one event in the stack and this event's
-			// top position is beyond the last event's bottom, pop the stack
-			while ( count( $evt_stack ) > 1 && $top >= end( $evt_stack ) ) {
-				array_pop( $evt_stack );
-			}
-			// Indentation is number of stacked events minus 1
-			$indent = count( $evt_stack ) - 1;
-			// Push this event onto the top of the stack
-			array_push( $evt_stack, $bottom );
-
-			$notallday[] = array(
-				'top'    => $top,
-				'height' => $bottom - $top,
-				'indent' => $indent,
-			);
-		}
-
 		$today_ymd = $this->_registry->get(
 			'date.time',
 			$this->_registry->get( 'date.system' )->current_time()
 		)->format( 'Y-m-d' );
 
-		foreach ( array( 'allday', 'notallday' ) as $event_type ) {
-			foreach ( $all_events[$day_start_ts][$event_type] as $i => $evt ) {
-				$all_events[$day_start_ts][$event_type][$i] = array(
+		$evt_stack = array( 0 ); // Stack to keep track of indentation
+
+		foreach ( $all_events[$day_start_ts] as $event_type => &$events ) {
+			foreach ( $events as &$evt ) {
+				$event = array(
 					'filtered_title'   => $evt->get_runtime( 'filtered_title' ),
 					'post_excerpt'     => $evt->get_runtime( 'post_excerpt' ),
 					'color_style'      => $evt->get_runtime( 'color_style' ),
@@ -355,7 +326,31 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 						) ),
 				);
 				if ( 'notallday' === $event_type) {
-					$notallday[$i]['event'] = $all_events[$day_start_ts][$event_type][$i];
+					// Calculate top and bottom edges of current event
+					$top    = (int)(
+						$evt->get( 'start' )->diff_sec( $loc_start_time ) / 60
+					);
+					$bottom = min(
+						$top + ( $evt->get_duration() / 60 ),
+						1440
+					);
+					// While there's more than one event in the stack and this event's
+					// top position is beyond the last event's bottom, pop the stack
+					while ( count( $evt_stack ) > 1 && $top >= end( $evt_stack ) ) {
+						array_pop( $evt_stack );
+					}
+					// Indentation is number of stacked events minus 1
+					$indent = count( $evt_stack ) - 1;
+					// Push this event onto the top of the stack
+					array_push( $evt_stack, $bottom );
+					$evt = array(
+						'top'    => $top,
+						'height' => $bottom - $top,
+						'indent' => $indent,
+						'event'  => $event,
+					);
+				} else {
+					$evt = $event;
 				}
 			}
 		}
@@ -365,7 +360,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 				$start_time->format( 'Y-m-d' )
 			),
 			'allday'    => $all_events[$day_start_ts]['allday'],
-			'notallday' => $notallday,
+			'notallday' => $all_events[$day_start_ts]['notallday'],
 			'day'       => $this->_registry->
 				get( 'date.time', $day_start_ts )->format_i18n( 'j' ),
 			'weekday'   => $this->_registry->

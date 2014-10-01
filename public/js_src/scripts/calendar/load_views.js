@@ -297,16 +297,20 @@ define(
 
 							// Render template or just replace if already rendered.
 							var renderer;
-							if ( hash.match( /request_format\~json/ ) ){
-								var view_type =  $.parseJSON( data.html ).type;
-								if ( 'agenda' === view_type ){
-									renderer = agenda;
-								}
-								if ( 'oneday' === view_type || 'week' === view_type ){
-									renderer = oneday;
-								}
-								if ( 'month' === view_type ){
-									renderer = month;
+							if ( hash.match( /\brequest_format\~json\b/ ) ){
+								var 
+									view_type =  $.parseJSON( data.html ).type,
+									renderer_map = {
+										oneday : oneday,
+										week   : oneday,
+										month  : month
+									};
+
+								if ( renderer_map[view_type] ) {
+									renderer = renderer_map[view_type];
+								} else {
+									// That's an error. No view found.
+									return;
 								}
 							}
 							$calendar.find( '.ai1ec-calendar-view' )

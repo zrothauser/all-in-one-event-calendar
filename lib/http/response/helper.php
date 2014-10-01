@@ -94,4 +94,19 @@ class Ai1ec_Http_Response_Helper {
 		}
 		return $url;
 	}
+
+	/**
+	 * Removes the protocla from the url
+	 * 
+	 * @param string $url
+	 * 
+	 * @return boolean
+	 */
+	public static function is_json_required( $request_format ) {
+		return 
+			'json' === $request_format
+			&& AI1EC_USE_FRONTEND_RENDERING
+			&& Ai1ec_Http_Request::is_ajax();
+	}
+
 }

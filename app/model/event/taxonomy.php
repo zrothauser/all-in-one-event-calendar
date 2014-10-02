@@ -9,7 +9,7 @@
  * @package      Ai1EC
  * @subpackage   Ai1EC.Model
  */
-class Ai1ec_Event_Taxonomy {
+class Ai1ec_Event_Taxonomy extends Ai1ec_Base{
 
 	/**
 	 * @var string Name of categories taxonomy.
@@ -38,7 +38,8 @@ class Ai1ec_Event_Taxonomy {
 	 *
 	 * @return void
 	 */
-	public function __construct( $post_id = 0 ) {
+	public function __construct( Ai1ec_Registry_Object $registry, $post_id = 0 ) {
+		parent::__construct( $registry );
 		$this->_post_id = (int)$post_id;
 	}
 
@@ -50,7 +51,7 @@ class Ai1ec_Event_Taxonomy {
 	 * @param bool   $is_id    Set to true if $term is ID.
 	 * @param array  $attrs    Attributes to creatable entity.
 	 *
-	 * @return int|bool Created term ID or false on failure.
+	 * @return array|bool      Array with term id and taxonomy name
 	 */
 	public function initiate_term(
 		$term,
@@ -59,15 +60,35 @@ class Ai1ec_Event_Taxonomy {
 		array $attrs = array()
 	) {
 		$field = ( $is_id ) ? 'id' : 'name';
-		$term_to_return = get_term_by( $field, $term, $taxonomy );
-		if ( false === $term_to_return ) {
-			$term_to_return = wp_insert_term( $term, $taxonomy, $attrs );
-			if ( is_wp_error( $term_to_return ) ) {
+		$term_to_check = term_exists( $term );
+		$to_return = array(
+			'taxonomy' => $taxonomy
+		);
+		// if term doesn't exist, create it.
+		if ( 0 === $term_to_check || null === $term_to_check ) {
+			$term_to_check = wp_insert_term( $term, $taxonomy, $attrs );
+			if ( is_wp_error( $term_to_check ) ) {
 				return false;
 			}
-			$term_to_return = (object)$term_to_return;
+			$term_to_check = (object)$term_to_check;
+			$to_return['term_id'] = $term_to_check->term_id;
+		} else {
+			$to_return['term_id'] = $term_to_check;
+			// when importing categories, use the mapping of the current site, so place the term in the current taxonomy
+			if ( self::CATEGORIES === $taxonomy ) {
+				// check that the term matches the taxonomy
+				$db = $this->_registry->get( 'dbi.dbi' );
+				$tax = $db->get_row(
+					$db->prepare(
+						'SELECT wt.* FROM ' .  $db->get_table_name( 'terms' ) . ' AS t ' .
+						'INNER JOIN ' . $db->get_table_name( 'term_taxonomy' ) . ' AS wt USING(term_id) '.
+						'WHERE t.term_id = %s LIMIT 1', $term_to_check )
+				);
+				$to_return['taxonomy'] = $tax->taxonomy;
+			}
+
 		}
-		return (int)$term_to_return->term_id;
+		return $to_return;
 	}
 
 	/**
@@ -128,7 +149,7 @@ class Ai1ec_Event_Taxonomy {
 			$url_components = parse_url( $feed->feed_url );
 			$feed_name      = $url_components['host'];
 		}
-		$term_id = $this->initiate_term(
+		$term = $this->initiate_term(
 			$feed_name,
 			self::FEEDS,
 			false,
@@ -136,9 +157,10 @@ class Ai1ec_Event_Taxonomy {
 				'description' => $feed->feed_url,
 			)
 		);
-		if ( false === $term_id ) {
+		if ( false === $term ) {
 			return false;
 		}
+		$term_id = $term['term_id'];
 		return $this->set_terms( array( $term_id ), self::FEEDS );
 	}
 

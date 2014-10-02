@@ -513,13 +513,12 @@ class Ai1ec_Ics_Import_Export_Engine
 
 			}
 
-
-
 			// import not standard taxonomies.
 			unset( $imported_cat[Ai1ec_Event_Taxonomy::CATEGORIES] );
 			foreach ( $imported_cat as $tax_name => $ids ) {
 				wp_set_post_terms( $event->get( 'post_id' ), array_keys( $ids ), $tax_name );
 			}
+
 			// if the event is not finished, unset it otherwise it could be deleted afterwards.
 			if ( $event->get( 'end' )->format_to_gmt() > $current_timestamp ) {
 				unset( $events_in_db[$event->get( 'post_id' )] );

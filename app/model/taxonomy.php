@@ -15,7 +15,7 @@ class Ai1ec_Taxonomy extends Ai1ec_Base {
 	 */
 	protected $_taxonomy_map = array(
 		'events_categories' => array(),
-		'events_tags'       => array(),
+		'events_tags' => array(),
 	);
 
 	/**
@@ -26,18 +26,38 @@ class Ai1ec_Taxonomy extends Ai1ec_Base {
 	 * @return void
 	 */
 	public function update_meta( array $post_ids ) {
+		$taxonomies = get_object_taxonomies( AI1EC_POST_TYPE );
+		$categories = array();
+		$excluded_categories = array(
+			'events_tags'  => true,
+			'events_feeds' => true
+		);
+		foreach ( $taxonomies as $taxonomy ) {
+			if ( isset( $excluded_categories[$taxonomy] ) ) {
+				continue;
+			}
+			$categories[] = $taxonomy;
+		}
 		foreach ( $post_ids as $post_id ) {
 			$post_id = (int)$post_id;
 			$this->_taxonomy_map['events_categories'][$post_id] = array();
 			$this->_taxonomy_map['events_tags'][$post_id] = array();
 		}
-		$terms = wp_get_object_terms(
+		$tags = wp_get_object_terms(
 			$post_ids,
-			array( 'events_categories', 'events_tags' ),
+			array( 'events_tags' ),
 			array( 'fields' => 'all_with_object_id' )
 		);
-		foreach ( $terms as $term ) {
+		foreach ( $tags as $term ) {
 			$this->_taxonomy_map[$term->taxonomy][$term->object_id][] = $term;
+		}
+		$category_terms = wp_get_object_terms(
+			$post_ids,
+			$categories,
+			array( 'fields' => 'all_with_object_id' )
+		);
+		foreach ( $category_terms as $term ) {
+			$this->_taxonomy_map['events_categories'][$term->object_id][] = $term;
 		}
 	}
 

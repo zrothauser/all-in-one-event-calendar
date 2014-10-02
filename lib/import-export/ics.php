@@ -822,6 +822,7 @@ class Ai1ec_Ics_Import_Export_Engine
 
 		$categories = array();
 		$language   = get_bloginfo( 'language' );
+
 		foreach (
 			$this->_taxonomy_model->get_post_categories(
 				$event->get( 'post_id' )

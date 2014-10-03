@@ -251,7 +251,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 					'',
 					false
 				);
-			$dates[$timestamp]['events'][$category][] = $event_props;
+			$dates[$timestamp]['events'][$category][] = $event;
 			$dates[$timestamp]['href']                = $href_for_date;
 			$dates[$timestamp]['day']                 = $this->_registry->
 				get( 'date.time', $timestamp )->format_i18n( 'j' );

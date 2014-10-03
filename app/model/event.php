@@ -54,6 +54,36 @@ class Ai1ec_Event extends Ai1ec_Base {
 		return $this->_entity->get( $property, $default );
 	}
 
+    public function __get( $name ) {
+        $value = null;
+        switch ( $name ) {
+            case 'timespan_short':
+                $value = $this->_registry->get( 'view.event.time' )
+                ->get_timespan_html( $this, 'short' );
+            break;
+            case 'avatar':
+                $value = $this->_registry->
+				get( 'view.event.avatar' )->get_event_avatar(
+					$this,
+					array( 'post_thumbnail', 'content_img', 'location_avatar', 'category_avatar' ),
+					'alignleft'
+				);
+            break;
+        }
+        if ( null !== $value ) {
+            return $value;
+        }
+        $value = $this->get( $name );
+        if ( null !== $value ) {
+            return $value;
+        }
+        return $this->get_runtime( $name );
+    }
+
+    public function __isset( $name ) {
+        return ( null !== $this->$name );
+    }
+
 	/**
 	 * Get properties generated at runtime
 	 *

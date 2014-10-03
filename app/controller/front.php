@@ -755,8 +755,8 @@ class Ai1ec_Front_Controller {
 	 * @return void
 	 */
 	protected function _install_crons() {
-		$scheduling = $this->_registry->get( 'scheduling.utility', $this->_registry );
-		$allow      = $this->_registry->get( 'model.settings', $this->_registry )
+		$scheduling = $this->_registry->get( 'scheduling.utility' );
+		$allow      = $this->_registry->get( 'model.settings' )
 				->get( 'allow_statistics' );
 		$correct    = false;
 		// install the cron for stats

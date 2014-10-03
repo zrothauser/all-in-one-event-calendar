@@ -87,7 +87,7 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			'cell_array'               => $cell_array,
 			'show_location_in_title'   => $settings->get( 'show_location_in_title' ),
 			'now_top'                  => $now,
-			'now_text'                 => $now_text,                
+			'now_text'                 => $now_text,
 			'time_format'              => $time_format,
 			'done_allday_label'        => false,// legacy
 			'done_grid'                => false,// legacy
@@ -117,7 +117,9 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 		);
 
 		return
-			Ai1ec_Http_Response_Helper::is_json_required( $args['request_format'] )
+			$this->_registry->get( 'http.request' )->is_json_required(
+				$args['request_format']
+			)
 			? json_encode( $view_args )
 			: $this->_get_view( $view_args );
 

@@ -95,7 +95,9 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 		);
 
 		return
-			Ai1ec_Http_Response_Helper::is_json_required( $args['request_format'] )
+			$this->_registry->get( 'http.request' )->is_json_required(
+				$args['request_format']
+			)
 			? json_encode( $view_args )
 			: $this->_get_view( $view_args );
 	}

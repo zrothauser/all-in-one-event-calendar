@@ -150,16 +150,10 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 
 		$file = $loader->get_file( $type . '.twig', $args, false );
 
-		return 
-			'json' === $view_args['request_format']
-			&& AI1EC_USE_FRONTEND_RENDERING
-			&& $this->_registry->get( 'http.request' )->is_ajax()
+		return
+			Ai1ec_Http_Response_Helper::is_json_required( $view_args['request_format'] )
 			? json_encode( $args )
-			: apply_filters(
-				'ai1ec_get_' . $type . '_view',
-				$file->get_content(),
-				$view_args
-			);
+			: $this->_get_view( $args );
 	}
 
 	/* (non-PHPdoc)

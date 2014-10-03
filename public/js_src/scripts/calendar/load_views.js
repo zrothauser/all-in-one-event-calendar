@@ -301,6 +301,7 @@ define(
 								var 
 									view_type =  $.parseJSON( data.html ).type,
 									renderer_map = {
+										agenda : agenda,
 										oneday : oneday,
 										week   : oneday,
 										month  : month

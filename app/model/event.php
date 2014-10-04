@@ -54,36 +54,6 @@ class Ai1ec_Event extends Ai1ec_Base {
 		return $this->_entity->get( $property, $default );
 	}
 
-    public function __get( $name ) {
-        $value = null;
-        switch ( $name ) {
-            case 'timespan_short':
-                $value = $this->_registry->get( 'view.event.time' )
-                ->get_timespan_html( $this, 'short' );
-            break;
-            case 'avatar':
-                $value = $this->_registry->
-				get( 'view.event.avatar' )->get_event_avatar(
-					$this,
-					array( 'post_thumbnail', 'content_img', 'location_avatar', 'category_avatar' ),
-					'alignleft'
-				);
-            break;
-        }
-        if ( null !== $value ) {
-            return $value;
-        }
-        $value = $this->get( $name );
-        if ( null !== $value ) {
-            return $value;
-        }
-        return $this->get_runtime( $name );
-    }
-
-    public function __isset( $name ) {
-        return ( null !== $this->$name );
-    }
-
 	/**
 	 * Get properties generated at runtime
 	 *
@@ -370,6 +340,69 @@ class Ai1ec_Event extends Ai1ec_Base {
 			return '';
 		}
 		return $decoded['l'];
+	}
+
+	/**
+	 * Getter.
+	 *
+	 * @param string $name Property name.
+	 *
+	 * @return mixed Property value.
+	 */
+	public function __get( $name ) {
+		$value = $this->get( $name );
+		if ( null !== $value ) {
+			return $value;
+		}
+		return $this->get_runtime( $name );
+	}
+
+	/**
+	 * Isset magic function.
+	 *
+	 * @param string $name Property name.
+	 *
+	 * @return bool True of false.
+	 */
+	public function __isset( $name ) {
+		$method_name = 'get' . $name;
+		if ( method_exists( $this, $method_name ) ) {
+			return false;
+		}
+		return ( null !== $this->$name );
+	}
+
+	/**
+	 * Twig timespan short method.
+	 *
+	 * @return string Value.
+	 */
+	public function gettimespan_short() {
+		return $this->_registry->get( 'view.event.time' )
+			->get_timespan_html( $this, 'short' );
+	}
+
+	/**
+	 * Twig avatar method.
+	 *
+	 * @return string Value.
+	 */
+	public function getavatar() {
+		return $this->_registry->
+				get( 'view.event.avatar' )->get_event_avatar(
+					$this,
+					$this->_registry->get( 'view.calendar.fallbacks' )->get_all(),
+					'alignleft'
+				);
+	}
+
+	/**
+	 * Twig is_allday method.
+	 *
+	 * @return bool Value.
+	 */
+	public function getis_allday() {
+		return $this->is_allday();
 	}
 
 	/**

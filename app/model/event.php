@@ -389,11 +389,11 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 */
 	public function getavatar() {
 		return $this->_registry->
-				get( 'view.event.avatar' )->get_event_avatar(
-					$this,
-					$this->_registry->get( 'view.calendar.fallbacks' )->get_all(),
-					'alignleft'
-				);
+			get( 'view.event.avatar' )->get_event_avatar(
+				$this,
+				$this->_registry->get( 'view.calendar.fallbacks' )->get_all(),
+				'alignleft'
+			);
 	}
 
 	/**

@@ -214,6 +214,17 @@ class Ai1ec_Settings extends Ai1ec_App {
 		}
 	}
 
+
+	/**
+	 * Do things needed on every plugin upgrade.
+	 */
+	public function perform_upgrade_actions() {
+		$option = $this->_registry->get( 'model.option' );
+		$option->set( 'ai1ec_force_flush_rewrite_rules',      true, true );
+		$option->set( 'ai1ec_invalidate_css_cache',           true, true );
+		$option->set( Ai1ec_Theme_Loader::OPTION_FORCE_CLEAN, true, true );
+	}
+
 	/**
 	 * Hide an option by unsetting it's renderer
 	 *
@@ -284,21 +295,11 @@ class Ai1ec_Settings extends Ai1ec_App {
 			$upgrade = true;
 		}
 		if ( true === $upgrade ) {
-			$this->_perform_upgrade_actions();
+			$this->perform_upgrade_actions();
 		}
 		$this->_registry->get( 'controller.shutdown' )->register(
 			array( $this, 'shutdown' )
 		);
-	}
-
-	/**
-	 * Do things needed on every plugin upgrade.
-	 */
-	protected function _perform_upgrade_actions() {
-        $option = $this->_registry->get( 'model.option' );
-		$option->set( 'ai1ec_force_flush_rewrite_rules',      true, true );
-		$option->set( 'ai1ec_invalidate_css_cache',           true, true );
-		$option->set( Ai1ec_Theme_Loader::OPTION_FORCE_CLEAN, true, true );
 	}
 
 	/**

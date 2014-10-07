@@ -111,7 +111,10 @@ class Ai1ec_Front_Controller {
 		// if we have a command
 		if ( ! empty( $commands ) ) {
 			foreach( $commands as $command ) {
-				$command->execute();
+				$result = $command->execute();
+				if ( null !== $result ) {
+					return $result;
+				}
 			}
 		}
 	}

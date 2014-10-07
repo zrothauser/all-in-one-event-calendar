@@ -107,10 +107,12 @@ class Ai1ec_Front_Controller {
 			$this->_request
 		);
 		// get the command
-		$command = $resolver->get_command();
+		$commands = $resolver->get_command();
 		// if we have a command
-		if ( null !== $command ) {
-			$command->execute();
+		if ( ! empty( $commands ) ) {
+			foreach( $commands as $command ) {
+				$command->execute();
+			}
 		}
 	}
 
@@ -636,7 +638,7 @@ class Ai1ec_Front_Controller {
 				'admin_menu',
 				array( 'view.admin.widget-creator', 'add_page' )
 			);
-			
+
 		} else { // ! is_admin()
 			$dispatcher->register_shortcode(
 				'ai1ec',

@@ -69,7 +69,7 @@ class Ai1ec_Command_Resolver {
 		);
 		$this->add_command(
 			$registry->get(
-				'command.save-settings', 
+				'command.save-settings',
 				$request,
 				array(
 					'action' => 'ai1ec_save_settings',
@@ -122,11 +122,12 @@ class Ai1ec_Command_Resolver {
 	 * @return Ai1ec_Command|null
 	 */
 	public function get_command() {
+		$commands = array();
 		foreach ( $this->_commands as $command ) {
 			if ( $command->is_this_to_execute() ) {
-				return $command;
+				$commands[] = $command;
 			}
 		}
-		return null;
+		return $commands;
 	}
 }

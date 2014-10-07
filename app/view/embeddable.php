@@ -79,6 +79,7 @@ abstract class Ai1ec_Embeddable extends WP_Widget {
 		$this->_registry = apply_filters( 'ai1ec_registry', false );
 		$this->register_javascript_widget( $id_base );
 		add_filter( 'ai1ec_js_translations', array( $this, 'add_js_translations' ) );
+		$this->_registry->get( 'css.frontend' )->add_link_to_html_for_frontend();
 	}
 
 	/**

@@ -120,7 +120,7 @@ class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 						->add_link_to_html_for_frontend();
 		$js       = $this->_registry->get( 'controller.javascript' )
 						->load_frontend_js( true );
-		return $page_content;
+		return $page_content['html'];
 	}
 
 }

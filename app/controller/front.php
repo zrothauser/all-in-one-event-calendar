@@ -107,7 +107,7 @@ class Ai1ec_Front_Controller {
 			$this->_request
 		);
 		// get the command
-		$commands = $resolver->get_command();
+		$commands = $resolver->get_commands();
 		// if we have a command
 		if ( ! empty( $commands ) ) {
 			foreach( $commands as $command ) {

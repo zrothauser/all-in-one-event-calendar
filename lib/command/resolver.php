@@ -121,7 +121,7 @@ class Ai1ec_Command_Resolver {
 	 *
 	 * @return Ai1ec_Command|null
 	 */
-	public function get_command() {
+	public function get_commands() {
 		$commands = array();
 		foreach ( $this->_commands as $command ) {
 			if ( $command->is_this_to_execute() ) {

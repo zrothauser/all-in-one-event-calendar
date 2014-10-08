@@ -1,8 +1,8 @@
 <div class="timely ai1ec-calendar-toolbar ai1ec-clearfix
-{% if categories is empty
-	  and tags is empty
-	  and additional_filters is not defined
-	  and contribution_buttons is empty
+{% if categories           is empty       and
+	    tags                 is empty       and
+	    additional_filters   is not defined and
+	    contribution_buttons is empty
 %}
 	ai1ec-hidden
 {% endif %}
@@ -11,7 +11,7 @@
 		{{ categories | raw }}
 		{{ tags | raw }}
 		{% if additional_filters is defined %}
-		{{ additional_filters | raw }}
+			{{ additional_filters | raw }}
 		{% endif %}
 	</ul>
   <div class="ai1ec-pull-right">

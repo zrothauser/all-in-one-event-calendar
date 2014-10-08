@@ -1,6 +1,6 @@
 {{ navigation | raw }}
 
-<table class="ai1ec-oneday-view-original">
+<table class="ai1ec-{{ type }}-view-original" xxx>
 	<thead>
 		<tr>
 			{% for date, day in cell_array %}
@@ -104,7 +104,7 @@
 
 	</thead>
 	<tbody>
-		<tr class="ai1ec-oneday">
+		<tr class="ai1ec-{{ type }}">
 			{% for day in cell_array %}
 				<td {% if day.today %}class="ai1ec-today"{% endif %}>today
 

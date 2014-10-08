@@ -361,7 +361,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 
 	// Use frontend rendering.
 	if ( ! defined( 'AI1EC_USE_FRONTEND_RENDERING' ) ) {
-		define( 'AI1EC_USE_FRONTEND_RENDERING', false );
+		define( 'AI1EC_USE_FRONTEND_RENDERING', true );
 	}
 
 	// If i choose to use the calendar url as the base for events permalinks,
@@ -460,7 +460,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// you know what you are doing, because you will waste valuable
 	// resources - save the Earth, at least.
 	if ( ! defined( 'AI1EC_DEBUG' ) ) {
-		define( 'AI1EC_DEBUG', false );
+		define( 'AI1EC_DEBUG', true );
 	}
 
 	// Enable Ai1EC cache functionality. If you set this to false, only cache
@@ -468,7 +468,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// This is pointless in any case other than development, where literary
 	// every second refresh needs to take fresh copy of everything.
 	if ( ! defined( 'AI1EC_CACHE' ) ) {
-		define( 'AI1EC_CACHE', true );
+		define( 'AI1EC_CACHE', false );
 	}
 	
 	if ( ! defined( 'AI1EC_DISABLE_FILE_CACHE' ) ) {

@@ -349,7 +349,7 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 					'short_start_time' => $evt->get_runtime( 'short_start_time' ),
 					'instance_id'      => $evt->get( 'instance_id' ),
 					'post_id'          => $evt->get( 'post_id' ),
-					'is_multiday'      => $evt->get( 'is_multiday' ),
+					'is_multiday'      => $evt->is_multiday(),
 					'venue'            => $evt->get( 'venue' ),
 					'ticket_url'       => $evt->get( 'ticket_url' ),
 					'start_truncated'  => $evt->get( 'start_truncated' ),

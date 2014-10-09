@@ -19,7 +19,7 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 	 * @var array
 	 */
 	protected $_addons = array(
-		'all-in-one-event-calendar-extended-views/all-in-one-event-calendar-extended-views.php' => '1.1.0',
+		'all-in-one-event-calendar-extended-views/all-in-one-event-calendar-extended-views.php' => '1.1.0.3',
 	);
 
 	/**

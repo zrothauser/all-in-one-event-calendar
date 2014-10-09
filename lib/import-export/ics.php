@@ -1078,7 +1078,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			}
 			$term = $event_taxonomy->initiate_term( $cat_name, $taxonomy, ! $use_name );
 			if ( false !== $term ) {
-				if( ! isset( $imported_terms[$term['taxonomy']] ) ) {
+				if ( ! isset( $imported_terms[$term['taxonomy']] ) ) {
 					$imported_terms[$term['taxonomy']] = array();
 				}
 				$imported_terms[$term['taxonomy']][$term['term_id']] = true;

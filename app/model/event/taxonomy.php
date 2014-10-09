@@ -71,18 +71,21 @@ class Ai1ec_Event_Taxonomy extends Ai1ec_Base{
 				return false;
 			}
 			$term_to_check = (object)$term_to_check;
-			$to_return['term_id'] = $term_to_check->term_id;
+			$to_return['term_id'] = (int)$term_to_check->term_id;
 		} else {
-			$to_return['term_id'] = $term_to_check;
-			// when importing categories, use the mapping of the current site, so place the term in the current taxonomy
+			$to_return['term_id'] = (int)$term_to_check;
+			// when importing categories, use the mapping of the current site
+			// so place the term in the current taxonomy
 			if ( self::CATEGORIES === $taxonomy ) {
 				// check that the term matches the taxonomy
 				$db = $this->_registry->get( 'dbi.dbi' );
 				$tax = $db->get_row(
 					$db->prepare(
-						'SELECT wt.* FROM ' .  $db->get_table_name( 'terms' ) . ' AS t ' .
-						'INNER JOIN ' . $db->get_table_name( 'term_taxonomy' ) . ' AS wt USING(term_id) '.
-						'WHERE t.term_id = %s LIMIT 1', $term_to_check )
+						'SELECT terms_taxonomy.* FROM ' .  $db->get_table_name( 'terms' ) . 
+						' AS terms INNER JOIN ' . 
+						$db->get_table_name( 'term_taxonomy' ) . 
+						' AS terms_taxonomy USING(term_id) '.
+						'WHERE terms.term_id = %s LIMIT 1', $term_to_check )
 				);
 				$to_return['taxonomy'] = $tax->taxonomy;
 			}

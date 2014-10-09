@@ -277,7 +277,7 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Embeddable::get_content()
 	 */
-	public function get_content( array $args_for_widget ) {
+	public function get_content( array $args_for_widget, $remote = false ) {
 		$agenda     = $this->_registry->get(
 			'view.calendar.view.agenda',
 			$this->_registry->get( 'http.request.parser' )
@@ -347,7 +347,9 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 		// load CSS just once for all widgets. 
 		// Do not load it on the calendar page as it's already loaded.
 		if ( false === $this->_css_loaded && ! $is_calendar_page ) {
-			$args_for_widget['css']                   = $this->_registry->get( 'css.frontend' )->get_compiled_css();
+			if ( true === $remote ) {
+				$args_for_widget['css'] = $this->_registry->get( 'css.frontend' )->get_compiled_css();
+			}
 			$this->_css_loaded = true;
 		}
 		$args_for_widget['show_location_in_title']    = $settings->get( 'show_location_in_title' );

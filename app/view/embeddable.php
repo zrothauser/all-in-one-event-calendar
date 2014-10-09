@@ -1,8 +1,14 @@
 <?php
 abstract class Ai1ec_Embeddable extends WP_Widget {
 	
+	/**
+	 * @var Ai1ec_Registry_Object
+	 */
 	protected $_registry;
 	
+	/**
+	 * @var string
+	 */
 	protected $_id;
 	
 	/**
@@ -24,8 +30,9 @@ abstract class Ai1ec_Embeddable extends WP_Widget {
 	 * Create the html for the widget. Shared by all versions.
 	 * 
 	 * @param array $args_for_widget
+	 * @param bool  $remote_request whether the request is for a remote site or not (useful to inline CSS)
 	 */
-	abstract public function get_content( array $args_for_widget );
+	abstract public function get_content( array $args_for_widget, $remote_request = false );
 	
 	/**
 	 * Add the required javascript for the widget. Needed for shortcode and Wordpress widget
@@ -72,8 +79,13 @@ abstract class Ai1ec_Embeddable extends WP_Widget {
 		$this->_registry = apply_filters( 'ai1ec_registry', false );
 		$this->register_javascript_widget( $id_base );
 		add_filter( 'ai1ec_js_translations', array( $this, 'add_js_translations' ) );
+		$this->_registry->get( 'css.frontend' )->add_link_to_html_for_frontend();
 	}
 
+	/**
+	 * @param array $translations
+	 * @return array
+	 */
 	public function add_js_translations( array $translations ) {
 		$translations['javascript_widgets'][$this->_id] = $this->get_js_widget_configurable_defaults();
 		return $translations;
@@ -104,6 +116,12 @@ abstract class Ai1ec_Embeddable extends WP_Widget {
 
 	}
 
+	/**
+	 * Renders shortcode
+	 * 
+	 * @param array $atts
+	 * @param string $content
+	 */
 	public function shortcode( $atts, $content = null ) {
 		$defaults = $this->get_defaults();
 		$atts = shortcode_atts( $defaults, $atts );
@@ -111,10 +129,14 @@ abstract class Ai1ec_Embeddable extends WP_Widget {
 		return $this->get_content( $atts );
 	}
 
+	/**
+	 * Renders js widget
+	 * 
+	 * @param array $args
+	 */
 	public function javascript_widget( $args ) {
 		$defaults = $this->get_defaults();
 		$args = wp_parse_args( $args, $defaults );
-		$this->_css_loaded = true;
-		return $this->get_content( $args );
+		return $this->get_content( $args, true );
 	}
 }

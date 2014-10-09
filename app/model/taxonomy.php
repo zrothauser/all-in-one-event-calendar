@@ -19,13 +19,14 @@ class Ai1ec_Taxonomy extends Ai1ec_Base {
 	);
 
 	/**
-	 * Callback to pre-populate taxonomies before processing.
+	 * Callback to pre-populate taxonomies before exporting ics.
+	 * All taxonomies which are not tags are exported as event_categories
 	 *
 	 * @param array $post_ids List of Post IDs to inspect.
 	 *
 	 * @return void
 	 */
-	public function update_meta( array $post_ids ) {
+	public function prepare_meta_for_ics( array $post_ids ) {
 		$taxonomies = get_object_taxonomies( AI1EC_POST_TYPE );
 		$categories = array();
 		$excluded_categories = array(
@@ -58,6 +59,29 @@ class Ai1ec_Taxonomy extends Ai1ec_Base {
 		);
 		foreach ( $category_terms as $term ) {
 			$this->_taxonomy_map['events_categories'][$term->object_id][] = $term;
+		}
+	}
+
+	/**
+	 * Callback to pre-populate taxonomies before processing.
+	 *
+	 * @param array $post_ids List of Post IDs to inspect.
+	 *
+	 * @return void
+	 */
+	public function update_meta( array $post_ids ) {
+		foreach ( $post_ids as $post_id ) {
+			$post_id = (int)$post_id;
+			$this->_taxonomy_map['events_categories'][$post_id] = array();
+			$this->_taxonomy_map['events_tags'][$post_id] = array();
+		}
+		$terms = wp_get_object_terms(
+			$post_ids,
+			array( 'events_categories', 'events_tags' ),
+			array( 'fields' => 'all_with_object_id' )
+		);
+		foreach ( $terms as $term ) {
+			$this->_taxonomy_map[$term->taxonomy][$term->object_id][] = $term;
 		}
 	}
 

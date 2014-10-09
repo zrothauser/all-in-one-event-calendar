@@ -512,7 +512,8 @@ class Ai1ec_Ics_Import_Export_Engine
 
 			}
 			// if the event is not finished, unset it otherwise it could be deleted afterwards.
-			if ( $event->get( 'end' )->format_to_gmt() > $this->_registry->get( 'date.time' )->format_to_gmt() ) {
+			$now = $this->_registry->get( 'date.time' )->format_to_gmt();
+			if ( $event->get( 'end' )->format_to_gmt() > $now ) {
 				unset( $events_in_db[$event->get( 'post_id' )] );
 			}
 

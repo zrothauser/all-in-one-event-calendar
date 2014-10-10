@@ -208,8 +208,17 @@ abstract class Ai1ec_Base_Extension_Controller {
 		$version = $option->get( $version_variable );
 		if ( $version !== $this->get_version() ) {
 			$registry->get( 'model.settings' )->perform_upgrade_actions();
+			$this->_perform_upgrade_actions();
 			$option->set( $version_variable, $this->get_version(), true );
 		}
+	}
+
+	/**
+	 * Function called on add on upgrade.
+	 * Can be overridden by add ons for extra behaviour
+	 */
+	protected function _perform_upgrade_actions() {
+		
 	}
 
 	/**

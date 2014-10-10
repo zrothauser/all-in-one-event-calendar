@@ -32,7 +32,7 @@
 								</div>
 
 								{% for event in day.events %}
-									<a href="{{ event.instance_permalink | e( 'html_attr' ) }}"
+									<a href="{{ event.permalink | e( 'html_attr' ) }}"
 										{{ data_type_events | raw }}
 										{% if event.is_multiday %}
 											data-end-day="{{ event.multiday_end_day }}"

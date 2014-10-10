@@ -84,9 +84,10 @@ class Ai1ec_Calendar_View_Week  extends Ai1ec_Calendar_View_Abstract {
 		$show_reveal_button       = apply_filters( 'ai1ec_week_reveal_button', false );
 
 		$hours = array();
-		for ( $i = 0; $i < 24; $i ++ ) {
-			$hours[] = $this->_registry
-				->get( 'twig.ai1ec-extension')->hour_to_datetime( $i )
+		$today = $this->_registry->get( 'date.time', 'now', 'sys.default' );
+		for ( $hour = 0; $hour < 24; $hour++ ) {
+			$hours[] = $today
+				->set_time( $hour, 0, 0 )
 				->format_i18n( $time_format );
 		}
 

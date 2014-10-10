@@ -75,9 +75,10 @@ class Ai1ec_Calendar_View_Oneday  extends Ai1ec_Calendar_View_Abstract {
 			->get( 'time_format', Ai1ec_I18n::__( 'g a' ) );
 
 		$hours = array();
-		for ( $i = 0; $i < 24; $i ++ ) {
-			$hours[] = $this->_registry
-				->get( 'twig.ai1ec-extension')->hour_to_datetime( $i )
+		$today = $this->_registry->get( 'date.time', 'now', 'sys.default' );
+		for ( $hour = 0; $hour < 24; $hour++ ) {
+			$hours[] = $today
+				->set_time( $hour, 0, 0 )
 				->format_i18n( $time_format );
 		}
 

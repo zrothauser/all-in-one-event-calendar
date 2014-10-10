@@ -204,7 +204,7 @@ abstract class Ai1ec_Base_Extension_Controller {
 	protected function _perform_upgrade( Ai1ec_Registry_Object $registry ) {
 		$version_variable = 'ai1ec_' . $this->get_machine_name() .
 			'_version';
-		$option = $registry->get( 'model.option' );
+		$option  = $registry->get( 'model.option' );
 		$version = $option->get( $version_variable );
 		if ( $version !== $this->get_version() ) {
 			$registry->get( 'model.settings' )->perform_upgrade_actions();

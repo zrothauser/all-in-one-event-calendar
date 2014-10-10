@@ -77,12 +77,12 @@ class Ai1ec_Http_Response_Helper {
 		}
 		return array_map( array( __CLASS__, 'utf8' ), $input );
 	}
-	
+
 	/**
 	 * Removes the protocla from the url
-	 * 
+	 *
 	 * @param string $url
-	 * 
+	 *
 	 * @return string
 	 */
 	public static function remove_protocols( $url ) {

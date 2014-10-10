@@ -13,6 +13,8 @@ define(
 		"libs/select2_multiselect_helper",
 		"external_libs/twig",
 		"agenda",
+		"oneday", // Also used for Week view.
+		"month",
 		"external_libs/jquery_history",
 		"external_libs/jquery.tablescroller",
 		"external_libs/jquery.scrollTo",
@@ -32,7 +34,9 @@ define(
 		common_frontend,
 		select2_multiselect_helper,
 		twig,
-		agenda
+		agenda,
+		oneday,
+		month
 	) {
 
 	"use strict"; // jshint ;_;
@@ -290,13 +294,33 @@ define(
 							are_filters_set = data.are_filters_set;
 							var $container = $calendar.find( '.ai1ec-calendar-view-container' );
 							$container.height( $container.height() );
+
 							// Render template or just replace if already rendered.
+							var renderer;
+							if ( hash.match( /\brequest_format\~json\b/ ) ){
+								var 
+									view_type =  $.parseJSON( data.html ).type,
+									renderer_map = {
+										agenda : agenda,
+										oneday : oneday,
+										week   : oneday,
+										month  : month
+									};
+
+								if ( renderer_map[view_type] ) {
+									renderer = renderer_map[view_type];
+								} else {
+									// That's an error. No view found.
+									return;
+								}
+							}
 							$calendar.find( '.ai1ec-calendar-view' )
 								.html( 
-									hash.match( /request_format\~json/ )
-									? agenda.render( $.parseJSON( data.html ) )
+									renderer
+									? renderer.render( $.parseJSON( data.html ) )
 									: data.html
 								);
+
 							// Animate vertical height of container between HTML replacement
 							var new_height = $calendar.find( '.ai1ec-calendar-view' ).height();
 							$container.animate( { height: new_height }, { complete: function() {

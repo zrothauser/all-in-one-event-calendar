@@ -81,10 +81,10 @@ class Ai1ecsw_View_Widegt_Creator extends Ai1ec_View_Admin_Abstract {
 
 	/**
 	 * Renders the settings
-	 * 
+	 *
 	 * @param array $settings
-	 * 
-	 * @return array 
+	 *
+	 * @return array
 	 */
 	public function get_html_from_settings( array $settings ) {
 		$named_elements = array();
@@ -112,7 +112,10 @@ class Ai1ecsw_View_Widegt_Creator extends Ai1ec_View_Admin_Abstract {
 		$tabs = array();
 		foreach ( $widgets as $widget_id => $widget_class ) {
 			$widget = $this->_registry->get( $widget_class );
-			$tabs[$widget_id] = array( 
+			if ( ! $widget instanceof Ai1ec_Widget_Creator ) {
+				continue;
+			}
+			$tabs[$widget_id] = array(
 				'name' => $widget->get_name(),
 				'elements' => $this->get_html_from_settings(
 					$widget->get_configurable_for_widget_creation()

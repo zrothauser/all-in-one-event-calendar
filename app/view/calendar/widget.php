@@ -5,7 +5,7 @@
  *
  * A widget that displays the next X upcoming events (similar to Agenda view).
  */
-class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
+class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable implements Ai1ec_Widget_Creator {
 
 	/**
 	 * @var boolean
@@ -344,7 +344,7 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 
 
 		$args_for_widget['dates']                     = $dates;
-		// load CSS just once for all widgets. 
+		// load CSS just once for all widgets.
 		// Do not load it on the calendar page as it's already loaded.
 		if ( false === $this->_css_loaded && ! $is_calendar_page ) {
 			if ( true === $remote ) {

@@ -1,5 +1,8 @@
+{% if ai1ec_before_navigation is defined %}
+	{{ ai1ec_before_navigation | raw }}
+{% endif %}
 <div class="timely ai1ec-calendar-toolbar ai1ec-clearfix
-{% if categories           is empty       and
+{% if   categories           is empty       and
 	    tags                 is empty       and
 	    additional_filters   is not defined and
 	    contribution_buttons is empty

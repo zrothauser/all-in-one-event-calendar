@@ -45,6 +45,7 @@ $ai1ec_exception_handler = new Ai1ec_Exception_Handler(
 	'Ai1ec_Error_Exception'
 );
 
+
 // if the user clicked the link to reactivate the plugin
 if ( isset( $_GET[Ai1ec_Exception_Handler::DB_REACTIVATE_PLUGIN] ) ) {
 	$ai1ec_exception_handler->reactivate_plugin();

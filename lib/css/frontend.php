@@ -158,7 +158,10 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		// if it's numeric, just consider it a new install
 		if ( empty( $saved_par ) ) {
 			return Ai1ec_Http_Response_Helper::remove_protocols(
-				 AI1EC_URL . '/public/themes-ai1ec/vortex/css/ai1ec_parsed_css.css'
+				apply_filters( 
+					'ai1ec_frontend_standard_css_url',
+					AI1EC_URL . '/public/themes-ai1ec/vortex/css/ai1ec_parsed_css.css'
+				)
 			);
 		}
 		if ( is_numeric( $saved_par ) ) {

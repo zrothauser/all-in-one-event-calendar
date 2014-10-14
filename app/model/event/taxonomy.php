@@ -81,7 +81,7 @@ class Ai1ec_Event_Taxonomy extends Ai1ec_Base{
 				$db = $this->_registry->get( 'dbi.dbi' );
 				$tax = $db->get_row(
 					$db->prepare(
-						'SELECT terms_taxonomy.* FROM ' .  $db->get_table_name( 'terms' ) . 
+						'SELECT terms_taxonomy.taxonomy FROM ' .  $db->get_table_name( 'terms' ) . 
 						' AS terms INNER JOIN ' . 
 						$db->get_table_name( 'term_taxonomy' ) . 
 						' AS terms_taxonomy USING(term_id) '.

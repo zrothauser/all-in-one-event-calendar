@@ -342,7 +342,8 @@ class Ai1ec_Front_Controller {
 		if ( isset( $_GET[Ai1ec_Controller_Javascript_Widget::WIDGET_PARAMETER] ) ) {
 			$this->_registry->get( 'event.dispatcher' )->register_action(
 				'init',
-				array( 'controller.javascript-widget', 'render_js_widget' )
+				array( 'controller.javascript-widget', 'render_js_widget' ),
+				PHP_INT_MAX
 			);
 		}
 		// Route the request.

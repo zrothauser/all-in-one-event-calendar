@@ -5,7 +5,7 @@
  *
  * A widget that displays the next X upcoming events (similar to Agenda view).
  */
-class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable implements Ai1ec_Widget_Creator {
+class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 
 	/**
 	 * @var boolean

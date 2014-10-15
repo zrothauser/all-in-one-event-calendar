@@ -240,6 +240,92 @@ define(
 		);
 	};
 
+	/** 
+	 * Featured events block.
+	 */
+	var initialize_featured_events = function() {
+		var 
+			$carousel = $( '.ai1ec-featured-list' ),
+			$items = $carousel.find( '.ai1ec-featured-event' ),
+			$all_items = null,
+			$main = $( '.ai1ec-featured-first' ),
+			$main_image = $main.find( '.ai1ec-featured-image' ),
+			item_height = $items.first().outerHeight()
+				+ parseInt( $items.first().css( 'margin-bottom' ) ),
+			timer = null,
+			interval = 3000,
+			slide_time = 800,
+			current = 5,
+			init = function() {
+				$items
+					.slice( -5 )
+					.clone()
+						.addClass( 'ai1ec-featured-list-cloned' )
+						.prependTo( $carousel );
+						
+				$all_items = $carousel
+					.find( '.ai1ec-featured-event' )
+					.on( 'click', function() {
+						if ( $( this ).hasClass( 'ai1ec-featured-active' ) ) {
+							return;
+						}
+						select_item( $( this ).index() );
+						return false;
+					});
+						
+				$carousel.scrollTop( current * item_height );
+				$carousel.on( 'mouseenter', function() { console.log('enter')
+					clearInterval( timer )
+					$( this )
+						.stop()
+						.addClass( 'ai1ec-featured-hover' );
+						
+				}).on( 'mouseleave', function() { console.log('leave')
+					timer = setInterval( scroll_to_next, interval );
+					$( this )
+						.removeClass( 'ai1ec-featured-hover' )
+						.hide()
+						.show( 0 );
+						
+					current = Math.round( $carousel.scrollTop() / item_height );
+					$carousel.scrollTop( current * item_height );
+					if ( current === $items.length ) {
+						current --;
+					}
+				});
+			},
+			select_item = function( item ) {
+				$all_items
+					.removeClass( 'ai1ec-featured-active' )
+					.eq( item )
+					.addClass( 'ai1ec-featured-active' );
+				// Changing the main featured event.
+					$main_image.css( 
+						'background-image', 
+						$all_items
+							.eq( item )
+								.find( '.ai1ec-featured-image' )
+									.css( 'background-image' ) 
+					);
+			},
+			scroll_to_next = function() {
+				current ++;
+				$carousel.animate( {scrollTop: current * item_height }, slide_time, 'swing', function() {
+					if ( current === $items.length ) {
+						current = 0;
+						$carousel.scrollTop( 0 );
+					}
+
+					select_item( current + ( current === $items.length ? -5 : 2 ) );
+
+					console.log( current , $items.length)
+				})
+			};
+
+		init();
+		timer = setInterval( scroll_to_next, interval );
+	}
+
 	/**
 	 * Start calendar page.
 	 */
@@ -262,6 +348,9 @@ define(
 			) {
 				affix.initialize_affixed_toolbar( $( '.ai1ec-calendar' ) );
 			}
+			
+			// Featured events.
+			initialize_featured_events();
 		} );
 	};
 

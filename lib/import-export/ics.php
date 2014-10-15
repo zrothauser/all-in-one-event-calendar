@@ -144,7 +144,7 @@ class Ai1ec_Ics_Import_Export_Engine
 		$messages       = array();
 		$local_timezone = $this->_registry->get( 'date.timezone' )
 			->get_default_timezone();
-		$now = $this->_registry->get( 'date.time' )->format_to_gmt();
+		$current_timestamp = $this->_registry->get( 'date.time' )->format_to_gmt();
 		// go over each event
 		while ( $e = $v->getComponent( 'vevent' ) ) {
 			// Event data array.
@@ -513,7 +513,7 @@ class Ai1ec_Ics_Import_Export_Engine
 
 			}
 			// if the event is not finished, unset it otherwise it could be deleted afterwards.
-			if ( $event->get( 'end' )->format_to_gmt() > $now ) {
+			if ( $event->get( 'end' )->format_to_gmt() > $current_timestamp ) {
 				unset( $events_in_db[$event->get( 'post_id' )] );
 			}
 

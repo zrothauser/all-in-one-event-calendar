@@ -9,7 +9,7 @@
  * @package    AI1ECSW
  * @subpackage AI1ECSW.View
  */
-class Ai1ecsw_View_Widget_Creator extends Ai1ec_View_Admin_Abstract {
+class Ai1ec_View_Widget_Creator extends Ai1ec_View_Admin_Abstract {
 
 	/**
 	 * Adds page to the menu.

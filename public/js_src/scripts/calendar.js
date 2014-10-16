@@ -245,85 +245,150 @@ define(
 	 */
 	var initialize_featured_events = function() {
 		var 
-			$carousel = $( '.ai1ec-featured-list' ),
-			$items = $carousel.find( '.ai1ec-featured-event' ),
-			$all_items = null,
-			$main = $( '.ai1ec-featured-first' ),
-			$main_image = $main.find( '.ai1ec-featured-image' ),
-			item_height = $items.first().outerHeight()
+			$carousel         = $( '.ai1ec-featured-list' ),
+			$items            = $carousel.find( '.ai1ec-featured-event' ),
+			$all_items        = $items,
+			$main             = $( '.ai1ec-featured-first' ),
+			$main_image       = $main.find( '.ai1ec-featured-image' ),
+			// Get first item's full height.
+			item_height       = $items.first().outerHeight()
 				+ parseInt( $items.first().css( 'margin-bottom' ) ),
-			timer = null,
-			interval = 3000,
-			slide_time = 800,
-			current = 5,
-			init = function() {
-				$items
-					.slice( -5 )
-					.clone()
-						.addClass( 'ai1ec-featured-list-cloned' )
-						.prependTo( $carousel );
-						
-				$all_items = $carousel
-					.find( '.ai1ec-featured-event' )
+			timer             = null,
+			// Delay between two slides.
+			interval          = 3000,
+			// It's the time of transition in the list.
+			slide_time        = 800,
+			// No need to scroll the list if we have less than six items.
+			scrolling_enabled = $items.length > 5,
+			// Don't start animation with less than two items.
+			animation_enabled = $items.length > 1,
+			// Start from the first (not cloned) item.
+			current           = scrolling_enabled ? 5 : 0,
+			// This called just once.
+			init              = function() {
+				$carousel
+					// Stop animation when pointer enter the list area.
+					.on( 'mouseenter', function() {
+						clearInterval( timer )
+						$( this )
+							.stop()
+							// Add scrollbar to the list.
+							.addClass( scrolling_enabled && 'ai1ec-featured-hover' );
+					// Continue animation.
+					}).on( 'mouseleave', function() {
+						$( this )
+							// Remove scrollbar.
+							.removeClass( 'ai1ec-featured-hover' )
+							// Force browser to redraw the list to avoid flickering.
+							.hide()
+							.show( 0 );
+
+						if ( animation_enabled ) {
+							start_timer();
+						}
+					});
+				if ( scrolling_enabled ) {
+					// Clone last 5 events for a loop.
+					$items
+						.slice( -5 )
+						.clone()
+							.addClass( 'ai1ec-featured-list-cloned' )
+							.prependTo( $carousel );
+	
+					// All items including cloned.
+					$all_items = $carousel.find( '.ai1ec-featured-event' );
+					$carousel.scrollTop( current * item_height );
+				}
+				$all_items
 					.on( 'click', function() {
+						// Stop animation.
+						animation_enabled = false;
+						// Proceed with the default behaviour if item is active.
 						if ( $( this ).hasClass( 'ai1ec-featured-active' ) ) {
 							return;
 						}
+						// Select the clicked item.
 						select_item( $( this ).index() );
 						return false;
 					});
-						
-				$carousel.scrollTop( current * item_height );
-				$carousel.on( 'mouseenter', function() { console.log('enter')
-					clearInterval( timer )
-					$( this )
-						.stop()
-						.addClass( 'ai1ec-featured-hover' );
-						
-				}).on( 'mouseleave', function() { console.log('leave')
-					timer = setInterval( scroll_to_next, interval );
-					$( this )
-						.removeClass( 'ai1ec-featured-hover' )
-						.hide()
-						.show( 0 );
-						
-					current = Math.round( $carousel.scrollTop() / item_height );
-					$carousel.scrollTop( current * item_height );
-					if ( current === $items.length ) {
-						current --;
-					}
-				});
+
+				// Start timer.
+				animation_enabled && start_timer();
 			},
-			select_item = function( item ) {
+			start_timer       = function() {
+				timer = setInterval( scroll_to_next, interval );
+			},
+			// Select item in in the list and load its details to the main event.
+			select_item       = function( item ) {
 				$all_items
 					.removeClass( 'ai1ec-featured-active' )
 					.eq( item )
 					.addClass( 'ai1ec-featured-active' );
+
 				// Changing the main featured event.
-					$main_image.css( 
-						'background-image', 
-						$all_items
-							.eq( item )
-								.find( '.ai1ec-featured-image' )
-									.css( 'background-image' ) 
-					);
+				var $item = $all_items.eq( item );
+				$main_image.css( 
+					'background-image', 
+					$item
+						.find( '.ai1ec-featured-image' )
+							.css( 'background-image' )
+				);
+				$main
+					.find( '.ai1ec-featured-title' )
+						.html( $item.find( '.ai1ec-featured-title' ).html() )
+						.end()
+					.find( '.ai1ec-featured-footer' )
+						.html( $item.data( 'tags' ) + ' ' +  $item.data( 'categories' ) )
+						.end()
+					.find( 'a:first' )
+						.attr( 'href', $item.attr( 'href' ) )
+						.end()
+					.find( '.ai1ec-month')
+						.text( $item.data( 'month' ) )
+						.end()
+					.find( '.ai1ec-day')
+						.text( $item.data( 'day' ) )
+						.end()
+					.find( '.ai1ec-weekday')
+						.text( $item.data( 'weekday' ) );
 			},
-			scroll_to_next = function() {
+			check_for_end     = function() {
+				// Return to the top if reached the end.
+				if ( scrolling_enabled && first() === $items.length ) {
+					current = 2;
+					$carousel.scrollTop( 0 );
+				} else if ( !scrolling_enabled && current === $items.length ) {
+					current = 0;
+				}
+				select_item( current );
+			},
+			// Current first visible item.
+			first = function() {
+				return Math.round( $carousel.scrollTop() / item_height );
+			},
+			// Step of animation.
+			scroll_to_next    = function() {
 				current ++;
-				$carousel.animate( {scrollTop: current * item_height }, slide_time, 'swing', function() {
-					if ( current === $items.length ) {
-						current = 0;
-						$carousel.scrollTop( 0 );
+				if ( scrolling_enabled ) {
+					if ( 2 < current - first() ) {
+						// Sliding animation.
+						$carousel.animate( {
+							scrollTop: ( current - 2 )  * item_height
+						},
+						slide_time,
+						'swing',
+						function() {
+							check_for_end();
+						} );
+					} else {
+						check_for_end();
 					}
-
-					select_item( current + ( current === $items.length ? -5 : 2 ) );
-
-					console.log( current , $items.length)
-				})
+				} else {
+					check_for_end();
+				}
 			};
 
 		init();
-		timer = setInterval( scroll_to_next, interval );
 	}
 
 	/**

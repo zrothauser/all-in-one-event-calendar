@@ -67,6 +67,13 @@ abstract class Ai1ec_Embeddable extends WP_Widget {
 	abstract public function get_name();
 
 	/**
+	 * Checks and returns widget requirements.
+	 *
+	 * @return string
+	 */
+	abstract public function check_requirements();
+
+	/**
 	 * Register widget class with current WP instance.
 	 * This must be static as otherwise the class would be instantiated twice,
 	 * one to register it and the other from Wordpress.

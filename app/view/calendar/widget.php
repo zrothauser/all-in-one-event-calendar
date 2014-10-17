@@ -392,6 +392,13 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 		return parent::javascript_widget( $args );
 	}
 
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Embeddable::check_requirements()
+	 */
+	public function check_requirements() {
+		return null;
+	}
+
 	/**
 	 * _valid_seek_type method.
 	 *

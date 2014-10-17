@@ -113,8 +113,9 @@ class Ai1ec_View_Widget_Creator extends Ai1ec_View_Admin_Abstract {
 		foreach ( $widgets as $widget_id => $widget_class ) {
 			$widget           = $this->_registry->get( $widget_class );
 			$tabs[$widget_id] = array(
-				'name'     => $widget->get_name(),
-				'elements' => $this->get_html_from_settings(
+				'name'         => $widget->get_name(),
+				'requirements' => $widget->check_requirements(),
+				'elements'     => $this->get_html_from_settings(
 					$widget->get_configurable_for_widget_creation()
 				)
 			);

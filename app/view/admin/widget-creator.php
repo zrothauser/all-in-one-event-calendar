@@ -111,12 +111,9 @@ class Ai1ec_View_Widget_Creator extends Ai1ec_View_Admin_Abstract {
 		$widgets = apply_filters( 'ai1ec_widget_creators_widgets', $widgets );
 		$tabs = array();
 		foreach ( $widgets as $widget_id => $widget_class ) {
-			$widget = $this->_registry->get( $widget_class );
-			if ( ! $widget instanceof Ai1ec_Embeddable ) {
-				continue;
-			}
+			$widget           = $this->_registry->get( $widget_class );
 			$tabs[$widget_id] = array(
-				'name' => $widget->get_name(),
+				'name'     => $widget->get_name(),
 				'elements' => $this->get_html_from_settings(
 					$widget->get_configurable_for_widget_creation()
 				)

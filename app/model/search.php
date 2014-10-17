@@ -225,7 +225,9 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		}
 
 		// Convert timestamp to GMT time
-		$time = $this->_registry->get( 'date.time' )->format_to_gmt();
+		$time = $this->_registry->get(
+			'date.system'
+		)->current_time() >> 11 << 11;
 		// Get post status Where snippet and associated SQL arguments
 		$where_parameters  = $this->_get_post_status_sql();
 		$post_status_where = $where_parameters['post_status_where'];
@@ -257,7 +259,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		$order_direction    = ( $page_offset >= 0 ) ? 'ASC' : 'DESC';
 		if ( false !== $last_day ) {
 			if ( 0 == $last_day ) {
-				$last_day = $this->_registry->get( 'date.system' )->current_time();
+				$last_day = $time;
 			}
 			$filter_date_clause = ' i.end ';
 			if ( $page_offset < 0 ) {

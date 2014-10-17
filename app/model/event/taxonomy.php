@@ -9,7 +9,7 @@
  * @package      Ai1EC
  * @subpackage   Ai1EC.Model
  */
-class Ai1ec_Event_Taxonomy extends Ai1ec_Base{
+class Ai1ec_Event_Taxonomy extends Ai1ec_Base {
 
 	/**
 	 * @var string Name of categories taxonomy.
@@ -51,7 +51,8 @@ class Ai1ec_Event_Taxonomy extends Ai1ec_Base{
 	 * @param bool   $is_id    Set to true if $term is ID.
 	 * @param array  $attrs    Attributes to creatable entity.
 	 *
-	 * @return array|bool      Array with term id and taxonomy name
+	 * @return array|bool      Associative array with term_id 
+	 *                         and taxonomy keys or false on error
 	 */
 	public function initiate_term(
 		$term,
@@ -78,15 +79,7 @@ class Ai1ec_Event_Taxonomy extends Ai1ec_Base{
 			// so place the term in the current taxonomy
 			if ( self::CATEGORIES === $taxonomy ) {
 				// check that the term matches the taxonomy
-				$db = $this->_registry->get( 'dbi.dbi' );
-				$tax = $db->get_row(
-					$db->prepare(
-						'SELECT terms_taxonomy.taxonomy FROM ' .  $db->get_table_name( 'terms' ) . 
-						' AS terms INNER JOIN ' . 
-						$db->get_table_name( 'term_taxonomy' ) . 
-						' AS terms_taxonomy USING(term_id) '.
-						'WHERE terms.term_id = %s LIMIT 1', $term_to_check )
-				);
+				$tax = $this->_get_taxonomy_for_term_id( $term_to_check );
 				$to_return['taxonomy'] = $tax->taxonomy;
 			}
 
@@ -167,4 +160,22 @@ class Ai1ec_Event_Taxonomy extends Ai1ec_Base{
 		return $this->set_terms( array( $term_id ), self::FEEDS );
 	}
 
+	/**
+	 * Get the taxonomy name from term id
+	 * 
+	 * @param int $term
+	 * 
+	 * @return stdClass The taxonomy nane
+	 */
+	protected function _get_taxonomy_for_term_id( $term ) {
+		$db = $this->_registry->get( 'dbi.dbi' );
+		return $db->get_row(
+			$db->prepare(
+				'SELECT terms_taxonomy.taxonomy FROM ' .  $db->get_table_name( 'terms' ) .
+				' AS terms INNER JOIN ' .
+				$db->get_table_name( 'term_taxonomy' ) .
+				' AS terms_taxonomy USING(term_id) '.
+				'WHERE terms.term_id = %d LIMIT 1', $term )
+		);
+	}
 }

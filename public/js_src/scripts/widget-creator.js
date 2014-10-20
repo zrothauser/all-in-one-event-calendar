@@ -141,7 +141,7 @@ define(
 					};
 				// get the change event when it bubbles up.
 				$( '.timely' ).on( 'change', '.ai1ec-form-group', preview );
-				$( '.timely' ).on( 'click', 'a[data-toggle="ai1ec-tab"]', preview );
+				$( '.timely' ).on( 'shown.bs.tab', 'a[data-toggle="ai1ec-tab"]', preview );
 
 				// Generate code and preview on page load.
 				initialized = true;

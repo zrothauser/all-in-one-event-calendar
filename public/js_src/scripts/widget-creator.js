@@ -138,8 +138,7 @@ define(
 							'</html>'
 						);
 						iframe.document.close();
-					},
-					loaded
+					};
 				// get the change event when it bubbles up.
 				$( '.timely' ).on( 'change', '.ai1ec-form-group', preview );
 				$( '.timely' ).on( 'click', 'a[data-toggle="ai1ec-tab"]', preview );

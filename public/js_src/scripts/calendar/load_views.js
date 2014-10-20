@@ -240,8 +240,9 @@ define(
 						data: query,
 						method : 'get',
 						success: function( data ) {
-							// show the subscribe button ( used in the super widget )
-							$( '.ai1ec-subscribe-container' ).show();
+							// trigger the event so that other addons can respond
+							$( document ).trigger( 'calendar_view_loaded.ai1ec', $calendar );
+							
 							// Do required cleanup of existing view.
 							destroy_view( $calendar );
 
@@ -377,6 +378,7 @@ define(
 			$calendar = $el.closest( '.ai1ec-calendar' );
 
 		e.preventDefault();
+
 		load_view_according_to_datatype(
 			$calendar,
 			$el.data( 'type' ), $el.attr( 'href' )

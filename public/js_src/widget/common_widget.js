@@ -81,9 +81,7 @@ require(
 						data: data,
 						success: function( data ) {
 							$timely.html( data.html );
-							if ( typeof ai1ec_widget_loaded === $(document)[0].ai1ec_widget_loaded() ) {
-								$(document)[0].ai1ec_widget_loaded();
-							}
+							top.postMessage( 'ai1ec-widget-loaded', top.document.URL );
 						},
 						error: function( jqXHR, textStatus, errorThrown ) {
 							window.alert( 'An error occurred while retrieving the data.' );

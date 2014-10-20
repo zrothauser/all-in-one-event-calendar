@@ -63,6 +63,7 @@ require(
 					var $timely = $( '<div />', {
 						'class': 'timely'
 					} )
+						.html( '<i class="ai1ec-fa ai1ec-fa-spin ai1ec-fa-spinner"></i>' )
 						.insertAfter( $( this ) );
 					$timely.on( 'click',
 						'.ai1ec-load-event',
@@ -80,7 +81,9 @@ require(
 						data: data,
 						success: function( data ) {
 							$timely.html( data.html );
-		
+							if ( typeof ai1ec_widget_loaded === $(document)[0].ai1ec_widget_loaded() ) {
+								$(document)[0].ai1ec_widget_loaded();
+							}
 						},
 						error: function( jqXHR, textStatus, errorThrown ) {
 							window.alert( 'An error occurred while retrieving the data.' );

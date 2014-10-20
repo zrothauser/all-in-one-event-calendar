@@ -100,6 +100,9 @@ define(
 						if ( ! initialized ) {
 							return;
 						}
+						$( '#widget-preview-title' ).html(
+							ai1ec_config.widget_creator.preview_loading
+						);
 						var
 							iframe = $preview[0],
 							txt_code = generate_code();
@@ -114,7 +117,11 @@ define(
 								iframe.contentDocument.document ?
 									iframe.contentDocument.document :
 									iframe.contentDocument;
-
+						iframe.document.ai1ec_widget_loaded = function() {
+							$( '#widget-preview-title' ).html(
+								ai1ec_config.widget_creator.preview
+							);
+						};
 						iframe.document.open();
 						iframe.document.write(
 							'<!DOCTYPE html><html>' +

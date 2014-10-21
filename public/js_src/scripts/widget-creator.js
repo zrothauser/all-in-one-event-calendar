@@ -23,6 +23,14 @@ define(
 					$( 'ul.ai1ec-nav a[href=' + active_tab + ']' ).tab( 'show' );
 				}
 			};
+
+			var handle_loaded_widget_event = function( event ) {
+				if ( 'ai1ec-widget-loaded' === event.data ) {
+					$( '#widget-preview-title' ).html(
+						ai1ec_config.widget_creator.preview
+					);
+				}
+			};
 		
 			var initial_setup = function() {
 				// Handle embedding code for Super Widget.
@@ -100,6 +108,9 @@ define(
 						if ( ! initialized ) {
 							return;
 						}
+						$( '#widget-preview-title' ).html(
+							ai1ec_config.widget_creator.preview_loading
+						);
 						var
 							iframe = $preview[0],
 							txt_code = generate_code();
@@ -130,6 +141,7 @@ define(
 					};
 				// get the change event when it bubbles up.
 				$( '.timely' ).on( 'change', '.ai1ec-form-group', preview );
+				$( '.timely' ).on( 'shown.bs.tab', 'a[data-toggle="ai1ec-tab"]', preview );
 
 				// Generate code and preview on page load.
 				initialized = true;
@@ -139,7 +151,8 @@ define(
 			domReady( function() {
 				
 				utils.activate_saved_tab_on_page_load( $.cookie( 'widget_creator_active_tab' ) );
-				
+				window.addEventListener( 'message', handle_loaded_widget_event, false );
+
 				initial_setup(); 
 
 				// Register event handlers.

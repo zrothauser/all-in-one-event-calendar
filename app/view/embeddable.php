@@ -1,39 +1,44 @@
 <?php
 abstract class Ai1ec_Embeddable extends WP_Widget {
-	
+
 	/**
 	 * @var Ai1ec_Registry_Object
 	 */
 	protected $_registry;
-	
+
 	/**
 	 * @var string
 	 */
 	protected $_id;
-	
+
+	/**
+	 * @var boolean
+	 */
+	protected $_css_loaded = false;
+
 	/**
 	 * Get default values for shortcode or widget.
-	 * 
+	 *
 	 * @return array
 	 */
 	abstract public function get_defaults();
-	
+
 	/**
 	 * Get values which are configurable in the Javascript widget.
 	 * Some things might not be configurable.
-	 * 
+	 *
 	 * @return array
 	 */
 	abstract public function get_js_widget_configurable_defaults();
-	
+
 	/**
 	 * Create the html for the widget. Shared by all versions.
-	 * 
+	 *
 	 * @param array $args_for_widget
 	 * @param bool  $remote_request whether the request is for a remote site or not (useful to inline CSS)
 	 */
 	abstract public function get_content( array $args_for_widget, $remote_request = false );
-	
+
 	/**
 	 * Add the required javascript for the widget. Needed for shortcode and Wordpress widget
 	 */
@@ -41,26 +46,33 @@ abstract class Ai1ec_Embeddable extends WP_Widget {
 
 	/**
 	 * Register the widget to the controller.
-	 * 
+	 *
 	 * @param string $id_base
 	 */
 	abstract public function register_javascript_widget( $id_base );
-	
+
 
 	/**
 	 * Return options needed for thw "Widget creator page
-	 * 
+	 *
 	 * @return array
 	 */
 	abstract public function get_configurable_for_widget_creation();
 
 	/**
 	 * The human-readable name of the widget.
-	 * 
+	 *
 	 * @return string
 	 */
 	abstract public function get_name();
-	
+
+	/**
+	 * Checks and returns widget requirements.
+	 *
+	 * @return string
+	 */
+	abstract public function check_requirements();
+
 	/**
 	 * Register widget class with current WP instance.
 	 * This must be static as otherwise the class would be instantiated twice,
@@ -100,7 +112,7 @@ abstract class Ai1ec_Embeddable extends WP_Widget {
 	 * @return void
 	 */
 	public function widget( $args, $instance ) {
-	
+
 		$defaults = $this->get_defaults();
 		$instance = wp_parse_args( $instance, $defaults );
 		$this->add_js();
@@ -118,7 +130,7 @@ abstract class Ai1ec_Embeddable extends WP_Widget {
 
 	/**
 	 * Renders shortcode
-	 * 
+	 *
 	 * @param array $atts
 	 * @param string $content
 	 */
@@ -131,12 +143,32 @@ abstract class Ai1ec_Embeddable extends WP_Widget {
 
 	/**
 	 * Renders js widget
-	 * 
+	 *
 	 * @param array $args
 	 */
 	public function javascript_widget( $args ) {
 		$defaults = $this->get_defaults();
 		$args = wp_parse_args( $args, $defaults );
 		return $this->get_content( $args, true );
+	}
+
+	/**
+	 * Returns default and empty arguments for widgets.
+	 *
+	 * @return array Default, empty args.
+	 */
+	protected function _get_widget_default_args() {
+		return array(
+			'name'          => null,
+			'id'            => null,
+			'description'   => null,
+			'class'         => null,
+			'before_widget' => null,
+			'after_widget'  => null,
+			'before_title'  => null,
+			'after_title'   => null,
+			'widget_id'     => null,
+			'widget_name'   => null,
+		);
 	}
 }

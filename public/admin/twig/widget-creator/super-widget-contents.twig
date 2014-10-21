@@ -16,10 +16,15 @@
 		<div class="ai1ec-tab-content">
 			{% for id, data in tabs %}
 				<div class="ai1ec-tab-pane" id="{{ id }}">
+					{% if data.requirements is not empty %}
+						<div class="ai1ec-alert ai1ec-alert-info">
+							<i class="ai1ec-fa ai1ec-fa-info-circle ai1ec-fa-fw"></i>
+							{{ data.requirements | raw }}
+						</div>
+					{% endif %}
 					{% for element in data.elements %}
 						{{ element | raw }}
 					{% endfor %}
-					
 				</div>
 			{% endfor %}
 		</div>
@@ -35,6 +40,6 @@
 				| raw }}
 		</div>
 	</div>
-	<h2>{{ preview }}</h2>
+	<h2 id="widget-preview-title">{{ preview }}</h2>
 	<div id="ai1ec-superwidget-preview" class="ai1ec-well ai1ec-hidden"></div>
 </div>

@@ -447,6 +447,12 @@ class Ai1ec_Javascript_Controller {
 			'region'                         => ( $settings->get( 'geo_region_biasing' ) ) ? $locale->get_region() : '',
 			'site_url'                       => trailingslashit( get_site_url() ),
 			'javascript_widgets'             => array(),
+			'widget_creator'                 => array(
+				'preview'         => Ai1ec_I18n::__( 'Preview:' ),
+				'preview_loading' => Ai1ec_I18n::__(
+					'Loading preview&nbsp;<i class="ai1ec-fa ai1ec-fa-spin ai1ec-fa-spinner"></i>'
+				)
+			),
 		);
 		return apply_filters( 'ai1ec_js_translations', $data );
 	}

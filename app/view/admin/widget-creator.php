@@ -9,7 +9,7 @@
  * @package    AI1ECSW
  * @subpackage AI1ECSW.View
  */
-class Ai1ecsw_View_Widegt_Creator extends Ai1ec_View_Admin_Abstract {
+class Ai1ec_View_Widget_Creator extends Ai1ec_View_Admin_Abstract {
 
 	/**
 	 * Adds page to the menu.
@@ -81,10 +81,10 @@ class Ai1ecsw_View_Widegt_Creator extends Ai1ec_View_Admin_Abstract {
 
 	/**
 	 * Renders the settings
-	 * 
+	 *
 	 * @param array $settings
-	 * 
-	 * @return array 
+	 *
+	 * @return array
 	 */
 	public function get_html_from_settings( array $settings ) {
 		$named_elements = array();
@@ -111,10 +111,11 @@ class Ai1ecsw_View_Widegt_Creator extends Ai1ec_View_Admin_Abstract {
 		$widgets = apply_filters( 'ai1ec_widget_creators_widgets', $widgets );
 		$tabs = array();
 		foreach ( $widgets as $widget_id => $widget_class ) {
-			$widget = $this->_registry->get( $widget_class );
-			$tabs[$widget_id] = array( 
-				'name' => $widget->get_name(),
-				'elements' => $this->get_html_from_settings(
+			$widget           = $this->_registry->get( $widget_class );
+			$tabs[$widget_id] = array(
+				'name'         => $widget->get_name(),
+				'requirements' => $widget->check_requirements(),
+				'elements'     => $this->get_html_from_settings(
 					$widget->get_configurable_for_widget_creation()
 				)
 			);

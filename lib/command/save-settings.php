@@ -116,7 +116,9 @@ class Ai1ec_Command_Save_Settings extends Ai1ec_Command_Save_Abstract {
 		$enabled_views = $settings->get( 'enabled_views' );
 		foreach ( $enabled_views as $view => &$options ) {
 			$options['enabled'] = isset( $_POST['view_' . $view . '_enabled'] );
-			$options['default'] = $_POST['default_calendar_view'] === $view;
+			$options['default'] = isset( $_POST['default_calendar_view'] )
+				? $_POST['default_calendar_view'] === $view
+				: false;
 			$options['enabled_mobile'] =
 				isset( $_POST['view_' . $view . '_enabled_mobile'] );
 			$options['default_mobile'] =

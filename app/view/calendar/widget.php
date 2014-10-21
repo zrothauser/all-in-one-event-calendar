@@ -344,7 +344,7 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 
 
 		$args_for_widget['dates']                     = $dates;
-		// load CSS just once for all widgets. 
+		// load CSS just once for all widgets.
 		// Do not load it on the calendar page as it's already loaded.
 		if ( false === $this->_css_loaded && ! $is_calendar_page ) {
 			if ( true === $remote ) {
@@ -390,6 +390,13 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 		$args['show_calendar_button'] = false;
 		$args['link_for_days']        = false;
 		return parent::javascript_widget( $args );
+	}
+
+	/* (non-PHPdoc)
+	 * @see Ai1ec_Embeddable::check_requirements()
+	 */
+	public function check_requirements() {
+		return null;
 	}
 
 	/**

@@ -63,7 +63,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 			if ( '' !== $wp_static_folder ) {
 				$this->_cache_paths[] = array(
 					'path' => $wp_static_folder,
-					'url'  => content_url() . '/ai1ec_static/'
+					'url'  => content_url() . '/uploads/ai1ec_static/'
 				);
 			}
 		}

@@ -50,6 +50,25 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			nl2br( $location->get_location( $event ) ),
 			$event
 		);
+		$timezone_info = array(
+			'show_timezone'       => false,
+			'text_timezone_title' => null,
+			'event_timezone'      => null,
+		);
+		$default_tz = $this->_registry->get( 'date.timezone' )
+			->get_default_timezone();
+		if ( $event->get( 'timezone_name' ) !== $default_tz ) {
+			$timezone_info = array(
+				'show_timezone'       => true,
+				'event_timezone'      => $event->get( 'timezone_name' ),
+				'text_timezone_title' => sprintf(
+					Ai1ec_I18n:: __(
+						'Event was created in %s timezone.'
+					),
+					$event->get( 'timezone_name' )
+				),
+			);
+		}
 		// objects are passed by reference so an action is ok
 		do_action( 'ai1ec_single_event_page_before_render', $event );
 
@@ -82,6 +101,7 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			'text_free'               => __( 'Free', AI1EC_PLUGIN_NAME ),
 			'text_categories'         => __( 'Categories', AI1EC_PLUGIN_NAME ),
 			'text_tags'               => __( 'Tags', AI1EC_PLUGIN_NAME ),
+			'timezone_info'           => $timezone_info,
 		);
 
 		if (

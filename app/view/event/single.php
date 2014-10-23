@@ -55,10 +55,10 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			'text_timezone_title' => null,
 			'event_timezone'      => null,
 		);
+		$default_tz = $this->_registry->get( 'date.timezone' )
+			->get_default_timezone();
 		if (
-			$event->get( 'timezone_name' ) !== $this->_registry->get(
-				'date.timezone'
-			)->get_default_timezone()
+			$event->get( 'timezone_name' ) !== $default_tz
 		) {
 			$timezone_info = array(
 				'show_timezone'       => true,

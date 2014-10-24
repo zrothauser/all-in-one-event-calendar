@@ -63,7 +63,7 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 				'event_timezone'      => $event->get( 'start' )->get_gmt_offset_as_text(),
 				'text_timezone_title' => sprintf(
 					Ai1ec_I18n:: __(
-						'Event was created in %s timezone.'
+						'Event was created in the %s time zone'
 					),
 					$event->get( 'timezone_name' )
 				),

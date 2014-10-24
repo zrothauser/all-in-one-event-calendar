@@ -31,9 +31,9 @@ class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 			$view_names[$view_name] = true;
 		}
 
-		$view              = $default_view;
-		$events_categories = $events_tags = $post_ids = array();
-		$events_limit      = null;
+		$view               = $default_view;
+		$_events_categories = $_events_tags = $post_ids = array();
+		$events_limit       = null;
 
 		if ( isset( $atts['view'] ) ) {
 			if ( 'ly' === substr( $atts['view'], -2 ) ) {
@@ -62,7 +62,7 @@ class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 			) {
 				continue;
 			}
-			${$matches[1] . '_ids'} = array();
+			${'_' . $matches[1] . '_ids'} = array();
 			$custom_taxonomies[]    = $matches[1];
 
 			if ( ! isset( $mappings[$matches[1] . '_id'] ) ) {
@@ -107,13 +107,13 @@ class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 							continue;
 						}
 					}
-					${$type}[] = $argument;
+					${'_' . $type}[] = $argument;
 				}
 			}
 		}
 		$query = array(
-			'ai1ec_cat_ids'	 => implode( ',', $events_categories ),
-			'ai1ec_tag_ids'	 => implode( ',', $events_tags ),
+			'ai1ec_cat_ids'	 => implode( ',', $_events_categories ),
+			'ai1ec_tag_ids'	 => implode( ',', $_events_tags ),
 			'ai1ec_post_ids' => implode( ',', $post_ids ),
 			'action'         => $view,
 			'request_type'   => 'jsonp',
@@ -125,7 +125,7 @@ class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 				: null,
 		);
 		foreach ( $custom_taxonomies as $taxonomy ) {
-			$query['ai1ec_' . $taxonomy . '_ids'] = implode( ',', ${$taxonomy} );
+			$query['ai1ec_' . $taxonomy . '_ids'] = implode( ',', ${'_' . $taxonomy} );
 		}
 		if ( isset( $atts['exact_date'] ) ) {
 			$query['exact_date'] = $atts['exact_date'];

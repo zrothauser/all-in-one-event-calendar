@@ -60,6 +60,7 @@ class Ai1ec_Front_Controller {
 		$this->_registry->get( 'controller.shutdown' )
 			->register( 'ai1ec_stop' );
 		add_action( 'plugins_loaded', array( $this, 'register_extensions' ), 1 );
+		add_action( 'after_setup_theme', array( $this, 'register_themes' ), 1 );
 		add_action( 'init', array( $lessphp, 'invalidate_css_cache_if_requested' ) );
 	}
 
@@ -79,6 +80,15 @@ class Ai1ec_Front_Controller {
 	 */
 	public function register_extensions() {
 		do_action( 'ai1ec_loaded', $this->_registry );
+	}
+
+	/**
+	 * Notify themes and pass them instance of objects registry.
+	 *
+	 * @return void
+	 */
+	public function register_themes() {
+		do_action( 'ai1ec_after_themes_setup', $this->_registry );
 	}
 
 	/**

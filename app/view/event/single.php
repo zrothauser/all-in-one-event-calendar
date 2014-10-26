@@ -145,12 +145,13 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 	 * @param Ai1ec_Event $event
 	 */
 	public function get_full_article( Ai1ec_Event $event ) {
-		$title   = apply_filters(
+		$title         = apply_filters(
 			'the_title',
 			$event->get( 'post' )->post_title,
 			$event->get( 'post_id' )
 		);
-		$content = $this->get_content( $event ) . wpautop(
+		$event_details = $this->get_content( $event );
+		$content       = wpautop(
 			apply_filters(
 				'ai1ec_the_content',
 				apply_filters(
@@ -159,11 +160,10 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 				)
 			)
 		);
-		$args = compact( 'title', 'content' );
+		$args = compact( 'title', 'event_details', 'content' );
 		$loader = $this->_registry->get( 'theme.loader' );
 		return $loader->get_file( 'event-single-full.twig', $args, false )
 			->get_content();
-
 	}
 
 }

@@ -247,7 +247,7 @@ class Ai1ec_Javascript_Controller {
 		);
 
 		$javascript = $require . $require_config . $translation_module .
-			$config . $jquery . $page_js . $common_js . $ext_js . $page_ready;
+			$config . $jquery . $common_js . $ext_js . $page_js . $page_ready;
 		$this->_echo_javascript( $javascript );
 	}
 

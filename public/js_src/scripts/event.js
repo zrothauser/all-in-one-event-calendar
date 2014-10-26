@@ -28,9 +28,11 @@ define(
 	var start = function() {
 		domReady( function() {
 			// Initialize the page.
-			// We wait for the DOM to be loaded so we load gMaps only when needed
+			// We wait for the DOM to be loaded so we load the map only when able.
 			init();
 			attach_event_handlers();
+			// Trigger execution of any other actions to initialize event details.
+			$( document ).trigger( 'event_page_ready.ai1ec' );
 		} );
 	};
 

@@ -248,7 +248,8 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 				get( 'view.event.avatar' )->get_event_avatar(
 					$event,
 					array( 'post_thumbnail', 'content_img', 'location_avatar', 'category_avatar' ),
-					'alignleft'
+					'alignleft',
+					false
 				);
 			$dates[$timestamp]['events'][$category][] = $event_props;
 			$dates[$timestamp]['href']                = $href_for_date;

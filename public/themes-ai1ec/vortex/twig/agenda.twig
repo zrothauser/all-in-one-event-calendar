@@ -58,7 +58,11 @@
 
 									<div class="ai1ec-event-description">
 										{% if event.content_img_url is empty %}
-											{{ event.avatar | raw }}
+											<a {{ data_type_events | raw }}
+												class="ai1ec-load-event"
+												href="{{ event.instance_permalink | e('html_attr') }}">
+												{{ event.avatar | raw }}
+											</a>
 										{% endif %}
 										{{ event.filtered_content | raw }}
 									</div>

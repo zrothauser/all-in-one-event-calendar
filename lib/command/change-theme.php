@@ -24,7 +24,7 @@ class Ai1ec_Command_Change_Theme extends Ai1ec_Command {
 			'',
 			$_GET['ai1ec_stylesheet']
 		);
-		$this->switch_theme( array(
+		$this->_registry->get( 'theme.loader' )->switch_theme( array(
 			'theme_root' => realpath( $_GET['ai1ec_theme_root'] ),
 			'theme_dir'  => realpath( $_GET['ai1ec_theme_dir'] ),
 			'theme_url'  => $_GET['ai1ec_theme_url'],
@@ -69,25 +69,5 @@ class Ai1ec_Command_Change_Theme extends Ai1ec_Command {
 			return true;
 		}
 		return false;
-	}
-
-	/**
-	 * Switch to the given calendar theme.
-	 *
-	 * @param  array $theme The theme's settings array
-	 */
-	public function switch_theme( array $theme ) {
-		$option = $this->_registry->get( 'model.option' );
-		$option->set(
-			'ai1ec_current_theme',
-			$theme
-		);
-		// Delete user variables from database so fresh ones are used by new theme.
-		$option->delete(
-			Ai1ec_Less_Lessphp::DB_KEY_FOR_LESS_VARIABLES
-		);
-		// Recompile CSS for new theme.
-		$css_controller = $this->_registry->get( 'css.frontend' );
-		$css_controller->invalidate_cache( null, false );
 	}
 }

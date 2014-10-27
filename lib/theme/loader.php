@@ -234,10 +234,10 @@ class Ai1ec_Theme_Loader {
 		switch ( $ext ) {
 			case 'less':
 			case 'css':
-				$filename = substr( $filename, 0, $dot_position - 1);
-				$file     = $this->_registry->get(
+				$filename_base = substr( $filename, 0, $dot_position - 1);
+				$file          = $this->_registry->get(
 					'theme.file.less',
-					$filename,
+					$filename_base,
 					array_keys( $this->_paths['theme'] ) // Values (URLs) not used for CSS
 				);
 				break;
@@ -533,4 +533,33 @@ class Ai1ec_Theme_Loader {
 		return true;
 	}
 
+	/**
+	 * Switch to the given calendar theme.
+	 *
+	 * @param  array $theme            The theme's settings array
+	 * @param  bool  $delete_variables If true, deletes user variables from DB.
+	 *                                 Else replaces them with config file.
+	 */
+	public function switch_theme( array $theme, $delete_variables = true ) {
+		$option = $this->_registry->get( 'model.option' );
+		$option->set(
+			'ai1ec_current_theme',
+			$theme
+		);
+		$lessphp = $this->_registry->get( 'less.lessphp' );
+		// If requested, delete theme variables from DB.
+		if ( $delete_variables ) {
+			$option->delete( $lessphp::DB_KEY_FOR_LESS_VARIABLES );
+		}
+		// Else replace them with those loaded from config file.
+		else {
+			$option->set(
+				$lessphp::DB_KEY_FOR_LESS_VARIABLES,
+				$lessphp->get_less_variable_data_from_config_file()
+			);
+		}
+		// Recompile CSS for new theme.
+		$css_controller = $this->_registry->get( 'css.frontend' );
+		$css_controller->invalidate_cache( null, false );
+	}
 }

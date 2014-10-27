@@ -235,7 +235,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$event_props['content_img_url']     = $event->get_runtime( 'content_img_url' );
 			$event_props['filtered_content']    = $event->get_runtime( 'filtered_content' );
 			$event_props['ticket_url_label']    = $event->get_runtime( 'ticket_url_label' );
-			$event_props['instance_permalink']  = $event->get_runtime( 'instance_permalink' );
+			$event_props['permalink']           = $event->get_runtime( 'instance_permalink' );
 			$event_props['categories_html']     = $event->get_runtime( 'categories_html' );
 			$event_props['category_bg_color']   = $event->get_runtime( 'category_bg_color' );
 			$event_props['category_text_color'] = $event->get_runtime( 'category_text_color' );
@@ -248,7 +248,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 				get( 'view.event.avatar' )->get_event_avatar(
 					$event,
 					array( 'post_thumbnail', 'content_img', 'location_avatar', 'category_avatar' ),
-					'alignleft',
+					'',
 					false
 				);
 			$dates[$timestamp]['events'][$category][] = $event_props;

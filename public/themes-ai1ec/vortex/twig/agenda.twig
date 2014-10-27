@@ -60,7 +60,7 @@
 										{% if event.content_img_url is empty %}
 											<a {{ data_type_events | raw }}
 												class="ai1ec-load-event"
-												href="{{ event.instance_permalink | e('html_attr') }}">
+												href="{{ event.permalink | e('html_attr') }}">
 												{{ event.avatar | raw }}
 											</a>
 										{% endif %}
@@ -79,7 +79,7 @@
 											<a {{ data_type_events | raw }}
 												class="ai1ec-read-more ai1ec-btn ai1ec-btn-default
 													ai1ec-load-event"
-												href="{{ event.instance_permalink | e('html_attr') }}">
+												href="{{ event.permalink | e('html_attr') }}">
 												{{ text_read_more }} <i class="ai1ec-fa ai1ec-fa-arrow-right"></i>
 											</a>
 										</div>

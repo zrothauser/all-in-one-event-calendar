@@ -37,13 +37,9 @@ class Ai1ec_Front_Controller {
 	protected $_default_theme;
 
 	/**
-	 * Initialize the controller.
-	 *
-	 * @param Ai1ec_Loader $ai1ec_loader Instance of Ai1EC classes loader
-	 *
-	 * @return void
+	 * Initializes the default theme property.
 	 */
-	public function initialize( $ai1ec_loader ) {
+	public function __construct() {
 		// Initialize default theme.
 		$this->_default_theme = array(
 			'theme_dir'  => AI1EC_DEFAULT_THEME_PATH,
@@ -52,6 +48,16 @@ class Ai1ec_Front_Controller {
 			'stylesheet' => AI1EC_DEFAULT_THEME_NAME,
 			'legacy'     => false,
 		);
+	}
+
+	/**
+	 * Initialize the controller.
+	 *
+	 * @param Ai1ec_Loader $ai1ec_loader Instance of Ai1EC classes loader
+	 *
+	 * @return void
+	 */
+	public function initialize( $ai1ec_loader ) {
 		ai1ec_start();
 		$this->_init( $ai1ec_loader );
 		$this->_initialize_dispatcher();

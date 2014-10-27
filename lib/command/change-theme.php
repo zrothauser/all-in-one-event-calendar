@@ -77,12 +77,13 @@ class Ai1ec_Command_Change_Theme extends Ai1ec_Command {
 	 * @param  array $theme The theme's settings array
 	 */
 	public function switch_theme( array $theme ) {
-		update_option(
+		$option = $this->_registry->get( 'model.option' );
+		$option->set(
 			'ai1ec_current_theme',
 			$theme
 		);
 		// Delete user variables from database so fresh ones are used by new theme.
-		$this->_registry->get( 'model.option' )->delete(
+		$option->delete(
 			Ai1ec_Less_Lessphp::DB_KEY_FOR_LESS_VARIABLES
 		);
 		// Recompile CSS for new theme.

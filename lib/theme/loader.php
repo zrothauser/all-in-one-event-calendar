@@ -234,10 +234,10 @@ class Ai1ec_Theme_Loader {
 		switch ( $ext ) {
 			case 'less':
 			case 'css':
-				$filename_base = substr( $filename, 0, $dot_position - 1);
-				$file          = $this->_registry->get(
+				$filename = substr( $filename, 0, $dot_position - 1);
+				$file     = $this->_registry->get(
 					'theme.file.less',
-					$filename_base,
+					$filename,
 					array_keys( $this->_paths['theme'] ) // Values (URLs) not used for CSS
 				);
 				break;

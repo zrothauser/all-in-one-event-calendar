@@ -98,7 +98,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		if (
 			( $view_args['no_navigation'] || $type !== 'html' ) &&
 			'true' !== $shortcode &&
-			'true' !== $request->get( 'display_filters' ) // option to show filters in the super widget
+			$type !== 'jsonp'
 		) {
 			
 			// send data both for json and jsonp as shortcodes are jsonp
@@ -120,7 +120,8 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		} else {
 			$loader = $this->_registry->get( 'theme.loader' );
 			$empty  = $loader->get_file( 'empty.twig', array(), false );
-
+			
+			// option to show filters in the super widget
 			// Define new arguments for overall calendar view
 			$filter_args = array(
 				'views_dropdown'               => $views_dropdown,
@@ -154,12 +155,17 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				'view_args'                    => $view_args,
 				'request'                      => $request,
 			);
-
+			
 			$filter_menu   = $loader->get_file(
 				'filter-menu.twig',
 				$filter_args,
 				false
-			);
+			)->get_content();
+			// hide filters in the SW
+			if ( 'true' !== $request->get( 'display_filters' ) && $type === 'jsonp' ) {
+				$filter_menu = '';
+			}
+
 			$calendar_args = array(
 				'version'                      => AI1EC_VERSION,
 				'filter_menu'                  => $filter_menu,

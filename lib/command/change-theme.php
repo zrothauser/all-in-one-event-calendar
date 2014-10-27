@@ -12,6 +12,16 @@
 class Ai1ec_Command_Change_Theme extends Ai1ec_Command {
 
 	/**
+	 * Alternative constructor, useful to invoke theme change without an HTTP
+	 * request.
+	 *
+	 * @param Ai1ec_Registry_Object $registry
+	 */
+	public function __construct( Ai1ec_Registry_Object $registry ) {
+		$this->_registry = $registry;
+	}
+
+	/**
 	 * Executes the command to change the active theme.
 	 *
 	 * NOTE: {@see self::is_this_to_execute} must return true for this command
@@ -82,9 +92,12 @@ class Ai1ec_Command_Change_Theme extends Ai1ec_Command {
 			'ai1ec_current_theme',
 			$theme
 		);
-		// Delete user variables from database so fresh ones are used by new theme.
-		$option->delete(
-			Ai1ec_Less_Lessphp::DB_KEY_FOR_LESS_VARIABLES
+		$lessphp = $this->_registry->get( 'less.lessphp' );
+		// Initialize theme variables with fresh ones from config file(s) and save
+		// to DB.
+		$option->set(
+			$lessphp::DB_KEY_FOR_LESS_VARIABLES,
+			$lessphp->get_less_variable_data_from_config_file()
 		);
 		// Recompile CSS for new theme.
 		$css_controller = $this->_registry->get( 'css.frontend' );

@@ -12,7 +12,7 @@ define(
 	// Perform all initialization functions required on the page.
 	var init = function() {
 		if( $( '#ai1ec-gmap-canvas' ).length > 0 ) {
-			require( ['libs/gmaps' ], function( gMapsLoader ) {
+			timely.require( ['libs/gmaps' ], function( gMapsLoader ) {
 				gMapsLoader( gmaps_helper.init_gmaps );
 			} );
 		}

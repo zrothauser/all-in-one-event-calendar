@@ -24,13 +24,13 @@ class Ai1ec_Command_Change_Theme extends Ai1ec_Command {
 			'',
 			$_GET['ai1ec_stylesheet']
 		);
-		$this->switch_theme(
-			realpath( $_GET['ai1ec_theme_root'] ),
-			realpath( $_GET['ai1ec_theme_dir'] ),
-			$_GET['ai1ec_theme_url'],
-			$stylesheet,
-			(bool)intval( $_GET['ai1ec_legacy'] )
-		);
+		$this->switch_theme( array(
+			'theme_root' => realpath( $_GET['ai1ec_theme_root'] ),
+			'theme_dir'  => realpath( $_GET['ai1ec_theme_dir'] ),
+			'theme_url'  => $_GET['ai1ec_theme_url'],
+			'stylesheet' => $stylesheet,
+			'legacy'     => (bool)intval( $_GET['ai1ec_legacy'] )
+		) );
 
 		// Return user to themes list page with success message.
 		return array(
@@ -74,22 +74,12 @@ class Ai1ec_Command_Change_Theme extends Ai1ec_Command {
 	/**
 	 * Switch to the given calendar theme.
 	 *
-	 * @param  string $theme_root The theme's parent directory
-	 * @param  string $theme_dir  The theme's directory
-	 * @param  string $theme_url  The URL to the theme's resources
-	 * @param  string $stylesheet The name of the theme
-	 * @param  bool   $legacy     Whether this is a legacy theme
+	 * @param  array $theme The theme's settings array
 	 */
-	public function switch_theme(
-		$theme_root,
-		$theme_dir,
-		$theme_url,
-		$stylesheet,
-		$legacy
-	) {
+	public function switch_theme( array $theme ) {
 		update_option(
 			'ai1ec_current_theme',
-			compact( 'theme_dir', 'theme_root', 'theme_url', 'legacy', 'stylesheet' )
+			$theme
 		);
 		// Delete user variables from database so fresh ones are used by new theme.
 		$this->_registry->get( 'model.option' )->delete(

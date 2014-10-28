@@ -910,23 +910,23 @@ class Ai1ec_Front_Controller {
 	protected  function _migrate_categories_meta() {
 		$db         = $this->_registry->get( 'dbi.dbi' );
 		$table_name = $db->get_table_name( 'ai1ec_event_category_colors' );
-                $db_h = $this->_registry->get( 'database.helper' );
-                if ( $db_h->table_exists( $table_name ) ) { // if old table exists otherwise ignore it
-                    // Migrate color information
-                    $dest_table = $db->get_table_name( 'ai1ec_event_category_meta' );
-                    $colors     = $db->select(
-                            $table_name,
-                            array( 'term_id', 'term_color'),
-                            ARRAY_A
-                    );
-                    if ( ! empty( $colors ) ) {
-                            foreach ( $colors as $color ) {
-                                    $db->insert( $dest_table, $color );
-                            }
-                    }
-                    // Drop the old table
-                    $db->query( 'DROP TABLE IF EXISTS ' . $table_name );
-                }
+		$db_h       = $this->_registry->get( 'database.helper' );
+		if ( $db_h->table_exists( $table_name ) ) { // if old table exists otherwise ignore it
+			// Migrate color information
+			$dest_table = $db->get_table_name( 'ai1ec_event_category_meta' );
+			$colors     = $db->select(
+				$table_name,
+				array( 'term_id', 'term_color'),
+				ARRAY_A
+			);
+			if ( ! empty( $colors ) ) {
+				foreach ( $colors as $color ) {
+					$db->insert( $dest_table, $color );
+				}
+			}
+			// Drop the old table
+			$db->query( 'DROP TABLE IF EXISTS ' . $table_name );
+		}
 	}
 
 	/**

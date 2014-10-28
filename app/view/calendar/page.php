@@ -98,7 +98,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		if (
 			( $view_args['no_navigation'] || $type !== 'html' ) &&
 			'true' !== $shortcode &&
-			$type !== 'jsonp'
+			'jsonp' !== $type
 		) {
 			
 			// send data both for json and jsonp as shortcodes are jsonp
@@ -162,7 +162,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				false
 			)->get_content();
 			// hide filters in the SW
-			if ( 'true' !== $request->get( 'display_filters' ) && $type === 'jsonp' ) {
+			if ( 'true' !== $request->get( 'display_filters' ) && 'jsonp' === $type ) {
 				$filter_menu = '';
 			}
 

@@ -9,7 +9,7 @@
 * @package    AI1EC
 * @subpackage AI1EC.View
 */
-class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
+class Ai1ec_Calendar_View_Month extends Ai1ec_Calendar_View_Abstract {
 
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Calendar_View_Abstract::get_name()
@@ -358,12 +358,16 @@ class Ai1ec_Calendar_View_Month  extends Ai1ec_Calendar_View_Abstract {
 					'popup_timespan'   => $this->_registry
 						->get( 'twig.ai1ec-extension')->timespan( $evt, 'short' ),
 					'avatar'           => $this->_registry
-						->get( 'twig.ai1ec-extension')->avatar( $evt, array(
-						'post_thumbnail',
-						'content_img',
-						'location_avatar',
-						'category_avatar'
-						) ),
+						->get( 'twig.ai1ec-extension')->avatar(
+							$evt,
+							array(
+								'post_thumbnail',
+								'content_img',
+								'location_avatar',
+								'category_avatar',
+							),
+							'',
+							false ),
 				);
 			}
 			$weeks[$week][] = array(

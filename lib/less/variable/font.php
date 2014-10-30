@@ -50,6 +50,7 @@ class Ai1ec_Less_Variable_Font extends Ai1ec_Less_Variable {
 		'MS Sans Serif'       => '"MS Sans Serif", Geneva, sans-serif',
 		'MS Serif'            => '"MS Serif", "New York", serif',
 		'Palatino'            => '"Palatino Linotype", "Book Antiqua", Palatino, serif',
+		'Source Sans Pro'     => 'Source Sans Pro, sans-serif',
 		'Tahoma'              => 'Tahoma, Geneva, sans-serif',
 		'Times New Roman'     => '"Times New Roman", Times, serif',
 		'Trebuchet Ms'        => '"Trebuchet MS", "Lucida Grande", sans-serif',
@@ -65,10 +66,9 @@ class Ai1ec_Less_Variable_Font extends Ai1ec_Less_Variable {
 
 		// Allow extensions to add options to the font list.
 		$this->fonts = apply_filters( 'ai1ec_font_options', $this->fonts );
-
-		if ( ! in_array( $this->value, $this->fonts ) ) {
+		if ( ! in_array( $params['value'], $this->fonts ) ) {
 			$this->use_custom_value = true;
-			$this->custom_value = $this->value;
+			$this->custom_value = $params['value'];
 			$this->value = self::CUSTOM_FONT;
 		}
 		parent::__construct( $registry, $params );
@@ -86,7 +86,9 @@ class Ai1ec_Less_Variable_Font extends Ai1ec_Less_Variable {
 				'text' => $text,
 				'value' => $key,
 			);
-			if ( $key === $this->value ) {
+			if ( $key === $this->value
+				 || ( self::CUSTOM_FONT === $key && $this->use_custom_value )
+			   ) {
 				$option['args'] = array(
 					'selected' => 'selected',
 				);
@@ -122,7 +124,7 @@ class Ai1ec_Less_Variable_Font extends Ai1ec_Less_Variable {
 
 		);
 
-		if ( $this->value !== self::CUSTOM_FONT ) {
+		if ( ! $this->use_custom_value ) {
 			$args['input']['args']['class'] = 'ai1ec-custom-font ai1ec-hide';
 		} else {
 			$args['input']['value'] = $this->custom_value;

@@ -322,13 +322,6 @@ define(
 									: data.html
 								);
 
-							// Animate vertical height of container between HTML replacement
-							var new_height = $calendar.find( '.ai1ec-calendar-view' ).height();
-							$container.animate( { height: new_height }, { complete: function() {
-								// Restore height to automatic upon animation completion for
-								// proper page layout.
-								$container.height( 'auto' );
-							} } );
 							// Hide loader
 							$calendar.find( '.ai1ec-calendar-view-loading' ).fadeOut( 'fast' );
 							$calendar.find( '.ai1ec-calendar-view' ).fadeTo( 'fast', 1.0 );

@@ -55,21 +55,23 @@ class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 		);
 		$matches           = array();
 		$custom_taxonomies = array();
-		foreach ( $atts as $att => $value ) {
-			if (
+		if ( ! empty( $atts ) ) {
+			foreach ( $atts as $att => $value ) {
+				if (
 				! preg_match( '/([a-z0-9\_]+)_(id|name)/', $att, $matches ) ||
 				isset( $mappings[$matches[1] . '_id'] )
-			) {
-				continue;
-			}
-			${'_' . $matches[1] . '_ids'} = array();
-			$custom_taxonomies[]    = $matches[1];
-
-			if ( ! isset( $mappings[$matches[1] . '_id'] ) ) {
-				$mappings[$matches[1] . '_id']   = $matches[1];
-			}
-			if ( ! isset( $mappings[$matches[1] . '_name'] ) ) {
-				$mappings[$matches[1] . '_name'] = $matches[1];
+				) {
+					continue;
+				}
+				${'_' . $matches[1] . '_ids'} = array();
+				$custom_taxonomies[]    = $matches[1];
+			
+				if ( ! isset( $mappings[$matches[1] . '_id'] ) ) {
+					$mappings[$matches[1] . '_id']   = $matches[1];
+				}
+				if ( ! isset( $mappings[$matches[1] . '_name'] ) ) {
+					$mappings[$matches[1] . '_name'] = $matches[1];
+				}
 			}
 		}
 		foreach ( $mappings as $att_name => $type ) {
@@ -117,13 +119,19 @@ class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 			'ai1ec_post_ids' => implode( ',', $post_ids ),
 			'action'         => $view,
 			'request_type'   => 'jsonp',
-			'shortcode'      => 'true',
 			'events_limit'   => ( null !== $events_limit )
 			// definition above casts values as array, so we take first element,
 			// as there won't be others
 				? $events_limit[0]
 				: null,
 		);
+		// this is the opposite of how the SuperWidget works.
+		if ( ! isset( $atts['display_filters'] ) ) {
+			$query['display_filters'] = 'true';
+		} else {
+			$query['display_filters'] = $atts['display_filters'];
+		}
+
 		foreach ( $custom_taxonomies as $taxonomy ) {
 			$query['ai1ec_' . $taxonomy . '_ids'] = implode( ',', ${'_' . $taxonomy} );
 		}

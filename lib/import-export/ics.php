@@ -188,7 +188,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			}
 
 			$categories = $e->getProperty( "CATEGORIES", false, true );
-			$imported_cat = array();
+			$imported_cat = array( Ai1ec_Event_Taxonomy::CATEGORIES => array() );
 			// If the user chose to preserve taxonomies during import, add categories.
 			if( $categories && $feed->keep_tags_categories ) {
 				$imported_cat = $this->_add_categories_and_tags(
@@ -209,7 +209,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			}
 			$tags = $e->getProperty( "X-TAGS", false, true );
 
-			$imported_tags = array();
+			$imported_tags = array( Ai1ec_Event_Taxonomy::TAGS => array() );
 			// If the user chose to preserve taxonomies during import, add tags.
 			if( $tags && $feed->keep_tags_categories ) {
 				$imported_tags = $this->_add_categories_and_tags(
@@ -439,8 +439,8 @@ class Ai1ec_Ics_Import_Export_Engine
 				'ical_organizer'    => $organizer,
 				'ical_contact'      => $contact,
 				'ical_uid'          => $e->getProperty( 'uid' ),
-				'categories'        => array_keys( $imported_cat ),
-				'tags'              => array_keys( $imported_tags ),
+				'categories'        => array_keys( $imported_cat[Ai1ec_Event_Taxonomy::CATEGORIES] ),
+				'tags'              => array_keys( $imported_tags[Ai1ec_Event_Taxonomy::TAGS] ),
 				'feed'              => $feed,
 				'post'              => array(
 					'post_status'       => 'publish',
@@ -512,11 +512,18 @@ class Ai1ec_Ics_Import_Export_Engine
 				}
 
 			}
+
+
+
+			// import not standard taxonomies.
+			unset( $imported_cat[Ai1ec_Event_Taxonomy::CATEGORIES] );
+			foreach ( $imported_cat as $tax_name => $ids ) {
+				wp_set_post_terms( $event->get( 'post_id' ), array_keys( $ids ), $tax_name );
+			}
 			// if the event is not finished, unset it otherwise it could be deleted afterwards.
 			if ( $event->get( 'end' )->format_to_gmt() > $current_timestamp ) {
 				unset( $events_in_db[$event->get( 'post_id' )] );
 			}
-
 		}
 
 		return array(
@@ -1061,16 +1068,19 @@ class Ai1ec_Ics_Import_Export_Engine
 	) {
 		$taxonomy       = $is_tag ? 'events_tags' : 'events_categories';
 		$categories     = explode( ',', $terms );
-		$get_term_by    = $use_name ? 'name' : 'id';
 		$event_taxonomy = $this->_registry->get( 'model.event.taxonomy' );
+
 		foreach ( $categories as $cat_name ) {
 			$cat_name = trim( $cat_name );
 			if ( empty( $cat_name ) ) {
 				continue;
 			}
-			$term_id = $event_taxonomy->initiate_term( $cat_name, $taxonomy, ! $use_name );
-			if ( false !== $term_id ) {
-				$imported_terms[$term_id] = true;
+			$term = $event_taxonomy->initiate_term( $cat_name, $taxonomy, ! $use_name );
+			if ( false !== $term ) {
+				if ( ! isset( $imported_terms[$term['taxonomy']] ) ) {
+					$imported_terms[$term['taxonomy']] = array();
+				}
+				$imported_terms[$term['taxonomy']][$term['term_id']] = true;
 			}
 		}
 		return $imported_terms;

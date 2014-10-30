@@ -50,7 +50,6 @@ class Ai1ec_Less_Variable_Font extends Ai1ec_Less_Variable {
 		'MS Sans Serif'       => '"MS Sans Serif", Geneva, sans-serif',
 		'MS Serif'            => '"MS Serif", "New York", serif',
 		'Palatino'            => '"Palatino Linotype", "Book Antiqua", Palatino, serif',
-		'Source Sans Pro'     => 'Source Sans Pro, sans-serif',
 		'Tahoma'              => 'Tahoma, Geneva, sans-serif',
 		'Times New Roman'     => '"Times New Roman", Times, serif',
 		'Trebuchet Ms'        => '"Trebuchet MS", "Lucida Grande", sans-serif',

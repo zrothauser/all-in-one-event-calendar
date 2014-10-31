@@ -52,7 +52,7 @@ define(
 	 * (this is also called at the end of load_view()).
 	 */
 	var initialize_view = function( $calendar ) {
-		
+
 		// Get the dropdown menu link of the active view.
 		var $selected_view = $calendar
 			.find( '#ai1ec-view-dropdown .ai1ec-dropdown-menu .ai1ec-active a' );
@@ -98,7 +98,7 @@ define(
 		$calendar
 			.find( '.ai1ec-calendar-view-container' )
 				.trigger( 'initialize_view.ai1ec' );
-		
+
 		// Trigger Affix event.
 		$calendar
 			.find( '.ai1ec-calendar-toolbar' )
@@ -242,7 +242,7 @@ define(
 						success: function( data ) {
 							// trigger the event so that other addons can respond
 							$( document ).trigger( 'calendar_view_loaded.ai1ec', $calendar );
-							
+
 							// Do required cleanup of existing view.
 							destroy_view( $calendar );
 
@@ -293,13 +293,11 @@ define(
 											.replaceWith( data.save_view_btngroup );
 							}
 							are_filters_set = data.are_filters_set;
-							var $container = $calendar.find( '.ai1ec-calendar-view-container' );
-							$container.height( $container.height() );
 
 							// Render template or just replace if already rendered.
 							var renderer;
 							if ( hash.match( /\brequest_format\~json\b/ ) ){
-								var 
+								var
 									view_type =  $.parseJSON( data.html ).type,
 									renderer_map = {
 										agenda : agenda,
@@ -316,19 +314,12 @@ define(
 								}
 							}
 							$calendar.find( '.ai1ec-calendar-view' )
-								.html( 
+								.html(
 									renderer
 									? renderer.render( $.parseJSON( data.html ) )
 									: data.html
 								);
 
-							// Animate vertical height of container between HTML replacement
-							var new_height = $calendar.find( '.ai1ec-calendar-view' ).height();
-							$container.animate( { height: new_height }, { complete: function() {
-								// Restore height to automatic upon animation completion for
-								// proper page layout.
-								$container.height( 'auto' );
-							} } );
 							// Hide loader
 							$calendar.find( '.ai1ec-calendar-view-loading' ).fadeOut( 'fast' );
 							$calendar.find( '.ai1ec-calendar-view' ).fadeTo( 'fast', 1.0 );
@@ -373,7 +364,7 @@ define(
 
 	// Handle loading the correct view when clicking on a link
 	var handle_click_on_link_to_load_view = function( e ) {
-		var 
+		var
 			$el = $( this )
 			$calendar = $el.closest( '.ai1ec-calendar' );
 

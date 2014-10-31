@@ -83,7 +83,7 @@ require(
 							$timely.html( data.html );
 							top.postMessage( 'ai1ec-widget-loaded', top.document.URL );
 							$.each( calendar.extension_urls, function( index, el ) {
-								timely.require([ el.url ] );
+								timely.require( [ el.url ] );
 							} );
 						},
 						error: function( jqXHR, textStatus, errorThrown ) {

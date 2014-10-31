@@ -9,6 +9,7 @@
  * @package      Ai1EC
  * @subpackage   Ai1EC.Model
  */
+
 class Ai1ec_Event_Taxonomy extends Ai1ec_Base {
 
 	/**

@@ -69,7 +69,7 @@ class Ai1ec_Ics_Import_Export_Engine
 		foreach ( $arguments['events'] as $event ) {
 			$post_ids[] = $event->get( 'post_id' );
 		}
-		$this->_taxonomy_model->update_meta( $post_ids );
+		$this->_taxonomy_model->prepare_meta_for_ics( $post_ids );
 		$this->_registry->get( 'controller.content-filter' )
 			->clear_the_content_filters();
 		foreach ( $arguments['events'] as $event ) {
@@ -513,13 +513,12 @@ class Ai1ec_Ics_Import_Export_Engine
 
 			}
 
-
-
 			// import not standard taxonomies.
 			unset( $imported_cat[Ai1ec_Event_Taxonomy::CATEGORIES] );
 			foreach ( $imported_cat as $tax_name => $ids ) {
 				wp_set_post_terms( $event->get( 'post_id' ), array_keys( $ids ), $tax_name );
 			}
+
 			// if the event is not finished, unset it otherwise it could be deleted afterwards.
 			if ( $event->get( 'end' )->format_to_gmt() > $current_timestamp ) {
 				unset( $events_in_db[$event->get( 'post_id' )] );
@@ -822,6 +821,7 @@ class Ai1ec_Ics_Import_Export_Engine
 
 		$categories = array();
 		$language   = get_bloginfo( 'language' );
+
 		foreach (
 			$this->_taxonomy_model->get_post_categories(
 				$event->get( 'post_id' )

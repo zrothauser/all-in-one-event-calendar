@@ -112,13 +112,13 @@ abstract class Ai1ec_Embeddable extends WP_Widget {
 	 * @return void
 	 */
 	public function widget( $args, $instance ) {
-
 		$defaults = $this->get_defaults();
 		$instance = wp_parse_args( $instance, $defaults );
 		$this->add_js();
 		$args['widget_html'] = $this->get_content( $instance );
 		if ( ! empty( $args['widget_html'] ) ) {
 			$args['title'] = $instance['title'];
+			$args          = $this->_filter_widget_args( $args );
 			// Display theme
 			$this->_registry->get( 'theme.loader' )->get_file(
 				'widget.twig',
@@ -153,22 +153,15 @@ abstract class Ai1ec_Embeddable extends WP_Widget {
 	}
 
 	/**
-	 * Returns default and empty arguments for widgets.
+	 * Filters default widget parameters like classes, html elements before and
+	 * after title or widget. Useful for Feature Events widget which has
+	 * different title styling.
 	 *
-	 * @return array Default, empty args.
+	 * @param array $args Widget arguments.
+	 *
+	 * @return array Filtered arguments.
 	 */
-	protected function _get_widget_default_args() {
-		return array(
-			'name'          => null,
-			'id'            => null,
-			'description'   => null,
-			'class'         => null,
-			'before_widget' => null,
-			'after_widget'  => null,
-			'before_title'  => null,
-			'after_title'   => null,
-			'widget_id'     => null,
-			'widget_name'   => null,
-		);
+	protected function _filter_widget_args( $args ) {
+		return $args;
 	}
 }

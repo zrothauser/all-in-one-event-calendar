@@ -82,6 +82,9 @@ require(
 						success: function( data ) {
 							$timely.html( data.html );
 							top.postMessage( 'ai1ec-widget-loaded', top.document.URL );
+							$.each( calendar.extension_urls, function( index, el ) {
+								timely.require([ el.url ] );
+							} );
 						},
 						error: function( jqXHR, textStatus, errorThrown ) {
 							window.alert( 'An error occurred while retrieving the data.' );

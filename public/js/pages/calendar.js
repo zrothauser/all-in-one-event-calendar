@@ -118,25 +118,13 @@ the specific language governing permissions and limitations under the Apache Lic
  * @link      https://github.com/justjohn/twig.js
  */
 
-//     Twig.js
 //     Copyright (c) 2011-2013 John Roepke
-//     Available under the BSD 2-Clause License
-//     https://github.com/justjohn/twig.js
 
-// The following methods are from MDN and are available under a
 // [MIT License](http://www.opensource.org/licenses/mit-license.php) or are
-// [Public Domain](https://developer.mozilla.org/Project:Copyrights).
-//
-// See:
-// * [Object.keys - MDN](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object/keys)
 
-// ## twig.lib.js
-//
-// This file contains 3rd party libraries used within twig.
-//
+// [Public Domain](https://developer.mozilla.org/Project:Copyrights).
+
 // Copies of the licenses for the code included here can be found in the
-// LICENSES.md file.
-//
 
 /**
      * jPaq - A fully customizable JavaScript/JScript library
@@ -149,12 +137,6 @@ the specific language governing permissions and limitations under the Apache Lic
      * Version: 1.0.6.0000W
      * Revised: April 6, 2011
      */
-
-//     Twig.js
-//     Copyright (c) 2011-2013 John Roepke
-//                   2012 Hadrien Lanneau
-//     Available under the BSD 2-Clause License
-//     https://github.com/justjohn/twig.js
 
 /**
 				 * History.js jQuery Adapter

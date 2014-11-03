@@ -130,12 +130,16 @@ class Ai1ec_Cache_Strategy_File extends Ai1ec_Cache_Strategy {
 	 * @return string Sanitized file name
 	 */
 	protected function _safe_file_name( $file ) {
-		static $prefix = NULL;
+		static $prefix = null;
 		$extension = $this->_get_extension_for_file( $file );
-		if ( NULL === $prefix ) {
-			// in debug mode just always use the same otherwise we will have files created on
-			// every request
-			$pref_string = true === AI1EC_DEBUG ? site_url() : rand();
+		if ( null === $prefix ) {
+			// always include site_url when there is more than one
+			$pref_string = site_url();
+			if ( ! AI1EC_DEBUG ) {
+				// address multiple re-saves for a single version
+				// i.e. when theme settings are being edited
+				$pref_string .= mt_rand();
+			}
 			$prefix = substr( md5( $pref_string ), 0, 8 );
 		}
 		$length = strlen( $file );

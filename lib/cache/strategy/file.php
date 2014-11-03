@@ -133,7 +133,10 @@ class Ai1ec_Cache_Strategy_File extends Ai1ec_Cache_Strategy {
 		static $prefix = NULL;
 		$extension = $this->_get_extension_for_file( $file );
 		if ( NULL === $prefix ) {
-			$prefix = substr( md5( site_url() ), 0, 8 );
+			// in debug mode just always use the same otherwise we will have files created on
+			// every request
+			$pref_string = true === AI1EC_DEBUG ? site_url() : rand();
+			$prefix = substr( md5( $pref_string ), 0, 8 );
 		}
 		$length = strlen( $file );
 		if ( ! ctype_alnum( $file ) ) {

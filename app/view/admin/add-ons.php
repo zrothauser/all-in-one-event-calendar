@@ -21,7 +21,7 @@ class Ai1ec_View_Add_Ons extends Ai1ec_View_Admin_Abstract {
 		// =======================
 		// = Calendar Add Ons Page =
 		// =======================
-		$addons_list = add_submenu_page(
+		add_submenu_page(
 			AI1EC_ADMIN_BASE_URL,
 			Ai1ec_I18n::__( 'Add-ons' ),
 			Ai1ec_I18n::__( 'Add-ons' ),
@@ -42,30 +42,52 @@ class Ai1ec_View_Add_Ons extends Ai1ec_View_Admin_Abstract {
 			array(),
 			AI1EC_VERSION
 		);
-		ob_start(); ?>
-		<div class="wrap" id="ai1ec-add-ons">
-			<h2>
-				<?php echo Ai1ec_I18n::__( 'Add-ons for All In One Event Calendar' ); ?>
-				&nbsp;&mdash;&nbsp;<a href="https://time.ly/downloads/" class="button-primary" title="<?php echo Ai1ec_I18n::__( 'Browse All Extensions' ); ?>" target="_blank"><?php echo Ai1ec_I18n::__( 'Browse All Extensions' ); ?></a>
-			</h2>
-			<p><?php echo Ai1ec_I18n::__( 'These add-ons extend the functionality of the All-in-One Event Calendar.' ); ?></p>
-			<?php
-				if ( false === ( $cache = get_transient( 'ai1ec_timely_addons' ) ) ) {
-					$feed = wp_remote_get( AI1EC_TIMELY_ADDONS_URI, array( 'sslverify' => false ) );
-					if ( ! is_wp_error( $feed ) ) {
-						if ( isset( $feed['body'] ) && strlen( $feed['body'] ) > 0 ) {
-							$cache = wp_remote_retrieve_body( $feed );
-							set_transient( 'ai1ec_timely_addons', $cache, 3600 );
-						}
-					} else {
-						$cache = '<div class="error"><p>' . Ai1ec_I18n::__( 'There was an error retrieving the extensions list from the server. Please try again later.' ) . '</div>';
-					}
+		$content  = get_transient( 'ai1ec_timely_addons' );
+		$is_error = false;
+		if (
+			false === $content ||
+			(
+				defined( 'AI1EC_DEBUG' ) &&
+				AI1EC_DEBUG
+			)
+		) {
+			$is_error = true;
+			$feed     = wp_remote_get(
+				AI1EC_TIMELY_ADDONS_URI,
+				array(
+					'sslverify' => false
+				)
+			);
+			if ( ! is_wp_error( $feed ) ) {
+				$content  = json_decode( wp_remote_retrieve_body( $feed ) );
+				if ( null !== $content ) {
+					set_transient( 'ai1ec_timely_addons', $content, 3600 );
+					$is_error = false;
 				}
-				echo json_decode( $cache );
-			?>
-		</div>
-		<?php
-		echo ob_get_clean();
+			}
+		}
+		$this->_registry->get( 'theme.loader' )->get_file(
+			'add-ons-list/page.twig',
+			array(
+				'labels'   => array(
+					'title'             => Ai1ec_I18n::__(
+						'Add-ons for All In One Event Calendar'
+					),
+					'button_title'      => Ai1ec_I18n::__(
+						'Browse All Extensions'
+					),
+					'paragraph_content' => Ai1ec_I18n::__(
+						'These add-ons extend the functionality of the All-in-One Event Calendar.'
+					),
+					'error'             => Ai1ec_I18n::__(
+						'There was an error retrieving the extensions list from the server. Please try again later.'
+					),
+				),
+				'content'  => $content,
+				'is_error' => $is_error,
+			),
+			true
+		)->render();
 	}
 
 	public function add_meta_box() {

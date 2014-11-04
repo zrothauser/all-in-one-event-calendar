@@ -52,12 +52,7 @@ class Ai1ec_View_Add_Ons extends Ai1ec_View_Admin_Abstract {
 			)
 		) {
 			$is_error = true;
-			$feed     = wp_remote_get(
-				AI1EC_TIMELY_ADDONS_URI,
-				array(
-					'sslverify' => false
-				)
-			);
+			$feed     = wp_remote_get( AI1EC_TIMELY_ADDONS_URI );
 			if ( ! is_wp_error( $feed ) ) {
 				$content  = json_decode( wp_remote_retrieve_body( $feed ) );
 				if ( null !== $content ) {

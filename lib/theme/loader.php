@@ -549,35 +549,18 @@ class Ai1ec_Theme_Loader {
 		$lessphp = $this->_registry->get( 'less.lessphp' );
 		// If requested, delete theme variables from DB.
 		if ( $delete_variables ) {
-			$option->delete( $this->_get_less_db_key( $lessphp ) );
+			$option->delete( Ai1ec_Less_Lessphp::DB_KEY_FOR_LESS_VARIABLES );
 		}
 		// Else replace them with those loaded from config file.
 		else {
 			$option->set(
-				$this->_get_less_db_key( $lessphp ),
+				Ai1ec_Less_Lessphp::DB_KEY_FOR_LESS_VARIABLES,
 				$lessphp->get_less_variable_data_from_config_file()
 			);
 		}
 		// Recompile CSS for new theme.
 		$css_controller = $this->_registry->get( 'css.frontend' );
 		$css_controller->invalidate_cache( null, false );
-	}
-
-	/**
-	 * Version-aware way to get name of variables used to store LESS in DB.
-	 *
-	 * @param Ai1ec_Less_Lessphp $lessphp Object to use for a
-	 *                                    reference [optional=less.lessphp].
-	 *
-	 * @return string Name of variable.
-	 */
-	protected function _get_less_db_key( Ai1ec_Less_Lessphp $lessphp = null ) {
-		if ( null === $lessphp ) {
-			$lessphp = $this->_registry->get( 'less.lessphp' );
-		}
-		return constant(
-			get_class( $lessphp ) . '::DB_KEY_FOR_LESS_VARIABLES'
-		);
 	}
 
 }

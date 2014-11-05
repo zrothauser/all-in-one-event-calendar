@@ -16,7 +16,7 @@ define(
 
 			// If the input field lacks a value, provide current time (in UTC).
 			if ( $this.val() === '' ) {
-				var def_time = moment().utc();
+				var def_time = moment().local();
 				var time_format = $this.data( 'showMeridian' ) ? 'hh:mm A' : 'HH:mm';
 				$this.val( def_time.format( time_format ) );
 			}

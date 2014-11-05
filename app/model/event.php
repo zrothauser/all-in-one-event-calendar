@@ -343,47 +343,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 	}
 
 	/**
-	 * Getter.
-	 *
-	 * @param string $name Property name.
-	 *
-	 * @return mixed Property value.
-	 */
-	public function __get( $name ) {
-		$value = $this->get( $name );
-		if ( null !== $value ) {
-			return $value;
-		}
-		return $this->get_runtime( $name );
-	}
-
-	/**
-	 * Isset magic function.
-	 *
-	 * @param string $name Property name.
-	 *
-	 * @return bool True of false.
-	 */
-	public function __isset( $name ) {
-		$method_name = 'get' . $name;
-		if ( method_exists( $this, $method_name ) ) {
-			return false;
-		}
-		return ( null !== $this->$name );
-	}
-
-	/**
-	 * Twig timespan short method.
-	 *
-	 * @return string Value.
-	 */
-	public function gettimespan_short() {
-		return $this->_registry->get( 'view.event.time' )
-			->get_timespan_html( $this, 'short' );
-	}
-
-	/**
-	 * Twig avatar method.
+	 * Twig avatar method. It fixes default avatar for Stream view.
 	 *
 	 * @return string Value.
 	 */
@@ -394,15 +354,6 @@ class Ai1ec_Event extends Ai1ec_Base {
 				$this->_registry->get( 'view.calendar.fallbacks' )->get_all(),
 				'alignleft'
 			);
-	}
-
-	/**
-	 * Twig is_allday method.
-	 *
-	 * @return bool Value.
-	 */
-	public function getis_allday() {
-		return $this->is_allday();
 	}
 
 	/**

@@ -224,8 +224,10 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			}
 			$this->_add_runtime_properties( $event );
 			// Add the event.
-			$category = $event->is_allday() ? 'allday' : 'notallday';
-			$event_props = array();
+			$category                           = $event->is_allday()
+				? 'allday'
+				: 'notallday';
+			$event_props                        = array();
 			$event_props['post_id']             = $event->get( 'post_id' );
 			$event_props['instance_id']         = $event->get( 'instance_id' );
 			$event_props['venue']               = $event->get( 'venue' );
@@ -244,14 +246,12 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$event_props['short_start_time']    = $event->get_runtime( 'short_start_time' );
 			$event_props['timespan_short']      = $event->_registry->
 				get( 'view.event.time' )->get_timespan_html( $event, 'short' );
-			$event_props['avatar']              = $event->_registry->
-				get( 'view.event.avatar' )->get_event_avatar(
-					$event,
-					array( 'post_thumbnail', 'content_img', 'location_avatar', 'category_avatar' ),
-					'',
-					false
-				);
-			$dates[$timestamp]['events'][$category][] = $event;
+			$event_props['avatar']              = $event->getavatar();
+			$event_object                       = $event_props;
+			if ( AI1EC_THEME_COMPATIBILITY_FER ) {
+				$event_object = $event;
+			}
+			$dates[$timestamp]['events'][$category][] = $event_object;
 			$dates[$timestamp]['href']                = $href_for_date;
 			$dates[$timestamp]['day']                 = $this->_registry->
 				get( 'date.time', $timestamp )->format_i18n( 'j' );

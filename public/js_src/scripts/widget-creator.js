@@ -8,7 +8,7 @@ define(
 			"external_libs/jquery_cookie"
 		],
 		function( $, domReady, ai1ec_config, utils ) {
-			
+
 			var handle_set_tab_cookie = function( e ) {
 				var active = $( this ).attr( 'href' );
 				$.cookie( 'widget_creator_active_tab', active );
@@ -31,7 +31,7 @@ define(
 					);
 				}
 			};
-		
+
 			var initial_setup = function() {
 				// Handle embedding code for Super Widget.
 				var
@@ -92,9 +92,9 @@ define(
 									}
 								}
 							} );
-							
 							em_code += '&gt;<br>&nbsp;&nbsp;(function(){var d=document,s=d.createElement(\'script\'),<br>'
-								+ '&nbsp;&nbsp;i=\'ai1ec-script\';if(d.getElementById(i))return;s.async=1;<br>'
+								+ '&nbsp;&nbsp;i=\'ai1ec-script' + ( superwidget ? '-sw' : '' )
+								+ '\';if(d.getElementById(i))return;s.async=1;<br>'
 								+ '&nbsp;&nbsp;s.id=i;s.src=\'' + url + '\';<br>'
 								+ '&nbsp;&nbsp;d.getElementsByTagName(\'head\')[0].appendChild(s);})();<br>'
 								+ '&lt;/script&gt;'
@@ -147,17 +147,17 @@ define(
 				initialized = true;
 				preview();
 			};
-			
+
 			domReady( function() {
-				
+
 				utils.activate_saved_tab_on_page_load( $.cookie( 'widget_creator_active_tab' ) );
 				window.addEventListener( 'message', handle_loaded_widget_event, false );
 
-				initial_setup(); 
+				initial_setup();
 
 				// Register event handlers.
 				$( document )
 					.on( 'click',  'ul.ai1ec-nav a',             handle_set_tab_cookie )
 			} );
-		
+
 } )

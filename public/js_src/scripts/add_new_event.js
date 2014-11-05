@@ -313,7 +313,6 @@ define(
 				</div>\
 			</div>');
 		$( '#ai1ec-set-banner-image' ).on( 'click', function() {
-			console.log('save', $( '.attachment-details input[type=text]' ).val());
 			$( '#ai1ec_event_banner .inside a' )
 				.html( '<img width="100%" src="'
 					+ $( '.attachments:visible li.selected img' ).attr( 'src' ) + '" />\

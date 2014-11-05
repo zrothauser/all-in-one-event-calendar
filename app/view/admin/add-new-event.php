@@ -32,6 +32,24 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 	}
 
 	/**
+	 * Create hook to display Banner image meta box.
+	 *
+	 * @wp_hook add_meta_boxes
+	 *
+	 * @return void
+	 */
+	public function event_banner_meta_box_container() {
+		add_meta_box(
+			AI1EC_POST_TYPE. '_banner',
+			Ai1ec_I18n::__( 'Banner Image' ),
+			array( $this, 'banner_meta_box_view' ),
+			AI1EC_POST_TYPE,
+			'side',
+			'low'
+		);
+	}
+
+	/**
 	 * Add Event Details meta box to the Add/Edit Event screen in the dashboard.
 	 *
 	 * @return void
@@ -340,6 +358,15 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		echo $theme_loader
 			->get_file( 'add_new_event_meta_box.php', $args, true )
 			->get_content();
+	}
+
+	/**
+	 * Add Banner Image meta box to the Add/Edit Event.
+	 *
+	 * @return void
+	 */
+	public function banner_meta_box_view( $post ) {
+		echo "<a href=\"#\" id=\"ai1ec_set_banner_image\">Set banner image</a>";
 	}
 
 	/**

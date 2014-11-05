@@ -286,7 +286,48 @@ define(
 
 		// Free checkbox.
 		$( '#ai1ec_is_free' ).on( 'change', event_cost.handle_change_is_free );
+
+		// Banner image.
+		$( '#ai1ec_set_banner_image' ).on( 'click', set_banner_image );
 	};
+
+	// Hijack the Featured Image dialog to adapt it for Banner Image.
+	var set_banner_image = function() {
+		var fi = {}
+		fi._frame = wp.media({
+			state: 'featured-image',
+			states: [
+				new wp.media.controller.FeaturedImage(),
+				new wp.media.controller.EditImage()
+			]
+		});
+		fi._frame.open();
+		$( '.media-frame-title h1' ).text( 'Set Banner Image' );
+		$( '.media-frame-toolbar' ).append(
+			'<div class="media-toolbar">\
+				<div class="media-toolbar-primary search-form">\
+					<a href="#" id=\"ai1ec-set-banner-image\"\
+					   class="button media-button button-primary button-large">\
+					   	Set banner image\
+					</a>\
+				</div>\
+			</div>');
+		$( '#ai1ec-set-banner-image' ).on( 'click', function() {
+			console.log('save', $( '.attachment-details input[type=text]' ).val());
+			$( '#ai1ec_event_banner .inside a' )
+				.html( '<img width="100%" src="'
+					+ $( '.attachments:visible li.selected img' ).attr( 'src' ) + '" />\
+					<input type="hidden" name="ai1ec-banner-image" value=\"'
+					+ $( '.attachment-details input[type=text]' ).val() + '\">'
+				);
+			$( '#ai1ec_event_banner .inside' )
+				.append( '<br /><a href="#">Remove banner image</a>' );
+
+			fi._frame.close();
+			return false;
+		} );
+		return false;
+	}
 
 	/**
 	 * Place Event Details meta box below title, rather than below description.

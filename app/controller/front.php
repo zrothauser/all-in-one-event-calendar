@@ -241,6 +241,10 @@ class Ai1ec_Front_Controller {
 			$this->_initialize_schema();
 			// set the default theme if not set
 			$this->_add_default_theme_if_not_set();
+			// check if custom theme is set
+			if ( is_admin() ) {
+				$this->_check_old_theme();
+			}
 		} catch ( Ai1ec_Constants_Not_Set_Exception $e ) {
 			// This is blocking, throw it and disable the plugin
 			$exception = $e;
@@ -1002,6 +1006,38 @@ class Ai1ec_Front_Controller {
 			) CHARACTER SET utf8;";
 
 		return $sql;
+	}
+
+	/**
+	 * Performs run-once check if calendar is using theme outside core directory
+	 * what may mean that it is old format theme.
+	 *
+	 * @return void Method does not return.
+	 */
+	protected function _check_old_theme() {
+		$option = $this->_registry->get( 'model.option' );
+		if ( true === (bool)$option->get( 'ai1ec_fer_checked', false ) ) {
+			return;
+		}
+		$cur_theme  = $option->get( 'ai1ec_current_theme', array() );
+		$theme_root = dirname( AI1EC_DEFAULT_THEME_ROOT );
+		if (
+			! isset( $cur_theme['theme_root'] ) ||
+			$theme_root === dirname( $cur_theme['theme_root'] )
+		) {
+			$option->set( 'ai1ec_fer_checked', true );
+			return;
+		}
+		$this->_registry->get( 'notification.admin' )->store(
+			Ai1ec_I18n::__(
+				'Probably you are using custom calendar theme in old version. If you have problems with Calendar please read <a href="https://time.ly/">this article</a>.'
+			),
+			'error',
+			0,
+			array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
+			true
+		);
+		$option->set( 'ai1ec_fer_checked', true );
 	}
 
 }

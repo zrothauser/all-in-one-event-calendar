@@ -1030,7 +1030,7 @@ class Ai1ec_Front_Controller {
 		}
 		$this->_registry->get( 'notification.admin' )->store(
 			Ai1ec_I18n::__(
-				'Probably you are using custom calendar theme in old version. If you have problems with Calendar please read <a href="https://time.ly/">this article</a>.'
+				'You may be using a legacy custom calendar theme. If you have problems viewing the calendar, please read <a href="https://time.ly/">this article</a>.'
 			),
 			'error',
 			0,

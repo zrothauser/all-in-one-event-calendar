@@ -366,7 +366,18 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 	 * @return void
 	 */
 	public function banner_meta_box_view( $post ) {
-		echo "<a href=\"#\" id=\"ai1ec_set_banner_image\">Set banner image</a>";
+		$banner_image_meta = get_post_meta( $post->ID, 'ai1ec_banner_image' );
+		if ( $banner_image_meta && ! empty( $banner_image_meta[0] ) ) {
+			echo '<img width="100%" class="ai1ec_set_banner_image"
+					   src="' . $banner_image_meta[0] .'" />
+				 <input type="hidden" name="ai1ec_banner_image"
+					   value="' . $banner_image_meta[0] .'">
+				 <a class="ai1ec_remove_banner"
+				   href="#">' . Ai1ec_I18n::__( 'Remove banner image' ) . '</a>';
+		} else {
+			echo '<a href="#" class="ai1ec_set_banner_image">'
+				 	. Ai1ec_I18n::__( 'Set banner image' ) . '</a>';
+		}
 	}
 
 	/**

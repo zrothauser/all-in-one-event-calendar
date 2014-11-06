@@ -288,10 +288,13 @@ define(
 		$( '#ai1ec_is_free' ).on( 'change', event_cost.handle_change_is_free );
 
 		// Banner image.
-		$( '#ai1ec_set_banner_image' ).on( 'click', set_banner_image );
+		$( document ).on( 'click', '.ai1ec_set_banner_image', set_banner_image );
+		$( document ).on( 'click', '.ai1ec_remove_banner', remove_banner_image );
 	};
 
-	// Hijack the Featured Image dialog to adapt it for Banner Image.
+	/**
+	 * Hijack the Featured Image dialog to adapt it for Banner Image.
+	 */
 	var set_banner_image = function() {
 		var fi = {}
 		fi._frame = wp.media({
@@ -306,25 +309,39 @@ define(
 		$( '.media-frame-toolbar' ).append(
 			'<div class="media-toolbar">\
 				<div class="media-toolbar-primary search-form">\
-					<a href="#" id=\"ai1ec-set-banner-image\"\
-					   class="button media-button button-primary button-large">\
+					<a href="#" class="button media-button button-primary\
+									   button-large ai1ec-save-banner-image">\
 					   	Set banner image\
 					</a>\
 				</div>\
 			</div>');
-		$( '#ai1ec-set-banner-image' ).on( 'click', function() {
-			$( '#ai1ec_event_banner .inside a' )
-				.html( '<img width="100%" src="'
-					+ $( '.attachments:visible li.selected img' ).attr( 'src' ) + '" />\
-					<input type="hidden" name="ai1ec-banner-image" value=\"'
-					+ $( '.attachment-details input[type=text]' ).val() + '\">'
-				);
-			$( '#ai1ec_event_banner .inside' )
-				.append( '<br /><a href="#">Remove banner image</a>' );
+		$( '.ai1ec-save-banner-image' ).off().on( 'click', function() {
+			var
+				src = $( '.attachments:visible li.selected img' ).attr( 'src' ),
+				url = $( '.attachment-details:visible input[type=text]' ).val();
 
+			if ( src && url ) {
+				$( '#ai1ec_event_banner .inside' )
+					.html( '<img width="100%" class="ai1ec_set_banner_image" src="'
+						+ src + '" />\
+						<input type="hidden" name="ai1ec_banner_image" value="'
+						+ url + '">'
+						+ '<a class="ai1ec_remove_banner" href="#">Remove banner image</a>'
+					);
+			}
 			fi._frame.close();
 			return false;
 		} );
+		return false;
+	}
+
+	/**
+	 * Remove banner image.
+	 */
+	var remove_banner_image = function() {
+		$( '#ai1ec_event_banner .inside' )
+			.html( '<a href="#" class="ai1ec_set_banner_image">Set banner image</a>' );
+
 		return false;
 	}
 

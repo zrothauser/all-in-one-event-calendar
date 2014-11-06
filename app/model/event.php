@@ -343,6 +343,20 @@ class Ai1ec_Event extends Ai1ec_Base {
 	}
 
 	/**
+	 * Twig avatar method. It fixes default avatar for Stream view.
+	 *
+	 * @return string Value.
+	 */
+	public function getavatar() {
+		return $this->_registry->
+			get( 'view.event.avatar' )->get_event_avatar(
+				$this,
+				$this->_registry->get( 'view.calendar.fallbacks' )->get_all(),
+				'alignleft'
+			);
+	}
+
+	/**
 	 * Convert URL to a loggable form
 	 *
 	 * @param string $url    URL to which access must be counted

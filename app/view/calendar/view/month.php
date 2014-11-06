@@ -370,6 +370,9 @@ class Ai1ec_Calendar_View_Month extends Ai1ec_Calendar_View_Abstract {
 							false ),
 				);
 			}
+			if ( AI1EC_THEME_COMPATIBILITY_FER ) {
+				$events = $days_events[$i];
+			}
 			$weeks[$week][] = array(
 				'date' => $i,
 				'date_link' => $this->_create_link_for_day_view( $exact_date ),

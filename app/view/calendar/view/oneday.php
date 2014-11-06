@@ -332,6 +332,9 @@ class Ai1ec_Calendar_View_Oneday extends Ai1ec_Calendar_View_Abstract {
 							'',
 							false ),
 				);
+				if ( AI1EC_THEME_COMPATIBILITY_FER ) {
+					$event = $evt;
+				}
 				if ( 'notallday' === $event_type) {
 					// Calculate top and bottom edges of current event
 					$top    = (int)(

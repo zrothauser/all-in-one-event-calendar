@@ -90,8 +90,6 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 		$latitude         = isset( $_POST['ai1ec_latitude'] )         ? $_POST['ai1ec_latitude']                      : '';
 		$banner_image     = isset( $_POST['ai1ec_banner_image'] )     ? $_POST['ai1ec_banner_image']                  : '';
 
-		//$this->set_runtime( 'banner_image', get_post_meta($post_id, 'ai1ec_banner_image' ) );
-
 		$rrule  = NULL;
 		$exrule = NULL;
 		$exdate = NULL;

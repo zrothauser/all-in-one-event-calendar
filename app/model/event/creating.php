@@ -186,11 +186,6 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 
 		update_post_meta( $post_id, 'ai1ec_banner_image', $banner_image );
 
-/*
-		echo $banner_image;
-		die();
-*/
-
 		// let other extensions save their fields.
 		do_action( 'ai1ec_save_post', $event );
 

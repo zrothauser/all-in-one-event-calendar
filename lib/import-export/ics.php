@@ -678,7 +678,7 @@ class Ai1ec_Ics_Import_Export_Engine
 				)
 			)
 		);
-		fb($event->get( 'post' )->post_content);
+
 		$content = apply_filters(
 			'ai1ec_the_content',
 			apply_filters(

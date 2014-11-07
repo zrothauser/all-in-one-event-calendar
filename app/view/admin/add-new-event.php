@@ -370,17 +370,16 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 	 */
 	public function banner_meta_box_view( $post ) {
 		$banner_image_meta = get_post_meta( $post->ID, 'ai1ec_banner_image' );
-		if ( $banner_image_meta && ! empty( $banner_image_meta[0] ) ) {
-			echo '<img width="100%" class="ai1ec_set_banner_image"
-					   src="' . $banner_image_meta[0] .'" />
-				 <input type="hidden" name="ai1ec_banner_image"
-					   value="' . $banner_image_meta[0] .'">
-				 <a class="ai1ec_remove_banner"
-				   href="#">' . Ai1ec_I18n::__( 'Remove banner image' ) . '</a>';
-		} else {
-			echo '<a href="#" class="ai1ec_set_banner_image">'
-				 	. Ai1ec_I18n::__( 'Set banner image' ) . '</a>';
-		}
+		$theme_loader      = $this->_registry->get( 'theme.loader' );
+		$args = array(
+			'src'         => $banner_image_meta[0] ?: false,
+			'set_text'    => Ai1ec_I18n::__( 'Set banner image' ),
+			'remove_text' => Ai1ec_I18n::__( 'Remove banner image' ),
+
+		);
+		echo $theme_loader
+			->get_file( 'banner-image.twig', $args, true )
+			->get_content();
 	}
 
 	/**

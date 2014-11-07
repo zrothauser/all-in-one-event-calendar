@@ -420,7 +420,6 @@ class Ai1ec_Ics_Import_Export_Engine
 				// If no contact name, default to organizer property.
 				$data['contact_name']    = $organizer;
 			}
-
 			// Store yet-unsaved values to the $data array.
 			$data += array(
 				'recurrence_rules'  => $rrule,
@@ -679,6 +678,7 @@ class Ai1ec_Ics_Import_Export_Engine
 				)
 			)
 		);
+
 		$content = apply_filters(
 			'ai1ec_the_content',
 			apply_filters(
@@ -688,14 +688,20 @@ class Ai1ec_Ics_Import_Export_Engine
 		);
 		$content = str_replace(']]>', ']]&gt;', $content);
 		$content = html_entity_decode( $content, ENT_QUOTES, 'UTF-8' );
+		
 		// Prepend featured image if available.
 		$size = null;
 		$avatar = $this->_registry->get( 'view.event.avatar' );
-		if ( $img_url = $avatar->get_post_thumbnail_url( $event, $size ) ) {
-			$content = '<div class="ai1ec-event-avatar alignleft timely"><img src="' .
+		$matches = $avatar->get_image_from_content( $content );
+		// if no img is already present - add thumbnail
+		if ( empty( $matches ) ) {
+			if ( $img_url = $avatar->get_post_thumbnail_url( $event, $size ) ) {
+				$content = '<div class="ai1ec-event-avatar alignleft timely"><img src="' .
 					esc_attr( $img_url ) . '" width="' . $size[0] . '" height="' .
 					$size[1] . '" /></div>' . $content;
+			}
 		}
+
 		if ( isset( $params['no_html'] ) && $params['no_html'] ) {
 			$e->setProperty(
 				'description',

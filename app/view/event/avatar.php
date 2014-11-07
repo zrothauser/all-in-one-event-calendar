@@ -169,10 +169,8 @@ class Ai1ec_View_Event_Avatar extends Ai1ec_Base {
 	 * @return  string|null
 	 */
 	public function get_content_img_url( Ai1ec_Event $event, &$size = null ) {
-		preg_match(
-			'/<img([^>]+)src=["\']?([^"\'\ >]+)([^>]*)>/i',
-			$event->get( 'post' )->post_content,
-			$matches
+		$matches = $this->get_image_from_content(
+			$event->get( 'post' )->post_content
 		);
 		// Check if we have a result, otherwise a notice is issued.
 		if ( empty( $matches ) ) {
@@ -200,6 +198,21 @@ class Ai1ec_View_Event_Avatar extends Ai1ec_Base {
 		return $url;
 	}
 
+	/**
+	 * Get an image tag from an html string
+	 * 
+	 * @param string $content
+	 * 
+	 * @return array
+	 */
+	public function get_image_from_content( $content ) {
+		preg_match(
+			'/<img([^>]+)src=["\']?([^"\'\ >]+)([^>]*)>/i',
+			$content,
+			$matches
+		);
+		return $matches;
+	}
 	/**
 	 * Returns default avatar image (normally when no other ones are available).
 	 *

@@ -372,7 +372,8 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		$banner_image_meta = get_post_meta( $post->ID, 'ai1ec_banner_image' );
 		$theme_loader      = $this->_registry->get( 'theme.loader' );
 		$args = array(
-			'src'         => $banner_image_meta[0] ?: false,
+			'src'         => $banner_image_meta && $banner_image_meta[0]
+				? $banner_image_meta[0] : false,
 			'set_text'    => Ai1ec_I18n::__( 'Set banner image' ),
 			'remove_text' => Ai1ec_I18n::__( 'Remove banner image' ),
 

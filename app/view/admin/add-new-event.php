@@ -39,6 +39,9 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 	 * @return void
 	 */
 	public function event_banner_meta_box_container() {
+		if ( ! apply_filters( 'ai1ec_use_banner_image', false ) ) {
+			return;
+		}
 		add_meta_box(
 			AI1EC_POST_TYPE. '_banner',
 			Ai1ec_I18n::__( 'Banner Image' ),

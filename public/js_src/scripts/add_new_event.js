@@ -296,7 +296,7 @@ define(
 	 * Hijack the Featured Image dialog to adapt it for Banner Image.
 	 */
 	var set_banner_image = function() {
-		var fi = {}
+		var fi = {};
 		fi._frame = wp.media({
 			state: 'featured-image',
 			states: [
@@ -305,8 +305,9 @@ define(
 			]
 		});
 		fi._frame.open();
-		$( '.media-frame-title h1' ).text( 'Set Banner Image' );
-		$( '.media-frame-toolbar' ).append(
+		$( '.media-frame:last ').addClass( 'ai1ec-banner-image-frame' );
+		$( '.media-frame-title:last h1' ).text( 'Set Banner Image' );
+		$( '.media-frame-toolbar:last' ).append(
 			'<div class="media-toolbar">\
 				<div class="media-toolbar-primary search-form">\
 					<a href="#" class="button media-button button-primary\

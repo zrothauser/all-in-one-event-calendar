@@ -598,10 +598,12 @@ class Ai1ec_Front_Controller {
 				'add_meta_boxes',
 				array( 'view.admin.add-new-event', 'event_meta_box_container' )
 			);
-			$dispatcher->register_action(
-				'add_meta_boxes',
-				array( 'view.admin.add-new-event', 'event_banner_meta_box_container' )
-			);
+			if ( ! apply_filters( 'ai1ec_use_banner_image', false ) ) {
+				$dispatcher->register_action(
+					'add_meta_boxes',
+					array( 'view.admin.add-new-event', 'event_banner_meta_box_container' )
+				);
+			}
 			$dispatcher->register_action(
 				'edit_form_after_title',
 				array( 'view.admin.add-new-event', 'event_inline_alert' )

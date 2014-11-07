@@ -156,6 +156,17 @@ define(
 						// Activate the correct tab
 						$( 'ul.ai1ec-nav a[href=' + active_tab + ']' ).tab( 'show' );
 					}
+				},
+				/**
+				 * Adds the argument to the url. Just one argument for now
+				 * 
+				 * @param url  string the url to add arguments to
+				 * @param args array
+				 * 
+				 */
+				add_query_arg :  function( url, args ) {
+					var char = url.indexOf( '?' ) === -1 ? '?' : '&';
+					return url + char + args[0] + '=' + args[1];
 				}
 			};
 	}();

@@ -693,7 +693,7 @@ class Ai1ec_Ics_Import_Export_Engine
 		$size = null;
 		$avatar = $this->_registry->get( 'view.event.avatar' );
 		$matches = $avatar->get_image_from_content( $content );
-		// if no img is already rpesent add it.
+		// if no img is already present - add thumbnail
 		if ( empty( $matches ) ) {
 			if ( $img_url = $avatar->get_post_thumbnail_url( $event, $size ) ) {
 				$content = '<div class="ai1ec-event-avatar alignleft timely"><img src="' .

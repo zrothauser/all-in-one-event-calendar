@@ -143,7 +143,7 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 	/**
 	 * Checks all Time.ly addons.
 	 *
-	 * @param bool $silent Wheter to perform silent plugin deactivation or not.
+	 * @param bool $silent Whether to perform silent plugin deactivation or not.
 	 *
 	 * @return void Method does not return.
 	 */
@@ -166,7 +166,7 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 	 *                            called this method and it's enough to throw
 	 *                            and exception and allow exception handler
 	 *                            to deactivate addon with proper notices.
-	 * @param bool   $silent      Wheter to perform silent plugin deactivation
+	 * @param bool   $silent      Whether to perform silent plugin deactivation
 	 *                            or not.
 	 *
 	 * @return void Method does not return.

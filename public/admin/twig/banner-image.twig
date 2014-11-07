@@ -1,9 +1,9 @@
 {% if src %}
-	<img width="100%" class="ai1ec_set_banner_image"
+	<img width="100%" class="ai1ec-set-banner-image"
 		 src="{{ src | e( 'html_attr' ) }}" />
 	<input type="hidden" name="ai1ec_banner_image"
 		   value="{{ src | e( 'html_attr' ) }}">
-	<a class="ai1ec_remove_banner" href="#">{{ remove_text }}</a>
+	<a class="ai1ec-remove-banner" href="#">{{ remove_text }}</a>
 {% else %}
-	<a href="#" class="ai1ec_set_banner_image">{{ set_text }}</a>
+	<a href="#" class="ai1ec-set-banner-image">{{ set_text }}</a>
 {% endif %}

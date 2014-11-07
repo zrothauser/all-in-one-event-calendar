@@ -288,8 +288,8 @@ define(
 		$( '#ai1ec_is_free' ).on( 'change', event_cost.handle_change_is_free );
 
 		// Banner image.
-		$( document ).on( 'click', '.ai1ec_set_banner_image', set_banner_image );
-		$( document ).on( 'click', '.ai1ec_remove_banner', remove_banner_image );
+		$( document ).on( 'click', '.ai1ec-set-banner-image', set_banner_image );
+		$( document ).on( 'click', '.ai1ec-remove-banner', remove_banner_image );
 	};
 
 	/**
@@ -323,11 +323,11 @@ define(
 
 			if ( src && url ) {
 				$( '#ai1ec_event_banner .inside' )
-					.html( '<img width="100%" class="ai1ec_set_banner_image" src="'
+					.html( '<img width="100%" class="ai1ec-set-banner-image" src="'
 						+ src + '" />\
 						<input type="hidden" name="ai1ec_banner_image" value="'
 						+ url + '">'
-						+ '<a class="ai1ec_remove_banner" href="#">Remove banner image</a>'
+						+ '<a class="ai1ec-remove-banner" href="#">Remove banner image</a>'
 					);
 			}
 			fi._frame.close();
@@ -341,7 +341,7 @@ define(
 	 */
 	var remove_banner_image = function() {
 		$( '#ai1ec_event_banner .inside' )
-			.html( '<a href="#" class="ai1ec_set_banner_image">Set banner image</a>' );
+			.html( '<a href="#" class="ai1ec-set-banner-image">Set banner image</a>' );
 
 		return false;
 	}

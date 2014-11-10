@@ -1,9 +1,16 @@
 {% if src %}
-	<img width="100%" class="ai1ec-set-banner-image"
-		 src="{{ src | e( 'html_attr' ) }}" />
-	<input type="hidden" name="ai1ec_banner_image"
-		   value="{{ src | e( 'html_attr' ) }}">
-	<a class="ai1ec-remove-banner" href="#">{{ remove_text }}</a>
+	<p class="hide-if-no-js">
+		<img width="100%" class="ai1ec-set-banner-image"
+			 src="{{ src | e( 'html_attr' ) }}" />
+		<input type="hidden" name="ai1ec_banner_image"
+			   value="{{ src | e( 'html_attr' ) }}" />
+	</p>
+	<p class="hide-if-no-js">
+		<a class="ai1ec-remove-banner" href="#">{{ remove_text }}</a>
+	</p>
 {% else %}
-	<a href="#" class="ai1ec-set-banner-image">{{ set_text }}</a>
+	<p class="hide-if-no-js">
+		<a href="#" class="ai1ec-set-banner-image">{{ set_text }}</a>
+	</p>
 {% endif %}
+

@@ -323,11 +323,11 @@ define(
 
 			if ( src && url ) {
 				$( '#ai1ec_event_banner .inside' )
-					.html( '<img width="100%" class="ai1ec-set-banner-image" src="'
-						+ src + '" />\
-						<input type="hidden" name="ai1ec_banner_image" value="'
-						+ url + '">'
-						+ '<a class="ai1ec-remove-banner" href="#">Remove banner image</a>'
+					.html( '<p class="hide-if-no-js">\
+						<img width="100%" class="ai1ec-set-banner-image" src="' + src + '" />\
+						<input type="hidden" name="ai1ec_banner_image" value="'+ url + '"></p>\
+						<p class="hide-if-no-js">\
+						<a class="ai1ec-remove-banner" href="#">Remove banner image</a></p>'
 					);
 			}
 			fi._frame.close();

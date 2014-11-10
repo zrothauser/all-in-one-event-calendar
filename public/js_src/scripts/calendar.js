@@ -240,11 +240,7 @@ define(
 		);
 	};
 
-	var launched = false;
 	var launch = function() {
-		if ( launched ) {
-			return;
-		}
 		init();
 		if( ai1ec_config.use_select2 ) {
 			initialize_select2();
@@ -268,9 +264,7 @@ define(
 	 * Start calendar page.
 	 */
 	var start = function() {
-		$( document ).on( 'page_ready.ai1ec', function() {
-			launch();
-		} );
+		$( document ).one( 'page_ready.ai1ec', launch );
 	};
 
 	return {

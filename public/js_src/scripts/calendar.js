@@ -240,32 +240,35 @@ define(
 		);
 	};
 
+	var launch = function() {
+		init();
+		if( ai1ec_config.use_select2 ) {
+			initialize_select2();
+		}
+
+		attach_event_handlers();
+		// Initialize the calendar view for the first time.
+		$( '.ai1ec-calendar' ).each( function() {
+			load_views.initialize_view( $( this ) );
+		} );
+
+		// Affixed toolbar.
+		if ( ai1ec_config.affix_filter_menu
+			&& 1 === $( '.ai1ec-calendar' ).length
+		) {
+			affix.initialize_affixed_toolbar( $( '.ai1ec-calendar' ) );
+		}
+	}
+
 	/**
 	 * Start calendar page.
 	 */
 	var start = function() {
-		$( document ).on( 'page_ready.ai1ec', function() {
-			init();
-			if( ai1ec_config.use_select2 ) {
-				initialize_select2();
-			}
-
-			attach_event_handlers();
-			// Initialize the calendar view for the first time.
-			$( '.ai1ec-calendar' ).each( function() {
-				load_views.initialize_view( $( this ) );
-			} );
-
-			// Affixed toolbar.
-			if ( ai1ec_config.affix_filter_menu
-				&& 1 === $( '.ai1ec-calendar' ).length
-			) {
-				affix.initialize_affixed_toolbar( $( '.ai1ec-calendar' ) );
-			}
-		} );
+		$( document ).one( 'page_ready.ai1ec', launch );
 	};
 
 	return {
-		start : start
+		start  : start,
+		launch : launch
 	};
 } );

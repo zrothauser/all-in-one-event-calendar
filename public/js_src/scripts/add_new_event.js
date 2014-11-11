@@ -306,16 +306,14 @@ define(
 		});
 		fi._frame.open();
 		$( '.media-frame:last ').addClass( 'ai1ec-banner-image-frame' );
-		$( '.media-frame-title:last h1' ).text( 'Set Banner Image' );
+		$( '.media-frame-title:last h1' ).text(
+			$( '.ai1ec-set-banner-block .ai1ec-set-banner-image' ).text()
+		);
 		$( '.media-frame-toolbar:last' ).append(
-			'<div class="media-toolbar">\
-				<div class="media-toolbar-primary search-form">\
-					<a href="#" class="button media-button button-primary\
-									   button-large ai1ec-save-banner-image">\
-					   	Set banner image\
-					</a>\
-				</div>\
-			</div>');
+			$( '.ai1ec-media-toolbar' )
+				.clone()
+				.removeClass( 'ai1ec-media-toolbar ai1ec-hidden' )
+		);
 		$( '.ai1ec-save-banner-image' ).off().on( 'click', function() {
 			var
 				src = $( '.attachments:visible li.selected img' ).attr( 'src' ),
@@ -323,12 +321,20 @@ define(
 
 			if ( src && url ) {
 				$( '#ai1ec_event_banner .inside' )
-					.html( '<p class="hide-if-no-js">\
-						<img width="100%" class="ai1ec-set-banner-image" src="' + src + '" />\
-						<input type="hidden" name="ai1ec_banner_image" value="'+ url + '"></p>\
-						<p class="hide-if-no-js">\
-						<a class="ai1ec-remove-banner" href="#">Remove banner image</a></p>'
-					);
+					.find( '.ai1ec-banner-image-block' )
+						.removeClass( 'ai1ec-hidden' )
+							.find( 'img' )
+								.attr( 'src', src )
+								.end()
+							.find( 'input' )
+								.val( url )
+								.end()
+							.end()
+					.find( '.ai1ec-set-banner-block' )
+						.addClass( 'ai1ec-hidden' )
+						.end()
+					.find( '.ai1ec-remove-banner-block' )
+						.removeClass( 'ai1ec-hidden' );
 			}
 			fi._frame.close();
 			return false;
@@ -341,7 +347,20 @@ define(
 	 */
 	var remove_banner_image = function() {
 		$( '#ai1ec_event_banner .inside' )
-			.html( '<a href="#" class="ai1ec-set-banner-image">Set banner image</a>' );
+			.find( '.ai1ec-remove-banner-block' )
+				.addClass( 'ai1ec-hidden' )
+				.end()
+			.find( '.ai1ec-banner-image-block' )
+				.addClass( 'ai1ec-hidden' )
+				.find( 'input' )
+					.val( '' )
+					.end()
+				.find( 'img' )
+					.attr( 'src' ,'' )
+					.end()
+				.end()
+			.find( '.ai1ec-set-banner-block' )
+				.removeClass( 'ai1ec-hidden' )
 
 		return false;
 	}

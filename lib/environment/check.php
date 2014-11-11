@@ -20,6 +20,7 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 	 */
 	protected $_addons = array(
 		'all-in-one-event-calendar-extended-views/all-in-one-event-calendar-extended-views.php' => '1.1.0.10',
+		'all-in-one-event-calendar-super-widget/all-in-one-event-calendar-super-widget.php'     => '1.0.7.12',
 	);
 
 	/**
@@ -131,14 +132,28 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 	}
 
 	/**
+	 * Launches after bulk update.
+	 *
+	 * @param bool $result Input filter value.
+	 *
+	 * @return bool Output filter value.
+	 */
+	public function check_bulk_addons_activation( $result ) {
+		$this->_check_active_addons( true );
+		return $result;
+	}
+
+	/**
 	 * Checks all Time.ly addons.
+	 *
+	 * @param bool $silent Whether to perform silent plugin deactivation or not.
 	 *
 	 * @return void Method does not return.
 	 */
-	protected function _check_active_addons() {
+	protected function _check_active_addons( $silent = false ) {
 		foreach ( $this->_addons as $addon => $version ) {
 			if ( is_plugin_active( $addon ) ) {
-				$this->_plugin_activation( $addon, $version, true );
+				$this->_plugin_activation( $addon, $version, true, $silent );
 			}
 		}
 	}
@@ -154,13 +169,16 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 	 *                            called this method and it's enough to throw
 	 *                            and exception and allow exception handler
 	 *                            to deactivate addon with proper notices.
+	 * @param bool   $silent      Whether to perform silent plugin deactivation
+	 *                            or not.
 	 *
 	 * @return void Method does not return.
 	 */
 	protected function _plugin_activation(
 		$addon,
 		$min_version,
-		$core = false
+		$core   = false,
+		$silent = false
 	) {
 		$ev_data = get_plugin_data(
 			WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $addon
@@ -178,7 +196,7 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 			if ( ! $core ) {
 				throw new Ai1ec_Outdated_Addon_Exception( $message, $addon );
 			} else {
-				deactivate_plugins( $addon );
+				deactivate_plugins( $addon, $silent );
 				$this->_registry->get( 'notification.admin' )->store(
 					$message,
 					'error',

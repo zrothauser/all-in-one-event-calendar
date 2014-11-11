@@ -286,7 +286,84 @@ define(
 
 		// Free checkbox.
 		$( '#ai1ec_is_free' ).on( 'change', event_cost.handle_change_is_free );
+
+		// Banner image.
+		$( document ).on( 'click', '.ai1ec-set-banner-image', set_banner_image );
+		$( document ).on( 'click', '.ai1ec-remove-banner', remove_banner_image );
 	};
+
+	/**
+	 * Hijack the Featured Image dialog to adapt it for Banner Image.
+	 */
+	var set_banner_image = function() {
+		var fi = {};
+		fi._frame = wp.media({
+			state: 'featured-image',
+			states: [
+				new wp.media.controller.FeaturedImage(),
+				new wp.media.controller.EditImage()
+			]
+		});
+		fi._frame.open();
+		$( '.media-frame:last ').addClass( 'ai1ec-banner-image-frame' );
+		$( '.media-frame-title:last h1' ).text(
+			$( '.ai1ec-set-banner-block .ai1ec-set-banner-image' ).text()
+		);
+		$( '.media-frame-toolbar:last' ).append(
+			$( '.ai1ec-media-toolbar' )
+				.clone()
+				.removeClass( 'ai1ec-media-toolbar ai1ec-hidden' )
+		);
+		$( '.ai1ec-save-banner-image' ).off().on( 'click', function() {
+			var
+				src = $( '.attachments:visible li.selected img' ).attr( 'src' ),
+				url = $( '.attachment-details:visible input[type=text]' ).val();
+
+			if ( src && url ) {
+				$( '#ai1ec_event_banner .inside' )
+					.find( '.ai1ec-banner-image-block' )
+						.removeClass( 'ai1ec-hidden' )
+							.find( 'img' )
+								.attr( 'src', src )
+								.end()
+							.find( 'input' )
+								.val( url )
+								.end()
+							.end()
+					.find( '.ai1ec-set-banner-block' )
+						.addClass( 'ai1ec-hidden' )
+						.end()
+					.find( '.ai1ec-remove-banner-block' )
+						.removeClass( 'ai1ec-hidden' );
+			}
+			fi._frame.close();
+			return false;
+		} );
+		return false;
+	}
+
+	/**
+	 * Remove banner image.
+	 */
+	var remove_banner_image = function() {
+		$( '#ai1ec_event_banner .inside' )
+			.find( '.ai1ec-remove-banner-block' )
+				.addClass( 'ai1ec-hidden' )
+				.end()
+			.find( '.ai1ec-banner-image-block' )
+				.addClass( 'ai1ec-hidden' )
+				.find( 'input' )
+					.val( '' )
+					.end()
+				.find( 'img' )
+					.attr( 'src' ,'' )
+					.end()
+				.end()
+			.find( '.ai1ec-set-banner-block' )
+				.removeClass( 'ai1ec-hidden' )
+
+		return false;
+	}
 
 	/**
 	 * Place Event Details meta box below title, rather than below description.

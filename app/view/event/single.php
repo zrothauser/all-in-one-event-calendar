@@ -69,6 +69,10 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 				),
 			);
 		}
+
+		$banner_image_meta = get_post_meta( $event->get( 'post_id' ), 'ai1ec_banner_image' );
+		$banner_image = $banner_image_meta ? $banner_image_meta[0] : '';
+
 		// objects are passed by reference so an action is ok
 		do_action( 'ai1ec_single_event_page_before_render', $event );
 
@@ -102,6 +106,7 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			'text_categories'         => __( 'Categories', AI1EC_PLUGIN_NAME ),
 			'text_tags'               => __( 'Tags', AI1EC_PLUGIN_NAME ),
 			'timezone_info'           => $timezone_info,
+			'banner_image'            => $banner_image,
 		);
 
 		if (

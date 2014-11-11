@@ -649,8 +649,8 @@ class Ai1ec_Front_Controller {
 				'activated_plugin',
 				array( 'environment.check', 'check_addons_activation' )
 			);
-			$dispatcher->register_action(
-				'upgrader_process_complete',
+			$dispatcher->register_filter(
+				'upgrader_post_install',
 				array( 'environment.check', 'check_bulk_addons_activation' )
 			);
 			// Widget Creator

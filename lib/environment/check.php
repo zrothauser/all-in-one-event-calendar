@@ -134,10 +134,13 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 	/**
 	 * Launches after bulk update.
 	 *
-	 * @return void Method does not return.
+	 * @param bool $result Input filter value.
+	 *
+	 * @return bool Output filter value.
 	 */
-	public function check_bulk_addons_activation() {
+	public function check_bulk_addons_activation( $result ) {
 		$this->_check_active_addons( true );
+		return $result;
 	}
 
 	/**

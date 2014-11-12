@@ -2,13 +2,13 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.1.5.35\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.1.5.36\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2014-11-10 21:53:04+00:00\n"
+"POT-Creation-Date: 2014-11-12 13:22:06+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2014-11-10 22:53+0100\n"
+"PO-Revision-Date: 2014-11-12 14:22+0100\n"
 "Last-Translator: Timely <support@time.ly>\n"
 "Language-Team:\n"
 
@@ -40,7 +40,7 @@ msgstr ""
 msgid "Calendar Themes"
 msgstr "Calendar Themes"
 
-#: app/controller/front.php:878
+#: app/controller/front.php:886
 msgid ""
 "Your database is found to be corrupt. Likely previous update has failed. "
 "Please restore All-in-One Event Calendar tables from a backup and retry."
@@ -50,7 +50,7 @@ msgstr ""
 "Please restore All-in-One Event Calendar tables from a backup and retry."
 "<br>Following errors were found:<br>%s"
 
-#: app/controller/front.php:1032
+#: app/controller/front.php:1040
 msgid ""
 "You may be using a legacy custom calendar theme. If you have problems "
 "viewing the calendar, please read <a href=\"https://time.ly/\">this article</"
@@ -495,6 +495,18 @@ msgstr "Templates cache improves site performance"
 msgid "Event Details"
 msgstr "Event Details"
 
+#: app/view/admin/add-new-event.php:47
+msgid "Banner Image"
+msgstr "Banner Image"
+
+#: app/view/admin/add-new-event.php:377
+msgid "Set banner image"
+msgstr "Set banner image"
+
+#: app/view/admin/add-new-event.php:378
+msgid "Remove banner image"
+msgstr "Remove banner image"
+
 #: app/view/admin/add-ons.php:68
 msgid "Add-ons for All In One Event Calendar"
 msgstr "Add-ons for All In One Event Calendar"
@@ -904,7 +916,7 @@ msgstr "Subscribe to this calendar in another plain-text calendar"
 msgid "Clear category filter"
 msgstr "Clear category filter"
 
-#: app/view/calendar/taxonomy.php:98 app/view/event/single.php:102
+#: app/view/calendar/taxonomy.php:98 app/view/event/single.php:106
 #: lib/html/element/setting/tags-categories.php:47
 msgid "Categories"
 msgstr "Categories"
@@ -913,7 +925,7 @@ msgstr "Categories"
 msgid "Clear tag filter"
 msgstr "Clear tag filter"
 
-#: app/view/calendar/taxonomy.php:100 app/view/event/single.php:103
+#: app/view/calendar/taxonomy.php:100 app/view/event/single.php:107
 #: lib/html/element/setting/tags-categories.php:39
 msgid "Tags"
 msgstr "Tags"
@@ -1025,11 +1037,11 @@ msgstr "View Calendar"
 msgid "Add"
 msgstr "Add"
 
-#: app/view/event/content.php:33 app/view/event/single.php:97
+#: app/view/event/content.php:33 app/view/event/single.php:101
 msgid "When:"
 msgstr "When:"
 
-#: app/view/event/content.php:34 app/view/event/single.php:98
+#: app/view/event/content.php:34 app/view/event/single.php:102
 msgid "Where:"
 msgstr "Where:"
 
@@ -1104,28 +1116,27 @@ msgstr ""
 msgid "Event was created in the %s time zone"
 msgstr "Event was created in the %s time zone"
 
-#: app/view/event/single.php:93
+#: app/view/event/single.php:97
 msgid "Add to Calendar"
 msgstr "Add to Calendar"
 
-#: app/view/event/single.php:99
+#: app/view/event/single.php:103
 msgid "Cost:"
 msgstr "Cost:"
 
-#: app/view/event/single.php:100
-#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:94
+#: app/view/event/single.php:104
 msgid "Contact:"
 msgstr "Contact:"
 
-#: app/view/event/single.php:101
+#: app/view/event/single.php:105
 msgid "Free"
 msgstr "Free"
 
-#: app/view/event/single.php:117
+#: app/view/event/single.php:122
 msgid "Edit this occurrence (%s)"
 msgstr "Edit this occurrence (%s)"
 
-#: app/view/event/single.php:135
+#: app/view/event/single.php:140
 msgid ""
 "This post was replicated from another site's <a class=\"ai1ec-ics-icon\" "
 "href=\"%s\" title=\"iCalendar feed\">calendar feed</a>."
@@ -1133,7 +1144,7 @@ msgstr ""
 "This post was replicated from another site's <a class=\"ai1ec-ics-icon\" "
 "href=\"%s\" title=\"iCalendar feed\">calendar feed</a>."
 
-#: app/view/event/single.php:136
+#: app/view/event/single.php:141
 msgid "View original post"
 msgstr "View original post"
 
@@ -1178,39 +1189,6 @@ msgstr " – "
 #: app/view/event/time.php:160
 msgid ", and "
 msgstr ", and "
-
-#: cache/twig/78/3e/57d2212e2837aee7813ecc844f345947f68d3edb57d31388f926a75264db.php:27
-#: cache/twig/78/3e/57d2212e2837aee7813ecc844f345947f68d3edb57d31388f926a75264db.php:31
-msgid "Products"
-msgstr "Products"
-
-#: cache/twig/dc/78/b950182efb8f436b144938fb0dc48cf395d7daabe20293234dbcf2b26545.php:37
-msgid "Excludes: "
-msgstr "Excludes: "
-
-#: cache/twig/dc/78/b950182efb8f436b144938fb0dc48cf395d7daabe20293234dbcf2b26545.php:48
-msgid "Repeats"
-msgstr "Repeats"
-
-#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:173
-msgid "Seating capacity:"
-msgstr "Seating capacity:"
-
-#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:190
-msgid "Handicap accessible"
-msgstr "Handicap accessible"
-
-#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:205
-msgid "Parking:"
-msgstr "Parking:"
-
-#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:241
-msgid "Email Venue"
-msgstr "Email Venue"
-
-#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:259
-msgid "Visit Website"
-msgstr "Visit Website"
 
 #: lib/calendar-feed/ics.php:38
 msgid "ICS"
@@ -1401,11 +1379,11 @@ msgstr "Manual Offset"
 msgid "Choose your timezone"
 msgstr "Choose your timezone"
 
-#: lib/environment/check.php:52
+#: lib/environment/check.php:53
 msgid "Select an option in the <strong>Calendar page</strong> dropdown list."
 msgstr "Select an option in the <strong>Calendar page</strong> dropdown list."
 
-#: lib/environment/check.php:65
+#: lib/environment/check.php:66
 msgid ""
 "The plugin is installed, but has not been configured. <a href=\"%s\">Click "
 "here to set it up now &raquo;</a>"
@@ -1413,7 +1391,7 @@ msgstr ""
 "The plugin is installed, but has not been configured. <a href=\"%s\">Click "
 "here to set it up now &raquo;</a>"
 
-#: lib/environment/check.php:75
+#: lib/environment/check.php:76
 msgid ""
 "The plugin is installed, but has not been configured. Please log in as an "
 "Administrator to set it up."
@@ -1421,7 +1399,7 @@ msgstr ""
 "The plugin is installed, but has not been configured. Please log in as an "
 "Administrator to set it up."
 
-#: lib/environment/check.php:174
+#: lib/environment/check.php:192
 msgid "Addon %s needs to be at least in version %s"
 msgstr "Addon %s needs to be at least in version %s"
 
@@ -2732,9 +2710,9 @@ msgstr "Today background"
 msgid "All-in-One Event Calendar by Time.ly"
 msgstr "All-in-One Event Calendar by Time.ly"
 
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.5.35)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.5.36)  #-#-#-#-#
 #. Plugin URI of the plugin/theme
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.5.35)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.5.36)  #-#-#-#-#
 #. Author URI of the plugin/theme
 msgid "http://time.ly/"
 msgstr "http://time.ly/"

@@ -535,6 +535,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 * @return int            The post_id of the new or existing event.
 	 */
 	function save( $update = false ) {
+		do_action( 'ai1ec_pre_save_event', $this, $update );
 		if ( ! $update ) {
 			$response = apply_filters( 'ai1ec_event_save_new', $this );
 			if ( is_wp_error( $response ) ) {

@@ -458,6 +458,12 @@ class Ai1ec_Ics_Import_Export_Engine
 			);
 
 			// Create event object.
+			$data  = apply_filters(
+				'ai1ec_pre_init_event_from_feed',
+				$data,
+				$e,
+				$feed
+			);
 			$event = $this->_registry->get( 'model.event', $data );
 
 			// Instant Event
@@ -688,7 +694,7 @@ class Ai1ec_Ics_Import_Export_Engine
 		);
 		$content = str_replace(']]>', ']]&gt;', $content);
 		$content = html_entity_decode( $content, ENT_QUOTES, 'UTF-8' );
-		
+
 		// Prepend featured image if available.
 		$size = null;
 		$avatar = $this->_registry->get( 'view.event.avatar' );

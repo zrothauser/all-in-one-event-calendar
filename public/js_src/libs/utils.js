@@ -166,6 +166,9 @@ define(
 				 */
 				add_query_arg :  function( url, args ) {
 					var char = url.indexOf( '?' ) === -1 ? '?' : '&';
+					if ( -1 !== url.indexOf( char + args[0] + '=' ) ) {
+						return url;
+					}
 					return url + char + args[0] + '=' + args[1];
 				}
 			};

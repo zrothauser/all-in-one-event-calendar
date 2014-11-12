@@ -57,13 +57,6 @@
 								<div class="ai1ec-event-summary {% if expanded %}ai1ec-expanded{% endif %}">
 
 									<div class="ai1ec-event-description">
-										{% if event.content_img_url is empty %}
-											<a {{ data_type_events | raw }}
-												class="ai1ec-load-event"
-												href="{{ event.permalink | e('html_attr') }}">
-												{{ event.avatar | raw }}
-											</a>
-										{% endif %}
 										{{ event.filtered_content | raw }}
 									</div>
 

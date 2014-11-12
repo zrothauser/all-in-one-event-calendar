@@ -241,8 +241,12 @@ define(
 	};
 
 	var launch = function() {
+		// Prevent launching it twice.
+		if ( 1 === $( 'body' ).data( 'ai1ec-inited' ) ) {
+			return false;
+		}
 		init();
-		if( ai1ec_config.use_select2 ) {
+		if ( ai1ec_config.use_select2 ) {
 			initialize_select2();
 		}
 
@@ -258,6 +262,7 @@ define(
 		) {
 			affix.initialize_affixed_toolbar( $( '.ai1ec-calendar' ) );
 		}
+		$( 'body' ).data( 'ai1ec-inited', 1 );
 	}
 
 	/**

@@ -364,6 +364,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 	*/
 	protected function _add_view_specific_runtime_properties( Ai1ec_Event $event ) {
 		$taxonomy = $this->_registry->get( 'view.event.taxonomy' );
+		$avatar   = $this->_registry->get( 'view.event.avatar' );
 		$event->set_runtime(
 			'categories_html',
 			$taxonomy->get_categories_html( $event )
@@ -371,6 +372,10 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		$event->set_runtime(
 			'tags_html',
 			$taxonomy->get_tags_html( $event )
+		);
+		$event->set_runtime(
+			'content_img_url',
+			$avatar->get_content_img_url( $event )
 		);
 	}
 }

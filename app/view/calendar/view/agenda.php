@@ -246,7 +246,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$event_props['short_start_time']    = $event->get_runtime( 'short_start_time' );
 			$event_props['timespan_short']      = $event->_registry->
 				get( 'view.event.time' )->get_timespan_html( $event, 'short' );
-			$event_props['avatar']              = $event->getavatar();
+			$event_props['avatar']              = $event->getavatar( false );
 			$event_object                       = $event_props;
 			if ( AI1EC_THEME_COMPATIBILITY_FER ) {
 				$event_object = $event;

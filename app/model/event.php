@@ -345,14 +345,17 @@ class Ai1ec_Event extends Ai1ec_Base {
 	/**
 	 * Twig avatar method. It fixes default avatar for Stream view.
 	 *
+	 * @param bool $wrap_permalink Whether to wrap avatar in a element or not.
+	 *
 	 * @return string Value.
 	 */
-	public function getavatar() {
+	public function getavatar( $wrap_permalink = true ) {
 		return $this->_registry->
 			get( 'view.event.avatar' )->get_event_avatar(
 				$this,
 				$this->_registry->get( 'view.calendar.fallbacks' )->get_all(),
-				'alignleft'
+				'alignleft',
+				$wrap_permalink
 			);
 	}
 

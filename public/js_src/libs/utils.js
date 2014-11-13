@@ -159,10 +159,10 @@ define(
 				},
 				/**
 				 * Adds the argument to the url. Just one argument for now
-				 * 
+				 *
 				 * @param url  string the url to add arguments to
 				 * @param args array
-				 * 
+				 *
 				 */
 				add_query_arg :  function( url, args ) {
 					var char = url.indexOf( '?' ) === -1 ? '?' : '&';
@@ -170,6 +170,33 @@ define(
 						return url;
 					}
 					return url + char + args[0] + '=' + args[1];
+				},
+				/**
+				 * Enables autoselection of text for .ai1ec-autoselect
+				 */
+				init_autoselect : function() {
+					// Select the text when element is clicked (only once).
+					$( document ).one( 'click', '.ai1ec-autoselect', function( e ) {
+						// Lets do it only once. Perhaps, user wants to select just a part.
+						if ( $( this ).data( 'clicked' ) && e.originalEvent.detail < 2 ) {
+							return;
+						} else {
+							$( this ).data( 'clicked' , true );
+						}
+						// Working with the text selection depending on the browser abilities.
+						var range;
+						if ( document.body.createTextRange ) {
+							range = document.body.createTextRange();
+							range.moveToElementText( this );
+							range.select();
+						} else if ( window.getSelection ) {
+							selection = window.getSelection();
+							range = document.createRange();
+							range.selectNodeContents( this );
+							selection.removeAllRanges();
+							selection.addRange( range );
+						}
+					});
 				}
 			};
 	}();

@@ -241,23 +241,36 @@ define(
 	};
 
 	var launch = function() {
-		init();
-		if( ai1ec_config.use_select2 ) {
-			initialize_select2();
+		var $body      = $( 'body' ),
+		    $calendars = $( '.ai1ec-calendar' );
+
+		// Prevent double-initialization.
+		if ( $body.data( 'ai1ec-inited' ) ) {
+			return false;
 		}
 
+		// General initialization.
+		init();
+		if ( ai1ec_config.use_select2 ) {
+			initialize_select2();
+		}
 		attach_event_handlers();
-		// Initialize the calendar view for the first time.
-		$( '.ai1ec-calendar' ).each( function() {
+
+		// For each calendar on the page, initialize its view for the first time.
+		$calendars.each( function() {
 			load_views.initialize_view( $( this ) );
 		} );
 
-		// Affixed toolbar.
-		if ( ai1ec_config.affix_filter_menu
-			&& 1 === $( '.ai1ec-calendar' ).length
+		// Initialize affixed toolbar if requested, and page has only one calendar.
+		if (
+			ai1ec_config.affix_filter_menu &&
+			1 === $calendars.length
 		) {
 			affix.initialize_affixed_toolbar( $( '.ai1ec-calendar' ) );
 		}
+
+		// Prevent double-initialization.
+		$body.data( 'ai1ec-inited', true );
 	}
 
 	/**

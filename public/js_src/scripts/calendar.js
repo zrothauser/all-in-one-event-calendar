@@ -264,9 +264,9 @@ define(
 		// Initialize affixed toolbar if requested, and page has only one calendar.
 		if (
 			ai1ec_config.affix_filter_menu &&
-			1 === $calendars.length
+			1 === $( '.ai1ec-calendar:visible' ).first()
 		) {
-			affix.initialize_affixed_toolbar( $( '.ai1ec-calendar' ) );
+			affix.initialize_affixed_toolbar( $( '.ai1ec-calendar:visible' ).first() );
 		}
 
 		// Prevent double-initialization.

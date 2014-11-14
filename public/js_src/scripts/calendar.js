@@ -243,7 +243,7 @@ define(
 	var launch = function() {
 		var $body           = $( 'body' ),
 		    $calendars      = $( '.ai1ec-calendar' ),
-			$first_calendar = $( '.ai1ec-calendar:visible' ).first();
+		    $first_calendar = $( '.ai1ec-calendar:visible' ).first();
 
 		// Prevent double-initialization.
 		if ( $body.data( 'ai1ec-inited' ) ) {

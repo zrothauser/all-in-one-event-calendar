@@ -225,7 +225,13 @@ define(
 			function( e ) {
 				e.preventDefault();
 				$.cookie.raw = false;
-				$.cookie( 'ai1ec_calendar_url', document.URL );
+				$.cookie(
+					'ai1ec_calendar_url',
+					document.URL,
+					{
+						path: ai1ec_config.cookie_path
+					}
+				);
 				window.location.href = this.href;
 			}
 		);

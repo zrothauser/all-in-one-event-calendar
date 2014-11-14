@@ -317,7 +317,9 @@ define(
 								.html(
 									renderer
 									? renderer.render( $.parseJSON( data.html ) )
-									: data.html
+									: $( data.html )
+										.find( '.ai1ec-calendar-view' )
+											.html()
 								);
 
 							// Hide loader

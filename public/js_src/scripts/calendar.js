@@ -241,8 +241,9 @@ define(
 	};
 
 	var launch = function() {
-		var $body      = $( 'body' ),
-		    $calendars = $( '.ai1ec-calendar' );
+		var $body           = $( 'body' ),
+		    $calendars      = $( '.ai1ec-calendar' ),
+		    $first_calendar = $( '.ai1ec-calendar:visible' ).first();
 
 		// Prevent double-initialization.
 		if ( $body.data( 'ai1ec-inited' ) ) {
@@ -264,9 +265,9 @@ define(
 		// Initialize affixed toolbar if requested, and page has only one calendar.
 		if (
 			ai1ec_config.affix_filter_menu &&
-			1 === $calendars.length
+			1 === $first_calendar.length
 		) {
-			affix.initialize_affixed_toolbar( $( '.ai1ec-calendar' ) );
+			affix.initialize_affixed_toolbar( $first_calendar );
 		}
 
 		// Prevent double-initialization.

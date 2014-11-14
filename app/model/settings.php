@@ -605,6 +605,9 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'label' => Ai1ec_I18n::__(
 						' <strong>Affix filter menu</strong> to top of window when it scrolls out of view'
 					),
+					'help'  => Ai1ec_I18n::__(
+						'Only applies to first visible calendar found on the page.'
+					),
 				),
 				'default'  => false,
 			),

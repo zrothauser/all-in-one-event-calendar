@@ -87,7 +87,7 @@
 	.ai1ec-btn-toolbar & {
 		margin-bottom: 6px;
 		&.ai1ec-btn-group-xs {
-			margin-top: 6px;
+			margin-top: 5px;
 		}
 	}
 	> .ai1ec-btn-primary {
@@ -110,11 +110,10 @@
 	> .ai1ec-btn-lg {
 		font-size: @font-size-base + 2px;
 	}
-	> .ai1ec-prev-page:before,
-	> .ai1ec-next-page:before {
-		content: '';
-		display: inline-block;
-		margin-left: -3px;
+	// For HTML4 compatibility: Force natural button height in buttons that
+	// contain only an icon, by inserting a zero-width character:
+	> .ai1ec-btn:after {
+		content: '\180E';
 	}
 }
 .ai1ec-btn-primary {

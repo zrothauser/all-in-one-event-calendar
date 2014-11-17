@@ -318,8 +318,9 @@ define(
 									renderer
 									? renderer.render( $.parseJSON( data.html ) )
 									: $( data.html )
-										.find( '.ai1ec-calendar-view' )
-											.html()
+										.find( '.ai1ec-calendar-view' ).length
+											? $( data.html ).find( '.ai1ec-calendar-view' ).html()
+											: data.html
 								);
 
 							// Hide loader

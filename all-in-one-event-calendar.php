@@ -9,7 +9,6 @@
  * Text Domain: all-in-one-event-calendar
  * Domain Path: /language
  */
-
 $ai1ec_base_dir = dirname( __FILE__ );
 $ai1ec_base_url = plugins_url( '', __FILE__ );
 

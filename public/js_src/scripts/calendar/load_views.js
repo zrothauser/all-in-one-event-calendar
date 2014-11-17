@@ -233,102 +233,114 @@ define(
 							request_type: type,
 							ai1ec_doing_ajax : true
 					};
+					// remove alerts if present
+					$( '#ai1ec-container > .ai1ec-alert' ).remove();
 					// Fetch AJAX result
-					$.ajax( {
+					var request = $.ajax( {
 						url : hash,
 						dataType: type,
 						data: query,
-						method : 'get',
-						success: function( data ) {
-							// trigger the event so that other addons can respond
-							$( document ).trigger( 'calendar_view_loaded.ai1ec', $calendar );
+						method : 'get'
+					} )
+					request.done( function( data ) {
+						// trigger the event so that other addons can respond
+						$( document ).trigger( 'calendar_view_loaded.ai1ec', $calendar );
 
-							// Do required cleanup of existing view.
-							destroy_view( $calendar );
+						// Do required cleanup of existing view.
+						destroy_view( $calendar );
 
-							// Views Dropdown
-							if( typeof data.views_dropdown === 'string' ) {
-								$calendar
-									.find( '.ai1ec-views-dropdown' )
-										.replaceWith( data.views_dropdown );
-							}
-							// Update categories
-							if( typeof data.categories === 'string' ) {
-								$calendar
-									.find( '.ai1ec-category-filter' )
-										.replaceWith( data.categories );
-							}
-							// Update authors
-							if( typeof data.authors === 'string' ) {
-								$calendar
-									.find( '.ai1ec-author-filter' )
-										.replaceWith( data.authors );
-							}
-							// Tags
-							if( typeof data.tags === 'string' ) {
-								$calendar
-									.find( '.ai1ec-tag-filter' )
-										.replaceWith( data.tags );
-							}
-							// Custom filters
-							if( typeof data.custom_filters === 'string' ) {
-								$parent = $calendar
-									.find( 'li.ai1ec-custom-filter' ).parent();
-								$calendar
-									.find( 'li.ai1ec-custom-filter' )
-									.remove();
-								$parent.append( data.custom_filters );
-							}
-							// And the "Subscribe buttons"
-							if( typeof data.subscribe_buttons === 'string' ) {
-								$calendar
-									.find( '.ai1ec-subscribe-container' )
-										.replaceWith( data.subscribe_buttons );
-							}
-							// And the "Save filtered view"
-							if( typeof data.save_view_btngroup === 'string' ) {
-								$calendar
-									.find( '#save_filtered_views' )
-										.closest( '.ai1ec-btn-group' )
-											.replaceWith( data.save_view_btngroup );
-							}
-							are_filters_set = data.are_filters_set;
-
-							// Render template or just replace if already rendered.
-							var renderer;
-							if ( hash.match( /\brequest_format\~json\b/ ) ){
-								var
-									view_type =  $.parseJSON( data.html ).type,
-									renderer_map = {
-										agenda : agenda,
-										oneday : oneday,
-										week   : oneday,
-										month  : month
-									};
-
-								if ( renderer_map[view_type] ) {
-									renderer = renderer_map[view_type];
-								} else {
-									// That's an error. No view found.
-									return;
-								}
-							}
-							$calendar.find( '.ai1ec-calendar-view' )
-								.html(
-									renderer
-									? renderer.render( $.parseJSON( data.html ) )
-									: $( data.html )
-										.find( '.ai1ec-calendar-view' ).length
-											? $( data.html ).find( '.ai1ec-calendar-view' ).html()
-											: data.html
-								);
-
-							// Hide loader
-							$calendar.find( '.ai1ec-calendar-view-loading' ).fadeOut( 'fast' );
-							$calendar.find( '.ai1ec-calendar-view' ).fadeTo( 'fast', 1.0 );
-							// Do any general view initialization after loading
-							initialize_view( $calendar );
+						// Views Dropdown
+						if( typeof data.views_dropdown === 'string' ) {
+							$calendar
+								.find( '.ai1ec-views-dropdown' )
+									.replaceWith( data.views_dropdown );
 						}
+						// Update categories
+						if( typeof data.categories === 'string' ) {
+							$calendar
+								.find( '.ai1ec-category-filter' )
+									.replaceWith( data.categories );
+						}
+						// Update authors
+						if( typeof data.authors === 'string' ) {
+							$calendar
+								.find( '.ai1ec-author-filter' )
+									.replaceWith( data.authors );
+						}
+						// Tags
+						if( typeof data.tags === 'string' ) {
+							$calendar
+								.find( '.ai1ec-tag-filter' )
+									.replaceWith( data.tags );
+						}
+						// Custom filters
+						if( typeof data.custom_filters === 'string' ) {
+							$parent = $calendar
+								.find( 'li.ai1ec-custom-filter' ).parent();
+							$calendar
+								.find( 'li.ai1ec-custom-filter' )
+								.remove();
+							$parent.append( data.custom_filters );
+						}
+						// And the "Subscribe buttons"
+						if( typeof data.subscribe_buttons === 'string' ) {
+							$calendar
+								.find( '.ai1ec-subscribe-container' )
+									.replaceWith( data.subscribe_buttons );
+						}
+						// And the "Save filtered view"
+						if( typeof data.save_view_btngroup === 'string' ) {
+							$calendar
+								.find( '#save_filtered_views' )
+									.closest( '.ai1ec-btn-group' )
+										.replaceWith( data.save_view_btngroup );
+						}
+						are_filters_set = data.are_filters_set;
+
+						// Render template or just replace if already rendered.
+						var renderer;
+						if ( hash.match( /\brequest_format\~json\b/ ) ){
+							var
+								view_type =  $.parseJSON( data.html ).type,
+								renderer_map = {
+									agenda : agenda,
+									oneday : oneday,
+									week   : oneday,
+									month  : month
+								};
+
+							if ( renderer_map[view_type] ) {
+								renderer = renderer_map[view_type];
+							} else {
+								// That's an error. No view found.
+								return;
+							}
+						}
+						$calendar.find( '.ai1ec-calendar-view' )
+							.html(
+								renderer
+								? renderer.render( $.parseJSON( data.html ) )
+								: $( data.html )
+									.find( '.ai1ec-calendar-view' ).length
+										? $( data.html ).find( '.ai1ec-calendar-view' ).html()
+										: data.html
+							);
+						// Do any general view initialization after loading
+						initialize_view( $calendar );
+					} );
+					request.fail( function( jqXHR, textStatus, errorThrown ) {
+						var message = ai1ec_config.load_views_error;
+						message = message.replace( '%STATUS%', jqXHR.status );
+						message = message.replace( '%ERROR%', errorThrown );
+						var alert = utils.make_alert( message, 'error', true );
+						$( '#ai1ec-container' ).prepend( alert );
+						destroy_view( $calendar );
+						initialize_view( $calendar );
+					} );
+					request.always( function() {
+						// Hide loader
+						$calendar.find( '.ai1ec-calendar-view-loading' ).fadeOut( 'fast' );
+						$calendar.find( '.ai1ec-calendar-view' ).fadeTo( 'fast', 1.0 );
 					} );
 				}
 			);

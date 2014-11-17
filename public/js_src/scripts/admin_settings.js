@@ -140,29 +140,6 @@ define(
 				}
 			);
 
-			// Select the text when element is clicked (only once).
-			$( document ).on( 'click', '.ai1ec-autoselect', function ( e ) {
-				// Lets do it only once. Perhaps, user wants to select just a part.
-				if ( $( this ).data( 'clicked' ) && e.originalEvent.detail < 2 ) {
-					return;
-				} else {
-					$( this ).data( 'clicked' , true );
-				}
-				// Working with the text selection depending on the browser abilities.
-				var range;
-				if ( document.body.createTextRange ) {
-					range = document.body.createTextRange();
-					range.moveToElementText( this );
-					range.select();
-				} else if ( window.getSelection ) {
-					selection = window.getSelection();
-					range = document.createRange();
-					range.selectNodeContents( this );
-					selection.removeAllRanges();
-					selection.addRange( range );
-				}
-			});
-
 			// Show or hide additional options.
 			var toggle_affix_options = function() {
 				var $next_groups = $( this )
@@ -190,6 +167,9 @@ define(
 						.prop( 'checked', true );
 				}
 			);
+
+			// Enable autoselect feature.
+			utils.init_autoselect();
 
 			$( '#ai1ec_save_settings' ).on( 'click', validate_week_start_end );
 			$( '#show_create_event_button' ).trigger( 'ready' );

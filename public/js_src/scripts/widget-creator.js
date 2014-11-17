@@ -151,6 +151,7 @@ define(
 			domReady( function() {
 
 				utils.activate_saved_tab_on_page_load( $.cookie( 'widget_creator_active_tab' ) );
+				utils.init_autoselect();
 				window.addEventListener( 'message', handle_loaded_widget_event, false );
 
 				initial_setup();

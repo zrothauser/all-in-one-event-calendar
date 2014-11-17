@@ -453,6 +453,9 @@ class Ai1ec_Javascript_Controller {
 					'Loading preview&nbsp;<i class="ai1ec-fa ai1ec-fa-spin ai1ec-fa-spinner"></i>'
 				)
 			),
+			'load_views_error'                 => Ai1ec_I18n::__( 
+				'Something went wrong while fetching events.<br>The request status is: %STATUS% <br>The error thrown was: %ERROR%' 
+			),
 		);
 		return apply_filters( 'ai1ec_js_translations', $data );
 	}

@@ -327,9 +327,9 @@ define(
 						initialize_view( $calendar );
 					} );
 					request.fail( function( jqXHR, textStatus, errorThrown ) {
-						var message = 'Something went wrong while fetching events.<br>';
-						message    += 'The request status is: ' + jqXHR.status + '<br>';
-						message    += 'The error thrown was: ' + errorThrown;
+						var message = ai1ec_config.load_views_error;
+						message = message.replace( '%STATUS%', jqXHR.status );
+						message = message.replace( '%ERROR%', errorThrown );
 						var alert = utils.make_alert( message, 'error', true );
 						$( '#ai1ec-container' ).prepend( alert );
 						destroy_view( $calendar );

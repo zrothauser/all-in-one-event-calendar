@@ -233,6 +233,8 @@ define(
 							request_type: type,
 							ai1ec_doing_ajax : true
 					};
+					// remove alerts if present
+					$( '#ai1ec-container > .ai1ec-alert' ).remove();
 					// Fetch AJAX result
 					var request = $.ajax( {
 						url : hash,

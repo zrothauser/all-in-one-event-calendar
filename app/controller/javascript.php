@@ -459,6 +459,7 @@ class Ai1ec_Javascript_Controller {
 			'cookie_path'                    => $this->_registry->get(
 				'cookie.utility'
 			)->get_path_for_cookie(),
+			'disable_autocompletion'         => $settings->get( 'disable_autocompletion' ),
 		);
 		return apply_filters( 'ai1ec_js_translations', $data );
 	}

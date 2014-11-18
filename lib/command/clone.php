@@ -69,7 +69,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 		)->get_current_action();
 
 		if (
-			$current_action === 'clone' &&
+			'clone' === $current_action &&
 			! empty( $_REQUEST['post'] )
 		) {
 			foreach ( $_REQUEST['post'] as $post_id ) {

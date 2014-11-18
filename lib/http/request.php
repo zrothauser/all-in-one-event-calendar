@@ -179,4 +179,19 @@ class Ai1ec_Http_Request {
 			&& AI1EC_USE_FRONTEND_RENDERING
 			&& $this->is_ajax();
 	}
+
+	/**
+	 * Returns current action for bulk operations.
+	 *
+	 * @return string|null Action or null when empty.
+	 */
+	public function get_current_action() {
+		if ( isset( $_REQUEST['action'] ) && -1 != $_REQUEST['action'] ) {
+			return $_REQUEST['action'];
+		}
+		if ( isset( $_REQUEST['action2'] ) && -1 != $_REQUEST['action2'] ) {
+			return $_REQUEST['action2'];
+		}
+		return null;
+	}
 }

@@ -360,6 +360,26 @@ class Ai1ec_Event extends Ai1ec_Base {
 	}
 
 	/**
+	 * Returns whether Event has geo information.
+	 *
+	 * @return bool True or false.
+	 */
+	public function has_geoinformation() {
+		$latitude  = floatval( $this->get( 'latitude') );
+		$longitude = floatval( $this->get( 'longitude' ) );
+		return (
+			(
+				$latitude >= 0.000000000000001 ||
+				$latitude <= -0.000000000000001
+			) &&
+			(
+				$longitude >= 0.000000000000001 ||
+				$longitude <= -0.000000000000001
+			)
+		);
+	}
+
+	/**
 	 * Convert URL to a loggable form
 	 *
 	 * @param string $url    URL to which access must be counted

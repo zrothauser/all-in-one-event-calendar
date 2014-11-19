@@ -139,8 +139,15 @@ class Ai1ec_Ics_Import_Export_Engine
 		// Maybe use $v->selectComponents(), which takes into account recurrence
 
 		// Fetch default timezone in case individual properties don't define it
-		$timezone       = $v->getProperty( 'X-WR-TIMEZONE' );
-		$timezone       = (string)$timezone[1];
+		$tz = $v->getComponent( 'vtimezone' );
+		if ( ! empty( $tz ) ) {
+			$timezone   = $tz->getProperty( 'TZID' );
+		}
+		if ( empty( $timezone ) ) {
+			$timezone   = $v->getProperty( 'X-WR-TIMEZONE' );
+			$timezone   = (string)$timezone[1];
+		}
+
 		$messages       = array();
 		$local_timezone = $this->_registry->get( 'date.timezone' )
 			->get_default_timezone();

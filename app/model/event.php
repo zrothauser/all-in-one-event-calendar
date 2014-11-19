@@ -24,9 +24,9 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 *            [-1] - only `get` (for storage) operations require care.
 	 */
 	protected $_swizzable = array(
-		'contact_url'   => 0,
+		'contact_url'   => -1, // strip on save/import
 		'cost'          => 0,
-		'ticket_url'    => 0,
+		'ticket_url'    => -1, // strip on save/import
 		'start'         => -1,
 		'end'           => -1,
 		'timezone_name' => -1,
@@ -377,61 +377,6 @@ class Ai1ec_Event extends Ai1ec_Base {
 				$longitude <= -0.000000000000001
 			)
 		);
-	}
-
-	/**
-	 * Convert URL to a loggable form
-	 *
-	 * @param string $url    URL to which access must be counted
-	 * @param string $intent Char definition: 'b' - buy, 'd' - details
-	 *
-	 * @return string Loggable URL form
-	 *
-	 * @staticvar array $options Defaut options to persist between instances.
-	 */
-	protected function _make_url_loggable( $url, $intent ) {
-		static $options = NULL;
-		$url = trim( $url );
-		if ( ! $url || ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
-			return $url;
-		}
-		if ( ! isset( $options ) ) {
-			$options = array(
-				'l' => NULL,
-				'e' => ( false !== strpos( AI1EC_VERSION, 'pro' ) ) ? 'p' : 's',
-				'v' => (string)AI1EC_VERSION,
-				'i' => NULL,
-				'c' => NULL,
-				'o' => (string)get_site_url(),
-			);
-		}
-		$options['l'] = (string)$url;
-		$options['i'] = (string)$intent;
-		$options['c'] = (string)$this->get( 'cost' );
-		return AI1EC_REDIRECTION_SERVICE .
-			base64_encode( json_encode( $options ) );
-	}
-
-	/**
-	 * Make `Ticket URL` loggable
-	 *
-	 * @param string $value Ticket URL stored in database
-	 *
-	 * @return bool Success
-	 */
-	public function _handle_property_construct_ticket_url( $value ) {
-		return $this->_make_url_loggable( $value, 'b' );
-	}
-
-	/**
-	 * Make `Contact URL` loggable
-	 *
-	 * @param string $value Contact URL stored in database
-	 *
-	 * @return bool Success
-	 */
-	public function _handle_property_construct_contact_url( $value ) {
-		return $this->_make_url_loggable( $value, 'd' );
 	}
 
 	/**

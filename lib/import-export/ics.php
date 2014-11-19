@@ -145,7 +145,7 @@ class Ai1ec_Ics_Import_Export_Engine
 		}
 		if ( empty( $timezone ) ) {
 			$timezone   = $v->getProperty( 'X-WR-TIMEZONE' );
-			$timezone       = (string)$timezone[1];
+			$timezone   = (string)$timezone[1];
 		}
 
 		$messages       = array();

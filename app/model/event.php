@@ -578,7 +578,6 @@ class Ai1ec_Event extends Ai1ec_Base {
 			$this->set_no_end_time();
 		}
 		if ( $post_id ) {
-
 			$success = false;
 			if ( ! $update ) {
 				$success = $dbi->insert(

@@ -464,6 +464,7 @@ class Ai1ec_Ics_Import_Export_Engine
 				$e,
 				$feed
 			);
+
 			$event = $this->_registry->get( 'model.event', $data );
 
 			// Instant Event

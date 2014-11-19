@@ -61,7 +61,8 @@ class Ai1ec_Event_Taxonomy extends Ai1ec_Base {
 		$is_id       = false,
 		array $attrs = array()
 	) {
-		$field = ( $is_id ) ? 'id' : 'name';
+		// cast to int to have it working with term_exists
+		$term = ( $is_id ) ? (int) $term : $term;
 		$term_to_check = term_exists( $term );
 		$to_return = array(
 			'taxonomy' => $taxonomy

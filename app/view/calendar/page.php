@@ -63,7 +63,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		} catch ( Ai1ec_Bootstrap_Exception $exc ) {
 			$this->_registry->get( 'notification.admin' )->store(
 				sprintf(
-						Ai1ec_I18n::__( 'Calendar was unable to initiate "%s" view and it has switched to "Agenda". Please check if you have installed latest versions of Calendar add-ons.' ),
+						Ai1ec_I18n::__( 'Calendar was unable to initialize %s view and has reverted to Agenda view. Please check if you have installed the latest versions of calendar add-ons.' ),
 						ucfirst( $action )
 				),
 				'error',

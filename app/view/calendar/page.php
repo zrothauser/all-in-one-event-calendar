@@ -56,7 +56,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		// Add view-specific args to the current view args.
 		$exact_date = $this->get_exact_date( $request );
 		try {
-			$view_obj   = $this->_registry->get(
+			$view_obj = $this->_registry->get(
 				'view.calendar.view.' . $action,
 				$request
 			);
@@ -73,8 +73,8 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			);
 			// don't disable calendar - just switch to agenda which should
 			// always exists
-			$action = 'agenda';
-			$view_obj   = $this->_registry->get(
+			$action   = 'agenda';
+			$view_obj = $this->_registry->get(
 				'view.calendar.view.' . $action,
 				$request
 			);

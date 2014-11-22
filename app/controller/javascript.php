@@ -248,6 +248,9 @@ class Ai1ec_Javascript_Controller {
 
 		$javascript = $require . $require_config . $translation_module .
 			$config . $jquery . $common_js . $ext_js . $page_js . $page_ready;
+		// add to blank spaces to fix issues with js
+		// being truncated onn some installs
+		$javascript .= '  ';
 		$this->_echo_javascript( $javascript );
 	}
 

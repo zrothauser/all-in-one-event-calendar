@@ -61,7 +61,7 @@
 											<a {{ data_type_events | raw }}
 												class="ai1ec-load-event"
 												href="{{ event.permalink | e('html_attr') }}">
-												{{ event.avatar | raw }}
+												{{ event.avatar_not_wrapped | raw }}
 											</a>
 										{% endif %}
 										{{ event.filtered_content | raw }}

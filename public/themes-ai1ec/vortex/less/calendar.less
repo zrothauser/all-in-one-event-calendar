@@ -745,9 +745,7 @@ table.ai1ec-oneday-view-original {
 		text-align: left;
 	}
 	#wpadminbar,
-	#comments {
-		display: none;
-	}
+	#comments,
 	#page > header {
 		display: none;
 	}
@@ -762,10 +760,7 @@ table.ai1ec-oneday-view-original {
 		border: 2px solid gray !important;
 	}
 	.ai1ec-agenda-view {
-		.ai1ec-categories {
-			display: none;
-		}
-		.ai1ec-tags {
+		.ai1ec-event-summary-footer {
 			display: none;
 		}
 		.ai1ec-date-title {
@@ -774,27 +769,24 @@ table.ai1ec-oneday-view-original {
 				display: none;
 			}
 		}
-		.ai1ec-event-summary .ai1ec-event-title {
-			display: inline;
-		}
-		.ai1ec-event-summary .ai1ec-event-time {
-			display: inline;
-			border: none !important;
-			box-shadow: none !important;
-		}
-		.ai1ec-event-summary .ai1ec-event-time {
-			display: inline;
-			border: none !important;
-			box-shadow: none !important;
+		.ai1ec-event-summary {
+			.ai1ec-event-title {
+				display: inline;
+			}
+			.ai1ec-event-time {
+				display: inline;
+				border: none !important;
+				box-shadow: none !important;
+			}
 		}
 		.ai1ec-event-description {
 			padding: 0 !important;
 		}
-	}
-	.ai1ec-agenda-view .ai1ec-event.ai1ec-allday .ai1ec-allday-label {
-		border: none !important;
-		box-shadow: none !important;
-		padding-left: 0.2em !important;
+		.ai1ec-event.ai1ec-allday .ai1ec-allday-label {
+			border: none !important;
+			box-shadow: none !important;
+			padding-left: 0.2em !important;
+		}
 	}
 	.timely .entry-meta,
 	.timely .ai1ec-subscribe,
@@ -811,7 +803,7 @@ table.ai1ec-oneday-view-original {
 		display: none !important;
 	}
 	.ai1ec-event-header {
-		cursor : text !important;
+		cursor: text !important;
 	}
 }
 

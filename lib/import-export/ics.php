@@ -309,6 +309,13 @@ class Ai1ec_Ics_Import_Export_Engine
 							$excpt_date = trim( $particle );
 						}
 					}
+					if (
+						$allday &&
+						8 === strlen( $excpt_date )
+					) {
+						$excpt_date .= 'T000000Z';
+						$excpt_timezone = 'UTC';
+					}
 					$ex_dt = $this->_registry->get(
 						'date.time',
 						$excpt_date,

@@ -86,13 +86,14 @@ class Ai1ec_Event_Compatibility extends Ai1ec_Event {
 	public function getpopup_timespan() {
 		return $this->_registry->get( 'twig.ai1ec-extension' )
 			->timespan( $this, 'short' );
+	}
 
-	/*
+	/**
 	 * Returns Avatar not wrapped in <a> tag.
 	 *
-	 * @return string.
+	 * @return string
 	 */
 	public function getavatar_not_wrapped() {
-		return $this->getavatar( false );
+		 return $this->getavatar( false );
 	}
 }

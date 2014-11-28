@@ -279,7 +279,7 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 		if (
 			count( $tag ) < 7 ||
 			'ai1ec' !== substr( $tag[2], 0, 5 ) ||
-			! apply_filters( 'ai1ec_content_remove_shortcode_' . $tag[2], true )
+			! apply_filters( 'ai1ec_content_remove_shortcode_' . $tag[2], false )
 		) {
 			return $tag[0];
 		}

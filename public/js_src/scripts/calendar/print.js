@@ -35,13 +35,13 @@ define(
 		$( 'span' ).click( function() {
 			return false;
 		} );
-		$( '.ai1ec-load-event, div.ai1ec-event-avatar > a' ).each( function() {
+		$( '.ai1ec-agenda-view a' ).each( function() {
 			$( this ).data( 'href', $( this ).attr( 'href' ) );
 			$( this ).attr( 'href', '#' );
 		});
 		// Open the print screen
 		window.print();
-		$( '.ai1ec-load-event, div.ai1ec-event-avatar > a' ).each( function() {
+		$( '.ai1ec-agenda-view a' ).each( function() {
 			$( this ).attr( 'href', $( this ).data( 'href' ) );
 			$( this ).data( 'href', '' );
 		});

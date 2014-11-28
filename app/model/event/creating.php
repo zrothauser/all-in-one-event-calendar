@@ -238,4 +238,51 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 		);
 		return $post_id;
 	}
+
+	/**
+	 * Cleans calendar shortcodes from event content.
+	 *
+	 * @param array $data    An array of slashed post data.
+	 * @param array $postarr An array of sanitized, but otherwise unmodified post data.
+	 *
+	 * @return array An array of slashed post data.
+	 */
+	public function wp_insert_post_data( $data ) {
+		global $shortcode_tags;
+		if (
+			! isset( $data['post_type'] ) ||
+			! isset( $data['post_content'] ) ||
+			AI1EC_POST_TYPE !== $data['post_type'] ||
+			empty( $shortcode_tags ) ||
+			! is_array( $shortcode_tags ) ||
+			false === strpos( $data['post_content'], '[' )
+		) {
+			return $data;
+		}
+		$pattern              = get_shortcode_regex();
+		$data['post_content'] = preg_replace_callback(
+			"/$pattern/s",
+			array( $this, 'strip_shortcode_tag' ),
+			$data['post_content']
+		);
+		return $data;
+	}
+
+	/**
+	 * Reutrns shortcode or stripped content for given shortcode.
+	 *
+	 * @param array $tag Incoming data.
+	 *
+	 * @return string Shortcode replace tag.
+	 */
+	public function strip_shortcode_tag( $tag ) {
+		if (
+			count( $tag ) < 7 ||
+			'ai1ec' !== substr( $tag[2], 0, 5 ) ||
+			! apply_filters( 'ai1ec_content_remove_shortcode_' . $tag[2], true )
+		) {
+			return $tag[0];
+		}
+		return $tag[5];
+	}
 }

@@ -68,4 +68,14 @@ class Ai1ec_Event_Compatibility extends Ai1ec_Event {
 	public function getpermalink() {
 		return $this->get_runtime( 'instance_permalink' );
 	}
+
+	/**
+	 * Returns Event timespan for popup.
+	 *
+	 * @return string
+	 */
+	public function getpopup_timespan() {
+		return $this->_registry->get( 'twig.ai1ec-extension' )
+			->timespan( $this, 'short' );
+	}
 }

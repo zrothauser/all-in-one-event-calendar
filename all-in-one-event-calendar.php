@@ -87,7 +87,8 @@ $ai1ec_front_controller->initialize( $ai1ec_loader );
 add_action( 'admin_footer', 'ai1ec_jira_issue_collector' );
 function ai1ec_jira_issue_collector() {
 	$core = 'all-in-one-event-calendar/all-in-one-event-calendar.php';
-	if ( ! is_plugin_active( $core ) ) {
+	$dt   = 'all-in-one-event-calendar-developer-tools/all-in-one-event-calendar-developer-tools.php';
+	if ( ! is_plugin_active( $core ) || is_plugin_active( $dt ) ) {
 		return;
 	}
 	echo '<script type="text/javascript">';

@@ -249,6 +249,8 @@ define(
 
 
 	domReady( function() {
+		var $calendars      = $( '.ai1ec-calendar' ),
+			$first_calendar = $( '.ai1ec-calendar:visible' ).first();
 		init();
 		if( ai1ec_config.use_select2 ) {
 			initialize_select2();
@@ -256,15 +258,15 @@ define(
 
 		attach_event_handlers();
 		// Initialize the calendar view for the first time.
-		$( '.ai1ec-calendar' ).each( function() {
+		$calendars.each( function() {
 			load_views.initialize_view( $( this ) );
 		} );
 
 		// Affixed toolbar.
-		if ( ai1ec_config.affix_filter_menu
-			&& 1 === $( '.ai1ec-calendar' ).length
+		if ( ai1ec_config.affix_filter_menu &&
+			1 === $first_calendar.length
 		) {
-			affix.initialize_affixed_toolbar( $( '.ai1ec-calendar' ) );
+			affix.initialize_affixed_toolbar( $first_calendar );
 		}
 	} );
 	

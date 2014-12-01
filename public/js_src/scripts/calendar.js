@@ -250,7 +250,7 @@ define(
 
 	domReady( function() {
 		var $calendars      = $( '.ai1ec-calendar' ),
-			$first_calendar = $( '.ai1ec-calendar:visible' ).first();
+		    $first_calendar = $( '.ai1ec-calendar:visible' ).first();
 		init();
 		if( ai1ec_config.use_select2 ) {
 			initialize_select2();

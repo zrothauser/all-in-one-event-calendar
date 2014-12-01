@@ -252,18 +252,19 @@ define(
 		var $calendars      = $( '.ai1ec-calendar' ),
 		    $first_calendar = $( '.ai1ec-calendar:visible' ).first();
 		init();
-		if( ai1ec_config.use_select2 ) {
+		if ( ai1ec_config.use_select2 ) {
 			initialize_select2();
 		}
 
 		attach_event_handlers();
-		// Initialize the calendar view for the first time.
+		// For each calendar on the page, initialize its view for the first time.
 		$calendars.each( function() {
 			load_views.initialize_view( $( this ) );
 		} );
 
-		// Affixed toolbar.
-		if ( ai1ec_config.affix_filter_menu &&
+		// Initialize affixed toolbar if requested, and page has only one calendar.
+		if (
+			ai1ec_config.affix_filter_menu &&
 			1 === $first_calendar.length
 		) {
 			affix.initialize_affixed_toolbar( $first_calendar );

@@ -11,6 +11,13 @@
  */
 class Ai1ec_Compatibility_Memory extends Ai1ec_Base {
 
+	/**
+	 * Checks if there is enough available free memory.
+	 *
+	 * @param string $required_limit String memory value i.e '24M'
+	 *
+	 * @return bool True or false.
+	 */
 	public function check_available_memory( $required_limit = 0 ) {
 		if ( 0 === $required_limit ) {
 			return true;

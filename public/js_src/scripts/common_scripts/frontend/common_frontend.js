@@ -7,22 +7,7 @@ define(
 		"external_libs/modernizr",
 		"external_libs/bootstrap/tooltip",
 		"external_libs/constrained_popover",
-		"external_libs/bootstrap/dropdown",
-		"libs/recaptcha",
-		"libs/collapse_helper",
-		"external_libs/Placeholders",
-		"scripts/add_new_event/event_location/gmaps_helper",
-		"libs/select2_multiselect_helper",
-		"libs/tags_select",
-		"libs/timepicker_helper",
-		"external_libs/moment",
-		"libs/recaptcha",
-		"external_libs/Placeholders",
-		"external_libs/bootstrap/collapse",
-		"external_libs/bootstrap/alert",
-		"external_libs/bootstrap_datepicker",
-		"external_libs/bootstrap_fileupload",
-		"external_libs/jquery.scrollTo"
+		"external_libs/bootstrap/dropdown"
 	],
 	function( $, domReady, event_handlers, ai1ec_calendar, Modernizr ) {
 

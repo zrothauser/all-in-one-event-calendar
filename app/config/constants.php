@@ -487,4 +487,8 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		define( 'AI1EC_THEME_COMPATIBILITY_FER', true );
 	}
 
+	if ( ! defined( 'AI1EC_LESS_MIN_AVAIL_MEMORY' ) ) {
+		define( 'AI1EC_LESS_MIN_AVAIL_MEMORY', '24M' );
+	}
+
 }

@@ -45,19 +45,21 @@ class Ai1ec_Compatibility_Memory extends Ai1ec_Base {
 	 *
 	 * @param string $v String value.
 	 *
-	 * @return int Number;
+	 * @return int Number.
 	 */
 	protected function _string_to_bytes( $v ) {
 		$letter     = substr( $v, -1 );
 		$value      = (int)substr( $v, 0, -1 );
-		$multiplier = 1;
 		switch ( strtoupper( $letter ) ) {
 			case 'P': $multiplier = 1024 * 1024 * 1024 * 1024 * 1024; break;
 			case 'T': $multiplier = 1024 * 1024 * 1024 * 1024; break;
 			case 'G': $multiplier = 1024 * 1024 * 1024; break;
 			case 'M': $multiplier = 1024 * 1024; break;
 			case 'K': $multiplier = 1024; break;
-			default: break;
+			default : $multiplier = 1; break;
+		}
+		if ( 1 === $multiplier ) {
+			return (int)$v;
 		}
 		return $value * $multiplier;
 	}

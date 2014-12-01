@@ -83,3 +83,173 @@ spl_autoload_register( array( $ai1ec_loader, 'load' ) );
 
 $ai1ec_front_controller = new Ai1ec_Front_Controller();
 $ai1ec_front_controller->initialize( $ai1ec_loader );
+
+add_action( 'admin_footer', 'ai1ec_jira_issue_collector' );
+function ai1ec_jira_issue_collector() {
+	$core = 'all-in-one-event-calendar/all-in-one-event-calendar.php';
+	if ( ! is_plugin_active( $core ) ) {
+		return;
+	}
+	echo '<script type="text/javascript">';
+	$core_version = ai1ec_jira_issue_collector_gather_core_version();
+	echo 'window.ATL_JQ_PAGE_PROPS = {',
+		'    fieldValues: {';
+	if ( ! empty( $core_version ) ) {
+		echo '        versions : [ \'',
+		$core_version,
+		'\' ],';
+	}
+	echo '        environment: \'',
+		ai1ec_jira_issue_collector_gather_environment_data(),
+		'\'',
+		'    }',
+		'};';
+	echo 'jQuery.ajax({',
+		'    url: "https://jira.time.ly:8443/s/d41d8cd98f00b204e9800998ecf8427e/en_US-twqz1u-1988229788/6252/31/1.4.7/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector-embededjs/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector-embededjs.js?collectorId=7910ef3f",',
+		'    type: "get",',
+		'    cache: true,',
+		'    dataType: "script"',
+		'});';
+	echo '</script>';
+}
+
+function ai1ec_jira_issue_collector_gather_core_version() {
+	if ( ! defined( 'AI1EC_VERSION' ) ) {
+		return null;
+	}
+	$cores = array(
+		'2.0' => '11308',
+		'2.1' => '11400',
+	);
+	$core = implode(
+		'.',
+		array_slice( explode( '.', AI1EC_VERSION ), 0, 2 )
+	);
+
+	return isset( $cores[$core] ) ? $cores[$core] : null;
+}
+
+function ai1ec_jira_issue_collector_gather_environment_data() {
+	global $wp_version;
+	$ai1ec_version = ( defined( 'AI1EC_VERSION' ) )
+		? AI1EC_VERSION
+		: 'not defined';
+	$data          = 'WordPress version: ' . $wp_version . '\n';
+	$data         .= 'AI1EC version        : ' . $ai1ec_version;
+	$data         .= '\n============================\n';
+	$data         .= 'Active plugins:\n';
+	$plugins       = ai1ec_jira_issue_collector_get_plugins();
+	foreach ( $plugins['active'] as $info ) {
+		$data .= $info['Name'] . ' - version: ' . $info['Version'] . '\n';
+	}
+	$data .= '============================\n';
+	$data .= 'Inactive plugins:\n';
+	foreach ( $plugins['inactive'] as $info ) {
+		$data .= $info['Name'] . ' - version: ' . $info['Version'] . '\n';
+	}
+	$data  .= '============================\n';
+	$data  .= 'Active theme: ' . ai1ec_jira_issue_collector_get_active_theme();
+	$data  .= '\n============================\n';
+	$data  .= 'Themes:\n';
+	$themes = ai1ec_jira_issue_collector_get_inactive_themes();
+	foreach ( $themes as $info ) {
+		$data .= sprintf(
+			'%s - version: %s\n',
+			$info->get( 'Name' ),
+			$info->get( 'Version' )
+		);
+	}
+	$data  .= '============================\n';
+	$data  .= 'AI1EC active theme: ' . ai1ec_jira_issue_collector_get_active_ai1ec_theme();
+	$data  .= '\n============================\n';
+	$data  .= 'AI1EC Themes:\n';
+	$themes = ai1ec_jira_issue_collector_get_inactive_ai1ec_themes();
+	foreach ( $themes as $info ) {
+		$data .= sprintf(
+			'%s - version: %s\n',
+			$info->get( 'Name' ),
+			$info->get( 'Version' )
+		);
+	}
+	$data .= '============================\n';
+	$data .= '============================\n';
+	$data .= 'Environment\n';
+	$data .= '============================\n';
+	$data .= 'PHP version: ' . PHP_VERSION . '\n';
+	$data .= 'ini( memory_limit ): ' . ini_get( 'memory_limit' );
+	$data .= 'memory_get_usage() : ' . memory_get_usage();
+	$data .= 'OS : ' . php_uname();
+	$data .= '_SERVER : ' . var_export( $_SERVER, true );
+	return $data;
+}
+
+function ai1ec_jira_issue_collector_get_plugins() {
+	$plugins_list = get_plugins();
+	$plugins      = array(
+		'active'   => array(),
+		'inactive' => array(),
+	);
+	foreach ( $plugins_list as $file => $info ) {
+		$ident = 'active';
+		if ( ! is_plugin_active( $file ) ) {
+			$ident = 'inactive';
+		}
+		$plugins[$ident][$file] = $info;
+	}
+
+	return $plugins;
+}
+
+function ai1ec_jira_issue_collector_get_active_theme() {
+	$theme = wp_get_theme();
+	return sprintf(
+		'%s - version: %s',
+		$theme->get( 'Name' ),
+		$theme->get( 'Version' )
+	);
+}
+
+function ai1ec_jira_issue_collector_get_inactive_themes() {
+	$theme  = wp_get_theme();
+	$themes = wp_get_themes();
+	unset( $themes[$theme->template] );
+	return $themes;
+}
+
+function ai1ec_jira_issue_collector_get_active_ai1ec_theme() {
+	$theme = ai1ec_jira_issue_collector_get_current_theme_from_option();
+	if ( empty( $theme ) ) {
+		return 'not defined';
+	}
+	$themes     = ai1ec_jira_issue_collector_get_all_ai1ec_themes();
+	$theme_info = $themes[$theme['stylesheet']];
+	return sprintf(
+		'%s - version %s',
+		$theme_info->get( 'Name' ),
+		$theme_info->get( 'Version' )
+	);
+}
+
+function ai1ec_jira_issue_collector_get_inactive_ai1ec_themes() {
+	$themes = ai1ec_jira_issue_collector_get_all_ai1ec_themes();
+	$theme  = ai1ec_jira_issue_collector_get_current_theme_from_option();
+	unset( $themes[$theme['stylesheet']] );
+	return $themes;
+}
+
+function ai1ec_jira_issue_collector_get_current_theme_from_option() {
+	global $ai1ec_registry;
+	if ( null == $ai1ec_registry ) {
+		return array();
+	}
+	return $ai1ec_registry->get( 'model.option' )
+		->get( 'ai1ec_current_theme', array() );
+}
+
+function ai1ec_jira_issue_collector_get_all_ai1ec_themes() {
+	global $ai1ec_registry;
+	if ( null == $ai1ec_registry ) {
+		return array();
+	}
+	return $ai1ec_registry->get( 'theme.search' )->get_themes();
+}

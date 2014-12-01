@@ -1,6 +1,7 @@
 define(
 	[
 		"jquery_timely",
+		"domReady",
 		"scripts/calendar/load_views",
 		"scripts/calendar/print",
 		"scripts/calendar/agenda_view",
@@ -16,7 +17,7 @@ define(
 		"external_libs/jquery.scrollTo",
 		'external_libs/jquery_cookie',
 	],
-	function( $, load_views, print, agenda_view,
+	function( $, domReady, load_views, print, agenda_view,
 		month_view, affix, ai1ec_calendar, ai1ec_config, common_frontend,
 		AI1EC_UTILS, select2_multiselect_helper ) {
 	"use strict"; // jshint ;_;
@@ -246,49 +247,32 @@ define(
 		);
 	};
 
-	var launch = function() {
-		var $body           = $( 'body' ),
-		    $calendars      = $( '.ai1ec-calendar' ),
-		    $first_calendar = $( '.ai1ec-calendar:visible' ).first();
 
-		// Prevent double-initialization.
-		if ( $body.data( 'ai1ec-inited' ) ) {
-			return false;
-		}
-
-		// General initialization.
+	domReady( function() {
 		init();
-		if ( ai1ec_config.use_select2 ) {
+		if( ai1ec_config.use_select2 ) {
 			initialize_select2();
 		}
-		attach_event_handlers();
 
-		// For each calendar on the page, initialize its view for the first time.
-		$calendars.each( function() {
+		attach_event_handlers();
+		// Initialize the calendar view for the first time.
+		$( '.ai1ec-calendar' ).each( function() {
 			load_views.initialize_view( $( this ) );
 		} );
 
-		// Initialize affixed toolbar if requested, and page has only one calendar.
-		if (
-			ai1ec_config.affix_filter_menu &&
-			1 === $first_calendar.length
+		// Affixed toolbar.
+		if ( ai1ec_config.affix_filter_menu
+			&& 1 === $( '.ai1ec-calendar' ).length
 		) {
-			affix.initialize_affixed_toolbar( $first_calendar );
+			affix.initialize_affixed_toolbar( $( '.ai1ec-calendar' ) );
 		}
-
-		// Prevent double-initialization.
-		$body.data( 'ai1ec-inited', true );
-	}
-
-	/**
-	 * Start calendar page.
-	 */
+	} );
+	
 	var start = function() {
-		$( document ).one( 'page_ready.ai1ec', launch );
+		
 	};
 
 	return {
-		start  : start,
-		launch : launch
+		start  : start
 	};
 } );

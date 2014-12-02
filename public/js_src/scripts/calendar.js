@@ -224,7 +224,6 @@ define(
 
 		$( document ).on( 'click',      '#ai1ec-calendar-view .ai1ec-load-event',
 			function( e ) {
-				e.preventDefault();
 				$.cookie.raw = false;
 				$.cookie(
 					'ai1ec_calendar_url',
@@ -233,7 +232,6 @@ define(
 						path: ai1ec_config.cookie_path
 					}
 				);
-				window.location.href = this.href;
 			}
 		);
 	};
@@ -247,16 +245,17 @@ define(
 		);
 	};
 
-
 	domReady( function() {
 		var $calendars      = $( '.ai1ec-calendar' ),
 		    $first_calendar = $( '.ai1ec-calendar:visible' ).first();
+
+		// General initialization.
 		init();
 		if ( ai1ec_config.use_select2 ) {
 			initialize_select2();
 		}
-
 		attach_event_handlers();
+
 		// For each calendar on the page, initialize its view for the first time.
 		$calendars.each( function() {
 			load_views.initialize_view( $( this ) );
@@ -270,9 +269,9 @@ define(
 			affix.initialize_affixed_toolbar( $first_calendar );
 		}
 	} );
-	
+
 	var start = function() {
-		
+		// NOOP – function deprecated.
 	};
 
 	return {

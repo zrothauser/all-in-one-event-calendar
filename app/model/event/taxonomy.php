@@ -69,12 +69,20 @@ class Ai1ec_Event_Taxonomy extends Ai1ec_Base {
 		);
 		// if term doesn't exist, create it.
 		if ( 0 === $term_to_check || null === $term_to_check ) {
-			$term_to_check = wp_insert_term( $term, $taxonomy, $attrs );
-			if ( is_wp_error( $term_to_check ) ) {
-				return false;
+			$alias_to_use = $this->_check_if_alias_exists( $term );
+			if ( $alias_to_use ) {
+				$to_return['term_id'] = (int) $alias_to_use;
+				// check that the term matches the taxonomy
+				$tax = $this->_get_taxonomy_for_term_id( term_exists( (int) $alias_to_use ) );
+				$to_return['taxonomy'] = $tax->taxonomy;
+			} else {
+				$term_to_check = wp_insert_term( $term, $taxonomy, $attrs );
+				if ( is_wp_error( $term_to_check ) ) {
+					return false;
+				}
+				$term_to_check = (object)$term_to_check;
+				$to_return['term_id'] = (int)$term_to_check->term_id;
 			}
-			$term_to_check = (object)$term_to_check;
-			$to_return['term_id'] = (int)$term_to_check->term_id;
 		} else {
 			$to_return['term_id'] = (int)$term_to_check;
 			// when importing categories, use the mapping of the current site
@@ -160,6 +168,26 @@ class Ai1ec_Event_Taxonomy extends Ai1ec_Base {
 		}
 		$term_id = $term['term_id'];
 		return $this->set_terms( array( $term_id ), self::FEEDS );
+	}
+
+	/**
+	 * Check if there is a match in the alias table
+	 * 
+	 * @param string $alias
+	 * 
+	 * @return string|NULL
+	 */
+	protected function _check_if_alias_exists( $alias ) {
+		$db         = $this->_registry->get( 'dbi.dbi' );
+		$table_name = $db->get_table_name( 'ai1ec_cfg_aliases' );
+		
+		return $db->get_var(
+			$db->prepare(
+				'SELECT term_id FROM ' . $table_name .
+				' WHERE alias = %s',
+				strtolower( trim( $alias ) )
+			)
+		);
 	}
 
 	/**

@@ -35,7 +35,7 @@ class Ai1ec_Compatibility_Memory extends Ai1ec_Base {
 	 */
 	public function get_usage() {
 		if ( is_callable( 'memory_get_usage' ) ) {
-			return memory_get_usage( true );
+			return memory_get_usage();
 		}
 		return 0;
 	}
@@ -50,13 +50,16 @@ class Ai1ec_Compatibility_Memory extends Ai1ec_Base {
 	protected function _string_to_bytes( $v ) {
 		$letter     = substr( $v, -1 );
 		$value      = (int)substr( $v, 0, -1 );
-		switch ( strtoupper( $letter ) ) {
-			case 'P': $multiplier = 1024 * 1024 * 1024 * 1024 * 1024; break;
-			case 'T': $multiplier = 1024 * 1024 * 1024 * 1024; break;
-			case 'G': $multiplier = 1024 * 1024 * 1024; break;
-			case 'M': $multiplier = 1024 * 1024; break;
-			case 'K': $multiplier = 1024; break;
-			default : $multiplier = 1; break;
+		$powers     = array(
+			'K' => 10,
+			'M' => 20,
+			'G' => 30,
+			'T' => 40,
+			'P' => 50,
+		);
+		$multiplier = 1;
+		if ( isset( $powers[$letter] ) ) {
+			$multiplier = pow( 2, $powers[$letter] );
 		}
 		if ( 1 === $multiplier ) {
 			return (int)$v;

@@ -69,8 +69,10 @@ class Ai1ec_Event_Taxonomy extends Ai1ec_Base {
 		);
 		// if term doesn't exist, create it.
 		if ( 0 === $term_to_check || null === $term_to_check ) {
-			$alias_to_use = $this->_check_if_alias_exists( $term );
-			if ( $alias_to_use ) {
+			$alias_to_use = apply_filters( 'ai1ec_ics_import_alias', $term );
+			// the filter will either return null, the term_id to use or the original $term 
+			// if the filter is not run. Thus in need to check that $term !== $alias_to_use
+			if ( $alias_to_use && $alias_to_use !== $term ) {
 				$to_return['term_id'] = (int) $alias_to_use;
 				// check that the term matches the taxonomy
 				$tax = $this->_get_taxonomy_for_term_id( term_exists( (int) $alias_to_use ) );
@@ -168,26 +170,6 @@ class Ai1ec_Event_Taxonomy extends Ai1ec_Base {
 		}
 		$term_id = $term['term_id'];
 		return $this->set_terms( array( $term_id ), self::FEEDS );
-	}
-
-	/**
-	 * Check if there is a match in the alias table
-	 * 
-	 * @param string $alias
-	 * 
-	 * @return string|NULL
-	 */
-	protected function _check_if_alias_exists( $alias ) {
-		$db         = $this->_registry->get( 'dbi.dbi' );
-		$table_name = $db->get_table_name( 'ai1ec_cfg_aliases' );
-		
-		return $db->get_var(
-			$db->prepare(
-				'SELECT term_id FROM ' . $table_name .
-				' WHERE alias = %s',
-				strtolower( trim( $alias ) )
-			)
-		);
 	}
 
 	/**

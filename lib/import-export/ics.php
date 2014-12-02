@@ -1134,7 +1134,6 @@ class Ai1ec_Ics_Import_Export_Engine
 				$imported_terms[$term['taxonomy']][$term['term_id']] = true;
 			}
 		}
-		fb($imported_terms);
 		return $imported_terms;
 	}
 

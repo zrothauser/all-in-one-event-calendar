@@ -270,6 +270,12 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 
 	/**
 	 * Reutrns shortcode or stripped content for given shortcode.
+	 * Currently regex callback function passes as $tag argument 7-element long
+	 * array.
+	 * First element ($tag[0]) is not modified full shortcode text.
+	 * Third element ($tag[2]) is pure shortcode identifier.
+	 * Sixth element ($tag[5]) contains shortcode content if any
+	 * [ai1ec_test]content[/ai1ec].
 	 *
 	 * @param array $tag Incoming data.
 	 *

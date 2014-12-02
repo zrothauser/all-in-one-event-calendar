@@ -206,7 +206,8 @@ class Ai1ec_Exception_Handler {
 			$message       = method_exists( $exception, 'get_html_message' )
 				? $exception->get_html_message()
 				: $exception->getMessage();
-			$message .= $backtrace;
+			$message .= $backtrace .
+				'<br>Request Uri: ' . $_SERVER['REQUEST_URI'];
 			if ( null !== $disable_addon ) {
 				include_once ABSPATH . 'wp-admin/includes/plugin.php';
 				// deactivate the plugin. Fire handlers to hide options.

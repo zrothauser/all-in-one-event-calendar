@@ -177,10 +177,9 @@ function ai1ec_jira_issue_collector_gather_environment_data() {
 	$data .= 'Environment\n';
 	$data .= '============================\n';
 	$data .= 'PHP version: ' . PHP_VERSION . '\n';
-	$data .= 'ini( memory_limit ): ' . ini_get( 'memory_limit' );
-	$data .= 'memory_get_usage() : ' . memory_get_usage();
+	$data .= 'memory_limit: ' . ini_get( 'memory_limit' );
+	$data .= 'memory_get_usage: ' . memory_get_usage();
 	$data .= 'OS : ' . php_uname();
-	$data .= '_SERVER : ' . esc_attr( var_export( $_SERVER, true ) );
 	return $data;
 }
 

@@ -223,7 +223,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		) {
 			$message = sprintf(
 				Ai1ec_I18n::__(
-					'You don\'t have enough free memory (%s) to process CSS compilation. Please read this <a href="http://time.ly/document/user-guide/getting-started/pre-sale-questions/">article.</a>'
+					'CSS compilation failed because you don\'t have enough free memory (a minimum of %s is needed). Your calendar will not render or function properly without CSS. Please read <a href="http://time.ly/document/user-guide/getting-started/pre-sale-questions/">this article</a> to learn how to increase your PHP memory limit.'
 				),
 				AI1EC_LESS_MIN_AVAIL_MEMORY
 			);

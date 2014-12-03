@@ -2,7 +2,7 @@
 	{% if label is not defined %}
           {% set label = text_label %}
 	{% endif %}
-	<p><strong>{{ label }}:</strong>{{ message | raw }}</p>
+	<p><strong>{{ label }}:</strong> {{ message | raw }}</p>
 
 	{% if persistent == true %}
 		<div>

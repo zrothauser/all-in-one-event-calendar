@@ -612,6 +612,14 @@ class Ai1ec_Front_Controller {
 				10,
 				2
 			);
+			$dispatcher->register_shortcode(
+				'ai1ec',
+				array( 'view.calendar.shortcode', 'shortcode' )
+			);
+			$dispatcher->register_action(
+				'wp_insert_post_data',
+				array( 'model.event.creating', 'wp_insert_post_data' )
+			);
 			$dispatcher->register_action(
 				'manage_ai1ec_event_posts_custom_column',
 				array( 'view.admin.all-events', 'custom_columns' ),
@@ -672,10 +680,6 @@ class Ai1ec_Front_Controller {
 			);
 
 		} else { // ! is_admin()
-			$dispatcher->register_shortcode(
-				'ai1ec',
-				array( 'view.calendar.shortcode', 'shortcode' )
-			);
 			$dispatcher->register_action(
 				'after_setup_theme',
 				array( 'theme.loader', 'execute_theme_functions' )

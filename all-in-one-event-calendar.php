@@ -180,7 +180,7 @@ function ai1ec_jira_issue_collector_gather_environment_data() {
 	$data .= 'ini( memory_limit ): ' . ini_get( 'memory_limit' );
 	$data .= 'memory_get_usage() : ' . memory_get_usage();
 	$data .= 'OS : ' . php_uname();
-	$data .= '_SERVER : ' . var_export( $_SERVER, true );
+	$data .= '_SERVER : ' . esc_attr( var_export( $_SERVER, true ) );
 	return $data;
 }
 
@@ -224,6 +224,9 @@ function ai1ec_jira_issue_collector_get_active_ai1ec_theme() {
 	}
 	$themes     = ai1ec_jira_issue_collector_get_all_ai1ec_themes();
 	$theme_info = $themes[$theme['stylesheet']];
+    if ( ! is_object( $theme_info ) || ! is_callable( array( $theme_info, 'get' ) ) ) {
+        return 'Theme decoding error';
+    }
 	return sprintf(
 		'%s - version %s',
 		$theme_info->get( 'Name' ),

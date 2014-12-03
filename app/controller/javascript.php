@@ -236,7 +236,7 @@ class Ai1ec_Javascript_Controller {
 			$page_to_load
 		);
 		$ext_js = '';
-		
+
 		foreach ( $extension_files as $file ) {
 			$ext_js .= file_get_contents( $file );
 		}
@@ -424,6 +424,9 @@ class Ai1ec_Javascript_Controller {
 			),
 			'general_url_not_valid'          => Ai1ec_I18n::__(
 				'Please remember that URLs must start with either "http://" or "https://".'
+			),
+			'calendar_loading_event'          => Ai1ec_I18n::__(
+				'Loading&hellip;'
 			),
 			'language'                       => $this->_registry->get( 'p28n.wpml' )->get_lang(),
 			'ajax_url'                       => $ajax_url,

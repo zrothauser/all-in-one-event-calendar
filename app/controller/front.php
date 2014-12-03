@@ -497,6 +497,10 @@ class Ai1ec_Front_Controller {
 			Ai1ecIcsConnectorPlugin::HOOK_NAME,
 			array( 'calendar-feed.ics', 'cron' )
 		);
+		$dispatcher->register_shortcode(
+			'ai1ec',
+			array( 'view.calendar.shortcode', 'shortcode' )
+		);
 
 		if ( is_admin() ) {
 			// get the repeat box
@@ -611,10 +615,6 @@ class Ai1ec_Front_Controller {
 				array( 'model.event.creating', 'save_post' ),
 				10,
 				2
-			);
-			$dispatcher->register_shortcode(
-				'ai1ec',
-				array( 'view.calendar.shortcode', 'shortcode' )
 			);
 			$dispatcher->register_action(
 				'wp_insert_post_data',

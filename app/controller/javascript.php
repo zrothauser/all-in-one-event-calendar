@@ -236,6 +236,7 @@ class Ai1ec_Javascript_Controller {
 			$page_to_load
 		);
 		$ext_js = '';
+		
 		foreach ( $extension_files as $file ) {
 			$ext_js .= file_get_contents( $file );
 		}

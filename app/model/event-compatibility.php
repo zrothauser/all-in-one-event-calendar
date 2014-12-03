@@ -61,6 +61,15 @@ class Ai1ec_Event_Compatibility extends Ai1ec_Event {
 	}
 
 	/**
+	 * Twig is_multiday method.
+	 *
+	 * @return bool Value.
+	 */
+	public function getis_multiday() {
+		return $this->is_multiday();
+	}
+
+	/**
 	 * Returns Event instance permalink for FER compatibility.
 	 *
 	 * @return string Event instance permalink.

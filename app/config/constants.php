@@ -487,4 +487,9 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		define( 'AI1EC_THEME_COMPATIBILITY_FER', true );
 	}
 
+	// Defines amount of needed free memory to compile LESS files.
+	if ( ! defined( 'AI1EC_LESS_MIN_AVAIL_MEMORY' ) ) {
+		define( 'AI1EC_LESS_MIN_AVAIL_MEMORY', '24M' );
+	}
+
 }

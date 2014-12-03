@@ -197,8 +197,9 @@ class Ai1ec_Exception_Handler {
 		}
 		// if it's something we handle, handle it
 		$backtrace = '';
-		if ( ! empty( nl2br( $exception ) ) ) {
-			$backtrace = '<br><br>' . nl2br( $exception );
+		$trace     = nl2br( $exception );
+		if ( ! empty( $trace ) ) {
+			$backtrace = '<br><br>' . $trace;
 		}
 		if ( $exception instanceof $this->_exception_class ) {
 			// check if it's a plugin instead of core

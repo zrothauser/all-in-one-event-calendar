@@ -223,7 +223,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		) {
 			$message = sprintf(
 				Ai1ec_I18n::__(
-					'You don\'t have enough free memory (%s) to process CSS compilation. Please increase memory limit or turn off some plugins.'
+					'You don\'t have enough free memory (%s) to process CSS compilation. Please read this <a href="http://time.ly/document/user-guide/getting-started/pre-sale-questions/">article.</a>'
 				),
 				AI1EC_LESS_MIN_AVAIL_MEMORY
 			);

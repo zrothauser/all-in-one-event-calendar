@@ -103,6 +103,7 @@ define(
 		$calendar
 			.find( '.ai1ec-calendar-toolbar' )
 				.trigger( 'ai1ec-affix.reinit' );
+
 	};
 
 	/**
@@ -226,7 +227,7 @@ define(
 			.find( '.ai1ec-calendar-view-loading' )
 				.fadeIn( 'fast' )
 				.end()
-			.find( '.ai1ec-calendar-view' ).fadeTo( 'fast', 0.3,
+			.find( '.ai1ec-calendar-view' ).fadeTo( 'fast', .3,
 				// After loader is visible, fetch new content
 				function() {
 					var query = {
@@ -316,6 +317,12 @@ define(
 								return;
 							}
 						}
+
+						var $big_filtering = $(
+							'.ai1ec-calendar-view .ai1ec-bf-container',
+							$calendar
+						).detach();
+
 						$calendar.find( '.ai1ec-calendar-view' )
 							.html(
 								renderer
@@ -325,6 +332,30 @@ define(
 										? $( data.html ).find( '.ai1ec-calendar-view' ).html()
 										: data.html
 							);
+
+						if ( $big_filtering.length ) {
+							var $loaded_bf = $( '.ai1ec-calendar-view .ai1ec-bf-container', $calendar ).clone()
+							$( '.ai1ec-calendar-view .ai1ec-bf-container', $calendar )
+								.replaceWith( $big_filtering );
+
+							$( '.ai1ec-calendar-view a.ai1ec-bf-item-link', $calendar )
+								.each( function() {
+									$( this ).attr(
+										'href',
+										$loaded_bf.find(
+											'a.ai1ec-bf-item-link[data-term_id="'
+											+ $( this ).attr( 'data-term_id' ) +'"]'
+										).attr( 'href' )
+									);
+								} );
+
+							$( '.ai1ec-bf-filter-group ul' ).each( function() {
+								$ ( this ).scrollTop(
+									$( this ).data( 'scrolltop' )
+								);
+							} );
+						}
+
 						// Do any general view initialization after loading
 						initialize_view( $calendar );
 					} );

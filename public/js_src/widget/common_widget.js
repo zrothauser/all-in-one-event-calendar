@@ -159,7 +159,7 @@ require(
 				// Don't handle SuperWidget containers here.
 				$( '.ai1ec-widget-placeholder' ).not( '[data-widget="ai1ec-superwidget"]' )
 					.each( function( i, el ) {
-						var 
+						var
 							$timely = $( '<div />', {
 								'class': 'timely'
 							} )
@@ -172,9 +172,10 @@ require(
 								request_type: 'jsonp'
 							};
 
-						$timely.on( 'click', '.ai1ec-load-event, .ai1ec-cog-item-name a',
-							load_event_through_jsonp
-						);
+						$timely
+							.on( 'click', '.ai1ec-cog-item-name a',
+								load_event_through_jsonp
+							)
 						$.ajax( {
 							url: url,
 							dataType: 'jsonp',
@@ -191,5 +192,9 @@ require(
 							}
 						} );
 					} );
+
+				$( document ).on( 'click', 'a.ai1ec-load-event',
+					load_event_through_jsonp
+				);
 			 } );
 		} );

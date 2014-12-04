@@ -90,7 +90,8 @@ class Ai1ec_Calendar_View_Month extends Ai1ec_Calendar_View_Abstract {
 				'big_filtering'    => apply_filters(
 					'ai1ec_big_filtering',
 					'',
-					$this->get_name()
+					$this->get_name(),
+					$args
 				),
 			)
 		);

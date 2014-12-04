@@ -109,7 +109,8 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 				'big_filtering'    => apply_filters(
 					'ai1ec_big_filtering',
 					'',
-					$type
+					$type,
+					$view_args
 				),
 			);
 			// Add extra buttons to Agenda view's nav bar if events were returned.

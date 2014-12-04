@@ -1,6 +1,7 @@
 define(
 	[
 		"jquery_timely",
+		"domReady",
 		"scripts/calendar/load_views",
 		"scripts/calendar/print",
 		"scripts/calendar/agenda_view",
@@ -16,7 +17,7 @@ define(
 		"external_libs/jquery.scrollTo",
 		'external_libs/jquery_cookie',
 	],
-	function( $, load_views, print, agenda_view,
+	function( $, domReady, load_views, print, agenda_view,
 		month_view, affix, ai1ec_calendar, ai1ec_config, common_frontend,
 		AI1EC_UTILS, select2_multiselect_helper ) {
 	"use strict"; // jshint ;_;
@@ -223,7 +224,6 @@ define(
 
 		$( document ).on( 'click',      '#ai1ec-calendar-view .ai1ec-load-event',
 			function( e ) {
-				e.preventDefault();
 				$.cookie.raw = false;
 				$.cookie(
 					'ai1ec_calendar_url',
@@ -232,7 +232,6 @@ define(
 						path: ai1ec_config.cookie_path
 					}
 				);
-				window.location.href = this.href;
 			}
 		);
 	};
@@ -246,15 +245,9 @@ define(
 		);
 	};
 
-	var launch = function() {
-		var $body           = $( 'body' ),
-		    $calendars      = $( '.ai1ec-calendar' ),
+	domReady( function() {
+		var $calendars      = $( '.ai1ec-calendar' ),
 		    $first_calendar = $( '.ai1ec-calendar:visible' ).first();
-
-		// Prevent double-initialization.
-		if ( $body.data( 'ai1ec-inited' ) ) {
-			return false;
-		}
 
 		// General initialization.
 		init();
@@ -275,20 +268,13 @@ define(
 		) {
 			affix.initialize_affixed_toolbar( $first_calendar );
 		}
+	} );
 
-		// Prevent double-initialization.
-		$body.data( 'ai1ec-inited', true );
-	}
-
-	/**
-	 * Start calendar page.
-	 */
 	var start = function() {
-		$( document ).one( 'page_ready.ai1ec', launch );
+		// NOOP – function deprecated.
 	};
 
 	return {
-		start  : start,
-		launch : launch
+		start  : start
 	};
 } );

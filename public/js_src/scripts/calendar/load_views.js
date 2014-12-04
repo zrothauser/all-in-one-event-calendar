@@ -319,7 +319,7 @@ define(
 						}
 
 						var $big_filtering = $(
-							'.ai1ec-calendar-view .ai1ec-bf-container',
+							'.ai1ec-bf-container',
 							$calendar
 						).detach();
 
@@ -335,10 +335,8 @@ define(
 
 						if ( $big_filtering.length ) {
 							var $loaded_bf = $( '.ai1ec-calendar-view .ai1ec-bf-container', $calendar ).clone()
-							$( '.ai1ec-calendar-view .ai1ec-bf-container', $calendar )
-								.replaceWith( $big_filtering );
-
-							$( '.ai1ec-calendar-view a.ai1ec-bf-item-link', $calendar )
+							$( '.ai1ec-bf-container', $calendar ).replaceWith( $big_filtering );
+							$( 'a.ai1ec-bf-item-link', $calendar )
 								.each( function() {
 									$( this ).attr(
 										'href',
@@ -348,7 +346,6 @@ define(
 										).attr( 'href' )
 									);
 								} );
-
 							$( '.ai1ec-bf-filter-group ul' ).each( function() {
 								$ ( this ).scrollTop(
 									$( this ).data( 'scrolltop' )

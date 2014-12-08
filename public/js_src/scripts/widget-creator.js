@@ -60,7 +60,7 @@ define(
 							// get the defaults
 							var defaults = ai1ec_config.javascript_widgets;
 							// data-widget is unused in the superwidget but does no harm
-							em_code = '&lt;script class="ai1ec-widget-placeholder" data-widget="' + widget_id +'"';
+							em_code = '&lt;script data-widget="' + widget_id +'"';
 							// process the selects
 							$( 'select', $active_tab ).each( function() {
 								var $select = $( this );

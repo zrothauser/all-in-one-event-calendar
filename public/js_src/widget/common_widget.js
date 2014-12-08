@@ -157,7 +157,7 @@ require(
 				}
 				// If there are multiple divs load multiple widgets.
 				// Don't handle SuperWidget containers here.
-				$( '.ai1ec-widget-placeholder' ).not( '[data-widget="ai1ec-superwidget"]' )
+				$( '[data-widget^="ai1ec"]' ).not( '[data-widget="ai1ec-superwidget"]' )
 					.each( function( i, el ) {
 						var
 							$timely = $( '<div />', {

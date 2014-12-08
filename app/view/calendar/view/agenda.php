@@ -132,7 +132,6 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			'navigation'                => $navigation,
 			'post_ids'                  => join( ',', $view_args['post_ids'] ),
 			'data_type'                 => $view_args['data_type'],
-			'data_type_events'          => '',
 			'is_ticket_button_enabled'  => $is_ticket_button_enabled,
 			'text_upcoming_events'      => __( 'There are no upcoming events to display at this time.', AI1EC_PLUGIN_NAME ),
 			'text_edit'                 => __( 'Edit', AI1EC_PLUGIN_NAME ),
@@ -141,9 +140,6 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			'text_tags'                 => __( 'Tags:', AI1EC_PLUGIN_NAME ),
 			'text_venue_separator'      => __( '@ %s', AI1EC_PLUGIN_NAME ),
 		);
-		if ( $settings->get( 'ajaxify_events_in_web_widget' ) ) {
-			$args['data_type_events'] = $view_args['data_type'];
-		}
 
 		// Allow child views to modify arguments passed to template.
 		$args = $this->get_extra_template_arguments( $args );

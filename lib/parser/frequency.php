@@ -42,6 +42,11 @@ class Ai1ec_Frequency_Utility {
 	protected $_parsed = array();
 
 	/**
+	 * @var array
+	 */
+	protected $_cache = array();
+
+	/**
 	 * Inject different multiplier
 	 *
 	 * Add multiplier, to parseable characters
@@ -119,6 +124,9 @@ class Ai1ec_Frequency_Utility {
 		$reverse_quant = array_flip( $this->_multipliers );
 		krsort( $reverse_quant );
 		$seconds       = $this->to_seconds();
+		if ( $wp_name = $this->_match_wp_native_interval( $seconds ) ) {
+			return $wp_name;
+		}
 		$output        = array();
 		foreach ( $reverse_quant as $duration => $quant ) {
 			if ( $duration > $seconds ) {
@@ -166,6 +174,33 @@ class Ai1ec_Frequency_Utility {
 			$output[$quantifier] += $matches[1][$key];
 		}
 		return $output;
+	}
+
+	/**
+	 * Returns seconds interval to native wp name,
+	 *
+	 * @param int $seconds Value.
+	 *
+	 * @return bool|string False or name.
+	 */
+	protected function _match_wp_native_interval( $seconds ) {
+		if ( empty( $this->_parsed ) ) {
+			return false;
+		}
+		if ( isset( $this->_cache[$seconds] ) ) {
+			return $this->_cache[$seconds];
+		}
+		$parsed_value     = reset( $this->_parsed );
+		$parsed_key       = key( $this->_parsed );
+		$parsed_interval  = array( $parsed_key => $parsed_value );
+		foreach ( $this->_wp_names as $name => $interval ) {
+			if ( $interval === $parsed_interval ) {
+				$this->_cache[$seconds] = $name;
+				return $name;
+			}
+		}
+		$this->_cache[$seconds] = false;
+		return false;
 	}
 
 }

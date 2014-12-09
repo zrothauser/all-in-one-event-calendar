@@ -104,7 +104,6 @@ class Ai1ec_Calendar_View_Week extends Ai1ec_Calendar_View_Abstract {
 			'done_allday_label'        => false,
 			'done_grid'                => false,
 			'data_type'                => $args['data_type'],
-			'data_type_events'         => '',
 			'is_ticket_button_enabled' => $is_ticket_button_enabled,
 			'show_reveal_button'       => $show_reveal_button,
 			'text_full_day'            => __( 'Reveal full day', AI1EC_PLUGIN_NAME ),
@@ -115,9 +114,6 @@ class Ai1ec_Calendar_View_Week extends Ai1ec_Calendar_View_Abstract {
 			'indent_multiplier'        => 8,
 			'indent_offset'            => 0,
 		);
-		if ( $settings->get( 'ajaxify_events_in_web_widget' ) ) {
-			$view_args['data_type_events'] = $args['data_type'];
-		}
 
 		// Add navigation if requested.
 		$view_args['navigation'] = $this->_get_navigation(

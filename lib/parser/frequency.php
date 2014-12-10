@@ -9,7 +9,7 @@
  * @package      Ai1EC
  * @subpackage   Ai1EC.Parser
  */
-class Ai1ec_Frequency_Utility {
+class Ai1ec_Frequency_Utility extends Ai1ec_Base {
 
 	/**
 	 * @var array Map of default multipliers
@@ -42,9 +42,21 @@ class Ai1ec_Frequency_Utility {
 	protected $_parsed = array();
 
 	/**
-	 * @var array
+	 * @var Ai1ec_Cache_Memory
 	 */
-	protected $_cache = array();
+	protected $_cache;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param Ai1ec_Registry_Object $registry
+	 *
+	 * @return void Method does not return.
+	 */
+	public function __construct( Ai1ec_Registry_Object $registry ) {
+		parent::__construct( $registry );
+		$this->_cache = $registry->get( 'cache.memory' );
+	}
 
 	/**
 	 * Inject different multiplier
@@ -121,12 +133,12 @@ class Ai1ec_Frequency_Utility {
 	 * @return string Unified output format
 	 */
 	public function to_string() {
-		$reverse_quant = array_flip( $this->_multipliers );
-		krsort( $reverse_quant );
 		$seconds       = $this->to_seconds();
-		if ( $wp_name = $this->_match_wp_native_interval( $seconds ) ) {
+		if ( $wp_name = $this->match_wp_native_interval( $seconds ) ) {
 			return $wp_name;
 		}
+		$reverse_quant = array_flip( $this->_multipliers );
+		krsort( $reverse_quant );
 		$output        = array();
 		foreach ( $reverse_quant as $duration => $quant ) {
 			if ( $duration > $seconds ) {
@@ -142,6 +154,33 @@ class Ai1ec_Frequency_Utility {
 			}
 		}
 		return implode( ' ', $output );
+	}
+
+	/**
+	 * Returns seconds interval to native wp name,
+	 *
+	 * @param int $seconds Value.
+	 *
+	 * @return bool|string False or name.
+	 */
+	public function match_wp_native_interval( $seconds ) {
+		if ( empty( $this->_parsed ) ) {
+			return false;
+		}
+		$key = __METHOD__ . '_' . $seconds;
+		if ( null === ( $response = $this->_cache->get( $key ) ) ) {
+			$parsed_value    = reset( $this->_parsed );
+			$parsed_key      = key( $this->_parsed );
+			$parsed_interval = array( $parsed_key => $parsed_value );
+			foreach ( $this->_wp_names as $name => $interval ) {
+				if ( $interval === $parsed_interval ) {
+					$response = $name;
+					break;
+				}
+			}
+			$this->_cache->set( $key, $response );
+		}
+		return $response;
 	}
 
 	/**
@@ -175,32 +214,4 @@ class Ai1ec_Frequency_Utility {
 		}
 		return $output;
 	}
-
-	/**
-	 * Returns seconds interval to native wp name,
-	 *
-	 * @param int $seconds Value.
-	 *
-	 * @return bool|string False or name.
-	 */
-	protected function _match_wp_native_interval( $seconds ) {
-		if ( empty( $this->_parsed ) ) {
-			return false;
-		}
-		if ( isset( $this->_cache[$seconds] ) ) {
-			return $this->_cache[$seconds];
-		}
-		$parsed_value     = reset( $this->_parsed );
-		$parsed_key       = key( $this->_parsed );
-		$parsed_interval  = array( $parsed_key => $parsed_value );
-		foreach ( $this->_wp_names as $name => $interval ) {
-			if ( $interval === $parsed_interval ) {
-				$this->_cache[$seconds] = $name;
-				return $name;
-			}
-		}
-		$this->_cache[$seconds] = false;
-		return false;
-	}
-
 }

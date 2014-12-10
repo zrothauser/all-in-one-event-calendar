@@ -106,8 +106,8 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 				'no_navigation'    => $view_args['no_navigation'],
 				'pagination_links' => $pagination_links,
 				'views_dropdown'   => $view_args['views_dropdown'],
-				'big_filtering'    => apply_filters(
-					'ai1ec_big_filtering',
+				'below_toolbar'    => apply_filters(
+					'ai1ec_below_toolbar',
 					'',
 					$type,
 					$view_args

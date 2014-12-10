@@ -1181,12 +1181,13 @@ class Ai1ec_Ics_Import_Export_Engine
 			$hour = $min = $sec = '00';
 			$timezone = 'Z';
 		}
-		$exdate .= 'T' . sprintf(
-			'%02d%02d%02d',
+		$exdate .= sprintf(
+			'T%02d%02d%02d%s',
 			$hour,
 			$min,
-			$sec
-		) . $timezone;
+			$sec,
+			$timezone
+		);
 		$exclusions[$e->getProperty( 'uid' )][] = $exdate;
 		return $exclusions;
 	}

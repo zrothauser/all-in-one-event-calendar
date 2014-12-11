@@ -182,7 +182,7 @@ class Ai1ec_Event_Taxonomy extends Ai1ec_Base {
 	 *
 	 * @return stdClass The taxonomy nane
 	 */
-	protected function _get_taxonomy_for_term_id( $term ) {
+	public function get_taxonomy_for_term_id( $term_id ) {
 		$db = $this->_registry->get( 'dbi.dbi' );
 		return $db->get_row(
 			$db->prepare(
@@ -190,7 +190,7 @@ class Ai1ec_Event_Taxonomy extends Ai1ec_Base {
 				' AS terms INNER JOIN ' .
 				$db->get_table_name( 'term_taxonomy' ) .
 				' AS terms_taxonomy USING(term_id) '.
-				'WHERE terms.term_id = %d LIMIT 1', $term )
+				'WHERE terms.term_id = %d LIMIT 1', $term_id )
 		);
 	}
 }

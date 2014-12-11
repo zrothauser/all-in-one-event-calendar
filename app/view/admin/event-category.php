@@ -132,28 +132,23 @@ class Ai1ec_View_Admin_EventCategory extends Ai1ec_Base {
 			);
 		}
 	}
-
-	/**
-	 * Edit category form
-	 *
-	 * @param $term
-	 *
-	 * @return void
-	 */
-	public function events_categories_edit_form_fields( $term ) {
-
+	
+	public function show_color( $term = null ) {
+		
 		$taxonomy = $this->_registry->get( 'model.taxonomy' );
-		$color    = $taxonomy->get_category_color( $term->term_id );
-		$image    = $taxonomy->get_category_image( $term->term_id );
-
+		$color = '';
+		if ( null !== $term ) {
+			$color = $taxonomy->get_category_color( $term->term_id );
+		}
+		
 		$style = '';
 		$clr   = '';
-
-		if ( null !== $color ) {
+		
+		if ( ! empty( $color ) ) {
 			$style = 'style="background-color: ' . $color . '"';
 			$clr   = $color;
 		}
-
+		
 		$args = array(
 			'style'       => $style,
 			'color'       => $clr,
@@ -163,13 +158,27 @@ class Ai1ec_View_Admin_EventCategory extends Ai1ec_Base {
 			),
 			'edit'        => true,
 		);
-
+		
 		$loader = $this->_registry->get( 'theme.loader' );
 		$loader->get_file(
 			'setting/categories-color-picker.twig',
 			$args,
 			true
 		)->render();
+	}
+
+	/**
+	 * Edit category form
+	 *
+	 * @param $term
+	 *
+	 * @return void
+	 */
+	public function events_categories_edit_form_fields( $term ) {
+		$this->show_color( $term );
+		$taxonomy = $this->_registry->get( 'model.taxonomy' );
+		$loader = $this->_registry->get( 'theme.loader' );
+		$image    = $taxonomy->get_category_image( $term->term_id );
 
 		$style = 'style="display:none"';
 
@@ -205,28 +214,9 @@ class Ai1ec_View_Admin_EventCategory extends Ai1ec_Base {
 	 */
 	public function events_categories_add_form_fields() {
 
+		$this->show_color();
+
 		$loader = $this->_registry->get( 'theme.loader' );
-
-		// Category color
-		$args  = array(
-			'color'        => '',
-			'style'        => '',
-			'label'        => __( 'Category Color', AI1EC_PLUGIN_NAME ),
-			'remove_label' => __( 'Remove Image', AI1EC_PLUGIN_NAME ),
-			'description'  => __(
-				'Events in this category will be identified by this color',
-				AI1EC_PLUGIN_NAME
-			),
-			'edit'        => false
-		);
-
-		$file   = $loader->get_file(
-			'setting/categories-color-picker.twig',
-			$args,
-			true
-		);
-
-		$file->render();
 
 		// Category image
 		$args  = array(

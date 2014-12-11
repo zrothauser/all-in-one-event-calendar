@@ -93,8 +93,10 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 	public function get_category_color_square( $term_id ) {
 		$taxonomy = $this->_registry->get( 'model.taxonomy' );
 		$color = $taxonomy->get_category_color( $term_id );
+		$event_taxonomy = $this->_registry->get( 'model.event.taxonomy' );
 		if ( null !== $color ) {
-			$cat = get_term( $term_id, 'events_categories' );
+			$taxonomy = $event_taxonomy->get_taxonomy_for_term_id( $term_id );
+			$cat = get_term( $term_id, $taxonomy->taxonomy );
 			return '<span class="ai1ec-color-swatch ai1ec-tooltip-trigger" ' .
 				'style="background:' . $color . '" title="' .
 				esc_attr( $cat->name ) . '"></span>';

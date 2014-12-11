@@ -132,7 +132,7 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 				'</span>'
 			);
 		}
-		return apply_filters( 'ai1ec_get_timespan_html', $output, $this );
+		return apply_filters( 'ai1ec_get_timespan_html', $output, $event );
 	}
 
 	/**

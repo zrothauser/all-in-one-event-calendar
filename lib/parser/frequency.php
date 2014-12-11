@@ -26,9 +26,18 @@ class Ai1ec_Frequency_Utility extends Ai1ec_Base {
 	 * @var array Map of WordPress native multipliers
 	 */
 	protected $_wp_names = array(
-		'hourly'     => array( 'h' => 1   ),
-		'twicedaily' => array( 'd' => 0.5 ),
-		'daily'      => array( 'd' => 1   ),
+		'hourly'     => array(
+			'item'    => array( 'h' => 1 ),
+			'seconds' => 3600
+		),
+		'twicedaily' => array(
+			'item'    => array( 'd' => 0.5 ),
+			'seconds' => 43200
+		),
+		'daily'      => array(
+			'item'    => array( 'd' => 1 ),
+			'seconds' => 86400
+		),
 	);
 
 	/**
@@ -102,7 +111,7 @@ class Ai1ec_Frequency_Utility extends Ai1ec_Base {
 			)
 		);
 		if ( isset( $this->_wp_names[$input] ) ) {
-			$this->_parsed = $this->_wp_names[$input];
+			$this->_parsed = $this->_wp_names[$input]['item'];
 			return true;
 		}
 		$match = $this->_match( $input );
@@ -167,18 +176,14 @@ class Ai1ec_Frequency_Utility extends Ai1ec_Base {
 		if ( empty( $this->_parsed ) ) {
 			return false;
 		}
-		$key = __METHOD__ . '_' . $seconds;
-		if ( null === ( $response = $this->_cache->get( $key ) ) ) {
-			$parsed_value    = reset( $this->_parsed );
-			$parsed_key      = key( $this->_parsed );
-			$parsed_interval = array( $parsed_key => $parsed_value );
+		if ( null === ( $response = $this->_cache->get( $seconds ) ) ) {
 			foreach ( $this->_wp_names as $name => $interval ) {
-				if ( $interval === $parsed_interval ) {
+				if ( $interval['seconds'] === $seconds ) {
 					$response = $name;
 					break;
 				}
 			}
-			$this->_cache->set( $key, $response );
+			$this->_cache->set( $seconds, $response );
 		}
 		return $response;
 	}

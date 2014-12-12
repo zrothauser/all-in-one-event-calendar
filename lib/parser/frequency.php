@@ -105,7 +105,7 @@ class Ai1ec_Frequency_Utility extends Ai1ec_Base {
 	public function parse( $input ) {
 		$input = strtolower(
 			preg_replace(
-				'|(\d+)\s+([a-z])|',
+				'|(\d*\.?\d+)\s+([a-z])|',
 				'$1$2',
 				trim( $input )
 			)
@@ -200,7 +200,7 @@ class Ai1ec_Frequency_Utility extends Ai1ec_Base {
 	 * @return array Extracted time identifiers
 	 */
 	protected function _match( $input ) {
-		$regexp  = '/(\d+)([' .
+		$regexp  = '/(\d*\.?\d+)([' .
 			implode( '|', array_keys( $this->_multipliers ) ) .
 			'])?/';
 		$matches = NULL;

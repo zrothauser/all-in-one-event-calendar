@@ -1172,7 +1172,7 @@ class Ai1ec_Ics_Import_Export_Engine
 		$year = $month = $day = $hour = $min = $sec = null;
 		extract( $recurrence_id, EXTR_IF_EXISTS );
 		$timezone = '';
-		$exdate   = $year . $month . $day;
+		$exdate   = sprintf( '%04d%02d%02d', $year, $month, $day );
 		if (
 			null === $hour ||
 			null === $min ||
@@ -1181,7 +1181,13 @@ class Ai1ec_Ics_Import_Export_Engine
 			$hour = $min = $sec = '00';
 			$timezone = 'Z';
 		}
-		$exdate .= 'T' . $hour . $min . $sec . $timezone;
+		$exdate .= sprintf(
+			'T%02d%02d%02d%s',
+			$hour,
+			$min,
+			$sec,
+			$timezone
+		);
 		$exclusions[$e->getProperty( 'uid' )][] = $exdate;
 		return $exclusions;
 	}

@@ -121,6 +121,12 @@ class Ai1ec_Calendar_View_Week extends Ai1ec_Calendar_View_Abstract {
 				'no_navigation'    => $args['no_navigation'],
 				'pagination_links' => $pagination_links,
 				'views_dropdown'   => $args['views_dropdown'],
+				'below_toolbar'    => apply_filters(
+					'ai1ec_below_toolbar',
+					'',
+					$this->get_name(),
+					$args
+				),
 			)
 		);
 

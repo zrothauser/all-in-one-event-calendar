@@ -271,14 +271,26 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 						}
 					}
 				}
-				$tabs_to_display[$name] = $tab;
+				// lets make a check to avoid overriding tabs
+				if ( ! isset( $tabs_to_display[$name] ) ) {
+					$tabs_to_display[$name] = $tab;
+				} else {
+					$tabs_to_display[$name]['elements'] = $tab['elements'];
+				}
+				
 			} else {
 				// no items, just check for any element to display.
 				if ( isset( $tab['elements'] ) ) {
-					$tabs_to_display[$name] = $tab;
+					// lets make a check to avoid overriding tabs
+					if ( ! isset( $tabs_to_display[$name] ) ) {
+						$tabs_to_display[$name] = $tab;
+					} else {
+						$tabs_to_display[$name]['elements'] = $tab['elements'];
+					}
 				}
 			}
 		}
+		
 		return $tabs_to_display;
 	}
 

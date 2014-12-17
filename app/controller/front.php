@@ -198,7 +198,7 @@ class Ai1ec_Front_Controller {
 		if (
 			$option->get( 'permalink_structure' ) &&
 			( int ) get_option( 'page_on_front' ) !==
-			( int ) $settings->get( 'calendar_page_id' )
+			( int ) $cal_page
 		) {
 			$application->set( 'permalinks_enabled', true );
 		}

@@ -39,6 +39,11 @@ class Ai1ec_Theme_Compiler extends Ai1ec_Base {
 		$loader = $this->_registry->get( 'theme.loader' );
 		header( 'Content-Type: text/plain; charset=utf-8' );
 		$start  = microtime( true );
+		if ( ! $this->clean_and_check_dir( AI1EC_TWIG_CACHE_PATH ) ) {
+			throw new Ai1ec_Bootstrap_Exception(
+				'Failed to create cache directory: ' . AI1EC_TWIG_CACHE_PATH
+			);
+		}
 		foreach ( array( true, false ) as $for_admin ) {
 			$twig  = $loader->get_twig_instance( $for_admin, true );
 			$files = $this->get_files( $twig );
@@ -118,17 +123,12 @@ class Ai1ec_Theme_Compiler extends Ai1ec_Base {
 	 *
 	 * @param array $environment Initial environment arguments.
 	 *
-	 * @return 
+	 * @return
 	 */
 	public function ai1ec_twig_environment( array $environment ) {
 		$environment['debug']       = false;
 		$environment['cache']       = AI1EC_TWIG_CACHE_PATH;
 		$environment['auto_reload'] = true;
-		if ( ! $this->clean_and_check_dir( $environment['cache'] ) ) {
-			throw new Ai1ec_Bootstrap_Exception(
-				'Failed to create cache directory: ' . $environment['cache']
-			);
-		}
 		return $environment;
 	}
 

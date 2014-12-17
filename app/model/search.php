@@ -229,7 +229,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		// Convert timestamp to GMT time
 		$time = $this->_registry->get(
 			'date.system'
-		)->current_time() >> 11 << 11;
+		)->get_current_rounded_time();
 		// Get post status Where snippet and associated SQL arguments
 		$where_parameters  = $this->_get_post_status_sql();
 		$post_status_where = $where_parameters['post_status_where'];

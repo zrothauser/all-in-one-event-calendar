@@ -239,4 +239,15 @@ class Ai1ec_Date_System extends Ai1ec_Base {
 		}
 		return $date;
 	}
+
+	/**
+	 * Returns current rounded time as unix integer.
+	 *
+	 * @param int $shift Shift value.
+	 *
+	 * @return int Unix timestamp.
+	 */
+	public function get_current_rounded_time( $shift = 11 ) {
+		return $this->current_time() >> $shift << $shift;
+	}
 }

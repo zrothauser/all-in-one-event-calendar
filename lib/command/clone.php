@@ -67,11 +67,12 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 		$current_action = $this->_registry->get(
 			'http.request'
 		)->get_current_action();
-
 		if (
+			current_user_can( 'edit_ai1ec_events' ) &&
 			'clone' === $current_action &&
 			! empty( $_REQUEST['post'] ) &&
-			current_user_can( 'edit_ai1ec_events' )
+			! empty( $_REQUEST['_wpnonce'] ) &&
+			wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-posts' )
 		) {
 			foreach ( $_REQUEST['post'] as $post_id ) {
 				$this->_posts[] = array(

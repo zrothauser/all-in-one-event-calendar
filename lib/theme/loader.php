@@ -55,6 +55,10 @@ class Ai1ec_Theme_Loader {
 	protected $_core_theme = false;
 
 	/**
+	 * @var array Args Filtered args.
+	 */
+	protected $_filtered_args = array();
+	/**
 	 * @return boolean
 	 */
 	public function is_legacy_theme() {
@@ -93,6 +97,26 @@ class Ai1ec_Theme_Loader {
 				$theme['theme_url'] . '/'
 			);
 		}
+	}
+
+	/**
+	 * Runs the filter for the specified filename just once
+	 * 
+	 * @param array $args
+	 * @param string $filename
+	 * @param boole $is_admin
+	 * 
+	 * @return array
+	 */
+	public function apply_filters_to_args( array $args, $filename, $is_admin ) {
+		if ( ! isset( $this->_filtered_args[$filename] ) ) {
+			$this->_filtered_args[$filename] = apply_filters(
+				self::ARGS_FILTER_PREFIX . $filename,
+				$args,
+				$is_admin
+			);
+		}
+		return $this->_filtered_args[$filename];
 	}
 
 	/**
@@ -254,9 +278,9 @@ class Ai1ec_Theme_Loader {
 				break;
 
 			case 'php':
-				$args = apply_filters(
-					self::ARGS_FILTER_PREFIX . $filename,
+				$args = $this->apply_filters_to_args(
 					$args,
+					$filename,
 					$is_admin
 				);
 				if ( null === $paths ) {
@@ -273,9 +297,9 @@ class Ai1ec_Theme_Loader {
 				break;
 
 			case 'twig':
-				$args = apply_filters(
-					self::ARGS_FILTER_PREFIX . $filename,
+				$args = $this->apply_filters_to_args(
 					$args,
+					$filename,
 					$is_admin
 				);
 				if ( null === $paths ) {

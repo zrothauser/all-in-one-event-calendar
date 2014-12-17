@@ -120,6 +120,7 @@ class Ai1ec_Calendar_View_Oneday extends Ai1ec_Calendar_View_Abstract {
 			)
 		);
 
+		$view_args = $this->_apply_filters_to_args( $view_args );
 		return
 			$this->_registry->get( 'http.request' )->is_json_required(
 				$args['request_format']

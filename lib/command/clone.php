@@ -70,7 +70,8 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 
 		if (
 			'clone' === $current_action &&
-			! empty( $_REQUEST['post'] )
+			! empty( $_REQUEST['post'] ) &&
+			current_user_can( 'edit_ai1ec_events' )
 		) {
 			foreach ( $_REQUEST['post'] as $post_id ) {
 				$this->_posts[] = array(

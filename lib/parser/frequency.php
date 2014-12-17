@@ -51,23 +51,6 @@ class Ai1ec_Frequency_Utility extends Ai1ec_Base {
 	protected $_parsed = array();
 
 	/**
-	 * @var Ai1ec_Cache_Memory
-	 */
-	protected $_cache;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param Ai1ec_Registry_Object $registry
-	 *
-	 * @return void Method does not return.
-	 */
-	public function __construct( Ai1ec_Registry_Object $registry ) {
-		parent::__construct( $registry );
-		$this->_cache = $registry->get( 'cache.memory' );
-	}
-
-	/**
 	 * Inject different multiplier
 	 *
 	 * Add multiplier, to parseable characters
@@ -176,14 +159,11 @@ class Ai1ec_Frequency_Utility extends Ai1ec_Base {
 		if ( empty( $this->_parsed ) ) {
 			return false;
 		}
-		if ( null === ( $response = $this->_cache->get( $seconds ) ) ) {
-			foreach ( $this->_wp_names as $name => $interval ) {
-				if ( $interval['seconds'] === $seconds ) {
-					$response = $name;
-					break;
-				}
+		foreach ( $this->_wp_names as $name => $interval ) {
+			if ( $interval['seconds'] === $seconds ) {
+				$response = $name;
+				break;
 			}
-			$this->_cache->set( $seconds, $response );
 		}
 		return $response;
 	}

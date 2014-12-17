@@ -9,7 +9,7 @@
  * @package      Ai1EC
  * @subpackage   Ai1EC.Parser
  */
-class Ai1ec_Frequency_Utility extends Ai1ec_Base {
+class Ai1ec_Frequency_Utility {
 
 	/**
 	 * @var array Map of default multipliers

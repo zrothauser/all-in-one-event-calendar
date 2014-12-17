@@ -355,7 +355,9 @@ class Ai1ec_Settings extends Ai1ec_App {
 					'label'   => Ai1ec_I18n::__( 'Week starts on' ),
 					'options' => 'get_weekdays',
 				),
-				'default'  => 1,
+				'default'  => $this->_registry->get( 'model.option' )->get(
+					'start_of_week'
+				),
 			),
 			'enabled_views' => array(
 				'type' => 'array',

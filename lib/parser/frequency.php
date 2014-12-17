@@ -159,6 +159,7 @@ class Ai1ec_Frequency_Utility {
 		if ( empty( $this->_parsed ) ) {
 			return false;
 		}
+		$response = false;
 		foreach ( $this->_wp_names as $name => $interval ) {
 			if ( $interval['seconds'] === $seconds ) {
 				$response = $name;

@@ -67,6 +67,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 		$current_action = $this->_registry->get(
 			'http.request'
 		)->get_current_action();
+
 		if (
 			current_user_can( 'edit_ai1ec_events' ) &&
 			'clone' === $current_action &&

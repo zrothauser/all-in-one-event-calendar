@@ -132,23 +132,23 @@ class Ai1ec_View_Admin_EventCategory extends Ai1ec_Base {
 			);
 		}
 	}
-	
+
 	public function show_color( $term = null ) {
-		
+
 		$taxonomy = $this->_registry->get( 'model.taxonomy' );
 		$color = '';
 		if ( null !== $term ) {
 			$color = $taxonomy->get_category_color( $term->term_id );
 		}
-		
+
 		$style = '';
 		$clr   = '';
-		
-		if ( ! empty( $color ) ) {
+
+		if ( $color ) {
 			$style = 'style="background-color: ' . $color . '"';
 			$clr   = $color;
 		}
-		
+
 		$args = array(
 			'style'       => $style,
 			'color'       => $clr,
@@ -158,7 +158,7 @@ class Ai1ec_View_Admin_EventCategory extends Ai1ec_Base {
 			),
 			'edit'        => true,
 		);
-		
+
 		$loader = $this->_registry->get( 'theme.loader' );
 		$loader->get_file(
 			'setting/categories-color-picker.twig',

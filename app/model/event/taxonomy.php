@@ -69,12 +69,22 @@ class Ai1ec_Event_Taxonomy extends Ai1ec_Base {
 		);
 		// if term doesn't exist, create it.
 		if ( 0 === $term_to_check || null === $term_to_check ) {
-			$term_to_check = wp_insert_term( $term, $taxonomy, $attrs );
-			if ( is_wp_error( $term_to_check ) ) {
-				return false;
+			$alias_to_use = apply_filters( 'ai1ec_ics_import_alias', $term );
+			// the filter will either return null, the term_id to use or the original $term 
+			// if the filter is not run. Thus in need to check that $term !== $alias_to_use
+			if ( $alias_to_use && $alias_to_use !== $term ) {
+				$to_return['term_id'] = (int) $alias_to_use;
+				// check that the term matches the taxonomy
+				$tax = $this->_get_taxonomy_for_term_id( term_exists( (int) $alias_to_use ) );
+				$to_return['taxonomy'] = $tax->taxonomy;
+			} else {
+				$term_to_check = wp_insert_term( $term, $taxonomy, $attrs );
+				if ( is_wp_error( $term_to_check ) ) {
+					return false;
+				}
+				$term_to_check = (object)$term_to_check;
+				$to_return['term_id'] = (int)$term_to_check->term_id;
 			}
-			$term_to_check = (object)$term_to_check;
-			$to_return['term_id'] = (int)$term_to_check->term_id;
 		} else {
 			$to_return['term_id'] = (int)$term_to_check;
 			// when importing categories, use the mapping of the current site

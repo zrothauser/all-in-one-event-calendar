@@ -558,6 +558,11 @@ class Ai1ec_Ics_Import_Export_Engine
 				wp_set_post_terms( $event->get( 'post_id' ), array_keys( $ids ), $tax_name );
 			}
 
+			unset( $imported_tags[Ai1ec_Event_Taxonomy::TAGS] );
+			foreach ( $imported_tags as $tax_name => $ids ) {
+				wp_set_post_terms( $event->get( 'post_id' ), array_keys( $ids ), $tax_name );
+			}
+		
 			// if the event is not finished, unset it otherwise it could be deleted afterwards.
 			if ( $event->get( 'end' )->format_to_gmt() > $current_timestamp ) {
 				unset( $events_in_db[$event->get( 'post_id' )] );

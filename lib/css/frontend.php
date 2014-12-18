@@ -286,14 +286,18 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 					'<p>' . Ai1ec_I18n::__(
 						"Theme options were successfully reset to their default values. <a href='%s'>Visit site</a>"
 					) . '</p>',
-					get_site_url()
+					$this->_registry->get(
+						'template.link.helper'
+					)->get_site_url()
 				);
 			} else {
 				$message = sprintf(
 					'<p>' .Ai1ec_I18n::__(
 						"Theme options were updated successfully. <a href='%s'>Visit site</a>"
 					) . '</p>',
-					get_site_url()
+					$this->_registry->get(
+						'template.link.helper'
+					)->get_site_url()
 				);
 			}
 

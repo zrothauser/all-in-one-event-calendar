@@ -35,12 +35,29 @@ class Ai1ec_Template_Link_Helper {
 	public function get_site_url() {
 		if (
 			is_admin() &&
-			defined( 'FORCE_SSL_ADMIN' ) &&
-			true === FORCE_SSL_ADMIN
+			(
+				( defined( 'FORCE_SSL_ADMIN' ) && true === FORCE_SSL_ADMIN ) ||
+				class_exists( 'WordPressHTTPS' )
+			)
 		) {
 			return get_site_url( null, '', 'https' );
 		}
 		return get_site_url();
+	}
+
+	/**
+	 * Get the admin url respecting FORCE_SSL_ADMIN
+	 *
+	 * @return string
+	 */
+	public function get_admin_url() {
+		if (
+			( defined( 'FORCE_SSL_ADMIN' ) && true === FORCE_SSL_ADMIN ) ||
+			class_exists( 'WordPressHTTPS' )
+		) {
+			return get_admin_url( null, '', 'https' );
+		}
+		return get_admin_url();
 	}
 
 	/**

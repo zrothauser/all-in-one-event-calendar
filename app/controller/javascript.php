@@ -452,7 +452,9 @@ class Ai1ec_Javascript_Controller {
 			'affix_vertical_offset_xs'       => $settings->get( 'affix_vertical_offset_xs' ),
 			'calendar_page_id'               => $settings->get( 'calendar_page_id' ),
 			'region'                         => ( $settings->get( 'geo_region_biasing' ) ) ? $locale->get_region() : '',
-			'site_url'                       => trailingslashit( get_site_url() ),
+			'site_url'                       => trailingslashit(
+				$this->_template_link_helper->get_site_url()
+			),
 			'javascript_widgets'             => array(),
 			'widget_creator'                 => array(
 				'preview'         => Ai1ec_I18n::__( 'Preview:' ),

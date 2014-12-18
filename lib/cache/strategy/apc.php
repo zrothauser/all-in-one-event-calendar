@@ -107,7 +107,15 @@ class Ai1ec_Cache_Strategy_Apc extends Ai1ec_Cache_Strategy {
 	protected function _key( $key ) {
 		static $prefix = NULL;
 		if ( NULL === $prefix ) {
-			$prefix = substr( md5( site_url() ), 0, 8 );
+			$prefix = substr(
+				md5(
+					$this->_registry->get(
+						'template.link.helper'
+					)->get_site_url()
+				),
+				0,
+				8
+			);
 		}
 		if ( 0 !== strncmp( $key, $prefix, 8 ) ) {
 			$key = $prefix . $key;

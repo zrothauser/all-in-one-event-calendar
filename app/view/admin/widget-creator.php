@@ -126,7 +126,11 @@ class Ai1ec_View_Widget_Creator extends Ai1ec_View_Admin_Abstract {
 			'widget-creator/super-widget-contents.twig',
 			array(
 				'tabs'            => $tabs,
-				'siteurl'             => trailingslashit( get_site_url() ),
+				'siteurl'             => trailingslashit(
+					$this->_registry->get(
+						'template.link.helper'
+					)->get_site_url()
+				),
 				'common_info'         => __( 'Use this tool to generate code snippets you can place on your site to embed new calendars and widgets.', AI1EC_PLUGIN_NAME ),
 				'preview'             => __( 'Preview:', AI1EC_PLUGIN_NAME ),
 				'full_calendar_title' => __( 'Full Calendar', AI1EC_PLUGIN_NAME ),

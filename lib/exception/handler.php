@@ -421,9 +421,17 @@ class Ai1ec_Exception_Handler {
 	 */
 	protected function redirect() {
 		if ( is_admin() ) {
-			Ai1ec_Http_Response_Helper::redirect( get_admin_url() );
+			Ai1ec_Http_Response_Helper::redirect(
+				$this->_registry->get(
+					'template.link.helper'
+				)->get_admin_url()
+			);
 		} else {
-			Ai1ec_Http_Response_Helper::redirect( get_site_url() );
+			Ai1ec_Http_Response_Helper::redirect(
+				$this->_registry->get(
+					'template.link.helper'
+				)->get_site_url()
+			);
 		}
 	}
 	/**

@@ -110,7 +110,9 @@ class Ai1ec_Router extends Ai1ec_Base {
 	 */
 	public function get_site_url() {
 		if ( NULL === $this->_site_url ) {
-			$this->_site_url = site_url();
+			$this->_site_url = $this->_registry->get(
+				'template.link.helper'
+			)->get_site_url();
 		}
 		return $this->_site_url;
 	}

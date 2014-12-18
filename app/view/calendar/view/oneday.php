@@ -102,6 +102,7 @@ class Ai1ec_Calendar_View_Oneday extends Ai1ec_Calendar_View_Abstract {
 			'hours'                    => $hours,
 			'indent_multiplier'        => 16,
 			'indent_offset'            => 54,
+			'pagination_links'         => $pagination_links,
 		);
 
 		// Add navigation if requested.

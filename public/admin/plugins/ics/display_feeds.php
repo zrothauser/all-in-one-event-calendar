@@ -69,7 +69,7 @@
 		<label for="ai1ec_keep_old_events">
 			<input type="checkbox" name="ai1ec_keep_old_events"
 				id="ai1ec_keep_old_events" value="1">
-			<?php _e( 'Include events from the past', AI1EC_PLUGIN_NAME ); ?>
+			<?php _e( 'On refresh, preserve previously imported events that are missing from the feed', AI1EC_PLUGIN_NAME ); ?>
 		</label>
 	</div>
 	<div class="ai1ec-pull-right">

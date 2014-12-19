@@ -53,7 +53,7 @@
 		?></strong>
 	</div>
 	<div class="ai1ec-feed-keep-old-events">
-		<?php _e( 'Keep old events', AI1EC_PLUGIN_NAME ); ?>:
+		<?php _e( 'On refresh, preserve previously imported events that are missing from the feed', AI1EC_PLUGIN_NAME ); ?>:
 		<strong><?php
 		if ( $keep_old_events ) {
 			_e( 'Yes', AI1EC_PLUGIN_NAME );

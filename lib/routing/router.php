@@ -109,7 +109,7 @@ class Ai1ec_Router extends Ai1ec_Base {
 	 * @return string URL where WP is installed
 	 */
 	public function get_site_url() {
-		if ( NULL === $this->_site_url ) {
+		if ( null === $this->_site_url ) {
 			$this->_site_url = $this->_registry->get(
 				'template.link.helper'
 			)->get_site_url();

@@ -46,7 +46,12 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 				'object' => null
 			),
 			'action' =>
-				admin_url( '?controller=front&action=ai1ec_save_settings&plugin=' . AI1EC_PLUGIN_NAME ),
+				$this->_registry->get(
+					'template.link.helper'
+			)->admin_url(
+				'?controller=front&action=ai1ec_save_settings&plugin=' .
+				AI1EC_PLUGIN_NAME
+			),
 		);
 		$loader = $this->_registry->get( 'theme.loader' );
 		$file   = $loader->get_file( 'setting/page.twig', $args, true );
@@ -277,7 +282,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 				} else {
 					$tabs_to_display[$name]['elements'] = $tab['elements'];
 				}
-				
+
 			} else {
 				// no items, just check for any element to display.
 				if ( isset( $tab['elements'] ) ) {
@@ -290,7 +295,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 				}
 			}
 		}
-		
+
 		return $tabs_to_display;
 	}
 

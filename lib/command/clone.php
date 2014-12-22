@@ -39,12 +39,16 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 		if ( true === $this->_redirect ) {
 			if ( '' === $post['status'] ) {
 				return array(
-					'url' => admin_url( 'edit.php?post_type=' . AI1EC_POST_TYPE ),
+					'url'        => $this->_registry->get(
+						'template.link.helper'
+					)->admin_url( 'edit.php?post_type=' . AI1EC_POST_TYPE ),
 					'query_args' => array()
 				);
 			} else {
 				return array(
-					'url' => admin_url( 'post.php?action=edit&post=' . $id ),
+					'url'        => $this->_registry->get(
+						'template.link.helper'
+					)->admin_url( 'post.php?action=edit&post=' . $id ),
 					'query_args' => array()
 				);
 			}
@@ -163,7 +167,9 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 
 		$new_post_id    = wp_insert_post( $new_post );
 		$edit_event_url = esc_attr(
-			admin_url( "post.php?post={$new_post_id}&action=edit" )
+			$this->_registry->get(
+				'template.link.helper'
+			)->admin_url( "post.php?post={$new_post_id}&action=edit" )
 		);
 		$message = sprintf(
 			__( '<p>The event <strong>%s</strong> was cloned succesfully. <a href="%s">Edit cloned event</a></p>', AI1EC_PLUGIN_NAME ),

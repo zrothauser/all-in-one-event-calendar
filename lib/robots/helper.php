@@ -39,7 +39,9 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 			'ai1ec-nonce'
 		);
 
-		$redirect_url = admin_url(
+		$redirect_url = $this->_registry->get(
+			'template.link.helper'
+		)->admin_url(
 			'edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings&noredirect=1'
 		);
 
@@ -95,7 +97,7 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 
 			// Update robots.txt
 			$custom_rules = $this->rules( $current_rules, false );
-		} 
+		}
 		$robots_txt['is_installed'] = $wp_filesystem->put_contents(
 			$robots_file,
 			$custom_rules,

@@ -376,7 +376,9 @@ class Ai1ec_Javascript_Controller {
 		if ( $force_ssl_admin && ! is_ssl() ) {
 			force_ssl_admin( false );
 		}
-		$ajax_url        = admin_url( 'admin-ajax.php' );
+		$ajax_url        = $this->_registry->get(
+			'template.link.helper'
+		)->admin_url( 'admin-ajax.php' );
 		force_ssl_admin( $force_ssl_admin );
 		$settings        = $this->_registry->get( 'model.settings' );
 		$locale          = $this->_registry->get( 'p28n.wpml' );

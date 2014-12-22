@@ -228,7 +228,9 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'[site_url]'   => $this->_registry->get(
 				'template.link.helper'
 			)->get_site_url(),
-			'[feeds_url]'  => admin_url( AI1EC_FEED_SETTINGS_BASE_URL . '#ics' ),
+			'[feeds_url]'  => $this->_registry->get(
+				'template.link.helper'
+			)->admin_url( AI1EC_FEED_SETTINGS_BASE_URL . '#ics' ),
 		);
 		return $translations;
 	}

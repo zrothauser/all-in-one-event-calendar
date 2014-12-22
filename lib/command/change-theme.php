@@ -34,7 +34,9 @@ class Ai1ec_Command_Change_Theme extends Ai1ec_Command {
 
 		// Return user to themes list page with success message.
 		return array(
-			'url' => admin_url(
+			'url' => $this->_registry->get(
+				'template.link.helper'
+			)->admin_url(
 				'edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-themes'
 			),
 			'query_args' => array(

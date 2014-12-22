@@ -28,7 +28,9 @@ class Ai1ec_Command_Disable_Gzip extends Ai1ec_Command {
 		$this->_registry->get( 'model.settings' )
 			->set( 'disable_gzip_compression', true );
 		return array(
-			'url'        => admin_url( 'edit.php' ),
+			'url'        => $this->_registry->get(
+				'template.link.helper'
+			)->admin_url( 'edit.php' ),
 			'query_args' => array(
 				'post_type' => 'ai1ec_event',
 				'page'      => 'all-in-one-event-calendar-settings',

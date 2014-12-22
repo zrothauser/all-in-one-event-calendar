@@ -114,7 +114,9 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			$event->get( 'instance_id' ) &&
 			current_user_can( 'edit_ai1ec_events' )
 		) {
-			$args['edit_instance_url'] = admin_url(
+			$args['edit_instance_url'] = $this->_registry->get(
+				'template.link.helper'
+			)->admin_url(
 				'post.php?post=' . $event->get( 'post_id' ) .
 				'&action=edit&instance=' . $event->get( 'instance_id' )
 			);

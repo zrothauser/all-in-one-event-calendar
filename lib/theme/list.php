@@ -118,7 +118,7 @@ class Ai1ec_Theme_List extends WP_List_Table {
 		?>
 		<div class="tablenav themes <?php echo $which; ?>">
 			<?php $this->pagination( $which ); ?>
-		   <img src="<?php echo esc_url( admin_url( 'images/wpspin_light.gif' ) ); ?>"
+		   <img src="<?php echo esc_url( $this->_registry->get( 'template.link.helper' )->admin_url( 'images/wpspin_light.gif' ) ); ?>"
 				class="ajax-loading list-ajax-loading"
 				alt="" />
 		  <br class="clear" />
@@ -152,10 +152,14 @@ class Ai1ec_Theme_List extends WP_List_Table {
 					Ai1ec_I18n::__(
 						'You only have one theme enabled for this site right now. Visit the Network Admin to <a href="%1$s">enable</a> or <a href="%2$s">install</a> more themes.'
 					),
-					network_admin_url(
+					$this->_registry->get(
+						'template.link.helper'
+					)->network_admin_url(
 						'site-themes.php?id=' . $GLOBALS['blog_id']
 					),
-					network_admin_url( 'theme-install.php' )
+					$this->_registry->get(
+						'template.link.helper'
+					)->network_admin_url( 'theme-install.php' )
 				);
 
 				return;
@@ -164,7 +168,9 @@ class Ai1ec_Theme_List extends WP_List_Table {
 					Ai1ec_I18n::__(
 						'You only have one theme enabled for this site right now. Visit the Network Admin to <a href="%1$s">enable</a> more themes.'
 					),
-					network_admin_url(
+					$this->_registry->get(
+						'template.link.helper'
+					)->network_admin_url(
 						'site-themes.php?id=' . $GLOBALS['blog_id']
 					)
 				);
@@ -179,7 +185,9 @@ class Ai1ec_Theme_List extends WP_List_Table {
 					Ai1ec_I18n::__(
 						'You only have one theme installed right now. You can choose from many free themes in the Timely Theme Directory at any time: just click on the <a href="%s">Install Themes</a> tab above.'
 					),
-					admin_url( AI1EC_THEME_SELECTION_BASE_URL )
+					$this->_registry->get(
+						'template.link.helper'
+					)->admin_url( AI1EC_THEME_SELECTION_BASE_URL )
 				);
 
 				return;
@@ -190,7 +198,7 @@ class Ai1ec_Theme_List extends WP_List_Table {
 			Ai1ec_I18n::__(
 				'Only the active theme is available to you. Contact the <em>%s</em> administrator to add more themes.'
 			),
-            get_site_option( 'site_name' )
+			get_site_option( 'site_name' )
 		);
 	}
 
@@ -238,7 +246,9 @@ class Ai1ec_Theme_List extends WP_List_Table {
 				$legacy         = $legacy ? '1' : '0';
 
 				// Generate theme activation link.
-				$activate_link  = admin_url( AI1EC_THEME_SELECTION_BASE_URL );
+				$activate_link  = $this->_registry->get(
+					'template.link.helper'
+				)->admin_url( AI1EC_THEME_SELECTION_BASE_URL );
 				$activate_link  = add_query_arg(
 					array(
 						'ai1ec_action'     => 'activate_theme',

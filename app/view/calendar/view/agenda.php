@@ -150,15 +150,12 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 
 		// Allow child views to modify arguments passed to template.
 		$args = $this->get_extra_template_arguments( $args );
-		// pre filter args for FER
-		$args = $loader->apply_filters_to_args( $args, $type . '.twig', false );
-		$file = $loader->get_file( $type . '.twig', $args, false );
 
 		return
 			$this->_registry->get( 'http.request' )->is_json_required(
 				$view_args['request_format']
 			)
-			? json_encode( $args )
+			? json_encode( $loader->apply_filters_to_args( $args, $type . '.twig', false ) )
 			: $this->_get_view( $args );
 	}
 

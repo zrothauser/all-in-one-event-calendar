@@ -225,7 +225,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'[categories]' => implode( ', ', $categories ),
 			'[user_email]' => $_POST['ai1ec_submitter_email'],
 			'[site_title]' => get_bloginfo( 'name' ),
-			'[site_url]'   => ai1ec_get_site_url(),
+			'[site_url]'   => ai1ec_site_url(),
 			'[feeds_url]'  => ai1ec_admin_url(
 				AI1EC_FEED_SETTINGS_BASE_URL . '#ics'
 			),

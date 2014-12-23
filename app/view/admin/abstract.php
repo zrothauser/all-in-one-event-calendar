@@ -43,7 +43,7 @@ abstract class Ai1ec_View_Admin_Abstract extends Ai1ec_Base {
 				'post_type' => AI1EC_POST_TYPE,
 				'page'      => AI1EC_PLUGIN_NAME . '-' . $this->_page_suffix,
 			),
-			ai1ec_get_admin_url() . 'edit.php'
+			ai1ec_get_admin_url( 'edit.php' )
 		);
 	}
 

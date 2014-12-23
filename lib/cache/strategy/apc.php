@@ -108,9 +108,7 @@ class Ai1ec_Cache_Strategy_Apc extends Ai1ec_Cache_Strategy {
 		static $prefix = null;
 		if ( NULL === $prefix ) {
 			$prefix = substr(
-				md5(
-					ai1ec_get_site_url()
-				),
+				md5( ai1ec_get_site_url() ),
 				0,
 				8
 			);

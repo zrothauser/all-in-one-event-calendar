@@ -134,7 +134,7 @@ class Ai1ec_Cache_Strategy_File extends Ai1ec_Cache_Strategy {
 		$extension = $this->_get_extension_for_file( $file );
 		if ( null === $prefix ) {
 			// always include site_url when there is more than one
-			$pref_string = ai1ec_get_site_url();
+			$pref_string = ai1ec_site_url();
 			if ( ! AI1EC_DEBUG ) {
 				// address multiple re-saves for a single version
 				// i.e. when theme settings are being edited

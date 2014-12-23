@@ -392,7 +392,7 @@ class Ai1ec_Exception_Handler {
 		$redirect_url = add_query_arg(
 			self::DB_REACTIVATE_PLUGIN,
 			'true',
-			ai1ec_admin_url( $_SERVER['REQUEST_URI'] )
+			preg_replace( '#http(s?):#', '', get_admin_url() )
 		);
 		$label = __(
 			'All In One Event Calendar has been disabled due to an error:',

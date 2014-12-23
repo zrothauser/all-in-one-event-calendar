@@ -419,9 +419,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 	public function get_uid() {
 		static $format = null;
 		if ( null === $format ) {
-			$site_url = parse_url(
-				ai1ec_get_site_url()
-			);
+			$site_url = parse_url( ai1ec_get_site_url() );
 			$format   = 'ai1ec-%d@' . $site_url['host'];
 			if ( isset( $site_url['path'] ) ) {
 				$format .= $site_url['path'];

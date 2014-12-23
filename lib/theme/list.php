@@ -152,7 +152,9 @@ class Ai1ec_Theme_List extends WP_List_Table {
 					Ai1ec_I18n::__(
 						'You only have one theme enabled for this site right now. Visit the Network Admin to <a href="%1$s">enable</a> or <a href="%2$s">install</a> more themes.'
 					),
-					ai1ec_network_admin_url( 'site-themes.php?id='.$GLOBALS['blog_id'] ),
+					ai1ec_network_admin_url(
+						'site-themes.php?id=' . $GLOBALS['blog_id']
+					),
 					ai1ec_network_admin_url( 'theme-install.php' )
 				);
 
@@ -162,7 +164,9 @@ class Ai1ec_Theme_List extends WP_List_Table {
 					Ai1ec_I18n::__(
 						'You only have one theme enabled for this site right now. Visit the Network Admin to <a href="%1$s">enable</a> more themes.'
 					),
-					ai1ec_network_admin_url( 'site-themes.php?id='.$GLOBALS['blog_id'] )
+					ai1ec_network_admin_url(
+						'site-themes.php?id=' . $GLOBALS['blog_id']
+					)
 				);
 
 				return;

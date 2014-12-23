@@ -36,7 +36,7 @@
 				<a href="<?php echo ai1ec_admin_url( AI1EC_THEME_SELECTION_BASE_URL ) ?>" class="nav-tab nav-tab-active">
 					<?php echo esc_html( __( 'Manage Themes' ) ); ?>
 				</a>
-				<a href="<?php echo ai1ec_admin_url( AI1EC_THEME_SELECTION_BASE_URL.'-install' ) ?>" class="nav-tab">
+				<a href="<?php echo ai1ec_admin_url( AI1EC_THEME_SELECTION_BASE_URL . '-install' ) ?>" class="nav-tab">
 					<?php echo esc_html_x( 'Install Themes', 'theme' ); ?>
 				</a>
 			</h2>

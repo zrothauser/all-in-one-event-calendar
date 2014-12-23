@@ -453,7 +453,7 @@ class Ai1ec_Javascript_Controller {
 			'calendar_page_id'               => $settings->get( 'calendar_page_id' ),
 			'region'                         => ( $settings->get( 'geo_region_biasing' ) ) ? $locale->get_region() : '',
 			'site_url'                       => trailingslashit(
-				$this->_template_link_helper->get_site_url()
+				ai1ec_get_site_url()
 			),
 			'javascript_widgets'             => array(),
 			'widget_creator'                 => array(
@@ -604,7 +604,7 @@ JSC;
 				// If we are on the calendar page we must load the correct option
 				self::IS_CALENDAR_PAGE     => $is_calendar_page,
 			),
-			trailingslashit( $this->_template_link_helper->get_site_url() )
+			trailingslashit( ai1ec_get_site_url() )
 		);
 		if ( true === $backend ) {
 			$this->_scripts_helper->enqueue_script(

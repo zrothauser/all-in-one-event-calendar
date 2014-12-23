@@ -39,11 +39,7 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 			'ai1ec-nonce'
 		);
 
-		$redirect_url = $this->_registry->get(
-			'template.link.helper'
-		)->admin_url(
-			'edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings&noredirect=1'
-		);
+		$redirect_url = ai1ec_admin_url( 'edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings&noredirect=1' );
 
 		if ( ! function_exists( 'request_filesystem_credentials' )  ) {
 			return;

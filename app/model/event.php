@@ -420,9 +420,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 		static $format = null;
 		if ( null === $format ) {
 			$site_url = parse_url(
-				$this->_registry->get(
-					'template.link.helper'
-				)->get_site_url()
+				ai1ec_get_site_url()
 			);
 			$format   = 'ai1ec-%d@' . $site_url['host'];
 			if ( isset( $site_url['path'] ) ) {

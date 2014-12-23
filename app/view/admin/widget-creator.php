@@ -127,9 +127,7 @@ class Ai1ec_View_Widget_Creator extends Ai1ec_View_Admin_Abstract {
 			array(
 				'tabs'            => $tabs,
 				'siteurl'             => trailingslashit(
-					$this->_registry->get(
-						'template.link.helper'
-					)->get_site_url()
+					ai1ec_get_site_url()
 				),
 				'common_info'         => __( 'Use this tool to generate code snippets you can place on your site to embed new calendars and widgets.', AI1EC_PLUGIN_NAME ),
 				'preview'             => __( 'Preview:', AI1EC_PLUGIN_NAME ),

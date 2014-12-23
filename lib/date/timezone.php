@@ -362,9 +362,7 @@ class Ai1ec_Date_Timezone extends Ai1ec_Base {
 						Ai1ec_I18n::__(
 							'Please select site timezone in %s <em>Timezone</em> dropdown menu.'
 						),
-						'<a href="' . $this->_registry->get(
-							'template.link.helper'
-						)->admin_url( 'options-general.php' ) .
+						'<a href="' . ai1ec_admin_url( 'options-general.php' ) .
 						'">' . Ai1ec_I18n::__( 'Settings' ) . '</a>'
 					),
 					'error'
@@ -400,9 +398,7 @@ class Ai1ec_Date_Timezone extends Ai1ec_Base {
 					'Timezone "UTC%+d" is not recognized. Please %suse valid%s timezone name, until then events will be created in UTC timezone.'
 				),
 				$zone,
-				'<a href="' . $this->_registry->get(
-					'template.link.helper'
-				)->admin_url( 'options-general.php' ) . '">',
+				'<a href="' . ai1ec_admin_url( 'options-general.php' ) . '">',
 				'</a>'
 			),
 			'error'

@@ -65,9 +65,7 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 			) {
 				$msg = sprintf(
 					Ai1ec_I18n::__( 'The plugin is installed, but has not been configured. <a href="%s">Click here to set it up now &raquo;</a>' ),
-					$this->_registry->get(
-						'template.link.helper'
-					)->admin_url( AI1EC_SETTINGS_BASE_URL )
+					ai1ec_admin_url( AI1EC_SETTINGS_BASE_URL )
 				);
 				$notification->store(
 					$msg,

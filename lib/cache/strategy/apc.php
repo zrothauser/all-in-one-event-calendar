@@ -109,9 +109,7 @@ class Ai1ec_Cache_Strategy_Apc extends Ai1ec_Cache_Strategy {
 		if ( NULL === $prefix ) {
 			$prefix = substr(
 				md5(
-					$this->_registry->get(
-						'template.link.helper'
-					)->get_site_url()
+					ai1ec_get_site_url()
 				),
 				0,
 				8

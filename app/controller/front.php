@@ -309,9 +309,7 @@ class Ai1ec_Front_Controller {
 						Ai1ec_I18n::__(
 							'Your active calendar theme could not be properly initialized. The default theme has been activated instead. Please visit %s and try reactivating your theme manually.'
 						),
-						'<a href="' . $this->_registry->get(
-							'template.link.helper'
-							)->admin_url( AI1EC_THEME_SELECTION_BASE_URL ) . '">' .
+						'<a href="' . ai1ec_admin_url( AI1EC_THEME_SELECTION_BASE_URL ) . '">' .
 						Ai1ec_I18n::__( 'Calendar Themes' ) . '</a>'
 					),
 					'error',

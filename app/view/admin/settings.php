@@ -46,12 +46,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 				'object' => null
 			),
 			'action' =>
-				$this->_registry->get(
-					'template.link.helper'
-			)->admin_url(
-				'?controller=front&action=ai1ec_save_settings&plugin=' .
-				AI1EC_PLUGIN_NAME
-			),
+				ai1ec_admin_url( '?controller=front&action=ai1ec_save_settings&plugin='.AI1EC_PLUGIN_NAME ),
 		);
 		$loader = $this->_registry->get( 'theme.loader' );
 		$file   = $loader->get_file( 'setting/page.twig', $args, true );

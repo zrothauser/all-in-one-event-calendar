@@ -392,9 +392,7 @@ class Ai1ec_Exception_Handler {
 		$redirect_url = add_query_arg(
 			self::DB_REACTIVATE_PLUGIN,
 			'true',
-			$this->_registry->get(
-				'template.link.helper'
-			)->admin_url( $_SERVER['REQUEST_URI'] )
+			ai1ec_admin_url( $_SERVER['REQUEST_URI'] )
 		);
 		$label = __(
 			'All In One Event Calendar has been disabled due to an error:',
@@ -424,15 +422,11 @@ class Ai1ec_Exception_Handler {
 	protected function redirect() {
 		if ( is_admin() ) {
 			Ai1ec_Http_Response_Helper::redirect(
-				$this->_registry->get(
-					'template.link.helper'
-				)->get_admin_url()
+				ai1ec_get_admin_url()
 			);
 		} else {
 			Ai1ec_Http_Response_Helper::redirect(
-				$this->_registry->get(
-					'template.link.helper'
-				)->get_site_url()
+				ai1ec_get_site_url()
 			);
 		}
 	}

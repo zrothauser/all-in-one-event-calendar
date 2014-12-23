@@ -74,43 +74,66 @@ function ai1ec_deprecated( $function ) {
  * @see admin_url()
  */
 function ai1ec_admin_url( $path = '', $scheme = 'admin' ) {
-	return Ai1ec_Http_Response_Helper::remove_protocols(
-		admin_url( $path, $scheme )
-	);
+	if ( ai1ec_is_ssl_forced() ) {
+		$scheme = 'https';
+	}
+	return admin_url( $path, $scheme );
 }
 
 /* (non-PHPdoc)
  * @see get_admin_url()
  */
 function ai1ec_get_admin_url( $blog_id = null, $path = '', $scheme = 'admin' ) {
-	return Ai1ec_Http_Response_Helper::remove_protocols(
-		get_admin_url( $blog_id, $path, $scheme )
-	);
+	if ( ai1ec_is_ssl_forced() ) {
+		$scheme = 'https';
+	}
+	return get_admin_url( $blog_id, $path, $scheme );
 }
 
 /* (non-PHPdoc)
  * @see get_site_url()
  */
 function ai1ec_get_site_url( $blog_id = null, $path = '', $scheme = null ) {
-	return Ai1ec_Http_Response_Helper::remove_protocols(
-		get_site_url( $blog_id, $path, $scheme )
-	);
+	if ( ai1ec_is_ssl_forced() ) {
+		$scheme = 'https';
+	}
+	return get_site_url( $blog_id, $path, $scheme );
 }
 
 /* (non-PHPdoc)
  * @see site_url()
  */
 function ai1ec_site_url( $path = '', $scheme = null ) {
-	return Ai1ec_Http_Response_Helper::remove_protocols(
-		site_url( $path, $scheme )
-	);
+	if ( ai1ec_is_ssl_forced() ) {
+		$scheme = 'https';
+	}
+	return site_url( $path, $scheme );
 }
 
 /* (non-PHPdoc)
  * @see network_admin_url()
  */
 function ai1ec_network_admin_url( $path = '', $scheme = 'admin' ) {
-	return Ai1ec_Http_Response_Helper::remove_protocols(
-		network_admin_url( $path, $scheme )
+	if ( ai1ec_is_ssl_forced() ) {
+		$scheme = 'https';
+	}
+	return network_admin_url( $path, $scheme );
+}
+
+/**
+ * Returns whether SSL URLs are forced or not.
+ *
+ * @return bool Result.
+ */
+function ai1ec_is_ssl_forced() {
+	return (
+		is_admin() &&
+		(
+			class_exists( 'WordPressHTTPS' ) ||
+			(
+				defined( 'FORCE_SSL_ADMIN' ) &&
+				true === FORCE_SSL_ADMIN
+			)
+		)
 	);
 }

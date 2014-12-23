@@ -69,3 +69,48 @@ function ai1ec_deprecated( $function ) {
 		E_USER_WARNING
 	);
 }
+
+/* (non-PHPdoc)
+ * @see admin_url()
+ */
+function ai1ec_admin_url( $path = '', $scheme = 'admin' ) {
+	return Ai1ec_Http_Response_Helper::remove_protocols(
+		admin_url( $path, $scheme )
+	);
+}
+
+/* (non-PHPdoc)
+ * @see get_admin_url()
+ */
+function ai1ec_get_admin_url( $blog_id = null, $path = '', $scheme = 'admin' ) {
+	return Ai1ec_Http_Response_Helper::remove_protocols(
+		get_admin_url( $blog_id, $path, $scheme )
+	);
+}
+
+/* (non-PHPdoc)
+ * @see get_site_url()
+ */
+function ai1ec_get_site_url( $blog_id = null, $path = '', $scheme = null ) {
+	return Ai1ec_Http_Response_Helper::remove_protocols(
+		get_site_url( $blog_id, $path, $scheme )
+	);
+}
+
+/* (non-PHPdoc)
+ * @see site_url()
+ */
+function ai1ec_site_url( $path = '', $scheme = null ) {
+	return Ai1ec_Http_Response_Helper::remove_protocols(
+		site_url( $path, $scheme )
+	);
+}
+
+/* (non-PHPdoc)
+ * @see network_admin_url()
+ */
+function ai1ec_network_admin_url( $path = '', $scheme = 'admin' ) {
+	return Ai1ec_Http_Response_Helper::remove_protocols(
+		network_admin_url( $path, $scheme )
+	);
+}

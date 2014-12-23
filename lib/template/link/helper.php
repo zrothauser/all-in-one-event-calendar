@@ -28,57 +28,6 @@ class Ai1ec_Template_Link_Helper {
 	}
 
 	/**
-	 * Get the home url respecting FORCE_SSL_ADMIN
-	 *
-	 * @return string URL.
-	 */
-	public function get_site_url() {
-		if (
-			is_admin() &&
-			$this->_is_ssl_forced()
-		) {
-			return get_site_url( null, '', 'https' );
-		}
-		return get_site_url();
-	}
-
-	/**
-	 * Get the admin url respecting FORCE_SSL_ADMIN using get_admin_url.
-	 *
-	 * @return string URL.
-	 */
-	public function get_admin_url( $blog_id = null, $path = '', $scheme = 'admin' ) {
-		if ( $this->_is_ssl_forced() ) {
-			$scheme = 'https';
-		}
-		return get_admin_url( $blog_id, $path, $scheme );
-	}
-
-	/**
-	 * Get the admin url respecting FORCE_SSL_ADMIN using admin_url.
-	 *
-	 * @return string URL.
-	 */
-	public function admin_url( $blog_id = null, $path = '', $scheme = 'admin' ) {
-		if ( $this->_is_ssl_forced() ) {
-			$scheme = 'https';
-		}
-		return admin_url( $blog_id, $path, $scheme );
-	}
-
-	/**
-	 * Get the network admin url respecting FORCE_SSL_ADMIN.
-	 *
-	 * @return string URL.
-	 */
-	public function network_admin_url( $path = '', $scheme = 'admin' ) {
-		if ( $this->_is_ssl_forced() ) {
-			$scheme = 'https';
-		}
-		return network_admin_url( $path, $scheme );
-	}
-
-	/**
 	 * Retrieve full permalink for current post or post ID.
 	 *
 	 * @since 1.0.0
@@ -89,15 +38,5 @@ class Ai1ec_Template_Link_Helper {
 	 */
 	public function get_permalink( $id = 0, $leavename = false ) {
 		return get_permalink( $id, $leavename );
-	}
-
-	/**
-	 * Checks whether FORCE_SSL_ADMIN is enabled or WordPress HTTP plugin.
-	 *
-	 * @return bool
-	 */
-	protected function _is_ssl_forced() {
-		return ( defined( 'FORCE_SSL_ADMIN' ) && true === FORCE_SSL_ADMIN ) ||
-			class_exists( 'WordPressHTTPS' );
 	}
 }

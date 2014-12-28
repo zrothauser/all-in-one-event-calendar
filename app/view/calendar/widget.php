@@ -310,9 +310,10 @@ class Ai1ec_View_Admin_Widget extends Ai1ec_Embeddable {
 
 		// Set $limit to the specified category/tag
 		$limit = array(
-			'cat_ids'   => $args_for_widget['cat_ids'],
-			'tag_ids'   => $args_for_widget['tag_ids'],
+			'cat_ids'    => $args_for_widget['cat_ids'],
+			'tag_ids'    => $args_for_widget['tag_ids'],
 		);
+		$limit = apply_filters( 'ai1ec_add_filters_upcoming_widget', $limit );
 
 		// Get events, then classify into date array
 		// JB: apply seek check here

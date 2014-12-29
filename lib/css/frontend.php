@@ -13,8 +13,8 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 
 	const QUERY_STRING_PARAM                = 'ai1ec_render_css';
 
-	// This is for testing purpose, set it to AI1EC_DEBUG value.
-	const PARSE_LESS_FILES_AT_EVERY_REQUEST = AI1EC_DEBUG;
+	// This is for testing purpose, set it to AI1EC_PARSE_LESS_FILES_AT_EVERY_REQUEST value.
+	const PARSE_LESS_FILES_AT_EVERY_REQUEST = AI1EC_PARSE_LESS_FILES_AT_EVERY_REQUEST;
 
 	const KEY_FOR_PERSISTANCE               = 'ai1ec_parsed_css';
 	/**

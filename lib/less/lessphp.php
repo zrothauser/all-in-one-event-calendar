@@ -231,11 +231,7 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 
 		if (
 			$option->get( 'ai1ec_invalidate_css_cache' ) ||
-			(
-				Ai1ec_Css_Frontend::PARSE_LESS_FILES_AT_EVERY_REQUEST &&
-				! defined( 'AI1EC_DONT_PARSE_LESS_FILES_AT_EVERY_REQUEST' ) ||
-				! AI1EC_DONT_PARSE_LESS_FILES_AT_EVERY_REQUEST
-			)
+			Ai1ec_Css_Frontend::PARSE_LESS_FILES_AT_EVERY_REQUEST
 		) {
 			$css_controller = $this->_registry->get( 'css.frontend' );
 			$css_controller->invalidate_cache( null, true );

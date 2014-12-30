@@ -77,7 +77,7 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 		$timezone
 	) {
 		$recurrence_parser = $this->_registry->get( 'recurrence.rule' );
-		$evs               = array();
+		$events            = array();
 
 		$startdate = array(
 			'timestamp' => $_start,
@@ -125,20 +125,20 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 		
 		$recurrence_dates = array_keys( $recurrence_dates );
 		// Add the instances
-		foreach ( $recurrence_dates as $date ) {
+		foreach ( $recurrence_dates as $timestamp ) {
 
 			// The arrays are in the form timestamp => true so an isset call is what we need
-			if ( isset( $exclude_dates[$date] ) ) {
+			if ( isset( $exclude_dates[$timestamp] ) ) {
 				continue;
 			}
-			$event_instance['start'] = $date;
-			$event_instance['end']	 = $date + $duration;
+			$event_instance['start'] = $timestamp;
+			$event_instance['end']	 = $timestamp + $duration;
 			$excluded	= false;
 
 			// Check if exception dates match this occurence
 			if ( $exception_dates = $event->get( 'exception_dates' ) ) {
 				$match_exdates = $this->date_match_exdates(
-					$date,
+					$timestamp,
 					$exception_dates,
 					$timezone
 				);
@@ -149,11 +149,11 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 
 			// Add event only if it is not excluded
 			if ( false === $excluded ) {
-				$evs[] = $event_instance;
+				$events[$timestamp] = $event_instance;
 			}
 		}
 
-		return $evs;
+		return $events;
 	}
 
 	/**
@@ -164,51 +164,47 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 	 * @return bool Success.
 	 */
 	public function create( Ai1ec_Event $event ) {
-        $evs = array();
-        $e	 = array(
-            'post_id' => $event->get( 'post_id' ),
-            'start'   => $event->get( 'start'   )->format_to_gmt(),
-            'end'     => $event->get( 'end'     )->format_to_gmt(),
-        );
-        $duration = $event->get( 'end' )->diff_sec( $event->get( 'start' ) );
+		$events     = array();
+		$event_item = array(
+			'post_id' => $event->get( 'post_id' ),
+			'start'   => $event->get( 'start'   )->format_to_gmt(),
+			'end'     => $event->get( 'end'     )->format_to_gmt(),
+		);
+		$duration = $event->get( 'end' )->diff_sec( $event->get( 'start' ) );
 
-        // Always cache initial instance
-        $evs[] = $e;
+		$_start = $event->get( 'start' )->format_to_gmt();
+		$_end   = $event->get( 'end'   )->format_to_gmt();
 
-        $_start = $event->get( 'start' )->format_to_gmt();
-        $_end   = $event->get( 'end'   )->format_to_gmt();
+		// Always cache initial instance
+		$events[$_start] = $event_item;
 
-        if ( $event->get( 'recurrence_rules' ) ) {
+		if ( $event->get( 'recurrence_rules' ) ) {
+            /**
+             * NOTE: this timezone switch is intentional, because underlying
+             * library doesn't allow us to pass it as an argument. Though no
+             * lesser importance shall be given to the restore call bellow.
+             */
 			$_restore_default_tz = date_default_timezone_get();
 			$start_timezone      = $event->get( 'start' )->get_timezone();
 			date_default_timezone_set( $start_timezone );
-			$evs = array_merge(
-				$evs,
-				$this->create_instances_by_recurrence(
-					$event,
-					$e,
-					$_start,
-					$duration,
-					$start_timezone
-				)
+			$events += $this->create_instances_by_recurrence(
+				$event,
+				$event_item,
+				$_start,
+				$duration,
+				$start_timezone
 			);
 			date_default_timezone_set( $_restore_default_tz );
 			unset( $_restore_default_tz );
         }
 
-        // Make entries unique (sometimes recurrence generator creates duplicates?)
-        $evs_unique = array();
-        foreach ( $evs as $ev ) {
-            $evs_unique[md5( serialize( $ev ) )] = $ev;
-        }
-
 		$search_helper = $this->_registry->get( 'model.search' );
-        foreach ( $evs_unique as $e ) {
+        foreach ( $events as $event_item ) {
             // Find out if this event instance is already accounted for by an
             // overriding 'RECURRENCE-ID' of the same iCalendar feed (by comparing the
             // UID, start date, recurrence). If so, then do not create duplicate
             // instance of event.
-            $start             = $e['start'];
+            $start             = $event_item['start'];
 			$matching_event_id = null;
 			if ( $event->get( 'ical_uid' ) ) {
 				$matching_event_id = $search_helper->get_matching_event_id(
@@ -224,7 +220,7 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
             if ( null === $matching_event_id ) {
 				$this->_dbi->insert(
 					'ai1ec_event_instances',
-					$e,
+					$event_item,
 					array( '%d', '%d', '%d' )
 				);
             }

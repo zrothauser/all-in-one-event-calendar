@@ -17,9 +17,14 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 	protected $_taxonomy_model = null;
 
 	/**
-	 * @var array Caches the term ID used to color each event.
+	 * @var array Caches the color evaluated for each event.
 	 */
 	protected $_event_color_map = array();
+
+	/**
+	 * @var array Caches the color squares HTML evaluated for each event.
+	 */
+	protected $_event_color_squares_map = array();
 
 	/**
 	 * Returns style attribute for events rendered in Month, Week, or Day view.
@@ -44,26 +49,34 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 	}
 
 	/**
-	 * Returns HTML of category color boxes for this event.
+	 * Returns HTML of category color swatches for this event.
 	 *
 	 * @param  Ai1ec_Event $event Event object.
 	 *
 	 * @return string             HTML of the event's category color swatches.
 	 */
 	public function get_category_colors( Ai1ec_Event $event ) {
-		static $category_colors = array();
-		$id = $event->get( 'post_id' );
-		if ( ! isset( $category_colors[$id] ) ) {
-			$categories           = $this->_taxonomy_model
-				->get_post_categories( $id );
-			$category_colors[$id] = '';
+		$post_id = $event->get( 'post_id' );
+
+		if ( ! isset( $this->_event_color_squares_map[$post_id] ) ) {
+			$squares = '';
+			$categories = $this->_taxonomy_model->get_post_categories( $post_id );
+
 			if ( false !== $categories ) {
-				$category_colors[$id] = $this->get_event_category_colors(
-					$categories
-				);
+				$squares = $this->get_event_category_colors( $categories );
 			}
+
+			// Allow add-ons to modify/add to category color swatch HTML.
+			$squares = apply_filters(
+				'ai1ec_event_color_squares',
+				$squares,
+				$event
+			);
+
+			$this->_event_color_squares_map[$post_id] = $squares;
 		}
-		return $category_colors[$id];
+
+		return $this->_event_color_squares_map[$post_id];
 	}
 
 	/**

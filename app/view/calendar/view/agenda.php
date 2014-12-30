@@ -136,6 +136,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			'show_location_in_title'    => $settings->get( 'show_location_in_title' ),
 			'page_offset'               => $view_args['page_offset'],
 			'navigation'                => $navigation,
+			'pagination_links'          => $pagination_links,
 			'post_ids'                  => join( ',', $view_args['post_ids'] ),
 			'data_type'                 => $view_args['data_type'],
 			'is_ticket_button_enabled'  => $is_ticket_button_enabled,

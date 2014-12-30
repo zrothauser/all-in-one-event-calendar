@@ -79,6 +79,7 @@ class Ai1ec_Calendar_View_Month extends Ai1ec_Calendar_View_Abstract {
 			'data_type'                => $args['data_type'],
 			'is_ticket_button_enabled' => $is_ticket_button_enabled,
 			'text_venue_separator'     => __( '@ %s', AI1EC_PLUGIN_NAME ),
+			'pagination_links'         => $pagination_links,
 		);
 
 		// Add navigation if requested.

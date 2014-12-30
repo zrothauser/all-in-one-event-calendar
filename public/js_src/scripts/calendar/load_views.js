@@ -430,7 +430,7 @@ define(
 			}
 
 			// Attach event handlers.
-			$( document ).on( 'changeDate', '.ai1ec-minical-trigger',
+			$( document ).one( 'changeDate', '.ai1ec-minical-trigger',
 				handle_minical_change_date
 			);
 		}

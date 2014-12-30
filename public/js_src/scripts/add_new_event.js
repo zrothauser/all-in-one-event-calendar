@@ -11,7 +11,8 @@ define(
 		'external_libs/jquery.calendrical_timespan',
 		'external_libs/jquery.inputdate',
 		'external_libs/jquery.tools',
-		'external_libs/ai1ec_datepicker',
+		// 'external_libs/ai1ec_datepicker',
+		'external_libs/bootstrap_datepicker',
 		'external_libs/bootstrap/transition',
 		'external_libs/bootstrap/collapse',
 		'external_libs/bootstrap/modal',
@@ -31,7 +32,7 @@ define(
 		calendrical_functions
 	) {
 	"use strict"; // jshint ;_;
-
+console.log(ai1ec_config)
 
 	var init_date_time = function() {
 
@@ -95,6 +96,22 @@ define(
 				.text(  $( '#ai1ec_exclude-dates-input' ).data( 'placeholder' ) );
 		}
 
+		var $datepicker = $( '#widgetCalendar' ).datepicker( {
+			multidate : true,
+			weekStart : ai1ec_config.week_start_day
+		} );
+
+		$datepicker.on( 'changeDate', function(e) {
+
+			var dates = [];
+			for ( var i = 0; i < e.dates.length; i++ ) {
+				dates.push( calendrical_functions.formatDate( new Date( e.dates[i] ), ai1ec_config.date_format ) + 'T000000Z');
+			}
+			$( '#ai1ec_exclude-dates-input' ).text( dates.join( ', ' ) );
+			$( "#ai1ec_exdate" ).val( dates.join( ',' ) );
+
+		} );
+/*
 		$( '#widgetCalendar' ).DatePicker({
 			flat: true,
 			calendars: 3,
@@ -131,6 +148,7 @@ define(
 		if( _clear_dp ) {
 			$( '#widgetCalendar' ).DatePickerClear();
 		}
+*/
 		// Hide datepicker if clicked outside.
 		$( document )
 			.on( 'mousedown.exclude', function( e ) {

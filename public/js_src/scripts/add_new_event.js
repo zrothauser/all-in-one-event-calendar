@@ -11,7 +11,6 @@ define(
 		'external_libs/jquery.calendrical_timespan',
 		'external_libs/jquery.inputdate',
 		'external_libs/jquery.tools',
-		'external_libs/ai1ec_datepicker',
 		'external_libs/bootstrap_datepicker',
 		'external_libs/bootstrap/transition',
 		'external_libs/bootstrap/collapse',
@@ -58,96 +57,6 @@ define(
 		};
 
 		$.timespan( data );
-		// Retrieve the dates saved in the hidden field
-		var exdate  = $( "#ai1ec_exdate" ).val();
-
-		// This variable holds the dates that must be selected in the datepicker.
-		var dp_date = null;
-		var _day;
-		if( exdate.length >= 8 ) {
-			dp_date = [];
-			var _span_html = [];
-			$.each( exdate.split( ',' ), function( i, v ) {
-				var
-					_date   = v.slice( 0, 8 ),
-					_year  = _date.substr( 0, 4 ),
-					_month = _date.substr( 4, 2 ),
-					_day   = _date.substr( 6, 2 ),
-
-				_month = _month.charAt(0) === '0'
-					? ( '0' + ( parseInt( _month.charAt( 1 ), 10 ) - 1 ) )
-					: ( parseInt( _month, 10 ) - 1 );
-
-				dp_date.push( new Date( _year, _month, _day ) );
-				_span_html.push(
-					calendrical_functions.formatDate(
-						new Date( _year, _month, _day ),
-						ai1ec_config.date_format,
-						true
-					)
-				);
-			});
-			$( '#ai1ec_exclude-dates-input' )
-				.text(  _span_html.join( ', ' ) );
-		} else {
-			$( '#ai1ec_exclude-dates-input' )
-				.text(  $( '#ai1ec_exclude-dates-input' ).data( 'placeholder' ) );
-		}
-
-		var $datepicker = $( '#ai1ec_widget_calendar' );
-
-		$datepicker.datepicker( {
-			multidate : true,
-			weekStart : ai1ec_config.week_start_day
-		} );
-
-		// Select dates if there are any.
-		if ( dp_date ) {
-			dp_date.unshift( 'setDates' );
-			$datepicker.datepicker.apply( $datepicker, dp_date );
-		}
-
-		$datepicker.on( 'changeDate', function( e ) {
-			var
-				dates = [],
-				dates_displayed = [];
-
-			for ( var i = 0; i < e.dates.length; i++ ) {
-				var
-					date      = new Date( e.dates[i] ),
-					// Format for sending to server.
-					formatted = ''
-						+ date.getFullYear()
-						+ ( '0' + ( date.getMonth() + 1 ) ).slice( -2 )
-						+ ( '0' + date.getDate() ).slice( -2 )
-						+ 'T000000Z',
-					// Format for displaying.
-					displayed = calendrical_functions.formatDate(
-						date,
-						ai1ec_config.date_format,
-						true
-					);
-
-				dates.push( formatted );
-				dates_displayed.push( displayed );
-			}
-			$( '#ai1ec_exclude-dates-input' ).text( dates_displayed.join( ', ' ) );
-			$( '#ai1ec_exdate' ).val( dates.join( ',' ) );
-
-		} );
-
-		// Hide datepicker if clicked outside.
-		$( document )
-			.on( 'mousedown.exclude', function( e ) {
-				var $container = $( '#ai1ec_widget_calendar' ),
-					$link = $( '#ai1ec_exclude-dates-input' );
-
-				if ( ! $container.is( e.target )
-					&& ! $link.is( e.target )
-					&& 0 === $container.has( e.target ).length ) {
-					$( '#ai1ec_widget_calendar' ).hide();
-				}
-			});
 	};
 
 	/**

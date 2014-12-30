@@ -83,7 +83,7 @@
 							<optgroup label="<?php echo $group;?>">
 						<?php
 							foreach ( $timezones as $timezone ) : ?>
-								<option value="<?php echo $timezone['value'];?>" 
+								<option value="<?php echo $timezone['value'];?>"
 									<?php echo $timezone['value'] == $timezone_string ? 'selected' : '';?>><?php echo $timezone['text'];?></option>
 							<?php endforeach; ?>
 							</optgroup>
@@ -150,7 +150,7 @@
 							</div>
 							<div id="widgetCalendar"></div>
 						</div>
-						<input type="hidden" name="ai1ec_exdate" id="ai1ec_exdate"
+						<input type="text" name="ai1ec_exdate" id="ai1ec_exdate"
 							value="<?php echo $exdate; ?>">
 						<span class="ai1ec-info-text">
 							(<?php _e( 'Choose specific dates to exclude', AI1EC_PLUGIN_NAME ); ?>)

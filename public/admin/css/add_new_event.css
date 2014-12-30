@@ -322,34 +322,10 @@
 }
 #widgetCalendar {
 	position: absolute;
-	top: 26px;
-	left: 0;
-	height: 186px;
-	overflow: hidden;
-	width: 648px !important;
+	display: none;
 	background: #FFFFFF;
-	z-index: 2;
-	display: none;
-}
-#widgetCalendar .datepicker {
-	position: absolute;
-	bottom: 0;
-	top: auto;
-}
-#widgetCalendar .datepickerContainer,
-#widgetCalendar .datepickerBorderT,
-#widgetCalendar .datepickerBorderB,
-#widgetCalendar .datepickerBorderL,
-#widgetCalendar .datepickerBorderR,
-#widgetCalendar .datepickerBorderTL,
-#widgetCalendar .datepickerBorderTR,
-#widgetCalendar .datepickerBorderBL,
-#widgetCalendar .datepickerBorderBR {
-	background: transparent !important;
-}
-#widgetCalendar .ai1ec-datepicker-week,
-#widgetCalendar .ai1ec-datepicker-header-week {
-	display: none;
+	z-index: 10000;
+	border: 1px solid #bbb;
 }
 #widgetField input {
 	width: 320px;

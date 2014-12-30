@@ -31,6 +31,11 @@
 					<?php _e( 'Yearly', AI1EC_PLUGIN_NAME ) ;?>
 				</a>
 			</li>
+			<li class="ai1ec-col-xs-3 ai1ec-text-center">
+				<a href="#ai1ec_custom_content" data-toggle="ai1ec-tab">
+					<?php _e( 'Custom', AI1EC_PLUGIN_NAME ) ;?>
+				</a>
+			</li>
 		</ul>
 
 		<p></p>
@@ -52,6 +57,10 @@
 		<div id="ai1ec_yearly_content" data-freq="yearly"
 			class="ai1ec-tab-pane">
 			<?php echo $row_yearly; ?>
+		</div>
+		<div id="ai1ec_custom_content" data-freq="custom"
+			class="ai1ec-tab-pane">
+			"test"
 		</div>
 	</div>
 </div>

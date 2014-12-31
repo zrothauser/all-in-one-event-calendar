@@ -32,7 +32,6 @@ define(
 		calendrical_functions
 	) {
 	"use strict"; // jshint ;_;
-console.log(ai1ec_config)
 
 	var init_date_time = function() {
 
@@ -64,18 +63,20 @@ console.log(ai1ec_config)
 
 		// This variable holds the dates that must be selected in the datepicker.
 		var dp_date = null;
-		var _clear_dp = false;
 		var _day;
 		if( exdate.length >= 8 ) {
 			dp_date = [];
 			var _span_html = [];
 			$.each( exdate.split( ',' ), function( i, v ) {
-				var _date = v.slice( 0, 8 );
-				var _year = _date.substr( 0, 4 );
-				var _month = _date.substr( 4, 2 );
-				_day = _date.substr( 6, 2 );
+				var
+					_date   = v.slice( 0, 8 ),
+					_year  = _date.substr( 0, 4 ),
+					_month = _date.substr( 4, 2 ),
+					_day   = _date.substr( 6, 2 ),
 
-				_month = _month.charAt(0) === '0' ? ( '0' + ( parseInt( _month.charAt( 1 ), 10 ) - 1 ) ) : ( parseInt( _month, 10 ) - 1 );
+				_month = _month.charAt(0) === '0'
+					? ( '0' + ( parseInt( _month.charAt( 1 ), 10 ) - 1 ) )
+					: ( parseInt( _month, 10 ) - 1 );
 
 				dp_date.push( new Date( _year, _month, _day ) );
 				_span_html.push(
@@ -89,66 +90,52 @@ console.log(ai1ec_config)
 			$( '#ai1ec_exclude-dates-input' )
 				.text(  _span_html.join( ', ' ) );
 		} else {
-			// Set as default date shown today
-			dp_date = new Date( ai1ec_config.now * 1000 );
-			_clear_dp = true;
 			$( '#ai1ec_exclude-dates-input' )
 				.text(  $( '#ai1ec_exclude-dates-input' ).data( 'placeholder' ) );
 		}
 
-		var $datepicker = $( '#widgetCalendar' ).datepicker( {
+		var $datepicker = $( '#widgetCalendar' );
+
+		$datepicker.datepicker( {
 			multidate : true,
 			weekStart : ai1ec_config.week_start_day
 		} );
 
-		$datepicker.on( 'changeDate', function(e) {
+		// Select dates if there are any.
+		if ( dp_date ) {
+			dp_date.unshift( 'setDates' );
+			$datepicker.datepicker.apply( $datepicker, dp_date );
+		}
 
-			var dates = [];
+		$datepicker.on( 'changeDate', function(e) {
+			var
+				dates = [],
+				dates_displayed = [];
+
 			for ( var i = 0; i < e.dates.length; i++ ) {
-				dates.push( calendrical_functions.formatDate( new Date( e.dates[i] ), ai1ec_config.date_format ) + 'T000000Z');
+				var
+					date      = new Date( e.dates[i] ),
+					// Format for sending to server.
+					formatted = ''
+						+ date.getFullYear()
+						+ ( '0' + ( date.getMonth() + 1 ) ).slice( -2 )
+						+ ( '0' + date.getDate() ).slice( -2 )
+						+ 'T000000Z',
+					// Format for displaying.
+					displayed = calendrical_functions.formatDate(
+						date,
+						ai1ec_config.date_format,
+						true
+					);
+
+				dates.push( formatted );
+				dates_displayed.push( displayed );
 			}
-			$( '#ai1ec_exclude-dates-input' ).text( dates.join( ', ' ) );
+			$( '#ai1ec_exclude-dates-input' ).text( dates_displayed.join( ', ' ) );
 			$( "#ai1ec_exdate" ).val( dates.join( ',' ) );
 
 		} );
-/*
-		$( '#widgetCalendar' ).DatePicker({
-			flat: true,
-			calendars: 3,
-			mode: 'multiple',
-			starts: ai1ec_config.week_start_day,
-			date: dp_date,
-			onChange: function( formated ) {
-				formated = formated.toString();
-				if( formated.length >= 8 ) {
-					// save the date in your hidden field
-					var exdate = '';
-					var formatted_date = [];
-					$.each( formated.split( ',' ), function( i, v ) {
-						formatted_date.push( calendrical_functions.formatDate( new Date( v ), ai1ec_config.date_format ) );
-						exdate += v.replace( /-/g, '' ) + 'T000000Z,';
-					});
-					$( '#ai1ec_exclude-dates-input' ).text( formatted_date.join( ', ' ) );
-					exdate = exdate.slice( 0, exdate.length - 1 );
-					$( "#ai1ec_exdate" ).val( exdate );
-				} else {
-					$( "#ai1ec_exdate" ).val( '' );
-					$( '#ai1ec_exclude-dates-input' ).text( $( '#ai1ec_exclude-dates-input' ).data( 'placeholder' ) );
-				}
-			},
-			prev: '«',
-			next: '»',
-			// Ignore clicking on month name.
-			month_link_inactive: true,
-			locale: {
-				daysMin: ai1ec_config.day_names.split( ',' ),
-				months: ai1ec_config.month_names.split( ',' )
-			}
-		});
-		if( _clear_dp ) {
-			$( '#widgetCalendar' ).DatePickerClear();
-		}
-*/
+
 		// Hide datepicker if clicked outside.
 		$( document )
 			.on( 'mousedown.exclude', function( e ) {

@@ -52,7 +52,7 @@ class Ai1ec_Event_Taxonomy extends Ai1ec_Base {
 	 * @param bool   $is_id    Set to true if $term is ID.
 	 * @param array  $attrs    Attributes to creatable entity.
 	 *
-	 * @return array|bool      Associative array with term_id 
+	 * @return array|bool      Associative array with term_id
 	 *                         and taxonomy keys or false on error
 	 */
 	public function initiate_term(
@@ -63,7 +63,7 @@ class Ai1ec_Event_Taxonomy extends Ai1ec_Base {
 	) {
 		// cast to int to have it working with term_exists
 		$term = ( $is_id ) ? (int) $term : $term;
-		$term_to_check = term_exists( $term );
+		$term_to_check = term_exists( $term, $taxonomy );
 		$to_return = array(
 			'taxonomy' => $taxonomy
 		);
@@ -86,12 +86,15 @@ class Ai1ec_Event_Taxonomy extends Ai1ec_Base {
 				$to_return['term_id'] = (int)$term_to_check->term_id;
 			}
 		} else {
-			$to_return['term_id'] = (int)$term_to_check;
+			$term_id = is_array( $term_to_check )
+				? $term_to_check['term_id']
+				: $term_to_check;
+			$to_return['term_id'] = (int)$term_id;
 			// when importing categories, use the mapping of the current site
 			// so place the term in the current taxonomy
 			if ( self::CATEGORIES === $taxonomy ) {
 				// check that the term matches the taxonomy
-				$tax = $this->_get_taxonomy_for_term_id( $term_to_check );
+				$tax = $this->_get_taxonomy_for_term_id( $term_id );
 				$to_return['taxonomy'] = $tax->taxonomy;
 			}
 
@@ -174,9 +177,9 @@ class Ai1ec_Event_Taxonomy extends Ai1ec_Base {
 
 	/**
 	 * Get the taxonomy name from term id
-	 * 
+	 *
 	 * @param int $term
-	 * 
+	 *
 	 * @return stdClass The taxonomy nane
 	 */
 	protected function _get_taxonomy_for_term_id( $term ) {

@@ -90,6 +90,12 @@ define(
 	 * @param  {object} e JS event object
 	 */
 	var handle_tooltip_over = function( e ) {
+		// Disable tooltips on mobile devices.
+		if ( 'ontouchstart' in document.documentElement ) {
+			e.preventDefault();
+			return;
+		}
+
 		var $this = $( this ),
 		    params = {
 					template:
@@ -103,7 +109,10 @@ define(
 
 		// Don't add tooltips to category colour squares already contained in
 		// descriptive category labels.
-		if ( $this.is( '.ai1ec-category .ai1ec-color-swatch' ) ) {
+		if (
+			$this.is( '.ai1ec-category .ai1ec-color-swatch' ) ||
+			$this.is( '.ai1ec-custom-filter .ai1ec-color-swatch' )
+		) {
 			return;
 		}
 		if ( $this.is( '.ai1ec-tooltip-auto' ) ) {
@@ -114,18 +123,12 @@ define(
 	};
 
 	/**
-	 * Manually handle tooltip mouseleave. Do not hide if entering tooltip or
-	 * tooltip triggering action.
+	 * Manually handle tooltip mouseleave.
 	 *
 	 * @param  {object} e JS event object
 	 */
 	var handle_tooltip_out = function( e ) {
-		var $el = $( e.toElement || e.relatedTarget );
-		if ( $el.closest( '.ai1ec-tooltip' ).length === 0 ) {
-			if ( $( this ).data( 'bs.tooltip' ) ) {
-				$( this ).tooltip( 'hide' );
-			}
-		}
+		$( this ).tooltip( 'hide' );
 	};
 
 	/**

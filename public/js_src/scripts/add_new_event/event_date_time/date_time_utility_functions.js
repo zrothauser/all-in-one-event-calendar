@@ -2,9 +2,10 @@ define(
 	[
 		'jquery_timely',
 		'ai1ec_config',
-		'libs/utils'
+		'libs/utils',
+		'external_libs/jquery.calendrical_timespan',
 	],
-	function( $, ai1ec_config, AI1EC_UTILS ) {
+	function( $, ai1ec_config, AI1EC_UTILS, calendrical_functions ) {
 
 	"use strict"; // jshint ;_;
 
@@ -116,6 +117,44 @@ define(
 				handle: 'ai1ec-handle'
 			}
 		} );
+
+		var $datepicker = $( '#ai1ec_recurrence_calendar' );
+
+		$datepicker.datepicker( {
+			multidate : true,
+			weekStart : ai1ec_config.week_start_day
+		} );
+
+		$datepicker.on( 'changeDate', function( e ) {
+			var
+				dates = [],
+				dates_displayed = [];
+
+			for ( var i = 0; i < e.dates.length; i++ ) {
+				var
+					date      = new Date( e.dates[i] ),
+					// Format for sending to server.
+					formatted = ''
+						+ date.getFullYear()
+						+ ( '0' + ( date.getMonth() + 1 ) ).slice( -2 )
+						+ ( '0' + date.getDate() ).slice( -2 )
+						+ 'T000000Z',
+					// Format for displaying.
+					displayed = calendrical_functions.formatDate(
+						date,
+						ai1ec_config.date_format,
+						true
+					);
+
+				dates.push( formatted );
+				dates_displayed.push( displayed );
+			}
+			$( '#ai1ec_rec_dates_list' ).text( dates_displayed.join( ', ' ) );
+			$( '#ai1ec_rec_custom_dates' ).val( dates.join( ',' ) );
+
+		} );
+
+
 
 		// Initialize inputdate plugin on our "until" date input.
 		var data = {

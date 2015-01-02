@@ -148,7 +148,7 @@
 							<div id="widgetField">
 								<a href="javascript:void(0)" id="ai1ec_exclude-dates-input" data-placeholder="<?php _e( 'Choose dates', AI1EC_PLUGIN_NAME ); ?>"></a>
 							</div>
-							<div id="widgetCalendar"></div>
+							<div id="ai1ec_widget_calendar"></div>
 						</div>
 						<input type="hidden" name="ai1ec_exdate" id="ai1ec_exdate"
 							value="<?php echo $exdate; ?>">

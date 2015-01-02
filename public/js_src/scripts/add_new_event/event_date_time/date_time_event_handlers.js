@@ -113,8 +113,7 @@ define(
 				break;
 
 			case 'custom':
-				rule += 'FREQ=CUSTOM;';
-				rule += 'DATES=' + $( '#ai1ec_rec_custom_dates' ).val();
+				rule += 'RDATE=' + $( '#ai1ec_rec_custom_dates' ).val();
 				break;
 		}
 

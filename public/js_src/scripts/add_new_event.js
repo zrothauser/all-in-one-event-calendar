@@ -94,7 +94,7 @@ define(
 				.text(  $( '#ai1ec_exclude-dates-input' ).data( 'placeholder' ) );
 		}
 
-		var $datepicker = $( '#widgetCalendar' );
+		var $datepicker = $( '#ai1ec_widget_calendar' );
 
 		$datepicker.datepicker( {
 			multidate : true,
@@ -107,7 +107,7 @@ define(
 			$datepicker.datepicker.apply( $datepicker, dp_date );
 		}
 
-		$datepicker.on( 'changeDate', function(e) {
+		$datepicker.on( 'changeDate', function( e ) {
 			var
 				dates = [],
 				dates_displayed = [];
@@ -132,20 +132,20 @@ define(
 				dates_displayed.push( displayed );
 			}
 			$( '#ai1ec_exclude-dates-input' ).text( dates_displayed.join( ', ' ) );
-			$( "#ai1ec_exdate" ).val( dates.join( ',' ) );
+			$( '#ai1ec_exdate' ).val( dates.join( ',' ) );
 
 		} );
 
 		// Hide datepicker if clicked outside.
 		$( document )
 			.on( 'mousedown.exclude', function( e ) {
-				var $container = $( '#widgetCalendar' ),
+				var $container = $( '#ai1ec_widget_calendar' ),
 					$link = $( '#ai1ec_exclude-dates-input' );
 
 				if ( ! $container.is( e.target )
 					&& ! $link.is( e.target )
 					&& 0 === $container.has( e.target ).length ) {
-					$( '#widgetCalendar' ).hide();
+					$( '#ai1ec_widget_calendar' ).hide();
 				}
 			});
 	};

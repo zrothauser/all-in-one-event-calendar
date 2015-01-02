@@ -320,7 +320,7 @@
 #datepicker-widget {
 	position: relative;
 }
-#widgetCalendar {
+#ai1ec_widget_calendar {
 	position: absolute;
 	display: none;
 	background: #FFFFFF;
@@ -371,4 +371,9 @@
 }
 .ai1ec-banner-image-frame .edit-attachment {
 	display: none !important;
+}
+
+#ai1ec_rec_dates_list {
+	margin-top: 15px;
+	font-size: 11px;
 }

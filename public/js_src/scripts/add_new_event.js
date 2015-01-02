@@ -11,7 +11,7 @@ define(
 		'external_libs/jquery.calendrical_timespan',
 		'external_libs/jquery.inputdate',
 		'external_libs/jquery.tools',
-		// 'external_libs/ai1ec_datepicker',
+		'external_libs/ai1ec_datepicker',
 		'external_libs/bootstrap_datepicker',
 		'external_libs/bootstrap/transition',
 		'external_libs/bootstrap/collapse',

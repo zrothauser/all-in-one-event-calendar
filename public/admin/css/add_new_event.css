@@ -374,6 +374,11 @@
 }
 
 #ai1ec_rec_dates_list {
-	margin-top: 15px;
-	font-size: 11px;
+	line-height: 1.7em;
+}
+#ai1ec_recurrence_calendar .ai1ec-datepicker-inline {
+	width: auto;
+}
+#ai1ec_recurrence_calendar .ai1ec-datepicker-inline table {
+	width: 100%;
 }

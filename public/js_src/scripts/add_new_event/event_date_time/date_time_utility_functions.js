@@ -140,16 +140,19 @@ define(
 						+ ( '0' + date.getDate() ).slice( -2 )
 						+ 'T000000Z',
 					// Format for displaying.
-					displayed = calendrical_functions.formatDate(
-						date,
-						ai1ec_config.date_format,
-						true
-					);
+					displayed = '<span class="ai1ec-label ai1ec-label-default">' +
+						calendrical_functions.formatDate(
+							date,
+							ai1ec_config.date_format,
+							true
+						) +
+						'</span>';
 
 				dates.push( formatted );
 				dates_displayed.push( displayed );
 			}
-			$( '#ai1ec_rec_dates_list' ).text( dates_displayed.join( ', ' ) );
+
+			$( '#ai1ec_rec_dates_list' ).html( dates_displayed.join( ' ' ) );
 			$( '#ai1ec_rec_custom_dates' ).val( dates.join( ',' ) );
 
 		} );

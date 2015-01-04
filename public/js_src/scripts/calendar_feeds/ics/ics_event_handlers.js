@@ -70,6 +70,7 @@ define(
 			    	map_display_enabled:  show_map,
 			    	keep_tags_categories: keep_tags_categories,
 				keep_old_events:      keep_old_events,
+                                feed_import_timezone: $( '#ai1ec_feed_import_timezone' ).val()
 			    };
 
 			// Make an AJAX call to save the new feed.

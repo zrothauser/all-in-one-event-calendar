@@ -72,6 +72,11 @@
 			<?php _e( 'On refresh, preserve previously imported events that are missing from the feed', AI1EC_PLUGIN_NAME ); ?>
 		</label>
 	</div>
+	<div class="ai1ec-feed-import-timezone">
+		<label for="ai1ec_feed_import_timezone">
+			<?php echo $timezones->render(); ?><br/>
+		</label>
+	</div>
 	<div class="ai1ec-pull-right">
 		<button type="button" id="ai1ec_add_new_ics"
 			class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-sm"

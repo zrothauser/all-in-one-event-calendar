@@ -249,8 +249,16 @@ class Ai1ec_Ics_Import_Export_Engine
 			if ( $allday ) {
 				$event_timezone = $local_timezone;
 			}
-			$start = $this->_time_array_to_datetime( $start, $event_timezone );
-			$end   = $this->_time_array_to_datetime( $end,   $event_timezone );
+			$start = $this->_time_array_to_datetime(
+				$start,
+				$event_timezone,
+				$args['feed']->import_timezone
+			);
+			$end   = $this->_time_array_to_datetime(
+				$end,
+				$event_timezone,
+				$args['feed']->import_timezone
+			);
 
 			if ( false === $start || false === $end ) {
 				throw new Ai1ec_Parse_Exception(
@@ -562,7 +570,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			foreach ( $imported_tags as $tax_name => $ids ) {
 				wp_set_post_terms( $event->get( 'post_id' ), array_keys( $ids ), $tax_name );
 			}
-		
+
 			// if the event is not finished, unset it otherwise it could be deleted afterwards.
 			if ( $event->get( 'end' )->format_to_gmt() > $current_timestamp ) {
 				unset( $events_in_db[$event->get( 'post_id' )] );
@@ -631,7 +639,11 @@ class Ai1ec_Ics_Import_Export_Engine
 	 *
 	 * @return int UNIX timestamp
 	 **/
-	protected function _time_array_to_datetime( array $time, $def_timezone ) {
+	protected function _time_array_to_datetime(
+		array $time,
+		$def_timezone,
+		$forced_timezone = 'UTC'
+	) {
 		$timezone = '';
 		if ( isset( $time['params']['TZID'] ) ) {
 			$timezone = $time['params']['TZID'];
@@ -670,7 +682,12 @@ class Ai1ec_Ics_Import_Export_Engine
 			$time['value']['min'],
 			$time['value']['sec']
 		);
-
+		if (
+			'UTC' === $timezone &&
+			'UTC' !== $forced_timezone
+		) {
+			$date_time->set_timezone( $forced_timezone );
+		}
 		return $date_time;
 	}
 

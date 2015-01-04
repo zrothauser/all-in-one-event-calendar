@@ -62,6 +62,10 @@
 		}
 		?></strong>
 	</div>
+	<div class="ai1ec-feed-import-timezone">
+		<?php _e( 'Use this timezone when imported events are in UTC', AI1EC_PLUGIN_NAME ); ?>:
+		<strong><?php echo $feed_import_timezone; ?></strong>
+	</div>
 	<div class="ai1ec-btn-group ai1ec-pull-right">
 		<button type="button"
 			class="ai1ec-btn ai1ec-btn-sm ai1ec-btn-default ai1ec-text-primary

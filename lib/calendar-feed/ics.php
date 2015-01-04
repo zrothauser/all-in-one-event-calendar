@@ -726,7 +726,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				'renderer' => array(
 					'options' => $timezones,
 					'label' => Ai1ec_I18n::__(
-						'Use this timezone when imported events are in UTC '
+						'Use this timezone when imported events are in UTC'
 					),
 				),
 				'id' => 'ai1ec_feed_import_timezone',

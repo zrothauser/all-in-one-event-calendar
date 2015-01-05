@@ -137,27 +137,6 @@
 						</span>
 					</td>
 				</tr>
-				<tr<?php echo $recurrence_attr; ?>>
-					<td>
-						<label for="ai1ec_exdate_calendar_icon" id="ai1ec_exclude_date_label">
-							<?php _e( 'Exclude dates', AI1EC_PLUGIN_NAME ); ?>:
-						</label>
-					</td>
-					<td>
-						<div id="datepicker-widget">
-							<div id="widgetField">
-								<a href="javascript:void(0)" id="ai1ec_exclude-dates-input" data-placeholder="<?php _e( 'Choose dates', AI1EC_PLUGIN_NAME ); ?>"></a>
-							</div>
-							<div id="ai1ec_widget_calendar"></div>
-						</div>
-						<input type="hidden" name="ai1ec_exdate" id="ai1ec_exdate"
-							value="<?php echo $exdate; ?>">
-						<span class="ai1ec-info-text">
-							(<?php _e( 'Choose specific dates to exclude', AI1EC_PLUGIN_NAME ); ?>)
-						</span>
-					</td>
-				</tr>
-
 				<?php // Recurrence modal skeleton ?>
 				<div id="ai1ec_repeat_box" class="ai1ec-modal ai1ec-fade">
 					<div class="ai1ec-modal-dialog">

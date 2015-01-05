@@ -1,6 +1,6 @@
 <div class="ai1ec-form-group">
 	<label class="ai1ec-control-label ai1ec-col-sm-3">
-		Custom dates:
+		<?php _e( 'Custom dates:', AI1EC_PLUGIN_NAME ) ;?>
 	</label>
 	<div class="ai1ec-col-sm-8">
 		<div id="ai1ec_recurrence_calendar"></div>

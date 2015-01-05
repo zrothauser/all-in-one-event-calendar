@@ -74,14 +74,14 @@ class Ai1ec_EDD_SL_Plugin_Updater extends EDD_SL_Plugin_Updater {
 	 */
 	protected function _modify_api_url( $_api_url, $_plugin_file, $_api_data ) {
 		$slug       = basename( $_plugin_file, '.php' );
-		$api_params = [
+		$api_params = array(
 			'edd_action' 	=> 'get_version',
 			'license' 		=> $_api_data['license'],
 			'item_name'		=> urlencode( $_api_data['item_name'] ),
 			'slug'			=> $slug,
 			'author'		=> urlencode( $_api_data['author'] ),
 			'url'			=> site_url(),
-		];
+		);
 		return add_query_arg(
 			$api_params,
 			trailingslashit( $_api_url )

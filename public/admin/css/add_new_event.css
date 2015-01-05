@@ -313,29 +313,11 @@
 	width: 16.6%;
 }
 
-/**
- * Exclude dates multiselect widget
- */
-
-#datepicker-widget {
-	position: relative;
-}
-#ai1ec_widget_calendar {
-	position: absolute;
-	display: none;
-	background: #FFFFFF;
-	z-index: 10000;
-	border: 1px solid #bbb;
-}
-#widgetField input {
-	width: 320px;
-	padding-right: 24px;
-	background-position: 99% 40%;
-}
 .ai1ec-info-text {
 	font-size: 10px;
 	float: left;
 }
+
 /* input coordinates */
 #ai1ec-inside-wrapper{
 	width: 33em;

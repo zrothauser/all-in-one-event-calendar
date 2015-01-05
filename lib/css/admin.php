@@ -65,7 +65,6 @@ class Ai1ec_Css_Admin  extends Ai1ec_Base {
 				array(
 					array( 'style', 'bootstrap.min.css', ),
 					array( 'style', 'add_new_event.css', ),
-					array( 'style', 'datepicker.css', ),
 				)
 			);
 		}

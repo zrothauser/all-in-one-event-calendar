@@ -109,7 +109,9 @@ define(
 	 */
 	var init_modal_widgets = function() {
 		// Initialize count range slider
-		$( '#ai1ec_count, #ai1ec_daily_count, #ai1ec_weekly_count, #ai1ec_monthly_count, #ai1ec_yearly_count' ).rangeinput( {
+		$( '#ai1ec_count, #ai1ec_daily_count, #ai1ec_weekly_count,\
+			#ai1ec_monthly_count, #ai1ec_yearly_count'
+		).rangeinput( {
 			css: {
 				input: 'ai1ec-range',
 				slider: 'ai1ec-slider',

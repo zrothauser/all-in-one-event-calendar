@@ -113,7 +113,12 @@ define(
 				break;
 
 			case 'custom':
-				rule += 'RDATE=' + $( '#ai1ec_rec_custom_dates' ).val();
+				if ( '1' === $( '#ai1ec_is_box_repeat' ).val() ) {
+					rule += 'RDATE=';
+				} else {
+					rule += 'EXDATE=';
+				}
+				rule += $( '#ai1ec_rec_custom_dates' ).val();
 				break;
 		}
 

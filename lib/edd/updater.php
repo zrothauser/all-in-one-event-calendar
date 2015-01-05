@@ -1,6 +1,6 @@
 <?php
 /**
- * Missing class description
+ * EDD_SL_Plugin_Updater wrapper.
  *
  * @author     Time.ly Network Inc.
  * @since      2.2
@@ -11,16 +11,22 @@
  */
 class Ai1ec_EDD_SL_Plugin_Updater extends EDD_SL_Plugin_Updater {
 
+	/**
+	 * @var string API URL.
+	 */
 	protected $_timely_api_url;
 
+	/**
+	 * @var array|null API data.
+	 */
 	protected $_timely_api_data;
 
 	/**
 	 * Class constructor.
 	 *
-	 * @param string $_api_url The URL pointing to the custom API endpoint.
+	 * @param string $_api_url     The URL pointing to the custom API endpoint.
 	 * @param string $_plugin_file Path to the plugin file.
-	 * @param array $_api_data Optional data to send with API calls.
+	 * @param array  $_api_data    Optional data to send with API calls.
 	 *
 	 * @return Ai1ec_EDD_SL_Plugin_Updater
 	 */

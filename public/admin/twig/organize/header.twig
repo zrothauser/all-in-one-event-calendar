@@ -1,0 +1,9 @@
+<div class="timely ai1ec-taxonomy-header ai1ec-hide">
+	<ul class="ai1ec-nav ai1ec-nav-tabs">
+		{% for taxonomy in taxonomies %}
+			<li class="{{ taxonomy.active }}">
+				<a href="{{ taxonomy.url }}">{{ taxonomy.name }}</a>
+			</li>
+		{% endfor %}
+	</ul>
+</div>

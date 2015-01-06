@@ -83,7 +83,8 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 		// ========================================
 		$events_categories_labels = array(
 			'name'          => Ai1ec_I18n::_x( 'Event Categories', 'Event categories taxonomy' ),
-			'singular_name' => Ai1ec_I18n::_x( 'Event Category', 'Event categories taxonomy (singular)' )
+			'singular_name' => Ai1ec_I18n::_x( 'Event Category', 'Event categories taxonomy (singular)' ),
+			'menu_name'     => Ai1ec_I18n::_x( 'Organize', 'Event categories menu item' ),
 		);
 
 		// ==================================
@@ -114,7 +115,7 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 				'edit_terms'   => 'manage_events_categories',
 				'delete_terms' => 'manage_events_categories',
 				'assign_terms' => 'edit_ai1ec_events'
-			)
+			),
 		);
 
 		// ================================
@@ -124,12 +125,13 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 			'labels'       => $events_tags_labels,
 			'hierarchical' => false,
 			'rewrite'      => array( 'slug' => 'events_tags' ),
+			'show_ui'      => false,
 			'capabilities' => array(
 				'manage_terms' => 'manage_events_categories',
 				'edit_terms'   => 'manage_events_categories',
 				'delete_terms' => 'manage_events_categories',
 				'assign_terms' => 'edit_ai1ec_events'
-			)
+			),
 		);
 
 		// ================================

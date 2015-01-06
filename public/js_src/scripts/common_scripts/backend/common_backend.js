@@ -173,7 +173,7 @@ define(
 			action   : 'ai1ec_tracking',
 		};
 		$.post( ajaxurl, options );
-	}
+	};
 
 	// show the op in popup. Here i use jQuery and not $ as i must use Wordpress jQuery
 	var show_tracking_popup = function() {
@@ -195,7 +195,7 @@ define(
 			},
 			close: function() {
 			}
-		}
+		};
 
 		jQuery( '#wpadminbar' ).pointer( pointer_options ).pointer( 'open' );
 		jQuery( '#pointer-close' ).after( '<a id="pointer-primary" class="button-primary">' + 'Allow tracking' + '</a>' );
@@ -208,10 +208,22 @@ define(
 		} );
 	};
 
+	var category_header = function() {
+		var $header = $( '.ai1ec-taxonomy-header' );
+		if ( $header.length ) {
+			$header.prependTo( '#col-container' ).removeClass( 'ai1ec-hide' );
+			// highlight the menu
+			$( '#menu-posts-ai1ec_event a[href="edit-tags.php?taxonomy=events_categories&post_type=ai1ec_event"]' )
+				.closest( 'li' )
+				.addClass( 'current' );
+		}
+	};
 	var start = function() {
 		domReady( function() {
 			// Attach the export to Facebook functionality.
 			add_export_to_facebook();
+			// place cateogry header
+			category_header();
 			// Initialize modal video if present.
 			initialize_modal_video();
 			// Attach the event handlers.

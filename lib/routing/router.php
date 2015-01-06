@@ -40,7 +40,7 @@ class Ai1ec_Router extends Ai1ec_Base {
 	/**
 	 * @var array Rewrite structure.
 	 */
-	protected $_rewrite = array();
+	protected $_rewrite = null;
 
 	/**
 	 * Check if at least one filter is set in the request
@@ -210,7 +210,10 @@ class Ai1ec_Router extends Ai1ec_Base {
 			'mask'   => $regexp,
 			'target' => $rewrite_to,
 		);
-		add_filter( 'rewrite_rules_array', array( $this, 'check_rewrite' ) );
+		add_filter(
+			'rewrite_rules_array',
+			array( $this, 'rewrite_rules_array' )
+		);
 		return $this;
 	}
 
@@ -229,12 +232,8 @@ class Ai1ec_Router extends Ai1ec_Base {
 	 *
 	 * @return array Rewrite rules.
 	 */
-	public function check_rewrite( $rules ) {
-		if (
-			! empty( $this->_rewrite ) &&
-			is_array( $rules ) &&
-			! array_key_exists( $this->_rewrite['mask'], $rules )
-		) {
+	public function rewrite_rules_array( $rules ) {
+		if ( null !== $this->_rewrite ) {
 			$rules[$this->_rewrite['mask']] = $this->_rewrite['target'];
 		}
 		return $rules;

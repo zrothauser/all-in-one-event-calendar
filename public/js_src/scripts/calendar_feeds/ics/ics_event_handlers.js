@@ -60,6 +60,8 @@ define(
 			    	.is( ':checked' ) ? 1 : 0,
 				keep_old_events = $( '#ai1ec_keep_old_events' )
 			    	.is( ':checked' ) ? 1 : 0,
+				feed_import_timezone = $( '#ai1ec_feed_import_timezone' )
+					.is( ':checked' ) ? 1 : 0,
 			    data = {
 			    	action:               'ai1ec_add_ics',
 			    	nonce:                ai1ec_config.calendar_feeds_nonce,
@@ -69,8 +71,8 @@ define(
 			    	comments_enabled:     enable_comments,
 			    	map_display_enabled:  show_map,
 			    	keep_tags_categories: keep_tags_categories,
-				keep_old_events:      keep_old_events,
-				feed_import_timezone: $( '#ai1ec_feed_import_timezone' ).val()
+					keep_old_events:      keep_old_events,
+					feed_import_timezone: feed_import_timezone
 			    };
 
 			// Make an AJAX call to save the new feed.
@@ -141,11 +143,20 @@ define(
 		$.post( ajaxurl, data, ajax_handlers.handle_update_ics, 'json' );
 	};
 
+	var feed_url_change = function() {
+		var $value = $( this ).val();
+		var $pattern = /.google./i;
+		if ( $pattern.test( $value ) ) {
+			$( '#ai1ec_feed_import_timezone').prop( 'checked', true );
+		}
+	};
+
 	return {
 		"add_new_feed"        : add_new_feed,
 		"submit_delete_modal" : submit_delete_modal,
 		"open_delete_modal"   : open_delete_modal,
-		"update_feed"         : update_feed
+		"update_feed"         : update_feed,
+		"feed_url_change"     : feed_url_change
 	};
 
 } );

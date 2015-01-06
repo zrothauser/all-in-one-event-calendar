@@ -124,11 +124,12 @@ class Ai1ec_Ics_Import_Export_Engine
 		vcalendar $v,
 		array $args
 	) {
-		$feed           = isset( $args['feed'] ) ? $args['feed'] : null;
-		$comment_status = isset( $args['comment_status'] ) ? $args['comment_status'] : 'open';
-		$do_show_map    = isset( $args['do_show_map'] ) ? $args['do_show_map'] : 0;
-		$count = 0;
-		$events_in_db   = isset( $args['events_in_db'] ) ? $args['events_in_db'] : 0;
+		$forced_timezone = null;
+		$feed            = isset( $args['feed'] ) ? $args['feed'] : null;
+		$comment_status  = isset( $args['comment_status'] ) ? $args['comment_status'] : 'open';
+		$do_show_map     = isset( $args['do_show_map'] ) ? $args['do_show_map'] : 0;
+		$count           = 0;
+		$events_in_db    = isset( $args['events_in_db'] ) ? $args['events_in_db'] : 0;
 		$v->sort();
 		// Reverse the sort order, so that RECURRENCE-IDs are listed before the
 		// defining recurrence events, and therefore take precedence during
@@ -141,16 +142,26 @@ class Ai1ec_Ics_Import_Export_Engine
 		// Fetch default timezone in case individual properties don't define it
 		$tz = $v->getComponent( 'vtimezone' );
 		if ( ! empty( $tz ) ) {
-			$timezone   = $tz->getProperty( 'TZID' );
-		}
-		if ( empty( $timezone ) ) {
-			$timezone   = $v->getProperty( 'X-WR-TIMEZONE' );
-			$timezone   = (string)$timezone[1];
+			$timezone = $tz->getProperty( 'TZID' );
 		}
 
-		$messages       = array();
-		$local_timezone = $this->_registry->get( 'date.timezone' )
+		$x_wr_timezone = $v->getProperty( 'X-WR-TIMEZONE' );
+		if (
+			isset( $x_wr_timezone[1] ) &&
+			is_array( $x_wr_timezone )
+		) {
+			$forced_timezone = (string)$x_wr_timezone[1];
+			$timezone        = empty( $timezone )
+				? (string)$x_wr_timezone[1]
+				: $timezone;
+		}
+
+		$messages        = array();
+		$local_timezone  = $this->_registry->get( 'date.timezone' )
 			->get_default_timezone();
+		if ( empty( $forced_timezone ) ) {
+			$forced_timezone = $local_timezone;
+		}
 		$current_timestamp = $this->_registry->get( 'date.time' )->format_to_gmt();
 		// initialize empty custom exclusions structure
 		$exclusions        = array();
@@ -252,12 +263,12 @@ class Ai1ec_Ics_Import_Export_Engine
 			$start = $this->_time_array_to_datetime(
 				$start,
 				$event_timezone,
-				$args['feed']->import_timezone
+				$feed->import_timezone ? $forced_timezone : null
 			);
 			$end   = $this->_time_array_to_datetime(
 				$end,
 				$event_timezone,
-				$args['feed']->import_timezone
+				$feed->import_timezone ? $forced_timezone : null
 			);
 
 			if ( false === $start || false === $end ) {
@@ -634,15 +645,18 @@ class Ai1ec_Ics_Import_Export_Engine
 	 * Passed array: Array( 'year', 'month', 'day', ['hour', 'min', 'sec', ['tz']] )
 	 * Return int: UNIX timestamp in GMT
 	 *
-	 * @param array  $time         iCalcreator time property array (*full* format expected)
-	 * @param string $def_timezone Default time zone in case not defined in $time
+	 * @param array       $time            iCalcreator time property array
+	 *                                     (*full* format expected)
+	 * @param string      $def_timezone    Default time zone in case not defined
+	 *                                     in $time
+	 * @param null|string $forced_timezone Timezone to use instead of UTC.
 	 *
 	 * @return int UNIX timestamp
 	 **/
 	protected function _time_array_to_datetime(
 		array $time,
 		$def_timezone,
-		$forced_timezone = 'UTC'
+		$forced_timezone = null
 	) {
 		$timezone = '';
 		if ( isset( $time['params']['TZID'] ) ) {
@@ -684,7 +698,7 @@ class Ai1ec_Ics_Import_Export_Engine
 		);
 		if (
 			'UTC' === $timezone &&
-			'UTC' !== $forced_timezone
+			null !== $forced_timezone
 		) {
 			$date_time->set_timezone( $forced_timezone );
 		}

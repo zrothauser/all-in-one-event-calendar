@@ -269,7 +269,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					map_display_enabled tinyint(1) NOT NULL DEFAULT '0',
 					keep_tags_categories tinyint(1) NOT NULL DEFAULT '0',
 					keep_old_events tinyint(1) NOT NULL DEFAULT '0',
-					import_timezone varchar(64) NOT NULL DEFAULT 'UTC',
+					import_timezone tinyint(1) NOT NULL DEFAULT '0',
 					PRIMARY KEY  (feed_id),
 					UNIQUE KEY feed (feed_url)
 					) CHARACTER SET utf8;";
@@ -391,7 +391,6 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'event_tags'       => $select2_tags,
 			'feed_rows'        => $this->_get_feed_rows(),
 			'modal'            => $modal,
-			'timezones'        => $this->_get_timezones_select(),
 		);
 
 		$display_feeds = $loader->get_file(
@@ -464,7 +463,9 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				'keep_old_events'      => (bool) intval(
 						$row->keep_old_events
 				),
-				'feed_import_timezone' => $row->import_timezone,
+				'feed_import_timezone' => (bool) intval(
+					$row->import_timezone
+				),
 			);
 			$html .= $theme_loader->get_file( 'feed_row.php', $args, true )
 				->get_content();
@@ -518,14 +519,20 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'feed_category'        => $feed_categories,
 			'feed_tags'            => $_REQUEST['feed_tags'],
 			'comments_enabled'     => Ai1ec_Primitive_Int::db_bool(
-				$_REQUEST['comments_enabled'] ),
+				$_REQUEST['comments_enabled']
+			),
 			'map_display_enabled'  => Ai1ec_Primitive_Int::db_bool(
-				$_REQUEST['map_display_enabled'] ),
+				$_REQUEST['map_display_enabled']
+			),
 			'keep_tags_categories' => Ai1ec_Primitive_Int::db_bool(
-				$_REQUEST['keep_tags_categories'] ),
+				$_REQUEST['keep_tags_categories']
+			),
 			'keep_old_events' => Ai1ec_Primitive_Int::db_bool(
-				$_REQUEST['keep_old_events'] ),
-			'import_timezone' => $_REQUEST['feed_import_timezone']
+				$_REQUEST['keep_old_events']
+			),
+			'import_timezone' => Ai1ec_Primitive_Int::db_bool(
+				$_REQUEST['feed_import_timezone']
+			),
 		);
 		$entry = apply_filters( 'ai1ec_ics_feed_entry', $entry );
 		if ( is_wp_error( $entry ) ) {
@@ -539,7 +546,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			return $json_strategy->render( array( 'data' => $output ) );
 		}
 
-		$format     = array( '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%s' );
+		$format     = array( '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d' );
 		$res        = $db->insert( $table_name, $entry, $format );
 		$feed_id    = $db->get_insert_id();
 		$categories = array();
@@ -706,32 +713,4 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	protected function _import_lock_name( $feed_id ) {
 		return 'ics_import_' . (int)$feed_id;
 	}
-
-	/**
-	 * Returns timezones select element.
-	 *
-	 * @return Ai1ec_Html_Setting_Select
-	 */
-	protected function _get_timezones_select() {
-		$timezones = $this->_registry->get(
-			'date.timezone'
-		)->get_timezones( true );
-		$utc['UTC'] = $timezones['UTC'];
-		$utc['UTC'][0]['text'] = 'UTC';
-		unset( $timezones['UTC'] );
-		$timezones = array_merge( $utc, $timezones );
-		return $this->_registry->get(
-			'html.element.setting.select',
-			array(
-				'renderer' => array(
-					'options' => $timezones,
-					'label' => Ai1ec_I18n::__(
-						'Use this timezone when imported events are in UTC'
-					),
-				),
-				'id' => 'ai1ec_feed_import_timezone',
-			)
-		);
-	}
-
 }

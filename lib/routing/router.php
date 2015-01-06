@@ -38,6 +38,11 @@ class Ai1ec_Router extends Ai1ec_Base {
 	protected $cookie_set_dto;
 
 	/**
+	 * @var array Rewrite structure.
+	 */
+	protected $_rewrite = array();
+
+	/**
 	 * Check if at least one filter is set in the request
 	 *
 	 * @param array $view_args
@@ -201,6 +206,11 @@ class Ai1ec_Router extends Ai1ec_Base {
 			$regexp,
 			$rewrite_to
 		);
+		$this->_rewrite = array(
+			'mask'   => $regexp,
+			'target' => $rewrite_to,
+		);
+		add_filter( 'rewrite_rules_array', array( $this, 'check_rewrite' ) );
 		return $this;
 	}
 
@@ -210,6 +220,24 @@ class Ai1ec_Router extends Ai1ec_Base {
 	public function __construct( Ai1ec_Registry_Object $registry ) {
 		parent::__construct( $registry );
 		$this->_query_manager = $registry->get( 'query.helper' );
+	}
+
+	/**
+	 * Checks if calendar rewrite rule is registered.
+	 *
+	 * @param array $rules Rewrite rules.
+	 *
+	 * @return array Rewrite rules.
+	 */
+	public function check_rewrite( $rules ) {
+		if (
+			! empty( $this->_rewrite ) &&
+			is_array( $rules ) &&
+			! array_key_exists( $this->_rewrite['mask'], $rules )
+		) {
+			$rules[$this->_rewrite['mask']] = $this->_rewrite['target'];
+		}
+		return $rules;
 	}
 
 }

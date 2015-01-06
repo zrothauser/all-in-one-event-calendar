@@ -315,7 +315,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 					$val['longname'],
 					1
 				);
-				if ( AI1EC_USE_FRONTEND_RENDERING ) {
+				if ( $settings->get( 'ai1ec_use_frontend_rendering' ) ) {
 					$options['request_format'] = 'json';
 				}
 				$href = $this->_registry->get( 'html.element.href', $options );

@@ -554,26 +554,38 @@ class Ai1ec_Event extends Ai1ec_Base {
 			$this->set( 'post_id', $post_id );
 			$columns['post_id'] = $post_id;
 
-			$taxonomy = $this->_registry->get(
-				'model.event.taxonomy',
-				$post_id
-			);
-			$taxonomy->set_categories( $this->get( 'categories' ) );
-			$taxonomy->set_tags(       $this->get( 'tags' ) );
-
-			if (
-				$feed = $this->get( 'feed' ) &&
-				isset( $feed->feed_id )
-			) {
-				$taxonomy->set_feed( $feed );
-			}
-
 			// =========================
 			// = Insert new event data =
 			// =========================
 			if ( false === $dbi->insert( $table_name, $columns, $format ) ) {
 				return false;
 			}
+		}
+
+		$taxonomy = $this->_registry->get(
+			'model.event.taxonomy',
+			$post_id
+		);
+		$cats = $this->get( 'categories' );
+		if (
+			is_array( $cats ) &&
+			! empty( $cats )
+		) {
+			$taxonomy->set_categories( $cats );
+		}
+		$tags = $this->get( 'tags' );
+		if (
+			is_array( $tags ) &&
+			! empty( $tags )
+		) {
+			$taxonomy->set_tags( $tags );
+		}
+
+		if (
+			$feed = $this->get( 'feed' ) &&
+			isset( $feed->feed_id )
+		) {
+			$taxonomy->set_feed( $feed );
 		}
 
 		// give other plugins / extensions the ability to do things

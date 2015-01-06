@@ -99,7 +99,7 @@ class Ai1ec_Router extends Ai1ec_Base {
 	/**
 	 * Set base (AI1EC) URI
 	 *
-	 * @param string $uri Base URI (i.e. http://www.example.com/calendar)
+	 * @param string $url Base URI (i.e. http://www.example.com/calendar)
 	 *
 	 * @return Ai1ec_Router Object itself
 	 */

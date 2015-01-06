@@ -580,7 +580,9 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'keep_old_events' => (bool) intval(
 				$_REQUEST['keep_old_events']
 			),
-			'feed_import_timezone' => $_REQUEST['feed_import_timezone'],
+			'feed_import_timezone' => (bool) intval(
+				$_REQUEST['feed_import_timezone']
+			),
 		);
 		$loader = $this->_registry->get( 'theme.loader' );
 		// display added feed row

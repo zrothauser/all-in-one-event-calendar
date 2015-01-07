@@ -22,10 +22,10 @@ class Ai1ec_View_Organize extends Ai1ec_Base {
 	public function add_taxonomy_actions() {
 		$taxonomies = get_object_taxonomies( AI1EC_POST_TYPE, 'object' );
 		$dispatcher = $this->_registry->get( 'event.dispatcher' );
-		$groups = $this->_registry->get( 'model.custom-filters.storage' )->get_items();
-		$icons = array();
-		foreach ( $groups as $group ) {
-			$icons[$group['taxonomy_name']] = array(
+		$customize_groups = apply_filters( 'ai1ec_add_custom_groups', array() );
+		$group_data = array();
+		foreach ( $customize_groups as $group ) {
+			$group_data[$group['taxonomy_name']] = array(
 				'icon' => $group['icon'],
 				'id'   => $group['id'],
 			);
@@ -39,7 +39,7 @@ class Ai1ec_View_Organize extends Ai1ec_Base {
 					$edit_url = add_query_arg(
 						array(
 							'action' => 'edit',
-							'id'     => $icons[$taxonomy]['id']
+							'id'     => $group_data[$taxonomy]['id']
 					 	),
 						$this->_registry->get( 'view.admin.custom-filters' )->get_url()
 					);
@@ -52,10 +52,10 @@ class Ai1ec_View_Organize extends Ai1ec_Base {
 					 	),
 						admin_url( 'edit-tags.php' )
 					),
-					'name'       => $data->labels->name,
+					'name'   => $data->labels->name,
 					'active'     => $active_taxonomy,
-					'icon'       => isset( $icons[$taxonomy] ) ?
-						$icons[$taxonomy]['icon'] :
+					'icon'   => isset( $group_data[$taxonomy] ) ?
+						$group_data[$taxonomy]['icon'] :
 						'',
 					'edit_url'   => $edit_url,
 					'edit_label' => Ai1ec_I18n::__( 'Edit' )

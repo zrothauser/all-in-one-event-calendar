@@ -211,6 +211,10 @@ define(
 	var category_header = function() {
 		var $header = $( '.ai1ec-taxonomy-header' );
 		if ( $header.length ) {
+			// move edit link
+			$( '.ai1ec-taxonomy-edit-link' )
+				.removeClass( 'ai1ec-hide' ) 
+				.insertAfter( '#col-container .form-wrap h3:first' )
 			$header.prependTo( '#col-container' ).removeClass( 'ai1ec-hide' );
 			// highlight the menu
 			$( '#menu-posts-ai1ec_event a[href="edit-tags.php?taxonomy=events_categories&post_type=ai1ec_event"]' )

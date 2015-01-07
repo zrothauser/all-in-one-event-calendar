@@ -1,9 +1,25 @@
 <div class="timely ai1ec-taxonomy-header ai1ec-hide">
 	<ul class="ai1ec-nav ai1ec-nav-tabs">
+		{% set edit_url  = '' %}
+		{% set edit_label = '' %}
 		{% for taxonomy in taxonomies %}
-			<li class="{{ taxonomy.active }}">
-				<a href="{{ taxonomy.url }}">{{ taxonomy.name }}</a>
+			{% if taxonomy.edit_url is not empty %}
+				{% set edit_url = taxonomy.edit_url %}
+				{% set edit_label = taxonomy.edit_label %}
+			{% endif %}
+			<li class="{{ taxonomy.active | e('html_attr') }}">
+				<a href="{{ taxonomy.url | e('html_attr') }}">
+				{% if taxonomy.icon is not empty %}
+					<i class="{{ taxonomy.icon | e('html_attr') }}"></i>
+				{% endif %}
+				{{ taxonomy.name }}
+				</a>
 			</li>
 		{% endfor %}
 	</ul>
 </div>
+{% if edit_url is not empty %}
+<div class="timely ai1ec-taxonomy-edit-link ai1ec-hide">
+	<a href="{{ edit_url | e('html_attr') }}">{{ edit_label }}</a>
+</div>
+{% endif %}

@@ -6635,6 +6635,16 @@ ul.ai1ec-dropdown-menu li {
   filter: alpha(opacity=80);
   border-color: rgba(0, 0, 0, 0.5);
 }
+.ai1ec-taxonomy-header {
+  padding: 1px 1px 0;
+}
+.edit-tags-php.post-type-ai1ec_event #col-container > * {
+  margin-top: 57px;
+}
+.edit-tags-php.post-type-ai1ec_event #col-container > .ai1ec-taxonomy-header,
+.edit-tags-php.post-type-ai1ec_event #col-container > .ai1ec-taxonomy-header ~ * {
+  margin-top: 0;
+}
 .at-upload_image_button {
   width: auto !important;
 }

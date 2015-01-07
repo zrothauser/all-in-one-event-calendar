@@ -847,7 +847,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 						'Use frontend rendering.'
 					),
 					'help'  => Ai1ec_I18n::__(
-						'Paul please propose something :)'
+						'Renders calendar views on the client rather than the server; can improve performance.'
 					),
 				),
 				'default'  => false,

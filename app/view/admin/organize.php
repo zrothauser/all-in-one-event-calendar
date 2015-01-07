@@ -52,9 +52,9 @@ class Ai1ec_View_Organize extends Ai1ec_Base {
 					 	),
 						admin_url( 'edit-tags.php' )
 					),
-					'name'   => $data->labels->name,
+					'name'       => $data->labels->name,
 					'active'     => $active_taxonomy,
-					'icon'   => isset( $group_data[$taxonomy] ) ?
+					'icon'       => isset( $group_data[$taxonomy] ) ?
 						$group_data[$taxonomy]['icon'] :
 						'',
 					'edit_url'   => $edit_url,

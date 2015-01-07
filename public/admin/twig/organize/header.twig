@@ -7,7 +7,7 @@
 				{% set edit_url = taxonomy.edit_url %}
 				{% set edit_label = taxonomy.edit_label %}
 			{% endif %}
-			<li class="{{ taxonomy.active | e('html_attr') }}">
+			<li {% if taxonomy.active %}class="ai1ec-active"{% endif %}>
 				<a href="{{ taxonomy.url | e('html_attr') }}">
 				{% if taxonomy.icon is not empty %}
 					<i class="{{ taxonomy.icon | e('html_attr') }}"></i>

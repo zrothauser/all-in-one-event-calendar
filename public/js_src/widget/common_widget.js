@@ -12,6 +12,13 @@ require(
 		 ],
 function( page, evt, common, domReady, $,calendar, config, utils ) {
 	'use strict'; // jshint ;_;
+
+	// Prevent double initialisation for legacy code snippets.
+	if ( window.timely.js_widgets_inited ) {
+		return;
+	}
+	window.timely['js_widgets_inited'] = 1;
+
 	var
 		create_url = function( data ) {
 			var configurable = config.javascript_widgets[data.widget];
@@ -92,10 +99,35 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 					} );
 				}
 			} );
+		},
+		prevent_injection = function() {
+			$( '.ai1ec-load-view, .ai1ec-clear-filter' )
+				.each( function() {
+					var
+						$this       = $( this ),
+						widget_type = $this
+							.closest( '.timely-widget' )
+								.attr( 'data-widget-type' ),
+						href        = $this.attr( 'href' ) || $this.attr( 'data-href' ),
+						new_href    = utils.add_query_arg(
+							href, ['ai1ec_source', widget_type]
+						);
+
+					$this.attr( {
+						'href'      : new_href,
+						'data-href' : new_href
+					} );
+				} );
 		};
 
+	$.each( calendar.extension_urls, function( index, el ) {
+		timely.require( [ el.url ] );
+	} );
+
 	domReady( function() {
-		common.start();
+		if ( ! common.are_event_listeners_attached() ) {
+			common.start();
+		}
 		// Create only one shared event details modal for all loaded calendars.
 		if ( ! $( '#ai1ec-event-modal' ).length ) {
 			$( 'body' ).append(
@@ -111,12 +143,29 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 				</div>'
 			);
 		}
+
+		$( document ).on( 'calendar_added.ai1ec', function() {
+			var $calendars      = $( '[data-widget^="ai1ec"]' ),
+			    added_calendars = 0;
+
+			for ( var i = 0; i < $calendars.length; i++ ) {
+				if ( $calendars.eq( i ).data( 'added' ) ) {
+					added_calendars++;
+				}
+			}
+			// If all are ready.
+			if ( $calendars.length === added_calendars ) {
+				prevent_injection();
+				$( document ).trigger( 'page_ready.ai1ec' );
+				top.postMessage( 'ai1ec-widget-loaded', top.document.URL );
+			}
+		} );
+
 		// Load each widget.
 		$( '[data-widget^="ai1ec"]' ).not( '[data-added]' )
 			.each( function( i, el ) {
 				var
-					$el         = $( el )
-						.attr( 'data-added', 1 ),
+					$el         = $( el ),
 					widget_type = $el.data( 'widget' ),
 					$timely     = $( '<div />', {
 						'class': 'timely timely-widget'
@@ -149,36 +198,18 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 					data     : data,
 					success  : function( data ) {
 						$timely.html( data.html );
-						top.postMessage( 'ai1ec-widget-loaded', top.document.URL );
-						$.each( calendar.extension_urls, function( index, el ) {
-							timely.require( [ el.url ] );
-						} );
-						prevent_injection();
 					},
-					error    : function( jqXHR, textStatus, errorThrown ) {
+					error    : function() {
 						$timely.html( '<p>An error occurred while retrieving the data.</p>' );
+					},
+					complete : function() {
+						$el.attr( 'data-added', 1 );
+						$( document ).trigger( 'calendar_added.ai1ec' );
 					}
 				} );
-			} ),
-			prevent_injection = function() {
-				$( '.ai1ec-load-view, .ai1ec-clear-filter' )
-					.each( function() {
-						var
-							$this       = $( this ),
-							widget_type = $this
-								.closest( '.timely-widget' )
-									.attr( 'data-widget-type' ),
-							href        = $this.attr( 'href' ) || $this.attr( 'data-href' ),
-							new_href    = utils.add_query_arg(
-								href, ['ai1ec_source', widget_type]
-							);
+			} );
 
-						$this.attr( {
-							'href'      : new_href,
-							'data-href' : new_href
-						} );
-					} );
-			};
+
 		$( document )
 			.on( 'click', 'a.ai1ec-load-event', load_event_through_jsonp )
 			.on( 'initialize_view.ai1ec', prevent_injection );

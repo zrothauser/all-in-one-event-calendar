@@ -134,7 +134,6 @@ class Ai1ec_Date_System extends Ai1ec_Base {
 	) {
 		$date = $datetime->format( $this->get_date_format_patter( $pattern ) );
 		return str_replace( '/', '-', $date );
-		return $date;
 	}
 
 	/**

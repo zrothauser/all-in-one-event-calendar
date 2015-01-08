@@ -24,10 +24,10 @@ class Ai1ec_View_Organize extends Ai1ec_Base {
 		$dispatcher = $this->_registry->get( 'event.dispatcher' );
 		$taxonomy_metadata = array(
 			'events_categories' => array(
-				'icon' => 'ai1eccfgi-folder-open'
+				'icon' => 'ai1ec-fa ai1ec-fa-folder-open'
 			),
 			'events_tags'       => array(
-				'icon' => 'ai1eccfgi-tags'
+				'icon' => 'ai1ec-fa ai1ec-fa-tags'
 			)
 		);
 		$taxonomy_metadata = apply_filters(
@@ -62,8 +62,7 @@ class Ai1ec_View_Organize extends Ai1ec_Base {
 						$taxonomy_metadata[$taxonomy]['icon'] :
 						'',
 					'edit_url'   => $edit_url,
-					'edit_label' => Ai1ec_I18n::__( 'Edit' )
-
+					'edit_label' => Ai1ec_I18n::__( 'Edit' ),
 				);
 
 				$dispatcher->register_action(

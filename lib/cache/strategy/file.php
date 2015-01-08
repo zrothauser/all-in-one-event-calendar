@@ -30,8 +30,8 @@ class Ai1ec_Cache_Strategy_File extends Ai1ec_Cache_Strategy {
 	 *
 	 */
 	public function get_data( $file ) {
-		$file = $this->_safe_file_name( $file );
-		if ( ! file_exists( $this->_cache_dir . $file ) ) {
+		$file = $this->_get_file_name( $file );
+		if ( ! $file || ! file_exists( $this->_cache_dir . $file ) ) {
 			throw new Ai1ec_Cache_Not_Set_Exception(
 				'File \'' . $file . '\' does not exist'
 			);
@@ -62,6 +62,7 @@ class Ai1ec_Cache_Strategy_File extends Ai1ec_Cache_Strategy {
 		return array(
 			'path' => $this->_cache_dir . $filename,
 			'url'  => $this->_cache_url . $filename,
+			'file' => $filename,
 		);
 	}
 
@@ -120,6 +121,23 @@ class Ai1ec_Cache_Strategy_File extends Ai1ec_Cache_Strategy {
 		return '';
 	}
 
+	/**
+	 * Tries to get the stored filename
+	 * 
+	 * @param string $file
+	 * 
+	 * @return boolean | string
+	 */
+	protected function _get_file_name( $file ) {
+		static $file_map = array(
+			'ai1ec_parsed_css' => 'ai1ec_filename_css',
+		);
+		if ( isset ( $file_map[$file] ) ) {
+			return $this->_registry->get( 'model.option' )->get( $file_map[$file] );
+		}
+		return false;
+	}
+	
 	/**
 	 * _safe_file_name method
 	 *

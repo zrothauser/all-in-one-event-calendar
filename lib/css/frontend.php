@@ -141,6 +141,11 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 	 */
 	public function update_persistence_layer( $css ) {
 		$filename = $this->persistance_context->write_data_to_persistence( $css );
+		$this->db_adapter->set(
+			'ai1ec_filename_css',
+			$filename['file'],
+			true
+		);
 		$this->save_less_parse_time( $filename['url'] );
 	}
 

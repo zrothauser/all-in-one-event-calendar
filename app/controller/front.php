@@ -375,7 +375,8 @@ class Ai1ec_Front_Controller {
 			'widgets_init',
 			array( 'Ai1ec_View_Admin_Widget', 'register_widget' )
 		);
-		if ( isset( $_GET[Ai1ec_Controller_Javascript_Widget::WIDGET_PARAMETER] ) ) {
+		if ( isset( $_GET[Ai1ec_Controller_Javascript_Widget::WIDGET_PARAMETER] ) ||
+			 isset( $_GET[Ai1ec_Controller_Javascript_Widget::LEGACY_WIDGET_PARAMETER] ) ) {
 			$this->_registry->get( 'event.dispatcher' )->register_action(
 				'init',
 				array( 'controller.javascript-widget', 'render_js_widget' ),

@@ -62,6 +62,9 @@ class Ai1ec_Http_Request {
 		if ( isset( $_GET['ai1ec_js_widget'] ) ) {
 			return true;
 		}
+		if ( isset( $_GET['ai1ec_super_widget'] ) ) {
+			return true;
+		}
 		if (
 			isset( $_GET['ai1ec_render_js'] ) ||
 			isset( $_GET['ai1ec_render_css'] )

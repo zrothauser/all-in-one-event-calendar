@@ -12,6 +12,7 @@
 class Ai1ec_Controller_Javascript_Widget extends Ai1ec_Base {
 
 	const WIDGET_PARAMETER = 'ai1ec_js_widget';
+	const LEGACY_WIDGET_PARAMETER = 'ai1ec_super_widget';
 
 	protected $_widgets = array();
 
@@ -56,7 +57,11 @@ class Ai1ec_Controller_Javascript_Widget extends Ai1ec_Base {
 	 */
 	public function render_js_widget() {
 		if ( isset( $_GET['render'] ) && 'true' === $_GET['render'] ) {
-			$widget = $_GET[self::WIDGET_PARAMETER];
+			if ( isset( $_GET[self::WIDGET_PARAMETER] ) ){
+				$widget = $_GET[self::WIDGET_PARAMETER];
+			} else if ( isset( $_GET[self::LEGACY_WIDGET_PARAMETER] ) ) {
+				$widget = $_GET[self::LEGACY_WIDGET_PARAMETER];
+			}
 			$widget_class = null;
 			if ( isset( $this->_widgets[$widget] ) ) {
 				$widget_class = $this->_widgets[$widget];

@@ -15,7 +15,7 @@ class Ai1ec_Cache_Strategy_File extends Ai1ec_Cache_Strategy {
 	 * @var string
 	 */
 	private $_cache_dir;
-	
+
 	private $_cache_url;
 
 	public function __construct( Ai1ec_Registry_Object $registry, array $cache_dir ) {
@@ -59,7 +59,7 @@ class Ai1ec_Cache_Strategy_File extends Ai1ec_Cache_Strategy {
 				$this->_cache_dir . $filename . '\'';
 			throw new Ai1ec_Cache_Write_Exception( $message );
 		}
-		return array( 
+		return array(
 			'path' => $this->_cache_dir . $filename,
 			'url'  => $this->_cache_url . $filename,
 		);
@@ -105,9 +105,9 @@ class Ai1ec_Cache_Strategy_File extends Ai1ec_Cache_Strategy {
 
 	/**
 	 * Get the extension for the file if required
-	 * 
+	 *
 	 * @param string $file
-	 * 
+	 *
 	 * @return string
 	 */
 	protected function _get_extension_for_file( $file ) {
@@ -119,7 +119,7 @@ class Ai1ec_Cache_Strategy_File extends Ai1ec_Cache_Strategy {
 		}
 		return '';
 	}
-	
+
 	/**
 	 * _safe_file_name method
 	 *
@@ -134,7 +134,7 @@ class Ai1ec_Cache_Strategy_File extends Ai1ec_Cache_Strategy {
 		$extension = $this->_get_extension_for_file( $file );
 		if ( null === $prefix ) {
 			// always include site_url when there is more than one
-			$pref_string = site_url();
+			$pref_string = ai1ec_site_url();
 			if ( ! AI1EC_DEBUG ) {
 				// address multiple re-saves for a single version
 				// i.e. when theme settings are being edited

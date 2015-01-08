@@ -58,7 +58,7 @@ class Ai1ec_Command_Save_Theme_Options extends Ai1ec_Command_Save_Abstract {
 		);
 
 		return array(
-			'url' => admin_url(
+			'url'        => ai1ec_admin_url(
 				'edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-edit-css'
 			),
 			'query_args' => array(),

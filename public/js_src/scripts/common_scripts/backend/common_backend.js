@@ -211,12 +211,12 @@ define(
 	var category_header = function() {
 		var $header = $( '.ai1ec-taxonomy-header' );
 		if ( $header.length ) {
-			// move edit link
+			// Move edit button.
 			$( '.ai1ec-taxonomy-edit-link' )
-				.removeClass( 'ai1ec-hide' ) 
-				.insertAfter( '#col-container .form-wrap h3:first' )
+				.removeClass( 'ai1ec-hide' )
+				.appendTo( '.wrap > h2:first' )
 			$header.prependTo( '#col-container' ).removeClass( 'ai1ec-hide' );
-			// highlight the menu
+			// Highlight the Organize menu item.
 			$( '#menu-posts-ai1ec_event a[href="edit-tags.php?taxonomy=events_categories&post_type=ai1ec_event"]' )
 				.closest( 'li' )
 				.addClass( 'current' );

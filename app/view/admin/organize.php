@@ -41,12 +41,13 @@ class Ai1ec_View_Organize extends Ai1ec_Base {
 				$active_taxonomy =
 					isset( $_GET['taxonomy'] ) &&
 					$taxonomy === $_GET['taxonomy'];
-				$edit_url = '';
+				$edit_url = $edit_label = '';
 				if (
 					true === $active_taxonomy &&
 					isset( $taxonomy_metadata[$taxonomy]['url'] )
 				) {
 					$edit_url = $taxonomy_metadata[$taxonomy]['url'];
+					$edit_label = $taxonomy_metadata[$taxonomy]['edit_label'];
 				}
 				$this->_taxonomies[] = array(
 					'url'        => add_query_arg(
@@ -62,7 +63,7 @@ class Ai1ec_View_Organize extends Ai1ec_Base {
 						$taxonomy_metadata[$taxonomy]['icon'] :
 						'',
 					'edit_url'   => $edit_url,
-					'edit_label' => Ai1ec_I18n::__( 'Edit' ),
+					'edit_label' => $edit_label,
 				);
 
 				$dispatcher->register_action(

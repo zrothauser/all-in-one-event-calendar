@@ -19,7 +19,8 @@
 	</ul>
 </div>
 {% if edit_url is not empty %}
-<div class="timely ai1ec-taxonomy-edit-link ai1ec-hide">
-	<a href="{{ edit_url | e('html_attr') }}">{{ edit_label }}</a>
-</div>
+	<a class="ai1ec-taxonomy-edit-link ai1ec-hide button button-primary timely"
+		href="{{ edit_url | e('html_attr') }}">
+		<i class="ai1ec-fa ai1ec-fa-pencil"></i> {{ edit_label }}
+	</a>
 {% endif %}

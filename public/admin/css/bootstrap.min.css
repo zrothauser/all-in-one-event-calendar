@@ -6642,12 +6642,20 @@ ul.ai1ec-dropdown-menu li {
   font-size: 1.15em;
   line-height: 1em;
 }
+.ai1ec_event_page_all-in-one-event-calendar-custom-filter-group-menu #col-container > .ai1ec-taxonomy-header,
+.edit-tags-php.post-type-ai1ec_event #col-container > .ai1ec-taxonomy-header,
+.ai1ec_event_page_all-in-one-event-calendar-custom-filter-group-menu #col-container > .ai1ec-taxonomy-header ~ *,
+.edit-tags-php.post-type-ai1ec_event #col-container > .ai1ec-taxonomy-header ~ * {
+  margin-top: 0;
+}
 .edit-tags-php.post-type-ai1ec_event #col-container > * {
   margin-top: 58px;
 }
-.edit-tags-php.post-type-ai1ec_event #col-container > .ai1ec-taxonomy-header,
-.edit-tags-php.post-type-ai1ec_event #col-container > .ai1ec-taxonomy-header ~ * {
-  margin-top: 0;
+.ai1ec_event_page_all-in-one-event-calendar-custom-filter-group-menu #col-container > * {
+  margin-top: 78px;
+}
+.ai1ec_event_page_all-in-one-event-calendar-custom-filter-group-menu .ai1ec-taxonomy-header {
+  padding-top: 20px;
 }
 .at-upload_image_button {
   width: auto !important;

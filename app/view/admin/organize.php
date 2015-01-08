@@ -74,17 +74,27 @@ class Ai1ec_View_Organize extends Ai1ec_Base {
 	}
 
 	/**
-	 * render header to manage taxonomies
+	 * Render tabbed header to manage taxonomies.
 	 */
 	public function render_header() {
-		$this->_registry->get( 'theme.loader' )->get_file(
-			'organize/header.twig',
-			array(
-				'taxonomies' => apply_filters( 'ai1ec_custom_taxonomies', $this->_taxonomies )
-			),
-			true
-		)->render();
-
+		echo $this->get_header();
 	}
 
+	/**
+	 * Generate and return tabbed header to manage taxonomies.
+	 *
+	 * @return string HTML markup for tabbed header
+	 */
+	public function get_header() {
+		return $this->_registry->get( 'theme.loader' )->get_file(
+			'organize/header.twig',
+			array(
+				'taxonomies' => apply_filters(
+					'ai1ec_custom_taxonomies',
+					$this->_taxonomies
+				),
+			),
+			true
+		)->get_content();
+	}
 }

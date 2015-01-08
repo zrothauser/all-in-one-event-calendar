@@ -50,20 +50,21 @@ class Ai1ec_View_Organize extends Ai1ec_Base {
 					$edit_label = $taxonomy_metadata[$taxonomy]['edit_label'];
 				}
 				$this->_taxonomies[] = array(
-					'url'        => add_query_arg(
+					'taxonomy_name' => $taxonomy,
+					'url'           => add_query_arg(
 						array(
 							'post_type' => AI1EC_POST_TYPE,
 							'taxonomy'  => $taxonomy
 					 	),
 						admin_url( 'edit-tags.php' )
 					),
-					'name'       => $data->labels->name,
-					'active'     => $active_taxonomy,
-					'icon'       => isset( $taxonomy_metadata[$taxonomy] ) ?
+					'name'          => $data->labels->name,
+					'active'        => $active_taxonomy,
+					'icon'          => isset( $taxonomy_metadata[$taxonomy] ) ?
 						$taxonomy_metadata[$taxonomy]['icon'] :
 						'',
-					'edit_url'   => $edit_url,
-					'edit_label' => $edit_label,
+					'edit_url'      => $edit_url,
+					'edit_label'    => $edit_label,
 				);
 
 				$dispatcher->register_action(

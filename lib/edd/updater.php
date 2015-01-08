@@ -2,9 +2,10 @@
 /**
  * EDD_SL_Plugin_Updater wrapper.
  *
+ * @instantiator new
+ *
  * @author     Time.ly Network Inc.
  * @since      2.2
- * @instantiator new
  * @package    AI1EC
  * @subpackage AI1EC.Lib.Edd
 

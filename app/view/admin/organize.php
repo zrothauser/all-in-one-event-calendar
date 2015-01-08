@@ -24,20 +24,28 @@ class Ai1ec_View_Organize extends Ai1ec_Base {
 		$dispatcher = $this->_registry->get( 'event.dispatcher' );
 		$taxonomy_metadata = array(
 			'events_categories' => array(
-				'icon' => 'ai1eccfgi-folder'
+				'icon' => 'ai1eccfgi-folder-open'
 			),
 			'events_tags'       => array(
-				'icon' => 'ai1eccfgi-tag'
+				'icon' => 'ai1eccfgi-tags'
 			)
 		);
-		$taxonomy_metadata = apply_filters( 'ai1ec_add_custom_groups', $taxonomy_metadata );
+		$taxonomy_metadata = apply_filters(
+			'ai1ec_add_custom_groups',
+			$taxonomy_metadata
+		);
 		$group_data = array();
 		do_action( 'ai1ec_taxonomy_management_css' );
 		foreach ( $taxonomies as $taxonomy => $data ) {
 			if ( true === $data->public ) {
-				$active_taxonomy = isset( $_GET['taxonomy'] ) && $taxonomy === $_GET['taxonomy'];
+				$active_taxonomy =
+					isset( $_GET['taxonomy'] ) &&
+					$taxonomy === $_GET['taxonomy'];
 				$edit_url = '';
-				if ( true === $active_taxonomy && isset( $taxonomy_metadata[$taxonomy]['url'] ) ) {
+				if (
+					true === $active_taxonomy &&
+					isset( $taxonomy_metadata[$taxonomy]['url'] )
+				) {
 					$edit_url = $taxonomy_metadata[$taxonomy]['url'];
 				}
 				$this->_taxonomies[] = array(

@@ -196,12 +196,14 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		$events,
 		Ai1ec_Abstract_Query $query = null
 	) {
+		global $post;
 		$dates    = array();
 		$time     = $this->_registry->get( 'date.system' );
 		$settings = $this->_registry->get( 'model.settings' );
 		$this->_registry->get( 'controller.content-filter' )
 			->clear_the_content_filters();
 		// Classify each event into a date/allday category
+		$current_post = $post;
 		foreach ( $events as $event ) {
 			$start_time    = $this->_registry
 				->get(
@@ -225,6 +227,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 					'notallday' => array(),
 				);
 			}
+			$post = $event->get( 'post' );
 			$this->_add_runtime_properties( $event );
 			// Add the event.
 			$category                           = $event->is_allday()
@@ -267,6 +270,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$dates[$timestamp]['year']                = $this->_registry->
 				get( 'date.time', $timestamp )->format_i18n( 'Y' );
 		}
+		$post = $current_post;
 		$this->_registry->get( 'controller.content-filter' )
 			->restore_the_content_filters();
 		// Flag today

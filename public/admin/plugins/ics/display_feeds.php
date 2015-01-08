@@ -76,7 +76,7 @@
 		<label for="ai1ec_feed_import_timezone" class="ai1ec-tooltip-toggle" title="<?php _e( 'Guesses the time zone of events that have none specified; recommended for Google Calendar feeds', AI1EC_PLUGIN_NAME ); ?>">
 			<input type="checkbox" name="ai1ec_feed_import_timezones"
 				   id="ai1ec_feed_import_timezone" value="1">
-			<?php _e( 'Use timezone from ICS feed or WordPress', AI1EC_PLUGIN_NAME ); ?>
+			<?php _e( 'Assign default time zone to events in UTC', AI1EC_PLUGIN_NAME ); ?>
 		</label>
 	</div>
 	<div class="ai1ec-pull-right">

@@ -198,6 +198,8 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	 * @param Ai1ec_Event $event
 	 */
 	protected function _add_runtime_properties( Ai1ec_Event $event ) {
+		global $post;
+		$original_post      = $post;
 		$instance_permalink = get_permalink(
 			$event->get( 'post_id' )
 		);
@@ -238,8 +240,8 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 		$event->set_runtime( 'category_colors', $taxonomy->get_category_colors( $event ) );
 		$event->set_runtime( 'ticket_url_label', $ticket->get_tickets_url_label( $event, false ) );
 		$event->set_runtime( 'edit_post_link', get_edit_post_link( $event->get( 'post_id' ) ) );
-		$post = $this->_registry->get( 'view.event.post' );
-		$event->set_runtime( 'post_excerpt', $post->trim_excerpt( $event ) );
+		$event_post = $this->_registry->get( 'view.event.post' );
+		$event->set_runtime( 'post_excerpt', $event_post->trim_excerpt( $event ) );
 		$color = $this->_registry->get( 'view.event.color' );
 		$event->set_runtime( 'faded_color', $color->get_faded_color( $event ) );
 		$event->set_runtime( 'rgba_color', $color->get_rgba_color( $event ) );
@@ -249,6 +251,7 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 			->get_short_time( $event->get( 'start' ) )
 		);
 		$this->_add_view_specific_runtime_properties( $event );
+		$post = $original_post;
 	}
 
 	/**

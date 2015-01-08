@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.1.9.6\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.1.9.7\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2015-01-02 19:09:08+00:00\n"
+"POT-Creation-Date: 2015-01-08 23:13:31+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -125,17 +125,17 @@ msgstr ""
 msgid "Loading&hellip;"
 msgstr ""
 
-#: app/controller/javascript.php:458 app/view/admin/widget-creator.php:131
+#: app/controller/javascript.php:460 app/view/admin/widget-creator.php:131
 msgid "Preview:"
 msgstr ""
 
-#: app/controller/javascript.php:459
+#: app/controller/javascript.php:461
 msgid ""
 "Loading preview&nbsp;<i class=\"ai1ec-fa ai1ec-fa-spin ai1ec-fa-spinner\"></"
 "i>"
 msgstr ""
 
-#: app/controller/javascript.php:463
+#: app/controller/javascript.php:465
 msgid ""
 "Something went wrong while fetching events.<br>The request status is: %STATUS"
 "% <br>The error thrown was: %ERROR%"
@@ -388,22 +388,32 @@ msgid ""
 msgstr ""
 
 #: app/model/settings.php:846
+msgid "Use frontend rendering."
+msgstr ""
+
+#: app/model/settings.php:849
+msgid ""
+"Renders calendar views on the client rather than the server; can improve "
+"performance."
+msgstr ""
+
+#: app/model/settings.php:861
 msgid ""
 "<strong>Link CSS</strong> in <code>&lt;head&gt;</code> section when file "
 "cache is unavailable."
 msgstr ""
 
-#: app/model/settings.php:849
+#: app/model/settings.php:864
 msgid ""
 "Use this option if file cache is unavailable and you would prefer to serve "
 "CSS as a link rather than have it output inline."
 msgstr ""
 
-#: app/model/settings.php:861
+#: app/model/settings.php:876
 msgid "Current <strong>robots.txt</strong> on this site"
 msgstr ""
 
-#: app/model/settings.php:865
+#: app/model/settings.php:880
 msgid ""
 "The Robot Exclusion Standard, also known as the Robots Exclusion Protocol "
 "or\n"
@@ -417,13 +427,13 @@ msgid ""
 "your root WordPress directory."
 msgstr ""
 
-#: app/model/settings.php:882
+#: app/model/settings.php:897
 msgid ""
 "<strong>Publicize, promote, and share my events</strong> marked as public on "
 "the Timely network. (<a href=\"%s\" target=\"_blank\">Learn more &#187;</a>)"
 msgstr ""
 
-#: app/model/settings.php:905
+#: app/model/settings.php:920
 msgid "Templates cache improves site performance"
 msgstr ""
 
@@ -634,59 +644,59 @@ msgstr ""
 msgid "All-in-One Event Calendar: Settings"
 msgstr ""
 
-#: app/view/admin/settings.php:65 app/view/admin/settings.php:66
+#: app/view/admin/settings.php:68 app/view/admin/settings.php:69
 #: lib/date/timezone.php:366
 msgid "Settings"
 msgstr ""
 
-#: app/view/admin/settings.php:86
+#: app/view/admin/settings.php:89
 msgctxt "meta box"
 msgid "General Settings"
 msgstr ""
 
-#: app/view/admin/settings.php:95
+#: app/view/admin/settings.php:98
 msgctxt "meta box"
 msgid "Timely"
 msgstr ""
 
-#: app/view/admin/settings.php:137
+#: app/view/admin/settings.php:140
 msgid "Viewing Events"
 msgstr ""
 
-#: app/view/admin/settings.php:140
+#: app/view/admin/settings.php:143
 msgid "Adding/Editing Events"
 msgstr ""
 
-#: app/view/admin/settings.php:143
+#: app/view/admin/settings.php:146
 msgid "Advanced"
 msgstr ""
 
-#: app/view/admin/settings.php:145
+#: app/view/admin/settings.php:148
 msgid "Advanced Settings"
 msgstr ""
 
-#: app/view/admin/settings.php:146
+#: app/view/admin/settings.php:149
 msgid "Shortcodes"
 msgstr ""
 
-#: app/view/admin/settings.php:147
+#: app/view/admin/settings.php:150
 msgid "Email Templates"
 msgstr ""
 
-#: app/view/admin/settings.php:148
+#: app/view/admin/settings.php:151
 msgid "External Services"
 msgstr ""
 
-#: app/view/admin/settings.php:149
+#: app/view/admin/settings.php:152
 msgid "Cache Report"
 msgstr ""
 
-#: app/view/admin/settings.php:167
+#: app/view/admin/settings.php:170
 #: public/admin/plugins/ics/display_feeds.php:24
 msgid "Save Settings"
 msgstr ""
 
-#: app/view/admin/settings.php:174
+#: app/view/admin/settings.php:177
 msgid ""
 "If the form below is not working please follow <a href=\"%s\">this link</a>."
 msgstr ""
@@ -866,7 +876,7 @@ msgstr ""
 msgid "There are no upcoming events to display at this time."
 msgstr ""
 
-#: app/view/calendar/view/agenda.php:144 app/view/calendar/widget.php:363
+#: app/view/calendar/view/agenda.php:144 app/view/calendar/widget.php:364
 msgid "Edit"
 msgstr ""
 
@@ -885,7 +895,7 @@ msgstr ""
 
 #: app/view/calendar/view/agenda.php:148 app/view/calendar/view/month.php:81
 #: app/view/calendar/view/oneday.php:101 app/view/calendar/view/week.php:112
-#: app/view/calendar/widget.php:364
+#: app/view/calendar/widget.php:365
 msgid "@ %s"
 msgstr ""
 
@@ -945,19 +955,19 @@ msgstr ""
 msgid "Show the subscribe button in the widget"
 msgstr ""
 
-#: app/view/calendar/widget.php:360
+#: app/view/calendar/widget.php:361
 msgid "There are no upcoming events."
 msgstr ""
 
-#: app/view/calendar/widget.php:361 app/view/event/time.php:131
+#: app/view/calendar/widget.php:362 app/view/event/time.php:131
 msgid "all-day"
 msgstr ""
 
-#: app/view/calendar/widget.php:362
+#: app/view/calendar/widget.php:363
 msgid "View Calendar"
 msgstr ""
 
-#: app/view/calendar/widget.php:365
+#: app/view/calendar/widget.php:366
 msgid "Add"
 msgstr ""
 
@@ -1046,6 +1056,7 @@ msgid "Cost:"
 msgstr ""
 
 #: app/view/event/single.php:104
+#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:94
 msgid "Contact:"
 msgstr ""
 
@@ -1109,6 +1120,113 @@ msgstr ""
 msgid ", and "
 msgstr ""
 
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:53
+#: public/admin/box_event_location.php:34
+msgid "Address:"
+msgstr ""
+
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:92
+#: public/admin/box_event_location.php:48
+msgid "Show Google Map"
+msgstr ""
+
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:118
+msgid "Longitude"
+msgstr ""
+
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:153
+msgid "Latitude"
+msgstr ""
+
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:215
+msgid "Description:"
+msgstr ""
+
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:248
+#: public/admin/box_event_contact.php:17
+msgid "Contact name:"
+msgstr ""
+
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:282
+#: public/admin/box_event_contact.php:30
+msgid "Phone:"
+msgstr ""
+
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:316
+msgid "Email:"
+msgstr ""
+
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:350
+msgid "External url:"
+msgstr ""
+
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:384
+#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:173
+msgid "Seating capacity:"
+msgstr ""
+
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:417
+msgid "Handicap Accessible:"
+msgstr ""
+
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:453
+#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:205
+msgid "Parking:"
+msgstr ""
+
+#: cache/twig/57/45/0188512a8737525f2a834d1b88782d9a19e5e6d3a9e57df3dbed47bab219.php:37
+msgid "Import events from a CSV file or iCalendar (.ics) feed:"
+msgstr ""
+
+#: cache/twig/57/45/0188512a8737525f2a834d1b88782d9a19e5e6d3a9e57df3dbed47bab219.php:60
+msgid "Or paste your CSV data or iCalendar (.ics) feed here:"
+msgstr ""
+
+#: cache/twig/57/45/0188512a8737525f2a834d1b88782d9a19e5e6d3a9e57df3dbed47bab219.php:101
+#: public/admin/plugins/ics/display_feeds.php:51
+msgid "Allow comments on imported events"
+msgstr ""
+
+#: cache/twig/57/45/0188512a8737525f2a834d1b88782d9a19e5e6d3a9e57df3dbed47bab219.php:111
+#: public/admin/plugins/ics/display_feeds.php:58
+msgid "Show map on imported events"
+msgstr ""
+
+#: cache/twig/57/45/0188512a8737525f2a834d1b88782d9a19e5e6d3a9e57df3dbed47bab219.php:121
+#: public/admin/plugins/ics/display_feeds.php:65
+msgid ""
+"Import any tags/categories provided by feed, in addition those selected above"
+msgstr ""
+
+#: cache/twig/78/3e/57d2212e2837aee7813ecc844f345947f68d3edb57d31388f926a75264db.php:27
+#: cache/twig/78/3e/57d2212e2837aee7813ecc844f345947f68d3edb57d31388f926a75264db.php:31
+msgid "Products"
+msgstr ""
+
+#: cache/twig/a2/d6/3fbda218850f7e089e33254a2a7e597c13d99697a035b078e57b486b58fd.php:50
+msgid "I understand - hide this notice"
+msgstr ""
+
+#: cache/twig/dc/78/b950182efb8f436b144938fb0dc48cf395d7daabe20293234dbcf2b26545.php:37
+msgid "Excludes: "
+msgstr ""
+
+#: cache/twig/dc/78/b950182efb8f436b144938fb0dc48cf395d7daabe20293234dbcf2b26545.php:48
+msgid "Repeats"
+msgstr ""
+
+#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:190
+msgid "Handicap accessible"
+msgstr ""
+
+#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:241
+msgid "Email Venue"
+msgstr ""
+
+#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:259
+msgid "Visit Website"
+msgstr ""
+
 #: lib/calendar-feed/ics.php:38
 msgid "ICS"
 msgstr ""
@@ -1141,36 +1259,36 @@ msgid_plural "Imported %s events"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/calendar-feed/ics.php:205 lib/calendar-feed/ics.php:654
+#: lib/calendar-feed/ics.php:205 lib/calendar-feed/ics.php:656
 msgid "Invalid ICS feed ID"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:348
+#: lib/calendar-feed/ics.php:350
 msgid "Categories (optional)"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:365
+#: lib/calendar-feed/ics.php:367
 msgid ""
 "Do you want to keep the events imported from the calendar or remove them?"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:371
+#: lib/calendar-feed/ics.php:373
 msgid "Removing ICS Feed"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:374
+#: lib/calendar-feed/ics.php:376
 msgid "Keep Events"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:377
+#: lib/calendar-feed/ics.php:379
 msgid "Remove Events"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:646
+#: lib/calendar-feed/ics.php:648
 msgid "Deleted %d events"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:681
+#: lib/calendar-feed/ics.php:683
 msgid "Feed deleted"
 msgstr ""
 
@@ -1200,13 +1318,13 @@ msgstr ""
 msgid "Clone to Draft"
 msgstr ""
 
-#: lib/command/clone.php:169
+#: lib/command/clone.php:173
 msgid ""
 "<p>The event <strong>%s</strong> was cloned succesfully. <a href=\"%s\">Edit "
 "cloned event</a></p>"
 msgstr ""
 
-#: lib/css/frontend.php:225
+#: lib/css/frontend.php:230
 msgid ""
 "CSS compilation failed because you don't have enough free memory (a minimum "
 "of %s is needed). Your calendar will not render or function properly without "
@@ -1215,29 +1333,29 @@ msgid ""
 "PHP memory limit."
 msgstr ""
 
-#: lib/css/frontend.php:252
+#: lib/css/frontend.php:257
 msgid ""
 "The LESS file compiled correctly but there was an error while saving the "
 "generated CSS to persistence."
 msgstr ""
 
-#: lib/css/frontend.php:258
+#: lib/css/frontend.php:263
 msgid ""
 "<p><strong>There was an error while compiling CSS.</strong> The message "
 "returned was: <em>%s</em></p>"
 msgstr ""
 
-#: lib/css/frontend.php:286
+#: lib/css/frontend.php:291
 msgid ""
 "Theme options were successfully reset to their default values. <a "
 "href='%s'>Visit site</a>"
 msgstr ""
 
-#: lib/css/frontend.php:293
+#: lib/css/frontend.php:298
 msgid "Theme options were updated successfully. <a href='%s'>Visit site</a>"
 msgstr ""
 
-#: lib/css/frontend.php:329
+#: lib/css/frontend.php:334
 msgid ""
 "Your CSS is being compiled on every request, which causes your calendar to "
 "perform slowly. The following error occurred: %s"
@@ -1258,7 +1376,7 @@ msgstr ""
 msgid "Error encountered: %s"
 msgstr ""
 
-#: lib/date/system.php:177
+#: lib/date/system.php:176
 msgid "GMT%+d:%02d"
 msgstr ""
 
@@ -1850,14 +1968,6 @@ msgstr ""
 msgid "Organizer contact info"
 msgstr ""
 
-#: public/admin/box_event_contact.php:17
-msgid "Contact name:"
-msgstr ""
-
-#: public/admin/box_event_contact.php:30
-msgid "Phone:"
-msgstr ""
-
 #: public/admin/box_event_contact.php:43
 msgid "E-mail:"
 msgstr ""
@@ -1892,14 +2002,6 @@ msgstr ""
 
 #: public/admin/box_event_location.php:22
 msgid "Venue name:"
-msgstr ""
-
-#: public/admin/box_event_location.php:34
-msgid "Address:"
-msgstr ""
-
-#: public/admin/box_event_location.php:48
-msgid "Show Google Map"
 msgstr ""
 
 #: public/admin/box_event_location.php:57
@@ -2257,19 +2359,6 @@ msgstr ""
 msgid "Check for new events"
 msgstr ""
 
-#: public/admin/plugins/ics/display_feeds.php:51
-msgid "Allow comments on imported events"
-msgstr ""
-
-#: public/admin/plugins/ics/display_feeds.php:58
-msgid "Show map on imported events"
-msgstr ""
-
-#: public/admin/plugins/ics/display_feeds.php:65
-msgid ""
-"Import any tags/categories provided by feed, in addition those selected above"
-msgstr ""
-
 #: public/admin/plugins/ics/display_feeds.php:82
 msgid "Add new subscription"
 msgstr ""
@@ -2306,19 +2395,25 @@ msgstr ""
 msgid "The active theme is broken.  Reverting to the default theme."
 msgstr ""
 
-#: public/admin/themes-install.php:22 public/admin/themes.php:4
+#: public/admin/themes-install.php:13
+msgid ""
+"New theme activated. This theme supports widgets, please visit the <a href="
+"\"%s\">widgets settings</a> screen to configure them."
+msgstr ""
+
+#: public/admin/themes-install.php:20 public/admin/themes.php:4
 msgid "New theme activated. <a href=\"%s\">Visit site</a>"
 msgstr ""
 
-#: public/admin/themes-install.php:28 public/admin/themes.php:10
+#: public/admin/themes-install.php:26 public/admin/themes.php:10
 msgid "Theme deleted."
 msgstr ""
 
-#: public/admin/themes-install.php:39 public/admin/themes-install.php:46
+#: public/admin/themes-install.php:37 public/admin/themes-install.php:44
 msgid "Manage Themes"
 msgstr ""
 
-#: public/admin/themes-install.php:42
+#: public/admin/themes-install.php:40
 msgctxt "theme"
 msgid "Install Themes"
 msgstr ""
@@ -2562,9 +2657,9 @@ msgstr ""
 msgid "All-in-One Event Calendar by Time.ly"
 msgstr ""
 
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.9.6)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.9.7)  #-#-#-#-#
 #. Plugin URI of the plugin/theme
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.9.6)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.9.7)  #-#-#-#-#
 #. Author URI of the plugin/theme
 msgid "http://time.ly/"
 msgstr ""

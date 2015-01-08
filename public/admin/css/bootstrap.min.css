@@ -6638,6 +6638,10 @@ ul.ai1ec-dropdown-menu li {
 .ai1ec-taxonomy-header {
   padding: 2px 2px 0;
 }
+.ai1ec-taxonomy-header i {
+  font-size: 1.15em;
+  line-height: 1em;
+}
 .edit-tags-php.post-type-ai1ec_event #col-container > * {
   margin-top: 58px;
 }

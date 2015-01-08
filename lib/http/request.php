@@ -175,9 +175,11 @@ class Ai1ec_Http_Request {
 	 */
 	public function is_json_required( $request_format ) {
 		return
-			'json' === $request_format
-			&& AI1EC_USE_FRONTEND_RENDERING
-			&& $this->is_ajax();
+			'json' === $request_format &&
+			$this->_registry->get(
+				'model.settings'
+			)->get( 'ai1ec_use_frontend_rendering' ) &&
+			$this->is_ajax();
 	}
 
 	/**

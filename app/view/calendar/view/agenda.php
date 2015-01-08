@@ -313,7 +313,11 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 
 		$links = array();
 
-		if ( AI1EC_USE_FRONTEND_RENDERING ) {
+		if (
+			$this->_registry->get(
+				'model.settings'
+			)->get( 'ai1ec_use_frontend_rendering' )
+		) {
 			$args['request_format'] = 'json';
 		}
 		$args['page_offset'] = -1;

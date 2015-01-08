@@ -837,6 +837,21 @@ class Ai1ec_Settings extends Ai1ec_App {
 				),
 				'default'  => true,
 			),
+			'ai1ec_use_frontend_rendering' => array(
+				'type' => 'bool',
+				'renderer' => array(
+					'class' => 'checkbox',
+					'tab'   => 'advanced',
+					'item'  => 'advanced',
+					'label' => Ai1ec_I18n::__(
+						'Use frontend rendering.'
+					),
+					'help'  => Ai1ec_I18n::__(
+						'Renders calendar views on the client rather than the server; can improve performance.'
+					),
+				),
+				'default'  => false,
+			),
 			'render_css_as_link' => array(
 				'type' => 'bool',
 				'renderer' => array(

@@ -229,7 +229,10 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 	public function invalidate_css_cache_if_requested() {
 		$option = $this->_registry->get( 'model.option' );
 
-		if ( $option->get( 'ai1ec_invalidate_css_cache' ) ) {
+		if (
+			$option->get( 'ai1ec_invalidate_css_cache' ) ||
+			Ai1ec_Css_Frontend::PARSE_LESS_FILES_AT_EVERY_REQUEST
+		) {
 			$css_controller = $this->_registry->get( 'css.frontend' );
 			$css_controller->invalidate_cache( null, true );
 			$option->delete( 'ai1ec_invalidate_css_cache' );

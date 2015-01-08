@@ -487,4 +487,9 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		define( 'AI1EC_LESS_MIN_AVAIL_MEMORY', '24M' );
 	}
 
+	// Defines if LESS files are parsed at every request
+	if ( ! defined( 'AI1EC_PARSE_LESS_FILES_AT_EVERY_REQUEST' ) ) {
+		define( 'AI1EC_PARSE_LESS_FILES_AT_EVERY_REQUEST', false );
+	}
+
 }

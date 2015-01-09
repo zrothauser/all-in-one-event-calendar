@@ -112,7 +112,7 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	 */
 	protected function _apply_filters_to_args( array $args ) {
 		$loader = $this->_registry->get( 'theme.loader' );
-		$view = $this->get_name();
+		$view   = $this->get_name();
 		return $loader->apply_filters_to_args( $args, $view . '.twig', false );
 	}
 

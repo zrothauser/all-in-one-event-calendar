@@ -293,7 +293,6 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 				}
 			}
 		}
-
 		return $tabs_to_display;
 	}
 

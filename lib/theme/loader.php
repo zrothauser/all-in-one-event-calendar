@@ -96,6 +96,23 @@ class Ai1ec_Theme_Loader {
 	}
 
 	/**
+	 * Runs the filter for the specified filename just once
+	 * 
+	 * @param array $args
+	 * @param string $filename
+	 * @param boole $is_admin
+	 * 
+	 * @return array
+	 */
+	public function apply_filters_to_args( array $args, $filename, $is_admin ) {
+		return  apply_filters(
+			self::ARGS_FILTER_PREFIX . $filename,
+			$args,
+			$is_admin
+		);
+	}
+
+	/**
 	 * Adds file search path to list. If an extension is adding this path, and
 	 * this is a custom child theme, inserts its path at the second index of the
 	 * list. Else pushes it onto the top of the stack.
@@ -278,6 +295,7 @@ class Ai1ec_Theme_Loader {
 					$args,
 					$is_admin
 				);
+
 				if ( null === $paths ) {
 					$paths = $is_admin ? $this->_paths['admin'] : $this->_paths['theme'];
 					$paths = array_keys( $paths ); // Values (URLs) not used for Twig

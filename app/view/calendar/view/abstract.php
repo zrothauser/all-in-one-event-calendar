@@ -106,6 +106,17 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	}
 
 	/**
+	 * Applies filters to view args for freont end rendering
+	 * 
+	 * @param array $args
+	 */
+	protected function _apply_filters_to_args( array $args ) {
+		$loader = $this->_registry->get( 'theme.loader' );
+		$view   = $this->get_name();
+		return $loader->apply_filters_to_args( $args, $view . '.twig', false );
+	}
+
+	/**
 	 * Prepare week specific event start/end timestamps.
 	 *
 	 * @param Ai1ec_Event $event Instance of event.

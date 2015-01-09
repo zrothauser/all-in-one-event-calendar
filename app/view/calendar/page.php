@@ -115,6 +115,10 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			$view_args
 		);
 
+		$show_get_calendar = ! $this->_registry->get( 'model.settings' )
+			->get( 'disable_get_calendar_button' );
+		$get_calendar_text = 'Get a Timely Calendar';
+
 		if (
 			( $view_args['no_navigation'] || $type !== 'html' ) &&
 			'jsonp' !== $type
@@ -127,6 +131,8 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				'tags'               => $tags,
 				'views_dropdown'     => $views_dropdown,
 				'subscribe_buttons'  => $subscribe_buttons,
+				'show_get_calendar'  => $show_get_calendar,
+				'get_calendar_text'  => $get_calendar_text,
 				'are_filters_set'    => $are_filters_set,
 				'custom_filters'     => apply_filters(
 					'ai1ec_custom_filters_html',
@@ -190,6 +196,8 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				'filter_menu'                  => $filter_menu,
 				'view'                         => $view,
 				'subscribe_buttons'            => $subscribe_buttons,
+				'show_get_calendar'            => $show_get_calendar,
+				'get_calendar_text'            => $get_calendar_text,
 				'disable_standard_filter_menu' => apply_filters(
 					'ai1ec_disable_standard_filter_menu',
 					false
@@ -208,6 +216,8 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				'tags'               => $tags,
 				'views_dropdown'     => $views_dropdown,
 				'subscribe_buttons'  => $subscribe_buttons,
+				'show_get_calendar'  => $show_get_calendar,
+				'get_calendar_text'  => $get_calendar_text,
 				'are_filters_set'    => $are_filters_set,
 			);
 		}

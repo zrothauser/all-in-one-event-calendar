@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.1.9.9\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.1.9.10\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2015-01-09 13:14:51+00:00\n"
+"POT-Creation-Date: 2015-01-09 18:20:29+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -509,27 +509,27 @@ msgstr ""
 msgid "Image"
 msgstr ""
 
-#: app/view/admin/event-category.php:160 app/view/admin/event-category.php:214
+#: app/view/admin/event-category.php:155
 msgid "Category Color"
 msgstr ""
 
-#: app/view/admin/event-category.php:161 app/view/admin/event-category.php:216
+#: app/view/admin/event-category.php:156
 msgid "Events in this category will be identified by this color"
 msgstr ""
 
-#: app/view/admin/event-category.php:184 app/view/admin/event-category.php:235
+#: app/view/admin/event-category.php:193 app/view/admin/event-category.php:225
 msgid "Category Image"
 msgstr ""
 
-#: app/view/admin/event-category.php:185 app/view/admin/event-category.php:236
+#: app/view/admin/event-category.php:194 app/view/admin/event-category.php:226
 msgid "Add Image"
 msgstr ""
 
-#: app/view/admin/event-category.php:186 app/view/admin/event-category.php:215
+#: app/view/admin/event-category.php:195
 msgid "Remove Image"
 msgstr ""
 
-#: app/view/admin/event-category.php:187 app/view/admin/event-category.php:237
+#: app/view/admin/event-category.php:196 app/view/admin/event-category.php:227
 msgid ""
 "Assign an optional image to the category. Recommended size: square, minimum "
 "400&times;400 pixels."
@@ -1078,7 +1078,7 @@ msgstr ""
 msgid "View original post"
 msgstr ""
 
-#: app/view/event/taxonomy.php:117
+#: app/view/event/taxonomy.php:113
 msgid "Category image"
 msgstr ""
 
@@ -1851,7 +1851,7 @@ msgstr ""
 msgid "All of this theme&#8217;s files are located in <code>%2$s</code>."
 msgstr ""
 
-#: lib/theme/loader.php:305
+#: lib/theme/loader.php:323
 msgid "We couldn't find a suitable loader for filename with extension '%s'"
 msgstr ""
 
@@ -1868,13 +1868,6 @@ msgid ""
 "Failed to move your old core themes from <code>wp-content/themes-ai1ec/%s</"
 "code> to <code>wp-content/themes-ai1ec-obsolete/%s</code>. Please manually "
 "remove your old core themes from <code>wp-content/themes-ai1ec/%s</code>."
-msgstr ""
-
-#: lib/twig/environment.php:31
-msgid ""
-"We detected that your cache directory (%s) is not writable. This will make "
-"your calendar slow. Please contact your web host or server administrator to "
-"make it writable by the web server."
 msgstr ""
 
 #: public/admin/agenda-widget-form.php:2
@@ -2657,9 +2650,9 @@ msgstr ""
 msgid "All-in-One Event Calendar by Time.ly"
 msgstr ""
 
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.9.9)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.9.10)  #-#-#-#-#
 #. Plugin URI of the plugin/theme
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.9.9)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.9.10)  #-#-#-#-#
 #. Author URI of the plugin/theme
 msgid "http://time.ly/"
 msgstr ""

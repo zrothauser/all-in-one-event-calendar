@@ -40,6 +40,7 @@ class Ai1ec_Theme_Compiler extends Ai1ec_Base {
 		header( 'Content-Type: text/plain; charset=utf-8' );
 		$start  = microtime( true );
 		if ( ! $this->clean_and_check_dir( AI1EC_TWIG_CACHE_PATH ) ) {
+
 			throw new Ai1ec_Bootstrap_Exception(
 				'Failed to create cache directory: ' . AI1EC_TWIG_CACHE_PATH
 			);
@@ -143,17 +144,21 @@ class Ai1ec_Theme_Compiler extends Ai1ec_Base {
 	 * @return bool Validity.
 	 */
 	public function clean_and_check_dir( $cache_dir ) {
-		$parent = realpath( $cache_dir );
-		if ( ! $this->_prune_dir( $parent ) ) {
+		try {
+			$parent = realpath( $cache_dir );
+			if ( ! $this->_prune_dir( $parent ) ) {
+				return false;
+			}
+			if (
+				is_dir( $cache_dir ) && chmod( $cache_dir, 0754 )
+				|| mkdir( $cache_dir, 0754, true )
+			) {
+				return true;
+			}
+			return false;
+		} catch ( Exception $exc ) {
 			return false;
 		}
-		if (
-			is_dir( $cache_dir ) && chmod( $cache_dir, 0754 )
-			|| mkdir( $cache_dir, 0754, true )
-		) {
-			return true;
-		}
-		return false;
 	}
 
 	/**

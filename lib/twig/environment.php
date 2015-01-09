@@ -28,18 +28,27 @@ class Ai1ec_Twig_Environment extends Twig_Environment {
 		try {
 			return parent::loadTemplate( $name, $index );
 		} catch ( RuntimeException $excpt ) {
-			$message = Ai1ec_I18n::__(
-				'We detected that your cache directory (%s) is not writable. This will make your calendar slow. Please contact your web host or server administrator to make it writable by the web server.'
+			/*
+			 * We should not rely on is_writable - WP Engine case.
+			 * I've made twig directory read-only and is_writable was returning
+			 * true.
+			 */
+			$this->_registry->get(
+				'twig.cache'
+			)->set_unavailable( $this->cache );
+			/*
+			 * Some copy paste from original Twig method. Just to avoid first
+			 * error during rendering.
+			 */
+			$cls = $this->getTemplateClass( $name, $index );
+			eval(
+				'?>' .
+				$this->compileSource(
+					$this->getLoader()->getSource( $name ),
+					$name
+				)
 			);
-			$message = sprintf( $message, $this->cache );
-			$this->_registry->get( 'notification.admin' )
-					->store( $message, 'error', 1 );
-			$settings = $this->_registry->get( 'model.settings' );
-			/* @var $settings Ai1ec_Settings */
-			// used shutdown to store settings
-			// after this line exception occurs
-			$type = ( is_writable( parent::getCache() ) ) ? 'AI1EC_CACHE_UNAVAILABLE' : '';
-			$settings->set( 'twig_cache', $type )->persist();
+			return $this->loadedTemplates[$cls] = new $cls($this);
 		}
 	}
 

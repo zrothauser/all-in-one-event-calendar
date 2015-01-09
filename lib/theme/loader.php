@@ -425,9 +425,15 @@ class Ai1ec_Theme_Loader {
 		if ( $model_option->get( self::OPTION_FORCE_CLEAN, false ) ) {
 			$model_option->set( self::OPTION_FORCE_CLEAN, false );
 			$cache = realpath( $this->get_cache_dir() );
-			if ( 0 !== strcmp( $cache, realpath( AI1EC_TWIG_CACHE_PATH ) ) ) {
-				$this->_registry->get( 'theme.compiler' )
-					->clean_and_check_dir( $cache );
+			if ( 0 === strcmp( $cache, realpath( AI1EC_TWIG_CACHE_PATH ) ) ) {
+				return;
+			}
+			if (
+				! $this->_registry->get(
+					'theme.compiler'
+				)->clean_and_check_dir( $cache )
+			) {
+				$this->_registry->get( 'twig.cache' )->set_unavailable( $cache );
 			}
 		}
 	}

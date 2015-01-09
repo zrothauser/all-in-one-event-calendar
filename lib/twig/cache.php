@@ -28,4 +28,23 @@ class Ai1ec_Twig_Cache extends Ai1ec_Base {
 		$render_json->render( $output );
 	}
 
+	/**
+	 * Sets Twig cache as unavailable and notifies admin.
+	 *
+	 * @param string $cache_dir Cache dir.
+	 *
+	 * @throws Ai1ec_Bootstrap_Exception
+	 */
+	public function set_unavailable( $cache_dir = AI1EC_TWIG_CACHE_PATH ) {
+		static $notification_sent = false;
+		if ( $notification_sent ) {
+			return;
+		}
+		$this->_registry->get( 'notification.common-notices' )
+			->cache_unavailable( $cache_dir );
+		$this->_registry->get( 'model.settings' )
+			->set( 'twig_cache', AI1EC_CACHE_UNAVAILABLE );
+		$notification_sent = true;
+	}
+
 }

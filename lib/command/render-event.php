@@ -61,7 +61,7 @@ class Ai1ec_Command_Render_Event extends Ai1ec_Command_Render_Calendar {
 		if ( 'html' !== $this->_request_type ) {
 			return array(
 				'data'     => array(
-					'html' => $event_page->get_full_article( $event )
+					'html' => $event_page->get_full_article( $event ) . $footer_html
 				),
 				'callback' => Ai1ec_Request_Parser::get_param(
 					'callback',

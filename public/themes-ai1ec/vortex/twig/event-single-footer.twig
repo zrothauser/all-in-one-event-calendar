@@ -2,11 +2,7 @@
 	{% if event.get( 'ical_feed_url' ) is not empty %}
 		<p class="ai1ec-source-link">
 			{{ text_calendar_feed
-				| format(
-					event.get( 'ical_feed_url' )
-					| replace( { 'http://': 'webcal://' } )
-					| e('html_attr')
-				)
+				| raw
 			}}
 			{% if event.get( 'ical_source_url' ) is not empty %}
 				<a href="{{ event.get( 'ical_source_url' ) | e('html_attr') }}"

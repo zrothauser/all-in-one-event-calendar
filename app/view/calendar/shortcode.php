@@ -11,6 +11,11 @@
 class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 
 	/**
+	 * @var bool Global wide information whether page is  called from shortcode.
+	 */
+	protected $_shortcode_call = false;
+
+	/**
 	 * Generate replacement content for [ai1ec] shortcode.
 	 *
 	 * @param array	 $atts	  Attributes provided on shortcode
@@ -22,11 +27,12 @@ class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 	 * @return string Replacement for shortcode entry
 	 */
 	public function shortcode( $atts, $content = '', $tag = 'ai1ec' ) {
-		$settings_view   = $this->_registry->get( 'model.settings-view' );
-		$view_names_list = array_keys( $settings_view->get_all() );
-		$default_view    = $settings_view->get_default();
+		$this->_shortcode_call = true;
+		$settings_view         = $this->_registry->get( 'model.settings-view' );
+		$view_names_list       = array_keys( $settings_view->get_all() );
+		$default_view          = $settings_view->get_default();
 
-		$view_names      = array();
+		$view_names            = array();
 		foreach ( $view_names_list as $view_name ) {
 			$view_names[$view_name] = true;
 		}
@@ -39,6 +45,7 @@ class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 				$atts['view'] = substr( $atts['view'], 0, -2 );
 			}
 			if ( ! isset( $view_names[$atts['view']] ) ) {
+				$this->_shortcode_call = false;
 				return false;
 			}
 			$view = $atts['view'];
@@ -151,8 +158,17 @@ class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 			->add_link_to_html_for_frontend();
 		$this->_registry->get( 'controller.javascript' )
 			->load_frontend_js( true );
-
+		$this->_shortcode_call = false;
 		return $page_content['html'];
+	}
+
+	/**
+	 * Returns whether shortcode was an calendar initiator.
+	 *
+	 * @return bool Flag.
+	 */
+	public function is_shortcode_call() {
+		return $this->_shortcode_call;
 	}
 
 }

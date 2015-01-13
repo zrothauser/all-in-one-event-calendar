@@ -1,13 +1,12 @@
 {% set alignment = alignment ? alignment : 'left' %}
 {% set alignment2 = 'left' == alignment ? 'right' : 'left' %}
-<div class="ai1ec-subscribe-container ai1ec-dropdown ai1ec-pull-left ai1ec-btn
-	ai1ec-btn-default ai1ec-btn-sm {{ button_classes }}">
-	<div role="button"
-		class="ai1ec-dropdown-toggle ai1ec-subscribe"
+{% set button_classes = button_classes ? button_classes : 'ai1ec-btn-sm' %}
+<div class="ai1ec-subscribe-container ai1ec-dropdown ai1ec-btn
+	ai1ec-btn-default {{ button_classes | e('html_attr') }}">
+	<span role="button" class="ai1ec-dropdown-toggle ai1ec-subscribe"
 			data-toggle="ai1ec-dropdown">
 		<i class="ai1ec-fa ai1ec-icon-rss ai1ec-fa-lg ai1ec-fa-fw"></i>
 		<span class="ai1ec-hidden-xs">
-			<span class="ai1ec-hidden-xs">
 			{% if subscribe_label is not empty %}
 				{{ subscribe_label }}
 			{% else %}
@@ -17,10 +16,9 @@
 					{{ text_subscribe }}
 				{% endif %}
 			{% endif %}
-			</span>
 			<span class="ai1ec-caret"></span>
 		</span>
-	</div>
+	</span>
 	{% set url = export_url | replace( {"webcal://": "http://"} ) ~ url_args %}
 	<ul class="ai1ec-dropdown-menu ai1ec-pull-{{ alignment2 }}" role="menu">
 		<li>
@@ -66,3 +64,15 @@
 		</li>
 	</ul>
 </div>
+
+{% if show_get_calendar %}
+	<a href="http://time.ly" target="_blank"
+		class="ai1ec-btn ai1ec-btn-default ai1ec-get-calendar
+			{{ button_classes | e('html_attr') }}">
+		<small class="ai1ec-fa-stack ai1ec-text-info ai1ec-fa-fw">
+			<i class="ai1ec-fa ai1ec-fa-square ai1ec-fa-stack-2x"></i>
+			<i class="ai1ec-fa ai1ec-icon-timely ai1ec-fa-stack-1x ai1ec-fa-inverse ai1ec-fa-lg"></i>
+		</small>
+		<span class="ai1ec-hidden-xs">{{ text_get_calendar }}</span>
+	</a>
+{% endif %}

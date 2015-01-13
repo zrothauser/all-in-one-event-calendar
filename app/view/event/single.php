@@ -94,10 +94,12 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			'show_subscribe_buttons'  => ! $settings->get( 'turn_off_subscription_buttons' ),
 			'hide_featured_image'     => $settings->get( 'hide_featured_image' ),
 			'extra_buttons'           => $extra_buttons,
+			'show_get_calendar'       => ! $settings->get( 'disable_get_calendar_button' ),
 			'text_add_calendar'       => __( 'Add to Calendar', AI1EC_PLUGIN_NAME ),
 			'subscribe_buttons_text'  => $this->_registry
 				->get( 'view.calendar.subscribe-button' )
 				->get_labels(),
+			'text_get_calendar'       => Ai1ec_I18n::__( 'Get a Timely Calendar' ),
 			'text_when'               => __( 'When:', AI1EC_PLUGIN_NAME ),
 			'text_where'              => __( 'Where:', AI1EC_PLUGIN_NAME ),
 			'text_cost'               => __( 'Cost:', AI1EC_PLUGIN_NAME ),

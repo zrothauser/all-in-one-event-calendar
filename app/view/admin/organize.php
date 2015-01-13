@@ -71,6 +71,10 @@ class Ai1ec_View_Organize extends Ai1ec_Base {
 					$taxonomy . '_pre_add_form',
 					array( 'view.admin.organize', 'render_header' )
 				);
+				$dispatcher->register_action(
+					$taxonomy . '_pre_edit_form',
+					array( 'view.admin.organize', 'render_header' )
+				);
 			}
 		}
 	}

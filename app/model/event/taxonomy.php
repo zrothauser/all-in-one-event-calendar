@@ -75,7 +75,7 @@ class Ai1ec_Event_Taxonomy extends Ai1ec_Base {
 			if ( $alias_to_use && $alias_to_use !== $term ) {
 				$to_return['term_id'] = (int) $alias_to_use;
 				// check that the term matches the taxonomy
-				$tax = $this->_get_taxonomy_for_term_id( term_exists( (int) $alias_to_use ) );
+				$tax = $this->get_taxonomy_for_term_id( term_exists( (int) $alias_to_use ) );
 				$to_return['taxonomy'] = $tax->taxonomy;
 			} else {
 				$term_to_check = wp_insert_term( $term, $taxonomy, $attrs );
@@ -94,7 +94,7 @@ class Ai1ec_Event_Taxonomy extends Ai1ec_Base {
 			// so place the term in the current taxonomy
 			if ( self::CATEGORIES === $taxonomy ) {
 				// check that the term matches the taxonomy
-				$tax = $this->_get_taxonomy_for_term_id( $term_id );
+				$tax = $this->get_taxonomy_for_term_id( $term_id );
 				$to_return['taxonomy'] = $tax->taxonomy;
 			}
 

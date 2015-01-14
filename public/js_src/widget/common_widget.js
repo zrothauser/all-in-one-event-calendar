@@ -125,9 +125,6 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 	} );
 
 	domReady( function() {
-		if ( ! common.are_event_listeners_attached() ) {
-			common.start();
-		}
 		// Create only one shared event details modal for all loaded calendars.
 		if ( ! $( '#ai1ec-event-modal' ).length ) {
 			$( 'body' ).append(
@@ -144,26 +141,10 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 			);
 		}
 
-		$( document ).on( 'calendar_added.ai1ec', function() {
-			var $calendars      = $( '[data-widget^="ai1ec"]' ),
-			    added_calendars = 0;
-
-			for ( var i = 0; i < $calendars.length; i++ ) {
-				if ( $calendars.eq( i ).data( 'added' ) ) {
-					added_calendars++;
-				}
-			}
-			// If all are ready.
-			if ( $calendars.length === added_calendars ) {
-				prevent_injection();
-				$( document ).trigger( 'page_ready.ai1ec' );
-				top.postMessage( 'ai1ec-widget-loaded', top.document.URL );
-			}
-		} );
-
 		// Load each widget.
-		$( '[data-widget^="ai1ec"]' ).not( '[data-added]' )
-			.each( function( i, el ) {
+		// Create an array of promises ( notice the return ).
+		var promises = $( '[data-widget^="ai1ec"]' ).not( '[data-added]' )
+			.map( function( i, el ) {
 				var
 					$el         = $( el ),
 					widget_type = $el.data( 'widget' ),
@@ -185,30 +166,46 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 				// Do not render widget if it's not defined in config.
 				if ( false === url ) {
 					// Remove block with spinner.
+					$el.remove();
 					$timely.remove();
-					return;
+					return false;
 				}
 				$timely
 					.on( 'click', '.ai1ec-cog-item-name a',
 						load_event_through_jsonp
-					)
-				$.ajax( {
+					);
+
+				return $.ajax( {
 					url      : url,
 					dataType : 'jsonp',
 					data     : data,
 					success  : function( data ) {
 						$timely.html( data.html );
+						$el.attr( 'data-added', 1 );
+						page.initialize_view( $( el ).find( '.ai1ec-calendar' ) );
 					},
 					error    : function() {
 						$timely.html( '<p>An error occurred while retrieving the data.</p>' );
-					},
-					complete : function() {
-						$el.attr( 'data-added', 1 );
-						$( document ).trigger( 'calendar_added.ai1ec' );
 					}
 				} );
+			} ).get();
+
+		// When all the promises have fired their success callbacks, act.
+		$.when.apply( $, promises ).done( function() {
+			// The common library might be already loaded
+			// if we are embedding the calendar
+			// in a wordpress page with our plugin installed.
+			if ( ! common.are_event_listeners_attached() ) {
+				common.start();
+			}
+
+			$.each( calendar.extension_urls, function( index, el ) {
+				timely.require( [ el.url ] );
 			} );
 
+			prevent_injection();
+			top.postMessage( 'ai1ec-widget-loaded', top.document.URL );
+	 	} );
 
 		$( document )
 			.on( 'click', 'a.ai1ec-load-event', load_event_through_jsonp )

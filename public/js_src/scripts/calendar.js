@@ -275,6 +275,7 @@ define(
 	};
 
 	return {
-		start  : start
+		start           : start,
+		initialize_view : load_views.initialize_view
 	};
 } );

@@ -125,7 +125,7 @@ class Ai1ec_Post_Custom_Type extends Ai1ec_Base {
 			'labels'       => $events_tags_labels,
 			'hierarchical' => false,
 			'rewrite'      => array( 'slug' => 'events_tags' ),
-			'show_ui' => true,
+			'show_ui'      => true,
 			'capabilities' => array(
 				'manage_terms' => 'manage_events_categories',
 				'edit_terms'   => 'manage_events_categories',

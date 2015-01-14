@@ -300,7 +300,8 @@ define(
 
 						// Render template or just replace if already rendered.
 						var renderer;
-						if ( hash.match( /\brequest_format\~json\b/ ) ){
+
+						if ( data.is_json ) {
 							var
 								view_type =  $.parseJSON( data.html ).type,
 								renderer_map = {

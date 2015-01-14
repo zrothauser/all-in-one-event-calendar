@@ -507,6 +507,12 @@ class Ai1ec_Front_Controller {
 			'ai1ec',
 			array( 'view.calendar.shortcode', 'shortcode' )
 		);
+		$dispatcher->register_action(
+			'updated_option',
+			array( 'model.settings', 'wp_options_observer' ),
+			PHP_INT_MAX - 1,
+			3
+		);
 
 		if ( is_admin() ) {
 			// get the repeat box

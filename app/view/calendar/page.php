@@ -53,11 +53,6 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		$is_json = $this->_registry->get( 'http.request' )->is_json_required(
 			$view_args['request_format'], $action
 		);
-		// Don't serve data in JSON if current view doesn't support it.
-		//$fer_list = explode( ",", AI1EC_FER_ENABLED_TEMPLATES_LIST );
-		//if ( in_array( $action, $fer_list, true ) ) {
-			//$is_json = false;
-		//}
 
 		// Add view-specific args to the current view args.
 		$exact_date = $this->get_exact_date( $request );

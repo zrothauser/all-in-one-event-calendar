@@ -314,7 +314,9 @@ define(
 							if ( renderer_map[view_type] ) {
 								renderer = renderer_map[view_type];
 							} else {
-								// That's an error. No view found.
+								// No view found.
+								// Try to reload in HTML.
+								load_view( $calendar, hash.replace( /\~json/, '~html' ), type );
 								return;
 							}
 						}

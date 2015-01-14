@@ -479,7 +479,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 
 	// Defines if backward (<= 2.1.5) theme compatibility is enabled or not.
 	if ( ! defined( 'AI1EC_THEME_COMPATIBILITY_FER' ) ) {
-		define( 'AI1EC_THEME_COMPATIBILITY_FER', true );
+		define( 'AI1EC_THEME_COMPATIBILITY_FER', false );
 	}
 
 	// Defines amount of needed free memory to compile LESS files.
@@ -492,4 +492,11 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		define( 'AI1EC_PARSE_LESS_FILES_AT_EVERY_REQUEST', false );
 	}
 
+	// Defines a list of FER-enabled templates.
+	if ( ! defined( 'AI1EC_FER_ENABLED_TEMPLATES_LIST' ) ) {
+		define(
+			'AI1EC_FER_ENABLED_TEMPLATES_LIST',
+			'agenda,oneday,week,month'
+		);
+	}
 }

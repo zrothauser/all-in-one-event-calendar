@@ -80,6 +80,16 @@ class Ai1ec_Front_Controller {
 	}
 
 	/**
+	 * Remove unwanted menus
+	 */
+	public function admin_menu() {
+		remove_submenu_page(
+			'edit.php?post_type=ai1ec_event',
+			'edit-tags.php?taxonomy=events_tags&amp;post_type=ai1ec_event'
+		);
+	}
+
+	/**
 	 * Notify extensions and pass them instance of objects registry.
 	 *
 	 * @return void
@@ -370,6 +380,7 @@ class Ai1ec_Front_Controller {
 		$action = 'template_redirect';
 		if ( is_admin() ) {
 			$action = 'init';
+			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		}
 		add_action( $action, array( $this, 'route_request' ) );
 		add_filter( 'ai1ec_registry', array( $this, 'return_registry' ) );

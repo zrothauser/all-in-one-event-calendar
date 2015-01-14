@@ -584,6 +584,18 @@ class Ai1ec_Settings extends Ai1ec_App {
 				),
 				'default'  => false,
 			),
+			'disable_get_calendar_button' => array(
+				'type' => 'bool',
+				'renderer' => array(
+					'class' => 'checkbox',
+					'tab'   => 'viewing-events',
+					'item'  => 'viewing-events',
+					'label' => Ai1ec_I18n::__(
+						'Hide <strong>Get a Timely Calendar</strong> button'
+					)
+				),
+				'default'  => true,
+			),
 			'hide_maps_until_clicked' => array(
 				'type' => 'bool',
 				'renderer' => array(

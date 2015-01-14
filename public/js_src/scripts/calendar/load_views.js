@@ -286,7 +286,8 @@ define(
 						if( typeof data.subscribe_buttons === 'string' ) {
 							$calendar
 								.find( '.ai1ec-subscribe-container' )
-									.replaceWith( data.subscribe_buttons );
+								  .empty()
+									.append( data.subscribe_buttons );
 						}
 						// And the "Save filtered view"
 						if( typeof data.save_view_btngroup === 'string' ) {

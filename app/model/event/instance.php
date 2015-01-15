@@ -83,12 +83,19 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 			'timestamp' => $_start,
 			'tz'        => $timezone,
 		);
-		$start			   = $event_instance['start'];
+		$start             = $event_instance['start'];
 		$wdate             = $startdate = $enddate
 		                   = iCalUtilityFunctions::_timestamp2date( $startdate, 6 );
 		$enddate['year']   = $enddate['year'] + 3;
 		$exclude_dates	   = array();
 		$recurrence_dates  = array();
+		if ( $rdate = $event->get( 'recurrence_dates' ) ) {
+			$recurrence_dates  = $this->_populate_rdates(
+				$rdate,
+				$startdate,
+				$timezone
+			);
+		}
 		if ( $event->get( 'exception_rules' ) ) {
 			// creat an array for the rules
 			$exception_rules = $recurrence_parser
@@ -114,14 +121,15 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 			);
 
 		$recurrence_rules = iCalUtilityFunctions::_setRexrule( $recurrence_rules );
-		iCalUtilityFunctions::_recur2date(
-			$recurrence_dates,
-			$recurrence_rules,
-			$wdate,
-			$startdate,
-			$enddate
-		);
-
+		if ( $recurrence_rules ) {
+			iCalUtilityFunctions::_recur2date(
+				$recurrence_dates,
+				$recurrence_rules,
+				$wdate,
+				$startdate,
+				$enddate
+			);
+		}
 		
 		$recurrence_dates = array_keys( $recurrence_dates );
 		// Add the instances
@@ -178,7 +186,7 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 		// Always cache initial instance
 		$events[$_start] = $event_item;
 
-		if ( $event->get( 'recurrence_rules' ) ) {
+		if ( $event->get( 'recurrence_rules' ) || $event->get( 'recurrence_dates' ) ) {
             /**
              * NOTE: this timezone switch is intentional, because underlying
              * library doesn't allow us to pass it as an argument. Though no
@@ -282,6 +290,36 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 			}
 		}
 		return $ranges[$date_list];
+	}
+
+	protected function _populate_rdates( $rdates, array $start_struct ) {
+		$start = $this->_registry->get( 'date.time' )
+			->set_timezone( $start_struct['tz'] )
+			->set_date(
+				$start_struct['year'],
+				$start_struct['month'],
+				$start_struct['day']
+			)
+			->set_time(
+				$start_struct['hour'],
+				$start_struct['min'],
+				$start_struct['sec']
+			);
+		$dates = array();
+		foreach ( explode( ',', $rdates ) as $date ) {
+			$i_date = clone $start;
+			$spec   = sscanf( $date, '%04d%02d%02d' );
+			var_dump( $date );
+			print_r( $spec );
+			$i_date->set_date(
+				$spec[0],
+				$spec[1],
+				$spec[2]
+			);
+			$tstamp = $i_date->format_to_gmt();
+			$dates[$tstamp] = $tstamp;
+		}
+		return $dates;
 	}
 
 }

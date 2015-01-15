@@ -1062,11 +1062,11 @@ class Ai1ec_Ics_Import_Export_Engine
 		}
 
 		// add rrule to exported calendar
-		if ( ! empty( $rrule ) ) {
+		if ( ! empty( $rrule ) && ! isset( $rrule['RDATE'] ) ) {
 			$e->setProperty( 'rrule', $this->_sanitize_value( $rrule ) );
 		}
 		// add exrule to exported calendar
-		if ( ! empty( $exrule ) ) {
+		if ( ! empty( $exrule ) && ! isset( $exrule['EXDATE'] ) ) {
 			$e->setProperty( 'exrule', $this->_sanitize_value( $exrule ) );
 		}
 
@@ -1076,6 +1076,28 @@ class Ai1ec_Ics_Import_Export_Engine
 		// For all day events that use a date as DTSTART, date must be supplied
 		// For other other events which use DATETIME, we must use that as well
 		// We must also match the exact starting time
+		$recurrence_dates = $event->get( 'recurrence_dates' );
+		if ( ! empty( $recurrence_dates ) ) {
+			$params    = array(
+				'VALUE' => 'DATE-TIME',
+				'TZID'  => $tz,
+			);
+			$dt_suffix = $event->get( 'start' )->format( '\THis' );
+			foreach (
+				explode( ',', $recurrence_dates )
+				as $exdate
+			) {
+				// date-time string in EXDATES is formatted as 'Ymd\THis\Z', that
+				// means - in UTC timezone, thus we use `format_to_gmt` here.
+				$exdate = $this->_registry->get( 'date.time', $exdate )
+					->format_to_gmt( 'Ymd' );
+				$e->setProperty(
+					'rdate',
+					array( $exdate . $dt_suffix ),
+					$params
+				);
+			}
+		}
 		$exception_dates = $event->get( 'exception_dates' );
 		if ( ! empty( $exception_dates ) ) {
 			$params    = array(

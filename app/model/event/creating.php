@@ -90,10 +90,12 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 		$latitude         = isset( $_POST['ai1ec_latitude'] )         ? $_POST['ai1ec_latitude']                      : '';
 		$banner_image     = isset( $_POST['ai1ec_banner_image'] )     ? $_POST['ai1ec_banner_image']                  : '';
 
-		$rrule  = NULL;
-		$exrule = NULL;
-		$exdate = NULL;
+		$rrule  = null;
+		$exrule = null;
+		$exdate = null;
+		$rdate  = null;
 
+		$this->_remap_recurrence_dates();
 		// if rrule is set, convert it from local to UTC time
 		if (
 			isset( $_POST['ai1ec_repeat'] ) &&
@@ -113,12 +115,17 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 				$_POST['ai1ec_rrule']
 			);
 		}
-		// if exdate is set, convert it from local to UTC time
 		if (
 			isset( $_POST['ai1ec_exdate'] ) &&
 			! empty( $_POST['ai1ec_exdate'] )
 		) {
 			$exdate = $_POST['ai1ec_exdate'];
+		}
+		if (
+			isset( $_POST['ai1ec_rdate'] ) &&
+			! empty( $_POST['ai1ec_rdate'] )
+		) {
+			$rdate = $_POST['ai1ec_rdate'];
 		}
 
 		$is_new = false;
@@ -177,6 +184,7 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 		$event->set( 'recurrence_rules', $rrule );
 		$event->set( 'exception_rules',  $exrule );
 		$event->set( 'exception_dates',  $exdate );
+		$event->set( 'recurrence_dates', $rdate );
 		$event->set( 'show_coordinates', $show_coordinates );
 		$event->set( 'longitude',        trim( $longitude ) );
 		$event->set( 'latitude',         trim( $latitude ) );
@@ -291,4 +299,22 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 		}
 		return $tag[5];
 	}
+
+	protected function _remap_recurrence_dates() {
+		if (
+			isset( $_POST['ai1ec_exclude'] ) &&
+			'EXDATE' === substr( $_POST['ai1ec_exrule'], 0, 6 )
+		) {
+			$_POST['ai1ec_exdate'] = substr( $_POST['ai1ec_exrule'], 7 );
+			unset( $_POST['ai1ec_exclude'],  $_POST['ai1ec_exrule'] );
+		}
+		if (
+			isset( $_POST['ai1ec_repeat'] ) &&
+			'RDATE' === substr( $_POST['ai1ec_rrule'], 0, 5 )
+		) {
+			$_POST['ai1ec_rdate'] = substr( $_POST['ai1ec_rrule'], 6 );
+			unset( $_POST['ai1ec_repeat'],  $_POST['ai1ec_rrule'] );
+		}
+	}
+
 }

@@ -159,7 +159,7 @@ class Ai1ec_View_Event_Time extends Ai1ec_Base {
 			$excludes[] =
 			$rrule->rrule_to_text( $exception_rules );
 		}
-		if ( $exception_dates ) {
+		if ( $exception_dates && 0 !== strpos( $exception_rules, 'EXDATE' ) ) {
 			$excludes[] =
 			$rrule->exdate_to_text( $exception_dates );
 		}

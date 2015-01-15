@@ -132,11 +132,17 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 					'Recurrence rule cannot be empty.'
 				);
 			} else {
-				$rrule = $this->_registry->get( 'recurrence.rule' );
-				// convert rrule to text
-				$message = ucfirst(
-					$rrule->rrule_to_text( $_REQUEST['rrule'] )
-				);
+				//list( $rule, $value ) = explode( '=', $_REQUEST['rrule'], 2 );
+				//if ( in_array( array(), $rule ) ) {
+				//	$message = $this->_registry->get( 'recurrence.date' );
+				//
+				//} else {
+					$rrule = $this->_registry->get( 'recurrence.rule' );
+					// convert rrule to text
+					$message = ucfirst(
+						$rrule->rrule_to_text( $_REQUEST['rrule'] )
+					);
+					//}
 			}
 		} else {
 			$error   = true;

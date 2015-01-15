@@ -591,7 +591,7 @@ class Ai1ec_Theme_Loader {
 	/**
 	 * Switches to default Vortex theme.
 	 *
-	 * @param bool $silent     Whether notify admin or not.
+	 * @param bool $silent Whether notify admin or not.
 	 *
 	 * @return void Method does not return.
 	 */

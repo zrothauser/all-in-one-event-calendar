@@ -603,7 +603,7 @@ class Ai1ec_Theme_Loader {
 		) {
 			return $current_theme;
 		}
-		$root = AI1EC_PATH . DIRECTORY_SEPARATOR . 'public' .
+		$root  = AI1EC_PATH . DIRECTORY_SEPARATOR . 'public' .
 			DIRECTORY_SEPARATOR . AI1EC_THEME_FOLDER;
 		$theme = array(
 			'theme_root' => $root,

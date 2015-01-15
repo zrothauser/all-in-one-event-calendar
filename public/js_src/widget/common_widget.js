@@ -120,10 +120,6 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 				} );
 		};
 
-	$.each( calendar.extension_urls, function( index, el ) {
-		timely.require( [ el.url ] );
-	} );
-
 	domReady( function() {
 		// Create only one shared event details modal for all loaded calendars.
 		if ( ! $( '#ai1ec-event-modal' ).length ) {
@@ -182,7 +178,7 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 					success  : function( data ) {
 						$timely.html( data.html );
 						$el.attr( 'data-added', 1 );
-						page.initialize_view( $( el ).find( '.ai1ec-calendar' ) );
+						page.initialize_view( $timely.find( '.ai1ec-calendar' ) );
 					},
 					error    : function() {
 						$timely.html( '<p>An error occurred while retrieving the data.</p>' );
@@ -195,6 +191,7 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 			// The common library might be already loaded
 			// if we are embedding the calendar
 			// in a wordpress page with our plugin installed.
+
 			if ( ! common.are_event_listeners_attached() ) {
 				common.start();
 			}
@@ -205,6 +202,10 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 
 			prevent_injection();
 			top.postMessage( 'ai1ec-widget-loaded', top.document.URL );
+			$( document )
+				.trigger( 'page_ready.ai1ec' )
+				// If event hadlers are not inited yet, this flag can be used.
+				.data( 'ai1ec-widget-loaded', 1 );
 	 	} );
 
 		$( document )

@@ -211,20 +211,14 @@ define(
 	var category_header = function() {
 		var $header = $( '.ai1ec-taxonomy-header' ),
 		    active_tab;
-		
-		console.log($header);
+
 		if ( $header.length ) {
-			$col_cont = $( '#col-container' );
 			// Move edit button.
 			$( '.ai1ec-taxonomy-edit-link' )
 				.removeClass( 'ai1ec-hide' )
 				.appendTo( '.wrap > h2:first' );
 			// Move tabs to correct location and display them.
-			if ( $col_cont.length ) {
-				$header.prependTo( '#col-container' ).removeClass( 'ai1ec-hide' );
-			} else {
-				$(  '.wrap > h2:first' ).after( $header.removeClass( 'ai1ec-hide' ) );
-			}
+			$(  '.wrap > h2:first' ).after( $header.removeClass( 'ai1ec-hide' ) );
 			// Activate tab if none is active.
 			if ( ! $header.find( 'li.ai1ec-active' ).length ) {
 				active_tab = $( '[data-ai1ec_active_tab]' ).data( 'ai1ec_active_tab' );

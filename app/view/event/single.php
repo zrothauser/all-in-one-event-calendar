@@ -154,11 +154,12 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 	}
 
 	/**
-	 * Render the full article for the event
+	 * Render the full article for the event – title, content, and footer.
 	 *
 	 * @param Ai1ec_Event $event
+	 * @param string      $footer Footer HTML to append to event
 	 */
-	public function get_full_article( Ai1ec_Event $event ) {
+	public function get_full_article( Ai1ec_Event $event, $footer = '' ) {
 		$title         = apply_filters(
 			'the_title',
 			$event->get( 'post' )->post_title,
@@ -174,7 +175,7 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 				)
 			)
 		);
-		$args = compact( 'title', 'event_details', 'content' );
+		$args = compact( 'title', 'event_details', 'content', 'footer' );
 		$loader = $this->_registry->get( 'theme.loader' );
 		return $loader->get_file( 'event-single-full.twig', $args, false )
 			->get_content();

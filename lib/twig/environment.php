@@ -111,7 +111,9 @@ class Ai1ec_Twig_Environment extends Twig_Environment {
 	 */
 	protected function _handle_render_exception( $name, array $context ) {
 		register_shutdown_function( array( $this, 'switch_to_vortex' ) );
-		return '<div class="ai1ec-alert ai1ec-alert-danger">The calendar is temporarily disabled due to a rendering error. Please <a href="">refresh</a> this site.</div>';
+		return '<div class="ai1ec-alert ai1ec-alert-danger">' .
+			Ai1ec_I18n::__( 'The calendar is temporarily disabled due to a rendering error. Please <a href="">refresh</a> this site.' ) .
+			'</div>';
 	}
 
 }

@@ -136,19 +136,18 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 	 * @return The html of the footer
 	 */
 	public function get_footer( Ai1ec_Event $event ) {
-		$text_calendar_feed = __( 
-			'This post was replicated from another site\'s <a class="ai1ec-ics-icon" href="%s" title="iCalendar feed">calendar feed</a>.', 
-			AI1EC_PLUGIN_NAME 
+		$text_calendar_feed = Ai1ec_I18n::__(
+			'This post was replicated from another site\'s <a href="%s" title="iCalendar feed"><i class="ai1ec-fa ai1ec-fa-calendar"></i> calendar feed</a>.'
 		);
 		$loader = $this->_registry->get( 'theme.loader' );
-		$text_calendar_feed = sprintf( 
+		$text_calendar_feed = sprintf(
 			$text_calendar_feed,
 			esc_attr( str_replace( 'http://', 'webcal://', $event->get( 'ical_feed_url' ) ) )
 		);
 		$args   = array(
 			'event'              => $event,
 			'text_calendar_feed' => $text_calendar_feed,
-			'text_view_post'     => __( 'View original post', AI1EC_PLUGIN_NAME ),
+			'text_view_post'     => Ai1ec_I18n::__( 'View original' ),
 		);
 		return $loader->get_file( 'event-single-footer.twig', $args, false )
 			->get_content();

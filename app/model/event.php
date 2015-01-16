@@ -417,8 +417,9 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 * @staticvar string $format Cached format.
 	 */
 	public function get_uid() {
-		if ( $this->get( 'ical_uid' ) ) {
-			return $this->get( 'ical_uid' );
+		$ical_uid = $this->get( 'ical_uid' );
+		if ( ! empty( $ical_uid ) ) {
+			return $ical_uid;
 		}
 		static $format = null;
 		if ( null === $format ) {

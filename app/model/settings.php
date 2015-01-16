@@ -287,7 +287,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 				$this->get( $key ) !== $value
 			) {
 				$this->set( $key, $value );
-				continue;
+				break;
 			}
 		}
 	}

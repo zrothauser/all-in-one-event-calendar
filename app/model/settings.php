@@ -223,6 +223,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 		$option->set( 'ai1ec_force_flush_rewrite_rules',      true, true );
 		$option->set( 'ai1ec_invalidate_css_cache',           true, true );
 		$option->set( Ai1ec_Theme_Loader::OPTION_FORCE_CLEAN, true, true );
+			
 	}
 
 	/**
@@ -297,9 +298,11 @@ class Ai1ec_Settings extends Ai1ec_App {
 		if ( true === $upgrade ) {
 			$this->perform_upgrade_actions();
 		}
+		
 		$this->_registry->get( 'controller.shutdown' )->register(
 			array( $this, 'shutdown' )
 		);
+
 	}
 
 	/**

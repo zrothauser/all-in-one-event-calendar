@@ -270,21 +270,15 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 	 * @return array
 	 */
 	public function get_less_variable_data_from_config_file() {
-		static $variables = null;
 
-		// Only fetch from file once per HTTP request.
-		if ( ! $variables ) {
-			// Load the file to parse using the theme loader to select the right file.
-			$loader = $this->_registry->get( 'theme.loader' );
-			$file = $loader->get_file( 'less/user_variables.php', array(), false );
+		// Load the file to parse using the theme loader to select the right file.
+		$loader = $this->_registry->get( 'theme.loader' );
+		$file = $loader->get_file( 'less/user_variables.php', array(), false );
 
-			// This variables are returned by evaluating the PHP file.
-			$variables = $file->get_content();
-			// Inject extension variables into this array.
-			$variables = apply_filters( 'ai1ec_less_variables', $variables );
-		}
-
-		return $variables;
+		// This variables are returned by evaluating the PHP file.
+		$variables = $file->get_content();
+		// Inject extension variables into this array.
+		return apply_filters( 'ai1ec_less_variables', $variables );
 	}
 
 

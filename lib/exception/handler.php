@@ -573,7 +573,7 @@ class Ai1ec_Exception_Handler {
 		$ident     = sha1( $trace );
 		if ( ! empty( $trace ) ) {
 			$request_uri = $_SERVER['REQUEST_URI'];
-			$backtrace = <<< __JAVASCRIPT__
+			$backtrace = <<<JAVASCRIPT
 			<br><br>
 			<script type="text/javascript">
 			jQuery( function($) {
@@ -591,7 +591,7 @@ class Ai1ec_Exception_Handler {
 					<br>Request Uri: $request_uri
 				</div>
 			</div>
-__JAVASCRIPT__;
+JAVASCRIPT;
 		}
 		return $backtrace;
 	}

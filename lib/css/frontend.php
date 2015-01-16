@@ -242,7 +242,6 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 			return;
 		}
 		try {
-			$this->lessphp_controller->update_less_variables_on_theme_update();
 			// Try to parse the css
 			$css = $this->lessphp_controller->parse_less_files( $variables );
 			// Reset the parse time to force a browser reload of the CSS, whether we are

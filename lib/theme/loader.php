@@ -616,7 +616,7 @@ class Ai1ec_Theme_Loader {
 		if ( ! $silent ) {
 			$this->_registry->get( 'notification.admin' )->store(
 				Ai1ec_I18n::__(
-					'Your calendar theme has been switched to Vortex due to rendering problems. If you need more information please turn on DEBUG mode. You can do this by adding below line to your WordPress wp-config.php file.<br><br><pre>define( \'AI1EC_DEBUG\', true );</pre>'
+					"Your calendar theme has been switched to Vortex due to a rendering problem. For more information, please enable debug mode by adding this line to your WordPress <code>wp-config.php</code> file:<pre>define( 'AI1EC_DEBUG', true );</pre>"
 				),
 				'error',
 				0,

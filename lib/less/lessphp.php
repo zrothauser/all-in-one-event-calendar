@@ -270,7 +270,6 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 	 * @return array
 	 */
 	public function get_less_variable_data_from_config_file() {
-
 		// Load the file to parse using the theme loader to select the right file.
 		$loader = $this->_registry->get( 'theme.loader' );
 		$file = $loader->get_file( 'less/user_variables.php', array(), false );

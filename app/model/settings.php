@@ -279,16 +279,12 @@ class Ai1ec_Settings extends Ai1ec_App {
 			return;
 		}
 
-		foreach ( $options as $key => $data ) {
-			if (
-				$key === $option &&
-				isset( $data['type'] ) &&
-				'wp_option' === $data['type'] &&
-				$this->get( $key ) !== $value
-			) {
-				$this->set( $key, $value );
-				break;
-			}
+		if (
+			isset( $options[$option] ) &&
+			'wp_option' === $options[$option]['type'] &&
+			$this->get( $option ) !== $value
+		) {
+			$this->set( $option, $value );
 		}
 	}
 

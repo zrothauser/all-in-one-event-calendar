@@ -417,6 +417,10 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 * @staticvar string $format Cached format.
 	 */
 	public function get_uid() {
+		$ical_uid = $this->get( 'ical_uid' );
+		if ( ! empty( $ical_uid ) ) {
+			return $ical_uid;
+		}
 		static $format = null;
 		if ( null === $format ) {
 			$site_url = parse_url( ai1ec_get_site_url() );

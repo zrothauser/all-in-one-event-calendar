@@ -18,10 +18,13 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 	/**
 	 * @var string The html for the footer of the event.
 	 */
-	protected $_html_footer;
+	protected $_html_footer = '';
 
 	public function render( array $params ) {
 		$this->_html = $params['data'];
+		if ( isset( $params['footer'] ) ) {
+			$this->_html_footer = $params['footer'];
+		} 
 		if ( isset( $params['is_event'] ) ) {
 			// Filter event post content, in single- and multi-post views
 			add_filter( 'the_content', array( $this, 'event_content' ), PHP_INT_MAX - 1 );
@@ -53,6 +56,7 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 				$content,
 				$this->_html
 			);
+			$content .= $this->_html_footer;
 		}
 		return $content;
 	}

@@ -864,7 +864,7 @@ class Ai1ec_Ics_Import_Export_Engine
 				$dtstart
 			);
 
-			if ( false === $event->get( 'instant_event' ) ) {
+			if ( false === (bool)$event->get( 'instant_event' ) ) {
 				$e->setProperty(
 					'dtend',
 					$this->_sanitize_value(

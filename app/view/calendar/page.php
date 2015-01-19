@@ -30,9 +30,12 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 	/**
 	 * Get the content if the calendar page
 	 *
-	 * @param Ai1ec_Request_Parser $request
+	 * @param Ai1ec_Request_Parser $request Request object.
+	 * @param string               $caller  Method caller.
+	 *
+	 * @return string Content.
 	 */
-	public function get_content( Ai1ec_Request_Parser $request ) {
+	public function get_content( Ai1ec_Request_Parser $request, $caller = '' ) {
 		// Get args for the current view; required to generate HTML for views
 		// dropdown list, categories, tags, subscribe buttons, and of course the
 		// view itself.
@@ -147,7 +150,8 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				'contribution_buttons'         => apply_filters(
 					'ai1ec_contribution_buttons',
 					'',
-					$type
+					$type,
+					$caller
 				),
 				'show_dropdowns'               => apply_filters(
 					'ai1ec_show_dropdowns',

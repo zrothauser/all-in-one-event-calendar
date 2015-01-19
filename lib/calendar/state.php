@@ -1,6 +1,6 @@
 <?php
 /**
- * Calendar state container;
+ * Calendar state container.
  *
  * @author     Time.ly Network Inc.
  * @since      2.2

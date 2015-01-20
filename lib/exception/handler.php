@@ -196,19 +196,14 @@ class Ai1ec_Exception_Handler {
 			die();
 		}
 		// if it's something we handle, handle it
-		$backtrace = '';
-		$trace     = nl2br( $exception );
-		if ( ! empty( $trace ) ) {
-			$backtrace = '<br><br>' . $trace;
-		}
+		$backtrace = $this->_get_backtrace( $exception );
 		if ( $exception instanceof $this->_exception_class ) {
 			// check if it's a plugin instead of core
 			$disable_addon = $this->is_caused_by_addon( $exception );
 			$message       = method_exists( $exception, 'get_html_message' )
 				? $exception->get_html_message()
 				: $exception->getMessage();
-			$message .= $backtrace .
-				'<br>Request Uri: ' . $_SERVER['REQUEST_URI'];
+			$message .= $backtrace;
 			if ( null !== $disable_addon ) {
 				include_once ABSPATH . 'wp-admin/includes/plugin.php';
 				// deactivate the plugin. Fire handlers to hide options.
@@ -398,18 +393,17 @@ class Ai1ec_Exception_Handler {
 			'All In One Event Calendar has been disabled due to an error:',
 			AI1EC_PLUGIN_NAME
 		);
-		$message = '<div class="message error">'.
-						'<strong>' . $label . '</strong>';
+		$message  = '<div class="message error">';
+		$message .= '<strong>' . $label . '</strong>';
 		if ( ! empty( $this->_message ) ) {
 			$message .= '<p>' . $this->_message . '</p>';
 		}
-		$message .= sprintf(
+		$message .= '<div><a href="' . $redirect_url . '"><button class="button ai1ec-dismissable">' .
 			__(
-				'<p>If you corrected the error and wish to try reactivating the plugin, <a href="%s">click here</a>.</p>',
+				'Retry activating plugin',
 				AI1EC_PLUGIN_NAME
-			),
-			$redirect_url
-		);
+			);
+		$message .= '</button></a></div><p></p>';
 		$message .= '</div>';
 		echo $message;
 	}
@@ -564,6 +558,42 @@ class Ai1ec_Exception_Handler {
 		}
 
 		echo nl2br( str_replace( ' ', '&nbsp;', htmlentities( $string ) ) );
+	}
+
+	/**
+	 * Get HTML code with backtrace information for given exception.
+	 *
+	 * @param Exception $exception
+	 *
+	 * @return string HTML code.
+	 */
+	protected function _get_backtrace( Exception $exception ) {
+		$backtrace = '';
+		$trace     = nl2br( $exception->getTraceAsString() );
+		$ident     = sha1( $trace );
+		if ( ! empty( $trace ) ) {
+			$request_uri = $_SERVER['REQUEST_URI'];
+			$backtrace = <<<JAVASCRIPT
+			<br><br>
+			<script type="text/javascript">
+			jQuery( function($) {
+				$( "a[data-rel='$ident']" ).click( function() {
+					jQuery( "#ai1ec-error-$ident" ).slideToggle( "fast" );
+					return false;
+				});
+			});
+			</script>
+			<a href="#" data-rel="$ident">Show/hide error details</a>
+			<div id="ai1ec-error-$ident" style="display: none;">
+				<h3>Error details</h3>
+				<div>
+					$trace
+					<br>Request Uri: $request_uri
+				</div>
+			</div>
+JAVASCRIPT;
+		}
+		return $backtrace;
 	}
 
 }

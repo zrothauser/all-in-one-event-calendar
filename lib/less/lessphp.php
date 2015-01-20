@@ -53,6 +53,20 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 	 */
 	private $variable_file;
 
+	/**
+	 * Variables used for compilation.
+	 *
+	 * @var array
+	 */
+	private $variables;
+
+	/**
+	 * Hashmap for build-precompilation purposes.
+	 *
+	 * @var array
+	 */
+	private $hashmap;
+
 	public function __construct(
 		Ai1ec_Registry_Object $registry,
 		$default_theme_url = AI1EC_DEFAULT_THEME_URL
@@ -61,12 +75,9 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		$this->lessc = $this->_registry->get( 'lessc' );
 		$this->lessc->setFormatter( 'compressed' );
 		$this->default_theme_url = $this->sanitize_default_theme_url( $default_theme_url );
-		$this->parsed_css = '';
-		$this->files = array(
-			'style.less',
-			'event.less',
-			'calendar.less',
-		);
+		$this->parsed_css        = '';
+		$this->variables         = array();
+		$this->hashmap           = array();
 	}
 
 	/**
@@ -102,30 +113,22 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		}
 		// convert the variables to key / value
 		$variables   = $this->convert_less_variables_for_parsing( $variables );
-		// Inject additional constants from extensions if not compiling core only.
-		if ( false === $compile_core ) {
+		// Inject additional constants from extensions
+		$variables   = apply_filters( 'ai1ec_less_constants', $variables );
 
-			$variables   = apply_filters( 'ai1ec_less_constants', $variables );
-		}
-
+		// Use this variables for hashmap purposes.
+		$this->variables = $variables;
 
 		// Load the static variables defined in the theme's variables.less file.
 		$this->load_static_theme_variables();
 		$loader      = $this->_registry->get( 'theme.loader' );
-		//Allow extensions to add their own LESS files if not compiling core.
-		if ( false === $compile_core ) {
-			$this->files = apply_filters( 'ai1ec_less_files', $this->files );
-			$this->files[] = 'override.less';
-		}
+		//Allow extensions to add their own LESS files.
+		$this->files   = $this->_get_less_files();
+		$this->files[] = 'override.less';
 
 		// Find out the active theme URL.
 		$option      = $this->_registry->get( 'model.option' );
 		$theme       = $option->get( 'ai1ec_current_theme' );
-		// Get default theme for core compilation
-		if ( true === $compile_core ) {
-			$theme = $this->_registry->get( 'controller.front' )
-				->get_default_theme();
-		}
 		$this->lessc->addImportDir(
 			$theme['theme_dir'] . DIRECTORY_SEPARATOR . 'less'
 		);
@@ -147,7 +150,11 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 			}
 			// We prepend the unparsed variables.less file we got earlier.
 			// We do this as we do not import that anymore in the less files.
-			$this->unparsed_variable_file .= $file_to_parse->get_content();
+			$content                       = $file_to_parse->get_content();
+			$this->unparsed_variable_file .= $content;
+			if ( true === $compile_core ) {
+				$this->hashmap[$file] = sha1( $content );
+			}
 
 			// Set the import directories for the file. Includes current directory of
 			// file as well as theme directory in core. This is important for
@@ -280,6 +287,22 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		return apply_filters( 'ai1ec_less_variables', $variables );
 	}
 
+	/**
+	 * Returns compilation specific hashmap.
+	 *
+	 * @return array Hashmap.
+	 */
+	public function get_less_hashmap() {
+		foreach ( $this->variables as $key => $value ) {
+			if ( 'fontdir_' === substr( $key, 0, 8 ) ) {
+				unset( $this->variables[$key] );
+			}
+		}
+		return array(
+			'variables' => $this->variables,
+			'files'     => $this->hashmap,
+		);
+	}
 
 	/**
 	 * Drop extraneous attributes from variable array and convert to simple
@@ -400,5 +423,19 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 			$url = substr( $url, $pos_https );
 		}
 		return $url;
+	}
+
+	/**
+	 * Returns list of used LESS files.
+	 *
+	 * @return array List of LESS files to proceed.
+	 */
+	protected function _get_less_files() {
+		$files = array(
+			'style.less',
+			'event.less',
+			'calendar.less',
+		);
+		return apply_filters( 'ai1ec_less_files', $files );
 	}
 }

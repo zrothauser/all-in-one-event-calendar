@@ -159,7 +159,7 @@ class Ai1ec_Front_Controller {
 	public function initialize_router() {
 		/* @var $cal_state Ai1ec_Calendar_State */
 		$cal_state              = $this->_registry->get( 'calendar.state' );
-		$cal_state->init_router = true;
+		$cal_state->set_routing_initialization( true );
 		$settings               = $this->_registry->get( 'model.settings' );
 		$cal_page               = $settings->get( 'calendar_page_id' );
 
@@ -167,7 +167,7 @@ class Ai1ec_Front_Controller {
 			! $cal_page ||
 			$cal_page < 1
 		) { // Routing may not be affected in any way if no calendar page exists.
-			$cal_state->init_router = false;
+			$cal_state->set_routing_initialization( false );
 			return null;
 		}
 		$router              = $this->_registry->get( 'routing.router' );
@@ -189,7 +189,7 @@ class Ai1ec_Front_Controller {
 		$template_link_helper = $this->_registry->get( 'template.link.helper' );
 
 		if ( ! get_post( $cal_page ) ) {
-			$cal_state->init_router = false;
+			$cal_state->set_routing_initialization( false );
 			return null;
 		}
 
@@ -224,7 +224,7 @@ class Ai1ec_Front_Controller {
 
 		$router->asset_base( $page_base )
 			->register_rewrite( $page_link );
-		$cal_state->init_router = false;
+		$cal_state->set_routing_initialization( false );
 	}
 
 	/**

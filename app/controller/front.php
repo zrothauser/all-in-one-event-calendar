@@ -96,6 +96,10 @@ class Ai1ec_Front_Controller {
 	 */
 	public function register_extensions() {
 		do_action( 'ai1ec_loaded', $this->_registry );
+		// check if custom theme is set
+		if ( is_admin() ) {
+			$this->_check_old_theme();
+		}
 	}
 
 	/**
@@ -251,10 +255,6 @@ class Ai1ec_Front_Controller {
 			$this->_initialize_schema();
 			// set the default theme if not set
 			$this->_add_default_theme_if_not_set();
-			// check if custom theme is set
-			if ( is_admin() ) {
-				$this->_check_old_theme();
-			}
 		} catch ( Ai1ec_Constants_Not_Set_Exception $e ) {
 			// This is blocking, throw it and disable the plugin
 			$exception = $e;

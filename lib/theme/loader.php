@@ -588,4 +588,56 @@ class Ai1ec_Theme_Loader {
 		$css_controller->invalidate_cache( null, false );
 	}
 
+	/**
+	 * Switches to default Vortex theme.
+	 *
+	 * @param bool $silent Whether notify admin or not.
+	 *
+	 * @return void Method does not return.
+	 */
+	public function switch_to_vortex( $silent = false ) {
+		$current_theme = $this->get_current_theme();
+		if (
+			isset( $current_theme['stylesheet'] ) &&
+			'vortex' === $current_theme['stylesheet']
+		) {
+			return $current_theme;
+		}
+		$root  = AI1EC_PATH . DIRECTORY_SEPARATOR . 'public' .
+			DIRECTORY_SEPARATOR . AI1EC_THEME_FOLDER;
+		$theme = array(
+			'theme_root' => $root,
+			'theme_dir'  => $root . DIRECTORY_SEPARATOR . 'vortex',
+			'theme_url'  => AI1EC_URL . '/public/' . AI1EC_THEME_FOLDER . '/vortex',
+			'stylesheet' => 'vortex',
+			'legacy'     => false
+		);
+		$this->switch_theme( $theme );
+		if ( ! $silent ) {
+			$this->_registry->get( 'notification.admin' )->store(
+				Ai1ec_I18n::__(
+					"Your calendar theme has been switched to Vortex due to a rendering problem. For more information, please enable debug mode by adding this line to your WordPress <code>wp-config.php</code> file:<pre>define( 'AI1EC_DEBUG', true );</pre>"
+				),
+				'error',
+				0,
+				array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
+				true
+			);
+		}
+		return $theme;
+	}
+
+	/**
+	 * Returns current calendar theme.
+	 *
+	 * @return mixed Theme array or null.
+	 *
+	 * @throws Ai1ec_Bootstrap_Exception
+	 */
+	public function get_current_theme() {
+		return $this->_registry->get(
+			'model.option'
+		)->get( 'ai1ec_current_theme' );
+	}
+
 }

@@ -261,6 +261,34 @@ class Ai1ec_Settings extends Ai1ec_App {
 	}
 
 	/**
+	 * Observes wp_options changes. If any matches related setting then
+	 * updates that setting.
+	 *
+	 * @param string $option    Name of the updated option.
+	 * @param mixed  $old_value The old option value.
+	 * @param mixed  $value     The new option value.
+	 *
+	 * @return void Method does not return.
+	 */
+	public function wp_options_observer( $option, $old_value, $value ) {
+		$options = $this->get_options();
+		if (
+			self::WP_OPTION_KEY === $option ||
+			empty( $options )
+		) {
+			return;
+		}
+
+		if (
+			isset( $options[$option] ) &&
+			'wp_option' === $options[$option]['type'] &&
+			$this->get( $option ) !== $value
+		) {
+			$this->set( $option, $value );
+		}
+	}
+
+	/**
 	 * Initiate options map from storage.
 	 *
 	 * @return void Return from this method is ignored.

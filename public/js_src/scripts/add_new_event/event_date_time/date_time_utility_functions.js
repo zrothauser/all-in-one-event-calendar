@@ -70,7 +70,10 @@ define(
 				show_repeat_tabs( data, fn );
 			} else {
 				if ( this.id === 'ai1ec_repeat' ) {
-					$( '#ai1ec_exclude' ).attr( 'disabled', true );
+					$( '#ai1ec_exclude' )
+						.removeAttr( 'checked' )
+						.attr( 'disabled', true );
+					$( '#ai1ec_exclude_text > a' ).text( '' );
 				};
 				$( s2 ).text( '' );
 				var txt = $.trim( $( s3 ).text() );

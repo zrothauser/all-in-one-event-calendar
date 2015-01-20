@@ -864,14 +864,15 @@ class Ai1ec_Ics_Import_Export_Engine
 				$dtstart
 			);
 
-
-			$e->setProperty(
-				'dtend',
-				$this->_sanitize_value(
-					$event->get( 'end' )->format( "Ymd\THis" )
-				),
-				$dtend
-			);
+			if ( false === (bool)$event->get( 'instant_event' ) ) {
+				$e->setProperty(
+					'dtend',
+					$this->_sanitize_value(
+						$event->get( 'end' )->format( "Ymd\THis" )
+					),
+					$dtend
+				);
+			}
 		}
 
 		// ========================

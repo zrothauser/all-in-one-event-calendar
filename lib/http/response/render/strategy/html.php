@@ -54,7 +54,6 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 			return;
 		}
 		// Replace page content - make sure it happens at (almost) the very end of
-		// page content filters (some themes are overly ambitious here)
 		add_filter( 'the_content', array( $this, 'append_content' ), PHP_INT_MAX - 1 );
 	}
 

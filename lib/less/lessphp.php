@@ -326,10 +326,11 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		$misc        = $this->_registry->get( 'filesystem.misc' );
 		$cur_hashmap = $misc->get_current_theme_hashmap();
 		if ( empty( $variables ) ) {
-			$variables = $this->get_saved_variables( false );;
+			$variables = $this->get_saved_variables( false );
 		}
 		$variables   = $this->convert_less_variables_for_parsing( $variables );
 		$variables   = apply_filters( 'ai1ec_less_constants', $variables );
+		$variables   = $this->_compilation_check_clear_variables( $variables );
 		ksort( $variables );
 		if (
 			$variables !== $cur_hashmap['variables']
@@ -462,5 +463,22 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 			}
 		}
 		return '';
+	}
+
+	/**
+	 * Removes fontdir variables added by add-ons.
+	 *
+	 * @param array $variables Input variables array.
+	 *
+	 * @return array Modified variables.
+	 */
+	protected function _compilation_check_clear_variables( array $variables ) {
+		foreach ( $variables as $key => $value ) {
+			if ( 'fontdir_' === substr( $key, 0, 8 ) ) {
+				unset( $variables[$key] );
+			}
+		}
+
+		return $variables;
 	}
 }

@@ -224,6 +224,9 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		$update_persistence = false
 	) {
 		if ( ! $this->lessphp_controller->is_compilation_needed( $variables ) ) {
+			$this->_registry->get(
+				'model.option'
+			)->delete( 'ai1ec_render_css' );
 			return true;
 		}
 		$notification = $this->_registry->get( 'notification.admin' );

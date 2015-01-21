@@ -47,7 +47,8 @@ class Ai1ec_Command_Compile_Core_Css extends Ai1ec_Command {
 		}
 
 		$css      = $less->parse_less_files( null, true );
-		$hashmap  = $this->_get_hashmap_array( $less->get_less_hashmap() );
+		$hashmap  = $less->get_less_hashmap();
+		$hashmap  = $this->_get_hashmap_array( $hashmap );
 		$filename = $theme['theme_dir'] . DIRECTORY_SEPARATOR .
 			'css' . DIRECTORY_SEPARATOR . 'ai1ec_parsed_css.css';
 		$hashmap_file = $theme['theme_dir'] . DIRECTORY_SEPARATOR .
@@ -78,21 +79,9 @@ class Ai1ec_Command_Compile_Core_Css extends Ai1ec_Command {
 	 * @throws Ai1ec_Invalid_Argument_Exception
 	 */
 	protected function _get_theme( $stylesheet ) {
-		$themes = array( 'plana', 'vortex', 'umbra', 'gamma' );
-		if ( ! in_array( $stylesheet, $themes ) ) {
-			throw new Ai1ec_Invalid_Argument_Exception(
-				'Theme ' . $stylesheet . ' compilation is not supported.'
-			);
-		}
-		$root   = AI1EC_PATH . DIRECTORY_SEPARATOR . 'public' .
-			DIRECTORY_SEPARATOR . AI1EC_THEME_FOLDER;
-		return array(
-			'theme_root' => $root,
-			'theme_dir'  => $root . DIRECTORY_SEPARATOR . $stylesheet,
-			'theme_url'  => AI1EC_URL . '/public/' . AI1EC_THEME_FOLDER . '/' . $stylesheet,
-			'stylesheet' => $stylesheet,
-			'legacy'     => false,
-		);
+		return $this->_registry->get(
+			'filesystem.misc'
+		)->build_theme_structure( $stylesheet );
 	}
 
 	/**

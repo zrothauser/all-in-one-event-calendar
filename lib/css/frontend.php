@@ -223,8 +223,8 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		array $variables    = null,
 		$update_persistence = false
 	) {
-		if ( ! $this->lessphp_controller->is_compilation_needed() ) {
-			return;
+		if ( ! $this->lessphp_controller->is_compilation_needed( $variables ) ) {
+			return true;
 		}
 		$notification = $this->_registry->get( 'notification.admin' );
 		if (

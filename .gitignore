@@ -31,3 +31,7 @@ local.properties
 /app/config/constants-local.php
 /app/public/js/build.txt
 /lib/bootstrap/loader-map.php
+/public/themes-ai1ec/umbra/less.sha1.map.php
+/public/themes-ai1ec/gamma/less.sha1.map.php
+/public/themes-ai1ec/plana/less.sha1.map.php
+/public/themes-ai1ec/vortex/less.sha1.map.php

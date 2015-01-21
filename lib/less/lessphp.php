@@ -292,19 +292,48 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 				unset( $this->variables[$key] );
 			}
 		}
-		//$hashmap =
+		$hashmap   = $this->_registry->get(
+			'filesystem.misc'
+		)->build_current_theme_hashmap();
+		$variables = $this->variables;
+		ksort( $variables );
 		return array(
-			'variables' => $this->variables,
-			'files'     => $this->hashmap,
+			'variables' => $variables,
+			'files'     => $hashmap,
 		);
 	}
 
-	public function is_compilation_needed() {
-		$hashmap   = array();
-		$variables = $this->get_saved_variables( false );
-		$variables = $this->convert_less_variables_for_parsing( $variables );
-		$variables = apply_filters( 'ai1ec_less_constants', $variables );
-		$hashmap['variables'] = $variables;
+	/**
+	 * Returns whether LESS compilation should be performed or not.
+	 *
+	 * @param array $variables LESS variables.
+	 *
+	 * @return bool Result.
+	 *
+	 * @throws Ai1ec_Bootstrap_Exception
+	 */
+	public function is_compilation_needed( array $variables = array() ) {
+		if ( apply_filters( 'ai1ec_always_recompile_less', false ) ) {
+			return true;
+		}
+		/* @var $misc Ai1ec_Filesystem_Misc */
+		$misc        = $this->_registry->get( 'filesystem.misc' );
+		$cur_hashmap = $misc->get_current_theme_hashmap();
+		if ( empty( $variables ) ) {
+			$variables = $this->get_saved_variables( false );;
+		}
+		$variables   = $this->convert_less_variables_for_parsing( $variables );
+		$variables   = apply_filters( 'ai1ec_less_constants', $variables );
+		ksort( $variables );
+		if (
+			$variables !== $cur_hashmap['variables']
+		) {
+			return true;
+		}
+
+		$file_hashmap = $misc->build_current_theme_hashmap();
+
+		return ! $misc->compare_hashmaps( $file_hashmap, $cur_hashmap['files'] );
 	}
 
 

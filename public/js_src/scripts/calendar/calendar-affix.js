@@ -15,11 +15,14 @@ define(
 		var
 			$toolbar = $calendar.find( '.ai1ec-calendar-toolbar' );
 
-		// No use without a toolbar.
+		// Add an empty toolbar placeholder if there's none.
 		if ( ! $toolbar.length ) {
-			return false;
+			$toolbar = $( '<div />', {
+				class : 'timely ai1ec-calendar-toolbar ai1ec-empty-toolbar ai1ec-clearfix'
+			} );
+			$calendar.prepend( $toolbar );
 		}
-		var 
+		var
 			// Calendar navigation buttons
 			$buttons = $calendar.find( '.ai1ec-views-dropdown' )
 				.closest( 'div.ai1ec-clearfix' )

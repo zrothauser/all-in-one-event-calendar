@@ -14,11 +14,10 @@ class Ai1ec_Filesystem_Misc extends Ai1ec_Base {
 	/**
 	 * Builds directory hashmap.
 	 *
-	 * @param array|string $paths Paths for hashmap generation. It accepts
+	 * @param array|string $paths      Paths for hashmap generation. It accepts
 	 *                                 string or array of paths. Elements in
-	 *                                 hashmaps are overwritten with rule
-	 *                                 "last found filematters."
-	 * @param array $exclusions List of excluded file names.
+	 *                                 hashmaps are not overwritten.
+	 * @param array        $exclusions List of excluded file names.
 	 *
 	 * @return array Hashmap.
 	 */
@@ -28,7 +27,9 @@ class Ai1ec_Filesystem_Misc extends Ai1ec_Base {
 		}
 		$hashmap = array();
 		foreach ( $paths as $path ) {
-			$hashmap += $this->build_dir_hashmap( $path, $exclusions );
+			if ( file_exists( $path ) ) {
+				$hashmap += $this->build_dir_hashmap( $path, $exclusions );
+			}
 		}
 
 		ksort( $hashmap );
@@ -39,14 +40,14 @@ class Ai1ec_Filesystem_Misc extends Ai1ec_Base {
 	/**
 	 * Builds hashmap for given directory.
 	 *
-	 * @param string $dir Directory for hashmap creation.
-	 * @param array $exclusions List of excluded file names.
+	 * @param string $directory  Directory for hashmap creation.
+	 * @param array  $exclusions List of excluded file names.
 	 *
 	 * @return array Hashmap.
 	 */
-	public function build_dir_hashmap( $dir, $exclusions = array() ) {
+	public function build_dir_hashmap( $directory, $exclusions = array() ) {
 		$directory_iterator = new RecursiveDirectoryIterator(
-			$dir,
+			$directory,
 			RecursiveDirectoryIterator::SKIP_DOTS
 		);
 		$recursive_iterator = new RecursiveIteratorIterator(
@@ -54,7 +55,7 @@ class Ai1ec_Filesystem_Misc extends Ai1ec_Base {
 		);
 		$files              = new RegexIterator(
 			$recursive_iterator,
-			'/^.+\.(less|css)$/i',
+			'/^.+\.(less|css|php)$/i',
 			RegexIterator::GET_MATCH
 		);
 		$hashmap            = array();
@@ -64,7 +65,7 @@ class Ai1ec_Filesystem_Misc extends Ai1ec_Base {
 				continue;
 			}
 			$key = str_replace(
-				array( $dir, '/' ),
+				array( $directory, '/' ),
 				array( '', '\\' ),
 				$file[0]
 			);
@@ -108,18 +109,16 @@ class Ai1ec_Filesystem_Misc extends Ai1ec_Base {
 	 * @throws Ai1ec_Invalid_Argument_Exception
 	 */
 	public function build_current_theme_hashmap() {
-		$cur_theme = $this->_registry->get( 'model.option' )->get(
-			'ai1ec_current_theme'
-		);
-		$vortex    = $this->build_theme_structure( 'vortex' );
+		$paths = $this->_registry->get( 'theme.loader' )->get_paths();
 
 		return $this->build_dirs_hashmap(
-			array(
-				$cur_theme['theme_dir'],
-				$vortex['theme_dir'],
+			array_keys(
+				$paths['theme']
 			),
 			array(
 				'ai1ec_parsed_css.css',
+				'less.sha1.map.php',
+				'index.php',
 			)
 		);
 	}

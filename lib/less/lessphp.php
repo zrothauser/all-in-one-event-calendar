@@ -313,7 +313,13 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 	 * @throws Ai1ec_Bootstrap_Exception
 	 */
 	public function is_compilation_needed( array $variables = array() ) {
-		if ( apply_filters( 'ai1ec_always_recompile_less', false ) ) {
+		if (
+			apply_filters( 'ai1ec_always_recompile_less', false ) ||
+			(
+				defined( 'AI1EC_DEBUG' ) &&
+		        AI1EC_DEBUG
+			)
+		) {
 			return true;
 		}
 		/* @var $misc Ai1ec_Filesystem_Misc */

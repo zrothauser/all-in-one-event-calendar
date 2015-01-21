@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Miscelanous file systen related functions.
+ * Miscellaneous file system related functions.
  *
  * @author     Time.ly Network Inc.
  * @since      2.2

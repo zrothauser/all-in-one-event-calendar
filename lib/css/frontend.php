@@ -168,7 +168,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 			return Ai1ec_Http_Response_Helper::remove_protocols(
 				apply_filters(
 					'ai1ec_frontend_standard_css_url',
-				$theme['theme_url'] . '/css/ai1ec_parsed_css.css'
+					$theme['theme_url'] . '/css/ai1ec_parsed_css.css'
 				)
 			);
 		}

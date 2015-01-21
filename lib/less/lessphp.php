@@ -147,8 +147,7 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 			}
 			// We prepend the unparsed variables.less file we got earlier.
 			// We do this as we do not import that anymore in the less files.
-			$content                       = $file_to_parse->get_content();
-			$this->unparsed_variable_file .= $content;
+			$this->unparsed_variable_file .= $file_to_parse->get_content();
 
 			// Set the import directories for the file. Includes current directory of
 			// file as well as theme directory in core. This is important for
@@ -317,7 +316,7 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 			apply_filters( 'ai1ec_always_recompile_less', false ) ||
 			(
 				defined( 'AI1EC_DEBUG' ) &&
-		        AI1EC_DEBUG
+				AI1EC_DEBUG
 			)
 		) {
 			return true;
@@ -333,6 +332,7 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		$variables   = $this->_compilation_check_clear_variables( $variables );
 		ksort( $variables );
 		if (
+			null === $cur_hashmap ||
 			$variables !== $cur_hashmap['variables']
 		) {
 			return true;

@@ -21,11 +21,7 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 	protected $_html;
 
 	/**
-	 * Registers proper filters for content modifications.
-	 *
-	 * @param array $params Function params.
-	 *
-	 * @return void Method does not return.
+	 * @var string The html for the footer of the event.
 	 */
 	protected $_html_footer = '';
 
@@ -37,6 +33,13 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 	 */
 	protected $_caller     = '';
 
+	/**
+	 * Registers proper filters for content modifications.
+	 *
+	 * @param array $params Function params.
+	 *
+	 * @return void Method does not return.
+	 */
 	public function render( array $params ) {
 		$this->_html = $params['data'];
 		if ( isset( $params['caller'] ) ) {

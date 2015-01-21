@@ -25,7 +25,13 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 			if ( !configurable ) {
 				return false;
 			}
-			var url = config.site_url + '?ai1ec_js_widget='
+			var url = (
+					// We serve Calendar widgets from the Calendar page.
+					data.widget.match( /superwidget/ )
+					? calendar.calendar_url
+					: config.site_url
+				)
+				+ '?ai1ec_js_widget='
 				+ data.widget + '&render=true';
 
 			$.each( configurable, function( el, i ) {

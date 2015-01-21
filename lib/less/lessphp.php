@@ -60,13 +60,6 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 	 */
 	private $variables;
 
-	/**
-	 * Hashmap for build-precompilation purposes.
-	 *
-	 * @var array
-	 */
-	private $hashmap;
-
 	public function __construct(
 		Ai1ec_Registry_Object $registry,
 		$default_theme_url = AI1EC_DEFAULT_THEME_URL
@@ -77,7 +70,11 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		$this->default_theme_url = $this->sanitize_default_theme_url( $default_theme_url );
 		$this->parsed_css        = '';
 		$this->variables         = array();
-		$this->hashmap           = array();
+		$this->files             = array(
+			'style.less',
+			'event.less',
+			'calendar.less',
+		);
 	}
 
 	/**
@@ -123,7 +120,7 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 		$this->load_static_theme_variables();
 		$loader      = $this->_registry->get( 'theme.loader' );
 		//Allow extensions to add their own LESS files.
-		$this->files   = $this->_get_less_files();
+		$this->files   = apply_filters( 'ai1ec_less_files', $this->files );
 		$this->files[] = 'override.less';
 
 		// Find out the active theme URL.
@@ -152,9 +149,6 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 			// We do this as we do not import that anymore in the less files.
 			$content                       = $file_to_parse->get_content();
 			$this->unparsed_variable_file .= $content;
-			if ( true === $compile_core ) {
-				$this->hashmap[$file] = sha1( $content );
-			}
 
 			// Set the import directories for the file. Includes current directory of
 			// file as well as theme directory in core. This is important for
@@ -298,66 +292,21 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 				unset( $this->variables[$key] );
 			}
 		}
+		//$hashmap =
 		return array(
 			'variables' => $this->variables,
 			'files'     => $this->hashmap,
 		);
 	}
 
-	/**
-	 * Drop extraneous attributes from variable array and convert to simple
-	 * key-value pairs required by the LESS parser.
-	 *
-	 * @param array $variables
-	 * @return array
-	 */
-	private function convert_less_variables_for_parsing( array $variables ) {
-		$converted_variables = array();
-		foreach ( $variables as $variable_name => $variable_params ) {
-			$converted_variables[$variable_name] = $variable_params['value'];
-		}
-		return $converted_variables;
+	public function is_compilation_needed() {
+		$hashmap   = array();
+		$variables = $this->get_saved_variables( false );
+		$variables = $this->convert_less_variables_for_parsing( $variables );
+		$variables = apply_filters( 'ai1ec_less_constants', $variables );
+		$hashmap['variables'] = $variables;
 	}
 
-
-	/**
-	 * Different themes need different variables.less files. This uses the theme
-	 * loader (searches active theme first, then default) to load it unparsed.
-	 */
-	private function load_static_theme_variables() {
-		$loader = $this->_registry->get( 'theme.loader' );
-		$file = $loader->get_file( 'variables.less', array(), false );
-		$this->unparsed_variable_file = $file->get_content();
-	}
-
-	/**
-	 * Load font as base 64 encoded
-	 *
-	 * @param array $matches
-	 * @return string
-	 */
-	private function load_font_base64( $matches ) {
-		// Find out the active theme URL.
-		$option = $this->_registry->get( 'model.option' );
-		$theme  = $option->get( 'ai1ec_current_theme' );
-		$dirs   = apply_filters(
-			'ai1ec_font_dirs',
-			array(
-				'AI1EC'   => array(
-					$theme['theme_dir'] . DIRECTORY_SEPARATOR . 'font',
-					AI1EC_DEFAULT_THEME_PATH . DIRECTORY_SEPARATOR . 'font',
-				)
-			)
-		);
-		$directories = $dirs[$matches[1]];
-		foreach ( $directories as $dir ) {
-			$font_file = $dir . DIRECTORY_SEPARATOR . $matches[2];
-			if ( file_exists( $font_file ) ) {
-				return base64_encode( file_get_contents( $font_file ) );
-			}
-		}
-		return '';
-	}
 
 	/**
 	 * Gets the saved variables from the database, and make sure all variables
@@ -426,16 +375,57 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 	}
 
 	/**
-	 * Returns list of used LESS files.
+	 * Drop extraneous attributes from variable array and convert to simple
+	 * key-value pairs required by the LESS parser.
 	 *
-	 * @return array List of LESS files to proceed.
+	 * @param array $variables
+	 * @return array
 	 */
-	protected function _get_less_files() {
-		$files = array(
-			'style.less',
-			'event.less',
-			'calendar.less',
+	private function convert_less_variables_for_parsing( array $variables ) {
+		$converted_variables = array();
+		foreach ( $variables as $variable_name => $variable_params ) {
+			$converted_variables[$variable_name] = $variable_params['value'];
+		}
+		return $converted_variables;
+	}
+
+
+	/**
+	 * Different themes need different variables.less files. This uses the theme
+	 * loader (searches active theme first, then default) to load it unparsed.
+	 */
+	private function load_static_theme_variables() {
+		$loader = $this->_registry->get( 'theme.loader' );
+		$file = $loader->get_file( 'variables.less', array(), false );
+		$this->unparsed_variable_file = $file->get_content();
+	}
+
+	/**
+	 * Load font as base 64 encoded
+	 *
+	 * @param array $matches
+	 * @return string
+	 */
+	private function load_font_base64( $matches ) {
+		// Find out the active theme URL.
+		$option = $this->_registry->get( 'model.option' );
+		$theme  = $option->get( 'ai1ec_current_theme' );
+		$dirs   = apply_filters(
+			'ai1ec_font_dirs',
+			array(
+				'AI1EC'   => array(
+					$theme['theme_dir'] . DIRECTORY_SEPARATOR . 'font',
+					AI1EC_DEFAULT_THEME_PATH . DIRECTORY_SEPARATOR . 'font',
+				)
+			)
 		);
-		return apply_filters( 'ai1ec_less_files', $files );
+		$directories = $dirs[$matches[1]];
+		foreach ( $directories as $dir ) {
+			$font_file = $dir . DIRECTORY_SEPARATOR . $matches[2];
+			if ( file_exists( $font_file ) ) {
+				return base64_encode( file_get_contents( $font_file ) );
+			}
+		}
+		return '';
 	}
 }

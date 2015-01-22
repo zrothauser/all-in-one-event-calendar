@@ -211,6 +211,7 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	protected function _add_runtime_properties( Ai1ec_Event $event ) {
 		global $post;
 		$original_post      = $post;
+		$post               = $event->get( 'post' );
 		$instance_permalink = get_permalink(
 			$event->get( 'post_id' )
 		);

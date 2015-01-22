@@ -11,6 +11,11 @@
 class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 
 	/**
+	 * Twig page content placeholder.
+	 */
+	const CALENDAR_PLACEHOLDER = '<!-- AI1EC_PAGE_CONTENT_PLACEHOLDER -->';
+
+	/**
 	 * @var string the event html.
 	 */
 	protected $_html;
@@ -20,8 +25,19 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 	 */
 	protected $_html_footer = '';
 
+	/**
+	 * Caller identifier. Just for paranoid check in append_content method.
+	 * Expected 'calendar' or none.
+	 *
+	 * @var string
+	 */
+	protected $_caller     = '';
+
 	public function render( array $params ) {
 		$this->_html = $params['data'];
+		if ( isset( $params['caller'] ) ) {
+			$this->_caller = $params['caller'];
+		}
 		if ( isset( $params['footer'] ) ) {
 			$this->_html_footer = $params['footer'];
 		} 
@@ -41,18 +57,27 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 	 * Append locally generated content to normal page content. By default,
 	 * first checks if we are in The Loop before outputting to prevent multiple
 	 * calendar display - unless setting is turned on to skip this check.
+	 * We should not append full calendar body to single event content as it
+	 * leads to "calendar" nesting if default calendar page contains calendar
+	 * shortcode.
 	 *
 	 * @param  string $content Post/Page content
 	 * @return string          Modified Post/Page content
 	 */
 	public function append_content( $content ) {
+		if (
+			'calendar' === $this->_caller &&
+			! $this->_registry->get( 'calendar.state' )->append_content()
+		) {
+			return $content;
+		}
 		$settings = $this->_registry->get( 'model.settings' );
 
 		// Include any admin-provided page content in the placeholder specified in
 		// the calendar theme template.
 		if ( $settings->get( 'skip_in_the_loop_check' ) || in_the_loop() ) {
 			$content = str_replace(
-				'<!-- AI1EC_PAGE_CONTENT_PLACEHOLDER -->',
+				self::CALENDAR_PLACEHOLDER,
 				$content,
 				$this->_html
 			);

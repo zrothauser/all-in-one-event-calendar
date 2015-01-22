@@ -231,7 +231,8 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 				true
 			)
 		);
-
+		$calendar_state = $this->_registry->get( 'calendar.state' );
+		$calendar_state->set_append_content( false );
 		$event->set_runtime(
 			'filtered_content',
 			apply_filters(
@@ -242,6 +243,7 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 				)
 			)
 		);
+		$calendar_state->set_append_content( true );
 
 		$taxonomy = $this->_registry->get( 'view.event.taxonomy' );
 		$ticket   = $this->_registry->get( 'view.event.ticket' );

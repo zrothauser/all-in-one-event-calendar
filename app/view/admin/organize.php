@@ -34,7 +34,6 @@ class Ai1ec_View_Organize extends Ai1ec_Base {
 			'ai1ec_add_custom_groups',
 			$taxonomy_metadata
 		);
-		$group_data = array();
 		do_action( 'ai1ec_taxonomy_management_css' );
 		foreach ( $taxonomies as $taxonomy => $data ) {
 			if ( true === $data->public ) {
@@ -42,10 +41,7 @@ class Ai1ec_View_Organize extends Ai1ec_Base {
 					isset( $_GET['taxonomy'] ) &&
 					$taxonomy === $_GET['taxonomy'];
 				$edit_url = $edit_label = '';
-				if (
-					true === $active_taxonomy &&
-					isset( $taxonomy_metadata[$taxonomy]['url'] )
-				) {
+				if ( isset( $taxonomy_metadata[$taxonomy]['url'] ) ) {
 					$edit_url = $taxonomy_metadata[$taxonomy]['url'];
 					$edit_label = $taxonomy_metadata[$taxonomy]['edit_label'];
 				}

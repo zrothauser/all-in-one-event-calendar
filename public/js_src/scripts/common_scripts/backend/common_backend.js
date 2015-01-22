@@ -8,7 +8,8 @@ define(
 		"external_libs/Placeholders",
 		"external_libs/bootstrap/tooltip",
 		"external_libs/bootstrap/popover",
-		"external_libs/bootstrap/modal"
+		"external_libs/bootstrap/modal",
+		"external_libs/bootstrap/dropdown"
 	],
 
 	function( $, domReady, ai1ec_config, event_handlers ) {

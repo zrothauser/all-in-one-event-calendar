@@ -60,13 +60,12 @@ class Ai1ec_Calendar_View_Oneday extends Ai1ec_Calendar_View_Abstract {
 		$pagination_links = $this->_get_pagination( $args, $title );
 
 		// Calculate today marker's position.
-		$now              = $date_system->current_time();
-		$midnight         = $this->_registry->get( 'date.time', $now )
+		$midnight         = $this->_registry->get( 'date.time', 'now', 'sys.default' )
 			->set_time( 0, 0, 0 );
-		$now              = $this->_registry->get( 'date.time', $now );
+		$now              = $this->_registry->get( 'date.time', 'now', 'sys.default' );
 		$now_text         = $this->_registry->get( 'view.event.time' )
 			->get_short_time( $now );
-		$now              = $now->diff_sec( $midnight );
+		$now              = (int) ( $now->diff_sec( $midnight ) / 60 );
 
 		$is_ticket_button_enabled = apply_filters( 'ai1ec_oneday_ticket_button', false );
 		$show_reveal_button       = apply_filters( 'ai1ec_oneday_reveal_button', false );

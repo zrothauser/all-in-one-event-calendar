@@ -67,8 +67,8 @@ class Ai1ec_Calendar_View_Week extends Ai1ec_Calendar_View_Abstract {
 			->get( 'time_format', Ai1ec_I18n::__( 'g a' ) );
 
 		// Calculate today marker's position.
-		$now = $this->_registry->get( 'date.time' );
-		$now_text = $now->format_i18n( 'M j' );
+		$now = $this->_registry->get( 'date.time', 'now', 'sys.default' );
+		$now_text = $now->format_i18n( 'M j h:i a' );
 		$now = $now->format( 'G' ) * 60 + $now->format( 'i' );
 		// Find out if the current week view contains "now" and thus should display
 		// the "now" marker.
@@ -392,7 +392,6 @@ class Ai1ec_Calendar_View_Week extends Ai1ec_Calendar_View_Abstract {
 					}
 				}
 			}
-
 
 			$days[$day_date] = array(
 				'today'     =>

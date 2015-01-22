@@ -157,14 +157,17 @@ class Ai1ec_Front_Controller {
 	 * @return void
 	 */
 	public function initialize_router() {
-		$settings            = $this->_registry->get( 'model.settings' );
-
-		$cal_page            = $settings->get( 'calendar_page_id' );
+		/* @var $cal_state Ai1ec_Calendar_State */
+		$cal_state              = $this->_registry->get( 'calendar.state' );
+		$cal_state->set_routing_initialization( true );
+		$settings               = $this->_registry->get( 'model.settings' );
+		$cal_page               = $settings->get( 'calendar_page_id' );
 
 		if (
 			! $cal_page ||
 			$cal_page < 1
 		) { // Routing may not be affected in any way if no calendar page exists.
+			$cal_state->set_routing_initialization( false );
 			return null;
 		}
 		$router              = $this->_registry->get( 'routing.router' );
@@ -186,6 +189,7 @@ class Ai1ec_Front_Controller {
 		$template_link_helper = $this->_registry->get( 'template.link.helper' );
 
 		if ( ! get_post( $cal_page ) ) {
+			$cal_state->set_routing_initialization( false );
 			return null;
 		}
 
@@ -209,6 +213,7 @@ class Ai1ec_Front_Controller {
 		// If the calendar is set as the front page, disable permalinks.
 		// They would not be legal under a Windows server. See:
 		// https://issues.apache.org/bugzilla/show_bug.cgi?id=41441
+
 		if (
 			$option->get( 'permalink_structure' ) &&
 			( int ) get_option( 'page_on_front' ) !==
@@ -219,6 +224,7 @@ class Ai1ec_Front_Controller {
 
 		$router->asset_base( $page_base )
 			->register_rewrite( $page_link );
+		$cal_state->set_routing_initialization( false );
 	}
 
 	/**

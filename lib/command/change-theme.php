@@ -29,7 +29,7 @@ class Ai1ec_Command_Change_Theme extends Ai1ec_Command {
 			'theme_dir'  => realpath( $_GET['ai1ec_theme_dir'] ),
 			'theme_url'  => $_GET['ai1ec_theme_url'],
 			'stylesheet' => $stylesheet,
-			'legacy'     => (bool)intval( $_GET['ai1ec_legacy'] )
+			'legacy'     => false
 		) );
 
 		// Return user to themes list page with success message.

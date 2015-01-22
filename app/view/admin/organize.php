@@ -67,14 +67,16 @@ class Ai1ec_View_Organize extends Ai1ec_Base {
 					'edit_label'    => $edit_label,
 				);
 
-				$dispatcher->register_action(
-					$taxonomy . '_pre_add_form',
-					array( 'view.admin.organize', 'render_header' )
-				);
-				$dispatcher->register_action(
-					$taxonomy . '_pre_edit_form',
-					array( 'view.admin.organize', 'render_header' )
-				);
+				if ( $active_taxonomy ) {
+					$dispatcher->register_action(
+						$taxonomy . '_pre_add_form',
+						array( 'view.admin.organize', 'render_header' )
+					);
+					$dispatcher->register_action(
+						$taxonomy . '_pre_edit_form',
+						array( 'view.admin.organize', 'render_header' )
+					);
+				}
 			}
 		}
 	}

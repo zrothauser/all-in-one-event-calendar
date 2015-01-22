@@ -1,0 +1,11 @@
+{% set edit_url   = taxonomy.edit_url is not empty ? taxonomy.edit_url   : '' %}
+{% set edit_label = taxonomy.edit_url is not empty ? taxonomy.edit_label : '' %}
+<li class="{% if taxonomy.active %}ai1ec-active{% endif %}
+	ai1ec-taxonomy-{{ taxonomy.taxonomy_name }}">
+	<a href="{{ taxonomy.url | e('html_attr') }}">
+	{% if taxonomy.icon is not empty %}
+		<i class="{{ taxonomy.icon | e('html_attr') }}"></i>
+	{% endif %}
+	{{ taxonomy.name }}
+	</a>
+</li>

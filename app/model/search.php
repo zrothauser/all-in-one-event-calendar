@@ -59,6 +59,14 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	 *                                   ['post_ids'] => list of post IDs;
 	 *                                   ['auth_ids'] => list of author IDs.
 	 * @param bool $spanning         Also include events that span this period.
+	 * @param bool $single_day       This parameter is added for oneday view.
+	 *                               Query should find events lasting in
+	 *                               particular day instead of checking dates
+	 *                               range. If you need to call this method
+	 *                               with $single_day set to true consider
+	 *                               using method get_events_for_day. This
+	 *                               parameter matters only if $spanning is set
+	 *                               to false.
 	 *
 	 * @return array List of matching event objects.
 	 */
@@ -66,7 +74,8 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		Ai1ec_Date_Time $start,
 		Ai1ec_Date_Time $end,
 		array $filter = array(),
-		$spanning     = false
+		$spanning     = false,
+		$single_day   = false
 	) {
 		// Query arguments
 		$args = array(
@@ -93,6 +102,10 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 
 		if ( $spanning ) {
 			$spanning_string = 'i.end > %d AND i.start < %d ';
+		} elseif ( $single_day ) {
+			// if event starts before end of today
+			// and ends after beginning of today
+			$spanning_string = 'i.end >= %d AND i.start <= %d ';
 		} else {
 			$spanning_string = 'i.start BETWEEN %d AND %d ';
 		}
@@ -205,7 +218,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	 *                              ['date_first'] UNIX timestamp (date part) of first event
 	 *                              ['date_last'] UNIX timestamp (date part) of last event
 	 */
-	function get_events_relative_to(
+	public function get_events_relative_to(
 		$time,
 		$limit       = 0,
 		$page_offset = 0,
@@ -338,6 +351,32 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 			'next'       => $next,
 			'date_first' => $date_first,
 			'date_last'  => $date_last,
+		);
+	}
+
+	/**
+	 * Returns events for given day. Event can start before that day and must
+	 * ends on that day or after.
+	 *
+	 * @param Ai1ec_Date_Time $day    Date object.
+	 * @param array           $filter Search filters;
+	 *
+	 * @return array List of events.
+	 */
+	public function get_events_for_day(
+		Ai1ec_Date_Time $day,
+		array $filter = array()
+	) {
+		$end_of_day   = $this->_registry->get( 'date.time', $day )
+			->set_time( 23, 59, 59 );
+		$start_of_day = $this->_registry->get( 'date.time', $day )
+		                           ->set_time( 0, 0, 0 );
+		return $this->get_events_between(
+			$start_of_day,
+			$end_of_day,
+			$filter,
+			false,
+			true
 		);
 	}
 

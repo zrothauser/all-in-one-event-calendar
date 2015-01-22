@@ -220,8 +220,7 @@ class Ai1ec_Calendar_View_Oneday extends Ai1ec_Calendar_View_Abstract {
 		array $filter = array(),
 		$legacy       = false
 	) {
-		$search      = $this->_registry->get( 'model.search' );
-		$date_system = $this->_registry->get( 'date.system' );
+		$search = $this->_registry->get( 'model.search' );
 
 		$loc_start_time = $this->_registry
 			->get( 'date.time', $start_time, 'sys.default' )
@@ -231,17 +230,7 @@ class Ai1ec_Calendar_View_Oneday extends Ai1ec_Calendar_View_Abstract {
 			->adjust_day( +1 )
 			->set_time( 0, 0, 0 );
 
-		// expand search range to include dates that actually render on this day
-		$search_start = $this->_registry->get( 'date.time', $loc_start_time )
-			->adjust_day( -1 );
-		$search_end    = $this->_registry->get( 'date.time', $loc_end_time )
-			->adjust_day( 1 );
-
-		$day_events = $search->get_events_between(
-			$search_start,
-			$search_end,
-			$filter
-		);
+		$day_events = $search->get_events_for_day( $loc_start_time, $filter );
 		$this->_update_meta( $day_events );
 		// Split up events on a per-day basis
 		$all_events = array();

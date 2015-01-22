@@ -355,8 +355,8 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	}
 
 	/**
-	 * Returns events for given day. Event can start before that day and must
-	 * ends on that day or after.
+	 * Returns events for given day. Event must start before end of day and must
+	 * ends after beginning of day.
 	 *
 	 * @param Ai1ec_Date_Time $day    Date object.
 	 * @param array           $filter Search filters;
@@ -370,7 +370,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		$end_of_day   = $this->_registry->get( 'date.time', $day )
 			->set_time( 23, 59, 59 );
 		$start_of_day = $this->_registry->get( 'date.time', $day )
-		                           ->set_time( 0, 0, 0 );
+			->set_time( 0, 0, 0 );
 		return $this->get_events_between(
 			$start_of_day,
 			$end_of_day,

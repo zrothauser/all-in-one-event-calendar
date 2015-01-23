@@ -6630,6 +6630,9 @@ ul.ai1ec-dropdown-menu li {
 .ai1ec-allday-badge[href]:focus {
   background-color: #808080;
 }
+.ai1ec-message .button {
+  vertical-align: baseline !important;
+}
 .ai1ec-color-swatch,
 .ai1ec-color-swatch-empty {
   display: inline-block;

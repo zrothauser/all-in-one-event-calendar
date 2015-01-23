@@ -121,7 +121,7 @@ class Ai1ec_Calendar_View_Oneday extends Ai1ec_Calendar_View_Abstract {
 
 		return
 			$this->_registry->get( 'http.request' )->is_json_required(
-				$args['request_format']
+				$args['request_format'], 'oneday'
 			)
 			? json_encode( $this->_apply_filters_to_args( $view_args ) )
 			: $this->_get_view( $view_args );

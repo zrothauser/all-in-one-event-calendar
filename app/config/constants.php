@@ -492,4 +492,11 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		define( 'AI1EC_PARSE_LESS_FILES_AT_EVERY_REQUEST', false );
 	}
 
+	// Defines a list of FER-enabled templates.
+	if ( ! defined( 'AI1EC_FER_ENABLED_TEMPLATES_LIST' ) ) {
+		define(
+			'AI1EC_FER_ENABLED_TEMPLATES_LIST',
+			'agenda,oneday,week,month'
+		);
+	}
 }

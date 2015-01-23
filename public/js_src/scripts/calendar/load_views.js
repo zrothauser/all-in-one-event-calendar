@@ -300,7 +300,8 @@ define(
 
 						// Render template or just replace if already rendered.
 						var renderer;
-						if ( hash.match( /\brequest_format\~json\b/ ) ){
+
+						if ( data.is_json ) {
 							var
 								view_type =  $.parseJSON( data.html ).type,
 								renderer_map = {
@@ -313,7 +314,9 @@ define(
 							if ( renderer_map[view_type] ) {
 								renderer = renderer_map[view_type];
 							} else {
-								// That's an error. No view found.
+								// No view found.
+								// Try to reload in HTML.
+								load_view( $calendar, hash.replace( /\~json/, '~html' ), type );
 								return;
 							}
 						}

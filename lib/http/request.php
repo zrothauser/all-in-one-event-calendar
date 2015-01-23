@@ -173,9 +173,11 @@ class Ai1ec_Http_Request {
 	 *
 	 * @return bool True or false.
 	 */
-	public function is_json_required( $request_format ) {
+	public function is_json_required( $request_format, $type ) {
+		$fer_list = explode( ',', AI1EC_FER_ENABLED_TEMPLATES_LIST );
 		return
 			'json' === $request_format &&
+			in_array( strtolower( $type ), $fer_list ) &&
 			$this->_registry->get(
 				'model.settings'
 			)->get( 'ai1ec_use_frontend_rendering' ) &&

@@ -16,7 +16,6 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 	 */
 	protected $_exact_dates = NULL;
 
-
 	/**
 	 * Public constructor
 	 *
@@ -50,6 +49,10 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				'</p></div></div>';
 		}
 		$type       = $request->get( 'request_type' );
+
+		$is_json = $this->_registry->get( 'http.request' )->is_json_required(
+			$view_args['request_format'], $action
+		);
 
 		// Add view-specific args to the current view args.
 		$exact_date = $this->get_exact_date( $request );
@@ -126,6 +129,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				'views_dropdown'     => $views_dropdown,
 				'subscribe_buttons'  => $subscribe_buttons,
 				'are_filters_set'    => $are_filters_set,
+				'is_json'            => $is_json,
 				'custom_filters'     => apply_filters(
 					'ai1ec_custom_filters_html',
 					'',
@@ -207,6 +211,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				'views_dropdown'     => $views_dropdown,
 				'subscribe_buttons'  => $subscribe_buttons,
 				'are_filters_set'    => $are_filters_set,
+				'is_json'            => $is_json,
 			);
 		}
 	}

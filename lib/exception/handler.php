@@ -171,12 +171,12 @@ class Ai1ec_Exception_Handler {
 				$matches
 			)
 		) {
-			$line = '<h4>' .
+			$line = '<p><strong>' .
 				sprintf(
-					__( 'Disabled add-on "%s" due to an error' ),
+					__( 'The add-on "%s" has been disabled due to an error:' ),
 					__( trim( $matches[1] ), dirname( $addon ) )
 				) .
-				'</h4>';
+				'</strong></p>';
 		}
 		return $line;
 	}
@@ -203,6 +203,7 @@ class Ai1ec_Exception_Handler {
 			$message       = method_exists( $exception, 'get_html_message' )
 				? $exception->get_html_message()
 				: $exception->getMessage();
+			$message = '<p>' . $message . '</p>';
 			$message .= $backtrace;
 			if ( null !== $disable_addon ) {
 				include_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -390,21 +391,20 @@ class Ai1ec_Exception_Handler {
 			get_admin_url()
 		);
 		$label = __(
-			'All In One Event Calendar has been disabled due to an error:',
+			'All-in-One Event Calendar has been disabled due to an error:',
 			AI1EC_PLUGIN_NAME
 		);
 		$message  = '<div class="message error">';
-		$message .= '<strong>' . $label . '</strong>';
-		if ( ! empty( $this->_message ) ) {
-			$message .= '<p>' . $this->_message . '</p>';
-		}
-		$message .= '<div><a href="' . $redirect_url . '"><button class="button ai1ec-dismissable">' .
+		$message .= '<p><strong>' . $label . '</strong></p>';
+		$message .= $this->_message;
+		$message .= ' <a href="' . $redirect_url .
+			'" class="button button-primary ai1ec-dismissable">' .
 			__(
-				'Retry activating plugin',
+				'Try reactivating plugin',
 				AI1EC_PLUGIN_NAME
 			);
-		$message .= '</button></a></div><p></p>';
-		$message .= '</div>';
+		$message .= '</a>';
+		$message .= '<p></p></div>';
 		echo $message;
 	}
 
@@ -572,9 +572,10 @@ class Ai1ec_Exception_Handler {
 		$trace     = nl2br( $exception->getTraceAsString() );
 		$ident     = sha1( $trace );
 		if ( ! empty( $trace ) ) {
-			$request_uri = $_SERVER['REQUEST_URI'];
-			$backtrace = <<<JAVASCRIPT
-			<br><br>
+			$request_uri  = $_SERVER['REQUEST_URI'];
+			$button_label = Ai1ec_i18n::__( 'Toggle error details' );
+			$title        = Ai1ec_i18n::__( 'Error Details:' );
+			$backtrace    = <<<JAVASCRIPT
 			<script type="text/javascript">
 			jQuery( function($) {
 				$( "a[data-rel='$ident']" ).click( function() {
@@ -583,14 +584,12 @@ class Ai1ec_Exception_Handler {
 				});
 			});
 			</script>
-			<a href="#" data-rel="$ident">Show/hide error details</a>
-			<div id="ai1ec-error-$ident" style="display: none;">
-				<h3>Error details</h3>
-				<div>
-					$trace
-					<br>Request Uri: $request_uri
-				</div>
-			</div>
+			<blockquote id="ai1ec-error-$ident" style="display: none;">
+				<strong>$title</strong>
+				<p>$trace</p>
+				<p>Request Uri: $request_uri</p>
+			</blockquote>
+			<a href="#" data-rel="$ident" class="button">$button_label</a>
 JAVASCRIPT;
 		}
 		return $backtrace;

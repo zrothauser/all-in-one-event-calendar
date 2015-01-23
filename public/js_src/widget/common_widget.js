@@ -20,9 +20,18 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 	window.timely['js_widgets_inited'] = 1;
 
 	var
+		loading_html = '<h2 class="ai1ec-widget-loading ai1ec-text-center"><small>\
+			<i class="ai1ec-fa ai1ec-fa-lg ai1ec-fa-fw ai1ec-fa-spin\
+				ai1ec-fa-spinner"></i> ' + config.calendar_loading + '</small></h2>',
+		fade_out_loading = function( $parent ) {
+			$parent.find( '.ai1ec-widget-loading' ).fadeOut(
+				'slow',
+				function() { $( this ).remove(); }
+			);
+		},
 		create_url = function( data ) {
 			var configurable = config.javascript_widgets[data.widget];
-			if ( !configurable ) {
+			if ( ! configurable ) {
 				return false;
 			}
 			var url = (
@@ -52,19 +61,14 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 					request_type     : type,
 					ai1ec_doing_ajax : true,
 					ai1ec            : utils.create_ai1ec_to_send( $timely_div )
-				};
+				},
+				$modal      = $( '#ai1ec-event-modal' );
 
 			// Show modal with event title
-			$( '#ai1ec-event-modal' )
+			$modal
 				.modal( 'show' )
 				.find( '.ai1ec-modal-body' )
-					.html(
-						'<h1 class="ai1ec-text-center"><small>\
-							<i class="ai1ec-fa ai1ec-fa-lg ai1ec-fa-fw ai1ec-fa-spin\
-								ai1ec-fa-spinner"></i> ' +
-							config.calendar_loading_event +
-						'</small></h1>'
-					);
+					.html( loading_html );
 
 			// Hide popovers
 			$( '.ai1ec-popup' ).hide();
@@ -78,11 +82,10 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 				crossDomain : true,
 				success     : function( data ) {
 					// Place event details into modal.
-					var $modal = $( '#ai1ec-event-modal' );
 					$modal
 						.modal( 'show' )
 						.find( '.ai1ec-modal-body' )
-							.html( data.html );
+							.append( data.html );
 
 					// Hide the subscribe buttons.
 					$( '.ai1ec-subscribe-container', $modal ).hide();
@@ -103,7 +106,8 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 					timely.require( ['scripts/event'], function( event ) {
 						event.start();
 					} );
-				}
+				},
+				complete    : function() { fade_out_loading( $modal ); }
 			} );
 		},
 		prevent_injection = function() {
@@ -155,7 +159,7 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 						+ ( 'ai1ec-superwidget' === widget_type ? ' timely-calendar' : '' )
 					} )
 						.attr( 'data-widget-type', widget_type )
-						.html( '<i class="ai1ec-fa ai1ec-fa-spin ai1ec-fa-spinner"></i>' )
+						.html( loading_html )
 						.insertAfter( $el ),
 					url         = create_url( $el.data() ),
 					data        = {
@@ -173,22 +177,21 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 					return false;
 				}
 				$timely
-					.on( 'click', '.ai1ec-cog-item-name a',
-						load_event_through_jsonp
-					);
+					.on( 'click', '.ai1ec-cog-item-name a', load_event_through_jsonp );
 
 				return $.ajax( {
 					url      : url,
 					dataType : 'jsonp',
 					data     : data,
 					success  : function( data ) {
-						$timely.html( data.html );
+						$timely.append( data.html );
 						$el.attr( 'data-added', 1 );
 						page.initialize_view( $timely.find( '.ai1ec-calendar' ) );
 					},
 					error    : function() {
-						$timely.html( '<p>An error occurred while retrieving the data.</p>' );
-					}
+						$timely.append( '<p>An error occurred while retrieving the data.</p>' );
+					},
+					complete    : function() { fade_out_loading( $timely ); }
 				} );
 			} ).get();
 

@@ -1,70 +1,65 @@
 ({
-	appDir: '../',
-	baseUrl: './',                // This is relative to appDir
-	dir: '../../js',              // This is relative to this file's dir
+	appDir: "../",
+	baseUrl: "./",                // This is relative to appDir
+	dir: "../../js",              // This is relative to this file's dir
 	keepBuildDir: false,
 	fileExclusionRegExp: /(jasmine|build|jshintr|^\.|.bat|.sh$)/,
 	mainConfigFile: '../main.js', // This is relative to this file's dir
-	// optimize: 'none',          // Uncomment this line if you need to debug
+	// optimize: "none",          // Uncomment this line if you need to debug
 	modules: [ {
-				name: 'pages/calendar'
+				name: "pages/calendar"
 			},
 			{
-				name: 'pages/event'
+				name: "pages/event"
 			},
 			{
-				name: 'pages/admin_settings'
+				name: "pages/admin_settings"
 			},
 			{
-				name: 'pages/add_new_event'
+				name: "pages/add_new_event"
 			},
 			{
-				name: 'pages/calendar_feeds'
+				name: "pages/calendar_feeds"
 			},
 			{
-				name: 'pages/event_category'
+				name: "pages/event_category"
 			},
 			{
-				name: 'pages/common_backend'
+				name: "pages/common_backend"
 			},
 			{
-				name: 'pages/less_variables_editing'
+				name: "pages/less_variables_editing"
 			},
 			{
-				name: 'pages/common_frontend'
+				name: "pages/common_frontend"
 			},
 			{
-				name: 'scripts/calendar'
+				name: "scripts/calendar"
 			},
 			{
-				name: 'scripts/common_scripts/frontend/common_frontend'
+				name: "scripts/common_scripts/frontend/common_frontend"
 			},
 			{
-				name: 'scripts/calendar/event'
+				name: "scripts/calendar/event"
 			},
 			{
-				name: 'domReady'
+				name: "domReady"
 			},
 			{
-				name: 'scripts/common_scripts/page_ready'
+				name: "scripts/common_scripts/page_ready"
 			},
 			{
-				name: 'scripts/widget-creator'
+				name: "scripts/widget-creator"
 			},
 			{
-				name: 'widget/common_widget'
-			},
-			{
-				name: 'external_libs/twig'
+				name: "external_libs/twig"
 			}
 	],
 	namespace: 'timely', // Set the namespace.
 	paths: {
-		// These modules are created dynamically in WP.
-		'ai1ec_calendar' : 'empty:',
-		'ai1ec_config'   : 'empty:',
-		'jquery_timely'  : 'empty:',
-		'libs/gmaps'     : 'empty:'
+		"ai1ec_calendar" : "empty:", // This modules are created dynamically in WP
+		"ai1ec_config"   : "empty:",
+		"jquery_timely"  : "empty:"
 	},
 	wrap: false,
 	removeCombined: false

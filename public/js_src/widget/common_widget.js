@@ -156,7 +156,11 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 					widget_type = $el.data( 'widget' ),
 					$timely     = $( '<div />', {
 						'class': 'timely timely-widget'
-						+ ( 'ai1ec-superwidget' === widget_type ? ' timely-calendar' : '' )
+						+ (
+							widget_type.match( /ai1ec(_|-)superwidget/ )
+							? ' timely-calendar'
+							: ''
+						)
 					} )
 						.attr( 'data-widget-type', widget_type )
 						.html( loading_html )

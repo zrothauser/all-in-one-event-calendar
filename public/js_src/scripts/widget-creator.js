@@ -48,33 +48,31 @@ define(
 						// we need this for embedding calendar
 						var em_code = ai1ec_config.set_calendar_page;
 						if( ai1ec_config.calendar_page_id ) {
-							// get the active tab
-							var $active_tab = $( '.ai1ec-tab-content .ai1ec-active' );
-							var widget_id = $active_tab.attr( 'id' );
-							// superwidgets still has it's rules
-							var superwidget = false;
-							if ( 'ai1ec-superwidget' === widget_id ) {
-								superwidget = true;
-							}
-							var url = superwidget ? $code.data( 'url' ) : $code.data( 'widget-url' );
-							// get the defaults
-							var defaults = ai1ec_config.javascript_widgets;
-							// data-widget is unused in the superwidget but does no harm
+							var
+								// Get the active tab.
+								$active_tab = $( '.ai1ec-tab-content .ai1ec-active' ),
+								widget_id   = $active_tab.attr( 'id' ),
+								url         = $code.data( 'widget-url' ),
+								// Get the defaults.
+								defaults    = ai1ec_config.javascript_widgets;;
+
 							em_code = '&lt;script class="ai1ec-widget-placeholder" data-widget="' + widget_id +'"';
-							// process the selects
+							// Process the selects.
 							$( 'select', $active_tab ).each( function() {
-								var $select = $( this );
-								var selected = $select.val();
+								var
+									$select = $( this ),
+									selected = $select.val();
+
 								if ( selected ) {
 									var id = $select.attr( 'id' );
 									if ( $select.attr( 'multiple' ) ) {
 										selected = selected.join( ',' );
-										id = $select.data( 'id' )
+										id       = $select.data( 'id' )
 									}
 									em_code += ' data-' + id + '="' + selected + '"';
 								}
 							} );
-							// process inputs
+							// Process inputs.
 							$( 'input', $active_tab ).each( function() {
 								var $input = $( this );
 
@@ -93,7 +91,7 @@ define(
 								}
 							} );
 							em_code += '&gt;<br>&nbsp;&nbsp;(function(){var d=document,s=d.createElement(\'script\'),<br>'
-								+ '&nbsp;&nbsp;i=\'ai1ec-script' + ( superwidget ? '-sw' : '' )
+								+ '&nbsp;&nbsp;i=\'ai1ec-script'
 								+ '\';if(d.getElementById(i))return;s.async=1;<br>'
 								+ '&nbsp;&nbsp;s.id=i;s.src=\'' + url + '\';<br>'
 								+ '&nbsp;&nbsp;d.getElementsByTagName(\'head\')[0].appendChild(s);})();<br>'
@@ -114,7 +112,8 @@ define(
 						var
 							iframe = $preview[0],
 							txt_code = generate_code();
-						// a calendar page is needed for this to work. User must have saved it.
+
+						// A calendar page is needed for this to work. User must have saved it.
 						if( ! ai1ec_config.calendar_page_id ) {
 							return;
 						}
@@ -139,7 +138,7 @@ define(
 						);
 						iframe.document.close();
 					};
-				// get the change event when it bubbles up.
+				// Get the change event when it bubbles up.
 				$( '.timely' ).on( 'change', '.ai1ec-form-group', preview );
 				$( '.timely' ).on( 'shown.bs.tab', 'a[data-toggle="ai1ec-tab"]', preview );
 

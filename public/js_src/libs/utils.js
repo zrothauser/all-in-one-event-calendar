@@ -165,6 +165,7 @@ define(
 				 *
 				 */
 				add_query_arg :  function( url, args ) {
+					if ( 'string' !== typeof url ) return false;
 					var char = url.indexOf( '?' ) === -1 ? '?' : '&';
 					if ( -1 !== url.indexOf( char + args[0] + '=' ) ) {
 						return url;
@@ -172,11 +173,44 @@ define(
 					return url + char + args[0] + '=' + args[1];
 				},
 				/**
+				 * Makes a string from element's attributes.
+				 *
+				 * @param el object DOM object.
+				 *
+				 * @return string Concatenated attributes.
+				 */
+				create_ai1ec_to_send : function( el ) {
+					var
+						$el         = $( el ),
+						params      = [],
+						attrs       = [
+							'action',
+							'cat_ids',
+							'auth_ids',
+							'tag_ids',
+							'exact_date',
+							'display_filters',
+							'no_navigation',
+							'events_limit'
+						],
+						dashToCamel = function( str ) {
+							return str.replace( /\W+(.)/g, function ( x, chr ) {
+								return chr.toUpperCase();
+							} );
+						};
+
+					$( attrs ).each( function( i, item ) {
+						var value = $el.data( dashToCamel( item ) );
+						value && params.push( item + '~' + value );
+					} );
+					return params.join( '|' );
+				},
+				/**
 				 * Enables autoselection of text for .ai1ec-autoselect
 				 */
 				init_autoselect : function() {
 					// Select the text when element is clicked (only once).
-					$( document ).one( 'click', '.ai1ec-autoselect', function( e ) {
+					$( document ).on( 'click', '.ai1ec-autoselect', function( e ) {
 						// Lets do it only once. Perhaps, user wants to select just a part.
 						if ( $( this ).data( 'clicked' ) && e.originalEvent.detail < 2 ) {
 							return;

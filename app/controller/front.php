@@ -123,6 +123,28 @@ class Ai1ec_Front_Controller {
 	}
 
 	/**
+	 * If WIDGET_PARAMETER is set.
+	 *
+	 * @return boolean
+	 */
+	protected function is_widget() {
+		return isset(
+			$_GET[Ai1ec_Controller_Javascript_Widget::WIDGET_PARAMETER]
+		);
+	}
+
+	/**
+	 * If LEGACY_WIDGET_PARAMETER is set.
+	 *
+	 * @return boolean
+	 */
+	protected function is_legacy_widget() {
+		return isset(
+			$_GET[Ai1ec_Controller_Javascript_Widget::LEGACY_WIDGET_PARAMETER]
+		);
+	}
+
+	/**
 	 * Execute commands if our plugin must handle the request.
 	 *
 	 * @wp_hook init
@@ -375,13 +397,18 @@ class Ai1ec_Front_Controller {
 			'widgets_init',
 			array( 'Ai1ec_View_Admin_Widget', 'register_widget' )
 		);
-		if ( isset( $_GET[Ai1ec_Controller_Javascript_Widget::WIDGET_PARAMETER] ) ) {
+
+		if (
+			$this->is_widget() ||
+			$this->is_legacy_widget()
+		) {
 			$this->_registry->get( 'event.dispatcher' )->register_action(
 				'init',
 				array( 'controller.javascript-widget', 'render_js_widget' ),
 				PHP_INT_MAX
 			);
 		}
+
 		// Route the request.
 		$action = 'template_redirect';
 		if ( is_admin() ) {

@@ -178,7 +178,7 @@ define(
 					return right ? 'right' : false;
 				};
 
-				switch ( defaultPosition ) {
+				switch ( defaultPosition ) {
 					case 'top'    : return 'top'; break;
 					case 'bottom' : return 'bottom'; break;
 					case 'left'   : if ( testLeft() )  { return 'left'  };

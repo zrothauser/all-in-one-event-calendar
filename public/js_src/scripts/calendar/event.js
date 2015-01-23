@@ -1,10 +1,11 @@
 define(
 		[
-		 "jquery_timely",
-		 "external_libs/jquery.scrollTo"
-		 ],
-		 function( $ ) {
-	"use strict"; // jshint ;_;
+		 'jquery_timely',
+		 'libs/utils',
+		 'external_libs/jquery.scrollTo'
+		],
+		function( $, utils ) {
+	'use strict'; // jshint ;_;
 
 	var load_event_through_jsonp = function( e ) {
 		e.preventDefault();
@@ -15,7 +16,7 @@ define(
 		var query = {
 				request_type: type,
 				ai1ec_doing_ajax : true,
-				ai1ec : create_ai1ec_to_send( timely_div )
+				ai1ec : utils.create_ai1ec_to_send( timely_div )
 		};
 
 		// Fetch AJAX result
@@ -51,48 +52,8 @@ define(
 			}
 		} );
 	};
-	var add_value_to_array_if_present_on_el = function( key, params, $el, skip_key ) {
-		var camel_key = dashToCamel( key );
-		var value = $el.data( camel_key );
-		if ( value === undefined ) {
-			return params;
-		} else {
-			if( skip_key ) {
-				params.push( value );
-			} else {
-				params.push( key + '~' + value );
-			}
-			return params;
-		}
 
-	};
-
-	/**
-	 * Convert a string to camelcase
-	 *
-	 */
-	var dashToCamel = function( str ) {
-		return str.replace(/\W+(.)/g, function (x, chr) {
-			return chr.toUpperCase();
-		});
-	};
-	/**
-	 * Creates the ai1ec variable to send to the server to filter the calendar
-	 *
-	 */
-	var create_ai1ec_to_send = function( el ) {
-		var $el = $( el );
-		var params = [];
-		params = add_value_to_array_if_present_on_el( 'action', params, $el );
-		params = add_value_to_array_if_present_on_el( 'cat_ids', params, $el );
-		params = add_value_to_array_if_present_on_el( 'auth_ids', params, $el );
-		params = add_value_to_array_if_present_on_el( 'tag_ids', params, $el );
-		params = add_value_to_array_if_present_on_el( 'exact_date', params, $el );
-		params = add_value_to_array_if_present_on_el( 'no_navigation', params, $el );
-		return params.join( '|' );
-	};
 	return {
-		load_event_through_jsonp : load_event_through_jsonp,
-		create_ai1ec_to_send     : create_ai1ec_to_send
+		load_event_through_jsonp : load_event_through_jsonp
 	};
 } );

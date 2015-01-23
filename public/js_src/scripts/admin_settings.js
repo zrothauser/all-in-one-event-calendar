@@ -1,17 +1,16 @@
 define(
 	[
-		"jquery_timely",
-		"domReady",
-		"ai1ec_config",
-		"libs/utils",
+		'jquery_timely',
+		'domReady',
+		'ai1ec_config',
+		'libs/utils',
 		'scripts/setting/cache/cache_event_handlers',
-		 'external_libs/bootstrap/button',
-		"libs/collapse_helper",
-		"external_libs/bootstrap/tab",
-		"external_libs/bootstrap/dropdown",
-		"external_libs/bootstrap_datepicker",
-		"external_libs/bootstrap/tooltip",
-		"external_libs/jquery_cookie"
+		'external_libs/bootstrap/button',
+		'libs/collapse_helper',
+		'external_libs/bootstrap/tab',
+		'external_libs/bootstrap_datepicker',
+		'external_libs/bootstrap/tooltip',
+		'external_libs/jquery_cookie'
 	],
 	function( $, domReady, ai1ec_config, utils, cache_event_handlers ) {
 	"use strict";

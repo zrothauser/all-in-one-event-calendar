@@ -34,7 +34,6 @@ class Ai1ec_View_Organize extends Ai1ec_Base {
 			'ai1ec_add_custom_groups',
 			$taxonomy_metadata
 		);
-		$group_data = array();
 		do_action( 'ai1ec_taxonomy_management_css' );
 		foreach ( $taxonomies as $taxonomy => $data ) {
 			if ( true === $data->public ) {
@@ -42,10 +41,7 @@ class Ai1ec_View_Organize extends Ai1ec_Base {
 					isset( $_GET['taxonomy'] ) &&
 					$taxonomy === $_GET['taxonomy'];
 				$edit_url = $edit_label = '';
-				if (
-					true === $active_taxonomy &&
-					isset( $taxonomy_metadata[$taxonomy]['url'] )
-				) {
+				if ( isset( $taxonomy_metadata[$taxonomy]['url'] ) ) {
 					$edit_url = $taxonomy_metadata[$taxonomy]['url'];
 					$edit_label = $taxonomy_metadata[$taxonomy]['edit_label'];
 				}
@@ -67,14 +63,16 @@ class Ai1ec_View_Organize extends Ai1ec_Base {
 					'edit_label'    => $edit_label,
 				);
 
-				$dispatcher->register_action(
-					$taxonomy . '_pre_add_form',
-					array( 'view.admin.organize', 'render_header' )
-				);
-				$dispatcher->register_action(
-					$taxonomy . '_pre_edit_form',
-					array( 'view.admin.organize', 'render_header' )
-				);
+				if ( $active_taxonomy ) {
+					$dispatcher->register_action(
+						$taxonomy . '_pre_add_form',
+						array( 'view.admin.organize', 'render_header' )
+					);
+					$dispatcher->register_action(
+						$taxonomy . '_pre_edit_form',
+						array( 'view.admin.organize', 'render_header' )
+					);
+				}
 			}
 		}
 	}

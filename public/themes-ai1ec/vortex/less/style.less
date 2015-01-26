@@ -229,7 +229,8 @@ span.ai1ec-hidden-xs {
 }
 .select2-drop-mask {
 	z-index: @zindex-dropdown - 1;
-	.ai1ec-modal-open & {
+	.ai1ec-modal-open &,
+	.ai1ec-has-affixed-toolbar & {
 		z-index: @zindex-dropdown + @zindex-dropdown - 1;
 	}
 }
@@ -241,7 +242,8 @@ span.ai1ec-hidden-xs {
 	font-size: @font-size-base;
 	line-height: @line-height-base;
 	z-index: @zindex-dropdown;
-	.ai1ec-modal-open & {
+	.ai1ec-modal-open &,
+	.ai1ec-has-affixed-toolbar & {
 		z-index: @zindex-dropdown + @zindex-dropdown;
 	}
 }

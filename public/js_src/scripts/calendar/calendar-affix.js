@@ -198,6 +198,7 @@ define(
 					.css( 'margin-top' , $toolbar.outerHeight( true )
 						+ parseInt( $toolbar.css( 'margin-bottom' ) ) + 'px'
 					);
+				$( 'body' ).addClass( 'ai1ec-has-affixed-toolbar' );
 			} )
 			// Toolbar is not affixed. Event is thrown by Bootstrap.
 			.on( 'ai1ec-affix-top.bs.affix', function() {
@@ -214,6 +215,7 @@ define(
 				set_toolbar_offset();
 				$view.css( 'margin-top' , 0 );
 				$toolbar.data( 'original_height',  $toolbar.height() );
+				$( 'body' ).removeClass( 'ai1ec-has-affixed-toolbar' );
 			} )
 			// This event fires when a new content was loaded.
 			.on( 'ai1ec-affix.reinit', reinitialize )

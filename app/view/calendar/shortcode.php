@@ -146,13 +146,11 @@ class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 		);
 		$request->parse();
 		$page_content = $this->_registry->get( 'view.calendar.page' )
-			->get_content( $request );
+			->get_content( $request, 'shortcode' );
 		$this->_registry->get( 'css.frontend' )
 			->add_link_to_html_for_frontend();
 		$this->_registry->get( 'controller.javascript' )
 			->load_frontend_js( true );
-
 		return $page_content['html'];
 	}
-
 }

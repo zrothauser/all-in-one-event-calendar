@@ -26,6 +26,13 @@ abstract class Ai1ec_Captcha_Provider extends Ai1ec_Base {
 	protected $_theme_loader = null;
 
 	/**
+	 * Whether provider is configured or not.
+	 *
+	 * @var bool
+	 */
+	protected $_is_configured = null;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Ai1ec_Registry_Object $registry
@@ -59,9 +66,11 @@ abstract class Ai1ec_Captcha_Provider extends Ai1ec_Base {
 	/**
 	 * Validates challenge.
 	 *
+	 * @param array Challenge response data.
+	 *
 	 * @return mixed
 	 */
-	abstract public function validate_challenge();
+	abstract public function validate_challenge( array $data );
 
 	/**
 	 * Returns provider name.

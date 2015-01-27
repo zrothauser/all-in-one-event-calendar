@@ -12,13 +12,6 @@
 class Ai1ec_Captcha_Recaptcha_Provider extends Ai1ec_Captcha_Provider {
 
 	/**
-	 * Whether provider is configured or not.
-	 *
-	 * @var bool
-	 */
-	protected $_is_configured;
-
-	/**
 	 * Returns settings array.
 	 *
 	 * @param bool $enable_rendering Whether setting HTML will be rendered or not.
@@ -87,10 +80,37 @@ class Ai1ec_Captcha_Recaptcha_Provider extends Ai1ec_Captcha_Provider {
 	/**
 	 * Validates challenge.
 	 *
+	 * @param array Challenge response data.
+	 *
 	 * @return mixed
 	 */
-	public function validate_challenge() {
-		// TODO: Implement validate_challenge() method.
+	public function validate_challenge( array $data ) {
+		$response = array( 'success' => true );
+		if (
+			empty( $data['recaptcha_challenge_field'] ) ||
+			empty( $data['recaptcha_response_field'] )
+		) {
+			$response['message'] = Ai1ec_I18n::_(
+				'There was an error reading the word verification data. Please try again.'
+			);
+			$response['success'] = false;
+		}
+
+		require_once( AI1EC_VENDOR_PATH . 'recaptcha/recaptchalib.php' );
+		$resp = recaptcha_check_answer(
+			$this->_settings->get( 'google_recaptcha_private_key' ),
+			$_SERVER['REMOTE_ADDR'],
+			$data['recaptcha_challenge_field'],
+			$data['recaptcha_response_field']
+		);
+
+		if ( ! $resp->is_valid ) {
+			$response['message'] = Ai1ec_I18n::__(
+				'Please try answering the word verification again.'
+			);
+			$response['success'] = false;
+		}
+		return $response;
 	}
 
 	/**

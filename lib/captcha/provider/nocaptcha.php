@@ -67,9 +67,11 @@ class Ai1ec_Captcha_Nocaptcha_Provider extends Ai1ec_Captcha_Provider {
 	/**
 	 * Validates challenge.
 	 *
+	 * @param array Challenge response data.
+	 *
 	 * @return mixed
 	 */
-	public function validate_challenge() {
+	public function validate_challenge( array $data ) {
 		// TODO: Implement validate_challenge() method.
 	}
 

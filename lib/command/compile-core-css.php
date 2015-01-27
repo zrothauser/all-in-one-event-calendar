@@ -36,38 +36,9 @@ class Ai1ec_Command_Compile_Core_Css extends Ai1ec_Command {
 	 * @see Ai1ec_Command::do_execute()
 	*/
 	public function do_execute() {
-		$less   = $frontend = $this->_registry->get( 'less.lessphp' );
-		$option = $this->_registry->get( 'model.option' );
-		$theme  = $this->_get_theme( $_GET['theme'] );
-
-		if ( isset( $_GET['switch'] ) ) {
-			$option->delete( 'ai1ec_less_variables' );
-			$option->set( 'ai1ec_current_theme', $theme );
-			echo 'Theme switched to " ' . $theme['stylesheet'] . '".';
-			die();
-		}
-
-		$css      = $less->parse_less_files( null, true );
-		$hashmap  = $less->get_less_hashmap();
-		$hashmap  = $this->_get_hashmap_array( $hashmap );
-		$filename = $theme['theme_dir'] . DIRECTORY_SEPARATOR .
-			'css' . DIRECTORY_SEPARATOR . 'ai1ec_parsed_css.css';
-		$hashmap_file = $theme['theme_dir'] . DIRECTORY_SEPARATOR .
-			'less.sha1.map.php';
-
-		$css_written     = file_put_contents( $filename, $css );
-		$hashmap_written = file_put_contents( $hashmap_file, $hashmap );
-		if (
-			false === $css_written ||
-			false === $hashmap_written
-		) {
-			echo 'There has been an error writing theme CSS';
-		} else {
-			echo 'Theme CSS compiled succesfully and written in ' .
-				$filename . ' and classmap stored in ' . $hashmap_file;
-
-		}
-		die();
+		$message = $this->_process_files();
+		echo $message;
+		return Ai1ec_Http_Response_Helper::stop( 0 );
 	}
 
 	/**
@@ -94,5 +65,37 @@ class Ai1ec_Command_Compile_Core_Css extends Ai1ec_Command {
 	 */
 	protected function _get_hashmap_array( $hashmap ) {
 		return '<?php return ' . var_export( $hashmap, true ) . ';';
+	}
+
+	protected function _process_files() {
+		$less   = $frontend = $this->_registry->get( 'less.lessphp' );
+		$option = $this->_registry->get( 'model.option' );
+		$theme  = $this->_get_theme( $_GET['theme'] );
+
+		if ( isset( $_GET['switch'] ) ) {
+			$option->delete( 'ai1ec_less_variables' );
+			$option->set( 'ai1ec_current_theme', $theme );
+			return 'Theme switched to "' . $theme['stylesheet'] . '".';
+		}
+
+		$css      = $less->parse_less_files( null, true );
+		$hashmap  = $less->get_less_hashmap();
+		$hashmap  = $this->_get_hashmap_array( $hashmap );
+		$filename = $theme['theme_dir'] . DIRECTORY_SEPARATOR .
+					'css' . DIRECTORY_SEPARATOR . 'ai1ec_parsed_css.css';
+		$hashmap_file = $theme['theme_dir'] . DIRECTORY_SEPARATOR .
+					'less.sha1.map.php';
+
+		$css_written     = file_put_contents( $filename, $css );
+		$hashmap_written = file_put_contents( $hashmap_file, $hashmap );
+		if (
+			false === $css_written ||
+			false === $hashmap_written
+		) {
+			return 'There has been an error writing theme CSS';
+		}
+
+		return 'Theme CSS compiled succesfully and written in ' .
+					$filename . ' and classmap stored in ' . $hashmap_file;
 	}
 }

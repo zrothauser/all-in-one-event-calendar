@@ -72,7 +72,7 @@ class Ai1ec_Filesystem_Misc extends Ai1ec_Base {
 
 			$hashmap[ $key ] = array(
 				'size' => $file_info->getSize(),
-				'sha1' => sha1( file_get_contents( $file[0] ) ),
+				'sha1' => sha1_file( $file[0] ),
 			);
 		}
 		ksort( $hashmap );

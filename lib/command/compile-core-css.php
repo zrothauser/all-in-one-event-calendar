@@ -43,7 +43,8 @@ class Ai1ec_Command_Compile_Core_Css extends Ai1ec_Command {
 		if ( isset( $_GET['switch'] ) ) {
 			$option->delete( 'ai1ec_less_variables' );
 			$option->set( 'ai1ec_current_theme', $theme );
-			return array();
+			echo 'Theme switched to " ' . $theme['stylesheet'] . '".';
+			die();
 		}
 
 		$css      = $less->parse_less_files( null, true );
@@ -66,7 +67,7 @@ class Ai1ec_Command_Compile_Core_Css extends Ai1ec_Command {
 				$filename . ' and classmap stored in ' . $hashmap_file;
 
 		}
-		return array();
+		die();
 	}
 
 	/**

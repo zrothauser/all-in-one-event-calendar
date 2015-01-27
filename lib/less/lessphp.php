@@ -305,13 +305,13 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 	/**
 	 * Returns whether LESS compilation should be performed or not.
 	 *
-	 * @param array $variables LESS variables.
+	 * @param array|null $variables LESS variables.
 	 *
 	 * @return bool Result.
 	 *
 	 * @throws Ai1ec_Bootstrap_Exception
 	 */
-	public function is_compilation_needed( array $variables = array() ) {
+	public function is_compilation_needed( $variables = array() ) {
 		if (
 			apply_filters( 'ai1ec_always_recompile_less', false ) ||
 			(
@@ -320,6 +320,9 @@ class Ai1ec_Less_Lessphp extends Ai1ec_Base {
 			)
 		) {
 			return true;
+		}
+		if ( null === $variables ) {
+			$variables = array();
 		}
 		/* @var $misc Ai1ec_Filesystem_Misc */
 		$misc        = $this->_registry->get( 'filesystem.misc' );

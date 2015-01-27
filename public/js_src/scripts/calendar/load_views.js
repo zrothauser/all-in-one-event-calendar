@@ -45,6 +45,17 @@ define(
 	// the initial value is determined by the visibility of the save view button
 	var are_filters_set = ! $( '#save_filtered_views' ).hasClass( 'ai1ec-hide' );
 
+	// Register twigjs templates.
+	if ( ! timely['renderer_map'] ) {
+		timely['renderer_map'] = {};
+	}
+	$.extend( timely['renderer_map'],  {
+		agenda : agenda,
+		oneday : oneday,
+		week   : oneday,
+		month  : month
+	} );
+
 	/**
 	 * function initialize_view
 	 *
@@ -303,20 +314,13 @@ define(
 						var renderer;
 
 						if ( data.is_json ) {
-							var
-								view_type =  $.parseJSON( data.html ).type,
-								renderer_map = {
-									agenda : agenda,
-									oneday : oneday,
-									week   : oneday,
-									month  : month
-								};
-
-							if ( renderer_map[view_type] ) {
-								renderer = renderer_map[view_type];
+							var view_type =  $.parseJSON( data.html ).type;
+							if ( timely['renderer_map'][view_type] ) {
+								renderer = timely['renderer_map'][view_type];
 							} else {
 								// No view found.
 								// Try to reload in HTML.
+								console.log('view not found', view_type, timely['renderer_map'])
 								load_view( $calendar, hash.replace( /\~json/, '~html' ), type );
 								return;
 							}

@@ -262,6 +262,10 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 				get( 'date.time', $timestamp )->format_i18n( 'D' );
 			$dates[$timestamp]['month']               = $this->_registry->
 				get( 'date.time', $timestamp )->format_i18n( 'M' );
+			$dates[$timestamp]['full_month']          = $this->_registry->
+				get( 'date.time', $timestamp )->format_i18n( 'F' );
+			$dates[$timestamp]['full_weekday']        = $this->_registry->
+				get( 'date.time', $timestamp )->format_i18n( 'l' );
 			$dates[$timestamp]['year']                = $this->_registry->
 				get( 'date.time', $timestamp )->format_i18n( 'Y' );
 		}

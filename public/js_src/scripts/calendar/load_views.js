@@ -97,6 +97,7 @@ define(
 		// Execute any registered hooks from extensions.
 		$calendar
 			.find( '.ai1ec-calendar-view-container' )
+				.data( 'ai1ec-inited', 1 )
 				.trigger( 'initialize_view.ai1ec' );
 
 		// Trigger Affix event.

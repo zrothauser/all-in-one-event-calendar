@@ -55,8 +55,8 @@ class Ai1ec_Command_Compile_Core_Css extends Ai1ec_Command {
 		$hashmap_file = $theme['theme_dir'] . DIRECTORY_SEPARATOR .
 			'less.sha1.map.php';
 
-		$css_written     = @file_put_contents( $filename, $css );
-		$hashmap_written = @file_put_contents( $hashmap_file, $hashmap );
+		$css_written     = file_put_contents( $filename, $css );
+		$hashmap_written = file_put_contents( $hashmap_file, $hashmap );
 		if (
 			false === $css_written ||
 			false === $hashmap_written

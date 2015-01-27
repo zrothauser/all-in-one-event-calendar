@@ -107,9 +107,15 @@ class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 		$setting_renderer = $this->_registry->get(
 			'html.element.setting-renderer'
 		);
+		$global_settings  = $this->_registry->get(
+			'model.settings'
+		);
 		$content = '';
 		foreach ( $settings as $id => $setting ) {
-			$setting['id'] = $id;
+			$setting['id']    = $id;
+			// fetch value from real setting as this one is some kind of
+			// mockup.
+			$setting['value'] = $global_settings->get( $id );
 			$content .= $setting_renderer->render( $setting );
 		}
 		$args   = array(

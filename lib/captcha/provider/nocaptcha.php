@@ -9,7 +9,6 @@
  * @package    AI1EC
  * @subpackage AI1EC.
  */
-
 class Ai1ec_Captcha_Nocaptcha_Provider extends Ai1ec_Captcha_Provider {
 
 	/**

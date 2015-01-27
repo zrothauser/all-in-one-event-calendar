@@ -12,6 +12,13 @@
 class Ai1ec_Captcha_Recaptcha_Provider extends Ai1ec_Captcha_Provider {
 
 	/**
+	 * Whether provider is configured or not.
+	 *
+	 * @var bool
+	 */
+	protected $_is_configured;
+
+	/**
 	 * Returns settings array.
 	 *
 	 * @param bool $enable_rendering Whether setting HTML will be rendered or not.
@@ -62,7 +69,19 @@ class Ai1ec_Captcha_Recaptcha_Provider extends Ai1ec_Captcha_Provider {
 	 * @return mixed
 	 */
 	public function get_challenge() {
-		// TODO: Implement get_challenge() method.
+		$args = array(
+			'verification_words' => Ai1ec_I18n::__( 'Verification words' ),
+			'loading_recaptcha'  => Ai1ec_I18n::__( 'Loading reCAPTCHA...' ),
+			'recaptcha_key'      => $this->_settings->get(
+				'google_recaptcha_public_key'
+			),
+		);
+
+		return $this->_theme_loader->get_file(
+			'captcha/recaptcha/challenge.twig',
+			$args,
+			false
+		)->get_content();
 	}
 
 	/**

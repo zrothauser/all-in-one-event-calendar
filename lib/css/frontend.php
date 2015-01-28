@@ -162,10 +162,13 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		// if it's empty it's a new install probably. Return static css.
 		// if it's numeric, just consider it a new install
 		if ( empty( $saved_par ) ) {
+			$theme = $this->_registry->get(
+				'model.option'
+			)->get( 'ai1ec_current_theme' );
 			return Ai1ec_Http_Response_Helper::remove_protocols(
 				apply_filters(
 					'ai1ec_frontend_standard_css_url',
-					AI1EC_URL . '/public/themes-ai1ec/vortex/css/ai1ec_parsed_css.css'
+					$theme['theme_url'] . '/css/ai1ec_parsed_css.css'
 				)
 			);
 		}
@@ -220,6 +223,12 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		array $variables    = null,
 		$update_persistence = false
 	) {
+		if ( ! $this->lessphp_controller->is_compilation_needed( $variables ) ) {
+			$this->_registry->get(
+				'model.option'
+			)->delete( 'ai1ec_render_css' );
+			return true;
+		}
 		$notification = $this->_registry->get( 'notification.admin' );
 		if (
 			! $this->_registry->get(

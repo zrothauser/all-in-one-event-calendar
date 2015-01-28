@@ -337,6 +337,15 @@ class Ai1ec_Theme_Loader {
 	}
 
 	/**
+	 * Reuturns loader paths.
+	 *
+	 * @return array Loader paths.
+	 */
+	public function get_paths() {
+		return $this->_paths;
+	}
+
+	/**
 	 * Tries to load a PHP file from the theme. If not present, it falls back to
 	 * Twig.
 	 *

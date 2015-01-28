@@ -11,7 +11,7 @@ define(
 		'external_libs/jquery.calendrical_timespan',
 		'external_libs/jquery.inputdate',
 		'external_libs/jquery.tools',
-		'external_libs/ai1ec_datepicker',
+		'external_libs/bootstrap_datepicker',
 		'external_libs/bootstrap/transition',
 		'external_libs/bootstrap/collapse',
 		'external_libs/bootstrap/modal',
@@ -31,7 +31,6 @@ define(
 		calendrical_functions
 	) {
 	"use strict"; // jshint ;_;
-
 
 	var init_date_time = function() {
 
@@ -58,91 +57,6 @@ define(
 		};
 
 		$.timespan( data );
-		// Retrieve the dates saved in the hidden field
-		var exdate  = $( "#ai1ec_exdate" ).val();
-
-		// This variable holds the dates that must be selected in the datepicker.
-		var dp_date = null;
-		var _clear_dp = false;
-		var _day;
-		if( exdate.length >= 8 ) {
-			dp_date = [];
-			var _span_html = [];
-			$.each( exdate.split( ',' ), function( i, v ) {
-				var _date = v.slice( 0, 8 );
-				var _year = _date.substr( 0, 4 );
-				var _month = _date.substr( 4, 2 );
-				_day = _date.substr( 6, 2 );
-
-				_month = _month.charAt(0) === '0' ? ( '0' + ( parseInt( _month.charAt( 1 ), 10 ) - 1 ) ) : ( parseInt( _month, 10 ) - 1 );
-
-				dp_date.push( new Date( _year, _month, _day ) );
-				_span_html.push(
-					calendrical_functions.formatDate(
-						new Date( _year, _month, _day ),
-						ai1ec_config.date_format,
-						true
-					)
-				);
-			});
-			$( '#ai1ec_exclude-dates-input' )
-				.text(  _span_html.join( ', ' ) );
-		} else {
-			// Set as default date shown today
-			dp_date = new Date( ai1ec_config.now * 1000 );
-			_clear_dp = true;
-			$( '#ai1ec_exclude-dates-input' )
-				.text(  $( '#ai1ec_exclude-dates-input' ).data( 'placeholder' ) );
-		}
-
-		$( '#widgetCalendar' ).DatePicker({
-			flat: true,
-			calendars: 3,
-			mode: 'multiple',
-			starts: ai1ec_config.week_start_day,
-			date: dp_date,
-			onChange: function( formated ) {
-				formated = formated.toString();
-				if( formated.length >= 8 ) {
-					// save the date in your hidden field
-					var exdate = '';
-					var formatted_date = [];
-					$.each( formated.split( ',' ), function( i, v ) {
-						formatted_date.push( calendrical_functions.formatDate( new Date( v ), ai1ec_config.date_format ) );
-						exdate += v.replace( /-/g, '' ) + 'T000000Z,';
-					});
-					$( '#ai1ec_exclude-dates-input' ).text( formatted_date.join( ', ' ) );
-					exdate = exdate.slice( 0, exdate.length - 1 );
-					$( "#ai1ec_exdate" ).val( exdate );
-				} else {
-					$( "#ai1ec_exdate" ).val( '' );
-					$( '#ai1ec_exclude-dates-input' ).text( $( '#ai1ec_exclude-dates-input' ).data( 'placeholder' ) );
-				}
-			},
-			prev: '«',
-			next: '»',
-			// Ignore clicking on month name.
-			month_link_inactive: true,
-			locale: {
-				daysMin: ai1ec_config.day_names.split( ',' ),
-				months: ai1ec_config.month_names.split( ',' )
-			}
-		});
-		if( _clear_dp ) {
-			$( '#widgetCalendar' ).DatePickerClear();
-		}
-		// Hide datepicker if clicked outside.
-		$( document )
-			.on( 'mousedown.exclude', function( e ) {
-				var $container = $( '#widgetCalendar' ),
-					$link = $( '#ai1ec_exclude-dates-input' );
-
-				if ( ! $container.is( e.target )
-					&& ! $link.is( e.target )
-					&& 0 === $container.has( e.target ).length ) {
-					$( '#widgetCalendar' ).hide();
-				}
-			});
 	};
 
 	/**

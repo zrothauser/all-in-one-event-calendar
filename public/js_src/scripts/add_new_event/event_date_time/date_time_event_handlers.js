@@ -111,6 +111,15 @@ define(
 					rule += 'BYMONTH=' + months + ';';
 				}
 				break;
+
+			case 'custom':
+				if ( '1' === $( '#ai1ec_is_box_repeat' ).val() ) {
+					rule += 'RDATE=';
+				} else {
+					rule += 'EXDATE=';
+				}
+				rule += $( '#ai1ec_rec_custom_dates' ).val();
+				break;
 		}
 
 		var ending = $( '#ai1ec_end' ).val();
@@ -316,7 +325,7 @@ define(
 
 	var handle_animation_of_calendar_widget = function( e ) {
 		// Just toggle the visibility.
-		$('#widgetCalendar').toggle();
+		$('#ai1ec_widget_calendar').toggle();
 		return false;
 	};
 

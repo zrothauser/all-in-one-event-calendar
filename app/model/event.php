@@ -24,12 +24,14 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 *            [-1] - only `get` (for storage) operations require care.
 	 */
 	protected $_swizzable = array(
-		'contact_url'   => -1, // strip on save/import
-		'cost'          => 0,
-		'ticket_url'    => -1, // strip on save/import
-		'start'         => -1,
-		'end'           => -1,
-		'timezone_name' => -1,
+		'contact_url'      => -1, // strip on save/import
+		'cost'             => 0,
+		'ticket_url'       => -1, // strip on save/import
+		'start'            => -1,
+		'end'              => -1,
+		'timezone_name'    => -1,
+		'recurrence_dates' => 1,
+		'exception_dates'  => 1,
 	);
 
 	/**
@@ -377,6 +379,20 @@ class Ai1ec_Event extends Ai1ec_Base {
 				$longitude <= -0.000000000000001
 			)
 		);
+	}
+
+	protected function _handle_property_construct_recurrence_dates( $value ) {
+		if ( $value ) {
+			$this->_entity->set( 'recurrence_rules', 'RDATE=' . $value );
+		}
+		return $value;
+	}
+
+	protected function _handle_property_construct_exception_dates( $value ) {
+		if ( $value ) {
+			$this->_entity->set( 'exception_rules', 'EXDATE=' . $value );
+		}
+		return $value;
 	}
 
 	/**

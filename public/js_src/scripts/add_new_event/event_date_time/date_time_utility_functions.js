@@ -2,9 +2,10 @@ define(
 	[
 		'jquery_timely',
 		'ai1ec_config',
-		'libs/utils'
+		'libs/utils',
+		'external_libs/jquery.calendrical_timespan',
 	],
-	function( $, ai1ec_config, AI1EC_UTILS ) {
+	function( $, ai1ec_config, AI1EC_UTILS, calendrical_functions ) {
 
 	"use strict"; // jshint ;_;
 
@@ -69,7 +70,10 @@ define(
 				show_repeat_tabs( data, fn );
 			} else {
 				if ( this.id === 'ai1ec_repeat' ) {
-					$( '#ai1ec_exclude' ).attr( 'disabled', true );
+					$( '#ai1ec_exclude' )
+						.removeAttr( 'checked' )
+						.attr( 'disabled', true );
+					$( '#ai1ec_exclude_text > a' ).text( '' );
 				};
 				$( s2 ).text( '' );
 				var txt = $.trim( $( s3 ).text() );
@@ -108,7 +112,9 @@ define(
 	 */
 	var init_modal_widgets = function() {
 		// Initialize count range slider
-		$( '#ai1ec_count, #ai1ec_daily_count, #ai1ec_weekly_count, #ai1ec_monthly_count, #ai1ec_yearly_count' ).rangeinput( {
+		$( '#ai1ec_count, #ai1ec_daily_count, #ai1ec_weekly_count,\
+			#ai1ec_monthly_count, #ai1ec_yearly_count'
+		).rangeinput( {
 			css: {
 				input: 'ai1ec-range',
 				slider: 'ai1ec-slider',
@@ -116,6 +122,47 @@ define(
 				handle: 'ai1ec-handle'
 			}
 		} );
+
+		var $datepicker = $( '#ai1ec_recurrence_calendar' );
+
+		$datepicker.datepicker( {
+			multidate : true,
+			weekStart : ai1ec_config.week_start_day
+		} );
+
+		$datepicker.on( 'changeDate', function( e ) {
+			var
+				dates = [],
+				dates_displayed = [];
+
+			for ( var i = 0; i < e.dates.length; i++ ) {
+				var
+					date      = new Date( e.dates[i] ),
+					// Format for sending to server.
+					formatted = ''
+						+ date.getFullYear()
+						+ ( '0' + ( date.getMonth() + 1 ) ).slice( -2 )
+						+ ( '0' + date.getDate() ).slice( -2 )
+						+ 'T000000Z',
+					// Format for displaying.
+					displayed = '<span class="ai1ec-label ai1ec-label-default">' +
+						calendrical_functions.formatDate(
+							date,
+							ai1ec_config.date_format,
+							true
+						) +
+						'</span>';
+
+				dates.push( formatted );
+				dates_displayed.push( displayed );
+			}
+
+			$( '#ai1ec_rec_dates_list' ).html( dates_displayed.join( ' ' ) );
+			$( '#ai1ec_rec_custom_dates' ).val( dates.join( ',' ) );
+
+		} );
+
+
 
 		// Initialize inputdate plugin on our "until" date input.
 		var data = {

@@ -76,6 +76,7 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 		$duration,
 		$timezone
 	) {
+		$restore_timezone  = date_default_timezone_get();
 		$recurrence_parser = $this->_registry->get( 'recurrence.rule' );
 		$events            = array();
 
@@ -111,6 +112,7 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 					$exception_rules
 				);
 				$result = array();
+				date_default_timezone_set( $timezone );
 				// The first array is the result and it is passed by reference
 				iCalUtilityFunctions::_recur2date(
 					$exclude_dates,
@@ -119,6 +121,7 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 					$startdate,
 					$enddate
 				);
+				date_default_timezone_set( $restore_timezone );
 			}
 		}
 		$recurrence_rules = $recurrence_parser
@@ -128,6 +131,7 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 
 		$recurrence_rules = iCalUtilityFunctions::_setRexrule( $recurrence_rules );
 		if ( $recurrence_rules ) {
+			date_default_timezone_set( $timezone );
 			iCalUtilityFunctions::_recur2date(
 				$recurrence_dates,
 				$recurrence_rules,
@@ -135,6 +139,7 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 				$startdate,
 				$enddate
 			);
+			date_default_timezone_set( $restore_timezone );
 		}
 
 		$recurrence_dates = array_keys( $recurrence_dates );
@@ -174,11 +179,11 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 		$events[$_start] = $event_item;
 
 		if ( $event->get( 'recurrence_rules' ) || $event->get( 'recurrence_dates' ) ) {
-            /**
-             * NOTE: this timezone switch is intentional, because underlying
-             * library doesn't allow us to pass it as an argument. Though no
-             * lesser importance shall be given to the restore call bellow.
-             */
+			/**
+			 * NOTE: this timezone switch is intentional, because underlying
+			 * library doesn't allow us to pass it as an argument. Though no
+			 * lesser importance shall be given to the restore call bellow.
+			 */
 			$start_datetime = $event->get( 'start' );
 			$start_datetime->assert_utc_timezone();
 			$start_timezone = $this->_registry->get( 'date.timezone' )
@@ -190,15 +195,15 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 				$duration,
 				$start_timezone
 			);
-        }
+		}
 
 		$search_helper = $this->_registry->get( 'model.search' );
-        foreach ( $events as $event_item ) {
-            // Find out if this event instance is already accounted for by an
-            // overriding 'RECURRENCE-ID' of the same iCalendar feed (by comparing the
-            // UID, start date, recurrence). If so, then do not create duplicate
-            // instance of event.
-            $start             = $event_item['start'];
+		foreach ( $events as $event_item ) {
+			// Find out if this event instance is already accounted for by an
+			// overriding 'RECURRENCE-ID' of the same iCalendar feed (by comparing the
+			// UID, start date, recurrence). If so, then do not create duplicate
+			// instance of event.
+			$start             = $event_item['start'];
 			$matching_event_id = null;
 			if ( $event->get( 'ical_uid' ) ) {
 				$matching_event_id = $search_helper->get_matching_event_id(
@@ -210,17 +215,17 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 				);
 			}
 
-            // If no other instance was found
-            if ( null === $matching_event_id ) {
+			// If no other instance was found
+			if ( null === $matching_event_id ) {
 				$this->_dbi->insert(
 					'ai1ec_event_instances',
 					$event_item,
 					array( '%d', '%d', '%d' )
 				);
-            }
-        }
+			}
+		}
 
-        return true;
+		return true;
 	}
 
 	/**
@@ -279,16 +284,7 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 	}
 
 	protected function _populate_recurring_dates( $rule, array $start_struct, $timezone ) {
-		$start_iso = sprintf(
-			'%04d-%02d-%02dT%02d:%02d:%02dZ',
-			$start_struct['year'],
-			$start_struct['month'],
-			$start_struct['day'],
-			$start_struct['hour'],
-			$start_struct['min'],
-			$start_struct['sec']
-		);
-		$start = $this->_registry->get( 'date.time', $start_iso, $timezone );
+		$start = clone $start_struct['_dt'];
 		$dates = array();
 		foreach ( explode( ',', $rule ) as $date ) {
 			$i_date = clone $start;
@@ -298,17 +294,13 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 				$spec[1],
 				$spec[2]
 			);
-			$dates[$i_date->format_to_gmt()] = true;
+			$dates[$i_date->format_to_gmt()] = $i_date;
 		}
 		return $dates;
 	}
 
 	protected function _parsed_date_array( $startdate, $timezone ) {
 		$datetime = $this->_registry->get( 'date.time', $startdate, $timezone );
-		// iCalcreator performs opposite shift, thus we need to counteract it
-		// please note that *current* datetime offset is taken to account for
-		// DST and other potential changes.
-		$datetime->adjust( -1 * $datetime->get_gmt_offset(), 'minutes' );
 		$parsed   = array(
 			'year'  => intval( $datetime->format( 'Y' ) ),
 			'month' => intval( $datetime->format( 'm' ) ),
@@ -317,6 +309,7 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 			'min'   => intval( $datetime->format( 'i' ) ),
 			'sec'   => intval( $datetime->format( 's' ) ),
 			'tz'    => $datetime->get_timezone(),
+			'_dt'   => $datetime,
 		);
 		return $parsed;
 	}

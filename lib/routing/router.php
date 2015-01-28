@@ -234,7 +234,8 @@ class Ai1ec_Router extends Ai1ec_Base {
 	 */
 	public function rewrite_rules_array( $rules ) {
 		if ( null !== $this->_rewrite ) {
-			$rules[$this->_rewrite['mask']] = $this->_rewrite['target'];
+			$newrules[$this->_rewrite['mask']] = $this->_rewrite['target'];
+			$rules = array_merge( $newrules, $rules );
 		}
 		return $rules;
 	}

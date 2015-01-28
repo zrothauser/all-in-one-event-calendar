@@ -165,7 +165,8 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 		if ( $instant_event ) {
 			$event->set_no_end_time();
 		} else {
-			$event->set( 'end',          $end_time_entry );
+			$event->set( 'end',           $end_time_entry );
+			$event->set( 'instant_event', false );
 		}
 		$event->set( 'timezone_name',    $timezone_name );
 		$event->set( 'allday',           $all_day );

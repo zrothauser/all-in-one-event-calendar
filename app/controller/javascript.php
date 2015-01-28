@@ -469,6 +469,8 @@ class Ai1ec_Javascript_Controller {
 				'cookie.utility'
 			)->get_path_for_cookie(),
 			'disable_autocompletion'         => $settings->get( 'disable_autocompletion' ),
+			'end_must_be_after_start'        => __( 'The end date can\'t be earlier than the start date.', AI1EC_PLUGIN_NAME ),
+			'show_at_least_six_hours'        => __( 'For week and day view, you must select an interval of at least 6 hours.', AI1EC_PLUGIN_NAME ),
 		);
 		return apply_filters( 'ai1ec_js_translations', $data );
 	}

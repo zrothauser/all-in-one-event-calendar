@@ -59,13 +59,18 @@ define(
 
 		var get_field_name = function() {
 			return $provider.get_field_name();
-		}
+		};
+
+		var check_field = function() {
+			return $provider.check_field();
+		};
 
 		return {
 			init_captcha : init_captcha,
 			destroy : destroy,
 			reload : reload,
-			get_field_name : get_field_name
+			get_field_name : get_field_name,
+			check_field : check_field
 		}
 	}
 );

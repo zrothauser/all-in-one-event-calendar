@@ -5,6 +5,8 @@ define(
 	],
 	function( $ ) {
 
+		var initialized = false;
+
 		var is_ready = function() {
 			return ! ( 'undefined' === typeof Recaptcha );
 		};
@@ -16,11 +18,12 @@ define(
 				{
 					theme : 'white',
 					callback : function() {
-						$( '#recaptcha_response_field', $params.captcha_object )
+						$( get_field_name(), $params.captcha_object )
 							.attr( 'placeholder', $params.placeholder );
 						$params.captcha_object
 							.removeClass( 'ai1ec-initializing' )
 							.addClass( 'ai1ec-initialized' );
+						initialized = true;
 					}
 				}
 			);
@@ -33,7 +36,7 @@ define(
 
 		var reload = function( $form ) {
 			if (
-				$( '#recaptcha_response_field', $form ).length &&
+				$( get_field_name(), $form ).length &&
 				is_ready()
 			) {
 				Recaptcha.reload();
@@ -47,12 +50,23 @@ define(
 			Recaptcha.destroy();
 		};
 
+		var check_field = function() {
+			if ( ! initialized ) {
+				alert( 'not initialized' );
+				return true;
+			}
+			var $field = $( get_field_name() );
+			console.log( $field.val() );
+			return $field.val().length > 0;
+		};
+
 		return {
 			is_ready : is_ready,
 			init : init,
 			get_field_name : get_field_name,
 			reload : reload,
-			destroy : destroy
+			destroy : destroy,
+			check_field : check_field
 		}
 	}
 );

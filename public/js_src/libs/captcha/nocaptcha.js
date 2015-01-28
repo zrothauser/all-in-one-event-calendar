@@ -25,12 +25,17 @@ define(
 
 		};
 
+		var check_field = function() {
+			return false;
+		};
+
 		return {
 			is_ready : is_ready,
 			init : init,
 			get_field_name : get_field_name,
 			reload : reload,
-			destroy : destroy
+			destroy : destroy,
+			check_field : check_field
 		}
 	}
 );

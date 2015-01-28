@@ -251,7 +251,9 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$event_props['avatar']              = $event->getavatar();
 			$event_props['avatar_not_wrapped']  = $event->getavatar( false );
 			$event_object                       = $event_props;
-			if ( AI1EC_THEME_COMPATIBILITY_FER ) {
+			if (
+				$this->_compatibility->use_backward_compatibility()
+			) {
 				$event_object = $event;
 			}
 			$dates[$timestamp]['events'][$category][] = $event_object;

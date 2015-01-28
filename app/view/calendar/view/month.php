@@ -372,7 +372,9 @@ class Ai1ec_Calendar_View_Month extends Ai1ec_Calendar_View_Abstract {
 							'',
 							false ),
 				);
-				if ( AI1EC_THEME_COMPATIBILITY_FER ) {
+				if (
+					$this->_compatibility->use_backward_compatibility()
+				) {
 					$event_data = $evt;
 				}
 				$events[] = $event_data;

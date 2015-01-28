@@ -119,6 +119,6 @@ class Ai1ec_Captcha_Recaptcha_Provider extends Ai1ec_Captcha_Provider {
 	 * @return string
 	 */
 	public function get_name() {
-		return 'Google ReCaptcha';
+		return 'Google reCAPTCHA';
 	}
 }

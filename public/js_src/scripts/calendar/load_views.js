@@ -254,7 +254,7 @@ define(
 						data: query,
 						method : 'get'
 					} )
-					request.done( function( data ) {// console.log($.parseJSON( data.html ))
+					request.done( function( data ) {
 						// trigger the event so that other addons can respond
 						$( document ).trigger( 'calendar_view_loaded.ai1ec', $calendar );
 

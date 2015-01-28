@@ -60,7 +60,7 @@ class Ai1ec_Compatibility_Check extends Ai1ec_Base {
 		}
 		if ( $this->is_current_theme_outside_core() ) {
 			$this->_registry->get( 'notification.admin' )->store(
-				Ai1ec_I18n::__( 'You have turned on Frontend Rendering option and you are using custom calendar theme. If your theme does not support Frontend Rendering your calendar may don\'t work correctly.' ),
+				Ai1ec_I18n::__( 'You have turned on Frontend Rendering and you are using a custom calendar theme. If your theme does not support Frontend Rendering, your calendar may not work correctly.' ),
 				'error',
 				0,
 				array( Ai1ec_Notification_Admin::RCPT_ADMIN ),

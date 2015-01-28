@@ -63,7 +63,7 @@ class Ai1ec_Captcha_Recaptcha_Provider extends Ai1ec_Captcha_Provider {
 	 */
 	public function get_challenge() {
 		$args = array(
-			'verification_words' => Ai1ec_I18n::__( 'Verification words' ),
+			'verification_words' => Ai1ec_I18n::__( 'Human verification' ),
 			'loading_recaptcha'  => Ai1ec_I18n::__( 'Loading reCAPTCHA...' ),
 			'recaptcha_key'      => $this->_settings->get(
 				'google_recaptcha_public_key'
@@ -91,7 +91,7 @@ class Ai1ec_Captcha_Recaptcha_Provider extends Ai1ec_Captcha_Provider {
 			empty( $data['recaptcha_response_field'] )
 		) {
 			$response['message'] = Ai1ec_I18n::_(
-				'There was an error reading the word verification data. Please try again.'
+				'There was an error reading the human verification data. Please try again.'
 			);
 			$response['success'] = false;
 		}
@@ -106,7 +106,7 @@ class Ai1ec_Captcha_Recaptcha_Provider extends Ai1ec_Captcha_Provider {
 
 		if ( ! $resp->is_valid ) {
 			$response['message'] = Ai1ec_I18n::__(
-				'Please try answering the word verification again.'
+				'Please try verifying you are human again.'
 			);
 			$response['success'] = false;
 		}

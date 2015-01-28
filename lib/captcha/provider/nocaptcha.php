@@ -84,13 +84,13 @@ class Ai1ec_Captcha_Nocaptcha_Provider extends Ai1ec_Captcha_Provider {
 	public function validate_challenge( array $data ) {
 
 		$response['message'] = Ai1ec_I18n::__(
-			'Please try answering the word verification again.'
+			'Please try verifying you are human again.'
 		);
 		$response['success'] = false;
 
 		if ( empty( $data['g-recaptcha-response'] ) ) {
 			$response['message'] = Ai1ec_I18n::_(
-				'There was an error reading the word verification data. Please try again.'
+				'There was an error reading the human verification data. Please try again.'
 			);
 			$response['success'] = false;
 		}

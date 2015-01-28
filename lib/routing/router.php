@@ -212,9 +212,7 @@ class Ai1ec_Router extends Ai1ec_Base {
 		);
 		add_filter(
 			'rewrite_rules_array',
-			array( $this, 'rewrite_rules_array' ),
-			0,
-			1
+			array( $this, 'rewrite_rules_array' )
 		);
 		return $this;
 	}

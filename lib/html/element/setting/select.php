@@ -98,6 +98,18 @@ class Ai1ec_Html_Setting_Select extends Ai1ec_Html_Element_Settings {
 		return $options;
 	}
 
+	/**
+	 * Renders fieldset with options for selected item.
+	 *
+	 * @param array  $settings  Settings structure.
+	 * @param string $parent_id Option value from parent Html select element.
+	 * @param string $select_id Html Select element id.
+	 * @param bool   $visible   Whether fieldset is visible or not.
+	 *
+	 * @return string Html content.
+	 *
+	 * @throws Ai1ec_Bootstrap_Exception
+	 */
 	protected function _render_fieldset(
 		array $settings,
 		$parent_id,

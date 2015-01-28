@@ -19,9 +19,10 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 	 * @var array
 	 */
 	protected $_addons = array(
-		'all-in-one-event-calendar-extended-views/all-in-one-event-calendar-extended-views.php' => '1.1.2.2',
-		'all-in-one-event-calendar-super-widget/all-in-one-event-calendar-super-widget.php'     => '1.0.9.2',
-		'all-in-one-event-calendar-featured-events/all-in-one-event-calendar-featured-events'   => '1.0.4.2',
+		'all-in-one-event-calendar-extended-views/all-in-one-event-calendar-extended-views.php'               => '1.1.2.2',
+		'all-in-one-event-calendar-super-widget/all-in-one-event-calendar-super-widget.php'                   => '1.0.9.2',
+		'all-in-one-event-calendar-featured-events/all-in-one-event-calendar-featured-events.php'             => '1.0.4.2',
+		'all-in-one-event-calendar-frontend-submissions/all-in-one-event-calendar-frontend-submissions.php'   => '1.1.2.4',
 	);
 
 	/**

@@ -66,8 +66,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		Ai1ec_Date_Time $start,
 		Ai1ec_Date_Time $end,
 		array $filter = array(),
-		$spanning     = false,
-		$single_day   = false
+		$spanning     = false
 	) {
 		// Query arguments
 		$args = array(

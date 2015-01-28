@@ -76,6 +76,10 @@ define(
 			}
 		} );
 	};
+	var captcha_provider_changed = function() {
+		$( 'fieldset.ai1ec-captcha_provider' ).addClass( 'ai1ec-hidden' );
+		$( '.ai1ec-' + $( this ).val() ).removeClass( 'ai1ec-hidden' );
+	};
 
 	var start = function() {
 		// Perform DOM ready tasks.
@@ -165,6 +169,12 @@ define(
 					$( this ).parent().prev( 'td' ).children( '.ai1ec-toggle-view' )
 						.prop( 'checked', true );
 				}
+			);
+
+			$( document).on(
+				'change',
+				'#captcha_provider',
+				captcha_provider_changed
 			);
 
 			// Enable autoselect feature.

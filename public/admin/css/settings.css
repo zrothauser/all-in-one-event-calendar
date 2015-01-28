@@ -190,3 +190,7 @@
 .ai1ec_event_page_all-in-one-event-calendar-edit-css .metabox-holder {
 	padding-top: 0;
 }
+
+div.ai1ec-form-group > .ai1ec-setting-fieldset {
+	margin: 40px 15px 0px 15px;
+}

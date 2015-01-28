@@ -554,6 +554,13 @@ class Ai1ec_Front_Controller {
 			3
 		);
 
+		$dispatcher->register_action(
+			'ai1ec_settings_updated',
+			array( 'compatibility.check', 'ai1ec_settings_observer' ),
+			PHP_INT_MAX - 1,
+			2
+		);
+
 		if ( is_admin() ) {
 			// get the repeat box
 			$dispatcher->register_action(

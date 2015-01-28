@@ -21,8 +21,6 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	 */
 	protected $_compatibility;
 
-
-
 	/**
 	 * Public constructor
 	 *

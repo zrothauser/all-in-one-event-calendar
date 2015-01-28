@@ -97,11 +97,11 @@ class Ai1ec_Theme_Loader {
 
 	/**
 	 * Runs the filter for the specified filename just once
-	 * 
+	 *
 	 * @param array $args
 	 * @param string $filename
 	 * @param boole $is_admin
-	 * 
+	 *
 	 * @return array
 	 */
 	public function apply_filters_to_args( array $args, $filename, $is_admin ) {
@@ -575,11 +575,13 @@ class Ai1ec_Theme_Loader {
 	 *                                 Else replaces them with config file.
 	 */
 	public function switch_theme( array $theme, $delete_variables = true ) {
+		/* @var $option Ai1ec_Option */
 		$option = $this->_registry->get( 'model.option' );
 		$option->set(
 			'ai1ec_current_theme',
 			$theme
 		);
+		$option->delete( 'ai1ec_fer_checked' );
 		$lessphp = $this->_registry->get( 'less.lessphp' );
 		// If requested, delete theme variables from DB.
 		if ( $delete_variables ) {

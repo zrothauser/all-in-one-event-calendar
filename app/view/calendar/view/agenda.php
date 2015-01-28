@@ -155,7 +155,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$this->_registry->get( 'http.request' )->is_json_required(
 				$view_args['request_format'], $type
 			)
-			? json_encode( $loader->apply_filters_to_args( $args, $type . '.twig', false ) )
+			? $loader->apply_filters_to_args( $args, $type . '.twig', false )
 			: $this->_get_view( $args );
 	}
 
@@ -251,7 +251,9 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$event_props['avatar']              = $event->getavatar();
 			$event_props['avatar_not_wrapped']  = $event->getavatar( false );
 			$event_object                       = $event_props;
-			if ( AI1EC_THEME_COMPATIBILITY_FER ) {
+			if (
+				$this->_compatibility->use_backward_compatibility()
+			) {
 				$event_object = $event;
 			}
 			$dates[$timestamp]['events'][$category][] = $event_object;
@@ -262,6 +264,10 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 				get( 'date.time', $timestamp )->format_i18n( 'D' );
 			$dates[$timestamp]['month']               = $this->_registry->
 				get( 'date.time', $timestamp )->format_i18n( 'M' );
+			$dates[$timestamp]['full_month']          = $this->_registry->
+				get( 'date.time', $timestamp )->format_i18n( 'F' );
+			$dates[$timestamp]['full_weekday']        = $this->_registry->
+				get( 'date.time', $timestamp )->format_i18n( 'l' );
 			$dates[$timestamp]['year']                = $this->_registry->
 				get( 'date.time', $timestamp )->format_i18n( 'Y' );
 		}

@@ -17,6 +17,13 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	protected $_request;
 
 	/**
+	 * @var Ai1ec_Compatibility_Check Theme compatibility check object.
+	 */
+	protected $_compatibility;
+
+
+
+	/**
 	 * Public constructor
 	 *
 	 * @param Ai1ec_Registry_Object $registry
@@ -24,7 +31,8 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	 */
 	public function __construct( Ai1ec_Registry_Object $registry, Ai1ec_Request_Parser $request ) {
 		parent::__construct( $registry );
-		$this->_request = $request;
+		$this->_request       = $request;
+		$this->_compatibility = $registry->get( 'compatibility.check' );
 	}
 
 	/**
@@ -106,8 +114,8 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	}
 
 	/**
-	 * Applies filters to view args for freont end rendering
-	 * 
+	 * Applies filters to view args for front end rendering
+	 *
 	 * @param array $args
 	 */
 	protected function _apply_filters_to_args( array $args ) {

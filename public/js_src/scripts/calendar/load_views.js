@@ -254,7 +254,7 @@ define(
 						data: query,
 						method : 'get'
 					} )
-					request.done( function( data ) {
+					request.done( function( data ) {// console.log($.parseJSON( data.html ))
 						// trigger the event so that other addons can respond
 						$( document ).trigger( 'calendar_view_loaded.ai1ec', $calendar );
 
@@ -314,13 +314,12 @@ define(
 						var renderer;
 
 						if ( data.is_json ) {
-							var view_type =  $.parseJSON( data.html ).type;
+							var view_type =  data.html.type;
 							if ( timely['renderer_map'][view_type] ) {
 								renderer = timely['renderer_map'][view_type];
 							} else {
 								// No view found.
 								// Try to reload in HTML.
-								console.log('view not found', view_type, timely['renderer_map'])
 								load_view( $calendar, hash.replace( /\~json/, '~html' ), type );
 								return;
 							}
@@ -328,7 +327,7 @@ define(
 						$calendar.find( '.ai1ec-calendar-view' )
 							.html(
 								renderer
-								? renderer.render( $.parseJSON( data.html ) )
+								? renderer.render( data.html )
 								: $( data.html )
 									.find( '.ai1ec-calendar-view' ).length
 										? $( data.html ).find( '.ai1ec-calendar-view' ).html()

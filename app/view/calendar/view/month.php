@@ -101,7 +101,7 @@ class Ai1ec_Calendar_View_Month extends Ai1ec_Calendar_View_Abstract {
 			$this->_registry->get( 'http.request' )->is_json_required(
 				$args['request_format'], 'month'
 			)
-			? json_encode( $this->_apply_filters_to_args( $view_args ) )
+			? $this->_apply_filters_to_args( $view_args )
 			: $this->_get_view( $view_args );
 	}
 

@@ -155,7 +155,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$this->_registry->get( 'http.request' )->is_json_required(
 				$view_args['request_format'], $type
 			)
-			? json_encode( $loader->apply_filters_to_args( $args, $type . '.twig', false ) )
+			? $loader->apply_filters_to_args( $args, $type . '.twig', false )
 			: $this->_get_view( $args );
 	}
 

@@ -106,8 +106,8 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	}
 
 	/**
-	 * Applies filters to view args for freont end rendering
-	 * 
+	 * Applies filters to view args for front end rendering
+	 *
 	 * @param array $args
 	 */
 	protected function _apply_filters_to_args( array $args ) {

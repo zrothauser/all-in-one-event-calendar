@@ -526,10 +526,12 @@ class Ai1ec_Javascript_Controller {
 		);
 		$conditional_get->sendHeaders();
 		if ( ! $conditional_get->cacheIsValid ) {
-			$http_encoder = new HTTP_Encoder( array(
-				'content' => $javascript,
-				'type' => 'text/javascript'
-			)
+			$http_encoder = $this->_registry->get(
+				'http.encoder',
+				array(
+					'content' => $javascript,
+					'type' => 'text/javascript'
+				)
 			);
 			$compression_level = null;
 			if ( $this->_registry->get( 'model.settings' )->get( 'disable_gzip_compression' ) ) {

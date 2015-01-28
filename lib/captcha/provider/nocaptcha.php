@@ -127,6 +127,6 @@ class Ai1ec_Captcha_Nocaptcha_Provider extends Ai1ec_Captcha_Provider {
 	 * @return string
 	 */
 	public function get_name() {
-		return 'Google Nocaptcha';
+		return 'Google No CAPTCHA';
 	}
 }

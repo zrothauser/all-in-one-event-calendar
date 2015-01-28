@@ -59,14 +59,6 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	 *                                   ['post_ids'] => list of post IDs;
 	 *                                   ['auth_ids'] => list of author IDs.
 	 * @param bool $spanning         Also include events that span this period.
-	 * @param bool $single_day       This parameter is added for oneday view.
-	 *                               Query should find events lasting in
-	 *                               particular day instead of checking dates
-	 *                               range. If you need to call this method
-	 *                               with $single_day set to true consider
-	 *                               using method get_events_for_day. This
-	 *                               parameter matters only if $spanning is set
-	 *                               to false.
 	 *
 	 * @return array List of matching event objects.
 	 */
@@ -101,10 +93,6 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 			->get_wpml_table_where();
 
 		if ( $spanning ) {
-			$spanning_string = 'i.end > %d AND i.start < %d ';
-		} elseif ( $single_day ) {
-			// if event starts before end of today
-			// and ends after beginning of today
 			$spanning_string = 'i.end >= %d AND i.start <= %d ';
 		} else {
 			$spanning_string = 'i.start BETWEEN %d AND %d ';
@@ -375,7 +363,6 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 			$start_of_day,
 			$end_of_day,
 			$filter,
-			false,
 			true
 		);
 	}

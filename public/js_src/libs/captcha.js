@@ -2,15 +2,13 @@ define(
 	[
 		"jquery_timely",
 		"libs/captcha/recaptcha",
-		"libs/captcha/nocaptcha"
+		"libs/captcha/nocaptcha",
+		"libs/captcha/void"
 	],
-	function( $, $recaptcha, $nocaptcha ) {
+	function( $, $recaptcha, $nocaptcha, $void ) {
 
-		var $provider = {
-			is_ready : function() {
-				return false;
-			}
-		};
+		// initialize provider with void provider.
+		var $provider = $void;
 
 		var get_provider = function( $provider_name ) {
 			if ( 'recaptcha' === $provider_name ) {
@@ -27,6 +25,14 @@ define(
 				return;
 			}
 			$provider = get_provider( $captcha.data( 'provider' ) );
+
+			// Handle external plugin's provider constructor.
+			// Provider should export functions like defined in
+			// libs/captcha/void.js
+			if ( $captcha.data( 'providerConstructor' ) ) {
+				var $callback = $captcha.data( 'providerConstructor' );
+				$provider = eval( $callback )();
+			}
 			if (
 				! $provider.is_ready() ||
 				$captcha.is( '.ai1ec-initializing, .ai1ec-initialized' )

@@ -1,1 +1,213 @@
-timely.define(["jquery_timely","external_libs/modernizr"],function(e,t){var n=navigator.userAgent.match(/opera/i),r=navigator.userAgent.match(/webkit/i),i=function(t){var n=t.find(".ai1ec-day"),r=t.find(".ai1ec-week:first .ai1ec-day").length;t.find(".ai1ec-month-view .ai1ec-multiday").each(function(){var t=this.parentNode,r=e(this).outerHeight(!0),i=e(".ai1ec-date",t),u=parseInt(i.text(),10),a=e(this).data("endTruncated"),f=parseInt(a?e(n[n.length-1]).text():e(this).data("endDay"),10),l=e(this),c=e(".ai1ec-event",l)[0].style.backgroundColor,h=0,p=f-u+1,d=p,v,m=0;n.each(function(t){var n=e(".ai1ec-date",this),r=e(this.parentNode),i=r.index(),a=parseInt(n.text(),10);if(a>=u&&a<=f){a===u&&(v=parseInt(n.css("marginBottom"),10)+16),h===0&&m++;if(i===0&&a>u&&d!==0){var p=l.next(".ai1ec-popup").andSelf().clone(!1);n.parent().append(p);var g=p.first();g.addClass("ai1ec-multiday-bar ai1ec-multiday-clone"),g.css({position:"absolute",left:"1px",top:parseInt(n.css("marginBottom"),10)+13,backgroundColor:c});var y=d>7?7:d;g.css("width",s(y)),d>7&&g.append(o(1,c)),g.append(o(2,c))}h===0?n.css({marginBottom:v+"px"}):n.css({marginBottom:"+=16px"}),d--,d>0&&i===6&&h++}});if(a){var g=l.find("."+l[0].className.replace(/\s+/igm,".")).last();g.append(o(1,c))}e(this).css({position:"absolute",top:i.outerHeight(!0)-r-1+"px",left:"1px",width:s(m)}),h>0&&e(this).append(o(1,c)),e(this).data("startTruncated")&&e(this).append(o(2,c)).addClass("ai1ec-multiday-bar")})},s=function(e){var t;switch(e){case 1:t=97.5;break;case 2:t=198.7;break;case 3:t=300;break;case 4:t=401;break;case 5:r||n?t=507:t=503.4;break;case 6:r||n?t=608:t=603.5;break;case 7:r||n?t=709:t=705}return t+"%"},o=function(t,n){var r=e('<div class="ai1ec-multiday-arrow'+t+'"></div>');return t===1?r.css({borderLeftColor:n}):r.css({borderTopColor:n,borderRightColor:n,borderBottomColor:n}),r};return{extend_multiday_events:i}});
+timely.define(
+		[
+		 "jquery_timely",
+		 "external_libs/modernizr"
+		 ],
+		function( $, Modernizr ) {
+	 // jshint ;_;
+	// *** Month view ***
+
+	var isOpera = navigator.userAgent.match(/opera/i);
+	var isWebkit = navigator.userAgent.match(/webkit/i);
+	/**
+	 * Extends day bars for multiday events.
+	 */
+	var extend_multiday_events = function( $calendar ) {
+		var
+			$days = $calendar.find( '.ai1ec-day' ),
+			daysFirstWeek = $calendar.find( '.ai1ec-week:first .ai1ec-day' ).length;
+
+		$calendar.find( '.ai1ec-month-view .ai1ec-multiday' ).each( function() {
+			var container = this.parentNode,
+				elHeight = $( this ).outerHeight( true ),
+				$startEl = $( '.ai1ec-date', container ),
+				startDay = parseInt( $startEl.text(), 10 ),
+				nextMonthBar = $( this ).data( 'endTruncated' ),
+				endDay = parseInt( nextMonthBar
+					? $( $days[$days.length - 1] ).text()
+					: $( this ).data( 'endDay' ), 10
+				),
+				$evtContainer = $( this ),
+				bgColor = $( '.ai1ec-event', $evtContainer )[0].style.backgroundColor,
+				curLine = 0,
+				deltaDays = endDay - startDay + 1,
+				daysLeft = deltaDays,
+				marginSize,
+				// this is the variable used to count the number of days for the event
+				days = 0;
+
+			$days.each( function( i ) {
+				var $dayEl = $( '.ai1ec-date', this ),
+					$td = $( this.parentNode ),
+					cellNum = $td.index(),
+					day = parseInt( $dayEl.text(), 10 );
+
+				if ( day >= startDay && day <= endDay ) {
+					if ( day === startDay ) {
+						marginSize = parseInt( $dayEl.css( 'marginBottom' ), 10 ) + 16;
+					}
+
+					if ( curLine === 0 ) {
+						// Extend initial event bar to the end of first (!) week.
+						days++;
+					}
+
+					if ( cellNum === 0 && day > startDay && daysLeft !== 0 ) {
+						// Clone the event as well as its associated popup
+						var $clone = $evtContainer
+							.next( '.ai1ec-popup' )
+							.andSelf()
+							.clone( false );
+						$dayEl.parent().append( $clone );
+
+						var $block = $clone.first();
+
+						// Create a new spanning multiday bar. "ai1ec-multiday-bar" is used
+						// for proper styling, while "ai1ec-multiday-clone" identifies the
+						// clones so they can be removed when required.
+						$block.addClass( 'ai1ec-multiday-bar ai1ec-multiday-clone' );
+
+						$block
+							.css({
+								position: "absolute",
+								left: '1px',
+								// line height is 16px - 3px of initial margin
+								top: parseInt( $dayEl.css( 'marginBottom' ), 10 ) + 13,
+								backgroundColor: bgColor
+							});
+
+						// Check the days left, if they are more than 7 a new block is needed
+						// and we draw 7 days only
+						var daysForThisBlock = ( daysLeft > 7 ) ? 7 : daysLeft;
+
+						$block.css( 'width',
+							create_percentual_width_from_days( daysForThisBlock )
+						);
+
+						if ( daysLeft > 7 ) {
+							$block.append( create_multiday_arrow( 1, bgColor ) );
+						}
+
+						$block.append( create_multiday_arrow( 2, bgColor ) );
+					}
+
+					// Keep constant margin (number of bars) during the first row.
+					if ( curLine === 0 ) {
+						$dayEl.css( { 'marginBottom': marginSize + 'px' } );
+					}
+					// But need to reset it and append margins from the begining for
+					// subsequent weeks.
+					else {
+						$dayEl.css( { 'marginBottom': '+=16px' } );
+					}
+
+					daysLeft--;
+
+					// If in the last column of the table and there are more days left,
+					// increment curLine.
+					if ( daysLeft > 0 && cellNum === 6 ) {
+						curLine++;
+					}
+				}
+			});
+			// Adding "start arrow" to the end of multi-month bars.
+			if ( nextMonthBar ) {
+				var $lastBarPiece = $evtContainer.find(
+					'.' + $evtContainer[0].className.replace( /\s+/igm, '.' )
+				).last();
+				$lastBarPiece.append( create_multiday_arrow( 1, bgColor ) );
+			}
+
+			$(this).css( {
+				position: 'absolute',
+				top: $startEl.outerHeight( true ) - elHeight - 1 + 'px',
+				left: '1px',
+				width: create_percentual_width_from_days( days )
+			} );
+
+			// Add an ending arrow to the initial event bar for multi-week events.
+			if ( curLine > 0 ) {
+				$( this ).append( create_multiday_arrow( 1, bgColor ) );
+			}
+			// Add a starting arrow to the initial event bar for events starting in
+			// previous month.
+			if ( $( this ).data( 'startTruncated' ) ) {
+				$( this )
+					.append( create_multiday_arrow( 2, bgColor ) )
+					.addClass( 'ai1ec-multiday-bar' );
+			}
+		});
+	};
+
+	/**
+	 * returns a string with the percentage to use as width for the specified
+	 * number of days
+	 *
+	 * @param int days the number of days
+	 *
+	 */
+	var create_percentual_width_from_days = function( days ) {
+		var percent;
+		switch ( days ) {
+			case 1:
+				percent = 97.5;
+				break;
+			case 2:
+				percent = 198.7;
+				break;
+			case 3:
+				percent = 300;
+				break;
+			case 4:
+				percent = 401;
+				break;
+			case 5:
+				if( isWebkit || isOpera ) {
+					percent = 507;
+				} else {
+					percent = 503.4;
+				}
+				break;
+			case 6:
+				if( isWebkit || isOpera ) {
+					percent = 608;
+				} else {
+					percent = 603.5;
+				}
+				break;
+			case 7:
+				if( isWebkit || isOpera ) {
+					percent = 709;
+				} else {
+					percent = 705;
+				}
+				break;
+		}
+		return percent + '%';
+	};
+
+	/**
+	 * Creates arrow for multiday bars.
+	 *
+	 * @param {int}    type  1 for ending arrow, 2 for starting arrow
+	 * @param {string} color Color of the multiday event
+	 */
+	var create_multiday_arrow = function( type, color ) {
+		var $arrow = $( '<div class="ai1ec-multiday-arrow' + type + '"></div>' );
+		if ( type === 1 ) {
+			$arrow.css( { borderLeftColor: color } );
+		} else {
+			$arrow.css( {
+				borderTopColor: color,
+				borderRightColor: color,
+				borderBottomColor: color
+			} );
+		}
+		return $arrow;
+	};
+
+	return {
+		extend_multiday_events: extend_multiday_events
+	};
+
+} );

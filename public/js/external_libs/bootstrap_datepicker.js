@@ -20,4 +20,1648 @@
  * limitations under the License.
  * ========================================================= */
 
-timely.define(["jquery_timely","ai1ec_config","external_libs/locales/bootstrap-datepicker.bg","external_libs/locales/bootstrap-datepicker.br","external_libs/locales/bootstrap-datepicker.cs","external_libs/locales/bootstrap-datepicker.da","external_libs/locales/bootstrap-datepicker.de","external_libs/locales/bootstrap-datepicker.es","external_libs/locales/bootstrap-datepicker.fi","external_libs/locales/bootstrap-datepicker.fr","external_libs/locales/bootstrap-datepicker.id","external_libs/locales/bootstrap-datepicker.is","external_libs/locales/bootstrap-datepicker.it","external_libs/locales/bootstrap-datepicker.ja","external_libs/locales/bootstrap-datepicker.kr","external_libs/locales/bootstrap-datepicker.lt","external_libs/locales/bootstrap-datepicker.lv","external_libs/locales/bootstrap-datepicker.ms","external_libs/locales/bootstrap-datepicker.nb","external_libs/locales/bootstrap-datepicker.nl","external_libs/locales/bootstrap-datepicker.pl","external_libs/locales/bootstrap-datepicker.pt-BR","external_libs/locales/bootstrap-datepicker.pt","external_libs/locales/bootstrap-datepicker.ru","external_libs/locales/bootstrap-datepicker.sl","external_libs/locales/bootstrap-datepicker.sv","external_libs/locales/bootstrap-datepicker.th","external_libs/locales/bootstrap-datepicker.tr","external_libs/locales/bootstrap-datepicker.zh-CN","external_libs/locales/bootstrap-datepicker.zh-TW"],function(e,t){function r(){return new Date(Date.UTC.apply(Date,arguments))}function i(){var e=new Date;return r(e.getFullYear(),e.getMonth(),e.getDate())}function s(e){return function(){return this[e].apply(this,arguments)}}function f(t,n){var r=e(t).data(),i={},s,o=new RegExp("^"+n.toLowerCase()+"([A-Z])"),n=new RegExp("^"+n.toLowerCase());for(var u in r)n.test(u)&&(s=u.replace(o,function(e,t){return t.toLowerCase()}),i[s]=r[u]);return i}function l(t){var n={};if(!d[t]){t=t.split("-")[0];if(!d[t])return}var r=d[t];return e.each(p,function(e,t){t in r&&(n[t]=r[t])}),n}var n=e(window),o=function(){var t={get:function(e){return this.slice(e)[0]},contains:function(e){var t=e&&e.valueOf();for(var n=0,r=this.length;n<r;n++)if(this[n].valueOf()===t)return n;return-1},remove:function(e){this.splice(e,1)},replace:function(t){if(!t)return;e.isArray(t)||(t=[t]),this.clear(),this.push.apply(this,t)},clear:function(){this.splice(0)},copy:function(){var e=new o;return e.replace(this),e}};return function(){var n=[];return n.push.apply(n,arguments),e.extend(n,t),n}}(),u=function(t,n){this.dates=new o,this.viewDate=i(),this.focusDate=null,this._process_options(n),this.element=e(t),this.isInline=!1,this.isInput=this.element.is("input"),this.component=this.element.is(".ai1ec-date")?this.element.find(".ai1ec-input-group, .ai1ec-input-group-addon, .ai1ec-btn"):!1,this.hasInput=this.component&&this.element.find("input").length,this.component&&this.component.length===0&&(this.component=!1),this.picker=e(v.template),this._buildEvents(),this._attachEvents(),this.isInline?this.picker.addClass("ai1ec-datepicker-inline").appendTo(this.element):this.picker.addClass("ai1ec-datepicker-dropdown ai1ec-dropdown-menu"),this.o.rtl&&this.picker.addClass("ai1ec-datepicker-rtl"),this.viewMode=this.o.startView,this.o.calendarWeeks&&this.picker.find("tfoot th.ai1ec-today").attr("colspan",function(e,t){return parseInt(t)+1}),this._allow_update=!1,this.setStartDate(this._o.startDate),this.setEndDate(this._o.endDate),this.setDaysOfWeekDisabled(this.o.daysOfWeekDisabled),this.fillDow(),this.fillMonths(),this._allow_update=!0,this.update(),this.showMode(),this.isInline&&this.show()};u.prototype={constructor:u,_process_options:function(n){this._o=e.extend({},this._o,n);var r=this.o=e.extend({},this._o),i=r.language;d[i]||(i=i.split("-")[0],d[i]||(i=t.language,d[i]||(i=h.language))),r.language=i;switch(r.startView){case 2:case"decade":r.startView=2;break;case 1:case"year":r.startView=1;break;default:r.startView=0}switch(r.minViewMode){case 1:case"months":r.minViewMode=1;break;case 2:case"years":r.minViewMode=2;break;default:r.minViewMode=0}r.startView=Math.max(r.startView,r.minViewMode),r.multidate!==!0&&(r.multidate=Number(r.multidate)||!1,r.multidate!==!1?r.multidate=Math.max(0,r.multidate):r.multidate=1),r.multidateSeparator=String(r.multidateSeparator),r.weekStart%=7,r.weekEnd=(r.weekStart+6)%7;var s=v.parseFormat(r.format);r.startDate!==-Infinity&&(r.startDate?r.startDate instanceof Date?r.startDate=this._local_to_utc(this._zero_time(r.startDate)):r.startDate=v.parseDate(r.startDate,s,r.language):r.startDate=-Infinity),r.endDate!==Infinity&&(r.endDate?r.endDate instanceof Date?r.endDate=this._local_to_utc(this._zero_time(r.endDate)):r.endDate=v.parseDate(r.endDate,s,r.language):r.endDate=Infinity),r.daysOfWeekDisabled=r.daysOfWeekDisabled||[],e.isArray(r.daysOfWeekDisabled)||(r.daysOfWeekDisabled=r.daysOfWeekDisabled.split(/[,\s]*/)),r.daysOfWeekDisabled=e.map(r.daysOfWeekDisabled,function(e){return parseInt(e,10)});var o=String(r.orientation).toLowerCase().split(/\s+/g),u=r.orientation.toLowerCase();o=e.grep(o,function(e){return/^auto|left|right|top|bottom$/.test(e)}),r.orientation={x:"auto",y:"auto"};if(!!u&&u!=="auto")if(o.length===1)switch(o[0]){case"top":case"bottom":r.orientation.y=o[0];break;case"left":case"right":r.orientation.x=o[0]}else u=e.grep(o,function(e){return/^left|right$/.test(e)}),r.orientation.x=u[0]||"auto",u=e.grep(o,function(e){return/^top|bottom$/.test(e)}),r.orientation.y=u[0]||"auto"},_events:[],_secondaryEvents:[],_applyEvents:function(e){for(var t=0,n,r,i;t<e.length;t++)n=e[t][0],e[t].length==2?(r=undefined,i=e[t][1]):e[t].length==3&&(r=e[t][1],i=e[t][2]),n.on(i,r)},_unapplyEvents:function(e){for(var t=0,n,r,i;t<e.length;t++)n=e[t][0],e[t].length==2?(i=undefined,r=e[t][1]):e[t].length==3&&(i=e[t][1],r=e[t][2]),n.off(r,i)},_buildEvents:function(){this.isInput?this._events=[[this.element,{focus:e.proxy(this.show,this),keyup:e.proxy(function(t){e.inArray(t.keyCode,[27,37,39,38,40,32,13,9])===-1&&this.update()},this),keydown:e.proxy(this.keydown,this)}]]:this.component&&this.hasInput?this._events=[[this.element.find("input"),{focus:e.proxy(this.show,this),keyup:e.proxy(function(t){e.inArray(t.keyCode,[27,37,39,38,40,32,13,9])===-1&&this.update()},this),keydown:e.proxy(this.keydown,this)}],[this.component,{click:e.proxy(this.show,this)}]]:this.element.is("div")?this.isInline=!0:this._events=[[this.element,{click:e.proxy(this.show,this)}]],this._events.push([this.element,"*",{blur:e.proxy(function(e){this._focused_from=e.target},this)}],[this.element,{blur:e.proxy(function(e){this._focused_from=e.target},this)}]),this._secondaryEvents=[[this.picker,{click:e.proxy(this.click,this)}],[e(window),{resize:e.proxy(this.place,this)}],[e(document),{"mousedown touchstart":e.proxy(function(e){this.element.is(e.target)||this.element.find(e.target).length||this.picker.is(e.target)||this.picker.find(e.target).length||this.hide()},this)}]]},_attachEvents:function(){this._detachEvents(),this._applyEvents(this._events)},_detachEvents:function(){this._unapplyEvents(this._events)},_attachSecondaryEvents:function(){this._detachSecondaryEvents(),this._applyEvents(this._secondaryEvents)},_detachSecondaryEvents:function(){this._unapplyEvents(this._secondaryEvents)},_trigger:function(t,n){var r=n||this.dates.get(-1),i=this._utc_to_local(r);this.element.trigger({type:t,date:i,dates:e.map(this.dates,this._utc_to_local),format:e.proxy(function(e,t){arguments.length===0?(e=this.dates.length-1,t=this.o.format):typeof e=="string"&&(t=e,e=this.dates.length-1),t=t||this.o.format;var n=this.dates.get(e);return v.formatDate(n,t,this.o.language)},this)})},show:function(e){this.isInline||this.picker.appendTo("body"),this.picker.show(),this.height=this.component?this.component.outerHeight():this.element.outerHeight(),this.place(),this._attachSecondaryEvents(),this._trigger("show")},hide:function(){if(this.isInline)return;if(!this.picker.is(":visible"))return;this.focusDate=null,this.picker.hide().detach(),this._detachSecondaryEvents(),this.viewMode=this.o.startView,this.showMode(),this.o.forceParse&&(this.isInput&&this.element.val()||this.hasInput&&this.element.find("input").val())&&this.setValue(),this._trigger("hide")},remove:function(){this.hide(),this._detachEvents(),this._detachSecondaryEvents(),this.picker.remove(),delete this.element.data().datepicker,this.isInput||delete this.element.data().date},_utc_to_local:function(e){return e&&new Date(e.getTime()+e.getTimezoneOffset()*6e4)},_local_to_utc:function(e){return e&&new Date(e.getTime()-e.getTimezoneOffset()*6e4)},_zero_time:function(e){return e&&new Date(e.getFullYear(),e.getMonth(),e.getDate())},_zero_utc_time:function(e){return e&&new Date(Date.UTC(e.getUTCFullYear(),e.getUTCMonth(),e.getUTCDate()))},getDates:function(){return e.map(this.dates,this._utc_to_local)},getUTCDates:function(){return e.map(this.dates,function(e){return new Date(e)})},getDate:function(){return this._utc_to_local(this.getUTCDate())},getUTCDate:function(){return new Date(this.dates.get(-1))},setDates:function(){this.update.apply(this,arguments),this._trigger("changeDate"),this.setValue()},setUTCDates:function(){this.update.apply(this,e.map(arguments,this._utc_to_local)),this._trigger("changeDate"),this.setValue()},setDate:s("setDates"),setUTCDate:s("setUTCDates"),setValue:function(){var e=this.getFormattedDate();this.isInput?this.element.val(e).change():this.component&&this.element.find("input").val(e).change()},getFormattedDate:function(t){t===undefined&&(t=this.o.format);var n=this.o.language;return e.map(this.dates,function(e){return v.formatDate(e,t,n)}).join(this.o.multidateSeparator)},setStartDate:function(e){this._process_options({startDate:e}),this.update(),this.updateNavArrows()},setEndDate:function(e){this._process_options({endDate:e}),this.update(),this.updateNavArrows()},setDaysOfWeekDisabled:function(e){this._process_options({daysOfWeekDisabled:e}),this.update(),this.updateNavArrows()},place:function(){if(this.isInline)return;var t=this.picker.outerWidth(),r=this.picker.outerHeight(),i=10,s=n.width(),o=n.height(),u=n.scrollTop(),a=parseInt(this.element.parents().filter(function(){return e(this).css("z-index")!="auto"}).first().css("z-index"))+10,f=this.component?this.component.parent().offset():this.element.offset(),l=this.component?this.component.outerHeight(!0):this.element.outerHeight(!1),c=this.component?this.component.outerWidth(!0):this.element.outerWidth(!1),h=f.left,p=f.top;this.picker.removeClass("ai1ec-datepicker-orient-top ai1ec-datepicker-orient-bottom ai1ec-datepicker-orient-right ai1ec-datepicker-orient-left"),this.o.orientation.x!=="auto"?(this.picker.addClass("ai1ec-datepicker-orient-"+this.o.orientation.x),this.o.orientation.x==="right"&&(h-=t-c)):(this.picker.addClass("ai1ec-datepicker-orient-left"),f.left<0?h-=f.left-i:f.left+t>s&&(h=s-t-i));var d=this.o.orientation.y,v,m;d==="auto"&&(v=-u+f.top-r,m=u+o-(f.top+l+r),Math.max(v,m)===m?d="top":d="bottom"),this.picker.addClass("ai1ec-datepicker-orient-"+d),d==="top"?p+=l:p-=r+parseInt(this.picker.css("padding-top")),this.picker.css({top:p,left:h,zIndex:a})},_allow_update:!0,update:function(){if(!this._allow_update)return;var t=this.dates.copy(),n=[],r=!1;arguments.length?(e.each(arguments,e.proxy(function(e,t){t instanceof Date&&(t=this._local_to_utc(t)),n.push(t)},this)),r=!0):(n=this.isInput?this.element.val():this.element.data("date")||this.element.find("input").val(),n&&this.o.multidate?n=n.split(this.o.multidateSeparator):n=[n],delete this.element.data().date),n=e.map(n,e.proxy(function(e){return v.parseDate(e,this.o.format,this.o.language)},this)),n=e.grep(n,e.proxy(function(e){return e<this.o.startDate||e>this.o.endDate||!e},this),!0),this.dates.replace(n),this.dates.length?this.viewDate=new Date(this.dates.get(-1)):this.viewDate<this.o.startDate?this.viewDate=new Date(this.o.startDate):this.viewDate>this.o.endDate&&(this.viewDate=new Date(this.o.endDate)),r?this.setValue():n.length&&String(t)!==String(this.dates)&&this._trigger("changeDate"),!this.dates.length&&t.length&&this._trigger("clearDate"),this.fill()},fillDow:function(){var e=this.o.weekStart,t="<tr>";if(this.o.calendarWeeks){var n='<th class="ai1ec-cw">&nbsp;</th>';t+=n,this.picker.find(".ai1ec-datepicker-days thead tr:first-child").prepend(n)}while(e<this.o.weekStart+7)t+='<th class="ai1ec-dow">'+d[this.o.language].daysMin[e++%7]+"</th>";t+="</tr>",this.picker.find(".ai1ec-datepicker-days thead").append(t)},fillMonths:function(){var e="",t=0;while(t<12)e+='<span class="ai1ec-month">'+d[this.o.language].monthsShort[t++]+"</span>";this.picker.find(".ai1ec-datepicker-months td").html(e)},setRange:function(t){!t||!t.length?delete this.range:this.range=e.map(t,function(e){return e.valueOf()}),this.fill()},getClassNames:function(t){var n=[],r=this.viewDate.getUTCFullYear(),i=this.viewDate.getUTCMonth(),s=new Date;return t.getUTCFullYear()<r||t.getUTCFullYear()==r&&t.getUTCMonth()<i?n.push("ai1ec-old"):(t.getUTCFullYear()>r||t.getUTCFullYear()==r&&t.getUTCMonth()>i)&&n.push("ai1ec-new"),this.focusDate&&t.valueOf()===this.focusDate.valueOf()&&n.push("ai1ec-focused"),this.o.todayHighlight&&t.getUTCFullYear()==s.getFullYear()&&t.getUTCMonth()==s.getMonth()&&t.getUTCDate()==s.getDate()&&n.push("ai1ec-today"),this.dates.contains(t)!==-1&&n.push("ai1ec-active"),(t.valueOf()<this.o.startDate||t.valueOf()>this.o.endDate||e.inArray(t.getUTCDay(),this.o.daysOfWeekDisabled)!==-1)&&n.push("ai1ec-disabled"),this.range&&(t>this.range[0]&&t<this.range[this.range.length-1]&&n.push("ai1ec-range"),e.inArray(t.valueOf(),this.range)!=-1&&n.push("ai1ec-selected")),n},fill:function(){var t=new Date(this.viewDate),n=t.getUTCFullYear(),i=t.getUTCMonth(),s=this.o.startDate!==-Infinity?this.o.startDate.getUTCFullYear():-Infinity,o=this.o.startDate!==-Infinity?this.o.startDate.getUTCMonth():-Infinity,u=this.o.endDate!==Infinity?this.o.endDate.getUTCFullYear():Infinity,a=this.o.endDate!==Infinity?this.o.endDate.getUTCMonth():Infinity,f,l;this.picker.find(".ai1ec-datepicker-days thead th.ai1ec-datepicker-switch").text(d[this.o.language].months[i]+" "+n),this.picker.find("tfoot th.ai1ec-today").text(d[this.o.language].today).toggle(this.o.todayBtn!==!1),this.picker.find("tfoot th.ai1ec-clear").text(d[this.o.language].clear).toggle(this.o.clearBtn!==!1),this.updateNavArrows(),this.fillMonths();var c=r(n,i-1,28),h=v.getDaysInMonth(c.getUTCFullYear(),c.getUTCMonth());c.setUTCDate(h),c.setUTCDate(h-(c.getUTCDay()-this.o.weekStart+7)%7);var p=new Date(c);p.setUTCDate(p.getUTCDate()+42),p=p.valueOf();var m=[],g;while(c.valueOf()<p){if(c.getUTCDay()==this.o.weekStart){m.push("<tr>");if(this.o.calendarWeeks){var y=new Date(+c+(this.o.weekStart-c.getUTCDay()-7)%7*864e5),b=new Date(+y+(11-y.getUTCDay())%7*864e5),w=new Date(+(w=r(b.getUTCFullYear(),0,1))+(11-w.getUTCDay())%7*864e5),E=(b-w)/864e5/7+1;m.push('<td class="ai1ec-cw">'+E+"</td>")}}g=this.getClassNames(c),g.push("ai1ec-day");if(this.o.beforeShowDay!==e.noop){var S=this.o.beforeShowDay(this._utc_to_local(c));S===undefined?S={}:typeof S=="boolean"?S={enabled:S}:typeof S=="string"&&(S={classes:S}),S.enabled===!1&&g.push("ai1ec-disabled"),S.classes&&(g=g.concat(S.classes.split(/\s+/))),S.tooltip&&(f=S.tooltip)}g=e.unique(g),m.push('<td class="'+g.join(" ")+'"'+(f?' title="'+f+'"':"")+">"+c.getUTCDate()+"</td>"),c.getUTCDay()==this.o.weekEnd&&m.push("</tr>"),c.setUTCDate(c.getUTCDate()+1)}this.picker.find(".ai1ec-datepicker-days tbody").empty().append(m.join(""));var x=this.picker.find(".ai1ec-datepicker-months").find("th:eq(1)").text(n).end().find("span").removeClass("ai1ec-active");e.each(this.dates,function(e,t){t.getUTCFullYear()==n&&x.eq(t.getUTCMonth()).addClass("ai1ec-active")}),(n<s||n>u)&&x.addClass("ai1ec-disabled"),n==s&&x.slice(0,o).addClass("ai1ec-disabled"),n==u&&x.slice(a+1).addClass("ai1ec-disabled"),m="",n=parseInt(n/10,10)*10;var T=this.picker.find(".ai1ec-datepicker-years").find("th:eq(1)").text(n+"-"+(n+9)).end().find("td");n-=1;var N=e.map(this.dates,function(e){return e.getUTCFullYear()}),C;for(var k=-1;k<11;k++)C=["ai1ec-year"],k===-1?C.push("ai1ec-old"):k===10&&C.push("ai1ec-new"),e.inArray(n,N)!==-1&&C.push("ai1ec-active"),(n<s||n>u)&&C.push("ai1ec-disabled"),m+='<span class="'+C.join(" ")+'">'+n+"</span>",n+=1;T.html(m)},updateNavArrows:function(){if(!this._allow_update)return;var e=new Date(this.viewDate),t=e.getUTCFullYear(),n=e.getUTCMonth();switch(this.viewMode){case 0:this.o.startDate!==-Infinity&&t<=this.o.startDate.getUTCFullYear()&&n<=this.o.startDate.getUTCMonth()?this.picker.find(".ai1ec-prev").css({visibility:"hidden"}):this.picker.find(".ai1ec-prev").css({visibility:"visible"}),this.o.endDate!==Infinity&&t>=this.o.endDate.getUTCFullYear()&&n>=this.o.endDate.getUTCMonth()?this.picker.find(".ai1ec-next").css({visibility:"hidden"}):this.picker.find(".ai1ec-next").css({visibility:"visible"});break;case 1:case 2:this.o.startDate!==-Infinity&&t<=this.o.startDate.getUTCFullYear()?this.picker.find(".ai1ec-prev").css({visibility:"hidden"}):this.picker.find(".ai1ec-prev").css({visibility:"visible"}),this.o.endDate!==Infinity&&t>=this.o.endDate.getUTCFullYear()?this.picker.find(".ai1ec-next").css({visibility:"hidden"}):this.picker.find(".ai1ec-next").css({visibility:"visible"})}},click:function(t){t.preventDefault();var n=e(t.target).closest("span, td, th"),i,s,o;if(n.length==1)switch(n[0].nodeName.toLowerCase()){case"th":switch(n[0].className){case"ai1ec-datepicker-switch":this.showMode(1);break;case"ai1ec-prev":case"ai1ec-next":var u=v.modes[this.viewMode].navStep*(n[0].className=="ai1ec-prev"?-1:1);switch(this.viewMode){case 0:this.viewDate=this.moveMonth(this.viewDate,u),this._trigger("changeMonth",this.viewDate);break;case 1:case 2:this.viewDate=this.moveYear(this.viewDate,u),this.viewMode===1&&this._trigger("changeYear",this.viewDate)}this.fill();break;case"ai1ec-today":var a=new Date;a=r(a.getFullYear(),a.getMonth(),a.getDate(),0,0,0),this.showMode(-2);var f=this.o.todayBtn=="linked"?null:"view";this._setDate(a,f);break;case"ai1ec-clear":var l;this.isInput?l=this.element:this.component&&(l=this.element.find("input")),l&&l.val("").change(),this.update(),this._trigger("changeDate"),this.o.autoclose&&this.hide()}break;case"span":n.is(".ai1ec-disabled")||(this.viewDate.setUTCDate(1),n.is(".ai1ec-month")?(o=1,s=n.parent().find("span").index(n),i=this.viewDate.getUTCFullYear(),this.viewDate.setUTCMonth(s),this._trigger("changeMonth",this.viewDate),this.o.minViewMode===1&&this._setDate(r(i,s,o))):(o=1,s=0,i=parseInt(n.text(),10)||0,this.viewDate.setUTCFullYear(i),this._trigger("changeYear",this.viewDate),this.o.minViewMode===2&&this._setDate(r(i,s,o))),this.showMode(-1),this.fill());break;case"td":n.is(".ai1ec-day")&&!n.is(".ai1ec-disabled")&&(o=parseInt(n.text(),10)||1,i=this.viewDate.getUTCFullYear(),s=this.viewDate.getUTCMonth(),n.is(".ai1ec-old")?s===0?(s=11,i-=1):s-=1:n.is(".ai1ec-new")&&(s==11?(s=0,i+=1):s+=1),this._setDate(r(i,s,o)))}this.picker.is(":visible")&&this._focused_from&&e(this._focused_from).focus(),delete this._focused_from},_toggle_multidate:function(e){var t=this.dates.contains(e);e?t!==-1?this.dates.remove(t):this.dates.push(e):this.dates.clear();if(typeof this.o.multidate=="number")while(this.dates.length>this.o.multidate)this.dates.remove(0)},_setDate:function(e,t){(!t||t=="date")&&this._toggle_multidate(e&&new Date(e));if(!t||t=="view")this.viewDate=e&&new Date(e);this.fill(),this.setValue(),this._trigger("changeDate");var n;this.isInput?n=this.element:this.component&&(n=this.element.find("input")),n&&n.change(),this.o.autoclose&&(!t||t=="date")&&this.hide()},moveMonth:function(e,t){if(!e)return undefined;if(!t)return e;var n=new Date(e.valueOf()),r=n.getUTCDate(),i=n.getUTCMonth(),s=Math.abs(t),o,u;t=t>0?1:-1;if(s==1){u=t==-1?function(){return n.getUTCMonth()==i}:function(){return n.getUTCMonth()!=o},o=i+t,n.setUTCMonth(o);if(o<0||o>11)o=(o+12)%12}else{for(var a=0;a<s;a++)n=this.moveMonth(n,t);o=n.getUTCMonth(),n.setUTCDate(r),u=function(){return o!=n.getUTCMonth()}}while(u())n.setUTCDate(--r),n.setUTCMonth(o);return n},moveYear:function(e,t){return this.moveMonth(e,t*12)},dateWithinRange:function(e){return e>=this.o.startDate&&e<=this.o.endDate},keydown:function(e){if(this.picker.is(":not(:visible)")){e.keyCode==27&&this.show();return}var t=!1,n,r,s,o=this.focusDate||this.viewDate;switch(e.keyCode){case 27:this.focusDate?(this.focusDate=null,this.viewDate=this.dates.get(-1)||this.viewDate,this.fill()):this.hide(),e.preventDefault();break;case 37:case 39:if(!this.o.keyboardNavigation)break;n=e.keyCode==37?-1:1,e.ctrlKey?(r=this.moveYear(this.dates.get(-1)||i(),n),s=this.moveYear(o,n),this._trigger("changeYear",this.viewDate)):e.shiftKey?(r=this.moveMonth(this.dates.get(-1)||i(),n),s=this.moveMonth(o,n),this._trigger("changeMonth",this.viewDate)):(r=new Date(this.dates.get(-1)||i()),r.setUTCDate(r.getUTCDate()+n),s=new Date(o),s.setUTCDate(o.getUTCDate()+n)),this.dateWithinRange(r)&&(this.focusDate=this.viewDate=s,this.setValue(),this.fill(),e.preventDefault());break;case 38:case 40:if(!this.o.keyboardNavigation)break;n=e.keyCode==38?-1:1,e.ctrlKey?(r=this.moveYear(this.dates.get(-1)||i(),n),s=this.moveYear(o,n),this._trigger("changeYear",this.viewDate)):e.shiftKey?(r=this.moveMonth(this.dates.get(-1)||i(),n),s=this.moveMonth(o,n),this._trigger("changeMonth",this.viewDate)):(r=new Date(this.dates.get(-1)||i()),r.setUTCDate(r.getUTCDate()+n*7),s=new Date(o),s.setUTCDate(o.getUTCDate()+n*7)),this.dateWithinRange(r)&&(this.focusDate=this.viewDate=s,this.setValue(),this.fill(),e.preventDefault());break;case 32:break;case 13:o=this.focusDate||this.dates.get(-1)||this.viewDate,this._toggle_multidate(o),t=!0,this.focusDate=null,this.viewDate=this.dates.get(-1)||this.viewDate,this.setValue(),this.fill(),this.picker.is(":visible")&&(e.preventDefault(),this.o.autoclose&&this.hide());break;case 9:this.focusDate=null,this.viewDate=this.dates.get(-1)||this.viewDate,this.fill(),this.hide()}if(t){this.dates.length?this._trigger("changeDate"):this._trigger("clearDate");var u;this.isInput?u=this.element:this.component&&(u=this.element.find("input")),u&&u.change()}},showMode:function(e){e&&(this.viewMode=Math.max(this.o.minViewMode,Math.min(2,this.viewMode+e))),this.picker.find(">div").hide().filter(".ai1ec-datepicker-"+v.modes[this.viewMode].clsName).css("display","block"),this.updateNavArrows()}};var a=function(t,n){this.element=e(t),this.inputs=e.map(n.inputs,function(e){return e.jquery?e[0]:e}),delete n.inputs,e(this.inputs).datepicker(n).bind("changeDate",e.proxy(this.dateUpdated,this)),this.pickers=e.map(this.inputs,function(t){return e(t).data("datepicker")}),this.updateDates()};a.prototype={updateDates:function(){this.dates=e.map(this.pickers,function(e){return e.getUTCDate()}),this.updateRanges()},updateRanges:function(){var t=e.map(this.dates,function(e){return e.valueOf()});e.each(this.pickers,function(e,n){n.setRange(t)})},dateUpdated:function(t){if(this.updating)return;this.updating=!0;var n=e(t.target).data("datepicker"),r=n.getUTCDate(),i=e.inArray(t.target,this.inputs),s=this.inputs.length;if(i==-1)return;e.each(this.pickers,function(e,t){t.getUTCDate()||t.setUTCDate(r)});if(r<this.dates[i])while(i>=0&&r<this.dates[i])this.pickers[i--].setUTCDate(r);else if(r>this.dates[i])while(i<s&&r>this.dates[i])this.pickers[i++].setUTCDate(r);this.updateDates(),delete this.updating},remove:function(){e.map(this.pickers,function(e){e.remove()}),delete this.element.data().datepicker}};var c=e.fn.datepicker;e.fn.datepicker=function(t){var n=Array.apply(null,arguments);n.shift();var r;return this.each(function(){var i=e(this),s=i.data("datepicker"),o=typeof t=="object"&&t;if(!s){var c=f(this,"date"),p=e.extend({},h,c,o),d=l(p.language),v=e.extend({},h,d,c,o);if(i.is(".ai1ec-input-daterange")||v.inputs){var m={inputs:v.inputs||i.find("input").toArray()};i.data("datepicker",s=new a(this,e.extend(v,m)))}else i.data("datepicker",s=new u(this,v))}if(typeof t=="string"&&typeof s[t]=="function"){r=s[t].apply(s,n);if(r!==undefined)return!1}}),r!==undefined?r:this};var h=e.fn.datepicker.defaults={autoclose:!1,beforeShowDay:e.noop,calendarWeeks:!1,clearBtn:!1,daysOfWeekDisabled:[],endDate:Infinity,forceParse:!0,format:"mm/dd/yyyy",keyboardNavigation:!0,language:"en",minViewMode:0,multidate:!1,multidateSeparator:",",orientation:"auto",rtl:!1,startDate:-Infinity,startView:0,todayBtn:!1,todayHighlight:!1,weekStart:0},p=e.fn.datepicker.locale_opts=["format","rtl","weekStart"];e.fn.datepicker.Constructor=u;var d=e.fn.datepicker.dates={en:{days:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],daysShort:["Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun"],daysMin:["Su","Mo","Tu","We","Th","Fr","Sa","Su"],months:["January","February","March","April","May","June","July","August","September","October","November","December"],monthsShort:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],today:"Today",clear:"Clear"}},v={modes:[{clsName:"days",navFnc:"Month",navStep:1},{clsName:"months",navFnc:"FullYear",navStep:1},{clsName:"years",navFnc:"FullYear",navStep:10}],isLeapYear:function(e){return e%4===0&&e%100!==0||e%400===0},getDaysInMonth:function(e,t){return[31,v.isLeapYear(e)?29:28,31,30,31,30,31,31,30,31,30,31][t]},validParts:/dd?|DD?|mm?|MM?|yy(?:yy)?/g,nonpunctuation:/[^ -\/:-@\[\u3400-\u9fff-`{-~\t\n\r]+/g,parseFormat:function(e){var t=e.replace(this.validParts,"\0").split("\0"),n=e.match(this.validParts);if(!t||!t.length||!n||n.length===0)throw new Error("Invalid date format.");return{separators:t,parts:n}},parseDate:function(t,n,i){if(!t)return undefined;if(t instanceof Date)return t;typeof n=="string"&&(n=v.parseFormat(n));if(/^[\-+]\d+[dmwy]([\s,]+[\-+]\d+[dmwy])*$/.test(t)){var s=/([\-+]\d+)([dmwy])/,o=t.match(/([\-+]\d+)([dmwy])/g),a,f;t=new Date;for(var l=0;l<o.length;l++){a=s.exec(o[l]),f=parseInt(a[1]);switch(a[2]){case"d":t.setUTCDate(t.getUTCDate()+f);break;case"m":t=u.prototype.moveMonth.call(u.prototype,t,f);break;case"w":t.setUTCDate(t.getUTCDate()+f*7);break;case"y":t=u.prototype.moveYear.call(u.prototype,t,f)}}return r(t.getUTCFullYear(),t.getUTCMonth(),t.getUTCDate(),0,0,0)}var o=t&&t.match(this.nonpunctuation)||[],t=new Date,c={},h=["yyyy","yy","M","MM","m","mm","d","dd"],p={yyyy:function(e,t){return e.setUTCFullYear(t)},yy:function(e,t){return e.setUTCFullYear(2e3+t)},m:function(e,t){if(isNaN(e))return e;t-=1;while(t<0)t+=12;t%=12,e.setUTCMonth(t);while(e.getUTCMonth()!=t)e.setUTCDate(e.getUTCDate()-1);return e},d:function(e,t){return e.setUTCDate(t)}},m,g,a;p.M=p.MM=p.mm=p.m,p.dd=p.d,t=r(t.getFullYear(),t.getMonth(),t.getDate(),0,0,0);var y=n.parts.slice();o.length!=y.length&&(y=e(y).filter(function(t,n){return e.inArray(n,h)!==-1}).toArray());if(o.length==y.length){for(var l=0,b=y.length;l<b;l++){m=parseInt(o[l],10),a=y[l];if(isNaN(m))switch(a){case"MM":g=e(d[i].months).filter(function(){var e=this.slice(0,o[l].length),t=o[l].slice(0,e.length);return e==t}),m=e.inArray(g[0],d[i].months)+1;break;case"M":g=e(d[i].monthsShort).filter(function(){var e=this.slice(0,o[l].length),t=o[l].slice(0,e.length);return e==t}),m=e.inArray(g[0],d[i].monthsShort)+1}c[a]=m}for(var l=0,w,E;l<h.length;l++)E=h[l],E in c&&!isNaN(c[E])&&(w=new Date(t),p[E](w,c[E]),isNaN(w)||(t=w))}return t},formatDate:function(t,n,r){if(!t)return"";typeof n=="string"&&(n=v.parseFormat(n));var i={d:t.getUTCDate(),D:d[r].daysShort[t.getUTCDay()],DD:d[r].days[t.getUTCDay()],m:t.getUTCMonth()+1,M:d[r].monthsShort[t.getUTCMonth()],MM:d[r].months[t.getUTCMonth()],yy:t.getUTCFullYear().toString().substring(2),yyyy:t.getUTCFullYear()};i.dd=(i.d<10?"0":"")+i.d,i.mm=(i.m<10?"0":"")+i.m;var t=[],s=e.extend([],n.separators);for(var o=0,u=n.parts.length;o<=u;o++)s.length&&t.push(s.shift()),t.push(i[n.parts[o]]);return t.join("")},headTemplate:'<thead><tr><th class="ai1ec-prev"><i class="ai1ec-fa ai1ec-fa-arrow-left"></i></th><th colspan="5" class="ai1ec-datepicker-switch"></th><th class="ai1ec-next"><i class="ai1ec-fa ai1ec-fa-arrow-right"></i></th></tr></thead>',contTemplate:'<tbody><tr><td colspan="7"></td></tr></tbody>',footTemplate:'<tfoot><tr><th colspan="7" class="ai1ec-today"></th></tr><tr><th colspan="7" class="ai1ec-clear"></th></tr></tfoot>'};v.template='<div class="timely ai1ec-datepicker"><div class="ai1ec-datepicker-days"><table class=" ai1ec-table-condensed">'+v.headTemplate+"<tbody></tbody>"+v.footTemplate+"</table>"+"</div>"+'<div class="ai1ec-datepicker-months">'+'<table class="ai1ec-table-condensed">'+v.headTemplate+v.contTemplate+v.footTemplate+"</table>"+"</div>"+'<div class="ai1ec-datepicker-years">'+'<table class="ai1ec-table-condensed">'+v.headTemplate+v.contTemplate+v.footTemplate+"</table>"+"</div>"+"</div>",e.fn.datepicker.DPGlobal=v,e.fn.datepicker.noConflict=function(){return e.fn.datepicker=c,this},e(document).on("focus.datepicker.data-api click.datepicker.data-api",'[data-provide="datepicker"]',function(t){var n=e(this);if(n.data("datepicker"))return;t.preventDefault(),n.datepicker("show")}),e(function(){e('[data-provide="datepicker-inline"]').datepicker()});for(var m=2,g=arguments.length;m<g;m++)arguments[m].localize()});
+timely.define(
+	[
+		"jquery_timely",
+		"ai1ec_config",
+		"external_libs/locales/bootstrap-datepicker.bg",
+		"external_libs/locales/bootstrap-datepicker.br",
+		"external_libs/locales/bootstrap-datepicker.cs",
+		"external_libs/locales/bootstrap-datepicker.da",
+		"external_libs/locales/bootstrap-datepicker.de",
+		"external_libs/locales/bootstrap-datepicker.es",
+		"external_libs/locales/bootstrap-datepicker.fi",
+		"external_libs/locales/bootstrap-datepicker.fr",
+		"external_libs/locales/bootstrap-datepicker.id",
+		"external_libs/locales/bootstrap-datepicker.is",
+		"external_libs/locales/bootstrap-datepicker.it",
+		"external_libs/locales/bootstrap-datepicker.ja",
+		"external_libs/locales/bootstrap-datepicker.kr",
+		"external_libs/locales/bootstrap-datepicker.lt",
+		"external_libs/locales/bootstrap-datepicker.lv",
+		"external_libs/locales/bootstrap-datepicker.ms",
+		"external_libs/locales/bootstrap-datepicker.nb",
+		"external_libs/locales/bootstrap-datepicker.nl",
+		"external_libs/locales/bootstrap-datepicker.pl",
+		"external_libs/locales/bootstrap-datepicker.pt-BR",
+		"external_libs/locales/bootstrap-datepicker.pt",
+		"external_libs/locales/bootstrap-datepicker.ru",
+		"external_libs/locales/bootstrap-datepicker.sl",
+		"external_libs/locales/bootstrap-datepicker.sv",
+		"external_libs/locales/bootstrap-datepicker.th",
+		"external_libs/locales/bootstrap-datepicker.tr",
+		"external_libs/locales/bootstrap-datepicker.zh-CN",
+		"external_libs/locales/bootstrap-datepicker.zh-TW"
+	],
+	function(
+		$,
+		ai1ec_config
+	) {
+
+	var $window = $(window);
+
+	function UTCDate(){
+		return new Date(Date.UTC.apply(Date, arguments));
+	}
+	function UTCToday(){
+		var today = new Date();
+		return UTCDate(today.getFullYear(), today.getMonth(), today.getDate());
+	}
+	function alias(method){
+		return function(){
+			return this[method].apply(this, arguments);
+		}
+	}
+
+	var DateArray = (function(){
+		var extras = {
+			get: function(i){
+				return this.slice(i)[0];
+			},
+			contains: function(d){
+				// Array.indexOf is not cross-browser;
+				// $.inArray doesn't work with Dates
+				var val = d && d.valueOf();
+				for (var i=0, l=this.length; i<l; i++)
+					if (this[i].valueOf() === val)
+						return i;
+				return -1;
+			},
+			remove: function(i){
+				this.splice(i,1);
+			},
+			replace: function(new_array){
+				if (!new_array)
+					return;
+				if (!$.isArray(new_array))
+					new_array = [new_array];
+				this.clear();
+				this.push.apply(this, new_array);
+			},
+			clear: function(){
+				this.splice(0);
+			},
+			copy: function(){
+				var a = new DateArray();
+				a.replace(this);
+				return a;
+			}
+		};
+
+		return function(){
+			var a = [];
+			a.push.apply(a, arguments);
+			$.extend(a, extras);
+			return a;
+		}
+	})();
+
+
+	// Picker object
+
+	var Datepicker = function(element, options) {
+		this.dates = new DateArray();
+		this.viewDate = UTCToday();
+		this.focusDate = null;
+
+		this._process_options(options);
+
+		this.element = $(element);
+		this.isInline = false;
+		this.isInput = this.element.is('input');
+		this.component = this.element.is('.ai1ec-date') ? this.element.find('.ai1ec-input-group, .ai1ec-input-group-addon, .ai1ec-btn') : false;
+		this.hasInput = this.component && this.element.find('input').length;
+		if(this.component && this.component.length === 0)
+			this.component = false;
+
+		this.picker = $(DPGlobal.template);
+		this._buildEvents();
+		this._attachEvents();
+
+		if(this.isInline) {
+			this.picker.addClass('ai1ec-datepicker-inline').appendTo(this.element);
+		} else {
+			this.picker.addClass('ai1ec-datepicker-dropdown ai1ec-dropdown-menu');
+		}
+
+		if (this.o.rtl){
+			this.picker.addClass('ai1ec-datepicker-rtl');
+		}
+
+		this.viewMode = this.o.startView;
+
+		if (this.o.calendarWeeks)
+			this.picker.find('tfoot th.ai1ec-today')
+						.attr('colspan', function(i, val){
+							return parseInt(val) + 1;
+						});
+
+		this._allow_update = false;
+
+		this.setStartDate(this._o.startDate);
+		this.setEndDate(this._o.endDate);
+		this.setDaysOfWeekDisabled(this.o.daysOfWeekDisabled);
+
+		this.fillDow();
+		this.fillMonths();
+
+		this._allow_update = true;
+
+		this.update();
+		this.showMode();
+
+		if(this.isInline) {
+			this.show();
+		}
+	};
+
+	Datepicker.prototype = {
+		constructor: Datepicker,
+
+		_process_options: function(opts){
+			// Store raw options for reference
+			this._o = $.extend({}, this._o, opts);
+			// Processed options
+			var o = this.o = $.extend({}, this._o);
+
+			// Check if "de-DE" style date is available, if not language should
+			// fallback to 2 letter code eg "de"
+			var lang = o.language;
+			if (!dates[lang]) {
+				lang = lang.split('-')[0];
+				// ==========================
+				// = Timely edit 10-01-2014 =
+				// ==========================
+				if (!dates[lang]) {
+					lang = ai1ec_config.language;
+					if (!dates[lang])
+						lang = defaults.language;
+				}
+				// ===================
+				// = Timely edit end =
+				// ===================
+			}
+			o.language = lang;
+
+			switch(o.startView){
+				case 2:
+				case 'decade':
+					o.startView = 2;
+					break;
+				case 1:
+				case 'year':
+					o.startView = 1;
+					break;
+				default:
+					o.startView = 0;
+			}
+
+			switch (o.minViewMode) {
+				case 1:
+				case 'months':
+					o.minViewMode = 1;
+					break;
+				case 2:
+				case 'years':
+					o.minViewMode = 2;
+					break;
+				default:
+					o.minViewMode = 0;
+			}
+
+			o.startView = Math.max(o.startView, o.minViewMode);
+
+			// true, false, or Number > 0
+			if (o.multidate !== true){
+				o.multidate = Number(o.multidate) || false;
+				if (o.multidate !== false)
+					o.multidate = Math.max(0, o.multidate);
+				else
+					o.multidate = 1;
+			}
+			o.multidateSeparator = String(o.multidateSeparator);
+
+			o.weekStart %= 7;
+			o.weekEnd = ((o.weekStart + 6) % 7);
+
+			var format = DPGlobal.parseFormat(o.format);
+			if (o.startDate !== -Infinity) {
+				if (!!o.startDate) {
+					if (o.startDate instanceof Date)
+						o.startDate = this._local_to_utc(this._zero_time(o.startDate));
+					else
+						o.startDate = DPGlobal.parseDate(o.startDate, format, o.language);
+				} else {
+					o.startDate = -Infinity;
+				}
+			}
+			if (o.endDate !== Infinity) {
+				if (!!o.endDate) {
+					if (o.endDate instanceof Date)
+						o.endDate = this._local_to_utc(this._zero_time(o.endDate));
+					else
+						o.endDate = DPGlobal.parseDate(o.endDate, format, o.language);
+				} else {
+					o.endDate = Infinity;
+				}
+			}
+
+			o.daysOfWeekDisabled = o.daysOfWeekDisabled||[];
+			if (!$.isArray(o.daysOfWeekDisabled))
+				o.daysOfWeekDisabled = o.daysOfWeekDisabled.split(/[,\s]*/);
+			o.daysOfWeekDisabled = $.map(o.daysOfWeekDisabled, function (d) {
+				return parseInt(d, 10);
+			});
+
+			var plc = String(o.orientation).toLowerCase().split(/\s+/g),
+				_plc = o.orientation.toLowerCase();
+			plc = $.grep(plc, function(word){
+				return (/^auto|left|right|top|bottom$/).test(word);
+			});
+			o.orientation = {x: 'auto', y: 'auto'};
+			if (!_plc || _plc === 'auto')
+				; // no action
+			else if (plc.length === 1){
+				switch(plc[0]){
+					case 'top':
+					case 'bottom':
+						o.orientation.y = plc[0];
+						break;
+					case 'left':
+					case 'right':
+						o.orientation.x = plc[0];
+						break;
+				}
+			}
+			else {
+				_plc = $.grep(plc, function(word){
+					return (/^left|right$/).test(word);
+				});
+				o.orientation.x = _plc[0] || 'auto';
+
+				_plc = $.grep(plc, function(word){
+					return (/^top|bottom$/).test(word);
+				});
+				o.orientation.y = _plc[0] || 'auto';
+			}
+		},
+		_events: [],
+		_secondaryEvents: [],
+		_applyEvents: function(evs){
+			for (var i=0, el, ch, ev; i<evs.length; i++){
+				el = evs[i][0];
+				if (evs[i].length == 2){
+					ch = undefined;
+					ev = evs[i][1];
+				}
+				else if (evs[i].length == 3){
+					ch = evs[i][1];
+					ev = evs[i][2];
+				}
+				el.on(ev, ch);
+			}
+		},
+		_unapplyEvents: function(evs){
+			for (var i=0, el, ev, ch; i<evs.length; i++){
+				el = evs[i][0];
+				if (evs[i].length == 2){
+					ch = undefined;
+					ev = evs[i][1];
+				}
+				else if (evs[i].length == 3){
+					ch = evs[i][1];
+					ev = evs[i][2];
+				}
+				el.off(ev, ch);
+			}
+		},
+		_buildEvents: function(){
+			if (this.isInput) { // single input
+				this._events = [
+					[this.element, {
+						focus: $.proxy(this.show, this),
+						keyup: $.proxy(function(e){
+							if ($.inArray(e.keyCode, [27,37,39,38,40,32,13,9]) === -1)
+								this.update();
+						}, this),
+						keydown: $.proxy(this.keydown, this)
+					}]
+				];
+			}
+			else if (this.component && this.hasInput){ // component: input + button
+				this._events = [
+					// For components that are not readonly, allow keyboard nav
+					[this.element.find('input'), {
+						focus: $.proxy(this.show, this),
+						keyup: $.proxy(function(e){
+							if ($.inArray(e.keyCode, [27,37,39,38,40,32,13,9]) === -1)
+								this.update()
+						}, this),
+						keydown: $.proxy(this.keydown, this)
+					}],
+					[this.component, {
+						click: $.proxy(this.show, this)
+					}]
+				];
+			}
+			else if (this.element.is('div')) {  // inline datepicker
+				this.isInline = true;
+			}
+			else {
+				this._events = [
+					[this.element, {
+						click: $.proxy(this.show, this)
+					}]
+				];
+			}
+			this._events.push(
+				// Component: listen for blur on element descendants
+				[this.element, '*', {
+					blur: $.proxy(function(e){
+						this._focused_from = e.target;
+					}, this)
+				}],
+				// Input: listen for blur on element
+				[this.element, {
+					blur: $.proxy(function(e){
+						this._focused_from = e.target;
+					}, this)
+				}]
+			);
+
+			this._secondaryEvents = [
+				[this.picker, {
+					click: $.proxy(this.click, this)
+				}],
+				[$(window), {
+					resize: $.proxy(this.place, this)
+				}],
+				[$(document), {
+					'mousedown touchstart': $.proxy(function (e) {
+						// Clicked outside the datepicker, hide it
+						if (!(
+							this.element.is(e.target) ||
+							this.element.find(e.target).length ||
+							this.picker.is(e.target) ||
+							this.picker.find(e.target).length
+						)) {
+							this.hide();
+						}
+					}, this)
+				}]
+			];
+		},
+		_attachEvents: function(){
+			this._detachEvents();
+			this._applyEvents(this._events);
+		},
+		_detachEvents: function(){
+			this._unapplyEvents(this._events);
+		},
+		_attachSecondaryEvents: function(){
+			this._detachSecondaryEvents();
+			this._applyEvents(this._secondaryEvents);
+		},
+		_detachSecondaryEvents: function(){
+			this._unapplyEvents(this._secondaryEvents);
+		},
+		_trigger: function(event, altdate){
+			var date = altdate || this.dates.get(-1),
+				local_date = this._utc_to_local(date);
+
+			this.element.trigger({
+				type: event,
+				date: local_date,
+				dates: $.map(this.dates, this._utc_to_local),
+				format: $.proxy(function(ix, format){
+					if (arguments.length === 0){
+						ix = this.dates.length - 1;
+						format = this.o.format;
+					}
+					else if (typeof ix == 'string'){
+						format = ix;
+						ix = this.dates.length - 1;
+					}
+					format = format || this.o.format;
+					var date = this.dates.get(ix);
+					return DPGlobal.formatDate(date, format, this.o.language);
+				}, this)
+			});
+		},
+
+		show: function(e) {
+			if (!this.isInline)
+				this.picker.appendTo('body');
+			this.picker.show();
+			this.height = this.component ? this.component.outerHeight() : this.element.outerHeight();
+			this.place();
+			this._attachSecondaryEvents();
+			this._trigger('show');
+		},
+
+		hide: function(){
+			if(this.isInline) return;
+			if (!this.picker.is(':visible')) return;
+			this.focusDate = null;
+			this.picker.hide().detach();
+			this._detachSecondaryEvents();
+			this.viewMode = this.o.startView;
+			this.showMode();
+
+			if (
+				this.o.forceParse &&
+				(
+					this.isInput && this.element.val() ||
+					this.hasInput && this.element.find('input').val()
+				)
+			)
+				this.setValue();
+			this._trigger('hide');
+		},
+
+		remove: function() {
+			this.hide();
+			this._detachEvents();
+			this._detachSecondaryEvents();
+			this.picker.remove();
+			delete this.element.data().datepicker;
+			if (!this.isInput) {
+				delete this.element.data().date;
+			}
+		},
+
+		_utc_to_local: function(utc){
+			return utc && new Date(utc.getTime() + (utc.getTimezoneOffset()*60000));
+		},
+		_local_to_utc: function(local){
+			return local && new Date(local.getTime() - (local.getTimezoneOffset()*60000));
+		},
+		_zero_time: function(local){
+			return local && new Date(local.getFullYear(), local.getMonth(), local.getDate());
+		},
+		_zero_utc_time: function(utc){
+			return utc && new Date(Date.UTC(utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate()));
+		},
+
+		getDates: function(){
+			return $.map(this.dates, this._utc_to_local);
+		},
+
+		getUTCDates: function(){
+			return $.map(this.dates, function(d){ return new Date(d); });
+		},
+
+		getDate: function() {
+			return this._utc_to_local(this.getUTCDate());
+		},
+
+		getUTCDate: function() {
+			return new Date(this.dates.get(-1));
+		},
+
+		setDates: function() {
+			this.update.apply(this, arguments);
+			this._trigger('changeDate');
+			this.setValue();
+		},
+
+		setUTCDates: function() {
+			this.update.apply(this, $.map(arguments, this._utc_to_local));
+			this._trigger('changeDate');
+			this.setValue();
+		},
+
+		setDate: alias('setDates'),
+		setUTCDate: alias('setUTCDates'),
+
+		setValue: function() {
+			var formatted = this.getFormattedDate();
+			if (!this.isInput) {
+				if (this.component){
+					this.element.find('input').val(formatted).change();
+				}
+			} else {
+				this.element.val(formatted).change();
+			}
+		},
+
+		getFormattedDate: function(format) {
+			if (format === undefined)
+				format = this.o.format;
+
+			var lang = this.o.language;
+			return $.map(this.dates, function(d){
+				return DPGlobal.formatDate(d, format, lang);
+			}).join(this.o.multidateSeparator);
+		},
+
+		setStartDate: function(startDate){
+			this._process_options({startDate: startDate});
+			this.update();
+			this.updateNavArrows();
+		},
+
+		setEndDate: function(endDate){
+			this._process_options({endDate: endDate});
+			this.update();
+			this.updateNavArrows();
+		},
+
+		setDaysOfWeekDisabled: function(daysOfWeekDisabled){
+			this._process_options({daysOfWeekDisabled: daysOfWeekDisabled});
+			this.update();
+			this.updateNavArrows();
+		},
+
+		place: function(){
+						if(this.isInline) return;
+			var calendarWidth = this.picker.outerWidth(),
+				calendarHeight = this.picker.outerHeight(),
+				visualPadding = 10,
+				windowWidth = $window.width(),
+				windowHeight = $window.height(),
+				scrollTop = $window.scrollTop();
+
+			var zIndex = parseInt(this.element.parents().filter(function() {
+							return $(this).css('z-index') != 'auto';
+						}).first().css('z-index'))+10;
+			var offset = this.component ? this.component.parent().offset() : this.element.offset();
+			var height = this.component ? this.component.outerHeight(true) : this.element.outerHeight(false);
+			var width = this.component ? this.component.outerWidth(true) : this.element.outerWidth(false);
+			var left = offset.left,
+				top = offset.top;
+
+			this.picker.removeClass(
+				'ai1ec-datepicker-orient-top ai1ec-datepicker-orient-bottom '+
+				'ai1ec-datepicker-orient-right ai1ec-datepicker-orient-left'
+			);
+
+			if (this.o.orientation.x !== 'auto') {
+				this.picker.addClass('ai1ec-datepicker-orient-' + this.o.orientation.x);
+				if (this.o.orientation.x === 'right')
+					left -= calendarWidth - width;
+			}
+			// auto x orientation is best-placement: if it crosses a window
+			// edge, fudge it sideways
+			else {
+				// Default to left
+				this.picker.addClass('ai1ec-datepicker-orient-left');
+				if (offset.left < 0)
+					left -= offset.left - visualPadding;
+				else if (offset.left + calendarWidth > windowWidth)
+					left = windowWidth - calendarWidth - visualPadding;
+			}
+
+			// auto y orientation is best-situation: top or bottom, no fudging,
+			// decision based on which shows more of the calendar
+			var yorient = this.o.orientation.y,
+				top_overflow, bottom_overflow;
+			if (yorient === 'auto') {
+				top_overflow = -scrollTop + offset.top - calendarHeight;
+				bottom_overflow = scrollTop + windowHeight - (offset.top + height + calendarHeight);
+				if (Math.max(top_overflow, bottom_overflow) === bottom_overflow)
+					yorient = 'top';
+				else
+					yorient = 'bottom';
+			}
+			this.picker.addClass('ai1ec-datepicker-orient-' + yorient);
+			if (yorient === 'top')
+				top += height;
+			else
+				top -= calendarHeight + parseInt(this.picker.css('padding-top'));
+
+			this.picker.css({
+				top: top,
+				left: left,
+				zIndex: zIndex
+			});
+		},
+
+		_allow_update: true,
+		update: function(){
+			if (!this._allow_update) return;
+
+			var oldDates = this.dates.copy(),
+				dates = [],
+				fromArgs = false;
+			if(arguments.length) {
+				$.each(arguments, $.proxy(function(i, date){
+					if (date instanceof Date)
+						date = this._local_to_utc(date);
+					dates.push(date);
+				}, this));
+				fromArgs = true;
+			} else {
+				dates = this.isInput
+						? this.element.val()
+						: this.element.data('date') || this.element.find('input').val();
+				if (dates && this.o.multidate)
+					dates = dates.split(this.o.multidateSeparator);
+				else
+					dates = [dates];
+				delete this.element.data().date;
+			}
+
+			dates = $.map(dates, $.proxy(function(date){
+				return DPGlobal.parseDate(date, this.o.format, this.o.language);
+			}, this));
+			dates = $.grep(dates, $.proxy(function(date){
+				return (
+					date < this.o.startDate ||
+					date > this.o.endDate ||
+					!date
+				);
+			}, this), true);
+			this.dates.replace(dates);
+
+			if (this.dates.length)
+				this.viewDate = new Date(this.dates.get(-1));
+			else if (this.viewDate < this.o.startDate)
+				this.viewDate = new Date(this.o.startDate);
+			else if (this.viewDate > this.o.endDate)
+				this.viewDate = new Date(this.o.endDate);
+
+			if (fromArgs) {
+				// setting date by clicking
+				this.setValue();
+			} else if (dates.length) {
+				// setting date by typing
+				if (String(oldDates) !== String(this.dates))
+					this._trigger('changeDate');
+			}
+			if (!this.dates.length && oldDates.length)
+				this._trigger('clearDate');
+
+			this.fill();
+		},
+
+		fillDow: function(){
+			var dowCnt = this.o.weekStart,
+			html = '<tr>';
+			if(this.o.calendarWeeks){
+				var cell = '<th class="ai1ec-cw">&nbsp;</th>';
+				html += cell;
+				this.picker.find('.ai1ec-datepicker-days thead tr:first-child').prepend(cell);
+			}
+			while (dowCnt < this.o.weekStart + 7) {
+				html += '<th class="ai1ec-dow">'+dates[this.o.language].daysMin[(dowCnt++)%7]+'</th>';
+			}
+			html += '</tr>';
+			this.picker.find('.ai1ec-datepicker-days thead').append(html);
+		},
+
+		fillMonths: function(){
+			var html = '',
+			i = 0;
+			while (i < 12) {
+				html += '<span class="ai1ec-month">'+dates[this.o.language].monthsShort[i++]+'</span>';
+			}
+			this.picker.find('.ai1ec-datepicker-months td').html(html);
+		},
+
+		setRange: function(range){
+			if (!range || !range.length)
+				delete this.range;
+			else
+				this.range = $.map(range, function(d){ return d.valueOf(); });
+			this.fill();
+		},
+
+		getClassNames: function(date){
+			var cls = [],
+				year = this.viewDate.getUTCFullYear(),
+				month = this.viewDate.getUTCMonth(),
+				today = new Date();
+			if (date.getUTCFullYear() < year || (date.getUTCFullYear() == year && date.getUTCMonth() < month)) {
+				cls.push('ai1ec-old');
+			} else if (date.getUTCFullYear() > year || (date.getUTCFullYear() == year && date.getUTCMonth() > month)) {
+				cls.push('ai1ec-new');
+			}
+			if (this.focusDate && date.valueOf() === this.focusDate.valueOf())
+				cls.push('ai1ec-focused');
+			// Compare internal UTC date with local today, not UTC today
+			if (this.o.todayHighlight &&
+				date.getUTCFullYear() == today.getFullYear() &&
+				date.getUTCMonth() == today.getMonth() &&
+				date.getUTCDate() == today.getDate()) {
+				cls.push('ai1ec-today');
+			}
+			if (this.dates.contains(date) !== -1)
+				cls.push('ai1ec-active');
+			if (date.valueOf() < this.o.startDate || date.valueOf() > this.o.endDate ||
+				$.inArray(date.getUTCDay(), this.o.daysOfWeekDisabled) !== -1) {
+				cls.push('ai1ec-disabled');
+			}
+			if (this.range){
+				if (date > this.range[0] && date < this.range[this.range.length-1]){
+					cls.push('ai1ec-range');
+				}
+				if ($.inArray(date.valueOf(), this.range) != -1){
+					cls.push('ai1ec-selected');
+				}
+			}
+			return cls;
+		},
+
+		fill: function() {
+			var d = new Date(this.viewDate),
+				year = d.getUTCFullYear(),
+				month = d.getUTCMonth(),
+				startYear = this.o.startDate !== -Infinity ? this.o.startDate.getUTCFullYear() : -Infinity,
+				startMonth = this.o.startDate !== -Infinity ? this.o.startDate.getUTCMonth() : -Infinity,
+				endYear = this.o.endDate !== Infinity ? this.o.endDate.getUTCFullYear() : Infinity,
+				endMonth = this.o.endDate !== Infinity ? this.o.endDate.getUTCMonth() : Infinity,
+				tooltip, currentYear;
+			this.picker.find('.ai1ec-datepicker-days thead th.ai1ec-datepicker-switch')
+						.text(dates[this.o.language].months[month]+' '+year);
+			this.picker.find('tfoot th.ai1ec-today')
+						.text(dates[this.o.language].today)
+						.toggle(this.o.todayBtn !== false);
+			this.picker.find('tfoot th.ai1ec-clear')
+						.text(dates[this.o.language].clear)
+						.toggle(this.o.clearBtn !== false);
+			this.updateNavArrows();
+			this.fillMonths();
+			var prevMonth = UTCDate(year, month-1, 28),
+				day = DPGlobal.getDaysInMonth(prevMonth.getUTCFullYear(), prevMonth.getUTCMonth());
+			prevMonth.setUTCDate(day);
+			prevMonth.setUTCDate(day - (prevMonth.getUTCDay() - this.o.weekStart + 7)%7);
+			var nextMonth = new Date(prevMonth);
+			nextMonth.setUTCDate(nextMonth.getUTCDate() + 42);
+			nextMonth = nextMonth.valueOf();
+			var html = [];
+			var clsName;
+			while(prevMonth.valueOf() < nextMonth) {
+				if (prevMonth.getUTCDay() == this.o.weekStart) {
+					html.push('<tr>');
+					if(this.o.calendarWeeks){
+						// ISO 8601: First week contains first thursday.
+						// ISO also states week starts on Monday, but we can be more abstract here.
+						var
+							// Start of current week: based on weekstart/current date
+							ws = new Date(+prevMonth + (this.o.weekStart - prevMonth.getUTCDay() - 7) % 7 * 864e5),
+							// Thursday of this week
+							th = new Date(+ws + (7 + 4 - ws.getUTCDay()) % 7 * 864e5),
+							// First Thursday of year, year from thursday
+							yth = new Date(+(yth = UTCDate(th.getUTCFullYear(), 0, 1)) + (7 + 4 - yth.getUTCDay())%7*864e5),
+							// Calendar week: ms between thursdays, div ms per day, div 7 days
+							calWeek =  (th - yth) / 864e5 / 7 + 1;
+						html.push('<td class="ai1ec-cw">'+ calWeek +'</td>');
+
+					}
+				}
+				clsName = this.getClassNames(prevMonth);
+				clsName.push('ai1ec-day');
+
+				if (this.o.beforeShowDay !== $.noop){
+					var before = this.o.beforeShowDay(this._utc_to_local(prevMonth));
+					if (before === undefined)
+						before = {};
+					else if (typeof(before) === 'boolean')
+						before = {enabled: before};
+					else if (typeof(before) === 'string')
+						before = {classes: before};
+					if (before.enabled === false)
+						clsName.push('ai1ec-disabled');
+					if (before.classes)
+						clsName = clsName.concat(before.classes.split(/\s+/));
+					if (before.tooltip)
+						tooltip = before.tooltip;
+				}
+
+				clsName = $.unique(clsName);
+				html.push('<td class="'+clsName.join(' ')+'"' + (tooltip ? ' title="'+tooltip+'"' : '') + '>'+prevMonth.getUTCDate() + '</td>');
+				if (prevMonth.getUTCDay() == this.o.weekEnd) {
+					html.push('</tr>');
+				}
+				prevMonth.setUTCDate(prevMonth.getUTCDate()+1);
+			}
+			this.picker.find('.ai1ec-datepicker-days tbody').empty().append(html.join(''));
+
+			var months = this.picker.find('.ai1ec-datepicker-months')
+						.find('th:eq(1)')
+							.text(year)
+							.end()
+						.find('span').removeClass('ai1ec-active');
+
+			$.each(this.dates, function(i, d){
+				if (d.getUTCFullYear() == year)
+					months.eq(d.getUTCMonth()).addClass('ai1ec-active');
+			});
+
+			if (year < startYear || year > endYear) {
+				months.addClass('ai1ec-disabled');
+			}
+			if (year == startYear) {
+				months.slice(0, startMonth).addClass('ai1ec-disabled');
+			}
+			if (year == endYear) {
+				months.slice(endMonth+1).addClass('ai1ec-disabled');
+			}
+
+			html = '';
+			year = parseInt(year/10, 10) * 10;
+			var yearCont = this.picker.find('.ai1ec-datepicker-years')
+								.find('th:eq(1)')
+									.text(year + '-' + (year + 9))
+									.end()
+								.find('td');
+			year -= 1;
+			var years = $.map(this.dates, function(d){ return d.getUTCFullYear(); }),
+				classes;
+			for (var i = -1; i < 11; i++) {
+				classes = ['ai1ec-year'];
+				if (i === -1)
+					classes.push('ai1ec-old');
+				else if (i === 10)
+					classes.push('ai1ec-new');
+				if ($.inArray(year, years) !== -1)
+					classes.push('ai1ec-active');
+				if (year < startYear || year > endYear)
+					classes.push('ai1ec-disabled');
+				html += '<span class="' + classes.join(' ') + '">'+year+'</span>';
+				year += 1;
+			}
+			yearCont.html(html);
+		},
+
+		updateNavArrows: function() {
+			if (!this._allow_update) return;
+
+			var d = new Date(this.viewDate),
+				year = d.getUTCFullYear(),
+				month = d.getUTCMonth();
+			switch (this.viewMode) {
+				case 0:
+					if (this.o.startDate !== -Infinity && year <= this.o.startDate.getUTCFullYear() && month <= this.o.startDate.getUTCMonth()) {
+						this.picker.find('.ai1ec-prev').css({visibility: 'hidden'});
+					} else {
+						this.picker.find('.ai1ec-prev').css({visibility: 'visible'});
+					}
+					if (this.o.endDate !== Infinity && year >= this.o.endDate.getUTCFullYear() && month >= this.o.endDate.getUTCMonth()) {
+						this.picker.find('.ai1ec-next').css({visibility: 'hidden'});
+					} else {
+						this.picker.find('.ai1ec-next').css({visibility: 'visible'});
+					}
+					break;
+				case 1:
+				case 2:
+					if (this.o.startDate !== -Infinity && year <= this.o.startDate.getUTCFullYear()) {
+						this.picker.find('.ai1ec-prev').css({visibility: 'hidden'});
+					} else {
+						this.picker.find('.ai1ec-prev').css({visibility: 'visible'});
+					}
+					if (this.o.endDate !== Infinity && year >= this.o.endDate.getUTCFullYear()) {
+						this.picker.find('.ai1ec-next').css({visibility: 'hidden'});
+					} else {
+						this.picker.find('.ai1ec-next').css({visibility: 'visible'});
+					}
+					break;
+			}
+		},
+
+		click: function(e) {
+			e.preventDefault();
+			var target = $(e.target).closest('span, td, th'),
+				year, month, day;
+			if (target.length == 1) {
+				switch(target[0].nodeName.toLowerCase()) {
+					case 'th':
+						switch(target[0].className) {
+							case 'ai1ec-datepicker-switch':
+								this.showMode(1);
+								break;
+							case 'ai1ec-prev':
+							case 'ai1ec-next':
+								var dir = DPGlobal.modes[this.viewMode].navStep * (target[0].className == 'ai1ec-prev' ? -1 : 1);
+								switch(this.viewMode){
+									case 0:
+										this.viewDate = this.moveMonth(this.viewDate, dir);
+										this._trigger('changeMonth', this.viewDate);
+										break;
+									case 1:
+									case 2:
+										this.viewDate = this.moveYear(this.viewDate, dir);
+										if (this.viewMode === 1)
+											this._trigger('changeYear', this.viewDate);
+										break;
+								}
+								this.fill();
+								break;
+							case 'ai1ec-today':
+								var date = new Date();
+								date = UTCDate(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+
+								this.showMode(-2);
+								var which = this.o.todayBtn == 'linked' ? null : 'view';
+								this._setDate(date, which);
+								break;
+							case 'ai1ec-clear':
+								var element;
+								if (this.isInput)
+									element = this.element;
+								else if (this.component)
+									element = this.element.find('input');
+								if (element)
+									element.val("").change();
+								this.update();
+								this._trigger('changeDate');
+								if (this.o.autoclose)
+									this.hide();
+								break;
+						}
+						break;
+					case 'span':
+						if (!target.is('.ai1ec-disabled')) {
+							this.viewDate.setUTCDate(1);
+							if (target.is('.ai1ec-month')) {
+								day = 1;
+								month = target.parent().find('span').index(target);
+								year = this.viewDate.getUTCFullYear();
+								this.viewDate.setUTCMonth(month);
+								this._trigger('changeMonth', this.viewDate);
+								if (this.o.minViewMode === 1) {
+									this._setDate(UTCDate(year, month, day));
+								}
+							} else {
+								day = 1;
+								month = 0;
+								year = parseInt(target.text(), 10)||0;
+								this.viewDate.setUTCFullYear(year);
+								this._trigger('changeYear', this.viewDate);
+								if (this.o.minViewMode === 2) {
+									this._setDate(UTCDate(year, month, day));
+								}
+							}
+							this.showMode(-1);
+							this.fill();
+						}
+						break;
+					case 'td':
+						if (target.is('.ai1ec-day') && !target.is('.ai1ec-disabled')){
+							day = parseInt(target.text(), 10)||1;
+							year = this.viewDate.getUTCFullYear();
+							month = this.viewDate.getUTCMonth();
+							if (target.is('.ai1ec-old')) {
+								if (month === 0) {
+									month = 11;
+									year -= 1;
+								} else {
+									month -= 1;
+								}
+							} else if (target.is('.ai1ec-new')) {
+								if (month == 11) {
+									month = 0;
+									year += 1;
+								} else {
+									month += 1;
+								}
+							}
+							this._setDate(UTCDate(year, month, day));
+						}
+						break;
+				}
+			}
+			if (this.picker.is(':visible') && this._focused_from){
+				$(this._focused_from).focus();
+			}
+			delete this._focused_from;
+		},
+
+		_toggle_multidate: function( date ) {
+			var ix = this.dates.contains(date);
+			if (!date){
+				this.dates.clear();
+			}
+			else if (ix !== -1){
+				this.dates.remove(ix);
+			}
+			else{
+				this.dates.push(date);
+			}
+			if (typeof this.o.multidate == 'number')
+				while (this.dates.length > this.o.multidate)
+					this.dates.remove(0);
+		},
+
+		_setDate: function(date, which){
+			if (!which || which == 'date')
+				this._toggle_multidate(date && new Date(date));
+			if (!which || which  == 'view')
+				this.viewDate = date && new Date(date);
+
+			this.fill();
+			this.setValue();
+			this._trigger('changeDate');
+			var element;
+			if (this.isInput) {
+				element = this.element;
+			} else if (this.component){
+				element = this.element.find('input');
+			}
+			if (element) {
+				element.change();
+			}
+			if (this.o.autoclose && (!which || which == 'date')) {
+				this.hide();
+			}
+		},
+
+		moveMonth: function(date, dir){
+			if (!date) return undefined;
+			if (!dir) return date;
+			var new_date = new Date(date.valueOf()),
+				day = new_date.getUTCDate(),
+				month = new_date.getUTCMonth(),
+				mag = Math.abs(dir),
+				new_month, test;
+			dir = dir > 0 ? 1 : -1;
+			if (mag == 1){
+				test = dir == -1
+					// If going back one month, make sure month is not current month
+					// (eg, Mar 31 -> Feb 31 == Feb 28, not Mar 02)
+					? function(){ return new_date.getUTCMonth() == month; }
+					// If going forward one month, make sure month is as expected
+					// (eg, Jan 31 -> Feb 31 == Feb 28, not Mar 02)
+					: function(){ return new_date.getUTCMonth() != new_month; };
+				new_month = month + dir;
+				new_date.setUTCMonth(new_month);
+				// Dec -> Jan (12) or Jan -> Dec (-1) -- limit expected date to 0-11
+				if (new_month < 0 || new_month > 11)
+					new_month = (new_month + 12) % 12;
+			} else {
+				// For magnitudes >1, move one month at a time...
+				for (var i=0; i<mag; i++)
+					// ...which might decrease the day (eg, Jan 31 to Feb 28, etc)...
+					new_date = this.moveMonth(new_date, dir);
+				// ...then reset the day, keeping it in the new month
+				new_month = new_date.getUTCMonth();
+				new_date.setUTCDate(day);
+				test = function(){ return new_month != new_date.getUTCMonth(); };
+			}
+			// Common date-resetting loop -- if date is beyond end of month, make it
+			// end of month
+			while (test()){
+				new_date.setUTCDate(--day);
+				new_date.setUTCMonth(new_month);
+			}
+			return new_date;
+		},
+
+		moveYear: function(date, dir){
+			return this.moveMonth(date, dir*12);
+		},
+
+		dateWithinRange: function(date){
+			return date >= this.o.startDate && date <= this.o.endDate;
+		},
+
+		keydown: function(e){
+			if (this.picker.is(':not(:visible)')){
+				if (e.keyCode == 27) // allow escape to hide and re-show picker
+					this.show();
+				return;
+			}
+			var dateChanged = false,
+				dir, newDate, newViewDate,
+				focusDate = this.focusDate || this.viewDate;
+			switch(e.keyCode){
+				case 27: // escape
+					if (this.focusDate){
+						this.focusDate = null;
+						this.viewDate = this.dates.get(-1) || this.viewDate;
+						this.fill();
+					}
+					else
+						this.hide();
+					e.preventDefault();
+					break;
+				case 37: // left
+				case 39: // right
+					if (!this.o.keyboardNavigation) break;
+					dir = e.keyCode == 37 ? -1 : 1;
+					if (e.ctrlKey){
+						newDate = this.moveYear(this.dates.get(-1) || UTCToday(), dir);
+						newViewDate = this.moveYear(focusDate, dir);
+						this._trigger('changeYear', this.viewDate);
+					} else if (e.shiftKey){
+						newDate = this.moveMonth(this.dates.get(-1) || UTCToday(), dir);
+						newViewDate = this.moveMonth(focusDate, dir);
+						this._trigger('changeMonth', this.viewDate);
+					} else {
+						newDate = new Date(this.dates.get(-1) || UTCToday());
+						newDate.setUTCDate(newDate.getUTCDate() + dir);
+						newViewDate = new Date(focusDate);
+						newViewDate.setUTCDate(focusDate.getUTCDate() + dir);
+					}
+					if (this.dateWithinRange(newDate)){
+						this.focusDate = this.viewDate = newViewDate;
+						this.setValue();
+						this.fill();
+						e.preventDefault();
+					}
+					break;
+				case 38: // up
+				case 40: // down
+					if (!this.o.keyboardNavigation) break;
+					dir = e.keyCode == 38 ? -1 : 1;
+					if (e.ctrlKey){
+						newDate = this.moveYear(this.dates.get(-1) || UTCToday(), dir);
+						newViewDate = this.moveYear(focusDate, dir);
+						this._trigger('changeYear', this.viewDate);
+					} else if (e.shiftKey){
+						newDate = this.moveMonth(this.dates.get(-1) || UTCToday(), dir);
+						newViewDate = this.moveMonth(focusDate, dir);
+						this._trigger('changeMonth', this.viewDate);
+					} else {
+						newDate = new Date(this.dates.get(-1) || UTCToday());
+						newDate.setUTCDate(newDate.getUTCDate() + dir * 7);
+						newViewDate = new Date(focusDate);
+						newViewDate.setUTCDate(focusDate.getUTCDate() + dir * 7);
+					}
+					if (this.dateWithinRange(newDate)){
+						this.focusDate = this.viewDate = newViewDate;
+						this.setValue();
+						this.fill();
+						e.preventDefault();
+					}
+					break;
+				case 32: // spacebar
+					// Spacebar is used in manually typing dates in some formats.
+					// As such, its behavior should not be hijacked.
+					break;
+				case 13: // enter
+					focusDate = this.focusDate || this.dates.get(-1) || this.viewDate;
+					this._toggle_multidate(focusDate);
+					dateChanged = true;
+					this.focusDate = null;
+					this.viewDate = this.dates.get(-1) || this.viewDate;
+					this.setValue();
+					this.fill();
+					if (this.picker.is(':visible')){
+						e.preventDefault();
+						if (this.o.autoclose)
+							this.hide();
+					}
+					break;
+				case 9: // tab
+					this.focusDate = null;
+					this.viewDate = this.dates.get(-1) || this.viewDate;
+					this.fill();
+					this.hide();
+					break;
+			}
+			if (dateChanged){
+				if (this.dates.length)
+					this._trigger('changeDate');
+				else
+					this._trigger('clearDate');
+				var element;
+				if (this.isInput) {
+					element = this.element;
+				} else if (this.component){
+					element = this.element.find('input');
+				}
+				if (element) {
+					element.change();
+				}
+			}
+		},
+
+		showMode: function(dir) {
+			if (dir) {
+				this.viewMode = Math.max(this.o.minViewMode, Math.min(2, this.viewMode + dir));
+			}
+			/*
+				vitalets: fixing bug of very special conditions:
+				jquery 1.7.1 + webkit + show inline datepicker in bootstrap popover.
+				Method show() does not set display css correctly and datepicker is not shown.
+				Changed to .css('display', 'block') solve the problem.
+				See https://github.com/vitalets/x-editable/issues/37
+
+				In jquery 1.7.2+ everything works fine.
+			*/
+			//this.picker.find('>div').hide().filter('.datepicker-'+DPGlobal.modes[this.viewMode].clsName).show();
+			this.picker.find('>div').hide().filter('.ai1ec-datepicker-'+DPGlobal.modes[this.viewMode].clsName).css('display', 'block');
+			this.updateNavArrows();
+		}
+	};
+
+	var DateRangePicker = function(element, options){
+		this.element = $(element);
+		this.inputs = $.map(options.inputs, function(i){ return i.jquery ? i[0] : i; });
+		delete options.inputs;
+
+		$(this.inputs)
+			.datepicker(options)
+			.bind('changeDate', $.proxy(this.dateUpdated, this));
+
+		this.pickers = $.map(this.inputs, function(i){ return $(i).data('datepicker'); });
+		this.updateDates();
+	};
+	DateRangePicker.prototype = {
+		updateDates: function(){
+			this.dates = $.map(this.pickers, function(i){ return i.getUTCDate(); });
+			this.updateRanges();
+		},
+		updateRanges: function(){
+			var range = $.map(this.dates, function(d){ return d.valueOf(); });
+			$.each(this.pickers, function(i, p){
+				p.setRange(range);
+			});
+		},
+		dateUpdated: function(e){
+			// `this.updating` is a workaround for preventing infinite recursion
+			// between `changeDate` triggering and `setUTCDate` calling.  Until
+			// there is a better mechanism.
+			if (this.updating)
+				return;
+			this.updating = true;
+
+			var dp = $(e.target).data('datepicker'),
+				new_date = dp.getUTCDate(),
+				i = $.inArray(e.target, this.inputs),
+				l = this.inputs.length;
+			if (i == -1) return;
+
+			$.each(this.pickers, function(i, p){
+				if (!p.getUTCDate())
+					p.setUTCDate(new_date);
+			});
+
+			if (new_date < this.dates[i]){
+				// Date being moved earlier/left
+				while (i>=0 && new_date < this.dates[i]){
+					this.pickers[i--].setUTCDate(new_date);
+				}
+			}
+			else if (new_date > this.dates[i]){
+				// Date being moved later/right
+				while (i<l && new_date > this.dates[i]){
+					this.pickers[i++].setUTCDate(new_date);
+				}
+			}
+			this.updateDates();
+
+			delete this.updating;
+		},
+		remove: function(){
+			$.map(this.pickers, function(p){ p.remove(); });
+			delete this.element.data().datepicker;
+		}
+	};
+
+	function opts_from_el(el, prefix){
+		// Derive options from element data-attrs
+		var data = $(el).data(),
+			out = {}, inkey,
+			replace = new RegExp('^' + prefix.toLowerCase() + '([A-Z])'),
+			prefix = new RegExp('^' + prefix.toLowerCase());
+		for (var key in data)
+			if (prefix.test(key)){
+				inkey = key.replace(replace, function(_,a){ return a.toLowerCase(); });
+				out[inkey] = data[key];
+			}
+		return out;
+	}
+
+	function opts_from_locale(lang){
+		// Derive options from locale plugins
+		var out = {};
+		// Check if "de-DE" style date is available, if not language should
+		// fallback to 2 letter code eg "de"
+		if (!dates[lang]) {
+			lang = lang.split('-')[0];
+			if (!dates[lang])
+				return;
+		}
+		var d = dates[lang];
+		$.each(locale_opts, function(i,k){
+			if (k in d)
+				out[k] = d[k];
+		});
+		return out;
+	}
+
+	var old = $.fn.datepicker;
+	$.fn.datepicker = function ( option ) {
+		var args = Array.apply(null, arguments);
+		args.shift();
+		var internal_return;
+		this.each(function () {
+			var $this = $(this),
+				data = $this.data('datepicker'),
+				options = typeof option == 'object' && option;
+			if (!data) {
+				var elopts = opts_from_el(this, 'date'),
+					// Preliminary otions
+					xopts = $.extend({}, defaults, elopts, options),
+					locopts = opts_from_locale(xopts.language),
+					// Options priority: js args, data-attrs, locales, defaults
+					opts = $.extend({}, defaults, locopts, elopts, options);
+				if ($this.is('.ai1ec-input-daterange') || opts.inputs){
+					var ropts = {
+						inputs: opts.inputs || $this.find('input').toArray()
+					};
+					$this.data('datepicker', (data = new DateRangePicker(this, $.extend(opts, ropts))));
+				}
+				else{
+					$this.data('datepicker', (data = new Datepicker(this, opts)));
+				}
+			}
+			if (typeof option == 'string' && typeof data[option] == 'function') {
+				internal_return = data[option].apply(data, args);
+				if (internal_return !== undefined)
+					return false;
+			}
+		});
+		if (internal_return !== undefined)
+			return internal_return;
+		else
+			return this;
+	};
+
+	var defaults = $.fn.datepicker.defaults = {
+		autoclose: false,
+		beforeShowDay: $.noop,
+		calendarWeeks: false,
+		clearBtn: false,
+		daysOfWeekDisabled: [],
+		endDate: Infinity,
+		forceParse: true,
+		format: 'mm/dd/yyyy',
+		keyboardNavigation: true,
+		language: 'en',
+		minViewMode: 0,
+		multidate: false,
+		multidateSeparator: ',',
+		orientation: "auto",
+		rtl: false,
+		startDate: -Infinity,
+		startView: 0,
+		todayBtn: false,
+		todayHighlight: false,
+		weekStart: 0
+	};
+	var locale_opts = $.fn.datepicker.locale_opts = [
+		'format',
+		'rtl',
+		'weekStart'
+	];
+	$.fn.datepicker.Constructor = Datepicker;
+	var dates = $.fn.datepicker.dates = {
+		en: {
+			days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+			daysShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+			daysMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+			months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+			monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+			today: "Today",
+			clear: "Clear"
+		}
+	};
+
+	var DPGlobal = {
+		modes: [
+			{
+				clsName: 'days',
+				navFnc: 'Month',
+				navStep: 1
+			},
+			{
+				clsName: 'months',
+				navFnc: 'FullYear',
+				navStep: 1
+			},
+			{
+				clsName: 'years',
+				navFnc: 'FullYear',
+				navStep: 10
+		}],
+		isLeapYear: function (year) {
+			return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0));
+		},
+		getDaysInMonth: function (year, month) {
+			return [31, (DPGlobal.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
+		},
+		validParts: /dd?|DD?|mm?|MM?|yy(?:yy)?/g,
+		nonpunctuation: /[^ -\/:-@\[\u3400-\u9fff-`{-~\t\n\r]+/g,
+		parseFormat: function(format){
+			// IE treats \0 as a string end in inputs (truncating the value),
+			// so it's a bad format delimiter, anyway
+			var separators = format.replace(this.validParts, '\0').split('\0'),
+				parts = format.match(this.validParts);
+			if (!separators || !separators.length || !parts || parts.length === 0){
+				throw new Error("Invalid date format.");
+			}
+			return {separators: separators, parts: parts};
+		},
+		parseDate: function(date, format, language) {
+			if (!date)
+				return undefined;
+			if (date instanceof Date) return date;
+			if (typeof format === 'string')
+				format = DPGlobal.parseFormat(format);
+			if (/^[\-+]\d+[dmwy]([\s,]+[\-+]\d+[dmwy])*$/.test(date)) {
+				var part_re = /([\-+]\d+)([dmwy])/,
+					parts = date.match(/([\-+]\d+)([dmwy])/g),
+					part, dir;
+				date = new Date();
+				for (var i=0; i<parts.length; i++) {
+					part = part_re.exec(parts[i]);
+					dir = parseInt(part[1]);
+					switch(part[2]){
+						case 'd':
+							date.setUTCDate(date.getUTCDate() + dir);
+							break;
+						case 'm':
+							date = Datepicker.prototype.moveMonth.call(Datepicker.prototype, date, dir);
+							break;
+						case 'w':
+							date.setUTCDate(date.getUTCDate() + dir * 7);
+							break;
+						case 'y':
+							date = Datepicker.prototype.moveYear.call(Datepicker.prototype, date, dir);
+							break;
+					}
+				}
+				return UTCDate(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0, 0);
+			}
+			var parts = date && date.match(this.nonpunctuation) || [],
+				date = new Date(),
+				parsed = {},
+				setters_order = ['yyyy', 'yy', 'M', 'MM', 'm', 'mm', 'd', 'dd'],
+				setters_map = {
+					yyyy: function(d,v){ return d.setUTCFullYear(v); },
+					yy: function(d,v){ return d.setUTCFullYear(2000+v); },
+					m: function(d,v){
+						if (isNaN(d))
+							return d;
+						v -= 1;
+						while (v<0) v += 12;
+						v %= 12;
+						d.setUTCMonth(v);
+						while (d.getUTCMonth() != v)
+							d.setUTCDate(d.getUTCDate()-1);
+						return d;
+					},
+					d: function(d,v){ return d.setUTCDate(v); }
+				},
+				val, filtered, part;
+			setters_map['M'] = setters_map['MM'] = setters_map['mm'] = setters_map['m'];
+			setters_map['dd'] = setters_map['d'];
+			date = UTCDate(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+			var fparts = format.parts.slice();
+			// Remove noop parts
+			if (parts.length != fparts.length) {
+				fparts = $(fparts).filter(function(i,p){
+					return $.inArray(p, setters_order) !== -1;
+				}).toArray();
+			}
+			// Process remainder
+			if (parts.length == fparts.length) {
+				for (var i=0, cnt = fparts.length; i < cnt; i++) {
+					val = parseInt(parts[i], 10);
+					part = fparts[i];
+					if (isNaN(val)) {
+						switch(part) {
+							case 'MM':
+								filtered = $(dates[language].months).filter(function(){
+									var m = this.slice(0, parts[i].length),
+										p = parts[i].slice(0, m.length);
+									return m == p;
+								});
+								val = $.inArray(filtered[0], dates[language].months) + 1;
+								break;
+							case 'M':
+								filtered = $(dates[language].monthsShort).filter(function(){
+									var m = this.slice(0, parts[i].length),
+										p = parts[i].slice(0, m.length);
+									return m == p;
+								});
+								val = $.inArray(filtered[0], dates[language].monthsShort) + 1;
+								break;
+						}
+					}
+					parsed[part] = val;
+				}
+				for (var i=0, _date, s; i<setters_order.length; i++){
+					s = setters_order[i];
+					if (s in parsed && !isNaN(parsed[s])){
+						_date = new Date(date);
+						setters_map[s](_date, parsed[s]);
+						if (!isNaN(_date))
+							date = _date;
+					}
+				}
+			}
+			return date;
+		},
+		formatDate: function(date, format, language){
+			if (!date)
+				return '';
+			if (typeof format === 'string')
+				format = DPGlobal.parseFormat(format);
+			var val = {
+				d: date.getUTCDate(),
+				D: dates[language].daysShort[date.getUTCDay()],
+				DD: dates[language].days[date.getUTCDay()],
+				m: date.getUTCMonth() + 1,
+				M: dates[language].monthsShort[date.getUTCMonth()],
+				MM: dates[language].months[date.getUTCMonth()],
+				yy: date.getUTCFullYear().toString().substring(2),
+				yyyy: date.getUTCFullYear()
+			};
+			val.dd = (val.d < 10 ? '0' : '') + val.d;
+			val.mm = (val.m < 10 ? '0' : '') + val.m;
+			var date = [],
+				seps = $.extend([], format.separators);
+			for (var i=0, cnt = format.parts.length; i <= cnt; i++) {
+				if (seps.length)
+					date.push(seps.shift());
+				date.push(val[format.parts[i]]);
+			}
+			return date.join('');
+		},
+		headTemplate: '<thead>'+
+							'<tr>'+
+// ==========================
+// = Timely edit 17-03-2014 =
+// ==========================
+								'<th class="ai1ec-prev"><i class="ai1ec-fa ai1ec-fa-arrow-left"></i></th>'+
+								'<th colspan="5" class="ai1ec-datepicker-switch"></th>'+
+								'<th class="ai1ec-next"><i class="ai1ec-fa ai1ec-fa-arrow-right"></i></th>'+
+// ===================
+// = Timely edit end =
+// ===================
+							'</tr>'+
+						'</thead>',
+		contTemplate: '<tbody><tr><td colspan="7"></td></tr></tbody>',
+		footTemplate: '<tfoot><tr><th colspan="7" class="ai1ec-today"></th></tr><tr><th colspan="7" class="ai1ec-clear"></th></tr></tfoot>'
+	};
+	DPGlobal.template = '<div class="timely ai1ec-datepicker">'+
+							'<div class="ai1ec-datepicker-days">'+
+								'<table class=" ai1ec-table-condensed">'+
+									DPGlobal.headTemplate+
+									'<tbody></tbody>'+
+									DPGlobal.footTemplate+
+								'</table>'+
+							'</div>'+
+							'<div class="ai1ec-datepicker-months">'+
+								'<table class="ai1ec-table-condensed">'+
+									DPGlobal.headTemplate+
+									DPGlobal.contTemplate+
+									DPGlobal.footTemplate+
+								'</table>'+
+							'</div>'+
+							'<div class="ai1ec-datepicker-years">'+
+								'<table class="ai1ec-table-condensed">'+
+									DPGlobal.headTemplate+
+									DPGlobal.contTemplate+
+									DPGlobal.footTemplate+
+								'</table>'+
+							'</div>'+
+						'</div>';
+
+	$.fn.datepicker.DPGlobal = DPGlobal;
+
+
+	/* DATEPICKER NO CONFLICT
+	* =================== */
+
+	$.fn.datepicker.noConflict = function(){
+		$.fn.datepicker = old;
+		return this;
+	};
+
+
+	/* DATEPICKER DATA-API
+	* ================== */
+
+	$(document).on(
+		'focus.datepicker.data-api click.datepicker.data-api',
+		'[data-provide="datepicker"]',
+		function(e){
+			var $this = $(this);
+			if ($this.data('datepicker')) return;
+			e.preventDefault();
+			// component click requires us to explicitly show it
+			$this.datepicker('show');
+		}
+	);
+	$(function(){
+		$('[data-provide="datepicker-inline"]').datepicker();
+	});
+
+// ==========================
+// = Timely edit 10-01-2014 =
+// ==========================
+	// Load language files.
+	for ( var i = 2, len = arguments.length; i < len; i++ ) {
+		arguments[i].localize();
+	}
+// ===================
+// = Timely edit end =
+// ===================
+
+} );

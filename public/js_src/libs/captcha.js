@@ -25,7 +25,6 @@ define(
 				return;
 			}
 			$provider = get_provider( $captcha.data( 'provider' ) );
-
 			// Handle external plugin's provider constructor.
 			// Provider should export functions like defined in
 			// libs/captcha/void.js

@@ -1,1 +1,202 @@
-timely.define(["jquery_timely","external_libs/bootstrap/affix"],function(e){var t=function(t){var n=e(this),r=n.next(".ai1ec-popup"),i,s,o;if(r.length===0)return;i=r.html(),s=r.attr("class");var u=n.closest("#ai1ec-calendar-view");u.length===0&&(u=e("body")),n.offset().left-u.offset().left>182?o="left":o="right",n.constrained_popover({content:i,title:"",placement:o,trigger:"manual",html:!0,template:'<div class="timely ai1ec-popover '+s+'">'+'<div class="ai1ec-arrow"></div>'+'<div class="ai1ec-popover-inner">'+'<div class="ai1ec-popover-content"><div></div></div>'+"</div>"+"</div>",container:"body"}).constrained_popover("show")},n=function(t){var n=e(t.toElement||t.relatedTarget);n.closest(".ai1ec-popup").length===0&&e(this).constrained_popover("hide")},r=function(t){var n=e(t.toElement||t.relatedTarget);n.closest(".ai1ec-tooltip").length===0&&(e(this).remove(),e("body > .ai1ec-tooltip").remove())},i=function(t){if("ontouchstart"in document.documentElement){t.preventDefault();return}var n=e(this),r={template:'<div class="timely ai1ec-tooltip"><div class="ai1ec-tooltip-arrow"></div><div class="ai1ec-tooltip-inner"></div></div>',trigger:"manual",container:"body"};if(n.is(".ai1ec-category .ai1ec-color-swatch")||n.is(".ai1ec-custom-filter .ai1ec-color-swatch"))return;n.is(".ai1ec-tooltip-auto")&&(r.placement=u(250)),n.tooltip(r),n.tooltip("show")},s=function(t){e(this).tooltip("hide")},o=function(t){var n=e(t.toElement||t.relatedTarget);n.closest(".ai1ec-tooltip-trigger").length===0&&e(this).remove(),n.closest(".ai1ec-popup").length===0&&e("body > .ai1ec-popup").remove()},u=function(t){return function(n,r){var i,s,o=e(r),u=o.attr("data-placement"),a=e.extend({},o.offset(),{width:r.offsetWidth,height:r.offsetHeight}),f=function(){return!1===i?!1:(i=a.left-t>=0,i?"left":!1)},l=function(){return!1===s?!1:(s=a.left+t<=e(window).width(),s?"right":!1)};switch(u){case"top":return"top";case"bottom":return"bottom";case"left":if(f())return"left";case"right":if(l())return"right";default:if(f())return"left";if(l())return"right";return u}}};return{handle_popover_over:t,handle_popover_out:n,handle_popover_self_out:r,handle_tooltip_over:i,handle_tooltip_out:s,handle_tooltip_self_out:o}});
+timely.define(
+	[
+		"jquery_timely",
+		"external_libs/bootstrap/affix",
+	],
+	function( $ ) {
+	 // jshint ;_;
+
+	/**
+	 * Handler for popover trigger: mouseenter.
+	 *
+	 * @param  {object} e JS event object
+	 */
+	var handle_popover_over = function( e ) {
+		var $this = $( this ),
+				$pop_content = $this.next( '.ai1ec-popup' ),
+				el_content_data, el_classes_data, popover_placement;
+
+		// If no popover found, quit.
+		if ( $pop_content.length === 0 ) {
+			return;
+		}
+
+		el_content_data = $pop_content.html();
+		el_classes_data = $pop_content.attr( 'class' );
+
+		// Position popover to the left only if there's room for it within the
+		// bounds of the view (popovers are 182 pixels wide, a product of padding
+		// and inner width as defined in style.less).
+		var $bounds = $this.closest( '#ai1ec-calendar-view' );
+		if ( $bounds.length === 0 ) {
+			$bounds = $( 'body' );
+		}
+		if ( $this.offset().left - $bounds.offset().left > 182 ) {
+			popover_placement = 'left';
+		} else {
+			popover_placement = 'right';
+		}
+
+		$this.constrained_popover( {
+			content: el_content_data,
+			title: '',
+			placement: popover_placement,
+			trigger: 'manual',
+			html: true,
+			template:
+				'<div class="timely ai1ec-popover ' + el_classes_data + '">' +
+					'<div class="ai1ec-arrow"></div>' +
+					'<div class="ai1ec-popover-inner">' +
+						'<div class="ai1ec-popover-content"><div></div></div>' +
+					'</div>' +
+				'</div>',
+			container: 'body'
+		}).constrained_popover( 'show' );
+	};
+
+	/**
+	 * Handler for popover trigger: mouseleave. Remove popup if entering an
+	 * element that is not the popup.
+	 *
+	 * @param  {object} e JS event object
+	 */
+	var handle_popover_out = function( e ) {
+		var $el = $( e.toElement || e.relatedTarget );
+		// If an ancestor of element being entered is not a popup, hide popover.
+		if ( $el.closest( '.ai1ec-popup' ).length === 0 ) {
+			$( this ).constrained_popover( 'hide' );
+		}
+	};
+
+	/**
+	 * Handler for popover; remove the popover on mouseleave of itself. Hide popup
+	 * if entering an element that is not a tooltip.
+	 * Also remove any visible tooltip if removing popup.
+	 *
+	 * @param  {object} e JS event object
+	 */
+	var handle_popover_self_out = function( e ) {
+		var $el = $( e.toElement || e.relatedTarget );
+		// If an ancestor of element being entered is not a tooltip, hide popover.
+		if ( $el.closest( '.ai1ec-tooltip' ).length === 0 ) {
+			$( this ).remove();
+			$( 'body > .ai1ec-tooltip' ).remove();
+		}
+	};
+
+	/**
+	 * Manually handle tooltip mouseenter. Need to apply .timely namespace.
+	 *
+	 * @param  {object} e JS event object
+	 */
+	var handle_tooltip_over = function( e ) {
+		// Disable tooltips on mobile devices.
+		if ( 'ontouchstart' in document.documentElement ) {
+			e.preventDefault();
+			return;
+		}
+
+		var $this = $( this ),
+		    params = {
+					template:
+						'<div class="timely ai1ec-tooltip">' +
+							'<div class="ai1ec-tooltip-arrow"></div>' +
+							'<div class="ai1ec-tooltip-inner"></div>' +
+						'</div>',
+					trigger: 'manual',
+					container: 'body'
+				};
+
+		// Don't add tooltips to category colour squares already contained in
+		// descriptive category labels.
+		if (
+			$this.is( '.ai1ec-category .ai1ec-color-swatch' ) ||
+			$this.is( '.ai1ec-custom-filter .ai1ec-color-swatch' )
+		) {
+			return;
+		}
+		if ( $this.is( '.ai1ec-tooltip-auto' ) ) {
+			params.placement = get_placement_function( 250 );
+		}
+		$this.tooltip( params );
+		$this.tooltip( 'show' );
+	};
+
+	/**
+	 * Manually handle tooltip mouseleave.
+	 *
+	 * @param  {object} e JS event object
+	 */
+	var handle_tooltip_out = function( e ) {
+		$( this ).tooltip( 'hide' );
+	};
+
+	/**
+	 * Handler for tooltip; remove the tooltip on mouseleave of itself, unless
+	 * moving onto the tooltip trigger action. If moving onto an element that is
+	 * not in a popup, hide any visible popup.
+	 *
+	 * @param  {object} e JS event object
+	 */
+	var handle_tooltip_self_out = function( e ) {
+		var $el = $( e.toElement || e.relatedTarget );
+		// If an ancestor of element being entered is not a tooltip trigger action,
+		// hide tooltip.
+		if ( $el.closest( '.ai1ec-tooltip-trigger' ).length === 0 ) {
+			$( this ).remove();
+		}
+		// If an ancestor of element being entered is not a popup, hide any popup.
+		if ( $el.closest( '.ai1ec-popup' ).length === 0 ) {
+			$( 'body > .ai1ec-popup' ).remove();
+		}
+	};
+
+	var get_placement_function = function( width ) {
+		return function( tip, element ) {
+				var left, right;
+
+				var $element        = $( element );
+				var defaultPosition = $element.attr( 'data-placement' );
+				var pos             = $.extend( {}, $element.offset(), {
+					width:  element.offsetWidth,
+					height: element.offsetHeight
+				} );
+
+				var testLeft = function() {
+					if ( false === left ) {
+						return false;
+					}
+					left = ( ( pos.left - width ) >= 0 );
+					return left ? 'left' : false;
+				};
+
+				var testRight = function() {
+					if ( false === right ) {
+						return false;
+					}
+					right = ( ( pos.left + width ) <= $( window ).width() );
+					return right ? 'right' : false;
+				};
+
+				switch ( defaultPosition ) {
+					case 'top'    : return 'top'; break;
+					case 'bottom' : return 'bottom'; break;
+					case 'left'   : if ( testLeft() )  { return 'left'  };
+					case 'right'  : if ( testRight() ) { return 'right' };
+					default:
+						if ( testLeft() )  { return 'left'  };
+						if ( testRight() ) { return 'right' };
+						return defaultPosition;
+				}
+		}
+	};
+
+	return {
+		handle_popover_over        : handle_popover_over,
+		handle_popover_out         : handle_popover_out,
+		handle_popover_self_out    : handle_popover_self_out,
+		handle_tooltip_over        : handle_tooltip_over,
+		handle_tooltip_out         : handle_tooltip_out,
+		handle_tooltip_self_out    : handle_tooltip_self_out
+	};
+} );

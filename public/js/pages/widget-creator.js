@@ -1,1 +1,5 @@
-timely.require(["scripts/widget-creator"],function(){});
+timely.require(
+		[ "scripts/widget-creator" ],
+		function() {
+		
+});

@@ -52,11 +52,9 @@ define(
 
 		var check_field = function() {
 			if ( ! initialized ) {
-				alert( 'not initialized' );
 				return true;
 			}
 			var $field = $( get_field_name() );
-			console.log( $field.val() );
 			return $field.val().length > 0;
 		};
 

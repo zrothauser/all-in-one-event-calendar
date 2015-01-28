@@ -1,3 +1,7 @@
+timely.define( [],
+	function() {
+
+		
 /*
  * The MIT License
  *
@@ -15,4 +19,379 @@
  * THE SOFTWARE.
  */
 
-timely.define([],function(){function e(e,t,n){if(e.addEventListener)return e.addEventListener(t,n,!1);if(e.attachEvent)return e.attachEvent("on"+t,n)}function t(e,t){var n,r;for(n=0,r=e.length;n<r;n++)if(e[n]===t)return!0;return!1}function n(e,t){var n;e.createTextRange?(n=e.createTextRange(),n.move("character",t),n.select()):e.selectionStart&&(e.focus(),e.setSelectionRange(t,t))}function r(e,t){try{return e.type=t,!0}catch(n){return!1}}function P(e){var t;return e.value===e.getAttribute(h)&&e.getAttribute(p)==="true"?(e.setAttribute(p,"false"),e.value="",e.className=e.className.replace(f,""),t=e.getAttribute(d),t&&(e.type=t),!0):!1}function H(e){var t;return e.value===""?(e.setAttribute(p,"true"),e.value=e.getAttribute(h),e.className+=" "+a,t=e.getAttribute(d),t?e.type="text":e.type==="password"&&S.changeType(e,"text")&&e.setAttribute(d,"password"),!0):!1}function B(e,t){var n,r,i,s,o;if(e&&e.getAttribute(h))t(e);else{n=e?e.getElementsByTagName("input"):n,r=e?e.getElementsByTagName("textarea"):r;for(o=0,s=n.length+r.length;o<s;o++)i=o<n.length?n[o]:r[o-n.length],t(i)}}function j(e){B(e,P)}function F(e){B(e,H)}function I(e){return function(){x&&e.value===e.getAttribute(h)&&e.getAttribute(p)==="true"?S.moveCaret(e,0):P(e)}}function q(e){return function(){H(e)}}function R(e){return function(t){N=e.value;if(e.getAttribute(p)==="true")return N!==e.getAttribute(h)||!S.inArray(o,t.keyCode)}}function U(e){return function(){var t;e.getAttribute(p)==="true"&&e.value!==N&&(e.className=e.className.replace(f,""),e.value=e.value.replace(e.getAttribute(h),""),e.setAttribute(p,!1),t=e.getAttribute(d),t&&(e.type=t)),e.value===""&&(e.blur(),S.moveCaret(e,0))}}function z(e){return function(){e===document.activeElement&&e.value===e.getAttribute(h)&&e.getAttribute(p)==="true"&&S.moveCaret(e,0)}}function W(e){return function(){j(e)}}function X(e){e.form&&(O=e.form,O.getAttribute(v)||(S.addEventListener(O,"submit",W(O)),O.setAttribute(v,"true"))),S.addEventListener(e,"focus",I(e)),S.addEventListener(e,"blur",q(e)),x&&(S.addEventListener(e,"keydown",R(e)),S.addEventListener(e,"keyup",U(e)),S.addEventListener(e,"click",z(e))),e.setAttribute(m,"true"),e.setAttribute(h,L),H(e)}var i={Utils:{addEventListener:e,inArray:t,moveCaret:n,changeType:r}},s=["text","search","url","tel","email","password","number","textarea"],o=[27,33,34,35,36,37,38,39,40,8,46],u="#ccc",a="placeholdersjs",f=new RegExp("\\b"+a+"\\b"),l,c,h="data-placeholder-value",p="data-placeholder-active",d="data-placeholder-type",v="data-placeholder-submit",m="data-placeholder-bound",g="data-placeholder-focus",y="data-placeholder-live",b=document.createElement("input"),w=document.getElementsByTagName("head")[0],E=document.documentElement,S=i.Utils,x,T,N,C,k,L,A,O,M,_,D;if(b.placeholder===void 0){l=document.getElementsByTagName("input"),c=document.getElementsByTagName("textarea"),x=E.getAttribute(g)==="false",T=E.getAttribute(y)!=="false",C=document.createElement("style"),C.type="text/css",k=document.createTextNode("."+a+" { color:"+u+"; }"),C.styleSheet?C.styleSheet.cssText=k.nodeValue:C.appendChild(k),w.insertBefore(C,w.firstChild);for(D=0,_=l.length+c.length;D<_;D++)M=D<l.length?l[D]:c[D-l.length],L=M.getAttribute("placeholder"),L&&S.inArray(s,M.type)&&X(M);A=setInterval(function(){for(D=0,_=l.length+c.length;D<_;D++){M=D<l.length?l[D]:c[D-l.length],L=M.getAttribute("placeholder");if(L&&S.inArray(s,M.type)){M.getAttribute(m)||X(M);if(L!==M.getAttribute(h)||M.type==="password"&&!M.getAttribute(d))M.type==="password"&&!M.getAttribute(d)&&S.changeType(M,"text")&&M.setAttribute(d,"password"),M.value===M.getAttribute(h)&&(M.value=L),M.setAttribute(h,L)}}T||clearInterval(A)},100)}return i.disable=j,i.enable=F,i});
+		// Cross-browser DOM event binding
+		function addEventListener(elem, event, fn) {
+			if (elem.addEventListener) {
+				return elem.addEventListener(event, fn, false);
+			}
+			if (elem.attachEvent) {
+				return elem.attachEvent("on" + event, fn);
+			}
+		}
+
+		// Check whether an item is in an array (we don't use Array.prototype.indexOf so we don't clobber any existing polyfills - this is a really simple alternative)
+		function inArray(arr, item) {
+			var i, len;
+			for (i = 0, len = arr.length; i < len; i++) {
+				if (arr[i] === item) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		// Move the caret to the index position specified. Assumes that the element has focus
+		function moveCaret(elem, index) {
+			var range;
+			if (elem.createTextRange) {
+				range = elem.createTextRange();
+				range.move("character", index);
+				range.select();
+			} else if (elem.selectionStart) {
+				elem.focus();
+				elem.setSelectionRange(index, index);
+			}
+		}
+
+		// Attempt to change the type property of an input element
+		function changeType(elem, type) {
+			try {
+				elem.type = type;
+				return true;
+			} catch (e) {
+						// You can't change input type in IE8 and below
+						return false;
+					}
+				}
+
+		// Expose public methods
+		var Placeholders = {
+			Utils: {
+				addEventListener: addEventListener,
+				inArray: inArray,
+				moveCaret: moveCaret,
+				changeType: changeType
+			}
+		};
+
+		var validTypes = [
+		"text",
+		"search",
+		"url",
+		"tel",
+		"email",
+		"password",
+		"number",
+		"textarea"
+		],
+
+				// The list of keycodes that are not allowed when the polyfill is configured to hide-on-input
+				badKeys = [
+
+						// The following keys all cause the caret to jump to the end of the input value
+						27, // Escape
+						33, // Page up
+						34, // Page down
+						35, // End
+						36, // Home
+
+						// Arrow keys allow you to move the caret manually, which should be prevented when the placeholder is visible
+						37, // Left
+						38, // Up
+						39, // Right
+						40, // Down
+
+						// The following keys allow you to modify the placeholder text by removing characters, which should be prevented when the placeholder is visible
+						8, // Backspace
+						46 // Delete
+						],
+
+				// Styling variables
+				placeholderStyleColor = "#ccc",
+				placeholderClassName = "placeholdersjs",
+				classNameRegExp = new RegExp("\\b" + placeholderClassName + "\\b"),
+
+				// These will hold references to all elements that can be affected. NodeList objects are live, so we only need to get those references once
+				inputs, textareas,
+
+				// The various data-* attributes used by the polyfill
+				ATTR_CURRENT_VAL = "data-placeholder-value",
+				ATTR_ACTIVE = "data-placeholder-active",
+				ATTR_INPUT_TYPE = "data-placeholder-type",
+				ATTR_FORM_HANDLED = "data-placeholder-submit",
+				ATTR_EVENTS_BOUND = "data-placeholder-bound",
+				ATTR_OPTION_FOCUS = "data-placeholder-focus",
+				ATTR_OPTION_LIVE = "data-placeholder-live",
+
+				// Various other variables used throughout the rest of the script
+				test = document.createElement("input"),
+				head = document.getElementsByTagName("head")[0],
+				root = document.documentElement,
+				Utils = Placeholders.Utils,
+				hideOnInput, liveUpdates, keydownVal, styleElem, styleRules, placeholder, timer, form, elem, len, i;
+
+		// Hide the placeholder value on a single element. Returns true if the placeholder was hidden and false if it was not (because it wasn't visible in the first place)
+		function hidePlaceholder(elem) {
+			var type;
+			if (elem.value === elem.getAttribute(ATTR_CURRENT_VAL) && elem.getAttribute(ATTR_ACTIVE) === "true") {
+				elem.setAttribute(ATTR_ACTIVE, "false");
+				elem.value = "";
+				elem.className = elem.className.replace(classNameRegExp, "");
+
+						// If the polyfill has changed the type of the element we need to change it back
+						type = elem.getAttribute(ATTR_INPUT_TYPE);
+						if (type) {
+							elem.type = type;
+						}
+						return true;
+					}
+					return false;
+				}
+
+		// Show the placeholder value on a single element. Returns true if the placeholder was shown and false if it was not (because it was already visible)
+		function showPlaceholder(elem) {
+			var type;
+			if (elem.value === "") {
+				elem.setAttribute(ATTR_ACTIVE, "true");
+				elem.value = elem.getAttribute(ATTR_CURRENT_VAL);
+				elem.className += " " + placeholderClassName;
+
+						// If the type of element needs to change, change it (e.g. password inputs)
+						type = elem.getAttribute(ATTR_INPUT_TYPE);
+						if (type) {
+							elem.type = "text";
+						} else if (elem.type === "password") {
+							if (Utils.changeType(elem, "text")) {
+								elem.setAttribute(ATTR_INPUT_TYPE, "password");
+							}
+						}
+						return true;
+					}
+					return false;
+				}
+
+				function handleElem(node, callback) {
+
+					var inputs, textareas, elem, len, i;
+
+				// Check if the passed in node is an input/textarea (in which case it can't have any affected descendants)
+				if (node && node.getAttribute(ATTR_CURRENT_VAL)) {
+					callback(node);
+				} else {
+
+						// If an element was passed in, get all affected descendants. Otherwise, get all affected elements in document
+						inputs = node ? node.getElementsByTagName("input") : inputs;
+						textareas = node ? node.getElementsByTagName("textarea") : textareas;
+
+						// Run the callback for each element
+						for (i = 0, len = inputs.length + textareas.length; i < len; i++) {
+							elem = i < inputs.length ? inputs[i] : textareas[i - inputs.length];
+							callback(elem);
+						}
+					}
+				}
+
+		// Return all affected elements to their normal state (remove placeholder value if present)
+		function disablePlaceholders(node) {
+			handleElem(node, hidePlaceholder);
+		}
+
+		// Show the placeholder value on all appropriate elements
+		function enablePlaceholders(node) {
+			handleElem(node, showPlaceholder);
+		}
+
+		// Returns a function that is used as a focus event handler
+		function makeFocusHandler(elem) {
+			return function () {
+
+						// Only hide the placeholder value if the (default) hide-on-focus behaviour is enabled
+						if (hideOnInput && elem.value === elem.getAttribute(ATTR_CURRENT_VAL) && elem.getAttribute(ATTR_ACTIVE) === "true") {
+
+								// Move the caret to the start of the input (this mimics the behaviour of all browsers that do not hide the placeholder on focus)
+								Utils.moveCaret(elem, 0);
+
+							} else {
+
+								// Remove the placeholder
+								hidePlaceholder(elem);
+							}
+						};
+					}
+
+		// Returns a function that is used as a blur event handler
+		function makeBlurHandler(elem) {
+			return function () {
+				showPlaceholder(elem);
+			};
+		}
+
+		// Functions that are used as a event handlers when the hide-on-input behaviour has been activated - very basic implementation of the "input" event
+		function makeKeydownHandler(elem) {
+			return function (e) {
+				keydownVal = elem.value;
+
+				//Prevent the use of the arrow keys (try to keep the cursor before the placeholder)
+				if (elem.getAttribute(ATTR_ACTIVE) === "true") {
+					return !(keydownVal === elem.getAttribute(ATTR_CURRENT_VAL) && Utils.inArray(badKeys, e.keyCode));
+				}
+			};
+		}
+		function makeKeyupHandler(elem) {
+			return function () {
+				var type;
+
+				if (elem.getAttribute(ATTR_ACTIVE) === "true" && elem.value !== keydownVal) {
+
+						// Remove the placeholder
+						elem.className = elem.className.replace(classNameRegExp, "");
+						elem.value = elem.value.replace(elem.getAttribute(ATTR_CURRENT_VAL), "");
+						elem.setAttribute(ATTR_ACTIVE, false);
+
+						// If the type of element needs to change, change it (e.g. password inputs)
+						type = elem.getAttribute(ATTR_INPUT_TYPE);
+						if (type) {
+							elem.type = type;
+						}
+					}
+
+				// If the element is now empty we need to show the placeholder
+				if (elem.value === "") {
+					elem.blur();
+					Utils.moveCaret(elem, 0);
+				}
+			};
+		}
+		function makeClickHandler(elem) {
+			return function () {
+				if (elem === document.activeElement && elem.value === elem.getAttribute(ATTR_CURRENT_VAL) && elem.getAttribute(ATTR_ACTIVE) === "true") {
+					Utils.moveCaret(elem, 0);
+				}
+			};
+		}
+
+		// Returns a function that is used as a submit event handler on form elements that have children affected by this polyfill
+		function makeSubmitHandler(form) {
+			return function () {
+				// Turn off placeholders on all appropriate descendant elements
+				disablePlaceholders(form);
+			};
+		}
+
+		// Bind event handlers to an element that we need to affect with the polyfill
+		function newElement(elem) {
+
+				// If the element is part of a form, make sure the placeholder string is not submitted as a value
+				if (elem.form) {
+					form = elem.form;
+
+					// Set a flag on the form so we know it's been handled (forms can contain multiple inputs)
+					if (!form.getAttribute(ATTR_FORM_HANDLED)) {
+						Utils.addEventListener(form, "submit", makeSubmitHandler(form));
+						form.setAttribute(ATTR_FORM_HANDLED, "true");
+					}
+				}
+
+				// Bind event handlers to the element so we can hide/show the placeholder as appropriate
+				Utils.addEventListener(elem, "focus", makeFocusHandler(elem));
+				Utils.addEventListener(elem, "blur", makeBlurHandler(elem));
+
+				// If the placeholder should hide on input rather than on focus we need additional event handlers
+				if (hideOnInput) {
+					Utils.addEventListener(elem, "keydown", makeKeydownHandler(elem));
+					Utils.addEventListener(elem, "keyup", makeKeyupHandler(elem));
+					Utils.addEventListener(elem, "click", makeClickHandler(elem));
+				}
+
+				// Remember that we've bound event handlers to this element
+				elem.setAttribute(ATTR_EVENTS_BOUND, "true");
+				elem.setAttribute(ATTR_CURRENT_VAL, placeholder);
+
+				// If the element doesn't have a value, set it to the placeholder string
+				showPlaceholder(elem);
+			}
+
+			if (test.placeholder === void 0) {
+
+				// Get references to all the input and textarea elements currently in the DOM (live NodeList objects to we only need to do this once)
+				inputs = document.getElementsByTagName("input");
+				textareas = document.getElementsByTagName("textarea");
+
+				// Get any settings declared as data-* attributes on the root element (currently the only options are whether to hide the placeholder on focus or input and whether to auto-update)
+				hideOnInput = root.getAttribute(ATTR_OPTION_FOCUS) === "false";
+				liveUpdates = root.getAttribute(ATTR_OPTION_LIVE) !== "false";
+
+				// Create style element for placeholder styles (instead of directly setting style properties on elements - allows for better flexibility alongside user-defined styles)
+				styleElem = document.createElement("style");
+				styleElem.type = "text/css";
+
+				// Create style rules as text node
+				styleRules = document.createTextNode("." + placeholderClassName + " { color:" + placeholderStyleColor + "; }");
+
+				// Append style rules to newly created stylesheet
+				if (styleElem.styleSheet) {
+					styleElem.styleSheet.cssText = styleRules.nodeValue;
+				} else {
+					styleElem.appendChild(styleRules);
+				}
+
+				// Prepend new style element to the head (before any existing stylesheets, so user-defined rules take precedence)
+				head.insertBefore(styleElem, head.firstChild);
+
+				// Set up the placeholders
+				for (i = 0, len = inputs.length + textareas.length; i < len; i++) {
+					elem = i < inputs.length ? inputs[i] : textareas[i - inputs.length];
+
+					// Only apply the polyfill if this element is of a type that supports placeholders, and has a placeholder attribute with a non-empty value
+					placeholder = elem.getAttribute("placeholder");
+					if (placeholder && Utils.inArray(validTypes, elem.type)) {
+						newElement(elem);
+					}
+				}
+
+				// If enabled, the polyfill will repeatedly check for changed/added elements and apply to those as well
+				timer = setInterval(function () {
+				for (i = 0, len = inputs.length + textareas.length; i < len; i++) {
+					elem = i < inputs.length ? inputs[i] : textareas[i - inputs.length];
+
+					// Only apply the polyfill if this element is of a type that supports placeholders, and has a placeholder attribute with a non-empty value
+					placeholder = elem.getAttribute("placeholder");
+					if (placeholder && Utils.inArray(validTypes, elem.type)) {
+
+						// If the element hasn't had event handlers bound to it then add them
+						if (!elem.getAttribute(ATTR_EVENTS_BOUND)) {
+							newElement(elem);
+						}
+
+						// If the placeholder value has changed or not been initialised yet we need to update the display
+						if (placeholder !== elem.getAttribute(ATTR_CURRENT_VAL) || (elem.type === "password" && !elem.getAttribute(ATTR_INPUT_TYPE))) {
+
+							// Attempt to change the type of password inputs (fails in IE < 9)
+							if (elem.type === "password" && !elem.getAttribute(ATTR_INPUT_TYPE) && Utils.changeType(elem, "text")) {
+								elem.setAttribute(ATTR_INPUT_TYPE, "password");
+							}
+
+							// If the placeholder value has changed and the placeholder is currently on display we need to change it
+							if (elem.value === elem.getAttribute(ATTR_CURRENT_VAL)) {
+								elem.value = placeholder;
+							}
+
+							// Keep a reference to the current placeholder value in case it changes via another script
+							elem.setAttribute(ATTR_CURRENT_VAL, placeholder);
+						}
+					}
+				}
+
+				// If live updates are not enabled cancel the timer
+				if (!liveUpdates) {
+					clearInterval(timer);
+				}
+			}, 100);
+		}
+
+		// Expose public methods
+		Placeholders.disable = disablePlaceholders;
+		Placeholders.enable = enablePlaceholders;
+
+		return Placeholders;
+} );

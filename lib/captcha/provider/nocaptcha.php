@@ -61,7 +61,17 @@ class Ai1ec_Captcha_Nocaptcha_Provider extends Ai1ec_Captcha_Provider {
 	 * @return mixed
 	 */
 	public function get_challenge() {
-		// TODO: Implement get_challenge() method.
+		$args = array(
+			'nocaptcha_key' => $this->_settings->get(
+				'google_nocaptcha_public_key'
+			),
+		);
+
+		return $this->_theme_loader->get_file(
+			'captcha/nocaptcha/challenge.twig',
+			$args,
+			false
+		)->get_content();
 	}
 
 	/**
@@ -72,7 +82,43 @@ class Ai1ec_Captcha_Nocaptcha_Provider extends Ai1ec_Captcha_Provider {
 	 * @return mixed
 	 */
 	public function validate_challenge( array $data ) {
-		// TODO: Implement validate_challenge() method.
+
+		$response['message'] = Ai1ec_I18n::__(
+			'Please try answering the word verification again.'
+		);
+		$response['success'] = false;
+
+		if ( empty( $data['g-recaptcha-response'] ) ) {
+			$response['message'] = Ai1ec_I18n::_(
+				'There was an error reading the word verification data. Please try again.'
+			);
+			$response['success'] = false;
+		}
+		$url       = add_query_arg(
+			array(
+				'secret'   => $this->_settings->get(
+					'google_nocaptcha_private_key'
+				),
+				'response' => $data['g-recaptcha-response'],
+			),
+			'https://www.google.com/recaptcha/api/siteverify'
+		);
+		$json_resp = wp_remote_get( $url );
+		if ( is_wp_error( $json_resp ) ) {
+			return $response;
+		}
+		$resp = json_decode( $json_resp['body'], true );
+		if (
+			isset( $resp['success'] ) &&
+			$resp['success']
+		) {
+			$response = array(
+				'success' => true,
+			);
+		}
+
+		return $response;
+
 	}
 
 	/**

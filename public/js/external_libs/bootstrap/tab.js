@@ -17,4 +17,119 @@
  * limitations under the License.
  * ======================================================================== */
 
-timely.define(["jquery_timely"],function(e){var t=function(t){this.element=e(t)};t.prototype.show=function(){var t=this.element,n=t.closest("ul:not(.ai1ec-dropdown-menu)"),r=t.data("target");r||(r=t.attr("href"),r=r&&r.replace(/.*(?=#[^\s]*$)/,""));if(t.parent("li").hasClass("ai1ec-active"))return;var i=n.find(".ai1ec-active:last a")[0],s=e.Event("show.bs.tab",{relatedTarget:i});t.trigger(s);if(s.isDefaultPrevented())return;var o=e(r);this.activate(t.parent("li"),n),this.activate(o,o.parent(),function(){t.trigger({type:"shown.bs.tab",relatedTarget:i})})},t.prototype.activate=function(t,n,r){function o(){i.removeClass("ai1ec-active").find("> .ai1ec-dropdown-menu > .ai1ec-active").removeClass("ai1ec-active"),t.addClass("ai1ec-active"),s?(t[0].offsetWidth,t.addClass("ai1ec-in")):t.removeClass("ai1ec-fade"),t.parent(".ai1ec-dropdown-menu")&&t.closest("li.ai1ec-dropdown").addClass("ai1ec-active"),r&&r()}var i=n.find("> .ai1ec-active"),s=r&&e.support.transition&&i.hasClass("ai1ec-fade");s?i.one(e.support.transition.end,o).emulateTransitionEnd(150):o(),i.removeClass("ai1ec-in")};var n=e.fn.tab;e.fn.tab=function(n){return this.each(function(){var r=e(this),i=r.data("bs.tab");i||r.data("bs.tab",i=new t(this)),typeof n=="string"&&i[n]()})},e.fn.tab.Constructor=t,e.fn.tab.noConflict=function(){return e.fn.tab=n,this},e(document).on("click.bs.tab.data-api",'[data-toggle="ai1ec-tab"], [data-toggle="ai1ec-pill"]',function(t){t.preventDefault(),e(this).tab("show")})});
+
+timely.define( ["jquery_timely"], function( $ ) {  // jshint ;_;
+
+  // TAB CLASS DEFINITION
+  // ====================
+
+  var Tab = function (element) {
+    this.element = $(element)
+  }
+
+  Tab.prototype.show = function () {
+    var $this    = this.element
+    var $ul      = $this.closest('ul:not(.ai1ec-dropdown-menu)')
+    var selector = $this.data('target')
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') //strip for ie7
+    }
+
+    if ($this.parent('li').hasClass('ai1ec-active')) return
+
+    var previous = $ul.find('.ai1ec-active:last a')[0]
+    var e        = $.Event('show.bs.tab', {
+      relatedTarget: previous
+    })
+
+    $this.trigger(e)
+
+    if (e.isDefaultPrevented()) return
+
+    var $target = $(selector)
+
+    this.activate($this.parent('li'), $ul)
+    this.activate($target, $target.parent(), function () {
+      $this.trigger({
+        type: 'shown.bs.tab'
+      , relatedTarget: previous
+      })
+    })
+  }
+
+  Tab.prototype.activate = function (element, container, callback) {
+    var $active    = container.find('> .ai1ec-active')
+    var transition = callback
+      && $.support.transition
+      && $active.hasClass('ai1ec-fade')
+
+    function next() {
+      $active
+        .removeClass('ai1ec-active')
+        .find('> .ai1ec-dropdown-menu > .ai1ec-active')
+        .removeClass('ai1ec-active')
+
+      element.addClass('ai1ec-active')
+
+      if (transition) {
+        element[0].offsetWidth // reflow for transition
+        element.addClass('ai1ec-in')
+      } else {
+        element.removeClass('ai1ec-fade')
+      }
+
+      if (element.parent('.ai1ec-dropdown-menu')) {
+        element.closest('li.ai1ec-dropdown').addClass('ai1ec-active')
+      }
+
+      callback && callback()
+    }
+
+    transition ?
+      $active
+        .one($.support.transition.end, next)
+        .emulateTransitionEnd(150) :
+      next()
+
+    $active.removeClass('ai1ec-in')
+  }
+
+
+  // TAB PLUGIN DEFINITION
+  // =====================
+
+  var old = $.fn.tab
+
+  $.fn.tab = function ( option ) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data('bs.tab')
+
+      if (!data) $this.data('bs.tab', (data = new Tab(this)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  $.fn.tab.Constructor = Tab
+
+
+  // TAB NO CONFLICT
+  // ===============
+
+  $.fn.tab.noConflict = function () {
+    $.fn.tab = old
+    return this
+  }
+
+
+  // TAB DATA-API
+  // ============
+
+  $(document).on('click.bs.tab.data-api', '[data-toggle="ai1ec-tab"], [data-toggle="ai1ec-pill"]', function (e) {
+    e.preventDefault()
+    $(this).tab('show')
+  })
+
+} );

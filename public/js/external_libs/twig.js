@@ -1,3 +1,4 @@
+
 /**
  * Twig.js 0.7.2
  *
@@ -6,15 +7,1240 @@
  * @link      https://github.com/justjohn/twig.js
  */
 
+var Twig = (function (Twig) {
+
+    Twig.VERSION = "0.7.2";
+
+    return Twig;
+})(Twig || {});
+//     Twig.js
 //     Copyright (c) 2011-2013 John Roepke
+//     Available under the BSD 2-Clause License
+//     https://github.com/justjohn/twig.js
 
+var Twig = (function (Twig) {
+    
+    // ## twig.core.js
+    //
+    // This file handles template level tokenizing, compiling and parsing.
+
+    Twig.trace = false;
+    Twig.debug = false;
+
+    // Default caching to true for the improved performance it offers
+    Twig.cache = true;
+
+    Twig.placeholders = {
+        parent: "{{|PARENT|}}"
+    };
+
+    /**
+     * Fallback for Array.indexOf for IE8 et al
+     */
+    Twig.indexOf = function (arr, searchElement /*, fromIndex */ ) {
+        if (Array.prototype.hasOwnProperty("indexOf")) {
+            return arr.indexOf(searchElement);
+        }
+        if (arr === void 0 || arr === null) {
+            throw new TypeError();
+        }
+        var t = Object(arr);
+        var len = t.length >>> 0;
+        if (len === 0) {
+            return -1;
+        }
+        var n = 0;
+        if (arguments.length > 0) {
+            n = Number(arguments[1]);
+            if (n !== n) { // shortcut for verifying if it's NaN
+                n = 0;
+            } else if (n !== 0 && n !== Infinity && n !== -Infinity) {
+                n = (n > 0 || -1) * Math.floor(Math.abs(n));
+            }
+        }
+        if (n >= len) {
+            // console.log("indexOf not found1 ", JSON.stringify(searchElement), JSON.stringify(arr));
+            return -1;
+        }
+        var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
+        for (; k < len; k++) {
+            if (k in t && t[k] === searchElement) {
+                return k;
+            }
+        }
+        if (arr == searchElement) {
+            return 0;
+        }
+        // console.log("indexOf not found2 ", JSON.stringify(searchElement), JSON.stringify(arr));
+
+        return -1;
+    }
+
+    Twig.forEach = function (arr, callback, thisArg) {
+        if (Array.prototype.forEach ) {
+            return arr.forEach(callback, thisArg);
+        }
+
+        var T, k;
+
+        if ( arr == null ) {
+          throw new TypeError( " this is null or not defined" );
+        }
+
+        // 1. Let O be the result of calling ToObject passing the |this| value as the argument.
+        var O = Object(arr);
+
+        // 2. Let lenValue be the result of calling the Get internal method of O with the argument "length".
+        // 3. Let len be ToUint32(lenValue).
+        var len = O.length >>> 0; // Hack to convert O.length to a UInt32
+
+        // 4. If IsCallable(callback) is false, throw a TypeError exception.
+        // See: http://es5.github.com/#x9.11
+        if ( {}.toString.call(callback) != "[object Function]" ) {
+          throw new TypeError( callback + " is not a function" );
+        }
+
+        // 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
+        if ( thisArg ) {
+          T = thisArg;
+        }
+
+        // 6. Let k be 0
+        k = 0;
+
+        // 7. Repeat, while k < len
+        while( k < len ) {
+
+          var kValue;
+
+          // a. Let Pk be ToString(k).
+          //   This is implicit for LHS operands of the in operator
+          // b. Let kPresent be the result of calling the HasProperty internal method of O with argument Pk.
+          //   This step can be combined with c
+          // c. If kPresent is true, then
+          if ( k in O ) {
+
+            // i. Let kValue be the result of calling the Get internal method of O with argument Pk.
+            kValue = O[ k ];
+
+            // ii. Call the Call internal method of callback with T as the this value and
+            // argument list containing kValue, k, and O.
+            callback.call( T, kValue, k, O );
+          }
+          // d. Increase k by 1.
+          k++;
+        }
+        // 8. return undefined
+    };
+
+    /**
+     * Exception thrown by twig.js.
+     */
+    Twig.Error = function(message) {
+       this.message = message;
+       this.name = "TwigException";
+       this.type = "TwigException";
+    };
+
+    /**
+     * Get the string representation of a Twig error.
+     */
+    Twig.Error.prototype.toString = function() {
+        var output = this.name + ": " + this.message;
+
+        return output;
+    };
+
+    /**
+     * Wrapper for logging to the console.
+     */
+    Twig.log = {
+        trace: function() {if (Twig.trace && console) {console.log(Array.prototype.slice.call(arguments));}},
+        debug: function() {if (Twig.debug && console) {console.log(Array.prototype.slice.call(arguments));}},
+    };
+
+    if (typeof console !== "undefined" && 
+        typeof console.log !== "undefined") {
+        Twig.log.error = function() {
+            console.log.apply(console, arguments);
+        }
+    } else {
+        Twig.log.error = function(){};
+    }
+
+    /**
+     * Container for methods related to handling high level template tokens
+     *      (for example: {{ expression }}, {% logic %}, {# comment #}, raw data)
+     */
+    Twig.token = {};
+
+    /**
+     * Token types.
+     */
+    Twig.token.type = {
+        output:  'output',
+        logic:   'logic',
+        comment: 'comment',
+        raw:     'raw'
+    };
+
+    /**
+     * Token syntax definitions.
+     */
+    Twig.token.definitions = [
+        {
+            type: Twig.token.type.raw,
+            open: '{% raw %}',
+            close: '{% endraw %}'
+        },
+        // *Output type tokens*
+        //
+        // These typically take the form `{{ expression }}`.
+        {
+            type: Twig.token.type.output,
+            open: '{{',
+            close: '}}'
+        },
+        // *Logic type tokens*
+        //
+        // These typically take a form like `{% if expression %}` or `{% endif %}`
+        {
+            type: Twig.token.type.logic,
+            open: '{%',
+            close: '%}'
+        },
+        // *Comment type tokens*
+        //
+        // These take the form `{# anything #}`
+        {
+            type: Twig.token.type.comment,
+            open: '{#',
+            close: '#}'
+        }
+    ];
+
+
+    /**
+     * What characters start "strings" in token definitions. We need this to ignore token close
+     * strings inside an expression.
+     */
+    Twig.token.strings = ['"', "'"];
+
+    Twig.token.findStart = function (template) {
+        var output = {
+                position: null,
+                def: null
+            },
+            i,
+            token_template,
+            first_key_position;
+
+        for (i=0;i<Twig.token.definitions.length;i++) {
+            token_template = Twig.token.definitions[i];
+            first_key_position = template.indexOf(token_template.open);
+
+            Twig.log.trace("Twig.token.findStart: ", "Searching for ", token_template.open, " found at ", first_key_position);
+
+            // Does this token occur before any other types?
+            if (first_key_position >= 0 && (output.position === null || first_key_position < output.position)) {
+                output.position = first_key_position;
+                output.def = token_template;
+            }
+        }
+
+        return output;
+    };
+
+    Twig.token.findEnd = function (template, token_def, start) {
+        var end = null,
+            found = false,
+            offset = 0,
+
+            // String position variables
+            str_pos = null,
+            str_found = null,
+            pos = null,
+            end_offset = null,
+            this_str_pos = null,
+            end_str_pos = null,
+
+            // For loop variables
+            i,
+            l;
+
+        while (!found) {
+            str_pos = null;
+            str_found = null;
+            pos = template.indexOf(token_def.close, offset);
+
+            if (pos >= 0) {
+                end = pos;
+                found = true;
+            } else {
+                // throw an exception
+                throw new Twig.Error("Unable to find closing bracket '" + token_def.close +
+                                "'" + " opened near template position " + start);
+            }
+
+            // Ignore quotes within comments; just look for the next comment close sequence,
+            // regardless of what comes before it. https://github.com/justjohn/twig.js/issues/95
+            if (token_def.type === Twig.token.type.comment) {
+              break;
+            }
+
+            l = Twig.token.strings.length;
+            for (i = 0; i < l; i += 1) {
+                this_str_pos = template.indexOf(Twig.token.strings[i], offset);
+
+                if (this_str_pos > 0 && this_str_pos < pos &&
+                        (str_pos === null || this_str_pos < str_pos)) {
+                    str_pos = this_str_pos;
+                    str_found = Twig.token.strings[i];
+                }
+            }
+
+            // We found a string before the end of the token, now find the string's end and set the search offset to it
+            if (str_pos !== null) {
+                end_offset = str_pos + 1;
+                end = null;
+                found = false;
+                while (true) {
+                    end_str_pos = template.indexOf(str_found, end_offset);
+                    if (end_str_pos < 0) {
+                        throw "Unclosed string in template";
+                    }
+                    // Ignore escaped quotes
+                    if (template.substr(end_str_pos - 1, 1) !== "\\") {
+                        offset = end_str_pos + 1;
+                        break;
+                    } else {
+                        end_offset = end_str_pos + 1;
+                    }
+                }
+            }
+        }
+        return end;
+    };
+
+    /**
+     * Convert a template into high-level tokens.
+     */
+    Twig.tokenize = function (template) {
+        var tokens = [],
+            // An offset for reporting errors locations in the template.
+            error_offset = 0,
+
+            // The start and type of the first token found in the template.
+            found_token = null,
+            // The end position of the matched token.
+            end = null;
+
+        while (template.length > 0) {
+            // Find the first occurance of any token type in the template
+            found_token = Twig.token.findStart(template);
+
+            Twig.log.trace("Twig.tokenize: ", "Found token: ", found_token);
+
+            if (found_token.position !== null) {
+                // Add a raw type token for anything before the start of the token
+                if (found_token.position > 0) {
+                    tokens.push({
+                        type: Twig.token.type.raw,
+                        value: template.substring(0, found_token.position)
+                    });
+                }
+                template = template.substr(found_token.position + found_token.def.open.length);
+                error_offset += found_token.position + found_token.def.open.length;
+
+                // Find the end of the token
+                end = Twig.token.findEnd(template, found_token.def, error_offset);
+
+                Twig.log.trace("Twig.tokenize: ", "Token ends at ", end);
+
+                tokens.push({
+                    type:  found_token.def.type,
+                    value: template.substring(0, end).trim()
+                });
+
+                if ( found_token.def.type === "logic" && template.substr( end + found_token.def.close.length, 1 ) === "\n" ) {
+                    // Newlines directly after logic tokens are ignored
+                    end += 1;
+                }
+
+                template = template.substr(end + found_token.def.close.length);
+
+                // Increment the position in the template
+                error_offset += end + found_token.def.close.length;
+
+            } else {
+                // No more tokens -> add the rest of the template as a raw-type token
+                tokens.push({
+                    type: Twig.token.type.raw,
+                    value: template
+                });
+                template = '';
+            }
+        }
+
+        return tokens;
+    };
+
+
+    Twig.compile = function (tokens) {
+        try {
+
+            // Output and intermediate stacks
+            var output = [],
+                stack = [],
+                // The tokens between open and close tags
+                intermediate_output = [],
+
+                token = null,
+                logic_token = null,
+                unclosed_token = null,
+                // Temporary previous token.
+                prev_token = null,
+                // The previous token's template
+                prev_template = null,
+                // The output token
+                tok_output = null,
+
+                // Logic Token values
+                type = null,
+                open = null,
+                next = null;
+
+            while (tokens.length > 0) {
+                token = tokens.shift();
+                Twig.log.trace("Compiling token ", token);
+                switch (token.type) {
+                    case Twig.token.type.raw:
+                        if (stack.length > 0) {
+                            intermediate_output.push(token);
+                        } else {
+                            output.push(token);
+                        }
+                        break;
+
+                    case Twig.token.type.logic:
+                        // Compile the logic token
+                        logic_token = Twig.logic.compile.apply(this, [token]);
+
+                        type = logic_token.type;
+                        open = Twig.logic.handler[type].open;
+                        next = Twig.logic.handler[type].next;
+
+                        Twig.log.trace("Twig.compile: ", "Compiled logic token to ", logic_token,
+                                                         " next is: ", next, " open is : ", open);
+
+                        // Not a standalone token, check logic stack to see if this is expected
+                        if (open !== undefined && !open) {
+                            prev_token = stack.pop();
+                            prev_template = Twig.logic.handler[prev_token.type];
+
+                            if (Twig.indexOf(prev_template.next, type) < 0) {
+                                throw new Error(type + " not expected after a " + prev_token.type);
+                            }
+
+                            prev_token.output = prev_token.output || [];
+
+                            prev_token.output = prev_token.output.concat(intermediate_output);
+                            intermediate_output = [];
+
+                            tok_output = {
+                                type: Twig.token.type.logic,
+                                token: prev_token
+                            };
+                            if (stack.length > 0) {
+                                intermediate_output.push(tok_output);
+                            } else {
+                                output.push(tok_output);
+                            }
+                        }
+
+                        // This token requires additional tokens to complete the logic structure.
+                        if (next !== undefined && next.length > 0) {
+                            Twig.log.trace("Twig.compile: ", "Pushing ", logic_token, " to logic stack.");
+
+                            if (stack.length > 0) {
+                                // Put any currently held output into the output list of the logic operator
+                                // currently at the head of the stack before we push a new one on.
+                                prev_token = stack.pop();
+                                prev_token.output = prev_token.output || [];
+                                prev_token.output = prev_token.output.concat(intermediate_output);
+                                stack.push(prev_token);
+                                intermediate_output = [];
+                            }
+
+                            // Push the new logic token onto the logic stack
+                            stack.push(logic_token);
+
+                        } else if (open !== undefined && open) {
+                            tok_output = {
+                                type: Twig.token.type.logic,
+                                token: logic_token
+                            };
+                            // Standalone token (like {% set ... %}
+                            if (stack.length > 0) {
+                                intermediate_output.push(tok_output);
+                            } else {
+                                output.push(tok_output);
+                            }
+                        }
+                        break;
+
+                    // Do nothing, comments should be ignored
+                    case Twig.token.type.comment:
+                        break;
+
+                    case Twig.token.type.output:
+                        Twig.expression.compile.apply(this, [token]);
+                        if (stack.length > 0) {
+                            intermediate_output.push(token);
+                        } else {
+                            output.push(token);
+                        }
+                        break;
+                }
+
+                Twig.log.trace("Twig.compile: ", " Output: ", output,
+                                                 " Logic Stack: ", stack,
+                                                 " Pending Output: ", intermediate_output );
+            }
+
+            // Verify that there are no logic tokens left in the stack.
+            if (stack.length > 0) {
+                unclosed_token = stack.pop();
+                throw new Error("Unable to find an end tag for " + unclosed_token.type +
+                                ", expecting one of " + unclosed_token.next);
+            }
+            return output;
+        } catch (ex) {
+            Twig.log.error("Error compiling twig template " + this.id + ": ");
+            if (ex.stack) {
+                Twig.log.error(ex.stack);
+            } else {
+                Twig.log.error(ex.toString());
+            }
+
+            if (this.options.rethrow) throw ex;
+        }
+    };
+
+    /**
+     * Parse a compiled template.
+     *
+     * @param {Array} tokens The compiled tokens.
+     * @param {Object} context The render context.
+     *
+     * @return {string} The parsed template.
+     */
+    Twig.parse = function (tokens, context) {
+        try {
+            var output = [],
+                // Track logic chains
+                chain = true,
+                that = this;
+
+            // Default to an empty object if none provided
+            context = context || { };
+
+
+            Twig.forEach(tokens, function parseToken(token) {
+                Twig.log.debug("Twig.parse: ", "Parsing token: ", token);
+
+                switch (token.type) {
+                    case Twig.token.type.raw:
+                        output.push(token.value);
+                        break;
+
+                    case Twig.token.type.logic:
+                        var logic_token = token.token,
+                            logic = Twig.logic.parse.apply(that, [logic_token, context, chain]);
+
+                        if (logic.chain !== undefined) {
+                            chain = logic.chain;
+                        }
+                        if (logic.context !== undefined) {
+                            context = logic.context;
+                        }
+                        if (logic.output !== undefined) {
+                            output.push(logic.output);
+                        }
+                        break;
+
+                    case Twig.token.type.comment:
+                        // Do nothing, comments should be ignored
+                        break;
+
+                    case Twig.token.type.output:
+                        Twig.log.debug("Twig.parse: ", "Output token: ", token.stack);
+                        // Parse the given expression in the given context
+                        output.push(Twig.expression.parse.apply(that, [token.stack, context]));
+                        break;
+                }
+            });
+            return output.join("");
+        } catch (ex) {
+            Twig.log.error("Error parsing twig template " + this.id + ": ");
+            if (ex.stack) {
+                Twig.log.error(ex.stack);
+            } else {
+                Twig.log.error(ex.toString());
+            }
+
+            if (this.options.rethrow) throw ex;
+
+            if (Twig.debug) {
+                return ex.toString();
+            }
+        }
+    };
+
+    /**
+     * Tokenize and compile a string template.
+     *
+     * @param {string} data The template.
+     *
+     * @return {Array} The compiled tokens.
+     */
+    Twig.prepare = function(data) {
+        var tokens, raw_tokens;
+
+        // Tokenize
+        Twig.log.debug("Twig.prepare: ", "Tokenizing ", data);
+        raw_tokens = Twig.tokenize.apply(this, [data]);
+
+        // Compile
+        Twig.log.debug("Twig.prepare: ", "Compiling ", raw_tokens);
+        tokens = Twig.compile.apply(this, [raw_tokens]);
+
+        Twig.log.debug("Twig.prepare: ", "Compiled ", tokens);
+
+        return tokens;
+    };
+
+    // Namespace for template storage and retrieval
+    Twig.Templates = {
+        registry: {}
+    };
+
+    /**
+     * Is this id valid for a twig template?
+     *
+     * @param {string} id The ID to check.
+     *
+     * @throws {Twig.Error} If the ID is invalid or used.
+     * @return {boolean} True if the ID is valid.
+     */
+    Twig.validateId = function(id) {
+        if (id === "prototype") {
+            throw new Twig.Error(id + " is not a valid twig identifier");
+        } else if (Twig.Templates.registry.hasOwnProperty(id)) {
+            throw new Twig.Error("There is already a template with the ID " + id);
+        }
+        return true;
+    }
+
+    /**
+     * Save a template object to the store.
+     *
+     * @param {Twig.Template} template   The twig.js template to store.
+     */
+    Twig.Templates.save = function(template) {
+        if (template.id === undefined) {
+            throw new Twig.Error("Unable to save template with no id");
+        }
+        Twig.Templates.registry[template.id] = template;
+    };
+
+    /**
+     * Load a previously saved template from the store.
+     *
+     * @param {string} id   The ID of the template to load.
+     *
+     * @return {Twig.Template} A twig.js template stored with the provided ID.
+     */
+    Twig.Templates.load = function(id) {
+        if (!Twig.Templates.registry.hasOwnProperty(id)) {
+            return null;
+        }
+        return Twig.Templates.registry[id];
+    };
+
+    /**
+     * Load a template from a remote location using AJAX and saves in with the given ID.
+     *
+     * Available parameters:
+     *
+     *      async:       Should the HTTP request be performed asynchronously.
+     *                      Defaults to true.
+     *      method:      What method should be used to load the template
+     *                      (fs or ajax)
+     *      precompiled: Has the template already been compiled.
+     *
+     * @param {string} location  The remote URL to load as a template.
+     * @param {Object} params The template parameters.
+     * @param {function} callback  A callback triggered when the template finishes loading.
+     * @param {function} error_callback  A callback triggered if an error occurs loading the template.
+     *
+     *
+     */
+    Twig.Templates.loadRemote = function(location, params, callback, error_callback) {
+        var id          = params.id,
+            method      = params.method,
+            async       = params.async,
+            precompiled = params.precompiled,
+            template    = null;
+
+        // Default to async
+        if (async === undefined) async = true;
+
+        // Default to the URL so the template is cached.
+        if (id === undefined) {
+            id = location;
+        }
+        params.id = id;
+
+        // Check for existing template
+        if (Twig.cache && Twig.Templates.registry.hasOwnProperty(id)) {
+            // A template is already saved with the given id.
+            if (callback) {
+                callback(Twig.Templates.registry[id]);
+            }
+            return Twig.Templates.registry[id];
+        }
+
+        if (method == 'ajax') {
+            if (typeof XMLHttpRequest == "undefined") {
+                throw new Twig.Error("Unsupported platform: Unable to do remote requests " +
+                                     "because there is no XMLHTTPRequest implementation");
+            }
+
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                var data = null;
+
+                if(xmlhttp.readyState == 4) {
+                    if (xmlhttp.status == 200) {
+                        Twig.log.debug("Got template ", xmlhttp.responseText);
+
+                        if (precompiled === true) {
+                            data = JSON.parse(xmlhttp.responseText);
+                        } else {
+                            data = xmlhttp.responseText;
+                        }
+
+                        params.url = location;
+                        params.data = data;
+
+                        template = new Twig.Template(params);
+
+                        if (callback) {
+                            callback(template);
+                        }
+                    } else {
+                        if (error_callback) {
+                            error_callback(xmlhttp);
+                        }
+                    }
+                }
+            };
+            xmlhttp.open("GET", location, async);
+            xmlhttp.send();
+
+        } else { // if method = 'fs'
+            // Create local scope
+            (function() {
+                var fs = require('fs'),
+                    path = require('path'),
+                    data = null,
+                    loadTemplateFn = function(err, data) {
+                        if (err) {
+                            if (error_callback) {
+                                error_callback(err);
+                            }
+                            return;
+                        }
+
+                        if (precompiled === true) {
+                            data = JSON.parse(data);
+                        }
+
+                        params.data = data;
+                        params.path = location;
+
+                        // template is in data
+                        template = new Twig.Template(params);
+
+                        if (callback) {
+                            callback(template);
+                        }
+                    };
+
+                if (async === true) {
+                    fs.stat(location, function (err, stats) {
+                        if (err || !stats.isFile())
+                            throw new Twig.Error("Unable to find template file " + location);
+
+                        fs.readFile(location, 'utf8', loadTemplateFn);
+                    });
+                } else {
+                    if (!fs.statSync(location).isFile())
+                        throw new Twig.Error("Unable to find template file " + location);
+
+                    data = fs.readFileSync(location, 'utf8');
+                    loadTemplateFn(undefined, data);
+                }
+            })();
+        }
+        if (async === false) {
+            return template;
+        } else {
+            // placeholder for now, should eventually return a deferred object.
+            return true;
+        }
+    };
+
+    // Determine object type
+    function is(type, obj) {
+        var clas = Object.prototype.toString.call(obj).slice(8, -1);
+        return obj !== undefined && obj !== null && clas === type;
+    }
+
+    /**
+     * Create a new twig.js template.
+     *
+     * Parameters: {
+     *      data:   The template, either pre-compiled tokens or a string template
+     *      id:     The name of this template
+     *      blocks: Any pre-existing block from a child template
+     * }
+     *
+     * @param {Object} params The template parameters.
+     */
+    Twig.Template = function ( params ) {
+        var data = params.data,
+            id = params.id,
+            blocks = params.blocks,
+            macros = params.macros || {},
+            base = params.base,
+            path = params.path,
+            url = params.url,
+            // parser options
+            options = params.options;
+
+        // # What is stored in a Twig.Template
+        //
+        // The Twig Template hold several chucks of data.
+        //
+        //     {
+        //          id:     The token ID (if any)
+        //          tokens: The list of tokens that makes up this template.
+        //          blocks: The list of block this template contains.
+        //          base:   The base template (if any)
+        //            options:  {
+        //                Compiler/parser options
+        //
+        //                strict_variables: true/false
+        //                    Should missing variable/keys emit an error message. If false, they default to null.
+        //            }
+        //     }
+        //
+
+        this.id     = id;
+        this.base   = base;
+        this.path   = path;
+        this.url    = url;
+        this.macros = macros;
+        this.options = options;
+
+        this.reset(blocks);
+
+        if (is('String', data)) {
+            this.tokens = Twig.prepare.apply(this, [data]);
+        } else {
+            this.tokens = data;
+        }
+
+        if (id !== undefined) {
+            Twig.Templates.save(this);
+        }
+    };
+
+    Twig.Template.prototype.reset = function(blocks) {
+        Twig.log.debug("Twig.Template.reset", "Reseting template " + this.id);
+        this.blocks = {};
+        this.child = {
+            blocks: blocks || {}
+        };
+        this.extend = null;
+    };
+
+    Twig.Template.prototype.render = function (context, params) {
+        params = params || {};
+
+        var output,
+            url;
+
+        this.context = context || {};
+
+        // Clear any previous state
+        this.reset();
+        if (params.blocks) {
+            this.blocks = params.blocks;
+        }
+        if (params.macros) {
+            this.macros = params.macros;
+        }
+
+        output = Twig.parse.apply(this, [this.tokens, this.context]);
+
+        // Does this template extend another
+        if (this.extend) {
+            var ext_template;
+
+            // check if the template is provided inline
+            if ( this.options.allowInlineIncludes ) {
+                ext_template = Twig.Templates.load(this.extend);
+                if ( ext_template ) {
+                    ext_template.options = this.options;
+                }
+            }
+
+            // check for the template file via include
+            if (!ext_template) {
+                url = relativePath(this, this.extend);
+
+                ext_template = Twig.Templates.loadRemote(url, {
+                    method: this.url?'ajax':'fs',
+                    base: this.base,
+                    async:  false,
+                    id:     url,
+                    options: this.options
+                });
+            }
+
+            this.parent = ext_template;
+
+            return this.parent.render(this.context, {
+                blocks: this.blocks
+            });
+        }
+
+        if (params.output == 'blocks') {
+            return this.blocks;
+        } else if (params.output == 'macros') {
+            return this.macros;
+        } else {
+            return output;
+        }
+    };
+
+    Twig.Template.prototype.importFile = function(file) {
+        var url, sub_template;
+        if ( !this.url && !this.path && this.options.allowInlineIncludes ) {
+            sub_template = Twig.Templates.load(file);
+            sub_template.options = this.options;
+            if ( sub_template ) {
+                return sub_template;
+            }
+
+            throw new Twig.Error("Didn't find the inline template by id");
+        }
+
+        url = relativePath(this, file);
+
+        // Load blocks from an external file
+        sub_template = Twig.Templates.loadRemote(url, {
+            method: this.url?'ajax':'fs',
+            base: this.base,
+            async: false,
+            options: this.options,
+            id: url
+        });
+
+        return sub_template;
+    };
+
+    Twig.Template.prototype.importBlocks = function(file, override) {
+        var sub_template = this.importFile(file),
+            context = this.context,
+            that = this,
+            key;
+
+        override = override || false;
+
+        sub_template.render(context);
+
+        // Mixin blocks
+        Twig.forEach(Object.keys(sub_template.blocks), function(key) {
+            if (override || that.blocks[key] === undefined) {
+                that.blocks[key] = sub_template.blocks[key];
+            }
+        });
+    };
+
+    Twig.Template.prototype.importMacros = function(file) {
+        var url = relativePath(this, file);
+
+        // load remote template
+        var remoteTemplate = Twig.Templates.loadRemote(url, {
+            method: this.url?'ajax':'fs',
+            async: false,
+            id: url
+        });
+
+        return remoteTemplate;
+    };
+
+    Twig.Template.prototype.compile = function(options) {
+        // compile the template into raw JS
+        return Twig.compiler.compile(this, options);
+    };
+
+    /**
+     * Generate the relative canonical version of a url based on the given base path and file path.
+     *
+     * @param {string} template The Twig.Template.
+     * @param {string} file The file path, relative to the base path.
+     *
+     * @return {string} The canonical version of the path.
+     */
+    function relativePath(template, file) {
+        var base,
+            base_path,
+            sep_chr = "/",
+            new_path = [],
+            val;
+
+        if (template.url) {
+            if (typeof template.base !== 'undefined') {
+                base = template.base + ((template.base.charAt(template.base.length-1) === '/') ? '' : '/');
+            } else {
+                base = template.url;
+            }
+        } else if (template.path) {
+            // Get the system-specific path separator
+            var path = require("path"),
+                sep = path.sep || sep_chr,
+                relative = new RegExp("^\\.{1,2}" + sep.replace("\\", "\\\\"));
+            file = file.replace(/\//g, sep);
+
+            if (template.base !== undefined && file.match(relative) == null) {
+                file = file.replace(template.base, '');
+                base = template.base + sep;
+            } else {
+                base = template.path;
+            }
+
+            base = base.replace(sep+sep, sep);
+            sep_chr = sep;
+        } else {
+            throw new Twig.Error("Cannot extend an inline template.");
+        }
+
+        base_path = base.split(sep_chr);
+
+        // Remove file from url
+        base_path.pop();
+        base_path = base_path.concat(file.split(sep_chr));
+
+        while (base_path.length > 0) {
+            val = base_path.shift();
+            if (val == ".") {
+                // Ignore
+            } else if (val == ".." && new_path.length > 0 && new_path[new_path.length-1] != "..") {
+                new_path.pop();
+            } else {
+                new_path.push(val);
+            }
+        }
+
+        return new_path.join(sep_chr);
+    }
+
+    return Twig;
+
+}) (Twig || { });
+
+// The following methods are from MDN and are available under a
 // [MIT License](http://www.opensource.org/licenses/mit-license.php) or are
-
 // [Public Domain](https://developer.mozilla.org/Project:Copyrights).
+//
+// See:
+// * [Object.keys - MDN](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object/keys)
 
+// ## twig.fills.js
+//
+// This file contains fills for backwards compatability.
+(function() {
+    
+    // Handle methods that don't yet exist in every browser
+
+    if (!String.prototype.trim) {
+        String.prototype.trim = function() {
+            return this.replace(/^\s+|\s+$/g,'');
+        }
+    };
+
+    if(!Object.keys) Object.keys = function(o){
+        if (o !== Object(o)) {
+            throw new TypeError('Object.keys called on non-object');
+        }
+        var ret = [], p;
+        for (p in o) if (Object.prototype.hasOwnProperty.call(o, p)) ret.push(p);
+        return ret;
+    }
+
+})();
+// ## twig.lib.js
+//
+// This file contains 3rd party libraries used within twig.
+//
 // Copies of the licenses for the code included here can be found in the
+// LICENSES.md file.
+//
 
-/**
+var Twig = (function(Twig) {
+
+    // Namespace for libraries
+    Twig.lib = { };
+
+    /**
+    sprintf() for JavaScript 0.7-beta1
+    http://www.diveintojavascript.com/projects/javascript-sprintf
+    **/
+    var sprintf = (function() {
+            function get_type(variable) {
+                    return Object.prototype.toString.call(variable).slice(8, -1).toLowerCase();
+            }
+            function str_repeat(input, multiplier) {
+                    for (var output = []; multiplier > 0; output[--multiplier] = input) {/* do nothing */}
+                    return output.join('');
+            }
+
+            var str_format = function() {
+                    if (!str_format.cache.hasOwnProperty(arguments[0])) {
+                            str_format.cache[arguments[0]] = str_format.parse(arguments[0]);
+                    }
+                    return str_format.format.call(null, str_format.cache[arguments[0]], arguments);
+            };
+
+            str_format.format = function(parse_tree, argv) {
+                    var cursor = 1, tree_length = parse_tree.length, node_type = '', arg, output = [], i, k, match, pad, pad_character, pad_length;
+                    for (i = 0; i < tree_length; i++) {
+                            node_type = get_type(parse_tree[i]);
+                            if (node_type === 'string') {
+                                    output.push(parse_tree[i]);
+                            }
+                            else if (node_type === 'array') {
+                                    match = parse_tree[i]; // convenience purposes only
+                                    if (match[2]) { // keyword argument
+                                            arg = argv[cursor];
+                                            for (k = 0; k < match[2].length; k++) {
+                                                    if (!arg.hasOwnProperty(match[2][k])) {
+                                                            throw(sprintf('[sprintf] property "%s" does not exist', match[2][k]));
+                                                    }
+                                                    arg = arg[match[2][k]];
+                                            }
+                                    }
+                                    else if (match[1]) { // positional argument (explicit)
+                                            arg = argv[match[1]];
+                                    }
+                                    else { // positional argument (implicit)
+                                            arg = argv[cursor++];
+                                    }
+
+                                    if (/[^s]/.test(match[8]) && (get_type(arg) != 'number')) {
+                                            throw(sprintf('[sprintf] expecting number but found %s', get_type(arg)));
+                                    }
+                                    switch (match[8]) {
+                                            case 'b': arg = arg.toString(2); break;
+                                            case 'c': arg = String.fromCharCode(arg); break;
+                                            case 'd': arg = parseInt(arg, 10); break;
+                                            case 'e': arg = match[7] ? arg.toExponential(match[7]) : arg.toExponential(); break;
+                                            case 'f': arg = match[7] ? parseFloat(arg).toFixed(match[7]) : parseFloat(arg); break;
+                                            case 'o': arg = arg.toString(8); break;
+                                            case 's': arg = ((arg = String(arg)) && match[7] ? arg.substring(0, match[7]) : arg); break;
+                                            case 'u': arg = Math.abs(arg); break;
+                                            case 'x': arg = arg.toString(16); break;
+                                            case 'X': arg = arg.toString(16).toUpperCase(); break;
+                                    }
+                                    arg = (/[def]/.test(match[8]) && match[3] && arg >= 0 ? '+'+ arg : arg);
+                                    pad_character = match[4] ? match[4] == '0' ? '0' : match[4].charAt(1) : ' ';
+                                    pad_length = match[6] - String(arg).length;
+                                    pad = match[6] ? str_repeat(pad_character, pad_length) : '';
+                                    output.push(match[5] ? arg + pad : pad + arg);
+                            }
+                    }
+                    return output.join('');
+            };
+
+            str_format.cache = {};
+
+            str_format.parse = function(fmt) {
+                    var _fmt = fmt, match = [], parse_tree = [], arg_names = 0;
+                    while (_fmt) {
+                            if ((match = /^[^\x25]+/.exec(_fmt)) !== null) {
+                                    parse_tree.push(match[0]);
+                            }
+                            else if ((match = /^\x25{2}/.exec(_fmt)) !== null) {
+                                    parse_tree.push('%');
+                            }
+                            else if ((match = /^\x25(?:([1-9]\d*)\$|\(([^\)]+)\))?(\+)?(0|'[^$])?(-)?(\d+)?(?:\.(\d+))?([b-fosuxX])/.exec(_fmt)) !== null) {
+                                    if (match[2]) {
+                                            arg_names |= 1;
+                                            var field_list = [], replacement_field = match[2], field_match = [];
+                                            if ((field_match = /^([a-z_][a-z_\d]*)/i.exec(replacement_field)) !== null) {
+                                                    field_list.push(field_match[1]);
+                                                    while ((replacement_field = replacement_field.substring(field_match[0].length)) !== '') {
+                                                            if ((field_match = /^\.([a-z_][a-z_\d]*)/i.exec(replacement_field)) !== null) {
+                                                                    field_list.push(field_match[1]);
+                                                            }
+                                                            else if ((field_match = /^\[(\d+)\]/.exec(replacement_field)) !== null) {
+                                                                    field_list.push(field_match[1]);
+                                                            }
+                                                            else {
+                                                                    throw('[sprintf] huh?');
+                                                            }
+                                                    }
+                                            }
+                                            else {
+                                                    throw('[sprintf] huh?');
+                                            }
+                                            match[2] = field_list;
+                                    }
+                                    else {
+                                            arg_names |= 2;
+                                    }
+                                    if (arg_names === 3) {
+                                            throw('[sprintf] mixing positional and named placeholders is not (yet) supported');
+                                    }
+                                    parse_tree.push(match);
+                            }
+                            else {
+                                    throw('[sprintf] huh?');
+                            }
+                            _fmt = _fmt.substring(match[0].length);
+                    }
+                    return parse_tree;
+            };
+
+            return str_format;
+    })();
+
+    var vsprintf = function(fmt, argv) {
+        argv.unshift(fmt);
+        return sprintf.apply(null, argv);
+    };
+
+    // Expose to Twig
+    Twig.lib.sprintf = sprintf;
+    Twig.lib.vsprintf = vsprintf;
+
+
+    /**
      * jPaq - A fully customizable JavaScript/JScript library
      * http://jpaq.org/
      *
@@ -25,5 +1251,3949 @@
      * Version: 1.0.6.0000W
      * Revised: April 6, 2011
      */
+    ; (function() {
+        var shortDays = "Sun,Mon,Tue,Wed,Thu,Fri,Sat".split(",");
+        var fullDays = "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday".split(",");
+        var shortMonths = "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec".split(",");
+        var fullMonths = "January,February,March,April,May,June,July,August,September,October,November,December".split(",");
+        function getOrdinalFor(intNum) {
+                return (((intNum = Math.abs(intNum) % 100) % 10 == 1 && intNum != 11) ? "st"
+                        : (intNum % 10 == 2 && intNum != 12) ? "nd" : (intNum % 10 == 3
+                        && intNum != 13) ? "rd" : "th");
+        }
+        function getISO8601Year(aDate) {
+                var d = new Date(aDate.getFullYear() + 1, 0, 4);
+                if((d - aDate) / 86400000 < 7 && (aDate.getDay() + 6) % 7 < (d.getDay() + 6) % 7)
+                        return d.getFullYear();
+                if(aDate.getMonth() > 0 || aDate.getDate() >= 4)
+                        return aDate.getFullYear();
+                return aDate.getFullYear() - (((aDate.getDay() + 6) % 7 - aDate.getDate() > 2) ? 1 : 0);
+        }
+        function getISO8601Week(aDate) {
+                // Get a day during the first week of the year.
+                var d = new Date(getISO8601Year(aDate), 0, 4);
+                // Get the first monday of the year.
+                d.setDate(d.getDate() - (d.getDay() + 6) % 7);
+                return parseInt((aDate - d) / 604800000) + 1;
+        }
+        Twig.lib.formatDate = function(date, format) {
+            /// <summary>
+            ///   Gets a string for this date, formatted according to the given format
+            ///   string.
+            /// </summary>
+            /// <param name="format" type="String">
+            ///   The format of the output date string.  The format string works in a
+            ///   nearly identical way to the PHP date function which is highlighted here:
+            ///   http://php.net/manual/en/function.date.php.
+            ///   The only difference is the fact that "u" signifies milliseconds
+            ///   instead of microseconds.  The following characters are recognized in
+            ///   the format parameter string:
+            ///     d - Day of the month, 2 digits with leading zeros
+            ///     D - A textual representation of a day, three letters
+            ///     j - Day of the month without leading zeros
+            ///     l (lowercase 'L') - A full textual representation of the day of the week
+            ///     N - ISO-8601 numeric representation of the day of the week (starting from 1)
+            ///     S - English ordinal suffix for the day of the month, 2 characters st,
+            ///         nd, rd or th. Works well with j.
+            ///     w - Numeric representation of the day of the week (starting from 0)
+            ///     z - The day of the year (starting from 0)
+            ///     W - ISO-8601 week number of year, weeks starting on Monday
+            ///     F - A full textual representation of a month, such as January or March
+            ///     m - Numeric representation of a month, with leading zeros
+            ///     M - A short textual representation of a month, three letters
+            ///     n - Numeric representation of a month, without leading zeros
+            ///     t - Number of days in the given month
+            ///     L - Whether it's a leap year
+            ///     o - ISO-8601 year number. This has the same value as Y, except that if
+            ///         the ISO week number (W) belongs to the previous or next year, that
+            ///         year is used instead.
+            ///     Y - A full numeric representation of a year, 4 digits
+            ///     y - A two digit representation of a year
+            ///     a - Lowercase Ante meridiem and Post meridiem
+            ///     A - Uppercase Ante meridiem and Post meridiem
+            ///     B - Swatch Internet time
+            ///     g - 12-hour format of an hour without leading zeros
+            ///     G - 24-hour format of an hour without leading zeros
+            ///     h - 12-hour format of an hour with leading zeros
+            ///     H - 24-hour format of an hour with leading zeros
+            ///     i - Minutes with leading zeros
+            ///     s - Seconds, with leading zeros
+            ///     u - Milliseconds
+            ///     U - Seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
+            /// </param>
+            /// <returns type="String">
+            ///   Returns the string for this date, formatted according to the given
+            ///   format string.
+            /// </returns>
+            // If the format was not passed, use the default toString method.
+            if(typeof format !== "string" || /^\s*$/.test(format))
+                    return date + "";
+            var jan1st = new Date(date.getFullYear(), 0, 1);
+            var me = date;
+            return format.replace(/[dDjlNSwzWFmMntLoYyaABgGhHisuU]/g, function(option) {
+                switch(option) {
+                    // Day of the month, 2 digits with leading zeros
+                    case "d": return ("0" + me.getDate()).replace(/^.+(..)$/, "$1");
+                    // A textual representation of a day, three letters
+                    case "D": return shortDays[me.getDay()];
+                    // Day of the month without leading zeros
+                    case "j": return me.getDate();
+                    // A full textual representation of the day of the week
+                    case "l": return fullDays[me.getDay()];
+                    // ISO-8601 numeric representation of the day of the week
+                    case "N": return (me.getDay() + 6) % 7 + 1;
+                    // English ordinal suffix for the day of the month, 2 characters
+                    case "S": return getOrdinalFor(me.getDate());
+                    // Numeric representation of the day of the week
+                    case "w": return me.getDay();
+                    // The day of the year (starting from 0)
+                    case "z": return Math.ceil((jan1st - me) / 86400000);
+                    // ISO-8601 week number of year, weeks starting on Monday
+                    case "W": return ("0" + getISO8601Week(me)).replace(/^.(..)$/, "$1");
+                    // A full textual representation of a month, such as January or March
+                    case "F": return fullMonths[me.getMonth()];
+                    // Numeric representation of a month, with leading zeros
+                    case "m": return ("0" + (me.getMonth() + 1)).replace(/^.+(..)$/, "$1");
+                    // A short textual representation of a month, three letters
+                    case "M": return shortMonths[me.getMonth()];
+                    // Numeric representation of a month, without leading zeros
+                    case "n": return me.getMonth() + 1;
+                    // Number of days in the given month
+                    case "t": return new Date(me.getFullYear(), me.getMonth() + 1, -1).getDate();
+                    // Whether it's a leap year
+                    case "L": return new Date(me.getFullYear(), 1, 29).getDate() == 29 ? 1 : 0;
+                    // ISO-8601 year number. This has the same value as Y, except that if the
+                    // ISO week number (W) belongs to the previous or next year, that year is
+                    // used instead.
+                    case "o": return getISO8601Year(me);
+                    // A full numeric representation of a year, 4 digits
+                    case "Y": return me.getFullYear();
+                    // A two digit representation of a year
+                    case "y": return (me.getFullYear() + "").replace(/^.+(..)$/, "$1");
+                    // Lowercase Ante meridiem and Post meridiem
+                    case "a": return me.getHours() < 12 ? "am" : "pm";
+                    // Uppercase Ante meridiem and Post meridiem
+                    case "A": return me.getHours() < 12 ? "AM" : "PM";
+                    // Swatch Internet time
+                    case "B": return Math.floor((((me.getUTCHours() + 1) % 24) + me.getUTCMinutes() / 60 + me.getUTCSeconds() / 3600) * 1000 / 24);
+                    // 12-hour format of an hour without leading zeros
+                    case "g": return me.getHours() % 12 != 0 ? me.getHours() % 12 : 12;
+                    // 24-hour format of an hour without leading zeros
+                    case "G": return me.getHours();
+                    // 12-hour format of an hour with leading zeros
+                    case "h": return ("0" + (me.getHours() % 12 != 0 ? me.getHours() % 12 : 12)).replace(/^.+(..)$/, "$1");
+                    // 24-hour format of an hour with leading zeros
+                    case "H": return ("0" + me.getHours()).replace(/^.+(..)$/, "$1");
+                    // Minutes with leading zeros
+                    case "i": return ("0" + me.getMinutes()).replace(/^.+(..)$/, "$1");
+                    // Seconds, with leading zeros
+                    case "s": return ("0" + me.getSeconds()).replace(/^.+(..)$/, "$1");
+                    // Milliseconds
+                    case "u": return me.getMilliseconds();
+                    // Seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
+                    case "U": return me.getTime() / 1000;
+                }
+            });
+        };
+    })();
 
-var Twig=function(e){return e.VERSION="0.7.2",e}(Twig||{}),Twig=function(e){function t(e,t){var n=Object.prototype.toString.call(t).slice(8,-1);return t!==undefined&&t!==null&&n===e}function n(t,n){var r,i,s="/",o=[],u;if(t.url)typeof t.base!="undefined"?r=t.base+(t.base.charAt(t.base.length-1)==="/"?"":"/"):r=t.url;else{if(!t.path)throw new e.Error("Cannot extend an inline template.");var a=require("path"),f=a.sep||s,l=new RegExp("^\\.{1,2}"+f.replace("\\","\\\\"));n=n.replace(/\//g,f),t.base!==undefined&&n.match(l)==null?(n=n.replace(t.base,""),r=t.base+f):r=t.path,r=r.replace(f+f,f),s=f}i=r.split(s),i.pop(),i=i.concat(n.split(s));while(i.length>0)u=i.shift(),u!="."&&(u==".."&&o.length>0&&o[o.length-1]!=".."?o.pop():o.push(u));return o.join(s)}return e.trace=!1,e.debug=!1,e.cache=!0,e.placeholders={parent:"{{|PARENT|}}"},e.indexOf=function(e,t){if(Array.prototype.hasOwnProperty("indexOf"))return e.indexOf(t);if(e===void 0||e===null)throw new TypeError;var n=Object(e),r=n.length>>>0;if(r===0)return-1;var i=0;arguments.length>0&&(i=Number(arguments[1]),i!==i?i=0:i!==0&&i!==Infinity&&i!==-Infinity&&(i=(i>0||-1)*Math.floor(Math.abs(i))));if(i>=r)return-1;var s=i>=0?i:Math.max(r-Math.abs(i),0);for(;s<r;s++)if(s in n&&n[s]===t)return s;return e==t?0:-1},e.forEach=function(e,t,n){if(Array.prototype.forEach)return e.forEach(t,n);var r,i;if(e==null)throw new TypeError(" this is null or not defined");var s=Object(e),o=s.length>>>0;if({}.toString.call(t)!="[object Function]")throw new TypeError(t+" is not a function");n&&(r=n),i=0;while(i<o){var u;i in s&&(u=s[i],t.call(r,u,i,s)),i++}},e.Error=function(e){this.message=e,this.name="TwigException",this.type="TwigException"},e.Error.prototype.toString=function(){var e=this.name+": "+this.message;return e},e.log={trace:function(){e.trace&&console&&console.log(Array.prototype.slice.call(arguments))},debug:function(){e.debug&&console&&console.log(Array.prototype.slice.call(arguments))}},typeof console!="undefined"&&typeof console.log!="undefined"?e.log.error=function(){console.log.apply(console,arguments)}:e.log.error=function(){},e.token={},e.token.type={output:"output",logic:"logic",comment:"comment",raw:"raw"},e.token.definitions=[{type:e.token.type.raw,open:"{% raw %}",close:"{% endraw %}"},{type:e.token.type.output,open:"{{",close:"}}"},{type:e.token.type.logic,open:"{%",close:"%}"},{type:e.token.type.comment,open:"{#",close:"#}"}],e.token.strings=['"',"'"],e.token.findStart=function(t){var n={position:null,def:null},r,i,s;for(r=0;r<e.token.definitions.length;r++)i=e.token.definitions[r],s=t.indexOf(i.open),e.log.trace("Twig.token.findStart: ","Searching for ",i.open," found at ",s),s>=0&&(n.position===null||s<n.position)&&(n.position=s,n.def=i);return n},e.token.findEnd=function(t,n,r){var i=null,s=!1,o=0,u=null,a=null,f=null,l=null,c=null,h=null,p,d;while(!s){u=null,a=null,f=t.indexOf(n.close,o);if(!(f>=0))throw new e.Error("Unable to find closing bracket '"+n.close+"'"+" opened near template position "+r);i=f,s=!0;if(n.type===e.token.type.comment)break;d=e.token.strings.length;for(p=0;p<d;p+=1)c=t.indexOf(e.token.strings[p],o),c>0&&c<f&&(u===null||c<u)&&(u=c,a=e.token.strings[p]);if(u!==null){l=u+1,i=null,s=!1;for(;;){h=t.indexOf(a,l);if(h<0)throw"Unclosed string in template";if(t.substr(h-1,1)!=="\\"){o=h+1;break}l=h+1}}}return i},e.tokenize=function(t){var n=[],r=0,i=null,s=null;while(t.length>0)i=e.token.findStart(t),e.log.trace("Twig.tokenize: ","Found token: ",i),i.position!==null?(i.position>0&&n.push({type:e.token.type.raw,value:t.substring(0,i.position)}),t=t.substr(i.position+i.def.open.length),r+=i.position+i.def.open.length,s=e.token.findEnd(t,i.def,r),e.log.trace("Twig.tokenize: ","Token ends at ",s),n.push({type:i.def.type,value:t.substring(0,s).trim()}),i.def.type==="logic"&&t.substr(s+i.def.close.length,1)==="\n"&&(s+=1),t=t.substr(s+i.def.close.length),r+=s+i.def.close.length):(n.push({type:e.token.type.raw,value:t}),t="");return n},e.compile=function(t){try{var n=[],r=[],i=[],s=null,o=null,u=null,a=null,f=null,l=null,c=null,h=null,p=null;while(t.length>0){s=t.shift(),e.log.trace("Compiling token ",s);switch(s.type){case e.token.type.raw:r.length>0?i.push(s):n.push(s);break;case e.token.type.logic:o=e.logic.compile.apply(this,[s]),c=o.type,h=e.logic.handler[c].open,p=e.logic.handler[c].next,e.log.trace("Twig.compile: ","Compiled logic token to ",o," next is: ",p," open is : ",h);if(h!==undefined&&!h){a=r.pop(),f=e.logic.handler[a.type];if(e.indexOf(f.next,c)<0)throw new Error(c+" not expected after a "+a.type);a.output=a.output||[],a.output=a.output.concat(i),i=[],l={type:e.token.type.logic,token:a},r.length>0?i.push(l):n.push(l)}p!==undefined&&p.length>0?(e.log.trace("Twig.compile: ","Pushing ",o," to logic stack."),r.length>0&&(a=r.pop(),a.output=a.output||[],a.output=a.output.concat(i),r.push(a),i=[]),r.push(o)):h!==undefined&&h&&(l={type:e.token.type.logic,token:o},r.length>0?i.push(l):n.push(l));break;case e.token.type.comment:break;case e.token.type.output:e.expression.compile.apply(this,[s]),r.length>0?i.push(s):n.push(s)}e.log.trace("Twig.compile: "," Output: ",n," Logic Stack: ",r," Pending Output: ",i)}if(r.length>0)throw u=r.pop(),new Error("Unable to find an end tag for "+u.type+", expecting one of "+u.next);return n}catch(d){e.log.error("Error compiling twig template "+this.id+": "),d.stack?e.log.error(d.stack):e.log.error(d.toString());if(this.options.rethrow)throw d}},e.parse=function(t,n){try{var r=[],i=!0,s=this;return n=n||{},e.forEach(t,function(o){e.log.debug("Twig.parse: ","Parsing token: ",o);switch(o.type){case e.token.type.raw:r.push(o.value);break;case e.token.type.logic:var u=o.token,a=e.logic.parse.apply(s,[u,n,i]);a.chain!==undefined&&(i=a.chain),a.context!==undefined&&(n=a.context),a.output!==undefined&&r.push(a.output);break;case e.token.type.comment:break;case e.token.type.output:e.log.debug("Twig.parse: ","Output token: ",o.stack),r.push(e.expression.parse.apply(s,[o.stack,n]))}}),r.join("")}catch(o){e.log.error("Error parsing twig template "+this.id+": "),o.stack?e.log.error(o.stack):e.log.error(o.toString());if(this.options.rethrow)throw o;if(e.debug)return o.toString()}},e.prepare=function(t){var n,r;return e.log.debug("Twig.prepare: ","Tokenizing ",t),r=e.tokenize.apply(this,[t]),e.log.debug("Twig.prepare: ","Compiling ",r),n=e.compile.apply(this,[r]),e.log.debug("Twig.prepare: ","Compiled ",n),n},e.Templates={registry:{}},e.validateId=function(t){if(t==="prototype")throw new e.Error(t+" is not a valid twig identifier");if(e.Templates.registry.hasOwnProperty(t))throw new e.Error("There is already a template with the ID "+t);return!0},e.Templates.save=function(t){if(t.id===undefined)throw new e.Error("Unable to save template with no id");e.Templates.registry[t.id]=t},e.Templates.load=function(t){return e.Templates.registry.hasOwnProperty(t)?e.Templates.registry[t]:null},e.Templates.loadRemote=function(t,n,r,i){var s=n.id,o=n.method,u=n.async,a=n.precompiled,f=null;u===undefined&&(u=!0),s===undefined&&(s=t),n.id=s;if(e.cache&&e.Templates.registry.hasOwnProperty(s))return r&&r(e.Templates.registry[s]),e.Templates.registry[s];if(o=="ajax"){if(typeof XMLHttpRequest=="undefined")throw new e.Error("Unsupported platform: Unable to do remote requests because there is no XMLHTTPRequest implementation");var l=new XMLHttpRequest;l.onreadystatechange=function(){var s=null;l.readyState==4&&(l.status==200?(e.log.debug("Got template ",l.responseText),a===!0?s=JSON.parse(l.responseText):s=l.responseText,n.url=t,n.data=s,f=new e.Template(n),r&&r(f)):i&&i(l))},l.open("GET",t,u),l.send()}else(function(){var s=require("fs"),o=require("path"),l=null,c=function(s,o){if(s){i&&i(s);return}a===!0&&(o=JSON.parse(o)),n.data=o,n.path=t,f=new e.Template(n),r&&r(f)};if(u===!0)s.stat(t,function(n,r){if(n||!r.isFile())throw new e.Error("Unable to find template file "+t);s.readFile(t,"utf8",c)});else{if(!s.statSync(t).isFile())throw new e.Error("Unable to find template file "+t);l=s.readFileSync(t,"utf8"),c(undefined,l)}})();return u===!1?f:!0},e.Template=function(n){var r=n.data,i=n.id,s=n.blocks,o=n.macros||{},u=n.base,a=n.path,f=n.url,l=n.options;this.id=i,this.base=u,this.path=a,this.url=f,this.macros=o,this.options=l,this.reset(s),t("String",r)?this.tokens=e.prepare.apply(this,[r]):this.tokens=r,i!==undefined&&e.Templates.save(this)},e.Template.prototype.reset=function(t){e.log.debug("Twig.Template.reset","Reseting template "+this.id),this.blocks={},this.child={blocks:t||{}},this.extend=null},e.Template.prototype.render=function(t,r){r=r||{};var i,s;this.context=t||{},this.reset(),r.blocks&&(this.blocks=r.blocks),r.macros&&(this.macros=r.macros),i=e.parse.apply(this,[this.tokens,this.context]);if(this.extend){var o;return this.options.allowInlineIncludes&&(o=e.Templates.load(this.extend),o&&(o.options=this.options)),o||(s=n(this,this.extend),o=e.Templates.loadRemote(s,{method:this.url?"ajax":"fs",base:this.base,async:!1,id:s,options:this.options})),this.parent=o,this.parent.render(this.context,{blocks:this.blocks})}return r.output=="blocks"?this.blocks:r.output=="macros"?this.macros:i},e.Template.prototype.importFile=function(t){var r,i;if(!this.url&&!this.path&&this.options.allowInlineIncludes){i=e.Templates.load(t),i.options=this.options;if(i)return i;throw new e.Error("Didn't find the inline template by id")}return r=n(this,t),i=e.Templates.loadRemote(r,{method:this.url?"ajax":"fs",base:this.base,async:!1,options:this.options,id:r}),i},e.Template.prototype.importBlocks=function(t,n){var r=this.importFile(t),i=this.context,s=this,o;n=n||!1,r.render(i),e.forEach(Object.keys(r.blocks),function(e){if(n||s.blocks[e]===undefined)s.blocks[e]=r.blocks[e]})},e.Template.prototype.importMacros=function(t){var r=n(this,t),i=e.Templates.loadRemote(r,{method:this.url?"ajax":"fs",async:!1,id:r});return i},e.Template.prototype.compile=function(t){return e.compiler.compile(this,t)},e}(Twig||{});(function(){String.prototype.trim||(String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g,"")}),Object.keys||(Object.keys=function(e){if(e!==Object(e))throw new TypeError("Object.keys called on non-object");var t=[],n;for(n in e)Object.prototype.hasOwnProperty.call(e,n)&&t.push(n);return t})})();var Twig=function(e){e.lib={};var t=function(){function e(e){return Object.prototype.toString.call(e).slice(8,-1).toLowerCase()}function n(e,t){for(var n=[];t>0;n[--t]=e);return n.join("")}var r=function(){return r.cache.hasOwnProperty(arguments[0])||(r.cache[arguments[0]]=r.parse(arguments[0])),r.format.call(null,r.cache[arguments[0]],arguments)};return r.format=function(r,i){var s=1,o=r.length,u="",a,f=[],l,c,h,p,d,v;for(l=0;l<o;l++){u=e(r[l]);if(u==="string")f.push(r[l]);else if(u==="array"){h=r[l];if(h[2]){a=i[s];for(c=0;c<h[2].length;c++){if(!a.hasOwnProperty(h[2][c]))throw t('[sprintf] property "%s" does not exist',h[2][c]);a=a[h[2][c]]}}else h[1]?a=i[h[1]]:a=i[s++];if(/[^s]/.test(h[8])&&e(a)!="number")throw t("[sprintf] expecting number but found %s",e(a));switch(h[8]){case"b":a=a.toString(2);break;case"c":a=String.fromCharCode(a);break;case"d":a=parseInt(a,10);break;case"e":a=h[7]?a.toExponential(h[7]):a.toExponential();break;case"f":a=h[7]?parseFloat(a).toFixed(h[7]):parseFloat(a);break;case"o":a=a.toString(8);break;case"s":a=(a=String(a))&&h[7]?a.substring(0,h[7]):a;break;case"u":a=Math.abs(a);break;case"x":a=a.toString(16);break;case"X":a=a.toString(16).toUpperCase()}a=/[def]/.test(h[8])&&h[3]&&a>=0?"+"+a:a,d=h[4]?h[4]=="0"?"0":h[4].charAt(1):" ",v=h[6]-String(a).length,p=h[6]?n(d,v):"",f.push(h[5]?a+p:p+a)}}return f.join("")},r.cache={},r.parse=function(e){var t=e,n=[],r=[],i=0;while(t){if((n=/^[^\x25]+/.exec(t))!==null)r.push(n[0]);else if((n=/^\x25{2}/.exec(t))!==null)r.push("%");else{if((n=/^\x25(?:([1-9]\d*)\$|\(([^\)]+)\))?(\+)?(0|'[^$])?(-)?(\d+)?(?:\.(\d+))?([b-fosuxX])/.exec(t))===null)throw"[sprintf] huh?";if(n[2]){i|=1;var s=[],o=n[2],u=[];if((u=/^([a-z_][a-z_\d]*)/i.exec(o))===null)throw"[sprintf] huh?";s.push(u[1]);while((o=o.substring(u[0].length))!=="")if((u=/^\.([a-z_][a-z_\d]*)/i.exec(o))!==null)s.push(u[1]);else{if((u=/^\[(\d+)\]/.exec(o))===null)throw"[sprintf] huh?";s.push(u[1])}n[2]=s}else i|=2;if(i===3)throw"[sprintf] mixing positional and named placeholders is not (yet) supported";r.push(n)}t=t.substring(n[0].length)}return r},r}(),n=function(e,n){return n.unshift(e),t.apply(null,n)};return e.lib.sprintf=t,e.lib.vsprintf=n,function(){function s(e){return(e=Math.abs(e)%100)%10==1&&e!=11?"st":e%10==2&&e!=12?"nd":e%10==3&&e!=13?"rd":"th"}function o(e){var t=new Date(e.getFullYear()+1,0,4);return(t-e)/864e5<7&&(e.getDay()+6)%7<(t.getDay()+6)%7?t.getFullYear():e.getMonth()>0||e.getDate()>=4?e.getFullYear():e.getFullYear()-((e.getDay()+6)%7-e.getDate()>2?1:0)}function u(e){var t=new Date(o(e),0,4);return t.setDate(t.getDate()-(t.getDay()+6)%7),parseInt((e-t)/6048e5)+1}var t="Sun,Mon,Tue,Wed,Thu,Fri,Sat".split(","),n="Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday".split(","),r="Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec".split(","),i="January,February,March,April,May,June,July,August,September,October,November,December".split(",");e.lib.formatDate=function(e,a){if(typeof a!="string"||/^\s*$/.test(a))return e+"";var f=new Date(e.getFullYear(),0,1),l=e;return a.replace(/[dDjlNSwzWFmMntLoYyaABgGhHisuU]/g,function(e){switch(e){case"d":return("0"+l.getDate()).replace(/^.+(..)$/,"$1");case"D":return t[l.getDay()];case"j":return l.getDate();case"l":return n[l.getDay()];case"N":return(l.getDay()+6)%7+1;case"S":return s(l.getDate());case"w":return l.getDay();case"z":return Math.ceil((f-l)/864e5);case"W":return("0"+u(l)).replace(/^.(..)$/,"$1");case"F":return i[l.getMonth()];case"m":return("0"+(l.getMonth()+1)).replace(/^.+(..)$/,"$1");case"M":return r[l.getMonth()];case"n":return l.getMonth()+1;case"t":return(new Date(l.getFullYear(),l.getMonth()+1,-1)).getDate();case"L":return(new Date(l.getFullYear(),1,29)).getDate()==29?1:0;case"o":return o(l);case"Y":return l.getFullYear();case"y":return(l.getFullYear()+"").replace(/^.+(..)$/,"$1");case"a":return l.getHours()<12?"am":"pm";case"A":return l.getHours()<12?"AM":"PM";case"B":return Math.floor(((l.getUTCHours()+1)%24+l.getUTCMinutes()/60+l.getUTCSeconds()/3600)*1e3/24);case"g":return l.getHours()%12!=0?l.getHours()%12:12;case"G":return l.getHours();case"h":return("0"+(l.getHours()%12!=0?l.getHours()%12:12)).replace(/^.+(..)$/,"$1");case"H":return("0"+l.getHours()).replace(/^.+(..)$/,"$1");case"i":return("0"+l.getMinutes()).replace(/^.+(..)$/,"$1");case"s":return("0"+l.getSeconds()).replace(/^.+(..)$/,"$1");case"u":return l.getMilliseconds();case"U":return l.getTime()/1e3}})}}(),e.lib.strip_tags=function(e,t){t=(((t||"")+"").toLowerCase().match(/<[a-z][a-z0-9]*>/g)||[]).join("");var n=/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,r=/<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;return e.replace(r,"").replace(n,function(e,n){return t.indexOf("<"+n.toLowerCase()+">")>-1?e:""})},e.lib.parseISO8601Date=function(e){var t=/(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)(\.\d+)?(Z|([+-])(\d\d):(\d\d))/,n=[];n=e.match(t);if(!n)throw"Couldn't parse ISO 8601 date string '"+e+"'";var r=[1,2,3,4,5,6,10,11];for(var i in r)n[r[i]]=parseInt(n[r[i]],10);n[7]=parseFloat(n[7]);var s=Date.UTC(n[1],n[2]-1,n[3],n[4],n[5],n[6]);n[7]>0&&(s+=Math.round(n[7]*1e3));if(n[8]!="Z"&&n[10]){var o=n[10]*60*60*1e3;n[11]&&(o+=n[11]*60*1e3),n[9]=="-"?s-=o:s+=o}return new Date(s)},e.lib.strtotime=function(t,n){var r,i,s,o,u="";t=t.replace(/\s{2,}|^\s|\s$/g," "),t=t.replace(/[\t\r\n]/g,"");if(t==="now")return n===null||isNaN(n)?(new Date).getTime()/1e3|0:n|0;if(!isNaN(u=Date.parse(t)))return u/1e3|0;n?n=new Date(n*1e3):n=new Date;var a=t;t=t.toLowerCase();var f={day:{sun:0,mon:1,tue:2,wed:3,thu:4,fri:5,sat:6},mon:["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"]},l=function(e){var t=e[2]&&e[2]==="ago",r=(r=e[0]==="last"?-1:1)*(t?-1:1);switch(e[0]){case"last":case"next":switch(e[1].substring(0,3)){case"yea":n.setFullYear(n.getFullYear()+r);break;case"wee":n.setDate(n.getDate()+r*7);break;case"day":n.setDate(n.getDate()+r);break;case"hou":n.setHours(n.getHours()+r);break;case"min":n.setMinutes(n.getMinutes()+r);break;case"sec":n.setSeconds(n.getSeconds()+r);break;case"mon":if(e[1]==="month"){n.setMonth(n.getMonth()+r);break};default:var i=f.day[e[1].substring(0,3)];if(typeof i!="undefined"){var s=i-n.getDay();s===0?s=7*r:s>0?e[0]==="last"&&(s-=7):e[0]==="next"&&(s+=7),n.setDate(n.getDate()+s),n.setHours(0,0,0,0)}}break;default:if(!/\d+/.test(e[0]))return!1;r*=parseInt(e[0],10);switch(e[1].substring(0,3)){case"yea":n.setFullYear(n.getFullYear()+r);break;case"mon":n.setMonth(n.getMonth()+r);break;case"wee":n.setDate(n.getDate()+r*7);break;case"day":n.setDate(n.getDate()+r);break;case"hou":n.setHours(n.getHours()+r);break;case"min":n.setMinutes(n.getMinutes()+r);break;case"sec":n.setSeconds(n.getSeconds()+r)}}return!0};s=t.match(/^(\d{2,4}-\d{2}-\d{2})(?:\s(\d{1,2}:\d{2}(:\d{2})?)?(?:\.(\d+))?)?$/);if(s!==null)return s[2]?s[3]||(s[2]+=":00"):s[2]="00:00:00",o=s[1].split(/-/g),o[1]=f.mon[o[1]-1]||o[1],o[0]=+o[0],o[0]=o[0]>=0&&o[0]<=69?"20"+(o[0]<10?"0"+o[0]:o[0]+""):o[0]>=70&&o[0]<=99?"19"+o[0]:o[0]+"",parseInt(this.strtotime(o[2]+" "+o[1]+" "+o[0]+" "+s[2])+(s[4]?s[4]/1e3:""),10);var c="([+-]?\\d+\\s(years?|months?|weeks?|days?|hours?|min|minutes?|sec|seconds?|sun\\.?|sunday|mon\\.?|monday|tue\\.?|tuesday|wed\\.?|wednesday|thu\\.?|thursday|fri\\.?|friday|sat\\.?|saturday)|(last|next)\\s(years?|months?|weeks?|days?|hours?|min|minutes?|sec|seconds?|sun\\.?|sunday|mon\\.?|monday|tue\\.?|tuesday|wed\\.?|wednesday|thu\\.?|thursday|fri\\.?|friday|sat\\.?|saturday))(\\sago)?";s=t.match(new RegExp(c,"gi"));if(s===null){try{num=e.lib.parseISO8601Date(a);if(num)return num/1e3|0}catch(h){return!1}return!1}for(r=0,i=s.length;r<i;r++)if(!l(s[r].split(" ")))return!1;return n.getTime()/1e3|0},e.lib.is=function(e,t){var n=Object.prototype.toString.call(t).slice(8,-1);return t!==undefined&&t!==null&&n===e},e.lib.copy=function(e){var t={},n;for(n in e)t[n]=e[n];return t},e.lib.replaceAll=function(e,t,n){return e.split(t).join(n)},e.lib.chunkArray=function(t,n){var r=[],i=0,s=t.length;if(n<1||!e.lib.is("Array",t))return[];while(i<s)r.push(t.slice(i,i+=n));return r},e.lib.round=function(t,n,r){var i,s,o,u;n|=0,i=Math.pow(10,n),t*=i,u=t>0|-(t<0),o=t%1===.5*u,s=Math.floor(t);if(o)switch(r){case"PHP_ROUND_HALF_DOWN":t=s+(u<0);break;case"PHP_ROUND_HALF_EVEN":t=s+s%2*u;break;case"PHP_ROUND_HALF_ODD":t=s+!(s%2);break;default:t=s+(u>0)}return(o?t:Math.round(t))/i},e}(Twig||{}),Twig=function(e){e.logic={},e.logic.type={if_:"Twig.logic.type.if",endif:"Twig.logic.type.endif",for_:"Twig.logic.type.for",endfor:"Twig.logic.type.endfor",else_:"Twig.logic.type.else",elseif:"Twig.logic.type.elseif",set:"Twig.logic.type.set",setcapture:"Twig.logic.type.setcapture",endset:"Twig.logic.type.endset",filter:"Twig.logic.type.filter",endfilter:"Twig.logic.type.endfilter",block:"Twig.logic.type.block",endblock:"Twig.logic.type.endblock",extends_:"Twig.logic.type.extends",use:"Twig.logic.type.use",include:"Twig.logic.type.include",spaceless:"Twig.logic.type.spaceless",endspaceless:"Twig.logic.type.endspaceless",macro:"Twig.logic.type.macro",endmacro:"Twig.logic.type.endmacro",import_:"Twig.logic.type.import",from:"Twig.logic.type.from"},e.logic.definitions=[{type:e.logic.type.if_,regex:/^if\s+([^\s].+)$/,next:[e.logic.type.else_,e.logic.type.elseif,e.logic.type.endif],open:!0,compile:function(t){var n=t.match[1];return t.stack=e.expression.compile.apply(this,[{type:e.expression.type.expression,value:n}]).stack,delete t.match,t},parse:function(t,n,r){var i="",s=e.expression.parse.apply(this,[t.stack,n]);return r=!0,s&&(r=!1,i=e.parse.apply(this,[t.output,n])),{chain:r,output:i}}},{type:e.logic.type.elseif,regex:/^elseif\s+([^\s].*)$/,next:[e.logic.type.else_,e.logic.type.elseif,e.logic.type.endif],open:!1,compile:function(t){var n=t.match[1];return t.stack=e.expression.compile.apply(this,[{type:e.expression.type.expression,value:n}]).stack,delete t.match,t},parse:function(t,n,r){var i="";return r&&e.expression.parse.apply(this,[t.stack,n])===!0&&(r=!1,i=e.parse.apply(this,[t.output,n])),{chain:r,output:i}}},{type:e.logic.type.else_,regex:/^else$/,next:[e.logic.type.endif,e.logic.type.endfor],open:!1,parse:function(t,n,r){var i="";return r&&(i=e.parse.apply(this,[t.output,n])),{chain:r,output:i}}},{type:e.logic.type.endif,regex:/^endif$/,next:[],open:!1},{type:e.logic.type.for_,regex:/^for\s+([a-zA-Z0-9_,\s]+)\s+in\s+([^\s].*?)(?:\s+if\s+([^\s].*))?$/,next:[e.logic.type.else_,e.logic.type.endfor],open:!0,compile:function(t){var n=t.match[1],r=t.match[2],i=t.match[3],s=null;t.key_var=null,t.value_var=null;if(n.indexOf(",")>=0){s=n.split(",");if(s.length!==2)throw new e.Error("Invalid expression in for loop: "+n);t.key_var=s[0].trim(),t.value_var=s[1].trim()}else t.value_var=n;return t.expression=e.expression.compile.apply(this,[{type:e.expression.type.expression,value:r}]).stack,i&&(t.conditional=e.expression.compile.apply(this,[{type:e.expression.type.expression,value:i}]).stack),delete t.match,t},parse:function(t,n,r){var i=e.expression.parse.apply(this,[t.expression,n]),s=[],o,u=0,a,f=this,l=t.conditional,c=function(e,t){var r=l!==undefined;return{index:e+1,index0:e,revindex:r?undefined:t-e,revindex0:r?undefined:t-e-1,first:e===0,last:r?undefined:e===t-1,length:r?undefined:t,parent:n}},h=function(r,i){var a=e.lib.copy(n);a[t.value_var]=i,t.key_var&&(a[t.key_var]=r),a.loop=c(u,o);if(l===undefined||e.expression.parse.apply(f,[l,a]))s.push(e.parse.apply(f,[t.output,a])),u+=1};return i instanceof Array?(o=i.length,e.forEach(i,function(e){var t=u;h(t,e)})):i instanceof Object&&(i._keys!==undefined?a=i._keys:a=Object.keys(i),o=a.length,e.forEach(a,function(e){if(e==="_keys")return;h(e,i[e])})),r=s.length===0,{chain:r,output:s.join("")}}},{type:e.logic.type.endfor,regex:/^endfor$/,next:[],open:!1},{type:e.logic.type.set,regex:/^set\s+([a-zA-Z0-9_,\s]+)\s*=\s*(.+)$/,next:[],open:!0,compile:function(t){var n=t.match[1].trim(),r=t.match[2],i=e.expression.compile.apply(this,[{type:e.expression.type.expression,value:r}]).stack;return t.key=n,t.expression=i,delete t.match,t},parse:function(t,n,r){var i=e.expression.parse.apply(this,[t.expression,n]),s=t.key;return this.context[s]=i,n[s]=i,{chain:r,context:n}}},{type:e.logic.type.setcapture,regex:/^set\s+([a-zA-Z0-9_,\s]+)$/,next:[e.logic.type.endset],open:!0,compile:function(e){var t=e.match[1].trim();return e.key=t,delete e.match,e},parse:function(t,n,r){var i=e.parse.apply(this,[t.output,n]),s=t.key;return this.context[s]=i,n[s]=i,{chain:r,context:n}}},{type:e.logic.type.endset,regex:/^endset$/,next:[],open:!1},{type:e.logic.type.filter,regex:/^filter\s+(.+)$/,next:[e.logic.type.endfilter],open:!0,compile:function(t){var n="|"+t.match[1].trim();return t.stack=e.expression.compile.apply(this,[{type:e.expression.type.expression,value:n}]).stack,delete t.match,t},parse:function(t,n,r){var i=e.parse.apply(this,[t.output,n]),s=[{type:e.expression.type.string,value:i}].concat(t.stack),o=e.expression.parse.apply(this,[s,n]);return{chain:r,output:o}}},{type:e.logic.type.endfilter,regex:/^endfilter$/,next:[],open:!1},{type:e.logic.type.block,regex:/^block\s+([a-zA-Z0-9_]+)$/,next:[e.logic.type.endblock],open:!0,compile:function(e){return e.block=e.match[1].trim(),delete e.match,e},parse:function(t,n,r){var i="",s="",o=this.blocks[t.block]&&this.blocks[t.block].indexOf(e.placeholders.parent)>-1;if(this.blocks[t.block]===undefined||o||n.loop)i=e.expression.parse.apply(this,[{type:e.expression.type.string,value:e.parse.apply(this,[t.output,n])},n]),o?this.blocks[t.block]=this.blocks[t.block].replace(e.placeholders.parent,i):this.blocks[t.block]=i;return this.child.blocks[t.block]?s=this.child.blocks[t.block]:s=this.blocks[t.block],{chain:r,output:s}}},{type:e.logic.type.endblock,regex:/^endblock(?:\s+([a-zA-Z0-9_]+))?$/,next:[],open:!1},{type:e.logic.type.extends_,regex:/^extends\s+(.+)$/,next:[],open:!0,compile:function(t){var n=t.match[1].trim();return delete t.match,t.stack=e.expression.compile.apply(this,[{type:e.expression.type.expression,value:n}]).stack,t},parse:function(t,n,r){var i=e.expression.parse.apply(this,[t.stack,n]);return this.extend=i,{chain:r,output:""}}},{type:e.logic.type.use,regex:/^use\s+(.+)$/,next:[],open:!0,compile:function(t){var n=t.match[1].trim();return delete t.match,t.stack=e.expression.compile.apply(this,[{type:e.expression.type.expression,value:n}]).stack,t},parse:function(t,n,r){var i=e.expression.parse.apply(this,[t.stack,n]);return this.importBlocks(i),{chain:r,output:""}}},{type:e.logic.type.include,regex:/^include\s+(ignore missing\s+)?(.+?)\s*(?:with\s+(.+?))?\s*(only)?$/,next:[],open:!0,compile:function(t){var n=t.match,r=n[1]!==undefined,i=n[2].trim(),s=n[3],o=n[4]!==undefined&&n[4].length;return delete t.match,t.only=o,t.includeMissing=r,t.stack=e.expression.compile.apply(this,[{type:e.expression.type.expression,value:i}]).stack,s!==undefined&&(t.withStack=e.expression.compile.apply(this,[{type:e.expression.type.expression,value:s.trim()}]).stack),t},parse:function(t,n,r){var i={},s,o,u;if(!t.only)for(o in n)n.hasOwnProperty(o)&&(i[o]=n[o]);if(t.withStack!==undefined){s=e.expression.parse.apply(this,[t.withStack,n]);for(o in s)s.hasOwnProperty(o)&&(i[o]=s[o])}var a=e.expression.parse.apply(this,[t.stack,i]);return u=this.importFile(a),{chain:r,output:u.render(i)}}},{type:e.logic.type.spaceless,regex:/^spaceless$/,next:[e.logic.type.endspaceless],open:!0,parse:function(t,n,r){var i=e.parse.apply(this,[t.output,n]),s=/>\s+</g,o=i.replace(s,"><").trim();return{chain:r,output:o}}},{type:e.logic.type.endspaceless,regex:/^endspaceless$/,next:[],open:!1},{type:e.logic.type.macro,regex:/^macro\s+([a-zA-Z0-9_]+)\s?\((([a-zA-Z0-9_]+(,\s?)?)*)\)$/,next:[e.logic.type.endmacro],open:!0,compile:function(t){var n=t.match[1],r=t.match[2].split(/[ ,]+/);for(var i=0;i<r.length;i++)for(var s=0;s<r.length;s++)if(r[i]===r[s]&&i!==s)throw new e.Error("Duplicate arguments for parameter: "+r[i]);return t.macroName=n,t.parameters=r,delete t.match,t},parse:function(t,n,r){var i=this;return this.macros[t.macroName]=function(){var n={_self:i.macros};for(var r=0;r<t.parameters.length;r++){var s=t.parameters[r];typeof arguments[r]!="undefined"?n[s]=arguments[r]:n[s]=undefined}return e.parse.apply(i,[t.output,n])},{chain:r,output:""}}},{type:e.logic.type.endmacro,regex:/^endmacro$/,next:[],open:!1},{type:e.logic.type.import_,regex:/^import\s+(.+)\s+as\s+([a-zA-Z0-9_]+)$/,next:[],open:!0,compile:function(t){var n=t.match[1].trim(),r=t.match[2].trim();return delete t.match,t.expression=n,t.contextName=r,t.stack=e.expression.compile.apply(this,[{type:e.expression.type.expression,value:n}]).stack,t},parse:function(t,n,r){if(t.expression!=="_self"){var i=e.expression.parse.apply(this,[t.stack,n]),s=this.importMacros(i||t.expression);n[t.contextName]=s.render({},{output:"macros"})}else n[t.contextName]=this.macros;return{chain:r,output:""}}},{type:e.logic.type.from,regex:/^from\s+(.+)\s+import\s+([a-zA-Z0-9_, ]+)$/,next:[],open:!0,compile:function(t){var n=t.match[1].trim(),r=t.match[2].trim().split(/[ ,]+/),i={};for(var s=0;s<r.length;s++){var o=r[s],u=o.match(/^([a-zA-Z0-9_]+)\s+(.+)\s+as\s+([a-zA-Z0-9_]+)$/);u?i[u[1].trim()]=u[2].trim():o.match(/^([a-zA-Z0-9_]+)$/)&&(i[o]=o)}return delete t.match,t.expression=n,t.macroNames=i,t.stack=e.expression.compile.apply(this,[{type:e.expression.type.expression,value:n}]).stack,t},parse:function(t,n,r){var i;if(t.expression!=="_self"){var s=e.expression.parse.apply(this,[t.stack,n]),o=this.importMacros(s||t.expression);i=o.render({},{output:"macros"})}else i=this.macros;for(var u in t.macroNames)i.hasOwnProperty(u)&&(n[t.macroNames[u]]=i[u]);return{chain:r,output:""}}}],e.logic.handler={},e.logic.extendType=function(t,n){n=n||"Twig.logic.type"+t,e.logic.type[t]=n},e.logic.extend=function(t){if(!t.type)throw new e.Error("Unable to extend logic definition. No type provided for "+t);if(e.logic.type[t.type])throw new e.Error("Unable to extend logic definitions. Type "+t.type+" is already defined.");e.logic.extendType(t.type),e.logic.handler[t.type]=t};while(e.logic.definitions.length>0)e.logic.extend(e.logic.definitions.shift());return e.logic.compile=function(t){var n=t.value.trim(),r=e.logic.tokenize.apply(this,[n]),i=e.logic.handler[r.type];return i.compile&&(r=i.compile.apply(this,[r]),e.log.trace("Twig.logic.compile: ","Compiled logic token to ",r)),r},e.logic.tokenize=function(t){var n={},r=null,i=null,s=null,o=null,u=null,a=null;t=t.trim();for(r in e.logic.handler)if(e.logic.handler.hasOwnProperty(r)){i=e.logic.handler[r].type,s=e.logic.handler[r].regex,o=[],s instanceof Array?o=s:o.push(s);while(o.length>0){u=o.shift(),a=u.exec(t.trim());if(a!==null)return n.type=i,n.match=a,e.log.trace("Twig.logic.tokenize: ","Matched a ",i," regular expression of ",a),n}}throw new e.Error("Unable to parse '"+t.trim()+"'")},e.logic.parse=function(t,n,r){var i="",s;return n=n||{},e.log.debug("Twig.logic.parse: ","Parsing logic token ",t),s=e.logic.handler[t.type],s.parse&&(i=s.parse.apply(this,[t,n,r])),i},e}(Twig||{}),Twig=function(e){e.expression={},e.expression.reservedWords=["true","false","null","_context"],e.expression.type={comma:"Twig.expression.type.comma",operator:{unary:"Twig.expression.type.operator.unary",binary:"Twig.expression.type.operator.binary"},string:"Twig.expression.type.string",bool:"Twig.expression.type.bool",array:{start:"Twig.expression.type.array.start",end:"Twig.expression.type.array.end"},object:{start:"Twig.expression.type.object.start",end:"Twig.expression.type.object.end"},parameter:{start:"Twig.expression.type.parameter.start",end:"Twig.expression.type.parameter.end"},key:{period:"Twig.expression.type.key.period",brackets:"Twig.expression.type.key.brackets"},filter:"Twig.expression.type.filter",_function:"Twig.expression.type._function",variable:"Twig.expression.type.variable",number:"Twig.expression.type.number",_null:"Twig.expression.type.null",context:"Twig.expression.type.context",test:"Twig.expression.type.test"},e.expression.set={operations:[e.expression.type.filter,e.expression.type.operator.unary,e.expression.type.operator.binary,e.expression.type.array.end,e.expression.type.object.end,e.expression.type.parameter.end,e.expression.type.comma,e.expression.type.test],expressions:[e.expression.type._function,e.expression.type.bool,e.expression.type.string,e.expression.type.variable,e.expression.type.number,e.expression.type._null,e.expression.type.context,e.expression.type.parameter.start,e.expression.type.array.start,e.expression.type.object.start]},e.expression.set.operations_extended=e.expression.set.operations.concat([e.expression.type.key.period,e.expression.type.key.brackets]),e.expression.fn={compile:{push:function(e,t,n){n.push(e)},push_both:function(e,t,n){n.push(e),t.push(e)}},parse:{push:function(e,t,n){t.push(e)},push_value:function(e,t,n){t.push(e.value)}}},e.expression.definitions=[{type:e.expression.type.test,regex:/^is\s+(not)?\s*([a-zA-Z_][a-zA-Z0-9_]*)/,next:e.expression.set.operations.concat([e.expression.type.parameter.start]),compile:function(e,t,n){e.filter=e.match[2],e.modifier=e.match[1],delete e.match,delete e.value,n.push(e)},parse:function(t,n,r){var i=n.pop(),s=t.params&&e.expression.parse.apply(this,[t.params,r]),o=e.test(t.filter,i,s);t.modifier=="not"?n.push(!o):n.push(o)}},{type:e.expression.type.comma,regex:/^,/,next:e.expression.set.expressions.concat([e.expression.type.array.end,e.expression.type.object.end]),compile:function(t,n,r){var i=n.length-1,s;delete t.match,delete t.value;for(;i>=0;i--){s=n.pop();if(s.type===e.expression.type.object.start||s.type===e.expression.type.parameter.start||s.type===e.expression.type.array.start){n.push(s);break}r.push(s)}r.push(t)}},{type:e.expression.type.operator.binary,regex:/(^[\+\-~%\?\:]|^[!=]==?|^[!<>]=?|^\*\*?|^\/\/?|^and\s+|^or\s+|^in\s+|^not in\s+|^\.\.)/,next:e.expression.set.expressions.concat([e.expression.type.operator.unary]),compile:function(t,n,r){delete t.match,t.value=t.value.trim();var i=t.value,s=e.expression.operator.lookup(i,t);e.log.trace("Twig.expression.compile: ","Operator: ",s," from ",i);while(n.length>0&&(n[n.length-1].type==e.expression.type.operator.unary||n[n.length-1].type==e.expression.type.operator.binary)&&(s.associativity===e.expression.operator.leftToRight&&s.precidence>=n[n.length-1].precidence||s.associativity===e.expression.operator.rightToLeft&&s.precidence>n[n.length-1].precidence)){var o=n.pop();r.push(o)}if(i===":"){if(!n[n.length-1]||n[n.length-1].value!=="?"){var u=r.pop();if(u.type!==e.expression.type.string&&u.type!==e.expression.type.variable&&u.type!==e.expression.type.number)throw new e.Error("Unexpected value before ':' of "+u.type+" = "+u.value);t.key=u.value,r.push(t);return}}else n.push(s)},parse:function(t,n,r){t.key?n.push(t):e.expression.operator.parse(t.value,n)}},{type:e.expression.type.operator.unary,regex:/(^not\s+)/,next:e.expression.set.expressions,compile:function(t,n,r){delete t.match,t.value=t.value.trim();var i=t.value,s=e.expression.operator.lookup(i,t);e.log.trace("Twig.expression.compile: ","Operator: ",s," from ",i);while(n.length>0&&(n[n.length-1].type==e.expression.type.operator.unary||n[n.length-1].type==e.expression.type.operator.binary)&&(s.associativity===e.expression.operator.leftToRight&&s.precidence>=n[n.length-1].precidence||s.associativity===e.expression.operator.rightToLeft&&s.precidence>n[n.length-1].precidence)){var o=n.pop();r.push(o)}n.push(s)},parse:function(t,n,r){e.expression.operator.parse(t.value,n)}},{type:e.expression.type.string,regex:/^(["'])(?:(?=(\\?))\2.)*?\1/,next:e.expression.set.operations,compile:function(t,n,r){var i=t.value;delete t.match,i.substring(0,1)==='"'?i=i.replace('\\"','"'):i=i.replace("\\'","'"),t.value=i.substring(1,i.length-1).replace(/\\n/g,"\n").replace(/\\r/g,"\r"),e.log.trace("Twig.expression.compile: ","String value: ",t.value),r.push(t)},parse:e.expression.fn.parse.push_value},{type:e.expression.type.parameter.start,regex:/^\(/,next:e.expression.set.expressions.concat([e.expression.type.parameter.end]),compile:e.expression.fn.compile.push_both,parse:e.expression.fn.parse.push},{type:e.expression.type.parameter.end,regex:/^\)/,next:e.expression.set.operations_extended,compile:function(t,n,r){var i,s=t;i=n.pop();while(n.length>0&&i.type!=e.expression.type.parameter.start)r.push(i),i=n.pop();var o=[];while(t.type!==e.expression.type.parameter.start)o.unshift(t),t=r.pop();o.unshift(t);var u=!1;t=r[r.length-1],t===undefined||t.type!==e.expression.type._function&&t.type!==e.expression.type.filter&&t.type!==e.expression.type.test&&t.type!==e.expression.type.key.brackets&&t.type!==e.expression.type.key.period?(s.expression=!0,o.pop(),o.shift(),s.params=o,r.push(s)):(s.expression=!1,t.params=o)},parse:function(t,n,r){var i=[],s=!1,o=null;if(t.expression)o=e.expression.parse.apply(this,[t.params,r]),n.push(o);else{while(n.length>0){o=n.pop();if(o&&o.type&&o.type==e.expression.type.parameter.start){s=!0;break}i.unshift(o)}if(!s)throw new e.Error("Expected end of parameter set.");n.push(i)}}},{type:e.expression.type.array.start,regex:/^\[/,next:e.expression.set.expressions.concat([e.expression.type.array.end]),compile:e.expression.fn.compile.push_both,parse:e.expression.fn.parse.push},{type:e.expression.type.array.end,regex:/^\]/,next:e.expression.set.operations_extended,compile:function(t,n,r){var i=n.length-1,s;for(;i>=0;i--){s=n.pop();if(s.type===e.expression.type.array.start)break;r.push(s)}r.push(t)},parse:function(t,n,r){var i=[],s=!1,o=null;while(n.length>0){o=n.pop();if(o.type&&o.type==e.expression.type.array.start){s=!0;break}i.unshift(o)}if(!s)throw new e.Error("Expected end of array.");n.push(i)}},{type:e.expression.type.object.start,regex:/^\{/,next:e.expression.set.expressions.concat([e.expression.type.object.end]),compile:e.expression.fn.compile.push_both,parse:e.expression.fn.parse.push},{type:e.expression.type.object.end,regex:/^\}/,next:e.expression.set.operations_extended,compile:function(t,n,r){var i=n.length-1,s;for(;i>=0;i--){s=n.pop();if(s&&s.type===e.expression.type.object.start)break;r.push(s)}r.push(t)},parse:function(t,n,r){var i={},s=!1,o=null,u=null,a=!1,f=null;while(n.length>0){o=n.pop();if(o&&o.type&&o.type===e.expression.type.object.start){s=!0;break}if(o&&o.type&&(o.type===e.expression.type.operator.binary||o.type===e.expression.type.operator.unary)&&o.key){if(!a)throw new e.Error("Missing value for key '"+o.key+"' in object definition.");i[o.key]=f,i._keys===undefined&&(i._keys=[]),i._keys.unshift(o.key),f=null,a=!1}else a=!0,f=o}if(!s)throw new e.Error("Unexpected end of object.");n.push(i)}},{type:e.expression.type.filter,regex:/^\|\s?([a-zA-Z_][a-zA-Z0-9_\-]*)/,next:e.expression.set.operations_extended.concat([e.expression.type.parameter.start]),compile:function(e,t,n){e.value=e.match[1],n.push(e)},parse:function(t,n,r){var i=n.pop(),s=t.params&&e.expression.parse.apply(this,[t.params,r]);n.push(e.filter.apply(this,[t.value,i,s]))}},{type:e.expression.type._function,regex:/^([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/,next:e.expression.type.parameter.start,transform:function(e,t){return"("},compile:function(e,t,n){var r=e.match[1];e.fn=r,delete e.match,delete e.value,n.push(e)},parse:function(t,n,r){var i=t.params&&e.expression.parse.apply(this,[t.params,r]),s=t.fn,o;if(e.functions[s])o=e.functions[s].apply(this,i);else{if(typeof r[s]!="function")throw new e.Error(s+" function does not exist and is not defined in the context");o=r[s].apply(r,i)}n.push(o)}},{type:e.expression.type.variable,regex:/^[a-zA-Z_][a-zA-Z0-9_]*/,next:e.expression.set.operations_extended.concat([e.expression.type.parameter.start]),compile:e.expression.fn.compile.push,validate:function(t,n){return e.indexOf(e.expression.reservedWords,t[0])<0},parse:function(t,n,r){var i=e.expression.resolve(r[t.value],r);n.push(i)}},{type:e.expression.type.key.period,regex:/^\.([a-zA-Z0-9_]+)/,next:e.expression.set.operations_extended.concat([e.expression.type.parameter.start]),compile:function(e,t,n){e.key=e.match[1],delete e.match,delete e.value,n.push(e)},parse:function(t,n,r){var i=t.params&&e.expression.parse.apply(this,[t.params,r]),s=t.key,o=n.pop(),u;if(o===null||o===undefined){if(this.options.strict_variables)throw new e.Error("Can't access a key "+s+" on an null or undefined object.");return null}var a=function(e){return e.substr(0,1).toUpperCase()+e.substr(1)};typeof o=="object"&&s in o?u=o[s]:o["get"+a(s)]!==undefined?u=o["get"+a(s)]:o["is"+a(s)]!==undefined?u=o["is"+a(s)]:u=null,n.push(e.expression.resolve(u,o,i))}},{type:e.expression.type.key.brackets,regex:/^\[([^\]]*)\]/,next:e.expression.set.operations_extended.concat([e.expression.type.parameter.start]),compile:function(t,n,r){var i=t.match[1];delete t.value,delete t.match,t.stack=e.expression.compile({value:i}).stack,r.push(t)},parse:function(t,n,r){var i=t.params&&e.expression.parse.apply(this,[t.params,r]),s=e.expression.parse.apply(this,[t.stack,r]),o=n.pop(),u;if(o===null||o===undefined){if(this.options.strict_variables)throw new e.Error("Can't access a key "+s+" on an null or undefined object.");return null}typeof o=="object"&&s in o?u=o[s]:u=null,n.push(e.expression.resolve(u,o,i))}},{type:e.expression.type._null,regex:/^null/,next:e.expression.set.operations,compile:function(e,t,n){delete e.match,e.value=null,n.push(e)},parse:e.expression.fn.parse.push_value},{type:e.expression.type.context,regex:/^_context/,next:e.expression.set.operations_extended.concat([e.expression.type.parameter.start]),compile:e.expression.fn.compile.push,parse:function(e,t,n){t.push(n)}},{type:e.expression.type.number,regex:/^\-?\d+(\.\d+)?/,next:e.expression.set.operations,compile:function(e,t,n){e.value=Number(e.value),n.push(e)},parse:e.expression.fn.parse.push_value},{type:e.expression.type.bool,regex:/^(true|false)/,next:e.expression.set.operations,compile:function(e,t,n){e.value=e.match[0]=="true",delete e.match,n.push(e)},parse:e.expression.fn.parse.push_value}],e.expression.resolve=function(e,t,n){return typeof e=="function"?e.apply(t,n||[]):e},e.expression.handler={},e.expression.extendType=function(t){e.expression.type[t]="Twig.expression.type."+t},e.expression.extend=function(t){if(!t.type)throw new e.Error("Unable to extend logic definition. No type provided for "+t);e.expression.handler[t.type]=t};while(e.expression.definitions.length>0)e.expression.extend(e.expression.definitions.shift());return e.expression.tokenize=function(t){var n=[],r=0,i=null,s,o,u,a,f,l=[],c;c=function(){var t=Array.prototype.slice.apply(arguments),o=t.pop(),u=t.pop();return e.log.trace("Twig.expression.tokenize","Matched a ",s," regular expression of ",t),i&&e.indexOf(i,s)<0?(l.push(s+" cannot follow a "+n[n.length-1].type+" at template:"+r+" near '"+t[0].substring(0,20)+"...'"),t[0]):e.expression.handler[s].validate&&!e.expression.handler[s].validate(t,n)?t[0]:(l=[],n.push({type:s,value:t[0],match:t}),f=!0,i=a,r+=t[0].length,e.expression.handler[s].transform?e.expression.handler[s].transform(t,n):"")},e.log.debug("Twig.expression.tokenize","Tokenizing expression ",t);while(t.length>0){t=t.trim();for(s in e.expression.handler)if(e.expression.handler.hasOwnProperty(s)){a=e.expression.handler[s].next,o=e.expression.handler[s].regex,o instanceof Array?u=o:u=[o],f=!1;while(u.length>0)o=u.pop(),t=t.replace(o,c);if(f)break}if(!f)throw l.length>0?new e.Error(l.join(" OR ")):new e.Error("Unable to parse '"+t+"' at template position"+r)}return e.log.trace("Twig.expression.tokenize","Tokenized to ",n),n},e.expression.compile=function(t){var n=t.value,r=e.expression.tokenize(n),i=null,s=[],o=[],u=null;e.log.trace("Twig.expression.compile: ","Compiling ",n);while(r.length>0)i=r.shift(),u=e.expression.handler[i.type],e.log.trace("Twig.expression.compile: ","Compiling ",i),u.compile&&u.compile(i,o,s),e.log.trace("Twig.expression.compile: ","Stack is",o),e.log.trace("Twig.expression.compile: ","Output is",s);while(o.length>0)s.push(o.pop());return e.log.trace("Twig.expression.compile: ","Final output is",s),t.stack=s,delete t.value,t},e.expression.parse=function(t,n){var r=this;t instanceof Array||(t=[t]);var i=[],s=null;return e.forEach(t,function(t){s=e.expression.handler[t.type],s.parse&&s.parse.apply(r,[t,i,n])}),i.pop()},e}(Twig||{}),Twig=function(e){e.expression.operator={leftToRight:"leftToRight",rightToLeft:"rightToLeft"};var t=function(e,t){if(t.indexOf!==undefined)return e===t||e!==""&&t.indexOf(e)>-1;var n;for(n in t)if(t.hasOwnProperty(n)&&t[n]===e)return!0;return!1};return e.expression.operator.lookup=function(t,n){switch(t){case"..":case"not in":case"in":n.precidence=20,n.associativity=e.expression.operator.leftToRight;break;case",":n.precidence=18,n.associativity=e.expression.operator.leftToRight;break;case"?":case":":n.precidence=16,n.associativity=e.expression.operator.rightToLeft;break;case"or":n.precidence=14,n.associativity=e.expression.operator.leftToRight;break;case"and":n.precidence=13,n.associativity=e.expression.operator.leftToRight;break;case"==":case"!=":n.precidence=9,n.associativity=e.expression.operator.leftToRight;break;case"<":case"<=":case">":case">=":n.precidence=8,n.associativity=e.expression.operator.leftToRight;break;case"~":case"+":case"-":n.precidence=6,n.associativity=e.expression.operator.leftToRight;break;case"//":case"**":case"*":case"/":case"%":n.precidence=5,n.associativity=e.expression.operator.leftToRight;break;case"not":n.precidence=3,n.associativity=e.expression.operator.rightToLeft;break;default:throw new e.Error(t+" is an unknown operator.")}return n.operator=t,n},e.expression.operator.parse=function(n,r){e.log.trace("Twig.expression.operator.parse: ","Handling ",n);var i,s,o;switch(n){case":":break;case"?":o=r.pop(),s=r.pop(),i=r.pop(),i?r.push(s):r.push(o);break;case"+":s=parseFloat(r.pop()),i=parseFloat(r.pop()),r.push(i+s);break;case"-":s=parseFloat(r.pop()),i=parseFloat(r.pop()),r.push(i-s);break;case"*":s=parseFloat(r.pop()),i=parseFloat(r.pop()),r.push(i*s);break;case"/":s=parseFloat(r.pop()),i=parseFloat(r.pop()),r.push(i/s);break;case"//":s=parseFloat(r.pop()),i=parseFloat(r.pop()),r.push(parseInt(i/s));break;case"%":s=parseFloat(r.pop()),i=parseFloat(r.pop()),r.push(i%s);break;case"~":s=r.pop(),i=r.pop(),r.push((i!==undefined?i.toString():"")+(s!==undefined?s.toString():""));break;case"not":case"!":r.push(!r.pop());break;case"<":s=r.pop(),i=r.pop(),r.push(i<s);break;case"<=":s=r.pop(),i=r.pop(),r.push(i<=s);break;case">":s=r.pop(),i=r.pop(),r.push(i>s);break;case">=":s=r.pop(),i=r.pop(),r.push(i>=s);break;case"===":s=r.pop(),i=r.pop(),r.push(i===s);break;case"==":s=r.pop(),i=r.pop(),r.push(i==s);break;case"!==":s=r.pop(),i=r.pop(),r.push(i!==s);break;case"!=":s=r.pop(),i=r.pop(),r.push(i!=s);break;case"or":s=r.pop(),i=r.pop(),r.push(i||s);break;case"and":s=r.pop(),i=r.pop(),r.push(i&&s);break;case"**":s=r.pop(),i=r.pop(),r.push(Math.pow(i,s));break;case"not in":s=r.pop(),i=r.pop(),r.push(!t(i,s));break;case"in":s=r.pop(),i=r.pop(),r.push(t(i,s));break;case"..":s=r.pop(),i=r.pop(),r.push(e.functions.range(i,s));break;default:throw new e.Error(n+" is an unknown operator.")}},e}(Twig||{}),Twig=function(e){function t(e,t){var n=Object.prototype.toString.call(t).slice(8,-1);return t!==undefined&&t!==null&&n===e}return e.filters={upper:function(e){return typeof e!="string"?e:e.toUpperCase()},lower:function(e){return typeof e!="string"?e:e.toLowerCase()},capitalize:function(e){return typeof e!="string"?e:e.substr(0,1).toUpperCase()+e.toLowerCase().substr(1)},title:function(e){return typeof e!="string"?e:e.toLowerCase().replace(/(^|\s)([a-z])/g,function(e,t,n){return t+n.toUpperCase()})},length:function(t){return e.lib.is("Array",t)||typeof t=="string"?t.length:e.lib.is("Object",t)?t._keys===undefined?Object.keys(t).length:t._keys.length:0},reverse:function(e){if(t("Array",e))return e.reverse();if(t("String",e))return e.split("").reverse().join("");if(e instanceof Object){var n=e._keys||Object.keys(e).reverse();return e._keys=n,e}},sort:function(e){if(t("Array",e))return e.sort();if(e instanceof Object){delete e._keys;var n=Object.keys(e),r=n.sort(function(t,n){return e[t]>e[n]});return e._keys=r,e}},keys:function(t){if(t===undefined||t===null)return;var n=t._keys||Object.keys(t),r=[];return e.forEach(n,function(e){if(e==="_keys")return;t.hasOwnProperty(e)&&r.push(e)}),r},url_encode:function(e){if(e===undefined||e===null)return;return encodeURIComponent(e)},join:function(t,n){if(t===undefined||t===null)return;var r="",i=[],s=null;return n&&n[0]&&(r=n[0]),t instanceof Array?i=t:(s=t._keys||Object.keys(t),e.forEach(s,function(e){if(e==="_keys")return;t.hasOwnProperty(e)&&i.push(t[e])})),i.join(r)},"default":function(t,n){if(n===undefined||n.length!==1)throw new e.Error("default filter expects one argument");return t===undefined||t===null||t===""?n[0]:t},json_encode:function(e){return e&&e.hasOwnProperty("_keys")&&delete e._keys,e===undefined||e===null?"null":JSON.stringify(e)},merge:function(t,n){var r=[],i=0,s=[];t instanceof Array?e.forEach(n,function(e){e instanceof Array||(r={})}):r={},r instanceof Array||(r._keys=[]),t instanceof Array?e.forEach(t,function(e){r._keys&&r._keys.push(i),r[i]=e,i++}):(s=t._keys||Object.keys(t),e.forEach(s,function(e){r[e]=t[e],r._keys.push(e);var n=parseInt(e,10);!isNaN(n)&&n>=i&&(i=n+1)})),e.forEach(n,function(t){t instanceof Array?e.forEach(t,function(e){r._keys&&r._keys.push(i),r[i]=e,i++}):(s=t._keys||Object.keys(t),e.forEach(s,function(e){r[e]||r._keys.push(e),r[e]=t[e];var n=parseInt(e,10);!isNaN(n)&&n>=i&&(i=n+1)}))});if(n.length===0)throw new e.Error("Filter merge expects at least one parameter");return r},date:function(t,n){if(t===undefined||t===null)return;var r=e.functions.date(t);return e.lib.formatDate(r,n[0])},date_modify:function(t,n){if(t===undefined||t===null)return;if(n===undefined||n.length!==1)throw new e.Error("date_modify filter expects 1 argument");var r=n[0],i;return e.lib.is("Date",t)&&(i=e.lib.strtotime(r,t.getTime()/1e3)),e.lib.is("String",t)&&(i=e.lib.strtotime(r,e.lib.strtotime(t))),e.lib.is("Number",t)&&(i=e.lib.strtotime(r,t)),new Date(i*1e3)},replace:function(t,n){if(t===undefined||t===null)return;var r=n[0],i;for(i in r)r.hasOwnProperty(i)&&i!=="_keys"&&(t=e.lib.replaceAll(t,i,r[i]));return t},format:function(t,n){if(t===undefined||t===null)return;return e.lib.vsprintf(t,n)},striptags:function(t){if(t===undefined||t===null)return;return e.lib.strip_tags(t)},escape:function(e){if(e===undefined||e===null)return;return e.toString().replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")},e:function(t){return e.filters.escape(t)},nl2br:function(t){if(t===undefined||t===null)return;var n="BACKSLASH_n_replace",r="<br />"+n;return t=e.filters.escape(t).replace(/\r\n/g,r).replace(/\r/g,r).replace(/\n/g,r),e.lib.replaceAll(t,n,"\n")},number_format:function(e,t){var n=e,r=t&&t[0]?t[0]:undefined,i=t&&t[1]!==undefined?t[1]:".",s=t&&t[2]!==undefined?t[2]:",";n=(n+"").replace(/[^0-9+\-Ee.]/g,"");var o=isFinite(+n)?+n:0,u=isFinite(+r)?Math.abs(r):0,a="",f=function(e,t){var n=Math.pow(10,t);return""+Math.round(e*n)/n};return a=(u?f(o,u):""+Math.round(o)).split("."),a[0].length>3&&(a[0]=a[0].replace(/\B(?=(?:\d{3})+(?!\d))/g,s)),(a[1]||"").length<u&&(a[1]=a[1]||"",a[1]+=(new Array(u-a[1].length+1)).join("0")),a.join(i)},trim:function(t,n){if(t===undefined||t===null)return;var r=e.filters.escape(""+t),i;n&&n[0]?i=""+n[0]:i=" \n\r	\f            ​\u2028\u2029　";for(var s=0;s<r.length;s++)if(i.indexOf(r.charAt(s))===-1){r=r.substring(s);break}for(s=r.length-1;s>=0;s--)if(i.indexOf(r.charAt(s))===-1){r=r.substring(0,s+1);break}return i.indexOf(r.charAt(0))===-1?r:""},slice:function(t,n){if(t===undefined||t===null)return;if(n===undefined||n.length<1)throw new e.Error("slice filter expects at least 1 argument");var r=n[0]||0,i=n.length>1?n[1]:t.length,s=r>=0?r:Math.max(t.length+r,0);if(e.lib.is("Array",t)){var o=[];for(var u=s;u<s+i&&u<t.length;u++)o.push(t[u]);return o}if(e.lib.is("String",t))return t.substr(s,i);throw new e.Error("slice filter expects value to be an array or string")},abs:function(e){if(e===undefined||e===null)return;return Math.abs(e)},first:function(e){if(e instanceof Array)return e[0];if(e instanceof Object){if("_keys"in e)return e[e._keys[0]]}else if(typeof e=="string")return e.substr(0,1);return},split:function(t,n){if(t===undefined||t===null)return;if(n===undefined||n.length<1||n.length>2)throw new e.Error("split filter expects 1 or 2 argument");if(e.lib.is("String",t)){var r=n[0],i=n[1],s=t.split(r);if(i===undefined)return s;if(i<0)return t.split(r,s.length+i);var o=[];if(r=="")while(s.length>0){var u="";for(var a=0;a<i&&s.length>0;a++)u+=s.shift();o.push(u)}else{for(var a=0;a<i-1&&s.length>0;a++)o.push(s.shift());s.length>0&&o.push(s.join(r))}return o}throw new e.Error("split filter expects value to be a string")},last:function(t){if(e.lib.is("Object",t)){var n;return t._keys===undefined?n=Object.keys(t):n=t._keys,t[n[n.length-1]]}return t[t.length-1]},raw:function(e){return e},batch:function(t,n){var r=n.shift(),i=n.shift(),s,o,u;if(!e.lib.is("Array",t))throw new e.Error("batch filter expects items to be an array");if(!e.lib.is("Number",r))throw new e.Error("batch filter expects size to be a number");r=Math.ceil(r),s=e.lib.chunkArray(t,r);if(i&&t.length%r!=0){o=s.pop(),u=r-o.length;while(u--)o.push(i);s.push(o)}return s},round:function(t,n){n=n||[];var r=n.length>0?n[0]:0,i=n.length>1?n[1]:"common";t=parseFloat(t);if(r&&!e.lib.is("Number",r))throw new e.Error("round filter expects precision to be a number");if(i==="common")return e.lib.round(t,r);if(!e.lib.is("Function",Math[i]))throw new e.Error("round filter expects method to be 'floor', 'ceil', or 'common'");return Math[i](t*Math.pow(10,r))/Math.pow(10,r)}},e.filter=function(t,n,r){if(!e.filters[t])throw"Unable to find filter "+t;return e.filters[t].apply(this,[n,r])},e.filter.extend=function(t,n){e.filters[t]=n},e}(Twig||{}),Twig=function(e){function t(e,t){var n=Object.prototype.toString.call(t).slice(8,-1);return t!==undefined&&t!==null&&n===e}return e.functions={range:function(e,t,n){var r=[],i,s,o,u=n||1,a=!1;!isNaN(e)&&!isNaN(t)?(i=parseInt(e,10),s=parseInt(t,10)):isNaN(e)&&isNaN(t)?(a=!0,i=e.charCodeAt(0),s=t.charCodeAt(0)):(i=isNaN(e)?0:e,s=isNaN(t)?0:t),o=i>s?!1:!0;if(o)while(i<=s)r.push(a?String.fromCharCode(i):i),i+=u;else while(i>=s)r.push(a?String.fromCharCode(i):i),i-=u;return r},cycle:function(e,t){var n=t%e.length;return e[n]},dump:function(){var t="\n",n="  ",r=0,i="",s=Array.prototype.slice.call(arguments),o=function(e){var t="";while(e>0)e--,t+=n;return t},u=function(e){i+=o(r),typeof e=="object"?a(e):typeof e=="function"?i+="function()"+t:typeof e=="string"?i+="string("+e.length+') "'+e+'"'+t:typeof e=="number"?i+="number("+e+")"+t:typeof e=="boolean"&&(i+="bool("+e+")"+t)},a=function(e){var n;if(e===null)i+="NULL"+t;else if(e===undefined)i+="undefined"+t;else if(typeof e=="object"){i+=o(r)+typeof e,r++,i+="("+function(e){var t=0,n;for(n in e)e.hasOwnProperty(n)&&t++;return t}(e)+") {"+t;for(n in e)i+=o(r)+"["+n+"]=> "+t,u(e[n]);r--,i+=o(r)+"}"+t}else u(e)};return s.length==0&&s.push(this.context),e.forEach(s,function(e){a(e)}),i},date:function(t,n){var r;if(t===undefined)r=new Date;else if(e.lib.is("Date",t))r=t;else if(e.lib.is("String",t))r=new Date(e.lib.strtotime(t)*1e3);else{if(!e.lib.is("Number",t))throw new e.Error("Unable to parse date "+t);r=new Date(t*1e3)}return r},block:function(e){return this.blocks[e]},parent:function(){return e.placeholders.parent},attribute:function(e,t,n){return e instanceof Object&&e.hasOwnProperty(t)?typeof e[t]=="function"?e[t].apply(undefined,n):e[t]:e[t]||undefined}},e._function=function(t,n,r){if(!e.functions[t])throw"Unable to find function "+t;return e.functions[t](n,r)},e._function.extend=function(t,n){e.functions[t]=n},e}(Twig||{}),Twig=function(e){return e.tests={empty:function(e){if(e===null||e===undefined)return!0;if(typeof e=="number")return!1;if(e.length&&e.length>0)return!1;for(var t in e)if(e.hasOwnProperty(t))return!1;return!0},odd:function(e){return e%2===1},even:function(e){return e%2===0},divisibleby:function(e,t){return e%t[0]===0},defined:function(e){return e!==undefined},none:function(e){return e===null},"null":function(e){return this.none(e)},sameas:function(e,t){return e===t[0]}},e.test=function(t,n,r){if(!e.tests[t])throw"Test "+t+" is not defined.";return e.tests[t](n,r)},e.test.extend=function(t,n){e.tests[t]=n},e}(Twig||{}),Twig=function(e){return e.exports={VERSION:e.VERSION},e.exports.twig=function(n){var r=n.id,i={strict_variables:n.strict_variables||!1,allowInlineIncludes:n.allowInlineIncludes||!1,rethrow:n.rethrow||!1};r&&e.validateId(r),n.debug!==undefined&&(e.debug=n.debug),n.trace!==undefined&&(e.trace=n.trace);if(n.data!==undefined)return new e.Template({data:n.data,module:n.module,id:r,options:i});if(n.ref!==undefined){if(n.id!==undefined)throw new e.Error("Both ref and id cannot be set on a twig.js template.");return e.Templates.load(n.ref)}if(n.href!==undefined)return e.Templates.loadRemote(n.href,{id:r,method:"ajax",base:n.base,module:n.module,precompiled:n.precompiled,async:n.async,options:i},n.load,n.error);if(n.path!==undefined)return e.Templates.loadRemote(n.path,{id:r,method:"fs",base:n.base,module:n.module,precompiled:n.precompiled,async:n.async,options:i},n.load,n.error)},e.exports.extendFilter=function(t,n){e.filter.extend(t,n)},e.exports.extendFunction=function(t,n){e._function.extend(t,n)},e.exports.extendTest=function(t,n){e.test.extend(t,n)},e.exports.extendTag=function(t){e.logic.extend(t)},e.exports.extend=function(t){t(e)},e.exports.compile=function(t,n){var r=n.filename,i=n.filename,s;return s=new e.Template({data:t,path:i,id:r,options:n.settings["twig options"]}),function(e){return s.render(e)}},e.exports.renderFile=function(t,n,r){"function"==typeof n&&(r=n,n={}),n=n||{};var i={path:t,base:n.settings.views,load:function(e){r(null,e.render(n))}},s=n.settings["twig options"];if(s)for(var o in s)s.hasOwnProperty(o)&&(i[o]=s[o]);e.exports.twig(i)},e.exports.__express=e.exports.renderFile,e.exports.cache=function(t){e.cache=t},e}(Twig||{}),Twig=function(e){return e.compiler={module:{}},e.compiler.compile=function(t,n){var r=JSON.stringify(t.tokens),i=t.id,s;if(n.module){if(e.compiler.module[n.module]===undefined)throw new e.Error("Unable to find module type "+n.module);s=e.compiler.module[n.module](i,r,n.twig)}else s=e.compiler.wrap(i,r);return s},e.compiler.module={amd:function(t,n,r){return'define(["'+r+'"], function (Twig) {\n	var twig, templates;\ntwig = Twig.twig;\ntemplates = '+e.compiler.wrap(t,n)+"\n	return templates;\n});"},node:function(t,n){return'var twig = require("twig").twig;\nexports.template = '+e.compiler.wrap(t,n)},cjs2:function(t,n,r){return'module.declare([{ twig: "'+r+'" }], function (require, exports, module) {\n'+'	var twig = require("twig").twig;\n'+"	exports.template = "+e.compiler.wrap(t,n)+"\n});"}},e.compiler.wrap=function(e,t){return'twig({id:"'+e.replace('"','\\"')+'", data:'+t+", precompiled: true});\n"},e}(Twig||{});typeof module!="undefined"&&module.declare?module.declare([],function(e,t,n){for(key in Twig.exports)Twig.exports.hasOwnProperty(key)&&(t[key]=Twig.exports[key])}):typeof define=="function"&&define.amd||1?timely.define("external_libs/twig",[],function(){return Twig.exports}):typeof module!="undefined"&&module.exports?module.exports=Twig.exports:(window.twig=Twig.exports.twig,window.Twig=Twig.exports);
+    Twig.lib.strip_tags = function(input, allowed) {
+        // Strips HTML and PHP tags from a string
+        //
+        // version: 1109.2015
+        // discuss at: http://phpjs.org/functions/strip_tags
+        // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+        // +   improved by: Luke Godfrey
+        // +      input by: Pul
+        // +   bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+        // +   bugfixed by: Onno Marsman
+        // +      input by: Alex
+        // +   bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+        // +      input by: Marc Palau
+        // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+        // +      input by: Brett Zamir (http://brett-zamir.me)
+        // +   bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+        // +   bugfixed by: Eric Nagel
+        // +      input by: Bobby Drake
+        // +   bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+        // +   bugfixed by: Tomasz Wesolowski
+        // +      input by: Evertjan Garretsen
+        // +    revised by: Rafał Kukawski (http://blog.kukawski.pl/)
+        // *     example 1: strip_tags('<p>Kevin</p> <b>van</b> <i>Zonneveld</i>', '<i><b>');
+        // *     returns 1: 'Kevin <b>van</b> <i>Zonneveld</i>'
+        // *     example 2: strip_tags('<p>Kevin <img src="someimage.png" onmouseover="someFunction()">van <i>Zonneveld</i></p>', '<p>');
+        // *     returns 2: '<p>Kevin van Zonneveld</p>'
+        // *     example 3: strip_tags("<a href='http://kevin.vanzonneveld.net'>Kevin van Zonneveld</a>", "<a>");
+        // *     returns 3: '<a href='http://kevin.vanzonneveld.net'>Kevin van Zonneveld</a>'
+        // *     example 4: strip_tags('1 < 5 5 > 1');
+        // *     returns 4: '1 < 5 5 > 1'
+        // *     example 5: strip_tags('1 <br/> 1');
+        // *     returns 5: '1  1'
+        // *     example 6: strip_tags('1 <br/> 1', '<br>');
+        // *     returns 6: '1  1'
+        // *     example 7: strip_tags('1 <br/> 1', '<br><br/>');
+        // *     returns 7: '1 <br/> 1'
+        allowed = (((allowed || "") + "").toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join(''); // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
+        var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+            commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
+        return input.replace(commentsAndPhpTags, '').replace(tags, function ($0, $1) {
+            return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+        });
+    }
+
+    Twig.lib.parseISO8601Date = function (s){
+        // Taken from http://n8v.enteuxis.org/2010/12/parsing-iso-8601-dates-in-javascript/
+        // parenthese matches:
+        // year month day    hours minutes seconds  
+        // dotmilliseconds 
+        // tzstring plusminus hours minutes
+        var re = /(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)(\.\d+)?(Z|([+-])(\d\d):(\d\d))/;
+
+        var d = [];
+        d = s.match(re);
+
+        // "2010-12-07T11:00:00.000-09:00" parses to:
+        //  ["2010-12-07T11:00:00.000-09:00", "2010", "12", "07", "11",
+        //     "00", "00", ".000", "-09:00", "-", "09", "00"]
+        // "2010-12-07T11:00:00.000Z" parses to:
+        //  ["2010-12-07T11:00:00.000Z",      "2010", "12", "07", "11", 
+        //     "00", "00", ".000", "Z", undefined, undefined, undefined]
+
+        if (! d) {
+            throw "Couldn't parse ISO 8601 date string '" + s + "'";
+        }
+
+        // parse strings, leading zeros into proper ints
+        var a = [1,2,3,4,5,6,10,11];
+        for (var i in a) {
+            d[a[i]] = parseInt(d[a[i]], 10);
+        }
+        d[7] = parseFloat(d[7]);
+
+        // Date.UTC(year, month[, date[, hrs[, min[, sec[, ms]]]]])
+        // note that month is 0-11, not 1-12
+        // see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date/UTC
+        var ms = Date.UTC(d[1], d[2] - 1, d[3], d[4], d[5], d[6]);
+
+        // if there are milliseconds, add them
+        if (d[7] > 0) {  
+            ms += Math.round(d[7] * 1000);
+        }
+
+        // if there's a timezone, calculate it
+        if (d[8] != "Z" && d[10]) {
+            var offset = d[10] * 60 * 60 * 1000;
+            if (d[11]) {
+                offset += d[11] * 60 * 1000;
+            }
+            if (d[9] == "-") {
+                ms -= offset;
+            }
+            else {
+                ms += offset;
+            }
+        }
+
+        return new Date(ms);
+    };
+
+    Twig.lib.strtotime = function (str, now) {
+        // http://kevin.vanzonneveld.net
+        // +   original by: Caio Ariede (http://caioariede.com)
+        // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+        // +      input by: David
+        // +   improved by: Caio Ariede (http://caioariede.com)
+        // +   improved by: Brett Zamir (http://brett-zamir.me)
+        // +   bugfixed by: Wagner B. Soares
+        // +   bugfixed by: Artur Tchernychev
+        // %        note 1: Examples all have a fixed timestamp to prevent tests to fail because of variable time(zones)
+        // *     example 1: strtotime('+1 day', 1129633200);
+        // *     returns 1: 1129719600
+        // *     example 2: strtotime('+1 week 2 days 4 hours 2 seconds', 1129633200);
+        // *     returns 2: 1130425202
+        // *     example 3: strtotime('last month', 1129633200);
+        // *     returns 3: 1127041200
+        // *     example 4: strtotime('2009-05-04 08:30:00');
+        // *     returns 4: 1241418600
+        var i, l, match, s, parse = '';
+
+        str = str.replace(/\s{2,}|^\s|\s$/g, ' '); // unecessary spaces
+        str = str.replace(/[\t\r\n]/g, ''); // unecessary chars
+        if (str === 'now') {
+            return now === null || isNaN(now) ? new Date().getTime() / 1000 | 0 : now | 0;
+        } else if (!isNaN(parse = Date.parse(str))) {
+            return parse / 1000 | 0;
+        } else if (now) {
+            now = new Date(now * 1000); // Accept PHP-style seconds
+        } else {
+            now = new Date();
+        }
+
+        var upperCaseStr = str;
+
+        str = str.toLowerCase();
+
+        var __is = {
+            day: {
+                'sun': 0,
+                'mon': 1,
+                'tue': 2,
+                'wed': 3,
+                'thu': 4,
+                'fri': 5,
+                'sat': 6
+            },
+            mon: [
+                'jan',
+                'feb',
+                'mar',
+                'apr',
+                'may',
+                'jun',
+                'jul',
+                'aug',
+                'sep',
+                'oct',
+                'nov',
+                'dec'
+            ]
+        };
+
+        var process = function (m) {
+            var ago = (m[2] && m[2] === 'ago');
+            var num = (num = m[0] === 'last' ? -1 : 1) * (ago ? -1 : 1);
+
+            switch (m[0]) {
+            case 'last':
+            case 'next':
+                switch (m[1].substring(0, 3)) {
+                case 'yea':
+                    now.setFullYear(now.getFullYear() + num);
+                    break;
+                case 'wee':
+                    now.setDate(now.getDate() + (num * 7));
+                    break;
+                case 'day':
+                    now.setDate(now.getDate() + num);
+                    break;
+                case 'hou':
+                    now.setHours(now.getHours() + num);
+                    break;
+                case 'min':
+                    now.setMinutes(now.getMinutes() + num);
+                    break;
+                case 'sec':
+                    now.setSeconds(now.getSeconds() + num);
+                    break;
+                case 'mon':
+                    if (m[1] === "month") {
+                        now.setMonth(now.getMonth() + num);
+                        break;
+                    }
+                    // fall through
+                default:
+                    var day = __is.day[m[1].substring(0, 3)];
+                    if (typeof day !== 'undefined') {
+                        var diff = day - now.getDay();
+                        if (diff === 0) {
+                            diff = 7 * num;
+                        } else if (diff > 0) {
+                            if (m[0] === 'last') {
+                                diff -= 7;
+                            }
+                        } else {
+                            if (m[0] === 'next') {
+                                diff += 7;
+                            }
+                        }
+                        now.setDate(now.getDate() + diff);
+                        now.setHours(0, 0, 0, 0); // when jumping to a specific last/previous day of week, PHP sets the time to 00:00:00
+                    }
+                }
+                break;
+
+            default:
+                if (/\d+/.test(m[0])) {
+                    num *= parseInt(m[0], 10);
+
+                    switch (m[1].substring(0, 3)) {
+                    case 'yea':
+                        now.setFullYear(now.getFullYear() + num);
+                        break;
+                    case 'mon':
+                        now.setMonth(now.getMonth() + num);
+                        break;
+                    case 'wee':
+                        now.setDate(now.getDate() + (num * 7));
+                        break;
+                    case 'day':
+                        now.setDate(now.getDate() + num);
+                        break;
+                    case 'hou':
+                        now.setHours(now.getHours() + num);
+                        break;
+                    case 'min':
+                        now.setMinutes(now.getMinutes() + num);
+                        break;
+                    case 'sec':
+                        now.setSeconds(now.getSeconds() + num);
+                        break;
+                    }
+                } else {
+                    return false;
+                }
+                break;
+            }
+            return true;
+        };
+
+        match = str.match(/^(\d{2,4}-\d{2}-\d{2})(?:\s(\d{1,2}:\d{2}(:\d{2})?)?(?:\.(\d+))?)?$/);
+        if (match !== null) {
+            if (!match[2]) {
+                match[2] = '00:00:00';
+            } else if (!match[3]) {
+                match[2] += ':00';
+            }
+
+            s = match[1].split(/-/g);
+
+            s[1] = __is.mon[s[1] - 1] || s[1];
+            s[0] = +s[0];
+
+            s[0] = (s[0] >= 0 && s[0] <= 69) ? '20' + (s[0] < 10 ? '0' + s[0] : s[0] + '') : (s[0] >= 70 && s[0] <= 99) ? '19' + s[0] : s[0] + '';
+            return parseInt(this.strtotime(s[2] + ' ' + s[1] + ' ' + s[0] + ' ' + match[2]) + (match[4] ? match[4] / 1000 : ''), 10);
+        }
+
+        var regex = '([+-]?\\d+\\s' + '(years?|months?|weeks?|days?|hours?|min|minutes?|sec|seconds?' + '|sun\\.?|sunday|mon\\.?|monday|tue\\.?|tuesday|wed\\.?|wednesday' + '|thu\\.?|thursday|fri\\.?|friday|sat\\.?|saturday)' + '|(last|next)\\s' + '(years?|months?|weeks?|days?|hours?|min|minutes?|sec|seconds?' + '|sun\\.?|sunday|mon\\.?|monday|tue\\.?|tuesday|wed\\.?|wednesday' + '|thu\\.?|thursday|fri\\.?|friday|sat\\.?|saturday))' + '(\\sago)?';
+
+        match = str.match(new RegExp(regex, 'gi')); // Brett: seems should be case insensitive per docs, so added 'i'
+        if (match === null) {
+            // Try to parse ISO8601 in IE8
+            try {
+                num = Twig.lib.parseISO8601Date(upperCaseStr);
+                if (num) {
+                    return num / 1000 | 0;
+               }
+            } catch (err) {
+                return false;
+            }
+            return false;
+        }
+
+        for (i = 0, l = match.length; i < l; i++) {
+            if (!process(match[i].split(' '))) {
+                return false;
+            }
+        }
+
+        return now.getTime() / 1000 | 0;
+    };
+
+    Twig.lib.is = function(type, obj) {
+        var clas = Object.prototype.toString.call(obj).slice(8, -1);
+        return obj !== undefined && obj !== null && clas === type;
+    };
+
+    // shallow-copy an object
+    Twig.lib.copy = function(src) {
+        var target = {},
+            key;
+        for (key in src)
+            target[key] = src[key];
+
+        return target;
+    };
+
+    Twig.lib.replaceAll = function(string, search, replace) {
+        return string.split(search).join(replace);
+    };
+
+    // chunk an array (arr) into arrays of (size) items, returns an array of arrays, or an empty array on invalid input
+    Twig.lib.chunkArray = function (arr, size) {
+        var returnVal = [],
+            x = 0,
+            len = arr.length;
+
+        if (size < 1 || !Twig.lib.is("Array", arr)) {
+            return [];
+        }
+
+        while (x < len) {
+            returnVal.push(arr.slice(x, x += size));
+        }
+
+        return returnVal;
+    };
+
+    Twig.lib.round = function round(value, precision, mode) {
+        //  discuss at: http://phpjs.org/functions/round/
+        // original by: Philip Peterson
+        //  revised by: Onno Marsman
+        //  revised by: T.Wild
+        //  revised by: Rafał Kukawski (http://blog.kukawski.pl/)
+        //    input by: Greenseed
+        //    input by: meo
+        //    input by: William
+        //    input by: Josep Sanz (http://www.ws3.es/)
+        // bugfixed by: Brett Zamir (http://brett-zamir.me)
+        //        note: Great work. Ideas for improvement:
+        //        note: - code more compliant with developer guidelines
+        //        note: - for implementing PHP constant arguments look at
+        //        note: the pathinfo() function, it offers the greatest
+        //        note: flexibility & compatibility possible
+        //   example 1: round(1241757, -3);
+        //   returns 1: 1242000
+        //   example 2: round(3.6);
+        //   returns 2: 4
+        //   example 3: round(2.835, 2);
+        //   returns 3: 2.84
+        //   example 4: round(1.1749999999999, 2);
+        //   returns 4: 1.17
+        //   example 5: round(58551.799999999996, 2);
+        //   returns 5: 58551.8
+
+        var m, f, isHalf, sgn; // helper variables
+        precision |= 0; // making sure precision is integer
+        m = Math.pow(10, precision);
+        value *= m;
+        sgn = (value > 0) | -(value < 0); // sign of the number
+        isHalf = value % 1 === 0.5 * sgn;
+        f = Math.floor(value);
+
+        if (isHalf) {
+            switch (mode) {
+                case 'PHP_ROUND_HALF_DOWN':
+                    value = f + (sgn < 0); // rounds .5 toward zero
+                    break;
+                case 'PHP_ROUND_HALF_EVEN':
+                    value = f + (f % 2 * sgn); // rouds .5 towards the next even integer
+                    break;
+                case 'PHP_ROUND_HALF_ODD':
+                    value = f + !(f % 2); // rounds .5 towards the next odd integer
+                    break;
+                default:
+                    value = f + (sgn > 0); // rounds .5 away from zero
+            }
+        }
+
+        return (isHalf ? value : Math.round(value)) / m;
+    }
+
+    return Twig;
+
+})(Twig || { });
+//     Twig.js
+//     Copyright (c) 2011-2013 John Roepke
+//     Available under the BSD 2-Clause License
+//     https://github.com/justjohn/twig.js
+
+// ## twig.logic.js
+//
+// This file handles tokenizing, compiling and parsing logic tokens. {% ... %}
+var Twig = (function (Twig) {
+    
+
+    /**
+     * Namespace for logic handling.
+     */
+    Twig.logic = {};
+
+    /**
+     * Logic token types.
+     */
+    Twig.logic.type = {
+        if_:       'Twig.logic.type.if',
+        endif:     'Twig.logic.type.endif',
+        for_:      'Twig.logic.type.for',
+        endfor:    'Twig.logic.type.endfor',
+        else_:     'Twig.logic.type.else',
+        elseif:    'Twig.logic.type.elseif',
+        set:       'Twig.logic.type.set',
+        setcapture:'Twig.logic.type.setcapture',
+        endset:    'Twig.logic.type.endset',
+        filter:    'Twig.logic.type.filter',
+        endfilter: 'Twig.logic.type.endfilter',
+        block:     'Twig.logic.type.block',
+        endblock:  'Twig.logic.type.endblock',
+        extends_:  'Twig.logic.type.extends',
+        use:       'Twig.logic.type.use',
+        include:   'Twig.logic.type.include',
+        spaceless: 'Twig.logic.type.spaceless',
+        endspaceless: 'Twig.logic.type.endspaceless',
+        macro:     'Twig.logic.type.macro',
+        endmacro:  'Twig.logic.type.endmacro',
+        import_:   'Twig.logic.type.import',
+        from:      'Twig.logic.type.from'
+    };
+
+
+    // Regular expressions for handling logic tokens.
+    //
+    // Properties:
+    //
+    //      type:  The type of expression this matches
+    //
+    //      regex: A regular expression that matches the format of the token
+    //
+    //      next:  What logic tokens (if any) pop this token off the logic stack. If empty, the
+    //             logic token is assumed to not require an end tag and isn't push onto the stack.
+    //
+    //      open:  Does this tag open a logic expression or is it standalone. For example,
+    //             {% endif %} cannot exist without an opening {% if ... %} tag, so open = false.
+    //
+    //  Functions:
+    //
+    //      compile: A function that handles compiling the token into an output token ready for
+    //               parsing with the parse function.
+    //
+    //      parse:   A function that parses the compiled token into output (HTML / whatever the
+    //               template represents).
+    Twig.logic.definitions = [
+        {
+            /**
+             * If type logic tokens.
+             *
+             *  Format: {% if expression %}
+             */
+            type: Twig.logic.type.if_,
+            regex: /^if\s+([^\s].+)$/,
+            next: [
+                Twig.logic.type.else_,
+                Twig.logic.type.elseif,
+                Twig.logic.type.endif
+            ],
+            open: true,
+            compile: function (token) {
+                var expression = token.match[1];
+                // Compile the expression.
+                token.stack = Twig.expression.compile.apply(this, [{
+                    type:  Twig.expression.type.expression,
+                    value: expression
+                }]).stack;
+                delete token.match;
+                return token;
+            },
+            parse: function (token, context, chain) {
+                var output = '',
+                    // Parse the expression
+                    result = Twig.expression.parse.apply(this, [token.stack, context]);
+
+                // Start a new logic chain
+                chain = true;
+
+                if (result) {
+                    chain = false;
+                    // parse if output
+                    output = Twig.parse.apply(this, [token.output, context]);
+                }
+                return {
+                    chain: chain,
+                    output: output
+                };
+            }
+        },
+        {
+            /**
+             * Else if type logic tokens.
+             *
+             *  Format: {% elseif expression %}
+             */
+            type: Twig.logic.type.elseif,
+            regex: /^elseif\s+([^\s].*)$/,
+            next: [
+                Twig.logic.type.else_,
+                Twig.logic.type.elseif,
+                Twig.logic.type.endif
+            ],
+            open: false,
+            compile: function (token) {
+                var expression = token.match[1];
+                // Compile the expression.
+                token.stack = Twig.expression.compile.apply(this, [{
+                    type:  Twig.expression.type.expression,
+                    value: expression
+                }]).stack;
+                delete token.match;
+                return token;
+            },
+            parse: function (token, context, chain) {
+                var output = '';
+
+                if (chain && Twig.expression.parse.apply(this, [token.stack, context]) === true) {
+                    chain = false;
+                    // parse if output
+                    output = Twig.parse.apply(this, [token.output, context]);
+                }
+
+                return {
+                    chain: chain,
+                    output: output
+                };
+            }
+        },
+        {
+            /**
+             * Else if type logic tokens.
+             *
+             *  Format: {% elseif expression %}
+             */
+            type: Twig.logic.type.else_,
+            regex: /^else$/,
+            next: [
+                Twig.logic.type.endif,
+                Twig.logic.type.endfor
+            ],
+            open: false,
+            parse: function (token, context, chain) {
+                var output = '';
+                if (chain) {
+                    output = Twig.parse.apply(this, [token.output, context]);
+                }
+                return {
+                    chain: chain,
+                    output: output
+                };
+            }
+        },
+        {
+            /**
+             * End if type logic tokens.
+             *
+             *  Format: {% endif %}
+             */
+            type: Twig.logic.type.endif,
+            regex: /^endif$/,
+            next: [ ],
+            open: false
+        },
+        {
+            /**
+             * For type logic tokens.
+             *
+             *  Format: {% for expression %}
+             */
+            type: Twig.logic.type.for_,
+            regex: /^for\s+([a-zA-Z0-9_,\s]+)\s+in\s+([^\s].*?)(?:\s+if\s+([^\s].*))?$/,
+            next: [
+                Twig.logic.type.else_,
+                Twig.logic.type.endfor
+            ],
+            open: true,
+            compile: function (token) {
+                var key_value = token.match[1],
+                    expression = token.match[2],
+                    conditional = token.match[3],
+                    kv_split = null;
+
+                token.key_var = null;
+                token.value_var = null;
+
+                if (key_value.indexOf(",") >= 0) {
+                    kv_split = key_value.split(',');
+                    if (kv_split.length === 2) {
+                        token.key_var = kv_split[0].trim();
+                        token.value_var = kv_split[1].trim();
+                    } else {
+                        throw new Twig.Error("Invalid expression in for loop: " + key_value);
+                    }
+                } else {
+                    token.value_var = key_value;
+                }
+
+                // Valid expressions for a for loop
+                //   for item     in expression
+                //   for key,item in expression
+
+                // Compile the expression.
+                token.expression = Twig.expression.compile.apply(this, [{
+                    type:  Twig.expression.type.expression,
+                    value: expression
+                }]).stack;
+
+                // Compile the conditional (if available)
+                if (conditional) {
+                    token.conditional = Twig.expression.compile.apply(this, [{
+                        type:  Twig.expression.type.expression,
+                        value: conditional
+                    }]).stack;
+                }
+
+                delete token.match;
+                return token;
+            },
+            parse: function (token, context, continue_chain) {
+                // Parse expression
+                var result = Twig.expression.parse.apply(this, [token.expression, context]),
+                    output = [],
+					len,
+					index = 0,
+                    keyset,
+                    that = this,
+                    conditional = token.conditional,
+                    buildLoop = function(index, len) {
+                        var isConditional = conditional !== undefined;
+                        return {
+                            index: index+1,
+                            index0: index,
+                            revindex: isConditional?undefined:len-index,
+                            revindex0: isConditional?undefined:len-index-1,
+                            first: (index === 0),
+                            last: isConditional?undefined:(index === len-1),
+                            length: isConditional?undefined:len,
+                            parent: context
+                        };
+                    },
+                    loop = function(key, value) {
+                        var inner_context = Twig.lib.copy(context);
+
+                        inner_context[token.value_var] = value;
+                        if (token.key_var) {
+                            inner_context[token.key_var] = key;
+                        }
+
+                        // Loop object
+                        inner_context.loop = buildLoop(index, len);
+
+                        if (conditional === undefined ||
+                            Twig.expression.parse.apply(that, [conditional, inner_context]))
+                        {
+                            output.push(Twig.parse.apply(that, [token.output, inner_context]));
+                            index += 1;
+                        }
+                    };
+
+                if (result instanceof Array) {
+                    len = result.length;
+                    Twig.forEach(result, function (value) {
+                        var key = index;
+
+                        loop(key, value);
+                    });
+                } else if (result instanceof Object) {
+                    if (result._keys !== undefined) {
+                        keyset = result._keys;
+                    } else {
+                        keyset = Object.keys(result);
+                    }
+					len = keyset.length;
+                    Twig.forEach(keyset, function(key) {
+                        // Ignore the _keys property, it's internal to twig.js
+                        if (key === "_keys") return;
+
+                        loop(key,  result[key]);
+                    });
+                }
+
+                // Only allow else statements if no output was generated
+                continue_chain = (output.length === 0);
+
+                return {
+                    chain: continue_chain,
+                    output: output.join("")
+                };
+            }
+        },
+        {
+            /**
+             * End if type logic tokens.
+             *
+             *  Format: {% endif %}
+             */
+            type: Twig.logic.type.endfor,
+            regex: /^endfor$/,
+            next: [ ],
+            open: false
+        },
+        {
+            /**
+             * Set type logic tokens.
+             *
+             *  Format: {% set key = expression %}
+             */
+            type: Twig.logic.type.set,
+            regex: /^set\s+([a-zA-Z0-9_,\s]+)\s*=\s*(.+)$/,
+            next: [ ],
+            open: true,
+            compile: function (token) {
+                var key = token.match[1].trim(),
+                    expression = token.match[2],
+                    // Compile the expression.
+                    expression_stack  = Twig.expression.compile.apply(this, [{
+                        type:  Twig.expression.type.expression,
+                        value: expression
+                    }]).stack;
+
+                token.key = key;
+                token.expression = expression_stack;
+
+                delete token.match;
+                return token;
+            },
+            parse: function (token, context, continue_chain) {
+                var value = Twig.expression.parse.apply(this, [token.expression, context]),
+                    key = token.key;
+
+                // set on both the global and local context
+                this.context[key] = value;
+                context[key] = value;
+
+                return {
+                    chain: continue_chain,
+                    context: context
+                };
+            }
+        },
+        {
+            /**
+             * Set capture type logic tokens.
+             *
+             *  Format: {% set key %}
+             */
+            type: Twig.logic.type.setcapture,
+            regex: /^set\s+([a-zA-Z0-9_,\s]+)$/,
+            next: [
+                Twig.logic.type.endset
+            ],
+            open: true,
+            compile: function (token) {
+                var key = token.match[1].trim();
+
+                token.key = key;
+
+                delete token.match;
+                return token;
+            },
+            parse: function (token, context, continue_chain) {
+
+                var value = Twig.parse.apply(this, [token.output, context]),
+                    key = token.key;
+
+                // set on both the global and local context
+                this.context[key] = value;
+                context[key] = value;
+
+                return {
+                    chain: continue_chain,
+                    context: context
+                };
+            }
+        },
+        {
+            /**
+             * End set type block logic tokens.
+             *
+             *  Format: {% endset %}
+             */
+            type: Twig.logic.type.endset,
+            regex: /^endset$/,
+            next: [ ],
+            open: false
+        },
+        {
+            /**
+             * Filter logic tokens.
+             *
+             *  Format: {% filter upper %} or {% filter lower|escape %}
+             */
+            type: Twig.logic.type.filter,
+            regex: /^filter\s+(.+)$/,
+            next: [
+                Twig.logic.type.endfilter
+            ],
+            open: true,
+            compile: function (token) {
+                var expression = "|" + token.match[1].trim();
+                // Compile the expression.
+                token.stack = Twig.expression.compile.apply(this, [{
+                    type:  Twig.expression.type.expression,
+                    value: expression
+                }]).stack;
+                delete token.match;
+                return token;
+            },
+            parse: function (token, context, chain) {
+                var unfiltered = Twig.parse.apply(this, [token.output, context]),
+                    stack = [{
+                        type: Twig.expression.type.string,
+                        value: unfiltered
+                    }].concat(token.stack);
+
+                var output = Twig.expression.parse.apply(this, [stack, context]);
+
+                return {
+                    chain: chain,
+                    output: output
+                };
+            }
+        },
+        {
+            /**
+             * End filter logic tokens.
+             *
+             *  Format: {% endfilter %}
+             */
+            type: Twig.logic.type.endfilter,
+            regex: /^endfilter$/,
+            next: [ ],
+            open: false
+        },
+        {
+            /**
+             * Block logic tokens.
+             *
+             *  Format: {% block title %}
+             */
+            type: Twig.logic.type.block,
+            regex: /^block\s+([a-zA-Z0-9_]+)$/,
+            next: [
+                Twig.logic.type.endblock
+            ],
+            open: true,
+            compile: function (token) {
+                token.block = token.match[1].trim();
+                delete token.match;
+                return token;
+            },
+            parse: function (token, context, chain) {
+                var block_output = "",
+                    output = "",
+                    hasParent = this.blocks[token.block] && this.blocks[token.block].indexOf(Twig.placeholders.parent) > -1;
+
+                // Don't override previous blocks
+                // Loops should be exempted as well.
+                if (this.blocks[token.block] === undefined || hasParent || context.loop) {
+                    block_output = Twig.expression.parse.apply(this, [{
+                        type: Twig.expression.type.string,
+                        value: Twig.parse.apply(this, [token.output, context])
+                    }, context]);
+
+                    if (hasParent) {
+                        this.blocks[token.block] =  this.blocks[token.block].replace(Twig.placeholders.parent, block_output);
+                    } else {
+                        this.blocks[token.block] = block_output;
+                    }
+                }
+
+                // Check if a child block has been set from a template extending this one.
+                if (this.child.blocks[token.block]) {
+                    output = this.child.blocks[token.block];
+                } else {
+                    output = this.blocks[token.block];
+                }
+
+                return {
+                    chain: chain,
+                    output: output
+                };
+            }
+        },
+        {
+            /**
+             * End block logic tokens.
+             *
+             *  Format: {% endblock %}
+             */
+            type: Twig.logic.type.endblock,
+            regex: /^endblock(?:\s+([a-zA-Z0-9_]+))?$/,
+            next: [ ],
+            open: false
+        },
+        {
+            /**
+             * Block logic tokens.
+             *
+             *  Format: {% extends "template.twig" %}
+             */
+            type: Twig.logic.type.extends_,
+            regex: /^extends\s+(.+)$/,
+            next: [ ],
+            open: true,
+            compile: function (token) {
+                var expression = token.match[1].trim();
+                delete token.match;
+
+                token.stack   = Twig.expression.compile.apply(this, [{
+                    type:  Twig.expression.type.expression,
+                    value: expression
+                }]).stack;
+
+                return token;
+            },
+            parse: function (token, context, chain) {
+                // Resolve filename
+                var file = Twig.expression.parse.apply(this, [token.stack, context]);
+
+                // Set parent template
+                this.extend = file;
+
+                return {
+                    chain: chain,
+                    output: ''
+                };
+            }
+        },
+        {
+            /**
+             * Block logic tokens.
+             *
+             *  Format: {% extends "template.twig" %}
+             */
+            type: Twig.logic.type.use,
+            regex: /^use\s+(.+)$/,
+            next: [ ],
+            open: true,
+            compile: function (token) {
+                var expression = token.match[1].trim();
+                delete token.match;
+
+                token.stack = Twig.expression.compile.apply(this, [{
+                    type:  Twig.expression.type.expression,
+                    value: expression
+                }]).stack;
+
+                return token;
+            },
+            parse: function (token, context, chain) {
+                // Resolve filename
+                var file = Twig.expression.parse.apply(this, [token.stack, context]);
+
+                // Import blocks
+                this.importBlocks(file);
+
+                return {
+                    chain: chain,
+                    output: ''
+                };
+            }
+        },
+        {
+            /**
+             * Block logic tokens.
+             *
+             *  Format: {% includes "template.twig" [with {some: 'values'} only] %}
+             */
+            type: Twig.logic.type.include,
+            regex: /^include\s+(ignore missing\s+)?(.+?)\s*(?:with\s+(.+?))?\s*(only)?$/,
+            next: [ ],
+            open: true,
+            compile: function (token) {
+                var match = token.match,
+                    includeMissing = match[1] !== undefined,
+                    expression = match[2].trim(),
+                    withContext = match[3],
+                    only = ((match[4] !== undefined) && match[4].length);
+
+                delete token.match;
+
+                token.only = only;
+                token.includeMissing = includeMissing;
+
+                token.stack = Twig.expression.compile.apply(this, [{
+                    type:  Twig.expression.type.expression,
+                    value: expression
+                }]).stack;
+
+                if (withContext !== undefined) {
+                    token.withStack = Twig.expression.compile.apply(this, [{
+                        type:  Twig.expression.type.expression,
+                        value: withContext.trim()
+                    }]).stack;
+                }
+
+                return token;
+            },
+            parse: function (token, context, chain) {
+                // Resolve filename
+                var innerContext = {},
+                    withContext,
+                    i,
+                    template;
+
+                if (!token.only) {
+                    for (i in context) {
+                        if (context.hasOwnProperty(i))
+                            innerContext[i] = context[i];
+                    }
+                }
+
+                if (token.withStack !== undefined) {
+                    withContext = Twig.expression.parse.apply(this, [token.withStack, context]);
+
+                    for (i in withContext) {
+                        if (withContext.hasOwnProperty(i))
+                            innerContext[i] = withContext[i];
+                    }
+                }
+
+                var file = Twig.expression.parse.apply(this, [token.stack, innerContext]);
+
+                // Import file
+                template = this.importFile(file);
+
+                return {
+                    chain: chain,
+                    output: template.render(innerContext)
+                };
+            }
+        },
+        {
+            type: Twig.logic.type.spaceless,
+            regex: /^spaceless$/,
+            next: [
+                Twig.logic.type.endspaceless
+            ],
+            open: true,
+
+            // Parse the html and return it without any spaces between tags
+            parse: function (token, context, chain) {
+                var // Parse the output without any filter
+                    unfiltered = Twig.parse.apply(this, [token.output, context]),
+                    // A regular expression to find closing and opening tags with spaces between them
+                    rBetweenTagSpaces = />\s+</g,
+                    // Replace all space between closing and opening html tags
+                    output = unfiltered.replace(rBetweenTagSpaces,'><').trim();
+
+                return {
+                    chain: chain,
+                    output: output
+                };
+            }
+        },
+
+        // Add the {% endspaceless %} token
+        {
+            type: Twig.logic.type.endspaceless,
+            regex: /^endspaceless$/,
+            next: [ ],
+            open: false
+        },
+        {
+            /**
+             * Macro logic tokens.
+             *
+             * Format: {% maro input(name, value, type, size) %}
+             *
+             */
+            type: Twig.logic.type.macro,
+            regex: /^macro\s+([a-zA-Z0-9_]+)\s?\((([a-zA-Z0-9_]+(,\s?)?)*)\)$/,
+            next: [
+                Twig.logic.type.endmacro
+            ],
+            open: true,
+            compile: function (token) {
+                var macroName = token.match[1],
+                    parameters = token.match[2].split(/[ ,]+/);
+
+                //TODO: Clean up duplicate check
+                for (var i=0; i<parameters.length; i++) {
+                    for (var j=0; j<parameters.length; j++){
+                        if (parameters[i] === parameters[j] && i !== j) {
+                            throw new Twig.Error("Duplicate arguments for parameter: "+ parameters[i]);
+                        }
+                    }
+                }
+
+                token.macroName = macroName;
+                token.parameters = parameters;
+
+                delete token.match;
+                return token;
+            },
+            parse: function (token, context, chain) {
+                var template = this;
+                this.macros[token.macroName] = function() {
+                    // Pass global context and other macros
+                    var macroContext = {
+                        _self: template.macros
+                    }
+                    // Add parameters from context to macroContext
+                    for (var i=0; i<token.parameters.length; i++) {
+                        var prop = token.parameters[i];
+                        if(typeof arguments[i] !== 'undefined') {
+                            macroContext[prop] = arguments[i];
+                        } else {
+                            macroContext[prop] = undefined;
+                        }
+                    }
+                    // Render
+                    return Twig.parse.apply(template, [token.output, macroContext])
+                };
+
+                return {
+                    chain: chain,
+                    output: ''
+                };
+
+            }
+        },
+        {
+            /**
+             * End macro logic tokens.
+             *
+             * Format: {% endmacro %}
+             */
+             type: Twig.logic.type.endmacro,
+             regex: /^endmacro$/,
+             next: [ ],
+             open: false
+        },
+        {
+            /*
+            * import logic tokens.
+            *
+            * Format: {% import "template.twig" as form %}
+            */
+            type: Twig.logic.type.import_,
+            regex: /^import\s+(.+)\s+as\s+([a-zA-Z0-9_]+)$/,
+            next: [ ],
+            open: true,
+            compile: function (token) {
+                var expression = token.match[1].trim(),
+                    contextName = token.match[2].trim();
+                delete token.match;
+
+                token.expression = expression;
+                token.contextName = contextName;
+
+                token.stack = Twig.expression.compile.apply(this, [{
+                    type: Twig.expression.type.expression,
+                    value: expression
+                }]).stack;
+
+                return token;
+            },
+            parse: function (token, context, chain) {
+                if (token.expression !== "_self") {
+                    var file = Twig.expression.parse.apply(this, [token.stack, context]);
+                    var template = this.importMacros(file || token.expression);
+                    context[token.contextName] = template.render({}, {output: 'macros'});
+                }
+                else {
+                    context[token.contextName] = this.macros;
+                }
+
+                return {
+                    chain: chain,
+                    output: ''
+                }
+
+            }
+        },
+        {
+            /*
+            * from logic tokens.
+            *
+            * Format: {% from "template.twig" import func as form %}
+            */
+            type: Twig.logic.type.from,
+            regex: /^from\s+(.+)\s+import\s+([a-zA-Z0-9_, ]+)$/,
+            next: [ ],
+            open: true,
+            compile: function (token) {
+                var expression = token.match[1].trim(),
+                    macroExpressions = token.match[2].trim().split(/[ ,]+/),
+                    macroNames = {};
+
+                for (var i=0; i<macroExpressions.length; i++) {
+                    var res = macroExpressions[i];
+
+                    // match function as variable
+                    var macroMatch = res.match(/^([a-zA-Z0-9_]+)\s+(.+)\s+as\s+([a-zA-Z0-9_]+)$/);
+                    if (macroMatch) {
+                        macroNames[macroMatch[1].trim()] = macroMatch[2].trim();
+                    }
+                    else if (res.match(/^([a-zA-Z0-9_]+)$/)) {
+                        macroNames[res] = res;
+                    }
+                    else {
+                        // ignore import
+                    }
+
+                }
+
+                delete token.match;
+
+                token.expression = expression;
+                token.macroNames = macroNames;
+
+                token.stack = Twig.expression.compile.apply(this, [{
+                    type: Twig.expression.type.expression,
+                    value: expression
+                }]).stack;
+
+                return token;
+            },
+            parse: function (token, context, chain) {
+                var macros;
+
+                if (token.expression !== "_self") {
+                    var file = Twig.expression.parse.apply(this, [token.stack, context]);
+                    var template = this.importMacros(file || token.expression);
+                    macros = template.render({}, {output: 'macros'});
+                }
+                else {
+                    macros = this.macros;
+                }
+
+                for (var macroName in token.macroNames) {
+                    if (macros.hasOwnProperty(macroName)) {
+                        context[token.macroNames[macroName]] = macros[macroName];
+                    }
+                }
+
+                return {
+                    chain: chain,
+                    output: ''
+                }
+
+            }
+        }
+
+    ];
+
+
+    /**
+     * Registry for logic handlers.
+     */
+    Twig.logic.handler = {};
+
+    /**
+     * Define a new token type, available at Twig.logic.type.{type}
+     */
+    Twig.logic.extendType = function (type, value) {
+        value = value || ("Twig.logic.type" + type);
+        Twig.logic.type[type] = value;
+    };
+
+    /**
+     * Extend the logic parsing functionality with a new token definition.
+     *
+     * // Define a new tag
+     * Twig.logic.extend({
+     *     type: Twig.logic.type.{type},
+     *     // The pattern to match for this token
+     *     regex: ...,
+     *     // What token types can follow this token, leave blank if any.
+     *     next: [ ... ]
+     *     // Create and return compiled version of the token
+     *     compile: function(token) { ... }
+     *     // Parse the compiled token with the context provided by the render call
+     *     //   and whether this token chain is complete.
+     *     parse: function(token, context, chain) { ... }
+     * });
+     *
+     * @param {Object} definition The new logic expression.
+     */
+    Twig.logic.extend = function (definition) {
+
+        if (!definition.type) {
+            throw new Twig.Error("Unable to extend logic definition. No type provided for " + definition);
+        }
+        if (Twig.logic.type[definition.type]) {
+            throw new Twig.Error("Unable to extend logic definitions. Type " +
+                                 definition.type + " is already defined.");
+        } else {
+            Twig.logic.extendType(definition.type);
+        }
+        Twig.logic.handler[definition.type] = definition;
+    };
+
+    // Extend with built-in expressions
+    while (Twig.logic.definitions.length > 0) {
+        Twig.logic.extend(Twig.logic.definitions.shift());
+    }
+
+    /**
+     * Compile a logic token into an object ready for parsing.
+     *
+     * @param {Object} raw_token An uncompiled logic token.
+     *
+     * @return {Object} A compiled logic token, ready for parsing.
+     */
+    Twig.logic.compile = function (raw_token) {
+        var expression = raw_token.value.trim(),
+            token = Twig.logic.tokenize.apply(this, [expression]),
+            token_template = Twig.logic.handler[token.type];
+
+        // Check if the token needs compiling
+        if (token_template.compile) {
+            token = token_template.compile.apply(this, [token]);
+            Twig.log.trace("Twig.logic.compile: ", "Compiled logic token to ", token);
+        }
+
+        return token;
+    };
+
+    /**
+     * Tokenize logic expressions. This function matches token expressions against regular
+     * expressions provided in token definitions provided with Twig.logic.extend.
+     *
+     * @param {string} expression the logic token expression to tokenize
+     *                (i.e. what's between {% and %})
+     *
+     * @return {Object} The matched token with type set to the token type and match to the regex match.
+     */
+    Twig.logic.tokenize = function (expression) {
+        var token = {},
+            token_template_type = null,
+            token_type = null,
+            token_regex = null,
+            regex_array = null,
+            regex = null,
+            match = null;
+
+        // Ignore whitespace around expressions.
+        expression = expression.trim();
+
+        for (token_template_type in Twig.logic.handler) {
+            if (Twig.logic.handler.hasOwnProperty(token_template_type)) {
+                // Get the type and regex for this template type
+                token_type = Twig.logic.handler[token_template_type].type;
+                token_regex = Twig.logic.handler[token_template_type].regex;
+
+                // Handle multiple regular expressions per type.
+                regex_array = [];
+                if (token_regex instanceof Array) {
+                    regex_array = token_regex;
+                } else {
+                    regex_array.push(token_regex);
+                }
+
+                // Check regular expressions in the order they were specified in the definition.
+                while (regex_array.length > 0) {
+                    regex = regex_array.shift();
+                    match = regex.exec(expression.trim());
+                    if (match !== null) {
+                        token.type  = token_type;
+                        token.match = match;
+                        Twig.log.trace("Twig.logic.tokenize: ", "Matched a ", token_type, " regular expression of ", match);
+                        return token;
+                    }
+                }
+            }
+        }
+
+        // No regex matches
+        throw new Twig.Error("Unable to parse '" + expression.trim() + "'");
+    };
+
+    /**
+     * Parse a logic token within a given context.
+     *
+     * What are logic chains?
+     *      Logic chains represent a series of tokens that are connected,
+     *          for example:
+     *          {% if ... %} {% else %} {% endif %}
+     *
+     *      The chain parameter is used to signify if a chain is open of closed.
+     *      open:
+     *          More tokens in this chain should be parsed.
+     *      closed:
+     *          This token chain has completed parsing and any additional
+     *          tokens (else, elseif, etc...) should be ignored.
+     *
+     * @param {Object} token The compiled token.
+     * @param {Object} context The render context.
+     * @param {boolean} chain Is this an open logic chain. If false, that means a
+     *                        chain is closed and no further cases should be parsed.
+     */
+    Twig.logic.parse = function (token, context, chain) {
+        var output = '',
+            token_template;
+
+        context = context || { };
+
+        Twig.log.debug("Twig.logic.parse: ", "Parsing logic token ", token);
+
+        token_template = Twig.logic.handler[token.type];
+
+        if (token_template.parse) {
+            output = token_template.parse.apply(this, [token, context, chain]);
+        }
+        return output;
+    };
+
+    return Twig;
+
+})(Twig || { });
+//     Twig.js
+//     Copyright (c) 2011-2013 John Roepke
+//     Available under the BSD 2-Clause License
+//     https://github.com/justjohn/twig.js
+
+// ## twig.expression.js
+//
+// This file handles tokenizing, compiling and parsing expressions.
+var Twig = (function (Twig) {
+    
+
+    /**
+     * Namespace for expression handling.
+     */
+    Twig.expression = { };
+
+    /**
+     * Reserved word that can't be used as variable names.
+     */
+    Twig.expression.reservedWords = [
+        "true", "false", "null", "_context"
+    ];
+
+    /**
+     * The type of tokens used in expressions.
+     */
+    Twig.expression.type = {
+        comma:      'Twig.expression.type.comma',
+        operator: {
+            unary:  'Twig.expression.type.operator.unary',
+            binary: 'Twig.expression.type.operator.binary'
+        },
+        string:     'Twig.expression.type.string',
+        bool:       'Twig.expression.type.bool',
+        array: {
+            start:  'Twig.expression.type.array.start',
+            end:    'Twig.expression.type.array.end'
+        },
+        object: {
+            start:  'Twig.expression.type.object.start',
+            end:    'Twig.expression.type.object.end'
+        },
+        parameter: {
+            start:  'Twig.expression.type.parameter.start',
+            end:    'Twig.expression.type.parameter.end'
+        },
+        key: {
+            period:   'Twig.expression.type.key.period',
+            brackets: 'Twig.expression.type.key.brackets'
+        },
+        filter:     'Twig.expression.type.filter',
+        _function:  'Twig.expression.type._function',
+        variable:   'Twig.expression.type.variable',
+        number:     'Twig.expression.type.number',
+        _null:     'Twig.expression.type.null',
+        context:    'Twig.expression.type.context',
+        test:       'Twig.expression.type.test'
+    };
+
+    Twig.expression.set = {
+        // What can follow an expression (in general)
+        operations: [
+            Twig.expression.type.filter,
+            Twig.expression.type.operator.unary,
+            Twig.expression.type.operator.binary,
+            Twig.expression.type.array.end,
+            Twig.expression.type.object.end,
+            Twig.expression.type.parameter.end,
+            Twig.expression.type.comma,
+            Twig.expression.type.test
+        ],
+        expressions: [
+            Twig.expression.type._function,
+            Twig.expression.type.bool,
+            Twig.expression.type.string,
+            Twig.expression.type.variable,
+            Twig.expression.type.number,
+            Twig.expression.type._null,
+            Twig.expression.type.context,
+            Twig.expression.type.parameter.start,
+            Twig.expression.type.array.start,
+            Twig.expression.type.object.start
+        ]
+    };
+
+    // Most expressions allow a '.' or '[' after them, so we provide a convenience set
+    Twig.expression.set.operations_extended = Twig.expression.set.operations.concat([
+                    Twig.expression.type.key.period,
+                    Twig.expression.type.key.brackets]);
+
+    // Some commonly used compile and parse functions.
+    Twig.expression.fn = {
+        compile: {
+            push: function(token, stack, output) {
+                output.push(token);
+            },
+            push_both: function(token, stack, output) {
+                output.push(token);
+                stack.push(token);
+            }
+        },
+        parse: {
+            push: function(token, stack, context) {
+                stack.push(token);
+            },
+            push_value: function(token, stack, context) {
+                stack.push(token.value);
+            }
+        }
+    };
+
+    // The regular expressions and compile/parse logic used to match tokens in expressions.
+    //
+    // Properties:
+    //
+    //      type:  The type of expression this matches
+    //
+    //      regex: One or more regular expressions that matche the format of the token.
+    //
+    //      next:  Valid tokens that can occur next in the expression.
+    //
+    // Functions:
+    //
+    //      compile: A function that compiles the raw regular expression match into a token.
+    //
+    //      parse:   A function that parses the compiled token into output.
+    //
+    Twig.expression.definitions = [
+        {
+            type: Twig.expression.type.test,
+            regex: /^is\s+(not)?\s*([a-zA-Z_][a-zA-Z0-9_]*)/,
+            next: Twig.expression.set.operations.concat([Twig.expression.type.parameter.start]),
+            compile: function(token, stack, output) {
+                token.filter   = token.match[2];
+                token.modifier = token.match[1];
+                delete token.match;
+                delete token.value;
+                output.push(token);
+            },
+            parse: function(token, stack, context) {
+                var value = stack.pop(),
+                    params = token.params && Twig.expression.parse.apply(this, [token.params, context]),
+                    result = Twig.test(token.filter, value, params);
+
+                if (token.modifier == 'not') {
+                    stack.push(!result);
+                } else {
+                    stack.push(result);
+                }
+            }
+        },
+        {
+            type: Twig.expression.type.comma,
+            // Match a comma
+            regex: /^,/,
+            next: Twig.expression.set.expressions.concat([Twig.expression.type.array.end, Twig.expression.type.object.end]),
+            compile: function(token, stack, output) {
+                var i = stack.length - 1,
+                    stack_token;
+
+                delete token.match;
+                delete token.value;
+
+                // pop tokens off the stack until the start of the object
+                for(;i >= 0; i--) {
+                    stack_token = stack.pop();
+                    if (stack_token.type === Twig.expression.type.object.start
+                            || stack_token.type === Twig.expression.type.parameter.start
+                            || stack_token.type === Twig.expression.type.array.start) {
+                        stack.push(stack_token);
+                        break;
+                    }
+                    output.push(stack_token);
+                }
+                output.push(token);
+            }
+        },
+        {
+            type: Twig.expression.type.operator.binary,
+            // Match any of +, *, /, -, %, ~, <, <=, >, >=, !=, ==, **, ?, :, and, or, not
+            regex: /(^[\+\-~%\?\:]|^[!=]==?|^[!<>]=?|^\*\*?|^\/\/?|^and\s+|^or\s+|^in\s+|^not in\s+|^\.\.)/,
+            next: Twig.expression.set.expressions.concat([Twig.expression.type.operator.unary]),
+            compile: function(token, stack, output) {
+                delete token.match;
+
+                token.value = token.value.trim();
+                var value = token.value,
+                    operator = Twig.expression.operator.lookup(value, token);
+
+                Twig.log.trace("Twig.expression.compile: ", "Operator: ", operator, " from ", value);
+
+                while (stack.length > 0 &&
+                       (stack[stack.length-1].type == Twig.expression.type.operator.unary || stack[stack.length-1].type == Twig.expression.type.operator.binary) &&
+                            (
+                                (operator.associativity === Twig.expression.operator.leftToRight &&
+                                 operator.precidence    >= stack[stack.length-1].precidence) ||
+
+                                (operator.associativity === Twig.expression.operator.rightToLeft &&
+                                 operator.precidence    >  stack[stack.length-1].precidence)
+                            )
+                       ) {
+                     var temp = stack.pop();
+                     output.push(temp);
+                }
+
+                if (value === ":") {
+                    // Check if this is a ternary or object key being set
+                    if (stack[stack.length - 1] && stack[stack.length-1].value === "?") {
+                        // Continue as normal for a ternary
+                    } else {
+                        // This is not a ternary so we push the token to the output where it can be handled
+                        //   when the assocated object is closed.
+                        var key_token = output.pop();
+
+                        if (key_token.type === Twig.expression.type.string ||
+                                key_token.type === Twig.expression.type.variable ||
+                                key_token.type === Twig.expression.type.number) {
+                            token.key = key_token.value;
+
+                        } else {
+                            throw new Twig.Error("Unexpected value before ':' of " + key_token.type + " = " + key_token.value);
+                        }
+
+                        output.push(token);
+                        return;
+                    }
+                } else {
+                    stack.push(operator);
+                }
+            },
+            parse: function(token, stack, context) {
+                if (token.key) {
+                    // handle ternary ':' operator
+                    stack.push(token);
+                } else {
+                    Twig.expression.operator.parse(token.value, stack);
+                }
+            }
+        },
+        {
+            type: Twig.expression.type.operator.unary,
+            // Match any of not
+            regex: /(^not\s+)/,
+            next: Twig.expression.set.expressions,
+            compile: function(token, stack, output) {
+                delete token.match;
+
+                token.value = token.value.trim();
+                var value = token.value,
+                    operator = Twig.expression.operator.lookup(value, token);
+
+                Twig.log.trace("Twig.expression.compile: ", "Operator: ", operator, " from ", value);
+
+                while (stack.length > 0 &&
+                       (stack[stack.length-1].type == Twig.expression.type.operator.unary || stack[stack.length-1].type == Twig.expression.type.operator.binary) &&
+                            (
+                                (operator.associativity === Twig.expression.operator.leftToRight &&
+                                 operator.precidence    >= stack[stack.length-1].precidence) ||
+
+                                (operator.associativity === Twig.expression.operator.rightToLeft &&
+                                 operator.precidence    >  stack[stack.length-1].precidence)
+                            )
+                       ) {
+                     var temp = stack.pop();
+                     output.push(temp);
+                }
+
+                stack.push(operator);
+            },
+            parse: function(token, stack, context) {
+                Twig.expression.operator.parse(token.value, stack);
+            }
+        },
+        {
+            /**
+             * Match a string. This is anything between a pair of single or double quotes.
+             */
+            type: Twig.expression.type.string,
+            // See: http://blog.stevenlevithan.com/archives/match-quoted-string
+            regex: /^(["'])(?:(?=(\\?))\2.)*?\1/,
+            next: Twig.expression.set.operations,
+            compile: function(token, stack, output) {
+                var value = token.value;
+                delete token.match
+
+                // Remove the quotes from the string
+                if (value.substring(0, 1) === '"') {
+                    value = value.replace('\\"', '"');
+                } else {
+                    value = value.replace("\\'", "'");
+                }
+                token.value = value.substring(1, value.length-1).replace( /\\n/g, "\n" ).replace( /\\r/g, "\r" );
+                Twig.log.trace("Twig.expression.compile: ", "String value: ", token.value);
+                output.push(token);
+            },
+            parse: Twig.expression.fn.parse.push_value
+        },
+        {
+            /**
+             * Match a parameter set start.
+             */
+            type: Twig.expression.type.parameter.start,
+            regex: /^\(/,
+            next: Twig.expression.set.expressions.concat([Twig.expression.type.parameter.end]),
+            compile: Twig.expression.fn.compile.push_both,
+            parse: Twig.expression.fn.parse.push
+        },
+        {
+            /**
+             * Match a parameter set end.
+             */
+            type: Twig.expression.type.parameter.end,
+            regex: /^\)/,
+            next: Twig.expression.set.operations_extended,
+            compile: function(token, stack, output) {
+                var stack_token,
+                    end_token = token;
+
+                stack_token = stack.pop();
+                while(stack.length > 0 && stack_token.type != Twig.expression.type.parameter.start) {
+                    output.push(stack_token);
+                    stack_token = stack.pop();
+                }
+
+                // Move contents of parens into preceding filter
+                var param_stack = [];
+                while(token.type !== Twig.expression.type.parameter.start) {
+                    // Add token to arguments stack
+                    param_stack.unshift(token);
+                    token = output.pop();
+                }
+                param_stack.unshift(token);
+
+                var is_expression = false;
+
+                // Get the token preceding the parameters
+                token = output[output.length-1];
+
+                if (token === undefined ||
+                    (token.type !== Twig.expression.type._function &&
+                    token.type !== Twig.expression.type.filter &&
+                    token.type !== Twig.expression.type.test &&
+                    token.type !== Twig.expression.type.key.brackets &&
+                    token.type !== Twig.expression.type.key.period)) {
+
+                    end_token.expression = true;
+
+                    // remove start and end token from stack
+                    param_stack.pop();
+                    param_stack.shift();
+
+                    end_token.params = param_stack;
+
+                    output.push(end_token);
+
+                } else {
+                    end_token.expression = false;
+                    token.params = param_stack;
+                }
+            },
+            parse: function(token, stack, context) {
+                var new_array = [],
+                    array_ended = false,
+                    value = null;
+
+                if (token.expression) {
+                    value = Twig.expression.parse.apply(this, [token.params, context])
+                    stack.push(value);
+
+                } else {
+
+                    while (stack.length > 0) {
+                        value = stack.pop();
+                        // Push values into the array until the start of the array
+                        if (value && value.type && value.type == Twig.expression.type.parameter.start) {
+                            array_ended = true;
+                            break;
+                        }
+                        new_array.unshift(value);
+                    }
+
+                    if (!array_ended) {
+                        throw new Twig.Error("Expected end of parameter set.");
+                    }
+
+                    stack.push(new_array);
+                }
+            }
+        },
+        {
+            /**
+             * Match an array start.
+             */
+            type: Twig.expression.type.array.start,
+            regex: /^\[/,
+            next: Twig.expression.set.expressions.concat([Twig.expression.type.array.end]),
+            compile: Twig.expression.fn.compile.push_both,
+            parse: Twig.expression.fn.parse.push
+        },
+        {
+            /**
+             * Match an array end.
+             */
+            type: Twig.expression.type.array.end,
+            regex: /^\]/,
+            next: Twig.expression.set.operations_extended,
+            compile: function(token, stack, output) {
+                var i = stack.length - 1,
+                    stack_token;
+                // pop tokens off the stack until the start of the object
+                for(;i >= 0; i--) {
+                    stack_token = stack.pop();
+                    if (stack_token.type === Twig.expression.type.array.start) {
+                        break;
+                    }
+                    output.push(stack_token);
+                }
+                output.push(token);
+            },
+            parse: function(token, stack, context) {
+                var new_array = [],
+                    array_ended = false,
+                    value = null;
+
+                while (stack.length > 0) {
+                    value = stack.pop();
+                    // Push values into the array until the start of the array
+                    if (value.type && value.type == Twig.expression.type.array.start) {
+                        array_ended = true;
+                        break;
+                    }
+                    new_array.unshift(value);
+                }
+                if (!array_ended) {
+                    throw new Twig.Error("Expected end of array.");
+                }
+
+                stack.push(new_array);
+            }
+        },
+        // Token that represents the start of a hash map '}'
+        //
+        // Hash maps take the form:
+        //    { "key": 'value', "another_key": item }
+        //
+        // Keys must be quoted (either single or double) and values can be any expression.
+        {
+            type: Twig.expression.type.object.start,
+            regex: /^\{/,
+            next: Twig.expression.set.expressions.concat([Twig.expression.type.object.end]),
+            compile: Twig.expression.fn.compile.push_both,
+            parse: Twig.expression.fn.parse.push
+        },
+
+        // Token that represents the end of a Hash Map '}'
+        //
+        // This is where the logic for building the internal
+        // representation of a hash map is defined.
+        {
+            type: Twig.expression.type.object.end,
+            regex: /^\}/,
+            next: Twig.expression.set.operations_extended,
+            compile: function(token, stack, output) {
+                var i = stack.length-1,
+                    stack_token;
+
+                // pop tokens off the stack until the start of the object
+                for(;i >= 0; i--) {
+                    stack_token = stack.pop();
+                    if (stack_token && stack_token.type === Twig.expression.type.object.start) {
+                        break;
+                    }
+                    output.push(stack_token);
+                }
+                output.push(token);
+            },
+            parse: function(end_token, stack, context) {
+                var new_object = {},
+                    object_ended = false,
+                    token = null,
+                    token_key = null,
+                    has_value = false,
+                    value = null;
+
+                while (stack.length > 0) {
+                    token = stack.pop();
+                    // Push values into the array until the start of the object
+                    if (token && token.type && token.type === Twig.expression.type.object.start) {
+                        object_ended = true;
+                        break;
+                    }
+                    if (token && token.type && (token.type === Twig.expression.type.operator.binary || token.type === Twig.expression.type.operator.unary) && token.key) {
+                        if (!has_value) {
+                            throw new Twig.Error("Missing value for key '" + token.key + "' in object definition.");
+                        }
+                        new_object[token.key] = value;
+
+                        // Preserve the order that elements are added to the map
+                        // This is necessary since JavaScript objects don't
+                        // guarantee the order of keys
+                        if (new_object._keys === undefined) new_object._keys = [];
+                        new_object._keys.unshift(token.key);
+
+                        // reset value check
+                        value = null;
+                        has_value = false;
+
+                    } else {
+                        has_value = true;
+                        value = token;
+                    }
+                }
+                if (!object_ended) {
+                    throw new Twig.Error("Unexpected end of object.");
+                }
+
+                stack.push(new_object);
+            }
+        },
+
+        // Token representing a filter
+        //
+        // Filters can follow any expression and take the form:
+        //    expression|filter(optional, args)
+        //
+        // Filter parsing is done in the Twig.filters namespace.
+        {
+            type: Twig.expression.type.filter,
+            // match a | then a letter or _, then any number of letters, numbers, _ or -
+            regex: /^\|\s?([a-zA-Z_][a-zA-Z0-9_\-]*)/,
+            next: Twig.expression.set.operations_extended.concat([
+                    Twig.expression.type.parameter.start]),
+            compile: function(token, stack, output) {
+                token.value = token.match[1];
+                output.push(token);
+            },
+            parse: function(token, stack, context) {
+                var input = stack.pop(),
+                    params = token.params && Twig.expression.parse.apply(this, [token.params, context]);
+
+                stack.push(Twig.filter.apply(this, [token.value, input, params]));
+            }
+        },
+        {
+            type: Twig.expression.type._function,
+            // match any letter or _, then any number of letters, numbers, _ or - followed by (
+            regex: /^([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/,
+            next: Twig.expression.type.parameter.start,
+            transform: function(match, tokens) {
+                return '(';
+            },
+            compile: function(token, stack, output) {
+                var fn = token.match[1];
+                token.fn = fn;
+                // cleanup token
+                delete token.match;
+                delete token.value;
+
+                output.push(token);
+            },
+            parse: function(token, stack, context) {
+                var params = token.params && Twig.expression.parse.apply(this, [token.params, context]),
+                    fn     = token.fn,
+                    value;
+
+                if (Twig.functions[fn]) {
+                    // Get the function from the built-in functions
+                    value = Twig.functions[fn].apply(this, params);
+
+                } else if (typeof context[fn] == 'function') {
+                    // Get the function from the user/context defined functions
+                    value = context[fn].apply(context, params);
+
+                } else {
+                    throw new Twig.Error(fn + ' function does not exist and is not defined in the context');
+                }
+
+                stack.push(value);
+            }
+        },
+
+        // Token representing a variable.
+        //
+        // Variables can contain letters, numbers, underscores and
+        // dashes, but must start with a letter or underscore.
+        //
+        // Variables are retrieved from the render context and take
+        // the value of 'undefined' if the given variable doesn't
+        // exist in the context.
+        {
+            type: Twig.expression.type.variable,
+            // match any letter or _, then any number of letters, numbers, _ or -
+            regex: /^[a-zA-Z_][a-zA-Z0-9_]*/,
+            next: Twig.expression.set.operations_extended.concat([
+                    Twig.expression.type.parameter.start]),
+            compile: Twig.expression.fn.compile.push,
+            validate: function(match, tokens) {
+                return (Twig.indexOf(Twig.expression.reservedWords, match[0]) < 0);
+            },
+            parse: function(token, stack, context) {
+                // Get the variable from the context
+                var value = Twig.expression.resolve(context[token.value], context);
+                stack.push(value);
+            }
+        },
+        {
+            type: Twig.expression.type.key.period,
+            regex: /^\.([a-zA-Z0-9_]+)/,
+            next: Twig.expression.set.operations_extended.concat([
+                    Twig.expression.type.parameter.start]),
+            compile: function(token, stack, output) {
+                token.key = token.match[1];
+                delete token.match;
+                delete token.value;
+
+                output.push(token);
+            },
+            parse: function(token, stack, context) {
+                var params = token.params && Twig.expression.parse.apply(this, [token.params, context]),
+                    key = token.key,
+                    object = stack.pop(),
+                    value;
+
+                if (object === null || object === undefined) {
+                    if (this.options.strict_variables) {
+                        throw new Twig.Error("Can't access a key " + key + " on an null or undefined object.");
+                    } else {
+                        return null;
+                    }
+                }
+
+                var capitalize = function(value) {return value.substr(0, 1).toUpperCase() + value.substr(1);};
+
+                // Get the variable from the context
+                if (typeof object === 'object' && key in object) {
+                    value = object[key];
+                } else if (object["get"+capitalize(key)] !== undefined) {
+                    value = object["get"+capitalize(key)];
+                } else if (object["is"+capitalize(key)] !== undefined) {
+                    value = object["is"+capitalize(key)];
+                } else {
+                    value = null;
+                }
+                stack.push(Twig.expression.resolve(value, object, params));
+            }
+        },
+        {
+            type: Twig.expression.type.key.brackets,
+            regex: /^\[([^\]]*)\]/,
+            next: Twig.expression.set.operations_extended.concat([
+                    Twig.expression.type.parameter.start]),
+            compile: function(token, stack, output) {
+                var match = token.match[1];
+                delete token.value;
+                delete token.match;
+
+                // The expression stack for the key
+                token.stack = Twig.expression.compile({
+                    value: match
+                }).stack;
+
+                output.push(token);
+            },
+            parse: function(token, stack, context) {
+                // Evaluate key
+                var params = token.params && Twig.expression.parse.apply(this, [token.params, context]),
+                    key = Twig.expression.parse.apply(this, [token.stack, context]),
+                    object = stack.pop(),
+                    value;
+
+                if (object === null || object === undefined) {
+                    if (this.options.strict_variables) {
+                        throw new Twig.Error("Can't access a key " + key + " on an null or undefined object.");
+                    } else {
+                        return null;
+                    }
+                }
+
+                // Get the variable from the context
+                if (typeof object === 'object' && key in object) {
+                    value = object[key];
+                } else {
+                    value = null;
+                }
+                stack.push(Twig.expression.resolve(value, object, params));
+            }
+        },
+        {
+            /**
+             * Match a null value.
+             */
+            type: Twig.expression.type._null,
+            // match a number
+            regex: /^null/,
+            next: Twig.expression.set.operations,
+            compile: function(token, stack, output) {
+                delete token.match;
+                token.value = null;
+                output.push(token);
+            },
+            parse: Twig.expression.fn.parse.push_value
+        },
+        {
+            /**
+             * Match the context
+             */
+            type: Twig.expression.type.context,
+            regex: /^_context/,
+            next: Twig.expression.set.operations_extended.concat([
+                    Twig.expression.type.parameter.start]),
+            compile: Twig.expression.fn.compile.push,
+            parse: function(token, stack, context) {
+                stack.push(context);
+            }
+        },
+        {
+            /**
+             * Match a number (integer or decimal)
+             */
+            type: Twig.expression.type.number,
+            // match a number
+            regex: /^\-?\d+(\.\d+)?/,
+            next: Twig.expression.set.operations,
+            compile: function(token, stack, output) {
+                token.value = Number(token.value);
+                output.push(token);
+            },
+            parse: Twig.expression.fn.parse.push_value
+        },
+        {
+            /**
+             * Match a boolean
+             */
+            type: Twig.expression.type.bool,
+            regex: /^(true|false)/,
+            next: Twig.expression.set.operations,
+            compile: function(token, stack, output) {
+                token.value = (token.match[0] == "true");
+                delete token.match;
+                output.push(token);
+            },
+            parse: Twig.expression.fn.parse.push_value
+        }
+    ];
+
+    /**
+     * Resolve a context value.
+     *
+     * If the value is a function, it is executed with a context parameter.
+     *
+     * @param {string} key The context object key.
+     * @param {Object} context The render context.
+     */
+    Twig.expression.resolve = function(value, context, params) {
+        if (typeof value == 'function') {
+            return value.apply(context, params || []);
+        } else {
+            return value;
+        }
+    };
+
+    /**
+     * Registry for logic handlers.
+     */
+    Twig.expression.handler = {};
+
+    /**
+     * Define a new expression type, available at Twig.logic.type.{type}
+     *
+     * @param {string} type The name of the new type.
+     */
+    Twig.expression.extendType = function (type) {
+        Twig.expression.type[type] = "Twig.expression.type." + type;
+    };
+
+    /**
+     * Extend the expression parsing functionality with a new definition.
+     *
+     * Token definitions follow this format:
+     *  {
+     *      type:     One of Twig.expression.type.[type], either pre-defined or added using
+     *                    Twig.expression.extendType
+     *
+     *      next:     Array of types from Twig.expression.type that can follow this token,
+     *
+     *      regex:    A regex or array of regex's that should match the token.
+     *
+     *      compile: function(token, stack, output) called when this token is being compiled.
+     *                   Should return an object with stack and output set.
+     *
+     *      parse:   function(token, stack, context) called when this token is being parsed.
+     *                   Should return an object with stack and context set.
+     *  }
+     *
+     * @param {Object} definition A token definition.
+     */
+    Twig.expression.extend = function (definition) {
+        if (!definition.type) {
+            throw new Twig.Error("Unable to extend logic definition. No type provided for " + definition);
+        }
+        Twig.expression.handler[definition.type] = definition;
+    };
+
+    // Extend with built-in expressions
+    while (Twig.expression.definitions.length > 0) {
+        Twig.expression.extend(Twig.expression.definitions.shift());
+    }
+
+    /**
+     * Break an expression into tokens defined in Twig.expression.definitions.
+     *
+     * @param {string} expression The string to tokenize.
+     *
+     * @return {Array} An array of tokens.
+     */
+    Twig.expression.tokenize = function (expression) {
+        var tokens = [],
+            // Keep an offset of the location in the expression for error messages.
+            exp_offset = 0,
+            // The valid next tokens of the previous token
+            next = null,
+            // Match information
+            type, regex, regex_array,
+            // The possible next token for the match
+            token_next,
+            // Has a match been found from the definitions
+            match_found, invalid_matches = [], match_function;
+
+        match_function = function () {
+            var match = Array.prototype.slice.apply(arguments),
+                string = match.pop(),
+                offset = match.pop();
+
+            Twig.log.trace("Twig.expression.tokenize",
+                           "Matched a ", type, " regular expression of ", match);
+
+            if (next && Twig.indexOf(next, type) < 0) {
+                invalid_matches.push(
+                    type + " cannot follow a " + tokens[tokens.length - 1].type +
+                           " at template:" + exp_offset + " near '" + match[0].substring(0, 20) +
+                           "...'"
+                );
+                // Not a match, don't change the expression
+                return match[0];
+            }
+
+            // Validate the token if a validation function is provided
+            if (Twig.expression.handler[type].validate &&
+                    !Twig.expression.handler[type].validate(match, tokens)) {
+                return match[0];
+            }
+
+            invalid_matches = [];
+
+            tokens.push({
+                type:  type,
+                value: match[0],
+                match: match
+            });
+
+            match_found = true;
+            next = token_next;
+            exp_offset += match[0].length;
+
+            // Does the token need to return output back to the expression string
+            // e.g. a function match of cycle( might return the '(' back to the expression
+            // This allows look-ahead to differentiate between token types (e.g. functions and variable names)
+            if (Twig.expression.handler[type].transform) {
+                return Twig.expression.handler[type].transform(match, tokens);
+            }
+            return '';
+        };
+
+        Twig.log.debug("Twig.expression.tokenize", "Tokenizing expression ", expression);
+
+        while (expression.length > 0) {
+            expression = expression.trim();
+            for (type in Twig.expression.handler) {
+                if (Twig.expression.handler.hasOwnProperty(type)) {
+                    token_next = Twig.expression.handler[type].next;
+                    regex = Twig.expression.handler[type].regex;
+                    // Twig.log.trace("Checking type ", type, " on ", expression);
+                    if (regex instanceof Array) {
+                        regex_array = regex;
+                    } else {
+                        regex_array = [regex];
+                    }
+
+                    match_found = false;
+                    while (regex_array.length > 0) {
+                        regex = regex_array.pop();
+                        expression = expression.replace(regex, match_function);
+                    }
+                    // An expression token has been matched. Break the for loop and start trying to
+                    //  match the next template (if expression isn't empty.)
+                    if (match_found) {
+                        break;
+                    }
+                }
+            }
+            if (!match_found) {
+                if (invalid_matches.length > 0) {
+                    throw new Twig.Error(invalid_matches.join(" OR "));
+                } else {
+                    throw new Twig.Error("Unable to parse '" + expression + "' at template position" + exp_offset);
+                }
+            }
+        }
+
+        Twig.log.trace("Twig.expression.tokenize", "Tokenized to ", tokens);
+        return tokens;
+    };
+
+    /**
+     * Compile an expression token.
+     *
+     * @param {Object} raw_token The uncompiled token.
+     *
+     * @return {Object} The compiled token.
+     */
+    Twig.expression.compile = function (raw_token) {
+        var expression = raw_token.value,
+            // Tokenize expression
+            tokens = Twig.expression.tokenize(expression),
+            token = null,
+            output = [],
+            stack = [],
+            token_template = null;
+
+        Twig.log.trace("Twig.expression.compile: ", "Compiling ", expression);
+
+        // Push tokens into RPN stack using the Sunting-yard algorithm
+        // See http://en.wikipedia.org/wiki/Shunting_yard_algorithm
+
+        while (tokens.length > 0) {
+            token = tokens.shift();
+            token_template = Twig.expression.handler[token.type];
+
+            Twig.log.trace("Twig.expression.compile: ", "Compiling ", token);
+
+            // Compile the template
+            token_template.compile && token_template.compile(token, stack, output);
+
+            Twig.log.trace("Twig.expression.compile: ", "Stack is", stack);
+            Twig.log.trace("Twig.expression.compile: ", "Output is", output);
+        }
+
+        while(stack.length > 0) {
+            output.push(stack.pop());
+        }
+
+        Twig.log.trace("Twig.expression.compile: ", "Final output is", output);
+
+        raw_token.stack = output;
+        delete raw_token.value;
+
+        return raw_token;
+    };
+
+
+    /**
+     * Parse an RPN expression stack within a context.
+     *
+     * @param {Array} tokens An array of compiled expression tokens.
+     * @param {Object} context The render context to parse the tokens with.
+     *
+     * @return {Object} The result of parsing all the tokens. The result
+     *                  can be anything, String, Array, Object, etc... based on
+     *                  the given expression.
+     */
+    Twig.expression.parse = function (tokens, context) {
+        var that = this;
+
+        // If the token isn't an array, make it one.
+        if (!(tokens instanceof Array)) {
+            tokens = [tokens];
+        }
+
+        // The output stack
+        var stack = [],
+            token_template = null;
+
+        Twig.forEach(tokens, function (token) {
+            token_template = Twig.expression.handler[token.type];
+
+            token_template.parse && token_template.parse.apply(that, [token, stack, context]);
+        });
+
+        // Pop the final value off the stack
+        return stack.pop();
+    };
+
+    return Twig;
+
+})( Twig || { } );
+//     Twig.js
+//     Copyright (c) 2011-2013 John Roepke
+//     Available under the BSD 2-Clause License
+//     https://github.com/justjohn/twig.js
+
+// ## twig.expression.operator.js
+//
+// This file handles operator lookups and parsing.
+var Twig = (function (Twig) {
+    
+
+    /**
+     * Operator associativity constants.
+     */
+    Twig.expression.operator = {
+        leftToRight: 'leftToRight',
+        rightToLeft: 'rightToLeft'
+    };
+
+    var containment = function(a, b) {
+        if (b.indexOf !== undefined) {
+            // String
+            return a === b || a !== '' && b.indexOf(a) > -1;
+
+        } else {
+            var el;
+            for (el in b) {
+                if (b.hasOwnProperty(el) && b[el] === a) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    };
+
+    /**
+     * Get the precidence and associativity of an operator. These follow the order that C/C++ use.
+     * See http://en.wikipedia.org/wiki/Operators_in_C_and_C++ for the table of values.
+     */
+    Twig.expression.operator.lookup = function (operator, token) {
+        switch (operator) {
+            case "..":
+            case 'not in':
+            case 'in':
+                token.precidence = 20;
+                token.associativity = Twig.expression.operator.leftToRight;
+                break;
+
+            case ',':
+                token.precidence = 18;
+                token.associativity = Twig.expression.operator.leftToRight;
+                break;
+
+            // Ternary
+            case '?':
+            case ':':
+                token.precidence = 16;
+                token.associativity = Twig.expression.operator.rightToLeft;
+                break;
+
+            case 'or':
+                token.precidence = 14;
+                token.associativity = Twig.expression.operator.leftToRight;
+                break;
+
+            case 'and':
+                token.precidence = 13;
+                token.associativity = Twig.expression.operator.leftToRight;
+                break;
+
+            case '==':
+            case '!=':
+                token.precidence = 9;
+                token.associativity = Twig.expression.operator.leftToRight;
+                break;
+
+            case '<':
+            case '<=':
+            case '>':
+            case '>=':
+                token.precidence = 8;
+                token.associativity = Twig.expression.operator.leftToRight;
+                break;
+
+
+            case '~': // String concatination
+            case '+':
+            case '-':
+                token.precidence = 6;
+                token.associativity = Twig.expression.operator.leftToRight;
+                break;
+
+            case '//':
+            case '**':
+            case '*':
+            case '/':
+            case '%':
+                token.precidence = 5;
+                token.associativity = Twig.expression.operator.leftToRight;
+                break;
+
+            case 'not':
+                token.precidence = 3;
+                token.associativity = Twig.expression.operator.rightToLeft;
+                break;
+
+            default:
+                throw new Twig.Error(operator + " is an unknown operator.");
+        }
+        token.operator = operator;
+        return token;
+    };
+
+    /**
+     * Handle operations on the RPN stack.
+     *
+     * Returns the updated stack.
+     */
+    Twig.expression.operator.parse = function (operator, stack) {
+        Twig.log.trace("Twig.expression.operator.parse: ", "Handling ", operator);
+        var a, b, c;
+        switch (operator) {
+            case ':':
+                // Ignore
+                break;
+
+            case '?':
+                c = stack.pop(); // false expr
+                b = stack.pop(); // true expr
+                a = stack.pop(); // conditional
+                if (a) {
+                    stack.push(b);
+                } else {
+                    stack.push(c);
+                }
+                break;
+
+            case '+':
+                b = parseFloat(stack.pop());
+                a = parseFloat(stack.pop());
+                stack.push(a + b);
+                break;
+
+            case '-':
+                b = parseFloat(stack.pop());
+                a = parseFloat(stack.pop());
+                stack.push(a - b);
+                break;
+
+            case '*':
+                b = parseFloat(stack.pop());
+                a = parseFloat(stack.pop());
+                stack.push(a * b);
+                break;
+
+            case '/':
+                b = parseFloat(stack.pop());
+                a = parseFloat(stack.pop());
+                stack.push(a / b);
+                break;
+
+            case '//':
+                b = parseFloat(stack.pop());
+                a = parseFloat(stack.pop());
+                stack.push(parseInt(a / b));
+                break;
+
+            case '%':
+                b = parseFloat(stack.pop());
+                a = parseFloat(stack.pop());
+                stack.push(a % b);
+                break;
+
+            case '~':
+                b = stack.pop();
+                a = stack.pop();
+                stack.push( (a !== undefined ? a.toString() : "")
+                          + (b !== undefined ? b.toString() : "") );
+                break;
+
+            case 'not':
+            case '!':
+                stack.push(!stack.pop());
+                break;
+
+            case '<':
+                b = stack.pop();
+                a = stack.pop();
+                stack.push(a < b);
+                break;
+
+            case '<=':
+                b = stack.pop();
+                a = stack.pop();
+                stack.push(a <= b);
+                break;
+
+            case '>':
+                b = stack.pop();
+                a = stack.pop();
+                stack.push(a > b);
+                break;
+
+            case '>=':
+                b = stack.pop();
+                a = stack.pop();
+                stack.push(a >= b);
+                break;
+
+            case '===':
+                b = stack.pop();
+                a = stack.pop();
+                stack.push(a === b);
+                break;
+
+            case '==':
+                b = stack.pop();
+                a = stack.pop();
+                stack.push(a == b);
+                break;
+
+            case '!==':
+                b = stack.pop();
+                a = stack.pop();
+                stack.push(a !== b);
+                break;
+
+            case '!=':
+                b = stack.pop();
+                a = stack.pop();
+                stack.push(a != b);
+                break;
+
+            case 'or':
+                b = stack.pop();
+                a = stack.pop();
+                stack.push(a || b);
+                break;
+
+            case 'and':
+                b = stack.pop();
+                a = stack.pop();
+                stack.push(a && b);
+                break;
+
+            case '**':
+                b = stack.pop();
+                a = stack.pop();
+                stack.push(Math.pow(a, b));
+                break;
+
+
+            case 'not in':
+                b = stack.pop();
+                a = stack.pop();
+                stack.push( !containment(a, b) );
+                break;
+
+            case 'in':
+                b = stack.pop();
+                a = stack.pop();
+                stack.push( containment(a, b) );
+                break;
+
+            case '..':
+                b = stack.pop();
+                a = stack.pop();
+                stack.push( Twig.functions.range(a, b) );
+                break;
+
+            default:
+                throw new Twig.Error(operator + " is an unknown operator.");
+        }
+    };
+
+    return Twig;
+
+})( Twig || { } );
+//     Twig.js
+//     Copyright (c) 2011-2013 John Roepke
+//     Available under the BSD 2-Clause License
+//     https://github.com/justjohn/twig.js
+
+// ## twig.filters.js
+//
+// This file handles parsing filters.
+var Twig = (function (Twig) {
+
+    // Determine object type
+    function is(type, obj) {
+        var clas = Object.prototype.toString.call(obj).slice(8, -1);
+        return obj !== undefined && obj !== null && clas === type;
+    }
+
+    Twig.filters = {
+        // String Filters
+        upper:  function(value) {
+            if ( typeof value !== "string" ) {
+               return value;
+            }
+
+            return value.toUpperCase();
+        },
+        lower: function(value) {
+            if ( typeof value !== "string" ) {
+               return value;
+            }
+
+            return value.toLowerCase();
+        },
+        capitalize: function(value) {
+            if ( typeof value !== "string" ) {
+                 return value;
+            }
+
+            return value.substr(0, 1).toUpperCase() + value.toLowerCase().substr(1);
+        },
+        title: function(value) {
+            if ( typeof value !== "string" ) {
+               return value;
+            }
+
+            return value.toLowerCase().replace( /(^|\s)([a-z])/g , function(m, p1, p2){
+                return p1 + p2.toUpperCase();
+            });
+        },
+        length: function(value) {
+            if (Twig.lib.is("Array", value) || typeof value === "string") {
+                return value.length;
+            } else if (Twig.lib.is("Object", value)) {
+                if (value._keys === undefined) {
+                    return Object.keys(value).length;
+                } else {
+                    return value._keys.length;
+                }
+            } else {
+                return 0;
+            }
+        },
+
+        // Array/Object Filters
+        reverse: function(value) {
+            if (is("Array", value)) {
+                return value.reverse();
+            } else if (is("String", value)) {
+                return value.split("").reverse().join("");
+            } else if (value instanceof Object) {
+                var keys = value._keys || Object.keys(value).reverse();
+                value._keys = keys;
+                return value;
+            }
+        },
+        sort: function(value) {
+            if (is("Array", value)) {
+                return value.sort();
+            } else if (value instanceof Object) {
+                // Sorting objects isn't obvious since the order of
+                // returned keys isn't guaranteedin JavaScript.
+                // Because of this we use a "hidden" key called _keys to
+                // store the keys in the order we want to return them.
+
+                delete value._keys;
+                var keys = Object.keys(value),
+                    sorted_keys = keys.sort(function(a, b) {
+                        return value[a] > value[b];
+                    });
+                value._keys = sorted_keys;
+                return value;
+            }
+        },
+        keys: function(value) {
+            if (value === undefined || value === null){
+                return;
+           }
+
+            var keyset = value._keys || Object.keys(value),
+                output = [];
+
+            Twig.forEach(keyset, function(key) {
+                if (key === "_keys") return; // Ignore the _keys property
+                if (value.hasOwnProperty(key)) {
+                    output.push(key);
+                }
+            });
+            return output;
+        },
+        url_encode: function(value) {
+            if (value === undefined || value === null){
+                return;
+            }
+
+            return encodeURIComponent(value);
+        },
+        join: function(value, params) {
+            if (value === undefined || value === null){
+                return;
+            }
+
+            var join_str = "",
+                output = [],
+                keyset = null;
+
+            if (params && params[0]) {
+                join_str = params[0];
+            }
+            if (value instanceof Array) {
+                output = value;
+            } else {
+                keyset = value._keys || Object.keys(value);
+                Twig.forEach(keyset, function(key) {
+                    if (key === "_keys") return; // Ignore the _keys property
+                    if (value.hasOwnProperty(key)) {
+                        output.push(value[key]);
+                    }
+                });
+            }
+            return output.join(join_str);
+        },
+        "default": function(value, params) {
+            if (params === undefined || params.length !== 1) {
+                throw new Twig.Error("default filter expects one argument");
+            }
+            if (value === undefined || value === null || value === '' ) {
+                return params[0];
+            } else {
+                return value;
+            }
+        },
+        json_encode: function(value) {
+            if (value && value.hasOwnProperty( "_keys" ) ) {
+                delete value._keys;
+            }
+            if(value === undefined || value === null) {
+                return "null";
+            }
+            return JSON.stringify(value);
+        },
+        merge: function(value, params) {
+            var obj = [],
+                arr_index = 0,
+                keyset = [];
+
+            // Check to see if all the objects being merged are arrays
+            if (!(value instanceof Array)) {
+                // Create obj as an Object
+                obj = { };
+            } else {
+                Twig.forEach(params, function(param) {
+                    if (!(param instanceof Array)) {
+                        obj = { };
+                    }
+                });
+            }
+            if (!(obj instanceof Array)) {
+                obj._keys = [];
+            }
+
+            if (value instanceof Array) {
+                Twig.forEach(value, function(val) {
+                    if (obj._keys) obj._keys.push(arr_index);
+                    obj[arr_index] = val;
+                    arr_index++;
+                });
+            } else {
+                keyset = value._keys || Object.keys(value);
+                Twig.forEach(keyset, function(key) {
+                    obj[key] = value[key];
+                    obj._keys.push(key);
+
+                    // Handle edge case where a number index in an object is greater than
+                    //   the array counter. In such a case, the array counter is increased
+                    //   one past the index.
+                    //
+                    // Example {{ ["a", "b"]|merge({"4":"value"}, ["c", "d"])
+                    // Without this, d would have an index of "4" and overwrite the value
+                    //   of "value"
+                    var int_key = parseInt(key, 10);
+                    if (!isNaN(int_key) && int_key >= arr_index) {
+                        arr_index = int_key + 1;
+                    }
+                });
+            }
+
+            // mixin the merge arrays
+            Twig.forEach(params, function(param) {
+                if (param instanceof Array) {
+                    Twig.forEach(param, function(val) {
+                        if (obj._keys) obj._keys.push(arr_index);
+                        obj[arr_index] = val;
+                        arr_index++;
+                    });
+                } else {
+                    keyset = param._keys || Object.keys(param);
+                    Twig.forEach(keyset, function(key) {
+                        if (!obj[key]) obj._keys.push(key);
+                        obj[key] = param[key];
+
+                        var int_key = parseInt(key, 10);
+                        if (!isNaN(int_key) && int_key >= arr_index) {
+                            arr_index = int_key + 1;
+                        }
+                    });
+                }
+            });
+            if (params.length === 0) {
+                throw new Twig.Error("Filter merge expects at least one parameter");
+            }
+
+            return obj;
+        },
+        date: function(value, params) {
+            if (value === undefined||value === null){
+                return;
+            }
+
+            var date = Twig.functions.date(value);
+            return Twig.lib.formatDate(date, params[0]);
+        },
+
+        date_modify: function(value, params) {
+            if (value === undefined || value === null) {
+                return;
+            }
+            if (params === undefined || params.length !== 1) {
+                throw new Twig.Error("date_modify filter expects 1 argument");
+            }
+
+            var modifyText = params[0], time;
+
+            if (Twig.lib.is("Date", value)) {
+                time = Twig.lib.strtotime(modifyText, value.getTime() / 1000);
+            }
+            if (Twig.lib.is("String", value)) {
+                time = Twig.lib.strtotime(modifyText, Twig.lib.strtotime(value));
+            }
+            if (Twig.lib.is("Number", value)) {
+                time = Twig.lib.strtotime(modifyText, value);
+            }
+
+            return new Date(time * 1000);
+        },
+
+        replace: function(value, params) {
+            if (value === undefined||value === null){
+                return;
+            }
+
+            var pairs = params[0],
+                tag;
+            for (tag in pairs) {
+                if (pairs.hasOwnProperty(tag) && tag !== "_keys") {
+                    value = Twig.lib.replaceAll(value, tag, pairs[tag]);
+                }
+            }
+            return value;
+        },
+
+        format: function(value, params) {
+            if (value === undefined || value === null){
+                return;
+            }
+
+            return Twig.lib.vsprintf(value, params);
+        },
+
+        striptags: function(value) {
+            if (value === undefined || value === null){
+                return;
+            }
+
+            return Twig.lib.strip_tags(value);
+        },
+
+        escape: function(value) {
+            if (value === undefined|| value === null){
+                return;
+            }
+            return value.toString().replace(/&/g, "&amp;")
+                        .replace(/</g, "&lt;")
+                        .replace(/>/g, "&gt;")
+                        .replace(/"/g, "&quot;")
+                        .replace(/'/g, "&#039;");
+        },
+
+        /* Alias of escape */
+        "e": function(value) {
+            return Twig.filters.escape(value);
+        },
+
+        nl2br: function(value) {
+            if (value === undefined || value === null){
+                return;
+            }
+            var linebreak_tag = "BACKSLASH_n_replace",
+                br = "<br />" + linebreak_tag;
+
+            value = Twig.filters.escape(value)
+                        .replace(/\r\n/g, br)
+                        .replace(/\r/g, br)
+                        .replace(/\n/g, br);
+
+            return Twig.lib.replaceAll(value, linebreak_tag, "\n");
+        },
+
+        /**
+         * Adapted from: http://phpjs.org/functions/number_format:481
+         */
+        number_format: function(value, params) {
+            var number = value,
+                decimals = (params && params[0]) ? params[0] : undefined,
+                dec      = (params && params[1] !== undefined) ? params[1] : ".",
+                sep      = (params && params[2] !== undefined) ? params[2] : ",";
+
+            number = (number + '').replace(/[^0-9+\-Ee.]/g, '');
+            var n = !isFinite(+number) ? 0 : +number,
+                prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                s = '',
+                toFixedFix = function (n, prec) {
+                    var k = Math.pow(10, prec);
+                    return '' + Math.round(n * k) / k;
+                };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1).join('0');
+            }
+            return s.join(dec);
+        },
+
+        trim: function(value, params) {
+            if (value === undefined|| value === null){
+                return;
+            }
+
+            var str = Twig.filters.escape( '' + value ),
+                whitespace;
+            if ( params && params[0] ) {
+                whitespace = '' + params[0];
+            } else {
+                whitespace = ' \n\r\t\f\x0b\xa0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u200b\u2028\u2029\u3000';
+            }
+            for (var i = 0; i < str.length; i++) {
+                if (whitespace.indexOf(str.charAt(i)) === -1) {
+                    str = str.substring(i);
+                    break;
+                }
+            }
+            for (i = str.length - 1; i >= 0; i--) {
+                if (whitespace.indexOf(str.charAt(i)) === -1) {
+                    str = str.substring(0, i + 1);
+                    break;
+                }
+            }
+            return whitespace.indexOf(str.charAt(0)) === -1 ? str : '';
+        },
+
+        slice: function(value, params) {
+            if (value === undefined || value === null) {
+                return;
+            }
+            if (params === undefined || params.length < 1) {
+                throw new Twig.Error("slice filter expects at least 1 argument");
+            }
+
+            // default to start of string
+            var start = params[0] || 0;
+            // default to length of string
+            var length = params.length > 1 ? params[1] : value.length;
+            // handle negative start values
+            var startIndex = start >= 0 ? start : Math.max( value.length + start, 0 );
+
+            if (Twig.lib.is("Array", value)) {
+                var output = [];
+                for (var i = startIndex; i < startIndex + length && i < value.length; i++) {
+                    output.push(value[i]);
+                }
+                return output;
+            } else if (Twig.lib.is("String", value)) {
+                return value.substr(startIndex, length);
+            } else {
+                throw new Twig.Error("slice filter expects value to be an array or string");
+            }
+        },
+
+        abs: function(value) {
+            if (value === undefined || value === null) {
+                return;
+            }
+
+            return Math.abs(value);
+        },
+
+        first: function(value) {
+            if (value instanceof Array) {
+                return value[0];
+            } else if (value instanceof Object) {
+                if ('_keys' in value) {
+                    return value[value._keys[0]];
+                }
+            } else if ( typeof value === "string" ) {
+                return value.substr(0, 1);
+            }
+
+            return;
+        },
+
+        split: function(value, params) {
+            if (value === undefined || value === null) {
+                return;
+            }
+            if (params === undefined || params.length < 1 || params.length > 2) {
+                throw new Twig.Error("split filter expects 1 or 2 argument");
+            }
+            if (Twig.lib.is("String", value)) {
+                var delimiter = params[0],
+                    limit = params[1],
+                    split = value.split(delimiter);
+
+                if (limit === undefined) {
+
+                    return split;
+
+                } else if (limit < 0) {
+
+                    return value.split(delimiter, split.length + limit);
+
+                } else {
+
+                    var limitedSplit = [];
+
+                    if (delimiter == '') {
+                        // empty delimiter
+                        // "aabbcc"|split('', 2)
+                        //     -> ['aa', 'bb', 'cc']
+
+                        while(split.length > 0) {
+                            var temp = "";
+                            for (var i=0; i<limit && split.length > 0; i++) {
+                                temp += split.shift();
+                            }
+                            limitedSplit.push(temp);
+                        }
+
+                    } else {
+                        // non-empty delimiter
+                        // "one,two,three,four,five"|split(',', 3)
+                        //     -> ['one', 'two', 'three,four,five']
+
+                        for (var i=0; i<limit-1 && split.length > 0; i++) {
+                            limitedSplit.push(split.shift());
+                        }
+
+                        if (split.length > 0) {
+                            limitedSplit.push(split.join(delimiter));
+                        }
+                    }
+
+                    return limitedSplit;
+                }
+
+            } else {
+                throw new Twig.Error("split filter expects value to be a string");
+            }
+        },
+        last: function(value) {
+            if (Twig.lib.is('Object', value)) {
+                var keys;
+
+                if (value._keys === undefined) {
+                    keys = Object.keys(value);
+                } else {
+                    keys = value._keys;
+                }
+
+                return value[keys[keys.length - 1]];
+            }
+
+            // string|array
+            return value[value.length - 1];
+        },
+        raw: function(value) {
+            //Raw filter shim
+            return value;
+        },
+        batch: function(items, params) {
+            var size = params.shift(),
+                fill = params.shift(),
+                result,
+                last,
+                missing;
+
+            if (!Twig.lib.is("Array", items)) {
+                throw new Twig.Error("batch filter expects items to be an array");
+            }
+
+            if (!Twig.lib.is("Number", size)) {
+                throw new Twig.Error("batch filter expects size to be a number");
+            }
+
+            size = Math.ceil(size);
+
+            result = Twig.lib.chunkArray(items, size);
+
+            if (fill && items.length % size != 0) {
+                last = result.pop();
+                missing = size - last.length;
+
+                while (missing--) {
+                    last.push(fill);
+                }
+
+                result.push(last);
+            }
+
+            return result;
+        },
+        round: function(value, params) {
+            params = params || [];
+
+            var precision = params.length > 0 ? params[0] : 0,
+                method = params.length > 1 ? params[1] : "common";
+
+            value = parseFloat(value);
+
+            if(precision && !Twig.lib.is("Number", precision)) {
+                throw new Twig.Error("round filter expects precision to be a number");
+            }
+
+            if (method === "common") {
+                return Twig.lib.round(value, precision);
+            }
+
+            if(!Twig.lib.is("Function", Math[method])) {
+                throw new Twig.Error("round filter expects method to be 'floor', 'ceil', or 'common'");
+            }
+
+            return Math[method](value * Math.pow(10, precision)) / Math.pow(10, precision);
+        }
+    };
+
+    Twig.filter = function(filter, value, params) {
+        if (!Twig.filters[filter]) {
+            throw "Unable to find filter " + filter;
+        }
+        return Twig.filters[filter].apply(this, [value, params]);
+    };
+
+    Twig.filter.extend = function(filter, definition) {
+        Twig.filters[filter] = definition;
+    };
+
+    return Twig;
+
+})(Twig || { });
+//     Twig.js
+//     Copyright (c) 2011-2013 John Roepke
+//                   2012 Hadrien Lanneau
+//     Available under the BSD 2-Clause License
+//     https://github.com/justjohn/twig.js
+
+// ## twig.functions.js
+//
+// This file handles parsing filters.
+var Twig = (function (Twig) {
+
+    // Determine object type
+    function is(type, obj) {
+        var clas = Object.prototype.toString.call(obj).slice(8, -1);
+        return obj !== undefined && obj !== null && clas === type;
+    }
+
+    Twig.functions = {
+        //  attribute, block, constant, date, dump, parent, random,.
+
+        // Range function from http://phpjs.org/functions/range:499
+        // Used under an MIT License
+        range: function (low, high, step) {
+            // http://kevin.vanzonneveld.net
+            // +   original by: Waldo Malqui Silva
+            // *     example 1: range ( 0, 12 );
+            // *     returns 1: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+            // *     example 2: range( 0, 100, 10 );
+            // *     returns 2: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+            // *     example 3: range( 'a', 'i' );
+            // *     returns 3: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
+            // *     example 4: range( 'c', 'a' );
+            // *     returns 4: ['c', 'b', 'a']
+            var matrix = [];
+            var inival, endval, plus;
+            var walker = step || 1;
+            var chars = false;
+
+            if (!isNaN(low) && !isNaN(high)) {
+                inival = parseInt(low, 10);
+                endval = parseInt(high, 10);
+            } else if (isNaN(low) && isNaN(high)) {
+                chars = true;
+                inival = low.charCodeAt(0);
+                endval = high.charCodeAt(0);
+            } else {
+                inival = (isNaN(low) ? 0 : low);
+                endval = (isNaN(high) ? 0 : high);
+            }
+
+            plus = ((inival > endval) ? false : true);
+            if (plus) {
+                while (inival <= endval) {
+                    matrix.push(((chars) ? String.fromCharCode(inival) : inival));
+                    inival += walker;
+                }
+            } else {
+                while (inival >= endval) {
+                    matrix.push(((chars) ? String.fromCharCode(inival) : inival));
+                    inival -= walker;
+                }
+            }
+
+            return matrix;
+        },
+        cycle: function(arr, i) {
+            var pos = i % arr.length;
+            return arr[pos];
+        },
+        dump: function() {
+            var EOL = '\n',
+            	indentChar = '  ',
+            	indentTimes = 0,
+            	out = '',
+				args = Array.prototype.slice.call(arguments),
+				indent = function(times) {
+                	var ind	 = '';
+                    while (times > 0) {
+                        times--;
+                        ind += indentChar;
+                    }
+                    return ind;
+                },
+				displayVar = function(variable) {
+                    out += indent(indentTimes);
+                    if (typeof(variable) === 'object') {
+                        dumpVar(variable);
+                    } else if (typeof(variable) === 'function') {
+                        out += 'function()' + EOL;
+                    } else if (typeof(variable) === 'string') {
+                        out += 'string(' + variable.length + ') "' + variable + '"' + EOL;
+                    } else if (typeof(variable) === 'number') {
+                        out += 'number(' + variable + ')' + EOL;
+                    } else if (typeof(variable) === 'boolean') {
+                        out += 'bool(' + variable + ')' + EOL;
+                    }
+                },
+             	dumpVar = function(variable) {
+					var	i;
+	                if (variable === null) {
+	                    out += 'NULL' + EOL;
+	                } else if (variable === undefined) {
+	                    out += 'undefined' + EOL;
+	                } else if (typeof variable === 'object') {
+	                    out += indent(indentTimes) + typeof(variable);
+	                    indentTimes++;
+	                    out += '(' + (function(obj) {
+	                        var size = 0, key;
+	                        for (key in obj) {
+	                            if (obj.hasOwnProperty(key)) {
+	                                size++;
+	                            }
+	                        }
+	                        return size;
+	                    })(variable) + ') {' + EOL;
+	                    for (i in variable) {
+	                        out += indent(indentTimes) + '[' + i + ']=> ' + EOL;
+	                        displayVar(variable[i]);
+	                    }
+	                    indentTimes--;
+	                    out += indent(indentTimes) + '}' + EOL;
+	                } else {
+	                    displayVar(variable);
+	                }
+	            };
+
+			// handle no argument case by dumping the entire render context
+			if (args.length == 0) args.push(this.context);
+
+			Twig.forEach(args, function(variable) {
+				dumpVar(variable);
+			});
+
+            return out;
+        },
+        date: function(date, time) {
+            var dateObj;
+            if (date === undefined) {
+                dateObj = new Date();
+            } else if (Twig.lib.is("Date", date)) {
+                dateObj = date;
+            } else if (Twig.lib.is("String", date)) {
+                dateObj = new Date(Twig.lib.strtotime(date) * 1000);
+            } else if (Twig.lib.is("Number", date)) {
+                // timestamp
+                dateObj = new Date(date * 1000);
+            } else {
+                throw new Twig.Error("Unable to parse date " + date);
+            }
+            return dateObj;
+        },
+        block: function(block) {
+            return this.blocks[block];
+        },
+        parent: function() {
+            // Add a placeholder
+            return Twig.placeholders.parent;
+        },
+        attribute: function(object, method, params) {
+            if (object instanceof Object) {
+                if (object.hasOwnProperty(method)) {
+                    if (typeof object[method] === "function") {
+                        return object[method].apply(undefined, params);
+                    }
+                    else {
+                        return object[method];
+                    }
+                }
+            }
+            // Array will return element 0-index
+            return object[method] || undefined;
+        }
+    };
+
+    Twig._function = function(_function, value, params) {
+        if (!Twig.functions[_function]) {
+            throw "Unable to find function " + _function;
+        }
+        return Twig.functions[_function](value, params);
+    };
+
+    Twig._function.extend = function(_function, definition) {
+        Twig.functions[_function] = definition;
+    };
+
+    return Twig;
+
+})(Twig || { });
+//     Twig.js
+//     Copyright (c) 2011-2013 John Roepke
+//     Available under the BSD 2-Clause License
+//     https://github.com/justjohn/twig.js
+
+// ## twig.tests.js
+//
+// This file handles expression tests. (is empty, is not defined, etc...)
+var Twig = (function (Twig) {
+    
+    Twig.tests = {
+        empty: function(value) {
+            if (value === null || value === undefined) return true;
+            // Handler numbers
+            if (typeof value === "number") return false; // numbers are never "empty"
+            // Handle strings and arrays
+            if (value.length && value.length > 0) return false;
+            // Handle objects
+            for (var key in value) {
+                if (value.hasOwnProperty(key)) return false;
+            }
+            return true;
+        },
+        odd: function(value) {
+            return value % 2 === 1;
+        },
+        even: function(value) {
+            return value % 2 === 0;
+        },
+        divisibleby: function(value, params) {
+            return value % params[0] === 0;
+        },
+        defined: function(value) {
+            return value !== undefined;
+        },
+        none: function(value) {
+            return value === null;
+        },
+        'null': function(value) {
+            return this.none(value); // Alias of none
+        },
+        sameas: function(value, params) {
+            return value === params[0];
+        }
+        /*
+        constant ?
+         */
+    };
+
+    Twig.test = function(test, value, params) {
+        if (!Twig.tests[test]) {
+            throw "Test " + test + " is not defined.";
+        }
+        return Twig.tests[test](value, params);
+    };
+
+    Twig.test.extend = function(test, definition) {
+        Twig.tests[test] = definition;
+    };
+
+    return Twig;
+})( Twig || { } );
+//     Twig.js
+//     Copyright (c) 2011-2013 John Roepke
+//     Available under the BSD 2-Clause License
+//     https://github.com/justjohn/twig.js
+
+// ## twig.exports.js
+//
+// This file provides extension points and other hooks into the twig functionality.
+
+var Twig = (function (Twig) {
+    
+    Twig.exports = {
+        VERSION: Twig.VERSION
+    };
+
+    /**
+     * Create and compile a twig.js template.
+     *
+     * @param {Object} param Paramteres for creating a Twig template.
+     *
+     * @return {Twig.Template} A Twig template ready for rendering.
+     */
+    Twig.exports.twig = function twig(params) {
+        
+        var id = params.id,
+            options = {
+                strict_variables: params.strict_variables || false,
+                allowInlineIncludes: params.allowInlineIncludes || false,
+                rethrow: params.rethrow || false
+            };
+
+        if (id) {
+            Twig.validateId(id);
+        }
+
+        if (params.debug !== undefined) {
+            Twig.debug = params.debug;
+        }
+        if (params.trace !== undefined) {
+            Twig.trace = params.trace;
+        }
+
+        if (params.data !== undefined) {
+            return new Twig.Template({
+                data: params.data,
+                module: params.module,
+                id:   id,
+                options: options
+            });
+
+        } else if (params.ref !== undefined) {
+            if (params.id !== undefined) {
+                throw new Twig.Error("Both ref and id cannot be set on a twig.js template.");
+            }
+            return Twig.Templates.load(params.ref);
+
+        } else if (params.href !== undefined) {
+            return Twig.Templates.loadRemote(params.href, {
+                id: id,
+                method: 'ajax',
+                base: params.base,
+                module: params.module,
+                precompiled: params.precompiled,
+                async: params.async,
+                options: options
+
+            }, params.load, params.error);
+
+        } else if (params.path !== undefined) {
+            return Twig.Templates.loadRemote(params.path, {
+                id: id,
+                method: 'fs',
+                base: params.base,
+                module: params.module,
+                precompiled: params.precompiled,
+                async: params.async,
+                options: options
+
+            }, params.load, params.error);
+        }
+    };
+
+    // Extend Twig with a new filter.
+    Twig.exports.extendFilter = function(filter, definition) {
+        Twig.filter.extend(filter, definition);
+    };
+
+    // Extend Twig with a new function.
+    Twig.exports.extendFunction = function(fn, definition) {
+        Twig._function.extend(fn, definition);
+    };
+
+    // Extend Twig with a new test.
+    Twig.exports.extendTest = function(test, definition) {
+        Twig.test.extend(test, definition);
+    };
+
+    // Extend Twig with a new definition.
+    Twig.exports.extendTag = function(definition) {
+        Twig.logic.extend(definition);
+    };
+
+    // Provide an environment for extending Twig core.
+    // Calls fn with the internal Twig object.
+    Twig.exports.extend = function(fn) {
+        fn(Twig);
+    };
+
+
+    /**
+     * Provide an extension for use with express 2.
+     *
+     * @param {string} markup The template markup.
+     * @param {array} options The express options.
+     *
+     * @return {string} The rendered template.
+     */
+    Twig.exports.compile = function(markup, options) {
+        var id = options.filename,
+            path = options.filename,
+            template;
+
+        // Try to load the template from the cache
+        template = new Twig.Template({
+            data: markup,
+            path: path,
+            id: id,
+            options: options.settings['twig options']
+        }); // Twig.Templates.load(id) ||
+
+        return function(context) {
+            return template.render(context);
+        };
+    };
+
+    /**
+     * Provide an extension for use with express 3.
+     *
+     * @param {string} path The location of the template file on disk.
+     * @param {Object|Function} The options or callback.
+     * @param {Function} fn callback.
+     */
+
+    Twig.exports.renderFile = function(path, options, fn) {
+        // handle callback in options
+        if ('function' == typeof options) {
+            fn = options;
+            options = {};
+        }
+
+        options = options || {};
+
+        var params = {
+                path: path,
+                base: options.settings['views'],
+                load: function(template) {
+                    // render and return template
+                    fn(null, template.render(options));
+                }
+            };
+
+        // mixin any options provided to the express app.
+        var view_options = options.settings['twig options'];
+
+        if (view_options) {
+            for (var option in view_options) if (view_options.hasOwnProperty(option)) {
+                params[option] = view_options[option];
+            }
+        }
+
+        Twig.exports.twig(params);
+    };
+
+    // Express 3 handler
+    Twig.exports.__express = Twig.exports.renderFile;
+
+    /**
+     * Shoud Twig.js cache templates.
+     * Disable during development to see changes to templates without
+     * reloading, and disable in production to improve performance.
+     *
+     * @param {boolean} cache
+     */
+    Twig.exports.cache = function(cache) {
+        Twig.cache = cache;
+    }
+
+    return Twig;
+}) (Twig || { });
+
+//     Twig.js
+//     Copyright (c) 2011-2013 John Roepke
+//     Available under the BSD 2-Clause License
+//     https://github.com/justjohn/twig.js
+
+// ## twig.compiler.js
+//
+// This file handles compiling templates into JS
+var Twig = (function (Twig) {
+    /**
+     * Namespace for compilation.
+     */
+    Twig.compiler = {
+        module: {}
+    };
+
+    // Compile a Twig Template to output.
+    Twig.compiler.compile = function(template, options) {
+        // Get tokens
+        var tokens = JSON.stringify(template.tokens)
+            , id = template.id
+            , output;
+
+        if (options.module) {
+            if (Twig.compiler.module[options.module] === undefined) {
+                throw new Twig.Error("Unable to find module type " + options.module);
+            }
+            output = Twig.compiler.module[options.module](id, tokens, options.twig);
+        } else {
+            output = Twig.compiler.wrap(id, tokens);
+        }
+        return output;
+    };
+
+    Twig.compiler.module = {
+        amd: function(id, tokens, pathToTwig) {
+            return 'define(["' + pathToTwig + '"], function (Twig) {\n\tvar twig, templates;\ntwig = Twig.twig;\ntemplates = ' + Twig.compiler.wrap(id, tokens) + '\n\treturn templates;\n});';
+        }
+        , node: function(id, tokens) {
+            return 'var twig = require("twig").twig;\n'
+                + 'exports.template = ' + Twig.compiler.wrap(id, tokens)
+        }
+        , cjs2: function(id, tokens, pathToTwig) {
+            return 'module.declare([{ twig: "' + pathToTwig + '" }], function (require, exports, module) {\n'
+                        + '\tvar twig = require("twig").twig;\n'
+                        + '\texports.template = ' + Twig.compiler.wrap(id, tokens)
+                    + '\n});'
+        }
+    };
+
+    Twig.compiler.wrap = function(id, tokens) {
+        return 'twig({id:"'+id.replace('"', '\\"')+'", data:'+tokens+', precompiled: true});\n';
+    };
+
+    return Twig;
+})(Twig || {});
+//     Twig.js
+//     Copyright (c) 2011-2013 John Roepke
+//     Available under the BSD 2-Clause License
+//     https://github.com/justjohn/twig.js
+
+// ## twig.module.js
+// Provide a CommonJS/AMD/Node module export.
+
+if (typeof module !== 'undefined' && module.declare) {
+    // Provide a CommonJS Modules/2.0 draft 8 module
+    module.declare([], function(require, exports, module) {
+        // Add exports from the Twig exports
+        for (key in Twig.exports) {
+            if (Twig.exports.hasOwnProperty(key)) {
+                exports[key] = Twig.exports[key];
+            }
+        }
+    });
+} else if (typeof define == 'function' && define.amd || 1) {
+    timely.define('external_libs/twig',[],function() {
+        return Twig.exports;
+    });
+} else if (typeof module !== 'undefined' && module.exports) {
+    // Provide a CommonJS Modules/1.1 module
+    module.exports = Twig.exports;
+} else {
+    // Export for browser use
+    window.twig = Twig.exports.twig;
+    window.Twig = Twig.exports;
+}
+
+;

@@ -79,19 +79,22 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 		$recurrence_parser = $this->_registry->get( 'recurrence.rule' );
 		$events            = array();
 
-		$startdate = array(
-			'timestamp' => $_start,
-			'tz'        => $timezone,
-		);
 		$start             = $event_instance['start'];
 		$wdate             = $startdate = $enddate
-		                   = iCalUtilityFunctions::_timestamp2date( $startdate, 6 );
+			= $this->_parsed_date_array( $_start, $timezone );
 		$enddate['year']   = $enddate['year'] + 3;
 		$exclude_dates	   = array();
 		$recurrence_dates  = array();
-		if ( $rdate = $event->get( 'recurrence_dates' ) ) {
-			$recurrence_dates  = $this->_populate_rdates(
-				$rdate,
+		if ( $recurrence_dates = $event->get( 'recurrence_dates' ) ) {
+			$recurrence_dates  = $this->_populate_recurring_dates(
+				$recurrence_dates,
+				$startdate,
+				$timezone
+			);
+		}
+		if ( $exception_dates = $event->get( 'exception_dates' ) ) {
+			$exclude_dates  = $this->_populate_recurring_dates(
+				$exception_dates,
 				$startdate,
 				$timezone
 			);
@@ -102,18 +105,21 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 				->build_recurrence_rules_array(
 					$event->get( 'exception_rules' )
 				);
-			$exception_rules = iCalUtilityFunctions::_setRexrule(
-				$exception_rules
-			);
-			$result = array();
-			// The first array is the result and it is passed by reference
-			iCalUtilityFunctions::_recur2date(
-				$exclude_dates,
-				$exception_rules,
-				$wdate,
-				$startdate,
-				$enddate
-			);
+			unset($exception_rules['EXDATE']);
+			if ( ! empty( $exception_rules ) ) {
+				$exception_rules = iCalUtilityFunctions::_setRexrule(
+					$exception_rules
+				);
+				$result = array();
+				// The first array is the result and it is passed by reference
+				iCalUtilityFunctions::_recur2date(
+					$exclude_dates,
+					$exception_rules,
+					$wdate,
+					$startdate,
+					$enddate
+				);
+			}
 		}
 		$recurrence_rules = $recurrence_parser
 			->build_recurrence_rules_array(
@@ -130,33 +136,14 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 				$enddate
 			);
 		}
-		
+
 		$recurrence_dates = array_keys( $recurrence_dates );
 		// Add the instances
 		foreach ( $recurrence_dates as $timestamp ) {
-
 			// The arrays are in the form timestamp => true so an isset call is what we need
-			if ( isset( $exclude_dates[$timestamp] ) ) {
-				continue;
-			}
-			$event_instance['start'] = $timestamp;
-			$event_instance['end']	 = $timestamp + $duration;
-			$excluded	= false;
-
-			// Check if exception dates match this occurence
-			if ( $exception_dates = $event->get( 'exception_dates' ) ) {
-				$match_exdates = $this->date_match_exdates(
-					$timestamp,
-					$exception_dates,
-					$timezone
-				);
-				if ( $match_exdates ) {
-					$excluded = true;
-				}
-			}
-
-			// Add event only if it is not excluded
-			if ( false === $excluded ) {
+			if ( ! isset( $exclude_dates[$timestamp] ) ) {
+				$event_instance['start'] = $timestamp;
+				$event_instance['end']	 = $timestamp + $duration;
 				$events[$timestamp] = $event_instance;
 			}
 		}
@@ -192,9 +179,10 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
              * library doesn't allow us to pass it as an argument. Though no
              * lesser importance shall be given to the restore call bellow.
              */
-			$_restore_default_tz = date_default_timezone_get();
-			$start_timezone      = $event->get( 'start' )->get_timezone();
-			date_default_timezone_set( $start_timezone );
+			$start_datetime = $event->get( 'start' );
+			$start_datetime->assert_utc_timezone();
+			$start_timezone = $this->_registry->get( 'date.timezone' )
+				->get_name( $start_datetime->get_timezone() );
 			$events += $this->create_instances_by_recurrence(
 				$event,
 				$event_item,
@@ -202,8 +190,6 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 				$duration,
 				$start_timezone
 			);
-			date_default_timezone_set( $_restore_default_tz );
-			unset( $_restore_default_tz );
         }
 
 		$search_helper = $this->_registry->get( 'model.search' );
@@ -246,18 +232,18 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 	 *
 	 * @return bool True if given date is in rule.
 	 */
-    public function date_match_exdates( $date, $ics_rule, $timezone ) {
+	public function date_match_exdates( $date, $ics_rule, $timezone ) {
 		$ranges = $this->_get_date_ranges( $ics_rule, $timezone );
-        foreach ( $ranges as $interval ) {
+		foreach ( $ranges as $interval ) {
 			if ( $date >= $interval[0] && $date <= $interval[1] ) {
 				return true;
 			}
 			if ( $date <= $interval[0] ) {
 				break;
 			}
-        }
-        return false;
-    }
+		}
+		return false;
+	}
 
 	/**
 	 * Prepare date range list for fast exdate search.
@@ -292,34 +278,47 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 		return $ranges[$date_list];
 	}
 
-	protected function _populate_rdates( $rdates, array $start_struct ) {
-		$start = $this->_registry->get( 'date.time' )
-			->set_timezone( $start_struct['tz'] )
-			->set_date(
-				$start_struct['year'],
-				$start_struct['month'],
-				$start_struct['day']
-			)
-			->set_time(
-				$start_struct['hour'],
-				$start_struct['min'],
-				$start_struct['sec']
-			);
+	protected function _populate_recurring_dates( $rule, array $start_struct, $timezone ) {
+		$start_iso = sprintf(
+			'%04d-%02d-%02dT%02d:%02d:%02dZ',
+			$start_struct['year'],
+			$start_struct['month'],
+			$start_struct['day'],
+			$start_struct['hour'],
+			$start_struct['min'],
+			$start_struct['sec']
+		);
+		$start = $this->_registry->get( 'date.time', $start_iso, $timezone );
 		$dates = array();
-		foreach ( explode( ',', $rdates ) as $date ) {
+		foreach ( explode( ',', $rule ) as $date ) {
 			$i_date = clone $start;
 			$spec   = sscanf( $date, '%04d%02d%02d' );
-			var_dump( $date );
-			print_r( $spec );
 			$i_date->set_date(
 				$spec[0],
 				$spec[1],
 				$spec[2]
 			);
-			$tstamp = $i_date->format_to_gmt();
-			$dates[$tstamp] = $tstamp;
+			$dates[$i_date->format_to_gmt()] = true;
 		}
 		return $dates;
+	}
+
+	protected function _parsed_date_array( $startdate, $timezone ) {
+		$datetime = $this->_registry->get( 'date.time', $startdate, $timezone );
+		// iCalcreator performs opposite shift, thus we need to counteract it
+		// please note that *current* datetime offset is taken to account for
+		// DST and other potential changes.
+		$datetime->adjust( -1 * $datetime->get_gmt_offset(), 'minutes' );
+		$parsed   = array(
+			'year'  => intval( $datetime->format( 'Y' ) ),
+			'month' => intval( $datetime->format( 'm' ) ),
+			'day'   => intval( $datetime->format( 'd' ) ),
+			'hour'  => intval( $datetime->format( 'H' ) ),
+			'min'   => intval( $datetime->format( 'i' ) ),
+			'sec'   => intval( $datetime->format( 's' ) ),
+			'tz'    => $datetime->get_timezone(),
+		);
+		return $parsed;
 	}
 
 }

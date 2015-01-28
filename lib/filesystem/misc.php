@@ -61,18 +61,19 @@ class Ai1ec_Filesystem_Misc extends Ai1ec_Base {
 		$hashmap            = array();
 		foreach ( $files as $file ) {
 			$file_info = new SplFileInfo( $file[0] );
+			$file_path = $file_info->getPathname();
 			if ( in_array( $file_info->getFilename(), $exclusions ) ) {
 				continue;
 			}
 			$key = str_replace(
 				array( $directory, '/' ),
 				array( '', '\\' ),
-				$file[0]
+				$file_path
 			);
 
 			$hashmap[ $key ] = array(
 				'size' => $file_info->getSize(),
-				'sha1' => sha1_file( $file[0] ),
+				'sha1' => sha1_file( $file_path ),
 			);
 		}
 		ksort( $hashmap );

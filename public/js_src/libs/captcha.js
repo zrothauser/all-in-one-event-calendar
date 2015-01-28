@@ -29,7 +29,7 @@ define(
 			$provider = get_provider( $captcha.data( 'provider' ) );
 			if (
 				! $provider.is_ready() ||
-				captcha.is( '.ai1ec-initializing, .ai1ec-initialized' )
+				$captcha.is( '.ai1ec-initializing, .ai1ec-initialized' )
 			) {
 				return;
 			}
@@ -43,8 +43,19 @@ define(
 			);
 		};
 
+		var destroy = function( $form ) {
+			$provider.destroy( $form );
+		};
+
+		var reload = function( $form ) {
+			$provider.reload( $form );
+		};
+
+		var get_field_name = function() {
+			return $provider.get_field_name();
+		}
+
 		return {
-			is_ready : is_ready,
 			init_captcha : init_captcha,
 			destroy : destroy,
 			reload : reload,

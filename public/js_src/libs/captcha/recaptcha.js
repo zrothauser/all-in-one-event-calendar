@@ -16,7 +16,7 @@ define(
 				{
 					theme : 'white',
 					callback : function() {
-						$( '#recaptcha_response_field', $recaptcha )
+						$( '#recaptcha_response_field', $params.captcha_object )
 							.attr( 'placeholder', $params.placeholder );
 						$params.captcha_object
 							.removeClass( 'ai1ec-initializing' )

@@ -95,8 +95,6 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 						.each( function() {
 							$( this ).removeAttr( 'href' );
 						} );
-					// Hide actions
-					$( '.ai1ec-actions', $modal ).hide();
 
 					// Make calendar links close the modal.
 					$( '.ai1ec-calendar-link', $modal )

@@ -361,14 +361,14 @@ define(	function() {
         input[4] += minutesOffset || 0;
         date = new Date(0);
         if (asUTC) {
-			date.setYear(input[0]);
-			date.setUTCMonth(input[1]);
-			date.setUTCDate(input[2]);
+            date.setYear(input[0]);
+            date.setUTCMonth(input[1]);
+            date.setUTCDate(input[2]);
             date.setUTCHours(input[3], input[4], input[5], input[6]);
         } else {
-			date.setYear(input[0]);
-			date.setMonth(input[1]);
-			date.setDate(input[2]);
+            date.setYear(input[0]);
+            date.setMonth(input[1]);
+            date.setDate(input[2]);
             date.setHours(input[3], input[4], input[5], input[6]);
         }
         date._a = forValid;

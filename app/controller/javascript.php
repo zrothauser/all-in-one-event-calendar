@@ -205,7 +205,7 @@ class Ai1ec_Javascript_Controller {
 		$jquery = $this->get_jquery_version_based_on_browser(
 			isset( $_SERVER['HTTP_USER_AGENT'] )
 				? $_SERVER['HTTP_USER_AGENT']
-				: null
+				: ''
 		);
 
 		// Load the main script for the page.
@@ -336,9 +336,7 @@ class Ai1ec_Javascript_Controller {
 	public function get_jquery_version_based_on_browser( $user_agent ) {
 		$js_path = AI1EC_ADMIN_THEME_JS_PATH . DIRECTORY_SEPARATOR;
 		$jquery  = 'jquery_timely20.js';
-		if ( null === $user_agent ) {
-			return file_get_contents( $js_path . $jquery );
-		}
+
 		preg_match( '/MSIE (.*?);/', $user_agent, $matches );
 		if ( count( $matches ) > 1 ) {
 			//Then we're using IE

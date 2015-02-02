@@ -393,7 +393,6 @@ class Ai1ec_Ics_Import_Export_Engine
 			// ===================
 			$address = $venue = '';
 			$location = $e->getProperty( 'location' );
-			fb($location);
 			$matches = array();
 			// This regexp matches a venue / address in the format
 			// "venue @ address" or "venue - address".

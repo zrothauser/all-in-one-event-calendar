@@ -399,6 +399,9 @@ class Ai1ec_Ics_Import_Export_Engine
 			preg_match( '/\s*(.*\S)\s+[\-@]\s+(.*)\s*/', $location, $matches );
 			// if there is no match, it's not a combined venue + address
 			if ( empty( $matches ) ) {
+				// temporary fix for Mac ICS import. Se AIOEC-2187 
+				// and https://github.com/iCalcreator/iCalcreator/issues/13
+				$location = str_replace( '\n', "\n", $location );
 				// if there is a comma, probably it's an address
 				if ( false === strpos( $location, ',' ) ) {
 					$venue = $location;

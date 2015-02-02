@@ -125,7 +125,9 @@ class Ai1ec_Controller_Javascript_Widget extends Ai1ec_Base {
 		);
 		// get jquery
 		$jquery = $jscontroller->get_jquery_version_based_on_browser(
-			$_SERVER['HTTP_USER_AGENT']
+			isset( $_SERVER['HTTP_USER_AGENT'] )
+				? $_SERVER['HTTP_USER_AGENT']
+				: ''
 		);
 
 		$domready = $jscontroller->get_module(

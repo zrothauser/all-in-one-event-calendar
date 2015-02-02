@@ -203,7 +203,9 @@ class Ai1ec_Javascript_Controller {
 
 		// Load appropriate jQuery script based on browser.
 		$jquery = $this->get_jquery_version_based_on_browser(
-			$_SERVER['HTTP_USER_AGENT']
+			isset( $_SERVER['HTTP_USER_AGENT'] )
+				? $_SERVER['HTTP_USER_AGENT']
+				: ''
 		);
 
 		// Load the main script for the page.
@@ -324,6 +326,8 @@ class Ai1ec_Javascript_Controller {
 
 	/**
 	 * Loads version 1.9 or 2.0 of jQuery based on user agent.
+	 * If $user_agent is null (due to lack of HTTP header) we always serve
+	 * jQuery 2.0.
 	 *
 	 * @param string $user_agent
 	 *
@@ -331,7 +335,8 @@ class Ai1ec_Javascript_Controller {
 	 */
 	public function get_jquery_version_based_on_browser( $user_agent ) {
 		$js_path = AI1EC_ADMIN_THEME_JS_PATH . DIRECTORY_SEPARATOR;
-		$jquery = 'jquery_timely20.js';
+		$jquery  = 'jquery_timely20.js';
+
 		preg_match( '/MSIE (.*?);/', $user_agent, $matches );
 		if ( count( $matches ) > 1 ) {
 			//Then we're using IE

@@ -109,6 +109,13 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			'text_tags'               => __( 'Tags', AI1EC_PLUGIN_NAME ),
 			'timezone_info'           => $timezone_info,
 			'banner_image'            => $banner_image,
+			'content_img_url'         => $event->get( 'content_img_url' ),
+			'post_id'                 => $event->get( 'post_id' ),
+			'ticket_url'              => $event->get( 'ticket_url' ),
+			'tickets_url_label'       => $event->get( 'tickets_url_label' ),
+			'start'                   => $event->get( 'start' ),
+			'end'                     => $event->get( 'end' ),
+			'cost'                    => $event->get( 'cost' ),
 		);
 
 		if (

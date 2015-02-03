@@ -573,8 +573,8 @@ class Ai1ec_Exception_Handler {
 		$ident     = sha1( $trace );
 		if ( ! empty( $trace ) ) {
 			$request_uri  = $_SERVER['REQUEST_URI'];
-			$button_label = Ai1ec_i18n::__( 'Toggle error details' );
-			$title        = Ai1ec_i18n::__( 'Error Details:' );
+			$button_label = __( 'Toggle error details', AI1EC_PLUGIN_NAME );
+			$title        = __( 'Error Details:', AI1EC_PLUGIN_NAME );
 			$backtrace    = <<<JAVASCRIPT
 			<script type="text/javascript">
 			jQuery( function($) {

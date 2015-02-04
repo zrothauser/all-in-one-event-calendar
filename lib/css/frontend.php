@@ -179,7 +179,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 				return Ai1ec_Http_Response_Helper::remove_protocols(
 					add_query_arg(
 						array( self::QUERY_STRING_PARAM => $time, ),
-						trailingslashit( $template_helper->get_site_url() )
+						trailingslashit( ai1ec_get_site_url() )
 					)
 				);
 			} else {

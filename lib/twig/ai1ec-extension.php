@@ -30,11 +30,11 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	 */
 	public function getFunctions() {
 		return array(
-			'screen_icon'                 => new Twig_Function_Method( $this, 'screen_icon' ),
-			'wp_nonce_field'              => new Twig_Function_Method( $this, 'wp_nonce_field' ),
-			'do_meta_boxes'               => new Twig_Function_Method( $this, 'do_meta_boxes' ),
-			'fb'                          => new Twig_Function_Method( $this, 'fb' ),
-			'ai1ec_disable_conent_output' => new Twig_Function_Method( $this, 'ai1ec_disable_conent_output' )
+			'screen_icon'                  => new Twig_Function_Method( $this, 'screen_icon' ),
+			'wp_nonce_field'               => new Twig_Function_Method( $this, 'wp_nonce_field' ),
+			'do_meta_boxes'                => new Twig_Function_Method( $this, 'do_meta_boxes' ),
+			'fb'                           => new Twig_Function_Method( $this, 'fb' ),
+			'ai1ec_disable_content_output' => new Twig_Function_Method( $this, 'ai1ec_disable_content_output' )
 		);
 	}
 
@@ -362,9 +362,7 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	 *
 	 * @return void Method does not return.
 	 */
-	public function ai1ec_disable_conent_output() {
-		add_filter( 'the_content', function( $content ) {
-			return '';
-		});
+	public function ai1ec_disable_content_output() {
+		$this->_registry->get( 'calendar.state' )->set_append_content( false );
 	}
 }

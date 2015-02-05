@@ -10,7 +10,7 @@
 		{% for id, data in tabs %}
 			<li>
 				<a href="#{{ id | e('html_attr') }}" data-toggle="ai1ec-tab" >
-						<i class="ai1ec-fa ai1ec-fa-calendar ai1ec-fa-lg ai1ec-fa-fw"></i>
+					<i class="{{ data.icon }} ai1ec-fa-lg ai1ec-fa-fw"></i>
 					{{ data.name | raw }}
 				</a>
 			</li>

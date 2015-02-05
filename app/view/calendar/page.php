@@ -222,6 +222,12 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				'subscribe_buttons'  => $subscribe_buttons,
 				'are_filters_set'    => $are_filters_set,
 				'is_json'            => $is_json,
+				'custom_filters'     => apply_filters(
+					'ai1ec_custom_filters_html',
+					'',
+					$view_args,
+					$request
+				),
 			);
 		}
 	}

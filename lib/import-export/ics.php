@@ -211,7 +211,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			$imported_cat = array( Ai1ec_Event_Taxonomy::CATEGORIES => array() );
 			// If the user chose to preserve taxonomies during import, add categories.
 			if( $categories && $feed->keep_tags_categories ) {
-				$imported_cat = $this->_add_categories_and_tags(
+				$imported_cat = $this->add_categories_and_tags(
 						$categories['value'],
 						$imported_cat,
 						false,
@@ -220,7 +220,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			}
 			$feed_categories = $feed->feed_category;
 			if( ! empty( $feed_categories ) ) {
-				$imported_cat = $this->_add_categories_and_tags(
+				$imported_cat = $this->add_categories_and_tags(
 						$feed_categories,
 						$imported_cat,
 						false,
@@ -232,7 +232,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			$imported_tags = array( Ai1ec_Event_Taxonomy::TAGS => array() );
 			// If the user chose to preserve taxonomies during import, add tags.
 			if( $tags && $feed->keep_tags_categories ) {
-				$imported_tags = $this->_add_categories_and_tags(
+				$imported_tags = $this->add_categories_and_tags(
 						$tags[1]['value'],
 						$imported_tags,
 						true,
@@ -241,7 +241,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			}
 			$feed_tags = $feed->feed_tags;
 			if( ! empty( $feed_tags ) ) {
-				$imported_tags = $this->_add_categories_and_tags(
+				$imported_tags = $this->add_categories_and_tags(
 						$feed_tags,
 						$imported_tags,
 						true,
@@ -1168,7 +1168,7 @@ class Ai1ec_Ics_Import_Export_Engine
 	 *
 	 * @return array
 	 */
-	protected function _add_categories_and_tags(
+	public function add_categories_and_tags(
 		$terms,
 		array $imported_terms,
 		$is_tag,

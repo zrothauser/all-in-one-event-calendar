@@ -2690,21 +2690,21 @@ textarea.timely .ai1ec-input-lg {
 .timely .ai1ec-has-warning .ai1ec-checkbox,
 .timely .ai1ec-has-warning .ai1ec-radio-inline,
 .timely .ai1ec-has-warning .ai1ec-checkbox-inline {
-  color: #8a6d3b;
+  color: #7e4d16;
 }
 .timely .ai1ec-has-warning .ai1ec-form-control {
-  border-color: #8a6d3b;
+  border-color: #7e4d16;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 .timely .ai1ec-has-warning .ai1ec-form-control:focus {
-  border-color: #66512c;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #c0a16b;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #c0a16b;
+  border-color: #53320e;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d58225;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d58225;
 }
 .timely .ai1ec-has-warning .ai1ec-input-group-addon {
-  color: #8a6d3b;
-  border-color: #8a6d3b;
+  color: #7e4d16;
+  border-color: #7e4d16;
   background-color: #fcf8e3;
 }
 .timely .ai1ec-has-error .ai1ec-help-block,
@@ -3314,10 +3314,10 @@ fieldset[disabled] .timely .ai1ec-btn-link:focus {
   color: #518322;
 }
 .timely .ai1ec-text-warning {
-  color: #8a6d3b;
+  color: #7e4d16;
 }
 .timely .ai1ec-text-warning:hover {
-  color: #66512c;
+  color: #53320e;
 }
 .timely .ai1ec-text-danger {
   color: #a94442;
@@ -4343,13 +4343,13 @@ textarea.ai1ec-input-group-sm > .ai1ec-input-group-btn > .ai1ec-btn {
 .ai1ec-alert-warning {
   background-color: #fcf8e3;
   border-color: #faebcc;
-  color: #8a6d3b;
+  color: #7e4d16;
 }
 .ai1ec-alert-warning hr {
   border-top-color: #f7e1b5;
 }
 .ai1ec-alert-warning .ai1ec-alert-link {
-  color: #66512c;
+  color: #53320e;
 }
 .ai1ec-alert-danger {
   background-color: #f2dede;
@@ -4558,7 +4558,7 @@ textarea.ai1ec-input-group-sm > .ai1ec-input-group-btn > .ai1ec-btn {
   border-color: #faebcc;
 }
 .ai1ec-panel-warning > .ai1ec-panel-heading {
-  color: #8a6d3b;
+  color: #7e4d16;
   background-color: #fcf8e3;
   border-color: #faebcc;
 }

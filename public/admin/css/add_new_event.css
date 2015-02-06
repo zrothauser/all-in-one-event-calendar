@@ -110,13 +110,21 @@
 /* Google map */
 .ai1ec_box_map {
 	float: right;
-	/* These two are needed for proper map initialization: */
+	/* This line is needed for proper map initialization: */
 	position: absolute;
-	visibility: hidden;
 	border: 1px solid #ddd;
 }
+/* This rule is also needed for proper map initialization: */
+.ai1ec_box_map,
+.ai1ec_box_map * {
+	visibility: hidden;
+}
+/* These two rules reset visibility to normal after map has initialized: */
 .ai1ec_box_map.ai1ec_box_map_visible {
 	position: static;
+}
+.ai1ec_box_map.ai1ec_box_map_visible,
+.ai1ec_box_map.ai1ec_box_map_visible * {
 	visibility: visible;
 }
 #ai1ec_map_canvas {

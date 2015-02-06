@@ -101,6 +101,9 @@ class Ai1ec_Render_Strategy_Html extends Ai1ec_Http_Response_Render_Strategy {
 	 * @return string         Post/Page content
 	 **/
 	public function event_content( $content ) {
+		if ( ! $this->_registry->get( 'calendar.state' )->append_content() ) {
+			$content = '';
+		}
 		$to_return = $this->_html . $content;
 		if ( isset( $this->_html_footer ) ) {
 			$to_return .= $this->_html_footer;

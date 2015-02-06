@@ -8,7 +8,7 @@ then
 	twigjs \
 		--output ../js_src/ \
 		--module amd \
-		--twig 'external_libs/twig", "agenda' \
+		--twig 'libs/twig", "agenda' \
 		../themes-ai1ec/vortex/twig/agenda.twig
 	mv \
 		agenda.twig.js \
@@ -16,7 +16,7 @@ then
 	twigjs \
 		--output ../js_src/ \
 		--module amd \
-		--twig 'external_libs/twig", "oneday' \
+		--twig 'libs/twig", "oneday' \
 		../themes-ai1ec/vortex/twig/oneday.twig
 	mv \
 		oneday.twig.js \
@@ -24,7 +24,7 @@ then
 	twigjs \
 		--output ../js_src/ \
 		--module amd \
-		--twig 'external_libs/twig", "month' \
+		--twig 'libs/twig", "month' \
 		../themes-ai1ec/vortex/twig/month.twig
 	mv \
 		month.twig.js \

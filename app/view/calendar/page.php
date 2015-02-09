@@ -275,7 +275,6 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				implode( ',', $view_args['post_ids'] );
 			$args['is_filtered'] = true;
 		}
-		//$args['placement'] = 'up';
 		$args = apply_filters(
 			'ai1ec_subscribe_buttons_arguments',
 			$args,

@@ -258,6 +258,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			'text'               => $this->_registry
 				->get( 'view.calendar.subscribe-button' )
 				->get_labels(),
+			'placement'          => 'up',
 		);
 		if ( ! empty( $view_args['cat_ids'] ) ) {
 			$args['url_args'] .= '&ai1ec_cat_ids=' .
@@ -274,6 +275,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				implode( ',', $view_args['post_ids'] );
 			$args['is_filtered'] = true;
 		}
+		//$args['placement'] = 'up';
 		$args = apply_filters(
 			'ai1ec_subscribe_buttons_arguments',
 			$args,

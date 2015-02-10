@@ -173,7 +173,7 @@ define(
 		// Validate fields when clicking Publish.
 		$( '#post' ).submit( validate_form );
 		// On blur, update the map if both coordinates are set.
-		$( 'input.coordinates' ).blur( input_coordinates_event_handlers.update_map_from_coordinates_on_blur );
+		$( 'input.ai1ec-coordinates' ).blur( input_coordinates_event_handlers.update_map_from_coordinates_on_blur );
 
 		// If the extra publish button is present, handle its click.
 		$( '#ai1ec_bottom_publish' ).on( 'click', date_time_event_handlers.trigger_publish );

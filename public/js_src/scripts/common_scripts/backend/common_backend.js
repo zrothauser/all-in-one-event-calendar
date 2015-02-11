@@ -98,7 +98,6 @@ define(
 	};
 
 	var initialize_modal_video = function() {
-
 		if ( $( '#ai1ec-video' ).length ) {
 			// TODO: Load YouTube IFrame Player API async using requirejs (right?)
 			// TODO: Separate event handlers into common_event_handlers.js. Tried this
@@ -113,10 +112,8 @@ define(
 				url : '//www.youtube.com/iframe_api'
 			});
 
-
 			// Create an <iframe> (and YouTube player) after the API code downloads.
 			window.onYouTubeIframeAPIReady = function() {
-
 				var player = new YT.Player( 'ai1ec-video', {
 					height: '368',
 					width: '600',
@@ -210,16 +207,20 @@ define(
 	};
 
 	var category_header = function() {
-		var $header = $( '.ai1ec-taxonomy-header' ),
-		    active_tab;
+		var
+			$header = $( '.ai1ec-taxonomy-header' ),
+			$edit   = $( '.ai1ec-taxonomy-edit-link' ),
+			active_tab;
 
 		if ( $header.length ) {
-			// Move edit button.
-			$( '.ai1ec-taxonomy-edit-link' )
-				.removeClass( 'ai1ec-hide' )
-				.appendTo( '.wrap > h2:first' );
+			// Move and display edit button if not editing a term.
+			if ( ! $( 'form#edittag' ).length ) {
+				$edit
+					.removeClass( 'ai1ec-hide' )
+					.appendTo( '.wrap > h2:first' );
+			}
 			// Move tabs to correct location and display them.
-			$(  '.wrap > h2:first' ).after( $header.removeClass( 'ai1ec-hide' ) );
+			$(  '.wrap' ).prepend( $header.removeClass( 'ai1ec-hide' ) );
 			// Activate tab if none is active.
 			if ( ! $header.find( 'li.ai1ec-active' ).length ) {
 				active_tab = $( '[data-ai1ec_active_tab]' ).data( 'ai1ec_active_tab' );
@@ -233,6 +234,7 @@ define(
 				.addClass( 'current' );
 		}
 	};
+
 	var start = function() {
 		domReady( function() {
 			// Attach the export to Facebook functionality.

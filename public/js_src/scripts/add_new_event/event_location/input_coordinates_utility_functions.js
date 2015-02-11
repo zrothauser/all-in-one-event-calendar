@@ -13,9 +13,11 @@ define(
 			 */
 			var ai1ec_convert_commas_to_dots_for_coordinates = function() {
 				if ( $( '#ai1ec_input_coordinates:checked' ).length > 0 ) {
-					$( '#ai1ec_table_coordinates input.coordinates' ).each( function() {
-						this.value = AI1EC_UTILS.convert_comma_to_dot( this.value );
-					} );
+					$( '#ai1ec_table_coordinates input.ai1ec-coordinates' ).each(
+						function() {
+							this.value = AI1EC_UTILS.convert_comma_to_dot( this.value );
+						}
+					);
 				}
 			};
 			/**
@@ -57,7 +59,7 @@ define(
 					// Just in case, hide the ajax spinner and remove the disabled status
 					$( '#publish' ).removeClass( 'button-primary-disabled' );
 					$( '#publish' ).siblings( '.spinner' ).css( 'visibility', 'hidden' );
-					
+
 				}
 				// Focus on the first field that has an error
 				$( el ).focus();
@@ -70,7 +72,7 @@ define(
 			var check_if_address_or_coordinates_are_set = function() {
 				var address_set = AI1EC_UTILS.field_has_value( 'ai1ec_address' );
 				var lat_long_set = true;
-				$( '.coordinates' ).each( function() {
+				$( 'input.ai1ec-coordinates' ).each( function() {
 					var is_set = AI1EC_UTILS.field_has_value( this.id );
 					if ( ! is_set ) {
 						lat_long_set = false;
@@ -94,19 +96,21 @@ define(
 				if ( $( '#ai1ec_input_coordinates:checked' ).length > 0 ) {
 					// Clean up old error messages
 					$( 'div.ai1ec-error' ).remove();
-					$( '#ai1ec_table_coordinates input.coordinates' ).each( function() {
-						// Check if we are validating latitude or longitude
-						var latitude = $( this ).hasClass( 'latitude' );
-						// Get the correct error message
-						var error_message = latitude ? ai1ec_config.error_message_not_entered_lat : ai1ec_config.error_message_not_entered_long;
-						if ( this.value === '' ) {
-							valid = false;
-							if( first_not_valid === false ) {
-								first_not_valid = this;
+					$( '#ai1ec_table_coordinates input.ai1ec-coordinates' ).each(
+						function() {
+							// Check if we are validating latitude or longitude
+							var latitude = $( this ).hasClass( 'latitude' );
+							// Get the correct error message
+							var error_message = latitude ? ai1ec_config.error_message_not_entered_lat : ai1ec_config.error_message_not_entered_long;
+							if ( this.value === '' ) {
+								valid = false;
+								if( first_not_valid === false ) {
+									first_not_valid = this;
+								}
+								ai1ec_show_error_message_after_element( this, error_message );
 							}
-							ai1ec_show_error_message_after_element( this, error_message );
 						}
-					});
+					);
 				}
 				if ( valid === false ) {
 					ai1ec_prevent_actions_and_focus_on_errors( e, first_not_valid );
@@ -131,25 +135,27 @@ define(
 					// If a field is empty, we will return false so that the map is not updated.
 					var at_least_one_field_empty = false;
 					// Let's iterate over the coordinates.
-					$( '#ai1ec_table_coordinates input.coordinates' ).each( function() {
-						if ( this.value === '' ) {
-							at_least_one_field_empty = true;
-							return;
-						}
-						// Check if we are validating latitude or longitude
-						var latitude = $( this ).hasClass( 'latitude' );
-						// Get the correct error message
-						var error_message = latitude ? ai1ec_config.error_message_not_valid_lat : ai1ec_config.error_message_not_valid_long;
-						// Check if the coordinate is valid.
-						if( ! AI1EC_UTILS.is_valid_coordinate( this.value, latitude ) ) {
-							valid = false;
-							// Save the elements so that we can focus later
-							if ( first_not_valid === false ) {
-								first_not_valid = this;
+					$( '#ai1ec_table_coordinates input.ai1ec-coordinates' ).each(
+						function() {
+							if ( this.value === '' ) {
+								at_least_one_field_empty = true;
+								return;
 							}
-							ai1ec_show_error_message_after_element( this, error_message );
+							// Check if we are validating latitude or longitude
+							var latitude = $( this ).hasClass( 'latitude' );
+							// Get the correct error message
+							var error_message = latitude ? ai1ec_config.error_message_not_valid_lat : ai1ec_config.error_message_not_valid_long;
+							// Check if the coordinate is valid.
+							if ( ! AI1EC_UTILS.is_valid_coordinate( this.value, latitude ) ) {
+								valid = false;
+								// Save the elements so that we can focus later
+								if ( first_not_valid === false ) {
+									first_not_valid = this;
+								}
+								ai1ec_show_error_message_after_element( this, error_message );
+							}
 						}
-					});
+					);
 					// Check if there are errors
 					if ( valid === false ) {
 						ai1ec_prevent_actions_and_focus_on_errors( e, first_not_valid );

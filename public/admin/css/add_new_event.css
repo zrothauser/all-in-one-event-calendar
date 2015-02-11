@@ -96,32 +96,29 @@
 #ai1ec-event-location-box {
 	overflow: hidden;
 }
-#ai1ec-event-location-box .ai1ec-panel-body {
-	min-width: 625px;
-}
-.ai1ec-form.ai1ec-location-form {
-	width: 360px;
-}
-#side-info-column .ai1ec-form.ai1ec-location-form {
-	float: none;
-	width: 100%;
-}
 
 /* Google map */
-.ai1ec_box_map {
-	float: right;
-	/* These two are needed for proper map initialization: */
-	position: absolute;
-	visibility: hidden;
+.ai1ec-map-preview {
 	border: 1px solid #ddd;
+	opacity: 0.25;
+	pointer-events: none;
+	width: 100%;
 }
-.ai1ec_box_map.ai1ec_box_map_visible {
-	position: static;
-	visibility: visible;
+.ai1ec-map-preview.ai1ec-map-visible {
+	opacity: 1;
+	pointer-events: auto;
 }
 #ai1ec_map_canvas {
-	width: 250px;
+	width: 100%;
 	height: 155px;
+}
+
+/* Coordinates */
+#ai1ec_table_coordinates {
+	width: 100%;
+}
+#ai1ec_table_coordinates input {
+	max-width: 312px;
 }
 
 /* Bottom publish button */
@@ -316,11 +313,6 @@
 .ai1ec-info-text {
 	font-size: 10px;
 	float: left;
-}
-
-/* input coordinates */
-#ai1ec-inside-wrapper{
-	width: 33em;
 }
 
 .ai1ec-cost-label {

@@ -10,30 +10,20 @@ define(
 
 	// Toggle the visibility of google map on checkbox click
 	var toggle_visibility_of_google_map_on_click = function( e ) {
-		if( $( this ).is( ':checked' ) ) {
-			// show the map
-			$( '.ai1ec_box_map' )
-				.addClass( 'ai1ec_box_map_visible')
-				.hide()
-				.slideDown( 'fast' );
+		if ( this.checked ) {
+			$( '.ai1ec-map-preview' ).addClass( 'ai1ec-map-visible');
 		} else {
-			// hide the map
-			$( '.ai1ec_box_map' ).slideUp( 'fast' );
+			$( '.ai1ec-map-preview' ).removeClass( 'ai1ec-map-visible' );
 		}
 	};
 
 	// Hide / Show the coordinates table when clicking the checkbox
 	var toggle_visibility_of_coordinate_fields_on_click = function( e ) {
 		// If the checkbox is checked
-		if( this.checked === true ) {
-			$( '#ai1ec_table_coordinates' ).css( { visibility : 'visible' } );
+		if ( this.checked ) {
+			$( '#ai1ec_table_coordinates' ).fadeIn( 'fast' );
 		} else {
-			// Hide the table
-			$( '#ai1ec_table_coordinates' ).css( { visibility : 'hidden' } );
-			// Erase the input fields
-			$( '#ai1ec_table_coordinates input' ).val( '' );
-			// Clean up error messages
-			$( 'div.ai1ec-error' ).remove();
+			$( '#ai1ec_table_coordinates' ).fadeOut( 'fast' );
 		}
 	};
 
@@ -43,7 +33,7 @@ define(
 		// Check if the coordinates are valid.
 		var valid = input_utility_functions.ai1ec_check_lat_long_ok_for_search( e );
 		// If they are valid, update the map.
-		if( valid === true ) {
+		if ( valid === true ) {
 			gmaps_helper.ai1ec_update_map_from_coordinates();
 		}
 	};

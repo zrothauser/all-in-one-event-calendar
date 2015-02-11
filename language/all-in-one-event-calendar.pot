@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.1.9.14\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.1.9.15\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2015-01-28 21:18:05+00:00\n"
+"POT-Creation-Date: 2015-02-11 18:46:23+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -48,97 +48,97 @@ msgstr ""
 msgid "You must choose the Calendar page before using the Super Widget"
 msgstr ""
 
-#: app/controller/javascript.php:390
+#: app/controller/javascript.php:395
 msgid "This feed is already being imported."
 msgstr ""
 
-#: app/controller/javascript.php:393
+#: app/controller/javascript.php:398
 msgid "Please enter a valid iCalendar URL."
 msgstr ""
 
-#: app/controller/javascript.php:396
+#: app/controller/javascript.php:401
 msgid "Please enter a valid email address."
 msgstr ""
 
-#: app/controller/javascript.php:398
+#: app/controller/javascript.php:403
 msgid "Choose Image"
 msgstr ""
 
-#: app/controller/javascript.php:401
+#: app/controller/javascript.php:406
 msgid "The value you have entered is not a valid CSS length."
 msgstr ""
 
-#: app/controller/javascript.php:404
+#: app/controller/javascript.php:409
 msgid ""
 "Are you sure you want to reset your theme options to their default values?"
 msgstr ""
 
-#: app/controller/javascript.php:407
+#: app/controller/javascript.php:412
 msgid ""
 "Please enter a valid latitude. A valid latitude is comprised between +90 and "
 "-90."
 msgstr ""
 
-#: app/controller/javascript.php:410
+#: app/controller/javascript.php:415
 msgid ""
 "Please enter a valid longitude. A valid longitude is comprised between +180 "
 "and -180."
 msgstr ""
 
-#: app/controller/javascript.php:413
+#: app/controller/javascript.php:418
 msgid ""
 "When the \"Input coordinates\" checkbox is checked, \"Latitude\" is a "
 "required field."
 msgstr ""
 
-#: app/controller/javascript.php:416
+#: app/controller/javascript.php:421
 msgid ""
 "When the \"Input coordinates\" checkbox is checked, \"Longitude\" is a "
 "required field."
 msgstr ""
 
-#: app/controller/javascript.php:419
+#: app/controller/javascript.php:424
 msgid ""
 "The URL you have entered in the <b>Organizer Contact Info</b> &gt; "
 "<b>External URL</b> seems to be invalid."
 msgstr ""
 
-#: app/controller/javascript.php:422
+#: app/controller/javascript.php:427
 msgid ""
 "The URL you have entered in the <b>Event Cost and Tickets</b> &gt; <b>Buy "
 "Tickets URL</b> seems to be invalid."
 msgstr ""
 
-#: app/controller/javascript.php:425
+#: app/controller/javascript.php:430
 msgid ""
 "Please remember that URLs must start with either \"http://\" or \"https://\"."
 msgstr ""
 
-#: app/controller/javascript.php:428
+#: app/controller/javascript.php:433
 msgid "Loading&hellip;"
 msgstr ""
 
-#: app/controller/javascript.php:460 app/view/admin/widget-creator.php:131
+#: app/controller/javascript.php:465 app/view/admin/widget-creator.php:139
 msgid "Preview:"
 msgstr ""
 
-#: app/controller/javascript.php:461
+#: app/controller/javascript.php:466
 msgid ""
 "Loading preview&nbsp;<i class=\"ai1ec-fa ai1ec-fa-spin ai1ec-fa-spinner\"></"
 "i>"
 msgstr ""
 
-#: app/controller/javascript.php:465
+#: app/controller/javascript.php:470
 msgid ""
 "Something went wrong while fetching events.<br>The request status is: %STATUS"
 "% <br>The error thrown was: %ERROR%"
 msgstr ""
 
-#: app/controller/javascript.php:472
+#: app/controller/javascript.php:477
 msgid "The end date can't be earlier than the start date."
 msgstr ""
 
-#: app/controller/javascript.php:473
+#: app/controller/javascript.php:478
 msgid "For week and day view, you must select an interval of at least 6 hours."
 msgstr ""
 
@@ -645,6 +645,10 @@ msgstr ""
 msgid "<a href=\"%s\">Settings</a>"
 msgstr ""
 
+#: app/view/admin/organize.php:100
+msgid "Organize Events"
+msgstr ""
+
 #: app/view/admin/settings.php:30
 msgid "All-in-One Event Calendar: Settings"
 msgstr ""
@@ -769,21 +773,32 @@ msgctxt "meta box"
 msgid "Widget Creator"
 msgstr ""
 
-#: app/view/admin/widget-creator.php:130
+#: app/view/admin/widget-creator.php:131
 msgid ""
-"Use this tool to generate code snippets you can place on your site to embed "
-"new calendars and widgets."
+"Use this tool to generate code snippets you can add to <strong>an external "
+"website</strong> to embed new calendars and widgets."
 msgstr ""
 
 #: app/view/admin/widget-creator.php:132
-msgid "Full Calendar"
-msgstr ""
-
-#: app/view/admin/widget-creator.php:133
-msgid "Paste this code onto your site:"
+msgid ""
+"<h4>Attention!</h4><p>These widgets are designed to be embedded in "
+"<strong>external sites only</strong> and may cause conflicts if used within "
+"the same WordPress site.</p>"
 msgstr ""
 
 #: app/view/admin/widget-creator.php:134
+msgid ""
+"<p>Use <a href=\"%s\"><strong>Appearance</strong> &gt; <strong>Widgets</"
+"strong></a> to add event widgets to your WordPress site as you would any "
+"other widget, or use <a href=\"%s\" target=\"_blank\">shortcodes</a> to "
+"embed the full calendar.</strong></p>"
+msgstr ""
+
+#: app/view/admin/widget-creator.php:140
+msgid "Paste this code onto your site:"
+msgstr ""
+
+#: app/view/admin/widget-creator.php:141
 msgid ""
 "This code will update to reflect changes made to the settings. Changing "
 "settings will not affect previously embedded widgets."
@@ -801,15 +816,15 @@ msgid ""
 "Please check if you have installed the latest versions of calendar add-ons."
 msgstr ""
 
-#: app/view/calendar/page.php:247
+#: app/view/calendar/page.php:254
 msgid "Subscribe to filtered calendar"
 msgstr ""
 
-#: app/view/calendar/page.php:248
+#: app/view/calendar/page.php:255
 msgid "Subscribe"
 msgstr ""
 
-#: app/view/calendar/page.php:249 app/view/event/single.php:102
+#: app/view/calendar/page.php:256 app/view/event/single.php:102
 msgid "Get a Timely Calendar"
 msgstr ""
 
@@ -885,7 +900,7 @@ msgstr ""
 msgid "There are no upcoming events to display at this time."
 msgstr ""
 
-#: app/view/calendar/view/agenda.php:144 app/view/calendar/widget.php:364
+#: app/view/calendar/view/agenda.php:144 app/view/calendar/widget.php:373
 msgid "Edit"
 msgstr ""
 
@@ -904,7 +919,7 @@ msgstr ""
 
 #: app/view/calendar/view/agenda.php:148 app/view/calendar/view/month.php:81
 #: app/view/calendar/view/oneday.php:100 app/view/calendar/view/week.php:112
-#: app/view/calendar/widget.php:365
+#: app/view/calendar/widget.php:374
 msgid "@ %s"
 msgstr ""
 
@@ -964,19 +979,19 @@ msgstr ""
 msgid "Show the subscribe button in the widget"
 msgstr ""
 
-#: app/view/calendar/widget.php:361
+#: app/view/calendar/widget.php:370
 msgid "There are no upcoming events."
 msgstr ""
 
-#: app/view/calendar/widget.php:362 app/view/event/time.php:132
+#: app/view/calendar/widget.php:371 app/view/event/time.php:132
 msgid "all-day"
 msgstr ""
 
-#: app/view/calendar/widget.php:363
+#: app/view/calendar/widget.php:372
 msgid "View Calendar"
 msgstr ""
 
-#: app/view/calendar/widget.php:366
+#: app/view/calendar/widget.php:375
 msgid "Add"
 msgstr ""
 
@@ -1072,18 +1087,18 @@ msgstr ""
 msgid "Free"
 msgstr ""
 
-#: app/view/event/single.php:124
+#: app/view/event/single.php:131
 msgid "Edit this occurrence (%s)"
 msgstr ""
 
-#: app/view/event/single.php:139
+#: app/view/event/single.php:146
 msgid ""
 "This post was replicated from another site's <a href=\"%s\" title="
 "\"iCalendar feed\"><i class=\"ai1ec-fa ai1ec-fa-calendar\"></i> calendar "
 "feed</a>."
 msgstr ""
 
-#: app/view/event/single.php:150
+#: app/view/event/single.php:157
 msgid "View original"
 msgstr ""
 
@@ -1129,28 +1144,69 @@ msgstr ""
 msgid ", and "
 msgstr ""
 
-#: cache/twig/57/45/0188512a8737525f2a834d1b88782d9a19e5e6d3a9e57df3dbed47bab219.php:37
-msgid "Import events from a CSV file or iCalendar (.ics) feed:"
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:53
+#: public/admin/box_event_location.php:31
+msgid "Address:"
 msgstr ""
 
-#: cache/twig/57/45/0188512a8737525f2a834d1b88782d9a19e5e6d3a9e57df3dbed47bab219.php:60
-msgid "Or paste your CSV data or iCalendar (.ics) feed here:"
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:92
+msgid "Show Google Map"
 msgstr ""
 
-#: cache/twig/57/45/0188512a8737525f2a834d1b88782d9a19e5e6d3a9e57df3dbed47bab219.php:101
-#: public/admin/plugins/ics/display_feeds.php:51
-msgid "Allow comments on imported events"
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:123
+msgid "Longitude"
 msgstr ""
 
-#: cache/twig/57/45/0188512a8737525f2a834d1b88782d9a19e5e6d3a9e57df3dbed47bab219.php:111
-#: public/admin/plugins/ics/display_feeds.php:58
-msgid "Show map on imported events"
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:158
+msgid "Latitude"
 msgstr ""
 
-#: cache/twig/57/45/0188512a8737525f2a834d1b88782d9a19e5e6d3a9e57df3dbed47bab219.php:121
-#: public/admin/plugins/ics/display_feeds.php:65
-msgid ""
-"Import any tags/categories provided by feed, in addition those selected above"
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:220
+msgid "Description:"
+msgstr ""
+
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:253
+#: public/admin/box_event_contact.php:17
+msgid "Contact name:"
+msgstr ""
+
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:287
+#: public/admin/box_event_contact.php:30
+msgid "Phone:"
+msgstr ""
+
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:321
+msgid "Email:"
+msgstr ""
+
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:355
+msgid "External url:"
+msgstr ""
+
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:389
+msgid "Seating capacity:"
+msgstr ""
+
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:422
+msgid "Handicap Accessible:"
+msgstr ""
+
+#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:458
+msgid "Parking:"
+msgstr ""
+
+#: cache/twig/4b/54/8023eee8659ad1836d2185aae4bf5e8f0ebe217bd262863e58fa4cf1da34.php:37
+msgid "Your email here"
+msgstr ""
+
+#: cache/twig/64/6d/6348de0c3ef39b5536ab38eae718b16c67b3cdfe8a998663cdb1ea4c2d6c.php:24
+#: public/admin/agenda-widget-form.php:2
+msgid "Title:"
+msgstr ""
+
+#: cache/twig/78/3e/57d2212e2837aee7813ecc844f345947f68d3edb57d31388f926a75264db.php:27
+#: cache/twig/78/3e/57d2212e2837aee7813ecc844f345947f68d3edb57d31388f926a75264db.php:31
+msgid "Products"
 msgstr ""
 
 #: lib/calendar-feed/ics.php:38
@@ -1880,10 +1936,6 @@ msgid ""
 "href=\"javascript:location.reload();\">reload the page</a>."
 msgstr ""
 
-#: public/admin/agenda-widget-form.php:2
-msgid "Title:"
-msgstr ""
-
 #: public/admin/agenda-widget-form.php:12
 msgid "Number of events to show:"
 msgstr ""
@@ -1948,14 +2000,6 @@ msgstr ""
 msgid "Organizer contact info"
 msgstr ""
 
-#: public/admin/box_event_contact.php:17
-msgid "Contact name:"
-msgstr ""
-
-#: public/admin/box_event_contact.php:30
-msgid "Phone:"
-msgstr ""
-
 #: public/admin/box_event_contact.php:43
 msgid "E-mail:"
 msgstr ""
@@ -1988,28 +2032,24 @@ msgstr ""
 msgid "Event location details"
 msgstr ""
 
-#: public/admin/box_event_location.php:22
+#: public/admin/box_event_location.php:19
 msgid "Venue name:"
 msgstr ""
 
-#: public/admin/box_event_location.php:34
-msgid "Address:"
-msgstr ""
-
-#: public/admin/box_event_location.php:48
-msgid "Show Google Map"
+#: public/admin/box_event_location.php:45
+msgid "Input Coordinates"
 msgstr ""
 
 #: public/admin/box_event_location.php:57
-msgid "Input Coordinates"
+msgid "Latitude:"
 msgstr ""
 
 #: public/admin/box_event_location.php:69
 msgid "Longitude:"
 msgstr ""
 
-#: public/admin/box_event_location.php:82
-msgid "Latitude:"
+#: public/admin/box_event_location.php:85
+msgid "Show Map"
 msgstr ""
 
 #: public/admin/box_eventbrite.php:1
@@ -2353,6 +2393,19 @@ msgstr ""
 msgid "Check for new events"
 msgstr ""
 
+#: public/admin/plugins/ics/display_feeds.php:51
+msgid "Allow comments on imported events"
+msgstr ""
+
+#: public/admin/plugins/ics/display_feeds.php:58
+msgid "Show map on imported events"
+msgstr ""
+
+#: public/admin/plugins/ics/display_feeds.php:65
+msgid ""
+"Import any tags/categories provided by feed, in addition those selected above"
+msgstr ""
+
 #: public/admin/plugins/ics/display_feeds.php:91
 msgid "Add new subscription"
 msgstr ""
@@ -2655,9 +2708,9 @@ msgstr ""
 msgid "All-in-One Event Calendar by Time.ly"
 msgstr ""
 
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.9.14)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.9.15)  #-#-#-#-#
 #. Plugin URI of the plugin/theme
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.9.14)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.9.15)  #-#-#-#-#
 #. Author URI of the plugin/theme
 msgid "http://time.ly/"
 msgstr ""

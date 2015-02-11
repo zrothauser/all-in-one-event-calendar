@@ -142,6 +142,9 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 			date_default_timezone_set( $restore_timezone );
 		}
 
+		if ( ! is_array( $recurrence_dates ) ) {
+			$recurrence_dates = array();
+		}
 		$recurrence_dates = array_keys( $recurrence_dates );
 		// Add the instances
 		foreach ( $recurrence_dates as $timestamp ) {

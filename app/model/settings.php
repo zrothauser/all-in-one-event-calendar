@@ -47,12 +47,17 @@ class Ai1ec_Settings extends Ai1ec_App {
 		$renderer,
 		$version = '2.0.0'
 	) {
+		
 		if ( 'deprecated' === $type ) {
 			unset( $this->_options[$option] );
 		} else if (
 			! isset( $this->_options[$option] ) ||
 			! isset( $this->_options[$option]['version'] ) ||
-			(string)$this->_options[$option]['version'] !== (string)$version
+			(string)$this->_options[$option]['version'] !== (string)$version ||
+			( isset( $renderer['label'] ) &&
+				(string)$this->_options[$option]['renderer']['label'] !== (string)$renderer['label'] ) ||
+			( isset( $renderer['help'] ) &&
+				(string)$this->_options[$option]['renderer']['label'] !== (string)$renderer['help'] )
 		) {
 			$this->_options[$option] = array(
 				'value'    => ( isset( $this->_options[$option] ) )
@@ -317,10 +322,12 @@ class Ai1ec_Settings extends Ai1ec_App {
 			$this->_change_update_status( true );
 			$upgrade = true;
 		} else if ( $values instanceof Ai1ec_Settings ) { // process legacy
-			$this->_register_standard_values();
 			$this->_parse_legacy( $values );
 			$this->_change_update_status( true );
 			$upgrade = true;
+		} else {
+			// check for updated translations
+			$this->_register_standard_values();
 		}
 		if ( true === $upgrade ) {
 			$this->perform_upgrade_actions();

@@ -83,7 +83,7 @@ define(
 							break;
 						case 'success': alert_class = 'ai1ec-alert ai1ec-alert-success';
 							break;
-						default: alert_class = 'ai1ec-alert';
+						default: alert_class = 'ai1ec-alert ai1ec-alert-info';
 							break;
 					}
 					// Create the alert

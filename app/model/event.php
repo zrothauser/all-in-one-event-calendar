@@ -163,6 +163,15 @@ class Ai1ec_Event extends Ai1ec_Base {
 	}
 
 	/**
+	 * Delete the events from all tables
+	 */
+	public function delete() {
+		// delete post (this will trigger deletion of cached events, and
+		// remove the event from events table)
+		wp_delete_post( $this->get( 'post_id' ), true );
+	}
+
+	/**
 	 * Initialize object from ID.
 	 *
 	 * Attempts to retrieve entity from database and if succeeds - uses

@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.1.9.16\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.1.9.17\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2015-02-12 19:33:10+00:00\n"
+"POT-Creation-Date: 2015-02-13 21:19:02+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1080,6 +1080,7 @@ msgid "Cost:"
 msgstr ""
 
 #: app/view/event/single.php:106
+#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:94
 msgid "Contact:"
 msgstr ""
 
@@ -1144,69 +1145,56 @@ msgstr ""
 msgid ", and "
 msgstr ""
 
-#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:53
-#: public/admin/box_event_location.php:31
-msgid "Address:"
+#: cache/twig/57/45/0188512a8737525f2a834d1b88782d9a19e5e6d3a9e57df3dbed47bab219.php:37
+msgid "Import events from a CSV file or iCalendar (.ics) feed:"
 msgstr ""
 
-#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:92
-msgid "Show Google Map"
+#: cache/twig/57/45/0188512a8737525f2a834d1b88782d9a19e5e6d3a9e57df3dbed47bab219.php:60
+msgid "Or paste your CSV data or iCalendar (.ics) feed here:"
 msgstr ""
 
-#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:123
-msgid "Longitude"
+#: cache/twig/57/45/0188512a8737525f2a834d1b88782d9a19e5e6d3a9e57df3dbed47bab219.php:101
+#: public/admin/plugins/ics/display_feeds.php:51
+msgid "Allow comments on imported events"
 msgstr ""
 
-#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:158
-msgid "Latitude"
+#: cache/twig/57/45/0188512a8737525f2a834d1b88782d9a19e5e6d3a9e57df3dbed47bab219.php:111
+#: public/admin/plugins/ics/display_feeds.php:58
+msgid "Show map on imported events"
 msgstr ""
 
-#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:220
-msgid "Description:"
+#: cache/twig/57/45/0188512a8737525f2a834d1b88782d9a19e5e6d3a9e57df3dbed47bab219.php:121
+#: public/admin/plugins/ics/display_feeds.php:65
+msgid ""
+"Import any tags/categories provided by feed, in addition those selected above"
 msgstr ""
 
-#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:253
-#: public/admin/box_event_contact.php:17
-msgid "Contact name:"
+#: cache/twig/dc/78/b950182efb8f436b144938fb0dc48cf395d7daabe20293234dbcf2b26545.php:37
+msgid "Excludes: "
 msgstr ""
 
-#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:287
-#: public/admin/box_event_contact.php:30
-msgid "Phone:"
+#: cache/twig/dc/78/b950182efb8f436b144938fb0dc48cf395d7daabe20293234dbcf2b26545.php:48
+msgid "Repeats"
 msgstr ""
 
-#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:321
-msgid "Email:"
-msgstr ""
-
-#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:355
-msgid "External url:"
-msgstr ""
-
-#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:389
+#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:173
 msgid "Seating capacity:"
 msgstr ""
 
-#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:422
-msgid "Handicap Accessible:"
+#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:190
+msgid "Handicap accessible"
 msgstr ""
 
-#: cache/twig/0a/29/c1dadb694d38bbd3df612d552f2b3f8c013559207293814d0b2b4fa0d366.php:458
+#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:205
 msgid "Parking:"
 msgstr ""
 
-#: cache/twig/4b/54/8023eee8659ad1836d2185aae4bf5e8f0ebe217bd262863e58fa4cf1da34.php:37
-msgid "Your email here"
+#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:241
+msgid "Email Venue"
 msgstr ""
 
-#: cache/twig/64/6d/6348de0c3ef39b5536ab38eae718b16c67b3cdfe8a998663cdb1ea4c2d6c.php:24
-#: public/admin/agenda-widget-form.php:2
-msgid "Title:"
-msgstr ""
-
-#: cache/twig/78/3e/57d2212e2837aee7813ecc844f345947f68d3edb57d31388f926a75264db.php:27
-#: cache/twig/78/3e/57d2212e2837aee7813ecc844f345947f68d3edb57d31388f926a75264db.php:31
-msgid "Products"
+#: cache/twig/f0/57/03afef869c4fea0061567a42872d377423a41be579565d0cdf32260df05f.php:259
+msgid "Visit Website"
 msgstr ""
 
 #: lib/calendar-feed/ics.php:38
@@ -1936,6 +1924,10 @@ msgid ""
 "href=\"javascript:location.reload();\">reload the page</a>."
 msgstr ""
 
+#: public/admin/agenda-widget-form.php:2
+msgid "Title:"
+msgstr ""
+
 #: public/admin/agenda-widget-form.php:12
 msgid "Number of events to show:"
 msgstr ""
@@ -2000,6 +1992,14 @@ msgstr ""
 msgid "Organizer contact info"
 msgstr ""
 
+#: public/admin/box_event_contact.php:17
+msgid "Contact name:"
+msgstr ""
+
+#: public/admin/box_event_contact.php:30
+msgid "Phone:"
+msgstr ""
+
 #: public/admin/box_event_contact.php:43
 msgid "E-mail:"
 msgstr ""
@@ -2034,6 +2034,10 @@ msgstr ""
 
 #: public/admin/box_event_location.php:19
 msgid "Venue name:"
+msgstr ""
+
+#: public/admin/box_event_location.php:31
+msgid "Address:"
 msgstr ""
 
 #: public/admin/box_event_location.php:45
@@ -2393,19 +2397,6 @@ msgstr ""
 msgid "Check for new events"
 msgstr ""
 
-#: public/admin/plugins/ics/display_feeds.php:51
-msgid "Allow comments on imported events"
-msgstr ""
-
-#: public/admin/plugins/ics/display_feeds.php:58
-msgid "Show map on imported events"
-msgstr ""
-
-#: public/admin/plugins/ics/display_feeds.php:65
-msgid ""
-"Import any tags/categories provided by feed, in addition those selected above"
-msgstr ""
-
 #: public/admin/plugins/ics/display_feeds.php:91
 msgid "Add new subscription"
 msgstr ""
@@ -2708,9 +2699,9 @@ msgstr ""
 msgid "All-in-One Event Calendar by Time.ly"
 msgstr ""
 
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.9.16)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.9.17)  #-#-#-#-#
 #. Plugin URI of the plugin/theme
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.9.16)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.1.9.17)  #-#-#-#-#
 #. Author URI of the plugin/theme
 msgid "http://time.ly/"
 msgstr ""

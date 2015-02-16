@@ -204,7 +204,9 @@ class Ai1ec_Exception_Handler {
 				? $exception->get_html_message()
 				: $exception->getMessage();
 			$message = '<p>' . $message . '</p>';
-			$message .= $backtrace;
+			if ( $exception->display_backtrace() ) {
+				$message .= $backtrace;
+			}
 			if ( null !== $disable_addon ) {
 				include_once ABSPATH . 'wp-admin/includes/plugin.php';
 				// deactivate the plugin. Fire handlers to hide options.
@@ -218,7 +220,7 @@ class Ai1ec_Exception_Handler {
 						array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
 						true
 					);
-				$this->redirect();
+				$this->redirect( $exception->get_redirect_url() );
 			} else {
 				// check if it has a methof for deatiled html
 				$this->soft_deactivate_plugin( $message );
@@ -413,16 +415,14 @@ class Ai1ec_Exception_Handler {
 	 *
 	 * @return void Method does not return
 	 */
-	protected function redirect() {
+	protected function redirect( $suggested_url = null ) {
+		$url = ai1ec_get_site_url();
 		if ( is_admin() ) {
-			Ai1ec_Http_Response_Helper::redirect(
-				ai1ec_get_admin_url()
-			);
-		} else {
-			Ai1ec_Http_Response_Helper::redirect(
-				ai1ec_get_site_url()
-			);
+			$url = null !== $suggested_url
+				? $suggested_url
+				: ai1ec_get_admin_url();
 		}
+		Ai1ec_Http_Response_Helper::redirect( $url );
 	}
 	/**
 	 * Had to add it as var_dump was locking my browser.

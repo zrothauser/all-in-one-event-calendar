@@ -175,6 +175,9 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 	 *                            or not.
 	 *
 	 * @return void Method does not return.
+	 *              
+	 * @throws Ai1ec_Bootstrap_Exception
+	 * @throws Ai1ec_Outdated_Addon_Exception
 	 */
 	protected function _plugin_activation(
 		$addon,
@@ -190,23 +193,17 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 		}
 		$version = $ev_data['Version'];
 		if ( -1 === version_compare( $version, $min_version ) ) {
+			$msg1 = Ai1ec_I18n::__( 'The add-on <strong>%s</strong> must be updated to at least version %s to maintain compatibility with the core calendar.' );
+			$msg2 = Ai1ec_I18n::__( 'If you do not see update notices below, ensure you have properly <a href="https://time.ly/document/user-guide/getting-started/license-keys/" target="_blank">entered your licence keys</a>. Alternatively, navigate to <a href="https://time.ly/your-account/">your account</a> to download the latest version of the add-on(s) and <a href="http://time.ly/document/user-guide/troubleshooting/perform-manual-upgrade/">update manually</a>. Please <a href="https://time.ly/forums/">post in the forum</a> if you have trouble. We are happy to help.' );
+
 			$message = sprintf(
-				Ai1ec_I18n::__( 'Addon %s needs to be at least in version %s' ),
+				'<span class="highlight" style="margin: 0 -6px; padding: 4px 6px">' .
+					$msg1 . '</span></p><p>' . $msg2,
 				$ev_data['Name'],
 				$min_version
 			);
-			if ( ! $core ) {
-				throw new Ai1ec_Outdated_Addon_Exception( $message, $addon );
-			} else {
-				deactivate_plugins( $addon, $silent );
-				$this->_registry->get( 'notification.admin' )->store(
-					$message,
-					'error',
-					0,
-					array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
-					true
-				);
-			}
+
+			throw new Ai1ec_Outdated_Addon_Exception( $message, $addon );
 		}
 	}
 }

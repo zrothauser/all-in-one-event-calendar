@@ -57,7 +57,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 			( isset( $renderer['label'] ) &&
 				(string)$this->_options[$option]['renderer']['label'] !== (string)$renderer['label'] ) ||
 			( isset( $renderer['help'] ) &&
-				(string)$this->_options[$option]['renderer']['label'] !== (string)$renderer['help'] )
+				(string)$this->_options[$option]['renderer']['help'] !== (string)$renderer['help'] )
 		) {
 			$this->_options[$option] = array(
 				'value'    => ( isset( $this->_options[$option] ) )

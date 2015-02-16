@@ -311,6 +311,8 @@ class Ai1ec_Settings extends Ai1ec_App {
 			}
 		}
 		$upgrade = false;
+		// check for updated translations
+		$this->_register_standard_values();
 		if ( // process meta updates changes
 			empty( $values ) || (
 				false !== $test_version &&
@@ -325,9 +327,6 @@ class Ai1ec_Settings extends Ai1ec_App {
 			$this->_parse_legacy( $values );
 			$this->_change_update_status( true );
 			$upgrade = true;
-		} else {
-			// check for updated translations
-			$this->_register_standard_values();
 		}
 		if ( true === $upgrade ) {
 			$this->perform_upgrade_actions();

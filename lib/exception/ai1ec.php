@@ -38,7 +38,7 @@ class Ai1ec_Exception extends Exception {
 	 * @return string Result.
 	 */
 	public function get_redirect_url() {
-		return ai1ec_admin_url();
+		return ai1ec_get_admin_url();
 	}
 
 	/**

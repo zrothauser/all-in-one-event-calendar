@@ -175,6 +175,9 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 	 *                            or not.
 	 *
 	 * @return void Method does not return.
+	 *              
+	 * @throws Ai1ec_Bootstrap_Exception
+	 * @throws Ai1ec_Outdated_Addon_Exception
 	 */
 	protected function _plugin_activation(
 		$addon,
@@ -200,18 +203,7 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 				$min_version
 			);
 
-			if ( ! $core ) {
-				throw new Ai1ec_Outdated_Addon_Exception( $message, $addon );
-			} else {
-				deactivate_plugins( $addon, $silent );
-				$this->_registry->get( 'notification.admin' )->store(
-					$message,
-					'error',
-					0,
-					array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
-					true
-				);
-			}
+			throw new Ai1ec_Outdated_Addon_Exception( $message, $addon );
 		}
 	}
 }

@@ -143,7 +143,7 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 		$filename = $this->persistance_context->write_data_to_persistence( $css );
 		$this->db_adapter->set(
 			'ai1ec_filename_css',
-			$filename['file'],
+			isset( $filename['file'] ) ? $filename['file'] : false,
 			true
 		);
 		$this->save_less_parse_time( $filename['url'] );

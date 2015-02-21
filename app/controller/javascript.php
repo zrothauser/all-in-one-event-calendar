@@ -627,7 +627,7 @@ JSC;
 					self::JS_HANDLE,
 					$url,
 					array(),
-					true
+					false
 			);
 		}
 	}

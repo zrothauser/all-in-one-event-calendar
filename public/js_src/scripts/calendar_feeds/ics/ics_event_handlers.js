@@ -74,7 +74,16 @@ define(
 					keep_old_events:      keep_old_events,
 					feed_import_timezone: feed_import_timezone
 			    };
-
+				$( '.ai1ec-feed-field' ).each( function() {
+					var value = $( this ).val();
+					if (
+						'checkbox' === $( this ).attr( 'type' ) &&
+						! $( this ).prop( 'checked' )
+					) {
+						value = 0;
+					}
+					data[$( this ).attr( 'name' )] = value;
+				});
 			// Make an AJAX call to save the new feed.
 			$.post( ajaxurl, data, ajax_handlers.handle_add_new_ics, 'json' );
 		}

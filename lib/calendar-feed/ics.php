@@ -517,7 +517,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 		$feed_categories = empty( $_REQUEST['feed_category'] ) ? '' : implode(
 			',', $_REQUEST['feed_category'] );
-		$entry = array( 'feed_url' => $_REQUEST['feed_url'],
+		$entry = array(
+			'feed_url'             => $_REQUEST['feed_url'],
 			'feed_category'        => $feed_categories,
 			'feed_tags'            => $_REQUEST['feed_tags'],
 			'comments_enabled'     => Ai1ec_Primitive_Int::db_bool(
@@ -552,6 +553,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$res        = $db->insert( $table_name, $entry, $format );
 		$feed_id    = $db->get_insert_id();
 		$categories = array();
+		do_action( 'ai1ec_ics_feed_added', $feed_id, $entry );
 
 		if ( ! empty( $_REQUEST['feed_category'] ) ) {
 			foreach ( $_REQUEST['feed_category'] as $cat_id ) {
@@ -586,6 +588,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				$_REQUEST['feed_import_timezone']
 			),
 		);
+
 		$loader = $this->_registry->get( 'theme.loader' );
 		// display added feed row
 		$file = $loader->get_file( 'feed_row.php', $args, true );
@@ -694,6 +697,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		}
 		$table_name = $db->get_table_name( 'ai1ec_event_feeds' );
 		$db->query( $db->prepare( "DELETE FROM {$table_name} WHERE feed_id = %d", $ics_id ) );
+		do_action( 'ai1ec_ics_feed_deleted', $ics_id );
 		$output = array(
 			'error'   => false,
 			'message' => __( 'Feed deleted', AI1EC_PLUGIN_NAME ),

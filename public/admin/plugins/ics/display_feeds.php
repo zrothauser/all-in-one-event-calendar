@@ -81,6 +81,7 @@
 			</span>
 		</label>
 	</div>
+	<?php do_action( 'ai1ec_ics_row_after_settings', null ); ?>
 	<div class="ai1ec-pull-right">
 		<button type="button" id="ai1ec_add_new_ics"
 			class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-sm"

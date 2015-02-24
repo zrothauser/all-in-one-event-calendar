@@ -461,7 +461,7 @@ class Ai1ec_Front_Controller {
 		);
 		// add the filter to let the organize page work
 		$dispatcher->register_action(
-			'init',
+			'admin_init',
 			array( 'view.admin.organize', 'add_taxonomy_actions' ),
 			10000
 		);

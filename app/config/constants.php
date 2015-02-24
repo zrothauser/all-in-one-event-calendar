@@ -446,7 +446,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// = Add-ons list URL =
 	// ====================
 	if ( ! defined( 'AI1EC_TIMELY_ADDONS_URI' ) ) {
-		define( 'AI1EC_TIMELY_ADDONS_URI', 'https://time.ly/?action=addons_list' );
+		define( 'AI1EC_TIMELY_ADDONS_URI', 'http://time.ly/?action=addons_list' );
 	}
 
 	// Enable All-in-One-Event-Calendar to work in debug mode, which means,

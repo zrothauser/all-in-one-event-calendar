@@ -74,6 +74,7 @@
 			} ?>
 		</strong>
 	</div>
+	<?php do_action( 'ai1ec_ics_row_after_settings', $feed_id ); ?>
 	<div class="ai1ec-btn-group ai1ec-pull-right">
 		<button type="button"
 			class="ai1ec-btn ai1ec-btn-sm ai1ec-btn-default ai1ec-text-primary

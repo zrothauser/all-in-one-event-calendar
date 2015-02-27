@@ -969,7 +969,22 @@ class Ai1ec_Settings extends Ai1ec_App {
 					),
 				),
 				'default' => '',
-			)
+			),
+			'always_use_local_timezone' => array(
+				'type'     => 'bool',
+				'renderer' => array(
+					'class'  => 'checkbox',
+					'tab'    => 'viewing-events',
+					'item'   => 'viewing-events',
+					'label'  => Ai1ec_I18n::__(
+						'Use <strong>event timezone</strong> when displaying time'
+					),
+					'help'  => Ai1ec_I18n::__(
+						'If you uncheck this option - events will be displayed in your calendar timezone.'
+					),
+				),
+				'default'  => true,
+			),
 		);
 	}
 

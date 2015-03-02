@@ -101,9 +101,9 @@ class Ai1ec_Event_Entity extends Ai1ec_Base {
 	public function adjust_preferred_timezone() {
 		static $do_adjust = null;
 		if ( null === $do_adjust ) {
-			$do_adjust = $this->_registry
+			$do_adjust = !$this->_registry
 				->get( 'model.settings' )
-				->get( 'always_use_local_timezone', true );
+				->get( 'always_use_calendar_timezone', false );
 		}
 		if ( ! $do_adjust ) {
 			return false;

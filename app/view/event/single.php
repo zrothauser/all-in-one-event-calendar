@@ -67,18 +67,18 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 		 *        event is about to take place.
 		 */
 		if (
-			! $this->_registry->get( 'model.settings' )
-				->get( 'always_use_local_timezone' ) &&
+			$this->_registry->get( 'model.settings' )
+				->get( 'always_use_calendar_timezone' ) &&
 			$event->get( 'timezone_name' ) !== $default_tz
 		) {
 			$timezone_info = array(
 				'show_timezone'       => true,
-				'event_timezone'      => $event->get( 'start' )->get_gmt_offset_as_text(),
+				'event_timezone'      => $event->get( 'timezone_name' ),
 				'text_timezone_title' => sprintf(
 					Ai1ec_I18n:: __(
 						'Event was created in the %s time zone'
 					),
-					$event->get( 'timezone_name' )
+					$event->get( 'start' )->get_gmt_offset_as_text()
 				),
 			);
 		}

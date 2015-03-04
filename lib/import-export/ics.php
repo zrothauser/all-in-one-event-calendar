@@ -416,12 +416,13 @@ class Ai1ec_Ics_Import_Export_Engine
 			// =====================================================
 			// = Set show map status based on presence of location =
 			// =====================================================
+			$event_do_show_map = $do_show_map;
 			if (
 				1 === $do_show_map &&
 				NULL === $latitude &&
 				empty( $address )
 			) {
-				$do_show_map = 0;
+				$event_do_show_map = 0;
 			}
 
 			// ==================
@@ -481,7 +482,7 @@ class Ai1ec_Ics_Import_Export_Engine
 				'ticket_url'        => $this->_parse_legacy_loggable_url(
 					$ticket_url
 				),
-				'show_map'          => $do_show_map,
+				'show_map'          => $event_do_show_map,
 				'ical_feed_url'     => $feed->feed_url,
 				'ical_source_url'   => $e->getProperty( 'url' ),
 				'ical_organizer'    => $organizer,

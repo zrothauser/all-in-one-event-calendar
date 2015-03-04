@@ -27,34 +27,6 @@ define(
 				$( '#ai1ec_input_coordinates' ).trigger( 'click' );
 			}
 		},
-		set_position_with_geolocator_if_available = function() {
-			// Check if browser supports W3C Geolocation API. Use !! to have a boolean
-			// that reflect the truthiness of the original value.
-			if ( !! navigator.geolocation ) {
-				// Ask the user for his position. If the User denies it or if anything
-				// else goes wrong, we just fail silently and keep using our default.
-				navigator.geolocation.getCurrentPosition( function( position ) {
-					// The callback takes some time bofore it's called, we need to be sure
-					// to set the starting position only when no previous position was
-					// set. So we check if the coordinates or the address have been set.
-					var address_or_coordinates_set =
-						input_utility_functions.check_if_address_or_coordinates_are_set();
-					// If they have not been set, we use geolocation data.
-					if ( address_or_coordinates_set === false ) {
-						var lat = position.coords.latitude;
-						var long = position.coords.longitude;
-						// Update default location.
-						ai1ec_default_location = new google.maps.LatLng( lat, long );
-						// Set the marker position.
-						ai1ec_marker.setPosition( ai1ec_default_location );
-						// Center the Map and adjust the zoom level.
-						ai1ec_map.setCenter( ai1ec_default_location );
-						ai1ec_map.setZoom( 15 );
-						ai1ec_position = position;
-					}
-				} );
-			}
-		},
 		set_autocomplete_if_needed = function() {
 			if ( ! ai1ec_config.disable_autocompletion ) {
 				$( '#ai1ec_address' )
@@ -141,8 +113,6 @@ define(
 						ai1ec_marker, 'dragend', gmap_event_listener
 					);
 					ai1ec_marker.setPosition( ai1ec_default_location );
-					// If the browser supports geolocation, use it
-					set_position_with_geolocator_if_available();
 					// Start the autocompleter if the user decided to use it
 					set_autocomplete_if_needed();
 					// Set the map location and show / hide the coordinates

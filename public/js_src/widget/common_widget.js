@@ -65,7 +65,8 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 					ai1ec            : utils.create_ai1ec_to_send( $timely_div )
 				},
 				$modal      = $( '#ai1ec-event-modal' ),
-				$event      = $this.closest( '.ai1ec-event' ),
+				$event      = $this.closest( '.ai1ec-event' ).length
+					? $this.closest( '.ai1ec-event' ) : $this,
 				instance_id = instance_id || $event.attr( 'class' )
 					.match( /ai1ec-event-instance-id-(\d+)/ )[1],
 				event_name  = event_name || function() {

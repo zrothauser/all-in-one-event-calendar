@@ -369,8 +369,8 @@ class Ai1ec_Ics_Import_Export_Engine
 			$geo_tag  = $e->getProperty( 'geo' );
 			if ( is_array( $geo_tag ) ) {
 				if (
-				isset( $geo_tag['latitude'] ) &&
-				isset( $geo_tag['longitude'] )
+					isset( $geo_tag['latitude'] ) &&
+					isset( $geo_tag['longitude'] )
 				) {
 					$latitude  = (float)$geo_tag['latitude'];
 					$longitude = (float)$geo_tag['longitude'];
@@ -585,10 +585,7 @@ class Ai1ec_Ics_Import_Export_Engine
 				wp_set_post_terms( $event->get( 'post_id' ), array_keys( $ids ), $tax_name );
 			}
 
-			// if the event is not finished, unset it otherwise it could be deleted afterwards.
-			if ( $event->get( 'end' )->format_to_gmt() > $current_timestamp ) {
-				unset( $events_in_db[$event->get( 'post_id' )] );
-			}
+			unset( $events_in_db[$event->get( 'post_id' )] );
 		}
 
 		return array(

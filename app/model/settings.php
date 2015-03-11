@@ -47,7 +47,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 		$renderer,
 		$version = '2.0.0'
 	) {
-		
+
 		if ( 'deprecated' === $type ) {
 			unset( $this->_options[$option] );
 		} else if (
@@ -56,7 +56,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 			(string)$this->_options[$option]['version'] !== (string)$version ||
 			( isset( $renderer['label'] ) &&
 				(string)$this->_options[$option]['renderer']['label'] !== (string)$renderer['label'] ) ||
-			( isset( $renderer['help'] ) &&  
+			( isset( $renderer['help'] ) &&
 				( ! isset( $this->_options[$option]['renderer']['help'] ) || // handle the case when you are adding help
 				(string)$this->_options[$option]['renderer']['help'] !== (string)$renderer['help'] ) )
 		) {
@@ -368,7 +368,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'default'  => array(),
 			),
 			'show_tracking_popup' => array(
-				'type'    => 'bool',
+				'type'    => 'deprecated',
 				'default' => true,
 			),
 			'calendar_page_id' => array(

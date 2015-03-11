@@ -75,22 +75,12 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	if ( ! defined( 'AI1EC_CRON_VERSION' ) ) {
 		define( 'AI1EC_CRON_VERSION', AI1EC_VERSION );
 	}
-	if ( ! defined( 'AI1EC_N_CRON_VERSION' ) ) {
-		define( 'AI1EC_N_CRON_VERSION', AI1EC_VERSION );
-	}
-	if ( ! defined( 'AI1EC_N_CRON_FREQ' ) ) {
-		define( 'AI1EC_N_CRON_FREQ', 'daily' );
-	}
 	if ( ! defined( 'AI1EC_U_CRON_VERSION' ) ) {
 		define( 'AI1EC_U_CRON_VERSION', AI1EC_VERSION );
 	}
 	if ( ! defined( 'AI1EC_U_CRON_FREQ' ) ) {
 		define( 'AI1EC_U_CRON_FREQ', 'hourly' );
 	}
-	if ( ! defined( 'AI1EC_UPDATES_URL' ) ) {
-		define( 'AI1EC_UPDATES_URL', 'http://api.time.ly/plugin/pro/latest' );
-	}
-
 
 	// ==============
 	// = Plugin Url =
@@ -318,20 +308,6 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 				'&action=export_events'
 		);
 		unset( $webcal_url );
-	}
-
-	// =================
-	// = LOCATIONS API =
-	// =================
-	if ( ! defined( 'AI1EC_LOCATIONS_API' ) ) {
-		define( 'AI1EC_LOCATIONS_API', 'http://api.time.ly:32000' );
-	}
-
-	// =============
-	// = STATS API =
-	// =============
-	if ( ! defined( 'AI1EC_STATS_API' ) ) {
-		define( 'AI1EC_STATS_API', 'http://api.time.ly:31000' );
 	}
 
 	if ( ! defined( 'AI1EC_CA_ROOT_PEM' ) ) {

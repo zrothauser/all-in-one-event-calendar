@@ -50,19 +50,33 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 			} );
 			return url;
 		},
-		load_event_through_jsonp = function( e ) {
-			e.preventDefault();
-			e.stopImmediatePropagation();
+		// It can be triggered from a `popstate` event
+		// (then additional arguments are specified)
+		// or by clicking an event link.
+		load_event_through_jsonp = function( e, href, instance_id, event_name ) {
 			var
-				href        = $( this ).attr( 'href' );
+				$this       = $( this ),
+				href        = href || $this.attr( 'href' );
 				type        = 'jsonp',
-				$timely_div = $( this ).closest( '.timely' ),
+				$timely_div = $this.closest( '.timely' ),
 				query       = {
 					request_type     : type,
 					ai1ec_doing_ajax : true,
 					ai1ec            : utils.create_ai1ec_to_send( $timely_div )
 				},
-				$modal      = $( '#ai1ec-event-modal' );
+				$modal      = $( '#ai1ec-event-modal' ),
+				$event      = $this.closest( '.ai1ec-event' ).length
+					? $this.closest( '.ai1ec-event' ) : $this,
+				instance_id = instance_id || $event.attr( 'class' )
+					.match( /ai1ec-event-instance-id-(\d+)/ )[1],
+				event_name  = event_name || function() {
+					var name = href.match( /\/event\/([\w-]+)/ );
+					if ( ! name ) {
+						name = href.match( /\?ai1ec_event=([\w-]+)&/ );
+					}
+					return name ? name[1] : undefined;
+				},
+				eventURL    = '#event|' + event_name() + '|' + instance_id;
 
 			// Show modal with event title
 			$modal
@@ -72,6 +86,11 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 
 			// Hide popovers
 			$( '.ai1ec-popup' ).hide();
+
+			// Change URL.
+			if ( location.hash != eventURL ) {
+				History.pushState( instance_id, event_name, eventURL );
+			}
 
 			// Fetch AJAX result
 			$.ajax( {
@@ -107,6 +126,7 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 				},
 				complete    : function() { fade_out_loading( $modal ); }
 			} );
+			return false;
 		},
 		prevent_injection = function() {
 			$( '.ai1ec-load-view, .ai1ec-clear-filter' )
@@ -219,8 +239,42 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 				.data( 'ai1ec-widget-loaded', 1 );
 	 	} );
 
+	 	var initial_title = document.title;
 		$( document )
 			.on( 'click', 'a.ai1ec-load-event', load_event_through_jsonp )
-			.on( 'initialize_view.ai1ec', prevent_injection );
+			.on( 'initialize_view.ai1ec', prevent_injection )
+			.on( 'hide.bs.modal', '#ai1ec-event-modal', function() {
+				if ( location.hash ) {
+					history.pushState( null, initial_title, location.pathname );
+				}
+			} );
+
+		// If hash matches the defined pattern - show the event.
+		var load_event_from_hash = function() {
+			var event_hash = location.hash;
+			event_hash = event_hash.match( /event\|([\w-]+)\|(\d+)/);
+			if ( event_hash ) {
+				event_name = function() { return event_hash[1] };
+				instance_id = event_hash[2];
+				if ( calendar.permalinks_structure ) {
+					href = config.site_url
+						+ 'event/' + event_name()
+						+ '/?instance_id=' + instance_id;
+				} else {
+					href = config.site_url
+						+ '?ai1ec_event=' + event_name()
+						+ '&instance_id=' +  instance_id;
+				}
+				load_event_through_jsonp( null, href, instance_id, event_name );
+			} else {
+				$( '#ai1ec-event-modal' ).modal( 'hide' );
+			}
+		}
+		load_event_from_hash();
+		History.Adapter.bind( window, 'popstate', function( e ) {
+			if ( e.originalEvent ) {
+				load_event_from_hash();
+			}
+		} );
 	} );
 } );

@@ -139,7 +139,8 @@ define(
 		});
 		// Second run for month. Try to position events better.
 		$days.each( function( i ) {
-			var $dayEl          = $( '.ai1ec-date', this ),
+			var
+				$dayEl          = $( '.ai1ec-date', this ),
 				day             = parseInt( $dayEl.text(), 10 ),
 				$week           = $dayEl.closest( '.ai1ec-week' ),
 				eventCount      = $( this ).find( 'a.ai1ec-event-container:not(.ai1ec-multiday)' ).length,

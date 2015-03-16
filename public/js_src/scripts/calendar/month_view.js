@@ -141,25 +141,26 @@ define(
 		$days.each( function( i ) {
 			var $dayEl = $( '.ai1ec-date', this ),
 				day    = parseInt( $dayEl.text(), 10 ),
-				$week  = $dayEl.closest( '.ai1ec-week' );
-			var $eventCount = $( this ).find( 'a.ai1ec-event-container:not(.ai1ec-multiday)' ).length;
-			if ( 0 === $eventCount ) {
+				$week  = $dayEl.closest( '.ai1ec-week' ),
+				eventCount = $( this ).find( 'a.ai1ec-event-container:not(.ai1ec-multiday)' ).length,
+				$multidayEvents,
+				newMargin = null;
+			if ( 0 === eventCount ) {
 				return;
 			}
-			var $multidayEvents = $week.find( 'a.ai1ec-multiday[data-end-day]' )
+			$multidayEvents = $week.find( 'a.ai1ec-multiday[data-end-day]' )
 				.filter( function() {
 					return $( this ).data( 'endDay' ) >= day;
 				} );
-			var $newMargin = null;
 			$multidayEvents.each( function() {
-				var $newOffset = $( this ).prop( 'offsetTop' );
-				if ( null === $newMargin || $newOffset > $newMargin ) {
-					$newMargin = $newOffset;
+				var newOffset = $( this ).prop( 'offsetTop' );
+				if ( null === newMargin || newOffset > newMargin ) {
+					newMargin = newOffset;
 				}
 			} );
-			if ( null !== $newMargin ) {
-				$newMargin += 3;
-				$dayEl.css( 'marginBottom', $newMargin );
+			if ( null !== newMargin ) {
+				newMargin += 3;
+				$dayEl.css( 'marginBottom', newMargin );
 			}
 		});
 	};

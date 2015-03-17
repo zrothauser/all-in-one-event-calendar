@@ -208,7 +208,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				),
 				'inline_js_calendar'           => apply_filters(
 					'ai1ec_inline_js_calendar',
-					false
+					''
 				),
 			);
 

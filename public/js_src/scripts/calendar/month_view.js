@@ -152,7 +152,10 @@ define(
 			}
 			$multidayEvents = $week.find( 'a.ai1ec-multiday[data-end-day]' )
 				.filter( function() {
-					return $( this ).data( 'endDay' ) >= day;
+					return (
+						$( this ).data( 'startDay' ) <= day &&
+						$( this ).data( 'endDay'   ) >= day
+					);
 				} );
 			$multidayEvents.each( function() {
 				var newOffset = $( this ).prop( 'offsetTop' );

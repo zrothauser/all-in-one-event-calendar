@@ -33,7 +33,6 @@ class Ai1ec_Calendar_View_Oneday extends Ai1ec_Calendar_View_Abstract {
 			'exact_date'    => $date_system->current_time(),
 		);
 		$args = wp_parse_args( $view_args, $defaults );
-
 		$local_date = $this->_registry
 			->get( 'date.time', $args['exact_date'], 'sys.default' )
 			->adjust_day( 0 + $args['oneday_offset'] )
@@ -103,6 +102,8 @@ class Ai1ec_Calendar_View_Oneday extends Ai1ec_Calendar_View_Abstract {
 			'indent_offset'            => 54,
 			'pagination_links'         => $pagination_links,
 		);
+
+		$view_args = $this->get_extra_template_arguments( $view_args );
 
 		// Add navigation if requested.
 		$view_args['navigation'] = $this->_get_navigation(

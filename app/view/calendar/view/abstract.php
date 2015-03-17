@@ -65,6 +65,10 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	 * @return array The template arguments with the extra parameters added.
 	 */
 	public function get_extra_template_arguments( array $args ) {
+		$args['action_buttons'] = apply_filters(
+			'ai1ec_action_buttons',
+			'init'
+		);
 		return $args;
 	}
 

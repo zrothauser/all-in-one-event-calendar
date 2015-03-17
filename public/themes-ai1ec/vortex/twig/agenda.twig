@@ -40,7 +40,7 @@
 												>{{ text_venue_separator | format( event.venue ) }}</span>
 										{% endif %}
 									</span>
-
+									{{ action_buttons | raw }}
 									{% set edit_post_link = event.edit_post_link %}
 									{% if edit_post_link is not empty %}
 										<a class="post-edit-link" href="{{ edit_post_link | raw }}">

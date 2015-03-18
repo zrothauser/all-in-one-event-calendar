@@ -270,6 +270,10 @@ class Ai1ec_Calendar_View_Month extends Ai1ec_Calendar_View_Abstract {
 			->adjust( -1, 'second' )
 			->format_i18n( 'd' );
 		$event->set_runtime( 'multiday_end_day', $end_day );
+		$event->set_runtime(
+			'start_day',
+			$event->get( 'start' )->format( 'd' )
+		);
 	}
 
 	/**
@@ -349,6 +353,7 @@ class Ai1ec_Calendar_View_Month extends Ai1ec_Calendar_View_Abstract {
 					'edit_post_link'   => $evt->get_runtime( 'edit_post_link' ),
 					'short_start_time' => $evt->get_runtime( 'short_start_time' ),
 					'multiday_end_day' => $evt->get_runtime( 'multiday_end_day' ),
+					'start_day'        => $evt->get_runtime( 'start_day' ),
 					'short_start_time' => $evt->get_runtime( 'short_start_time' ),
 					'instance_id'      => $evt->get( 'instance_id' ),
 					'post_id'          => $evt->get( 'post_id' ),

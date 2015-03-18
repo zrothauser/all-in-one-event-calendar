@@ -163,6 +163,10 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 					$type,
 					$caller
 				),
+				'additional_buttons'           => apply_filters(
+					'ai1ec_additional_buttons',
+					''
+				),
 				'show_dropdowns'               => apply_filters(
 					'ai1ec_show_dropdowns',
 					true
@@ -208,6 +212,14 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				),
 				'inline_js_calendar'           => apply_filters(
 					'ai1ec_inline_js_calendar',
+					''
+				),
+				'after_view'                   => apply_filters(
+					'ai1ec_after_view',
+					''
+				),
+				'ai1ec_above_calendar'         => apply_filters(
+					'ai1ec_above_calendar',
 					''
 				),
 			);

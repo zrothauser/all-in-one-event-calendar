@@ -167,7 +167,7 @@ define(
 				newMargin += 3;
 				$dayEl.css( 'marginBottom', newMargin );
 			}
-		});
+		} );
 	};
 
 	/**

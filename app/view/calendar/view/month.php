@@ -272,7 +272,7 @@ class Ai1ec_Calendar_View_Month extends Ai1ec_Calendar_View_Abstract {
 		$event->set_runtime( 'multiday_end_day', $end_day );
 		$event->set_runtime(
 			'start_day',
-			$event->get( 'start' )->format( 'd' )
+			$event->get( 'start' )->format( 'j' )
 		);
 	}
 

@@ -138,7 +138,7 @@ define(
 			}
 		});
 		// Second run for month. Try to position events better.
-		$days.each( function( i ) {
+		$days.each( function() {
 			var
 				$dayEl          = $( '.ai1ec-date', this ),
 				day             = parseInt( $dayEl.text(), 10 ),

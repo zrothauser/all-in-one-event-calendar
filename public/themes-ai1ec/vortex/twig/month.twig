@@ -80,7 +80,7 @@
 													>{{ event.ticket_url_label }}</a>
 											{% endif %}
 										</span>
-										{{ action_buttons | raw }}
+
 										{% if event.edit_post_link %}
 											<a class="post-edit-link"
 												href="{{ event.edit_post_link | raw }}">
@@ -96,6 +96,7 @@
 											href="{{ event.permalink | e('html_attr') }}">
 											{{ event.avatar_not_wrapped | raw }}
 										</a>
+										{{ action_buttons | raw }}
 
 										{% if event.post_excerpt %}
 											<div class="ai1ec-popup-excerpt">{{ event.post_excerpt | raw }}</div>

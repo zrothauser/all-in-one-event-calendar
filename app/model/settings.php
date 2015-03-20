@@ -970,7 +970,22 @@ class Ai1ec_Settings extends Ai1ec_App {
 					),
 				),
 				'default' => '',
-			)
+			),
+			'always_use_calendar_timezone' => array(
+				'type'     => 'bool',
+				'renderer' => array(
+					'class'  => 'checkbox',
+					'tab'    => 'viewing-events',
+					'item'   => 'viewing-events',
+					'label'  => Ai1ec_I18n::__(
+						'Display events in <strong>calendar time zone</strong>'
+					),
+					'help'  => Ai1ec_I18n::__(
+						'If this box is checked events will appear in the calendar time zone with time zone information displayed on the event details page.'
+					),
+				),
+				'default'  => false,
+			),
 		);
 	}
 

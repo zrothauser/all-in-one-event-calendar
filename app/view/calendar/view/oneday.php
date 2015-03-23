@@ -48,7 +48,11 @@ class Ai1ec_Calendar_View_Oneday extends Ai1ec_Calendar_View_Abstract {
 					'post_ids' => $args['post_ids'],
 					'auth_ids' => $args['auth_ids'],
 				),
-				$view_args
+				$view_args,
+				apply_filters(
+					'ai1ec_show_unique_events',
+					false
+				)
 			)
 		);
 		// Create pagination links.

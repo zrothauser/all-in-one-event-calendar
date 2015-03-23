@@ -48,7 +48,11 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 				),
 				$view_args
 			),
-			$view_args['time_limit']
+			$view_args['time_limit'],
+			apply_filters(
+				'ai1ec_show_unique_events',
+				false
+			)
 		);
 		$this->_update_meta( $results['events'] );
 		$dates = $this->get_agenda_like_date_array(

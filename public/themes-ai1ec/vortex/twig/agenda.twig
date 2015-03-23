@@ -26,7 +26,8 @@
 								ai1ec-event-id-{{ event.post_id }}
 								ai1ec-event-instance-id-{{ event.instance_id }}
 								{% if event.is_allday %}ai1ec-allday{% endif %}
-								{% if expanded %}ai1ec-expanded{% endif %}">
+								{% if expanded %}ai1ec-expanded{% endif %}"
+								data-end="{{ event.end }}">
 
 								<div class="ai1ec-event-header">
 									<div class="ai1ec-event-toggle">

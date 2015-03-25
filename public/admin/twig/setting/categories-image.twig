@@ -30,7 +30,7 @@
 {% else %}
     <div class="form-field">
         <label for="ai1ec_image_field_id">
-            {{ section_name }}
+            {{ section_name | raw('html') }}
         </label>
 
         <img src='{{ image_src }}' {{ image_style }} alt='' id='ai1ec_category_imag_preview' />

@@ -1,6 +1,7 @@
 require(
 		[
 		 'scripts/calendar',
+		 'scripts/calendar/load_views',
 		 'scripts/event',
 		 'scripts/common_scripts/frontend/common_frontend',
 		 'domReady',
@@ -10,7 +11,7 @@ require(
 		 'libs/utils',
 		 'libs/gmaps'
 		 ],
-function( page, evt, common, domReady, $,calendar, config, utils ) {
+function( page, load_views, evt, common, domReady, $, calendar, config, utils ) {
 	'use strict'; // jshint ;_;
 
 	// Prevent double initialisation for legacy code snippets.
@@ -48,6 +49,12 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 					url += '&' + el + '=' + data[el];
 				}
 			} );
+			// Load the view specified in hash.
+			var view_hash  = location.hash.match( /view\|(.+)/ );
+			if ( view_hash && data.widget.match( /superwidget/ ) ) {
+				url = calendar.calendar_url + view_hash[1].replace( /\|/g, '/' );
+				history.pushState( null, document.title, location.pathname );
+			}
 			return url;
 		},
 		// It can be triggered from a `popstate` event
@@ -251,10 +258,11 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 
 		// If hash matches the defined pattern - show the event.
 		var load_event_from_hash = function() {
-			var event_hash = location.hash;
+			var event_hash = view_hash = location.hash;
 			event_hash = event_hash.match( /event\|([\w-]+)\|(\d+)/);
+			view_hash  = view_hash.match( /view\|(.+)/ );
 			if ( event_hash ) {
-				event_name = function() { return event_hash[1] };
+				event_name  = function() { return event_hash[1] };
 				instance_id = event_hash[2];
 				if ( calendar.permalinks_structure ) {
 					href = config.site_url
@@ -266,6 +274,7 @@ function( page, evt, common, domReady, $,calendar, config, utils ) {
 						+ '&instance_id=' +  instance_id;
 				}
 				load_event_through_jsonp( null, href, instance_id, event_name );
+			} else if ( view_hash ) {
 			} else {
 				$( '#ai1ec-event-modal' ).modal( 'hide' );
 			}

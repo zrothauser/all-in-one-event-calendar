@@ -34,6 +34,10 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		$events_limit     = is_numeric( $view_args['events_limit'] )
 			? $view_args['events_limit']
 			: $settings->get( $per_page_setting );
+		$events_limit = apply_filters(
+			'ai1ec_events_limit',
+			$events_limit
+		);
 		$results = $search->get_events_relative_to(
 			$timestamp,
 			$events_limit,
@@ -48,7 +52,11 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 				),
 				$view_args
 			),
-			$view_args['time_limit']
+			$view_args['time_limit'],
+			apply_filters(
+				'ai1ec_show_unique_events',
+				false
+			)
 		);
 		$this->_update_meta( $results['events'] );
 		$dates = $this->get_agenda_like_date_array(

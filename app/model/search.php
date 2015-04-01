@@ -173,7 +173,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		foreach ( $events as $event ) {
 			$id_list[] = $event['post_id'];
 		}
-
+		
 		if ( ! empty( $id_list ) ) {
 			update_meta_cache( 'post', $id_list );
 		}

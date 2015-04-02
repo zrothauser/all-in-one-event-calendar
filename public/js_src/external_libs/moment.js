@@ -3006,6 +3006,6 @@ define(	function() {
 	/************************************
 	 Exposing Moment
 	 ************************************/
-	console.log( 'moment: ' + VERSION );
+
 	return moment;
 } );

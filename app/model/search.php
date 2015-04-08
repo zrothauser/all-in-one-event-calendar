@@ -17,11 +17,25 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	private $_dbi = null;
 
 	/**
+	 * Caches the ids of the last 'between' query
+	 * 
+	 * @var array
+	 */
+	protected $_ids_between_cache = array();
+
+	/**
 	 * Creates local DBI instance.
 	 */
 	public function __construct( Ai1ec_Registry_Object $registry ){
 		parent::__construct( $registry );
 		$this->_dbi = $this->_registry->get( 'dbi.dbi' );
+	}
+
+	/**
+	 * @return array
+	 */
+	public function get_cached_between_ids() {
+		return $this->_ids_between_cache;
 	}
 
 	/**
@@ -170,12 +184,18 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		$events = $this->_dbi->get_results( $query, ARRAY_A );
 
 		$id_list = array();
+		$id_instance_list = array();
 		foreach ( $events as $event ) {
 			$id_list[] = $event['post_id'];
+			$id_instance_list[] = array(
+				'id'          => $event['post_id'],
+				'instance_id' => $event['instance_id'],
+			);
 		}
 		
 		if ( ! empty( $id_list ) ) {
 			update_meta_cache( 'post', $id_list );
+			$this->_ids_between_cache = $id_instance_list;
 		}
 
 		foreach ( $events as &$event ) {

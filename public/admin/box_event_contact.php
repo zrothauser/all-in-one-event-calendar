@@ -60,7 +60,7 @@
 						<input type="text" name="ai1ec_contact_url"
 							id="ai1ec_contact_url"
 							class="ai1ec-form-control"
-							value="<?php echo esc_attr( $event->get_nonloggable_url( $contact_url ) ); ?>">
+							value="<?php echo esc_attr( $contact_url ); ?>">
 					</td>
 				</tr>
 			</tbody>

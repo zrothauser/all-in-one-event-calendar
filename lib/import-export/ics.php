@@ -453,9 +453,7 @@ class Ai1ec_Ics_Import_Export_Engine
 				}
 				// Detect URL.
 				elseif ( false !== strpos( $el, '://' ) ) {
-					$data['contact_url']   = $this->_parse_legacy_loggable_url(
-						$el
-					);
+					$data['contact_url']   = $el;
 				}
 				// Detect phone number.
 				elseif ( preg_match( '/\d/', $el ) ) {
@@ -479,9 +477,7 @@ class Ai1ec_Ics_Import_Export_Engine
 				'venue'             => $venue,
 				'address'           => $address,
 				'cost'              => $cost,
-				'ticket_url'        => $this->_parse_legacy_loggable_url(
-					$ticket_url
-				),
+				'ticket_url'        => $ticket_url,
 				'show_map'          => $event_do_show_map,
 				'ical_feed_url'     => $feed->feed_url,
 				'ical_source_url'   => $e->getProperty( 'url' ),
@@ -594,33 +590,6 @@ class Ai1ec_Ics_Import_Export_Engine
 			'events_to_delete' => $events_in_db,
 			'messages'         => $messages,
 		);
-	}
-
-	/**
-	 * Convert loggable URL exported from legacy Ai1EC installation.
-	 *
-	 * @param string $loggable_url Likely loggable URL.
-	 *
-	 * @return string Non-loggable URL.
-	 */
-	protected function _parse_legacy_loggable_url( $loggable_url ) {
-		if ( 0 !== strpos( $loggable_url, AI1EC_REDIRECTION_SERVICE ) ) {
-			return $loggable_url; // it wasn't loggable URL
-		}
-		$value = base64_decode(
-			substr( $loggable_url, strlen( AI1EC_REDIRECTION_SERVICE ) )
-		);
-		$clear_url = null; // return empty if nothing is parseable
-		if ( // valid JSON structure remains
-			null !== ( $decoded = json_decode( $value, true ) ) &&
-			isset( $decoded['l'] )
-		) {
-			$clear_url = $decoded['l'];
-		} else if ( preg_match( '|"l"\s*:\s*"(.+?)","|', $value, $matches ) ) {
-			// reverting to dirty parsing as JSON is broken
-			$clear_url = stripslashes( $matches[1] );
-		} // no more else - impossible to parse anything
-		return $clear_url;
 	}
 
 	/**
@@ -946,7 +915,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			$e->setProperty(
 				'X-TICKETS-URL',
 				$this->_sanitize_value(
-					$event->get_nonloggable_url( $event->get( 'ticket_url' ) )
+					$event->get( 'ticket_url' )
 				)
 			);
 		}
@@ -967,7 +936,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			$event->get( 'contact_name' ),
 			$event->get( 'contact_phone' ),
 			$event->get( 'contact_email' ),
-			$event->get_nonloggable_url( $event->get( 'contact_url' ) ),
+			$event->get( 'contact_url' ),
 		);
 		$contact = array_filter( $contact );
 		$contact = implode( '; ', $contact );

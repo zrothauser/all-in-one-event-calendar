@@ -325,35 +325,6 @@ class Ai1ec_Event extends Ai1ec_Base {
 	}
 
 	/**
-	 * Restore original URL from loggable event URL
-	 *
-	 * @param string $value URL as seen by visitor
-	 *
-	 * @return string Original URL
-	 */
-	public function get_nonloggable_url( $value ) {
-		if (
-			empty( $value ) ||
-			false === strpos( $value, AI1EC_REDIRECTION_SERVICE )
-		) {
-			return $value;
-		}
-		$decoded = json_decode(
-			base64_decode(
-				trim(
-					substr( $value, strlen( AI1EC_REDIRECTION_SERVICE ) ),
-					'/'
-				)
-			),
-			true
-		);
-		if ( ! isset( $decoded['l'] ) ) {
-			return '';
-		}
-		return $decoded['l'];
-	}
-
-	/**
 	 * Twig method for retrieving avatar.
 	 *
 	 * @param  bool   $wrap_permalink Whether to wrap avatar in <a> element or not
@@ -780,17 +751,6 @@ class Ai1ec_Event extends Ai1ec_Base {
 	}
 
 	/**
-	 * Store `Ticket URL` in non-loggable form
-	 *
-	 * @param string $ticket_url URL for buying tickets.
-	 *
-	 * @return string Non loggable URL
-	 */
-	protected function _handle_property_destruct_ticket_url( $ticket_url ) {
-		return $this->get_nonloggable_url( $ticket_url );
-	}
-
-	/**
 	 * Format datetime to UNIX timestamp for storage.
 	 *
 	 * @param Ai1ec_Date_Time $start Datetime object to compact.
@@ -810,17 +770,6 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 */
 	protected function _handle_property_destruct_end( Ai1ec_Date_Time $end ) {
 		return $end->format_to_gmt();
-	}
-
-	/**
-	 * Store `Contact URL` in non-loggable form.
-	 *
-	 * @param string $contact_url URL for contact details.
-	 *
-	 * @return string Non loggable URL.
-	 */
-	protected function _handle_property_destruct_contact_url( $contact_url ) {
-		return $this->get_nonloggable_url( $contact_url );
 	}
 
 	/**

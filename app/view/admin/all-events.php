@@ -104,7 +104,8 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 				'selected'        => isset( $_GET[$tax_slug] ) ? $_GET[$tax_slug] : '',
 				'hierarchical'    => $tax_obj->hierarchical,
 				'show_count'      => true,
-				'hide_if_empty'   => true
+				'hide_if_empty'   => true,
+				'value_field'     => 'slug',
 				));
 			}
 		}

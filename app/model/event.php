@@ -24,9 +24,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 *            [-1] - only `get` (for storage) operations require care.
 	 */
 	protected $_swizzable = array(
-		'contact_url'      => -1, // strip on save/import
 		'cost'             => 0,
-		'ticket_url'       => -1, // strip on save/import
 		'start'            => -1,
 		'end'              => -1,
 		'timezone_name'    => -1,

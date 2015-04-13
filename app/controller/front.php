@@ -502,6 +502,12 @@ class Ai1ec_Front_Controller {
 				'admin_action_editpost',
 				array( 'model.event.parent', 'admin_init_post' )
 			);
+			$dispatcher->register_filter(
+				'user_has_cap',
+				array( 'content.filter', 'display_trash_link' ),
+				10,
+				4
+			);
 		}
 		// post row action for parent/child
 		$dispatcher->register_action(

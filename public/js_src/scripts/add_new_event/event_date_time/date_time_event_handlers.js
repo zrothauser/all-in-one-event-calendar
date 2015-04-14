@@ -56,10 +56,11 @@ define(
 	 * Handle click on the Apply button
 	 */
 	var handle_click_on_apply_button = function() {
-		var $button = $( this ),
-		    rule = '',
-		    $active_tab = $( '#ai1ec_repeat_box .ai1ec-tab-pane.ai1ec-active' ),
-		    frequency = $active_tab.data( 'freq' );
+		var	$button       = $( this ),
+			rule          = '',
+			$active_tab   = $( '#ai1ec_repeat_box .ai1ec-tab-pane.ai1ec-active' ),
+			frequency     = $active_tab.data( 'freq' ),
+			append_ending = true;
 
 		switch ( frequency ) {
 			case 'daily':
@@ -119,16 +120,20 @@ define(
 					rule += 'EXDATE=';
 				}
 				rule += $( '#ai1ec_rec_custom_dates' ).val();
+				/**
+				 * Don't append ending rules to custom dates. Issue #691
+				 */
+				append_ending = false;
 				break;
 		}
 
 		var ending = $( '#ai1ec_end' ).val();
 		// After x times
-		if ( ending === '1' ) {
+		if ( '1' === ending && append_ending ) {
 			rule += 'COUNT=' + $( '#ai1ec_count' ).val() + ';';
 		}
 		// On date
-		else if ( ending === '2' ) {
+		else if ( '2' === ending && append_ending ) {
 			var until = $( '#ai1ec_until-date-input' ).val();
 			until = calendrical_functions.parseDate( until, ai1ec_config.date_format );
 

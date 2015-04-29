@@ -341,17 +341,6 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		define( 'AI1EC_ALTERNATIVE_ARCHIVE_URL', 'ai1ec_events_archive' );
 	}
 
-	// ===============================
-	// = Time.ly redirection service =
-	// ===============================
-	if ( ! defined( 'AI1EC_REDIRECTION_SERVICE' ) ) {
-		define(
-			'AI1EC_REDIRECTION_SERVICE',
-			'http://aggregator.time.ly/ticket_redirect/'
-		);
-	}
-
-
 	// ===================
 	// = AI1EC Theme URL =
 	// ===================

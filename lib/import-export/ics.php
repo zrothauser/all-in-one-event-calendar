@@ -141,6 +141,7 @@ class Ai1ec_Ics_Import_Export_Engine
 
 		// Fetch default timezone in case individual properties don't define it
 		$tz = $v->getComponent( 'vtimezone' );
+		$timezone = 'sys.default';
 		if ( ! empty( $tz ) ) {
 			$timezone = $tz->getProperty( 'TZID' );
 		}

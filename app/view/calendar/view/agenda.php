@@ -45,10 +45,11 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			apply_filters(
 				'ai1ec_get_events_relative_to_filter',
 				array(
-					'post_ids' => $view_args['post_ids'],
-					'auth_ids' => $view_args['auth_ids'],
-					'cat_ids'  => $view_args['cat_ids'],
-					'tag_ids'  => $view_args['tag_ids'],
+					'post_ids'     => $view_args['post_ids'],
+					'auth_ids'     => $view_args['auth_ids'],
+					'cat_ids'      => $view_args['cat_ids'],
+					'tag_ids'      => $view_args['tag_ids'],
+					'instance_ids' => $view_args['instance_ids'],
 				),
 				$view_args
 			),

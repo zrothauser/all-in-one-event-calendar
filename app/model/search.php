@@ -73,7 +73,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	 *                                   ['post_ids']     => list of post IDs;
 	 *                                   ['auth_ids']     => list of author IDs;
 	 *                                   ['instance_ids'] => list of events
-	 *                                                       instance ids
+	 *                                                       instance ids;
 	 * @param bool $spanning         Also include events that span this period.
 	 * @param bool $single_day       This parameter is added for oneday view.
 	 *                               Query should find events lasting in

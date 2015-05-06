@@ -96,4 +96,17 @@ class Ai1ec_Event_Compatibility extends Ai1ec_Event {
 	public function getavatar_not_wrapped() {
 		 return $this->getavatar( false );
 	}
+
+	/**
+	 * Returns enddate specific info.
+	 *
+	 * @return array
+	 */
+	public function getenddate_info() {
+		return array(
+			'month'     => $this->get( 'end' )->format( 'M' ),
+			'day'       => $this->get( 'end' )->format( 'j' ),
+			'weekday'   => $this->get( 'end' )->format( 'D' ),
+		);
+	}
 }

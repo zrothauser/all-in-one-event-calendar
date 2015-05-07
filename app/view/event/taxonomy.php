@@ -142,16 +142,13 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 	 * @return string             Color to assign to event background.
 	 */
 	public function get_category_bg_color( Ai1ec_Event $event ) {
-		$color = $this->get_color_for_event( $event );
-
-		// Convert to HTML attribute.
+		$color     = $this->get_color_for_event( $event );
+		$attribute = '';
 		if ( $color ) {
-			$color = 'style="background-color: ' . $color . ';"';
-		} else {
-			$color = '';
+			$attribute = 'style="background-color: ' . $color . ';"';
 		}
 
-		return $color;
+		return $attribute;
 	}
 
 	/**
@@ -179,7 +176,7 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 	 *
 	 * @param  Ai1ec_Event $event Event object.
 	 *
-	 * @return string             Color to assign to event text (foreground).
+	 * @return string Color to assign to event text (foreground).
 	 */
 	public function get_category_text_color( Ai1ec_Event $event ) {
 		$color = $this->get_color_for_event( $event );

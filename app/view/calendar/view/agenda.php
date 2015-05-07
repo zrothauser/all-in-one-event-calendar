@@ -259,6 +259,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 				'month'     => $event->get( 'end' )->format( 'M' ),
 				'day'       => $event->get( 'end' )->format( 'j' ),
 				'weekday'   => $event->get( 'end' )->format( 'D' ),
+				'year'      => $event->get( 'end' )->format( 'Y' ),
 			);
 			$event_props['timespan_short']      = $event->_registry->
 				get( 'view.event.time' )->get_timespan_html( $event, 'short' );

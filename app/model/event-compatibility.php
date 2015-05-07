@@ -100,7 +100,7 @@ class Ai1ec_Event_Compatibility extends Ai1ec_Event {
 	/**
 	 * Returns enddate specific info.
 	 *
-	 * @return array
+	 * @return array Date info structure.
 	 */
 	public function getenddate_info() {
 		return array(

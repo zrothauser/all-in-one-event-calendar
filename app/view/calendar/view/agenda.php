@@ -254,13 +254,23 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$event_props['post_excerpt']        = $event->get_runtime( 'post_excerpt' );
 			$event_props['short_start_time']    = $event->get_runtime( 'short_start_time' );
 			$event_props['is_allday']           = $event->is_allday();
+			$event_props['is_multiday']         = $event->is_multiday();
+			$event_props['enddate_info']        = array(
+				'month'     => $event->get( 'end' )->format( 'M' ),
+				'day'       => $event->get( 'end' )->format( 'j' ),
+				'weekday'   => $event->get( 'end' )->format( 'D' ),
+				'year'      => $event->get( 'end' )->format( 'Y' ),
+			);
 			$event_props['timespan_short']      = $event->_registry->
 				get( 'view.event.time' )->get_timespan_html( $event, 'short' );
 			$event_props['avatar']              = $event->getavatar();
 			$event_props['avatar_not_wrapped']  = $event->getavatar( false );
 			$event_props['avatar_url']  = $this->_registry
 				->get( 'view.event.avatar' )->get_event_avatar_url( $event );
-			$event_object                       = $event_props;
+			$event_props['category_divider_color'] = $event->get_runtime(
+				'category_divider_color'
+			);
+			$event_object                          = $event_props;
 			if (
 				$this->_compatibility->use_backward_compatibility()
 			) {

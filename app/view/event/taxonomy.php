@@ -142,13 +142,16 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 	 * @return string             Color to assign to event background.
 	 */
 	public function get_category_bg_color( Ai1ec_Event $event ) {
-		$color     = $this->get_color_for_event( $event );
-		$attribute = '';
+		$color = $this->get_color_for_event( $event );
+
+		// Convert to HTML attribute.
 		if ( $color ) {
-			$attribute = 'style="background-color: ' . $color . ';"';
+			$color = 'style="background-color: ' . $color . ';"';
+		} else {
+			$color = '';
 		}
 
-		return $attribute;
+		return $color;
 	}
 
 	/**

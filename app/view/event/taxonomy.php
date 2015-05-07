@@ -155,6 +155,26 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 	}
 
 	/**
+	 * Style attribute for event multi-date divider color.
+	 *
+	 * @param  Ai1ec_Event $event Event object.
+	 *
+	 * @return string             Color to assign to event background.
+	 */
+	public function get_category_divider_color( Ai1ec_Event $event ) {
+		$color = $this->get_color_for_event( $event );
+
+		// Convert to HTML attribute.
+		if ( $color ) {
+			$color = 'style="border-color: ' . $color . ' transparent transparent transparent;"';
+		} else {
+			$color = '';
+		}
+
+		return $color;
+	}
+
+	/**
 	 * Style attribute for event text color.
 	 *
 	 * @param  Ai1ec_Event $event Event object.

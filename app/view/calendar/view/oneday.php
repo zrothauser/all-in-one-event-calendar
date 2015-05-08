@@ -48,7 +48,7 @@ class Ai1ec_Calendar_View_Oneday extends Ai1ec_Calendar_View_Abstract {
 					'tag_ids'      => $args['tag_ids'],
 					'post_ids'     => $args['post_ids'],
 					'auth_ids'     => $args['auth_ids'],
-					'instance_ids' => $view_args['instance_ids'],
+					'instance_ids' => $args['instance_ids'],
 				),
 				$view_args,
 				apply_filters(

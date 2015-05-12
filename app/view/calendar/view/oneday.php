@@ -30,6 +30,7 @@ class Ai1ec_Calendar_View_Oneday extends Ai1ec_Calendar_View_Abstract {
 			'tag_ids'       => array(),
 			'auth_ids'      => array(),
 			'post_ids'      => array(),
+			'instance_ids'  => array(),
 			'exact_date'    => $date_system->current_time(),
 		);
 		$args = wp_parse_args( $view_args, $defaults );
@@ -43,10 +44,11 @@ class Ai1ec_Calendar_View_Oneday extends Ai1ec_Calendar_View_Abstract {
 			apply_filters(
 				'ai1ec_get_events_relative_to_filter',
 				array(
-					'cat_ids'  => $args['cat_ids'],
-					'tag_ids'  => $args['tag_ids'],
-					'post_ids' => $args['post_ids'],
-					'auth_ids' => $args['auth_ids'],
+					'cat_ids'      => $args['cat_ids'],
+					'tag_ids'      => $args['tag_ids'],
+					'post_ids'     => $args['post_ids'],
+					'auth_ids'     => $args['auth_ids'],
+					'instance_ids' => $args['instance_ids'],
 				),
 				$view_args,
 				apply_filters(
@@ -212,10 +214,11 @@ class Ai1ec_Calendar_View_Oneday extends Ai1ec_Calendar_View_Abstract {
 	 *
 	 * @param int $timestamp    the UNIX timestamp of the first day of the week
 	 * @param array $filter     Array of filters for the events returned:
-	 *                          ['cat_ids']   => non-associatative array of category IDs
-	 *                          ['tag_ids']   => non-associatative array of tag IDs
-	 *                          ['post_ids']  => non-associatative array of post IDs
-	 *                          ['auth_ids']  => non-associatative array of author IDs
+	 *                          ['cat_ids']      => non-associatative array of category IDs
+	 *                          ['tag_ids']      => non-associatative array of tag IDs
+	 *                          ['post_ids']     => non-associatative array of post IDs
+	 *                          ['auth_ids']     => non-associatative array of author IDs
+	 *                          ['instance_ids'] => non-associatative array of event instance IDs
 	 *
 	 * @return array            array of arrays as per function description
 	 */

@@ -18,7 +18,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 
 	/**
 	 * Caches the ids of the last 'between' query
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $_ids_between_cache = array();
@@ -68,10 +68,12 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	 * @param Ai1ec_Date_Time $start Limit to events starting after this.
 	 * @param Ai1ec_Date_Time $end   Limit to events starting before this.
 	 * @param array $filter          Array of filters for the events returned:
-	 *                                   ['cat_ids']  => list of category IDs;
-	 *                                   ['tag_ids']  => list of tag IDs;
-	 *                                   ['post_ids'] => list of post IDs;
-	 *                                   ['auth_ids'] => list of author IDs.
+	 *                                   ['cat_ids']      => list of category IDs;
+	 *                                   ['tag_ids']      => list of tag IDs;
+	 *                                   ['post_ids']     => list of post IDs;
+	 *                                   ['auth_ids']     => list of author IDs;
+	 *                                   ['instance_ids'] => list of events
+	 *                                                       instance ids;
 	 * @param bool $spanning         Also include events that span this period.
 	 * @param bool $single_day       This parameter is added for oneday view.
 	 *                               Query should find events lasting in
@@ -192,7 +194,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 				'instance_id' => $event['instance_id'],
 			);
 		}
-		
+
 		if ( ! empty( $id_list ) ) {
 			update_meta_cache( 'post', $id_list );
 			$this->_ids_between_cache = $id_instance_list;
@@ -218,10 +220,11 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	 * @param int $limit          return a maximum of this number of items
 	 * @param int $page_offset    offset the result set by $limit times this number
 	 * @param array $filter       Array of filters for the events returned.
-	 *                            ['cat_ids']   => non-associatative array of category IDs
-	 *                            ['tag_ids']   => non-associatative array of tag IDs
-	 *                            ['post_ids']  => non-associatative array of post IDs
-	 *                            ['auth_ids']  => non-associatative array of author IDs
+	 *                            ['cat_ids']      => non-associatative array of category IDs
+	 *                            ['tag_ids']      => non-associatative array of tag IDs
+	 *                            ['post_ids']     => non-associatative array of post IDs
+	 *                            ['auth_ids']     => non-associatative array of author IDs
+	 *                            ['instance_ids'] => non-associatative array of author IDs
 	 * @param int $last_day       Last day (time), that was displayed.
 	 *                            NOTE FROM NICOLA: be careful, if you want a query with events
 	 *                            that have a start date which is greater than today, pass 0 as
@@ -617,10 +620,11 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	 * statements for running an SQL query limited to the specified options.
 	 *
 	 * @param array $filter Array of filters for the events returned:
-	 *                          ['cat_ids']   => list of category IDs
-	 *                          ['tag_ids']   => list of tag IDs
-	 *                          ['post_ids']  => list of event post IDs
-	 *                          ['auth_ids']  => list of event author IDs
+	 *                          ['cat_ids']      => list of category IDs
+	 *                          ['tag_ids']      => list of tag IDs
+	 *                          ['post_ids']     => list of event post IDs
+	 *                          ['auth_ids']     => list of event author IDs
+	 *                          ['instance_ids'] => list of event instance IDs
 	 *
 	 * @return array The modified filter array to having:
 	 *                   ['filter_join']  the Join statements for the SQL

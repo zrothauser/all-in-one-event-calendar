@@ -56,8 +56,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				) .
 				'</p></div></div>';
 		}
-		$type       = $request->get( 'request_type' );
-
+		$type    = $request->get( 'request_type' );
 		$is_json = $this->_registry->get( 'http.request' )->is_json_required(
 			$view_args['request_format'], $action
 		);
@@ -485,6 +484,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 					'cat_ids',
 					'tag_ids',
 					'events_limit',
+					'instance_ids',
 				)
 			)
 		);

@@ -109,7 +109,6 @@ class Ai1ec_View_Widget_Creator extends Ai1ec_View_Admin_Abstract {
 			->get_widgets();
 		// this is just for the Super Widget which doesn't fully implement Ai1ec_Embeddable
 		$widgets = apply_filters( 'ai1ec_widget_creators_widgets', $widgets );
-
 		$tabs = array();
 		foreach ( $widgets as $widget_id => $widget_class ) {
 			$widget           = $this->_registry->get( $widget_class );

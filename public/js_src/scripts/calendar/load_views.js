@@ -287,7 +287,7 @@ define(
 						}
 						// Custom filters
 						if( typeof data.custom_filters === 'string' ) {
-							$parent = $calendar
+							var $parent = $calendar
 								.find( 'li.ai1ec-custom-filter' ).parent();
 							$calendar
 								.find( 'li.ai1ec-custom-filter' )
@@ -388,7 +388,7 @@ define(
 	// Handle loading the correct view when clicking on a link
 	var handle_click_on_link_to_load_view = function( e ) {
 		var
-			$el = $( this )
+			$el = $( this ),
 			$calendar = $el.closest( '.ai1ec-calendar' );
 
 		e.preventDefault();
@@ -459,7 +459,6 @@ define(
 		    date;
 
 		$el.datepicker( 'hide' );
-
 		// Get URL template.
 		url = $el.data( 'href' );
 		// Fetch date provided by datepicker event object's format() function.

@@ -122,7 +122,6 @@ class Ai1ec_View_Widget_Creator extends Ai1ec_View_Admin_Abstract {
 				)
 			);
 		}
-		//echo "<pre>"; var_dump($tabs); die(1);
 
 		$loader = $this->_registry->get( 'theme.loader' );
 		$file   = $loader->get_file(

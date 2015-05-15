@@ -196,7 +196,7 @@ function( page, load_views, evt, common, domReady, $, calendar, config, utils ) 
 						request_type     : 'jsonp',
 						ai1ec            : utils.create_ai1ec_to_send( el ),
 						ai1ec_source     : widget_type
-					};
+					}
 
 				// Do not render widget if it's not defined in config.
 				if ( false === url ) {

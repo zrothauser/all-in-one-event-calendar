@@ -192,16 +192,23 @@ define(
 							'display_filters',
 							'no_navigation',
 							'events_limit'
-						],
-						dashToCamel = function( str ) {
-							return str.replace( /\W+(.)/g, function ( x, chr ) {
-								return chr.toUpperCase();
-							} );
-						};
+						];
 
-					$( attrs ).each( function( i, item ) {
-						var value = $el.data( dashToCamel( item ) );
-						value && params.push( item + '~' + value );
+					// Add data attributes.
+					$el.each( function() {
+						$.each( this.attributes, function() {
+							// Add if it's specified in the array or is a filter attribute.
+							if (
+								this.specified &&
+								this.value &&
+								this.name.match( /^data-/ ) && (
+									-1 < $.inArray( this.name.replace( /^data\-/, '' ), attrs ) ||
+									this.name.match( /_ids$/ )
+								)
+							) {
+								params.push( this.name.replace( /^data\-/, '' ) + '~' + this.value );
+							}
+						} );
 					} );
 					return params.join( '|' );
 				},

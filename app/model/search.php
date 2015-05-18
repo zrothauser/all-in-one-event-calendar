@@ -495,6 +495,42 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	}
 
 	/**
+	 * Returns events instances closest to today.
+	 *
+	 * @param array $events_ids Events ids filter.
+	 *
+	 * @return array Events collection.
+	 * @throws Ai1ec_Bootstrap_Exception
+	 */
+	public function get_instances_closest_to_today( array $events_ids = array() ) {
+		$where_events_ids = '';
+		if ( ! empty( $events_ids ) ) {
+			$where_events_ids = 'i.post_id IN ('
+				. implode( ',', $events_ids ) . ') AND ';
+		}
+		$query = 'SELECT i.id, i.post_id FROM ' .
+					$this->_dbi->get_table_name( 'ai1ec_event_instances' ) .
+					' i WHERE ' .
+					$where_events_ids .
+					' i.start > %d ' .
+					' GROUP BY i.post_id';
+		/** @var $today Ai1ec_Date_Time */
+		$today   = $this->_registry->get( 'date.time', 'now', 'sys.default' );
+		$today->set_time( 0, 0, 0 );
+		$query   = $this->_dbi->prepare( $query, $today->format( 'U' ) );
+		$results = $this->_dbi->get_results( $query );
+		$events  = array();
+		foreach ( $results as $result ) {
+			$events[] = $this->get_event(
+				$result->post_id,
+				$result->id
+			);
+		}
+
+		return $events;
+	}
+
+	/**
 	 * Check if given event must be treated as all-day event.
 	 *
 	 * Event instances that span 24 hours are treated as all-day.

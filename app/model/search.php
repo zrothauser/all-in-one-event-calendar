@@ -509,11 +509,11 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 				. implode( ',', $events_ids ) . ') AND ';
 		}
 		$query = 'SELECT i.id, i.post_id FROM ' .
-					$this->_dbi->get_table_name( 'ai1ec_event_instances' ) .
-					' i WHERE ' .
-					$where_events_ids .
-					' i.start > %d ' .
-					' GROUP BY i.post_id';
+			$this->_dbi->get_table_name( 'ai1ec_event_instances' ) .
+			' i WHERE ' .
+			$where_events_ids .
+			' i.start > %d ' .
+			' GROUP BY i.post_id';
 		/** @var $today Ai1ec_Date_Time */
 		$today   = $this->_registry->get( 'date.time', 'now', 'sys.default' );
 		$today->set_time( 0, 0, 0 );

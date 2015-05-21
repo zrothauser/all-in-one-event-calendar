@@ -110,4 +110,16 @@ class Ai1ec_Event_Compatibility extends Ai1ec_Event {
 			'year'      => $this->get( 'end' )->format( 'Y' ),
 		);
 	}
+
+	/**
+	 * Returns Event avatar URL.
+	 *
+	 * @return string Event avatar URL.
+	 * @throws Ai1ec_Bootstrap_Exception
+	 */
+	public function getavatar_url() {
+		return $this->_registry->get(
+			'view.event.avatar'
+		)->get_event_avatar_url( $this );
+	}
 }

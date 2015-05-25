@@ -88,8 +88,9 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		}
 
 		// Create navigation bar if requested.
-		$navigation = '';
-		$loader = $this->_registry->get( 'theme.loader' );
+		$navigation       = '';
+		$loader           = $this->_registry->get( 'theme.loader' );
+		$pagination_links = '';
 		if ( ! $view_args['no_navigation'] ) {
 			$pagination_links = $this->_get_agenda_like_pagination_links(
 				$view_args,

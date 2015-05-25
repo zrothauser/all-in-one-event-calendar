@@ -63,7 +63,7 @@ function( page, load_views, evt, common, domReady, $, calendar, config, utils ) 
 		load_event_through_jsonp = function( e, href, instance_id, event_name ) {
 			var
 				$this       = $( this ),
-				href        = href || $this.attr( 'href' );
+				href        = href || $this.attr( 'href' ),
 				type        = 'jsonp',
 				$timely_div = $this.closest( '.timely' ),
 				query       = {

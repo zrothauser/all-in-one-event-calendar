@@ -96,7 +96,7 @@
 	</div>
 </div>
 
-<?php
-echo $feed_rows;
-echo $modal->render();
-?>
+<div class="timely ai1ec-form-inline ai1ec-panel-group" id="ai1ec-feeds-accordion">
+	<?php echo $feed_rows; ?>
+</div>
+<?php echo $modal->render(); ?>

@@ -146,6 +146,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			$timezone = $tz->getProperty( 'TZID' );
 		}
 
+		$feed_name     = $v->getProperty( 'X-WR-CALNAME' );
 		$x_wr_timezone = $v->getProperty( 'X-WR-TIMEZONE' );
 		if (
 			isset( $x_wr_timezone[1] ) &&
@@ -590,6 +591,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			'count'            => $count,
 			'events_to_delete' => $events_in_db,
 			'messages'         => $messages,
+			'name'             => $feed_name,
 		);
 	}
 

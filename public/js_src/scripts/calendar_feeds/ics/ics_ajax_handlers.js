@@ -27,6 +27,13 @@ define(
 			// Reset the form and add the feed to the bottom of the list.
 			$url.val( '' );
 			$( '#ai1ec-feeds-after' ).after( response.message );
+			if (
+				response.update &&
+				response.update.data &&
+				! response.update.data.error
+			) {
+				handle_update_ics( response.update.data );
+			}
 		}
 	};
 

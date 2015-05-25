@@ -181,6 +181,20 @@
 	margin: 0.45em;
 }
 
+#ics .ai1ec-form-group {
+	width: 100%;
+}
+#ics .ai1ec-panel-heading {
+	word-break: break-all;
+}
+#ics .ai1ec-feed-url {
+	margin-bottom: 15px;
+}
+#ics .ai1ec-feed-actions {
+	margin-top: 15px;
+}
+
+
 /* Calendar theme options */
 
 #ai1ec-less-variables-tabs .inside {

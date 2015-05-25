@@ -10,7 +10,8 @@ define(
 		'external_libs/bootstrap/tab',
 		'external_libs/bootstrap/alert',
 		'external_libs/bootstrap/modal',
-		'external_libs/bootstrap/button'
+		'external_libs/bootstrap/button',
+		'external_libs/bootstrap/collapse'
 	],
 	function(
 		$,

@@ -228,7 +228,11 @@ class Ai1ec_Event extends Ai1ec_Base {
 			GROUP_CONCAT( ttt.term_id ) AS tags
 		';
 
-		if ( false !== $instance && is_numeric( $instance ) ) {
+		if (
+			false !== $instance &&
+			is_numeric( $instance ) &&
+			$instance > 0
+		) {
 			$select_sql .= ', IF( aei.start IS NOT NULL, aei.start, e.start ) as start,' .
 						   '  IF( aei.start IS NOT NULL, aei.end,   e.end )   as end ';
 
@@ -238,6 +242,13 @@ class Ai1ec_Event extends Ai1ec_Base {
 				' aei ON aei.id = ' . $instance . ' AND e.post_id = aei.post_id ';
 		} else {
 			$select_sql .= ', e.start as start, e.end as end, e.allday ';
+			if ( -1 === (int)$instance ) {
+				$select_sql .= ', aei.id as instance_id ';
+				$left_join   = 'LEFT JOIN ' .
+					$dbi->get_table_name( 'ai1ec_event_instances' ) .
+					' aei ON e.post_id = aei.post_id ' .
+					'AND e.start = aei.start AND e.end = aei.end ';
+			}
 		}
 
 		// =============================
@@ -282,14 +293,15 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 *                                         initialize fields with associative
 	 *                                         array $data containing both post
 	 *                                         and event fields.
-	 * @param bool                  $instance  Optionally instance ID.
+	 * @param int|bool              $instance  Optionally instance ID. When ID
+	 *                                         value is -1 then it is
+	 *                                         retrieved from db.
 	 *
 	 * @throws Ai1ec_Invalid_Argument_Exception When $data is not one
 	 *                                          of int|array|null.
 	 * @throws Ai1ec_Event_Not_Found_Exception  When $data relates to
 	 *                                          non-existent ID.
 	 *
-	 * @return void
 	 */
 	function __construct(
 		Ai1ec_Registry_Object $registry,

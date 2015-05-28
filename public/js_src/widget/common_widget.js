@@ -72,8 +72,8 @@ function( page, load_views, evt, common, domReady, $, calendar, config, utils ) 
 					ai1ec            : utils.create_ai1ec_to_send( $timely_div )
 				},
 				$modal      = $( '#ai1ec-event-modal' ),
-				$event      = $this.closest( '.ai1ec-event' ).length
-					? $this.closest( '.ai1ec-event' ) : $this,
+				$event      = $this.closest( '.ai1ec-event, .ai1ec-popover' ).length
+					? $this.closest( '.ai1ec-event, .ai1ec-popover' ) : $this,
 				instance_id = instance_id || $event.attr( 'class' )
 					.match( /ai1ec-event-instance-id-(\d+)/ )[1],
 				event_name  = event_name || function() {

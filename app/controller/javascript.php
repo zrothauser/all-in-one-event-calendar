@@ -215,10 +215,13 @@ class Ai1ec_Javascript_Controller {
 		}
 
 		// Load translation module.
-		$translation = $this->get_frontend_translation_data();
-		$permalink = $this->_template_link_helper
+		$translation    = $this->get_frontend_translation_data();
+		$permalink      = $this->_template_link_helper
 			->get_permalink( $this->_settings->get( 'calendar_page_id' ) );
-		$translation['calendar_url'] = $permalink;
+		$full_permalink = $this->_template_link_helper
+			->get_full_permalink( $this->_settings->get( 'calendar_page_id' ) );
+		$translation['calendar_url']      = $permalink;
+		$translation['full_calendar_url'] = $full_permalink;
 		$translation_module = $this->create_require_js_module(
 			self::FRONTEND_CONFIG_MODULE,
 			$translation

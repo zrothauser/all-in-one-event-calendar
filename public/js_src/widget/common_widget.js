@@ -50,7 +50,7 @@ function( page, load_views, evt, common, domReady, $, calendar, config, utils ) 
 				}
 			} );
 			// Load the view specified in hash.
-			var view_hash  = location.hash.match( /view\|(.+)/ );
+			var view_hash  = location.hash.match( /^#view\|(.+)/ );
 			if ( view_hash && data.widget.match( /superwidget/ ) ) {
 				url = calendar.calendar_url + view_hash[1].replace( /\|/g, '/' );
 				history.pushState( null, document.title, location.pathname );
@@ -258,12 +258,17 @@ function( page, load_views, evt, common, domReady, $, calendar, config, utils ) 
 
 		// If hash matches the defined pattern - show the event.
 		var load_event_from_hash = function() {
-			var event_hash = view_hash = location.hash;
-			event_hash = event_hash.match( /event\|([\w-]+)\|(\d+)/);
-			view_hash  = view_hash.match( /view\|(.+)/ );
+			var
+				event_hash = decodeURIComponent( location.hash ),
+				view_hash  = event_hash;
+
+			event_hash = event_hash.match( /^#event\|([\w-]+)\|(\d+)/ );
+			view_hash  = view_hash.match( /^#view\|(.+)/ );
 			if ( event_hash ) {
-				event_name  = function() { return event_hash[1] };
-				instance_id = event_hash[2];
+				var
+					event_name  = function() { return event_hash[1]},
+					instance_id = event_hash[2];
+
 				if ( calendar.permalinks_structure ) {
 					href = config.site_url
 						+ 'event/' + event_name()

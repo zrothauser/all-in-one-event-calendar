@@ -261,11 +261,14 @@ function( page, load_views, evt, common, domReady, $, calendar, config, utils ) 
 			var
 				event_hash = decodeURIComponent( location.hash ),
 				view_hash  = event_hash;
-			event_hash = event_hash.match( /^#event\|([\w-]+)\|(\d+)/);
+
+			event_hash = event_hash.match( /^#event\|([\w-]+)\|(\d+)/ );
 			view_hash  = view_hash.match( /^#view\|(.+)/ );
 			if ( event_hash ) {
-				event_name  = function() { return event_hash[1] };
-				var instance_id = event_hash[2];
+				var
+					event_name  = function() { return event_hash[1]},
+					instance_id = event_hash[2];
+
 				if ( calendar.permalinks_structure ) {
 					href = config.site_url
 						+ 'event/' + event_name()

@@ -55,6 +55,9 @@ class Ai1ec_Template_Link_Helper {
 		$leavename = false,
 		$sample = false
 	) {
+		if ( false === $post ) {
+			return '';
+		}
 		return _get_page_link( $post, $leavename, $sample );
 	}
 }

@@ -33,6 +33,8 @@ define(
 			attach_event_handlers();
 			// Trigger execution of any other actions to initialize event details.
 			$( document ).trigger( 'event_page_ready.ai1ec' );
+			// We need it for JS that will be loaded after this event.
+			$( 'body' ).addClass( 'ai1ec-event-details-ready' );
 		} );
 	};
 

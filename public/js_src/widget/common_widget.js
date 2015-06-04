@@ -218,7 +218,7 @@ function( page, load_views, evt, common, domReady, $, calendar, config, utils ) 
 						page.initialize_view( $timely.find( '.ai1ec-calendar' ) );
 					},
 					error    : function() {
-						$timely.append( '<p>xAn error occurred while retrieving the data.</p>' + url );
+						$timely.append( '<p>An error occurred while retrieving the data.</p>'  );
 					},
 					complete    : function() { fade_out_loading( $timely ); }
 				} );

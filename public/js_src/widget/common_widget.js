@@ -38,7 +38,7 @@ function( page, load_views, evt, common, domReady, $, calendar, config, utils ) 
 			var url = (
 					// We serve Calendar widgets from the Calendar page.
 					data.widget.match( /superwidget/ )
-					? calendar.calendar_url
+					? calendar.full_calendar_url
 					: config.site_url
 				)
 				+ '?ai1ec_js_widget='
@@ -52,7 +52,7 @@ function( page, load_views, evt, common, domReady, $, calendar, config, utils ) 
 			// Load the view specified in hash.
 			var view_hash  = location.hash.match( /^#view\|(.+)/ );
 			if ( view_hash && data.widget.match( /superwidget/ ) ) {
-				url = calendar.calendar_url + view_hash[1].replace( /\|/g, '/' );
+				url = calendar.full_calendar_url + view_hash[1].replace( /\|/g, '/' );
 				history.pushState( null, document.title, location.pathname );
 			}
 			return url;
@@ -218,7 +218,7 @@ function( page, load_views, evt, common, domReady, $, calendar, config, utils ) 
 						page.initialize_view( $timely.find( '.ai1ec-calendar' ) );
 					},
 					error    : function() {
-						$timely.append( '<p>An error occurred while retrieving the data.</p>' );
+						$timely.append( '<p>xAn error occurred while retrieving the data.</p>' + url );
 					},
 					complete    : function() { fade_out_loading( $timely ); }
 				} );

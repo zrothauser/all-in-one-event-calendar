@@ -52,7 +52,8 @@ function( page, load_views, evt, common, domReady, $, calendar, config, utils ) 
 			// Load the view specified in hash.
 			var view_hash  = location.hash.match( /^#view\|(.+)/ );
 			if ( view_hash && data.widget.match( /superwidget/ ) ) {
-				url = calendar.full_calendar_url + view_hash[1].replace( /\|/g, '/' );
+				url = calendar.calendar_url
+					+ '?' + view_hash[1].replace( /\|/g, '&' ).replace( /\~/g, '=' );
 				history.pushState( null, document.title, location.pathname );
 			}
 			return url;

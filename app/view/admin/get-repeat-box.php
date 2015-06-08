@@ -625,23 +625,10 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 	 *
 	 * @param SG_iCal_Recurrence $rc iCal class.
 	 *
-	 * @return bool
+	 * @return bool True or false.
 	 */
 	protected function _is_monthday_empty( SG_iCal_Recurrence $rc ) {
 		return false === $rc->getByMonthDay();
-	}
-
-	/**
-	 * Returns data for monthly recurrence.
-	 *
-	 * @param SG_iCal_Recurrence $rc iCal class.
-	 *
-	 * @return mixed
-	 */
-	protected function get_selected_data_for_montly( SG_iCal_Recurrence $rc ) {
-		if ( ! $this->_is_monthday_empty( $rc ) ) {
-			return $rc->getByMonthDay();
-		}
 	}
 
 	/**

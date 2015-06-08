@@ -178,8 +178,14 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	 * @return string
 	 */
 	protected function _get_navigation( array $nav_args ) {
-		$loader = $this->_registry->get( 'theme.loader' );
-		$navigation = '';
+		$navigation                       = '';
+		$loader                           = $this->_registry->get( 'theme.loader' );
+		$nav_args['contribution_buttons'] = apply_filters(
+			'ai1ec_contribution_buttons',
+			'contribution_buttons',
+			'html',
+			'render-command'
+		);
 		if ( true !== $nav_args['no_navigation'] ) {
 			$navigation = $loader->get_file(
 				'navigation.twig',

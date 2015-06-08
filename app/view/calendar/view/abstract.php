@@ -182,7 +182,7 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 		$loader                           = $this->_registry->get( 'theme.loader' );
 		$nav_args['contribution_buttons'] = apply_filters(
 			'ai1ec_contribution_buttons',
-			'contribution_buttons',
+			'',
 			'html',
 			'render-command'
 		);

@@ -176,6 +176,7 @@ define(
 			now              : new Date( ai1ec_config.now * 1000 )
 		};
 		$.inputdate( data );
+		$( document ).trigger( 'ai1ec.recurrence-modal.inited' );
 	};
 
 	/**

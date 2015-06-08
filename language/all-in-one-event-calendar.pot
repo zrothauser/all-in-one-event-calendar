@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.2.1.13\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.2.1.14\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2015-06-05 18:02:26+00:00\n"
+"POT-Creation-Date: 2015-06-08 21:25:13+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -550,104 +550,104 @@ msgid ""
 "400&times;400 pixels."
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:65
+#: app/view/admin/get-repeat-box.php:92
 msgid "times"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:131
+#: app/view/admin/get-repeat-box.php:162
 msgid "Recurrence rule cannot be empty."
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:149
+#: app/view/admin/get-repeat-box.php:180
 msgid "Recurrence rule was not provided."
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:176
+#: app/view/admin/get-repeat-box.php:207
 msgid "Never"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:177
+#: app/view/admin/get-repeat-box.php:208
 msgid "After"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:178 public/admin/box_repeat.php:93
+#: app/view/admin/get-repeat-box.php:209 public/admin/box_repeat.php:93
 msgid "On date"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:214
+#: app/view/admin/get-repeat-box.php:245
 msgid "day(s)"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:296
+#: app/view/admin/get-repeat-box.php:328
 msgid "week(s)"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:381 app/view/admin/get-repeat-box.php:448
+#: app/view/admin/get-repeat-box.php:411 app/view/admin/get-repeat-box.php:483
 #: lib/recurrence/rule.php:279
 msgid "last"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:389
+#: app/view/admin/get-repeat-box.php:424
 msgid "month(s)"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:443
+#: app/view/admin/get-repeat-box.php:478
 msgid "first"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:444
+#: app/view/admin/get-repeat-box.php:479
 msgid "second"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:445
+#: app/view/admin/get-repeat-box.php:480
 msgid "third"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:446
+#: app/view/admin/get-repeat-box.php:481
 msgid "fourth"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:458
+#: app/view/admin/get-repeat-box.php:493
 msgid "Sunday"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:459
+#: app/view/admin/get-repeat-box.php:494
 msgid "Monday"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:460
+#: app/view/admin/get-repeat-box.php:495
 msgid "Tuesday"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:461
+#: app/view/admin/get-repeat-box.php:496
 msgid "Wednesday"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:462
+#: app/view/admin/get-repeat-box.php:497
 msgid "Thursday"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:463
+#: app/view/admin/get-repeat-box.php:498
 msgid "Friday"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:464
+#: app/view/admin/get-repeat-box.php:499
 msgid "Saturday"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:466
+#: app/view/admin/get-repeat-box.php:501
 msgid "day"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:467
+#: app/view/admin/get-repeat-box.php:502
 msgid "weekday"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:468
+#: app/view/admin/get-repeat-box.php:503
 msgid "weekend day"
 msgstr ""
 
-#: app/view/admin/get-repeat-box.php:534
+#: app/view/admin/get-repeat-box.php:569
 msgid "year(s)"
 msgstr ""
 
@@ -826,15 +826,15 @@ msgid ""
 "Please check if you have installed the latest versions of calendar add-ons."
 msgstr ""
 
-#: app/view/calendar/page.php:271
+#: app/view/calendar/page.php:270
 msgid "Subscribe to filtered calendar"
 msgstr ""
 
-#: app/view/calendar/page.php:272
+#: app/view/calendar/page.php:271
 msgid "Subscribe"
 msgstr ""
 
-#: app/view/calendar/page.php:273 app/view/event/single.php:115
+#: app/view/calendar/page.php:272 app/view/event/single.php:115
 msgid "Get a Timely Calendar"
 msgstr ""
 
@@ -2687,9 +2687,9 @@ msgstr ""
 msgid "All-in-One Event Calendar by Time.ly"
 msgstr ""
 
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.2.1.13)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.2.1.14)  #-#-#-#-#
 #. Plugin URI of the plugin/theme
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.2.1.13)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.2.1.14)  #-#-#-#-#
 #. Author URI of the plugin/theme
 msgid "http://time.ly/"
 msgstr ""

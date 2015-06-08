@@ -345,14 +345,28 @@ define(
 			.removeClass( 'ai1ec-hide' );
 	};
 
+	var handle_tab_switch = function() {
+		var
+				active_element = $( '#ai1ec_repeat_box' )
+						.find( 'ul.ai1ec-nav' )
+						.find( 'li.ai1ec-active' ),
+				end_field = $( '#ai1ec_repeat_box' ).find( '.ai1ec-end-field' );
+		if ( active_element.hasClass( 'ai1ec-freq-custom' ) ) {
+			end_field.addClass( 'ai1ec-hidden' );
+		} else {
+			end_field.removeClass( 'ai1ec-hidden' );
+		}
+	};
+
 	var handle_modal_loaded = function() {
 		var
 			active_tab = $ ('#ai1ec-tab-content' ).data( 'activeFreq' ),
 			datepicker = $( '#ai1ec_recurrence_calendar' );
-		show_end_fields();
 		$( '.ai1ec-freq' ).removeClass( 'ai1ec-active' );
 		$( '.ai1ec-freq-' + active_tab ).addClass( 'ai1ec-active' );
-
+		$( document ).on( 'shown.bs.tab', handle_tab_switch );
+		show_end_fields();
+		handle_tab_switch();
 	};
 
 	$( document ).on( 'ai1ec.recurrence-modal.inited', handle_modal_loaded );

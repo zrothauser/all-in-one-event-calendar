@@ -53,7 +53,12 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 				$count = ( is_numeric( $count ) ) ? $count : 100;
 				$end = 1;
 			}
-		} catch( Ai1ec_Event_Not_Found_Exception $e ) { /* event wasn't found, keep defaults */ }
+		} catch( Ai1ec_Event_Not_Found_Exception $e ) {
+			$rule = '';
+			$rc   = new SG_iCal_Recurrence(
+				new SG_iCal_Line( 'RRULE:' )
+			);
+		}
 
 		$args = array(
 			'row_daily'       => $this->row_daily(

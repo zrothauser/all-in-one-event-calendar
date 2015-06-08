@@ -66,7 +66,7 @@
 </div>
 
 <div class="ai1ec-modal-footer">
-	<div class="ai1ec-form-horizontal ai1ec-text-left">
+	<div class="ai1ec-form-horizontal ai1ec-text-left ai1ec-end-field">
 		<div class="ai1ec-form-group">
 			<label for="ai1ec_end" class="ai1ec-control-label ai1ec-col-sm-3">
 				<?php _e( 'End', AI1EC_PLUGIN_NAME ); ?>:

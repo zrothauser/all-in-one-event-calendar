@@ -166,7 +166,6 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 					'ai1ec_additional_buttons',
 					'',
 					$view_args
-
 				),
 				'show_dropdowns'               => apply_filters(
 					'ai1ec_show_dropdowns',

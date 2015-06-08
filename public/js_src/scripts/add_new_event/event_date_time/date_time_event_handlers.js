@@ -345,6 +345,18 @@ define(
 			.removeClass( 'ai1ec-hide' );
 	};
 
+	var handle_modal_loaded = function() {
+		var
+			active_tab = $ ('#ai1ec-tab-content' ).data( 'activeFreq' ),
+			datepicker = $( '#ai1ec_recurrence_calendar' );
+		show_end_fields();
+		$( '.ai1ec-freq' ).removeClass( 'ai1ec-active' );
+		$( '.ai1ec-freq-' + active_tab ).addClass( 'ai1ec-active' );
+
+	};
+
+	$( document ).on( 'ai1ec.recurrence-modal.inited', handle_modal_loaded );
+
 	return {
 		show_end_fields                     : show_end_fields,
 		trigger_publish                     : trigger_publish,

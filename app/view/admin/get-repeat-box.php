@@ -22,7 +22,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 		$repeat  = $repeat == 1 ? 1 : 0;
 		$post_id = (int) $_REQUEST["post_id"];
 		$count   = 100;
-		$end     = NULL;
+		$end     = 0;
 		$until   = $time_system->current_time( true );
 
 		// try getting the event
@@ -31,13 +31,13 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 			$rule = '';
 
 			if ( $repeat ) {
-				$rule = $event->get( 'recurrence_rules' ) ?
-				'' :
-				$event->get( 'recurrence_rules' );
+				$rule = $event->get( 'recurrence_rules' )
+					? $event->get( 'recurrence_rules' )
+					: '';
 			} else {
 				$rule = $event->get( 'exception_rules' ) ?
-				'' :
-				$event->get( 'exception_rules' );
+					$event->get( 'exception_rules' )
+					: '';
 			}
 
 			$rc = new SG_iCal_Recurrence(
@@ -48,17 +48,33 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 				$until = ( is_numeric( $until ) )
 				? $until
 				: strtotime( $until );
+				$end = 2;
 			} elseif ( $count = $rc->getCount() ) {
 				$count = ( is_numeric( $count ) ) ? $count : 100;
+				$end = 1;
 			}
 		} catch( Ai1ec_Event_Not_Found_Exception $e ) { /* event wasn't found, keep defaults */ }
 
 		$args = array(
-			'row_daily'       => $this->row_daily(),
-			'row_weekly'      => $this->row_weekly(),
-			'row_monthly'     => $this->row_monthly(),
-			'row_yearly'      => $this->row_yearly(),
-			'row_custom'      => $this->row_custom(),
+			'row_daily'       => $this->row_daily( false, $rc->getInterval() ),
+			'row_weekly'      => $this->row_weekly(
+				false,
+				$rc->getInterval(),
+				is_array( $rc->getByDay() ) ? $rc->getByDay() : array()
+			),
+			'row_monthly'     => $this->row_monthly(
+				false,
+				$rc->getInterval()
+			),
+			'row_yearly'      => $this->row_yearly(
+				false,
+				$rc->getInterval() ? $rc->getInterval() : 1,
+				is_array( $rc->getByMonth() ) ? $rc->getByMonth() : array()
+			),
+			'row_custom'      => $this->row_custom(
+				false,
+				$this->get_date_array_from_rule( $rule )
+			),
 			'count'           => $this->create_count_input(
 				'ai1ec_count',
 				$count
@@ -66,6 +82,10 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 			'end'             => $this->create_end_dropdown( $end ),
 			'until'           => $until,
 			'repeat'          => $repeat,
+			'ending_type'     => $end,
+			'selected_tab'    => $rc->getFreq()
+				? strtolower( $rc->getFreq() )
+				: 'custom',
 		);
 		$output = array(
 			'error'   => false,
@@ -224,11 +244,12 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 	 *
 	 * @return void
 	 **/
-	protected function row_custom( $visible = false, $selected = 1 ) {
+	protected function row_custom( $visible = false, $dates = array() ) {
 		$loader = $this->_registry->get( 'theme.loader' );
 
 		$args = array(
-			'visible'  => $visible
+			'visible'        => $visible,
+			'selected_dates' => implode( ',', $dates )
 		);
 		return $loader->get_file( 'row_custom.php', $args, true )
 			->get_content();
@@ -346,9 +367,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 		$count                = 1,
 		$ai1ec_monthly_each   = 0,
 		$ai1ec_monthly_on_the = 0,
-		$month                = array(),
-		$first                = false,
-		$second               = false
+		$month                = array()
 	) {
 		global $wp_locale;
 		$start_of_week = $this->_registry->get( 'model.option' )
@@ -380,6 +399,9 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 		}
 		$options_dn['-1'] = Ai1ec_I18n::__( 'last' );
 
+		$byday_checked      = 'checked';
+		$bymonthday_checked = 'checked';
+
 		$args = array(
 			'visible'              => $visible,
 			'count'                => $this->create_count_input(
@@ -392,10 +414,6 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 			'month'                => $this->create_monthly_date_select(
 				$month
 			),
-			'on_the_select'        => $this->create_on_the_select(
-				$first,
-				$second
-			),
 			'day_nums'             => $this->create_select_element(
 				'ai1ec_monthly_byday_num',
 				$options_dn
@@ -404,6 +422,8 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 				'ai1ec_monthly_byday_weekday',
 				$options_wd
 			),
+			'bymonthday_checked'   => $bymonthday_checked,
+			'byday_checked'        => $byday_checked,
 		);
 		return $loader->get_file( 'row_monthly.php', $args, true )
 			->get_content();
@@ -562,5 +582,28 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 			$options,
 			$selected
 		);
+	}
+
+	/**
+	 * Converts recurrence rule to array of string of dates.
+	 *
+	 * @param string $rule RUle.
+	 *
+	 * @return array Array of dates or empty array.
+	 * @throws Ai1ec_Bootstrap_Exception
+	 */
+	protected function get_date_array_from_rule( $rule ) {
+		if ( 'RDATE' !== substr( $rule, 0, 5 ) ) {
+			return array();
+		}
+		$line             = new SG_iCal_Line( 'RRULE:' . $rule );
+		$dates            = $line->getDataAsArray();
+		$dates_as_strings = array();
+		foreach ( $dates as $date ) {
+			$date = str_replace( 'RDATE=', '', $date );
+			$date = $this->_registry->get( 'date.time', $date );
+			$dates_as_strings[] = $date->format('m/d/Y');
+		}
+		return $dates_as_strings;
 	}
 }

@@ -285,7 +285,7 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 			' WHERE post_id = %d',
 			$post_id
 		);
-		$results = $this->_dbi->get_results( $query );
+		$results   = $this->_dbi->get_results( $query );
 		$instances = array();
 		foreach ( $results as $result ) {
 			$instances[$result->start] = $result->id;

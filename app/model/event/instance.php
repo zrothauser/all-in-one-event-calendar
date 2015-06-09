@@ -54,8 +54,19 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 	 * @return bool Success.
 	 */
 	public function recreate( Ai1ec_Event $event ) {
-		$this->clean( $event->get( 'post_id' ) );
-		return ( false !== $this->create( $event ) );
+		$old_instances = $this->_load_instances( $event->get( 'post_id' ) );
+		$instances     = $this->_create_instances_collection( $event );
+		$insert        = array();
+		foreach ( $instances as $instance ) {
+			if ( ! isset( $old_instances[$instance['start']] ) ) {
+				$insert[] = $instance;
+				continue;
+			}
+			unset( $old_instances[$instance['start']] );
+		}
+		$this->_remove_instances_by_ids( array_values( $old_instances ) );
+		$this->_add_instances( $insert );
+		return true;
 	}
 
 	/**
@@ -169,11 +180,7 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 	public function create( Ai1ec_Event $event ) {
 		$instances = $this->_create_instances_collection( $event );
 		foreach ( $instances as $instance ) {
-			$this->_dbi->insert(
-				'ai1ec_event_instances',
-				$instance,
-				array( '%d', '%d', '%d' )
-			);
+			$this->_add_instance( $instance );
 		}
 		return true;
 	}
@@ -272,13 +279,13 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 	 * @return array Array of data.
 	 */
 	protected function _load_instances( $post_id ) {
-		$results = $this->_dbi->select(
-			'ai1ec_event_instances',
-			array(
-				'id',
-				'start'
-			)
+		$query = $this->_dbi->prepare(
+			'SELECT id, start FROM ' .
+			$this->_dbi->get_table_name( 'ai1ec_event_instances' ) .
+			' WHERE post_id = %d',
+			$post_id
 		);
+		$results = $this->_dbi->get_results( $query );
 		$instances = array();
 		foreach ( $results as $result ) {
 			$instances[$result->start] = $result->id;
@@ -354,4 +361,56 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 		return array_filter( $events );
 	}
 
+	/**
+	 * Removes ai1ec_event_instances entries using their IDS.
+	 *
+	 * @param array $ids Collection of IDS.
+	 *
+	 * @return bool Result.
+	 */
+	protected function _remove_instances_by_ids( array $ids ) {
+		if ( empty( $ids ) ) {
+			return false;
+		}
+		foreach ( $ids as $id ) {
+			$this->_dbi->delete(
+				'ai1ec_event_instances',
+				array(
+					'id' => $id
+				),
+				array(
+					'%d'
+				)
+			);
+		}
+		return true;
+	}
+
+	/**
+	 * Inserts new ai1ec_event_instances entry.
+	 *
+	 * @param array $instance Instance data.
+	 *
+	 * @return false|int Number of affected rows or false.
+	 */
+	protected function _add_instance( array $instance ) {
+		return $this->_dbi->insert(
+			'ai1ec_event_instances',
+			$instance,
+			array( '%d', '%d', '%d' )
+		);
+	}
+
+	/**
+	 * Adds new instances collection.
+	 *
+	 * @param array $instances Collection of instances.
+	 *
+	 * @return void
+	 */
+	protected function _add_instances( array $instances ) {
+		foreach ( $instances as $instance ) {
+			$this->_add_instance( $instance );
+		}
+	}
 }

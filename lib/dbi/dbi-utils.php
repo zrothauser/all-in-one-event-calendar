@@ -7,7 +7,7 @@
  * @since      2.2
  *
  * @package    AI1EC
- * @subpackage AI1EC.
+ * @subpackage AI1EC.Dbi
  */
 
 class Ai1ec_Dbi_Utils extends Ai1ec_Base {

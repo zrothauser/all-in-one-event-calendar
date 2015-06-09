@@ -17,15 +17,22 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 	protected $_dbi = null;
 
 	/**
+	 * DBI utils.
+	 *
+	 * @var Ai1ec_Dbi_Utils
+	 */
+	protected $_dbi_utils;
+
+	/**
 	 * Store locally instance of Ai1ec_Dbi.
 	 *
 	 * @param Ai1ec_Registry_Object $registry Injected object registry.
 	 *
-	 * @return void
 	 */
 	public function __construct( Ai1ec_Registry_Object $registry ) {
 		parent::__construct( $registry );
-		$this->_dbi = $this->_registry->get( 'dbi.dbi' );
+		$this->_dbi       = $this->_registry->get( 'dbi.dbi' );
+		$this->_dbi_utils = $this->_registry->get( 'dbi.dbi-utils' );
 	}
 
 	/**
@@ -179,9 +186,7 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 	 */
 	public function create( Ai1ec_Event $event ) {
 		$instances = $this->_create_instances_collection( $event );
-		foreach ( $instances as $instance ) {
-			$this->_add_instance( $instance );
-		}
+		$this->_add_instances( $instances );
 		return true;
 	}
 
@@ -288,7 +293,7 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 		$results   = $this->_dbi->get_results( $query );
 		$instances = array();
 		foreach ( $results as $result ) {
-			$instances[$result->start] = $result->id;
+			$instances[(int)$result->start] = (int)$result->id;
 		}
 		return $instances;
 	}
@@ -372,33 +377,13 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 		if ( empty( $ids ) ) {
 			return false;
 		}
-		foreach ( $ids as $id ) {
-			$this->_dbi->delete(
-				'ai1ec_event_instances',
-				array(
-					'id' => $id
-				),
-				array(
-					'%d'
-				)
-			);
-		}
+		$query  = 'DELETE FROM ' . $this->_dbi->get_table_name(
+				'ai1ec_event_instances'
+			) . ' WHERE id IN (';
+		$ids    = array_filter( array_map( 'intval', $ids ) );
+		$query .= implode( ',', $ids ) . ')';
+		$this->_dbi->query( $query );
 		return true;
-	}
-
-	/**
-	 * Inserts new ai1ec_event_instances entry.
-	 *
-	 * @param array $instance Instance data.
-	 *
-	 * @return false|int Number of affected rows or false.
-	 */
-	protected function _add_instance( array $instance ) {
-		return $this->_dbi->insert(
-			'ai1ec_event_instances',
-			$instance,
-			array( '%d', '%d', '%d' )
-		);
 	}
 
 	/**
@@ -409,8 +394,17 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 	 * @return void
 	 */
 	protected function _add_instances( array $instances ) {
-		foreach ( $instances as $instance ) {
-			$this->_add_instance( $instance );
+		$chunks    = array_chunk( $instances, 50 );
+		foreach ( $chunks as $chunk ) {
+			$query = 'INSERT INTO ' . $this->_dbi->get_table_name(
+					'ai1ec_event_instances'
+				) . '(`post_id`, `start`, `end`) VALUES';
+			$chunk  = array_map(
+				array( $this->_dbi_utils, 'array_value_to_sql_value' ),
+				$chunk
+			);
+			$query .= implode( ',', $chunk );
+			$this->_dbi->query( $query );
 		}
 	}
 }

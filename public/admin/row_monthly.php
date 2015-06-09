@@ -27,13 +27,13 @@
 </div>
 
 <div class="ai1ec-form-group">
-	<div id="ai1ec_repeat_monthly_bymonthday" class="ai1ec-collapse <?php echo $bymonthday_expanded; ?>">
+	<div id="ai1ec_repeat_monthly_bymonthday" class="ai1ec-collapse ai1ec-in">
 		<div class="ai1ec-col-sm-offset-3 ai1ec-col-sm-9">
 			<?php echo $month; ?>
 		</div>
 	</div>
 
-	<div id="ai1ec_repeat_monthly_byday" class="ai1ec-collapse <?php echo $byday_expanded; ?>">
+	<div id="ai1ec_repeat_monthly_byday" class="ai1ec-collapse">
 		<label for="ai1ec_monthly_type_byday"
 			class="ai1ec-control-label ai1ec-col-sm-3">
 			<?php _e( 'Every', AI1EC_PLUGIN_NAME ); ?>:

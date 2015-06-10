@@ -356,6 +356,9 @@ define(
 		} else {
 			end_field.removeClass( 'ai1ec-hidden' );
 		}
+		if ( active_element.hasClass( 'ai1ec-freq-monthly' ) ) {
+			handle_checkbox_monthly_tab_modal();
+		}
 	};
 
 	var handle_modal_loaded = function() {

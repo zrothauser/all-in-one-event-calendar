@@ -411,9 +411,9 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 		$options_dn['-1'] = Ai1ec_I18n::__( 'last' );
 
 		$byday_checked       = $bymonthday ? '' : 'checked';
-		$byday_expanded      = $bymonthday ? '' : 'ai1ec-in';
+		$byday_expanded      = $bymonthday ? 'ai1ec-collapse' : 'ai1ec-in';
 		$bymonthday_checked  = $bymonthday ? 'checked' : '';
-		$bymonthday_expanded = $bymonthday ? 'ai1ec-in' : '';
+		$bymonthday_expanded = $bymonthday ? 'ai1ec-in' : 'ai1ec-collapse';
 
 		$args = array(
 			'visible'              => $visible,

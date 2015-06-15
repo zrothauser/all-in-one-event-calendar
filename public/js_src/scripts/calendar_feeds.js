@@ -3,8 +3,8 @@ define(
 		'jquery_timely',
 		'domReady',
 		'scripts/calendar_feeds/ics/ics_event_handlers',
-		"libs/select2_multiselect_helper",
-		"libs/tags_select",
+		'libs/select2_multiselect_helper',
+		'libs/tags_select',
 		'libs/utils',
 		'external_libs/jquery_cookie',
 		'external_libs/bootstrap/tab',
@@ -58,6 +58,16 @@ define(
 		// ===========================
 		// = ICS feed event handlers =
 		// ===========================
+		$( 'select[name="cron_freq"]' ).on( 'change', function() {
+			$.ajax( {
+				url      : ajaxurl,
+				type     : 'POST',
+				data: {
+					action    : 'ai1ec_feeds_page_post',
+					cron_freq : this.value
+				}
+			} );
+		} );
 		// Handles clicking the buttons in the ICS delete modal.
 		$( '#ai1ec-ics-modal' ).on(
 			'click', '.remove, .keep', ics_event_handlers.submit_delete_modal

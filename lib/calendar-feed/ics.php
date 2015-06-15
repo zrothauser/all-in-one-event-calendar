@@ -322,10 +322,11 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	 */
 	public function handle_feeds_page_post() {
 		$settings = $this->_registry->get( 'model.settings' );
-		if ( isset( $_POST['ai1ec_save_settings'] ) ) {
+		if ( isset( $_POST['cron_freq'] ) ) {
 			$settings->set( 'ics_cron_freq', $_REQUEST['cron_freq'] );
 		}
 	}
+
 	/**
 	 * (non-PHPdoc)
 	 *
@@ -552,7 +553,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			);
 			return $json_strategy->render( array( 'data' => $output ) );
 		}
-		
+
 		$format     = array( '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d' );
 		$res        = $db->insert( $table_name, $entry, $format );
 		$feed_id    = $db->get_insert_id();

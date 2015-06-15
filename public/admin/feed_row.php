@@ -98,12 +98,6 @@
 					<?php _e( 'Refresh', AI1EC_PLUGIN_NAME ); ?>
 				</button>
 				<button type="button"
-					class="ai1ec-btn ai1ec-btn-sm ai1ec-btn-default ai1ec-text-warning
-						ai1ec_edit_ics">
-					<i class="ai1ec-fa ai1ec-fa-edit ai1ec-fa-fw"></i>
-					<?php _e( 'Edit', AI1EC_PLUGIN_NAME ); ?>
-				</button>
-				<button type="button"
 					class="ai1ec-btn ai1ec-btn-sm ai1ec-btn-default ai1ec-text-danger
 						ai1ec_delete_ics"
 					data-loading-text="<?php echo esc_attr(

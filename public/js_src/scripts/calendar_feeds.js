@@ -79,8 +79,11 @@ define(
 			.on( 'click', '.ai1ec_delete_ics', ics_event_handlers.open_delete_modal )
 			// Handles refreshing the feed's events.
 			.on( 'click', '.ai1ec_update_ics', ics_event_handlers.update_feed )
+			// Edit feed.
+			.on( 'click', '.ai1ec_edit_ics' , ics_event_handlers.edit_feed )
 			// Checks import timezone option
-			.on( 'blur', '#ai1ec_feed_url', ics_event_handlers.feed_url_change )
+			.on( 'blur', '#ai1ec_feed_url', ics_event_handlers.feed_url_change );
+
 	};
 
 	var start = function() {

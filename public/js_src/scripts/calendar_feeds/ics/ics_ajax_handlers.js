@@ -25,8 +25,29 @@ define(
 			$( '#ics-alerts' ).append( $alert );
 		} else {
 			// Reset the form and add the feed to the bottom of the list.
-			$url.val( '' );
-			$( '#ai1ec-feeds-after' ).after( response.message );
+			$url.val( ' ' ).prop( 'readonly', false );
+			$( '#ai1ec-feeds-after input[type="checkbox"]' ).prop( 'checked', false );
+			$( '#ai1ec_feed_id' ).remove();
+			$( '#ai1ec_feed_category' ).select2( 'val', '' );
+			$( '#ai1ec_feed_tags' ).select2( 'val', '' );
+			var
+				feed_id    = response.update.data.ics_id,
+				$feed      = $( response.message ),
+				$add       = $( '#ai1ec_ics_add_new, #ai1ec_add_new_ics > i' ),
+				$update    = $( '#ai1ec_ics_update' ),
+				$container = $( '.ai1ec_feed_id[value="' + feed_id + '"] ')
+				.closest( '.ai1ec-feed-container' );;
+
+			$add.removeClass( 'ai1ec-hidden' );
+			$update.addClass( 'ai1ec-hidden' );
+			$feed.find( '.ai1ec-collapse' ).removeClass( 'ai1ec-collapse' );
+			var $container = $( '.ai1ec_feed_id[value="' + feed_id + '"] ')
+				.closest( '.ai1ec-feed-container' );
+			if ( $container.length ) {
+				$container.replaceWith( $feed );
+			} else {
+				$( '#ai1ec-feeds-after' ).after( $feed );
+			}
 			if (
 				response.update &&
 				response.update.data &&

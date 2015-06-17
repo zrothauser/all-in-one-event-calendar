@@ -450,9 +450,11 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				'feed_url'            => $row->feed_url,
 				'feed_name'           => $row->feed_name ?: $row->feed_url,
 				'event_category'      => implode( ', ', $categories ),
+				'categories_ids'      => $row->feed_category,
 				'tags'                => stripslashes(
 					str_replace( ',', ', ', $row->feed_tags )
 				),
+				'tags_ids'            => $row->feed_tags,
 				'feed_id'             => $row->feed_id,
 				'comments_enabled'    => (bool) intval(
 						$row->comments_enabled
@@ -555,8 +557,18 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		}
 
 		$format     = array( '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d' );
-		$res        = $db->insert( $table_name, $entry, $format );
-		$feed_id    = $db->get_insert_id();
+		if ( ! empty( $_REQUEST['feed_id'] ) ) {
+			$feed_id = $_REQUEST['feed_id'];
+			$db->update(
+				$table_name,
+				$entry,
+				array( 'feed_id' => $feed_id )
+			);
+		} else {
+			$res        = $db->insert( $table_name, $entry, $format );
+			$feed_id    = $db->get_insert_id();
+		}
+
 		$categories = array();
 		do_action( 'ai1ec_ics_feed_added', $feed_id, $entry );
 
@@ -574,22 +586,26 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			array( 'feed_id' => $feed_id )
 		);
 
+		$cat_ids = '';
 		if ( ! empty( $_REQUEST['feed_category'] ) ) {
 			foreach ( $_REQUEST['feed_category'] as $cat_id ) {
 				$feed_category = get_term( $cat_id, 'events_categories' );
 				$categories[]  = $feed_category->name;
 			}
+			$cat_ids = implode( ',', $_REQUEST['feed_category'] );
 		}
 
 		$args = array(
 			'feed_url'             => $_REQUEST['feed_url'],
 			'feed_name'            => $feed_name,
 			'event_category'       => implode( ', ', $categories ),
+			'categories_ids'       => $cat_ids,
 			'tags'                 => str_replace(
 				',',
 				', ',
 				$_REQUEST['feed_tags']
 			),
+			'tags_ids'             => $_REQUEST['feed_tags'],
 			'feed_id'              => $feed_id,
 			'comments_enabled'     => (bool) intval(
 				$_REQUEST['comments_enabled']

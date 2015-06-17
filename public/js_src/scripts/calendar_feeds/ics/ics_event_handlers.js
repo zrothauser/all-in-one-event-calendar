@@ -106,8 +106,12 @@ define(
 			$form      = $( '#ai1ec-feeds-after' ),
 			$add       = $( '#ai1ec_ics_add_new, #ai1ec_add_new_ics > i' ),
 			$update    = $( '#ai1ec_ics_update' ),
-			categories = $( '.ai1ec-feed-category', $feed ).data( 'ids' ).toString(),
-			tags       = $( '.ai1ec-feed-tags', $feed ).data( 'ids' ).toString();
+			categories = (
+				$( '.ai1ec-feed-category', $feed ).data( 'ids' ) || ''
+			).toString(),
+			tags       = (
+				$( '.ai1ec-feed-tags', $feed ).data( 'ids' ) || ''
+			).toString();
 
 		// Populate the feeds form.
 		$( '#ai1ec_feed_url' ).val(

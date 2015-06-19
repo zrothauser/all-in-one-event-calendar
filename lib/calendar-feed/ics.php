@@ -18,7 +18,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 	const ICS_OPTION_DB_VERSION = 'ai1ec_ics_db_version';
 
-	const ICS_DB_VERSION        = 220;
+	const ICS_DB_VERSION        = 221;
 
 	/**
 	 * @var array
@@ -154,6 +154,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					$result = $import_export->import_events( 'ics', $args );
 					do_action( 'ai1ec_ics_after_import' );
 					$count  = $result['count'];
+					$feed_name = $result['name'][1] ?: $feed->feed_url;
 					// we must flip again the array to iterate over it
 					if ( 0 == $feed->keep_old_events ) {
 						$events_to_delete = array_flip( $result['events_to_delete'] );
@@ -182,21 +183,17 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					AI1EC_PLUGIN_NAME
 				);
 			}
-
-
-			if ( $count == 0 ) {
-				// If results are 0, it could be result of a bad URL or other error, send a specific message
-				$return_message = false === $message ?
-					__( 'No events were found', AI1EC_PLUGIN_NAME ) :
-					$message;
+			if ( $message ) {
+				// If we already got an error message, display it.
 				$output['data'] = array(
 						'error'   => true,
-						'message' => $return_message
+						'message' => $message,
 				);
 			} else {
 				$output['data'] = array(
-						'error'       => false,
-						'message'     => sprintf( _n( 'Imported %s event', 'Imported %s events', $count, AI1EC_PLUGIN_NAME ), $count ),
+						'error'   => false,
+						'message' => sprintf( _n( 'Imported %s event', 'Imported %s events', $count, AI1EC_PLUGIN_NAME ), $count ),
+						'name'    => $feed_name,
 				);
 			}
 		} else {
@@ -265,6 +262,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			$sql = "CREATE TABLE $table_name (
 					feed_id bigint(20) NOT NULL AUTO_INCREMENT,
 					feed_url varchar(255) NOT NULL,
+					feed_name varchar(255) NOT NULL,
 					feed_category varchar(255) NOT NULL,
 					feed_tags varchar(255) NOT NULL,
 					comments_enabled tinyint(1) NOT NULL DEFAULT '1',
@@ -324,10 +322,11 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	 */
 	public function handle_feeds_page_post() {
 		$settings = $this->_registry->get( 'model.settings' );
-		if ( isset( $_POST['ai1ec_save_settings'] ) ) {
+		if ( isset( $_POST['cron_freq'] ) ) {
 			$settings->set( 'ics_cron_freq', $_REQUEST['cron_freq'] );
 		}
 	}
+
 	/**
 	 * (non-PHPdoc)
 	 *
@@ -418,6 +417,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			array(
 				'feed_id',
 				'feed_url',
+				'feed_name',
 				'feed_category',
 				'feed_tags',
 				'comments_enabled',
@@ -448,6 +448,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 			$args          = array(
 				'feed_url'            => $row->feed_url,
+				'feed_name'           => $row->feed_name ?: $row->feed_url,
 				'event_category'      => implode( ', ', $categories ),
 				'tags'                => stripslashes(
 					str_replace( ',', ', ', $row->feed_tags )
@@ -522,6 +523,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			',', $_REQUEST['feed_category'] );
 		$entry = array(
 			'feed_url'             => $_REQUEST['feed_url'],
+			'feed_name'            => $_REQUEST['feed_url'],
 			'feed_category'        => $feed_categories,
 			'feed_tags'            => $_REQUEST['feed_tags'],
 			'comments_enabled'     => Ai1ec_Primitive_Int::db_bool(
@@ -541,22 +543,36 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			),
 		);
 		$entry = apply_filters( 'ai1ec_ics_feed_entry', $entry );
+		$json_strategy = $this->_registry->get(
+			'http.response.render.strategy.json'
+		);
 		if ( is_wp_error( $entry ) ) {
 			$output = array(
 				'error'   => true,
 				'message' => $entry->get_error_message()
 			);
-			$json_strategy = $this->_registry->get(
-				'http.response.render.strategy.json'
-			);
 			return $json_strategy->render( array( 'data' => $output ) );
 		}
 
-		$format     = array( '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d' );
+		$format     = array( '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d' );
 		$res        = $db->insert( $table_name, $entry, $format );
 		$feed_id    = $db->get_insert_id();
 		$categories = array();
 		do_action( 'ai1ec_ics_feed_added', $feed_id, $entry );
+
+		$update = $this->update_ics_feed( $feed_id );
+		if ( $update['data']['error'] ) {
+			$this->delete_ics_feed( false, $feed_id );
+			return $json_strategy->render( $update );
+		}
+		$feed_name = $update['data']['name'];
+		$db->update(
+			$table_name,
+			array(
+				'feed_name' => $feed_name
+			),
+			array( 'feed_id' => $feed_id )
+		);
 
 		if ( ! empty( $_REQUEST['feed_category'] ) ) {
 			foreach ( $_REQUEST['feed_category'] as $cat_id ) {
@@ -567,6 +583,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 		$args = array(
 			'feed_url'             => $_REQUEST['feed_url'],
+			'feed_name'            => $feed_name,
 			'event_category'       => implode( ', ', $categories ),
 			'tags'                 => str_replace(
 				',',
@@ -592,18 +609,14 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			),
 		);
 
+		// Display added feed row.
 		$loader = $this->_registry->get( 'theme.loader' );
-		// display added feed row
-		$file = $loader->get_file( 'feed_row.php', $args, true );
-
+		$file   = $loader->get_file( 'feed_row.php', $args, true );
 		$output = $file->get_content();
-
 		$output = array(
-			'error' => false,
-			'message' => stripslashes( $output )
-		);
-		$json_strategy = $this->_registry->get(
-			'http.response.render.strategy.json'
+			'error'   => false,
+			'message' => stripslashes( $output ),
+			'update'  => $update,
 		);
 		return $json_strategy->render( array( 'data' => $output ) );
 	}

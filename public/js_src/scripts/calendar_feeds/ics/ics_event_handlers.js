@@ -3,11 +3,12 @@ define(
 		'jquery_timely',
 		'scripts/calendar_feeds/ics/ics_ajax_handlers',
 		'libs/utils',
-		'ai1ec_config'
+		'ai1ec_config',
+		'external_libs/select2'
 	],
 	function( $, ajax_handlers, AI1EC_UTILS, ai1ec_config ) {
 
-	"use strict"; // jshint ;_;
+	'use strict'; // jshint ;_;
 
 	var ajaxurl = AI1EC_UTILS.get_ajax_url();
 
@@ -18,6 +19,7 @@ define(
 		var $button = $( this ),
 		    $url    = $( '#ai1ec_feed_url' ),
 		    url     = $url.val().replace( 'webcal://', 'http://' ),
+		    feed_id = $( '#ai1ec_feed_id').val(),
 		    invalid = false,
 		    error_message;
 
@@ -26,14 +28,16 @@ define(
 		$( '#ai1ec-feed-error' ).remove();
 
 		// Check for duplicates
-		$( '.ai1ec-feed-url' ).each( function() {
-			if ( this.value === url ) {
-				// This feed's already been added
-				$( this ).css( 'border-color', '#FF0000' );
-				invalid = true;
-				error_message = ai1ec_config.duplicate_feed_message;
-			}
-		} );
+		if ( ! feed_id ) {
+			$( '.ai1ec-feed-url' ).each( function() {
+				if ( this.value === url ) {
+					// This feed's already been added
+					$( this ).css( 'border-color', '#FF0000' );
+					invalid = true;
+					error_message = ai1ec_config.duplicate_feed_message;
+				}
+			} );
+		}
 
 		// Check for valid URL
 		if ( ! AI1EC_UTILS.isUrl( url ) ) {
@@ -83,11 +87,69 @@ define(
 						value = 0;
 					}
 					data[$( this ).attr( 'name' )] = value;
-				});
+				} );
+				if ( feed_id ) {
+					data.feed_id = feed_id
+				}
 			// Make an AJAX call to save the new feed.
 			$.post( ajaxurl, data, ajax_handlers.handle_add_new_ics, 'json' );
 		}
 	};
+
+	/**
+	 * User subscribes to a new feed.
+	 */
+	var edit_feed = function() {
+		var
+			$this      = $( this ),
+			$feed      = $this.closest( '.ai1ec-feed-container' ),
+			$form      = $( '#ai1ec-feeds-after' ),
+			$add       = $( '#ai1ec_ics_add_new, #ai1ec_add_new_ics > i' ),
+			$update    = $( '#ai1ec_ics_update' ),
+			categories = (
+				$( '.ai1ec-feed-category', $feed ).data( 'ids' ) || ''
+			).toString(),
+			tags       = (
+				$( '.ai1ec-feed-tags', $feed ).data( 'ids' ) || ''
+			).toString();
+
+		// Populate the feeds form.
+		$( '#ai1ec_feed_url' ).val(
+			$( '.ai1ec-feed-url', $feed ).val()
+		).prop( 'readonly', true );
+		$( '#ai1ec_comments_enabled' ).prop(
+			'checked',
+			$( '.ai1ec-feed-comments-enabled', $feed ).data( 'state' )
+		);
+		$( '#ai1ec_map_display_enabled' ).prop(
+			'checked',
+			$( '.ai1ec-feed-map-display-enabled', $feed ).data( 'state' )
+		);
+		$( '#ai1ec_add_tag_categories' ).prop(
+			'checked',
+			$( '.ai1ec-feed-keep-tags-categories', $feed ).data( 'state' )
+		);
+		$( '#ai1ec_keep_old_events' ).prop(
+			'checked',
+			$( '.ai1ec-feed-keep-old-events', $feed ).data( 'state' )
+		);
+		$( '#ai1ec_feed_import_timezone' ).prop(
+			'checked',
+			$( '.ai1ec-feed-import-timezone', $feed ).data( 'state' )
+		);
+		// Change button caption.
+		$add.addClass( 'ai1ec-hidden' );
+		$update.removeClass( 'ai1ec-hidden' );
+		// Add input with feed ID.
+		$( '<input type="hidden" id="ai1ec_feed_id" name="ai1ec_feed_id">' )
+			.val( $( '.ai1ec_feed_id', $feed ).val() )
+			.appendTo( $form );
+		// Set selects with tags and categories.
+		$( '#ai1ec_feed_category' ).select2( 'val', categories.split( ',' ) );
+		$( '#ai1ec_feed_tags' ).select2( 'val', tags.split( ',' ) );
+		// Scroll to the form.
+		window.scroll( 0, $form.offset().top - 40 );
+	}
 
 	/**
 	 * User clicks "Remove" or "Keep" in ICS feed delete modal.
@@ -99,16 +161,16 @@ define(
 
 		var remove_events = $( this ).hasClass( 'remove' ) ? true : false,
 		    // Get the button element associated with the feed.
-		    $button = $( $( this ).data( 'el' ) ),
+		    $button    = $( $( this ).data( 'el' ) ),
 		    // Get the feed container.
 		    $container = $button.closest( '.ai1ec-feed-container' ),
 		    // Get the feed's ID.
-		    ics_id = $( '.ai1ec_feed_id', $container ).val(),
+		    ics_id     = $( '.ai1ec_feed_id', $container ).val(),
 		    // Create the data to send.
-		    data = {
-		    	"action"        : 'ai1ec_delete_ics',
-		    	"ics_id"        : ics_id,
-		    	"remove_events" : remove_events
+		    data       = {
+		    	'action'        : 'ai1ec_delete_ics',
+		    	'ics_id'        : ics_id,
+		    	'remove_events' : remove_events
 		    };
 
 		// Activate button loading state.
@@ -153,19 +215,22 @@ define(
 	};
 
 	var feed_url_change = function() {
-		var $value = $( this ).val();
-		var $pattern = /.google./i;
+		var
+			$value   = $( this ).val(),
+			$pattern = /.google./i;
+
 		if ( $pattern.test( $value ) ) {
-			$( '#ai1ec_feed_import_timezone').prop( 'checked', true );
+			$( '#ai1ec_feed_import_timezone' ).prop( 'checked', true );
 		}
 	};
 
 	return {
-		"add_new_feed"        : add_new_feed,
-		"submit_delete_modal" : submit_delete_modal,
-		"open_delete_modal"   : open_delete_modal,
-		"update_feed"         : update_feed,
-		"feed_url_change"     : feed_url_change
+		'add_new_feed'        : add_new_feed,
+		'submit_delete_modal' : submit_delete_modal,
+		'open_delete_modal'   : open_delete_modal,
+		'update_feed'         : update_feed,
+		'edit_feed'           : edit_feed,
+		'feed_url_change'     : feed_url_change
 	};
 
 } );

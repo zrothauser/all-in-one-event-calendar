@@ -84,7 +84,12 @@
 				'<i class="ai1ec-fa ai1ec-fa-spinner ai1ec-fa-spin ai1ec-fa-fw"></i> ' .
 				__( 'Please wait&#8230;', AI1EC_PLUGIN_NAME ) ); ?>">
 			<i class="ai1ec-fa ai1ec-fa-plus"></i>
-			<?php _e( 'Add new subscription', AI1EC_PLUGIN_NAME ) ?>
+			<span id="ai1ec_ics_add_new">
+				<?php _e( 'Add new subscription', AI1EC_PLUGIN_NAME ); ?>
+			</span>
+			<span id="ai1ec_ics_update" class="ai1ec-hidden">
+				<?php _e( 'Update subscription', AI1EC_PLUGIN_NAME ); ?>
+			</span>
 		</button>
 	</div>
 </div>

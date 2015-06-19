@@ -124,9 +124,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		);
 
 		if (
-			( $view_args['no_navigation'] || $type !== 'html' ) &&
-			'jsonp' !== $type &&
-			$is_json
+			( $view_args['no_navigation'] || $type !== 'html' ) && $is_json
 		) {
 
 			// send data both for json and jsonp as shortcodes are jsonp

@@ -159,7 +159,7 @@ define(
 		for ( var group in custom_groups ) {
 			$( '[id="ai1ec_feed_cfg_' + group.toLowerCase() + '"]' )
 				.select2( 'val',
-					custom_groups[group].split(',') || custom_groups[group]
+					custom_groups[group].split( ',' ) || custom_groups[group]
 				);
 		}
 		// Scroll to the form.

@@ -30,6 +30,7 @@ define(
 			$( '#ai1ec_feed_id' ).remove();
 			$( '#ai1ec_feed_category' ).select2( 'val', '' );
 			$( '#ai1ec_feed_tags' ).select2( 'val', '' );
+			$( '[id^="ai1ec_feed_cfg_"]' ).select2( 'val', '' );
 			var
 				feed_id    = response.update.data.ics_id,
 				$feed      = $( response.message ),

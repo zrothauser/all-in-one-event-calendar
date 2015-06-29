@@ -111,7 +111,16 @@ define(
 			).toString(),
 			tags       = (
 				$( '.ai1ec-feed-tags', $feed ).data( 'ids' ) || ''
-			).toString();
+			).toString(),
+			$custom_groups = $( '.ai1ec-cfg-feed', $feed ),
+			custom_groups  = [];
+			
+		$custom_groups.each( function() {
+			var $this = $( this );
+			custom_groups[
+				$this.attr( 'data-group_name' )
+			] = $this.attr( 'data-terms' );
+		} );
 
 		// Populate the feeds form.
 		$( '#ai1ec_feed_url' ).val(
@@ -147,6 +156,12 @@ define(
 		// Set selects with tags and categories.
 		$( '#ai1ec_feed_category' ).select2( 'val', categories.split( ',' ) );
 		$( '#ai1ec_feed_tags' ).select2( 'val', tags.split( ',' ) );
+		for ( var group in custom_groups ) {
+			$( '[id="ai1ec_feed_cfg_' + group.toLowerCase() + '"]' )
+				.select2( 'val',
+					custom_groups[group].split(',') || custom_groups[group]
+				);
+		}
 		// Scroll to the form.
 		window.scroll( 0, $form.offset().top - 40 );
 	}

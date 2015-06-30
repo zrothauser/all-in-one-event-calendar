@@ -193,7 +193,12 @@
 #ics .ai1ec-feed-actions {
 	margin-top: 15px;
 }
-
+#ics #ai1ec_cancel_ics {
+	display: none;
+}
+#ics .ai1ec-form-group {
+	margin-bottom: 10px;
+}
 
 /* Calendar theme options */
 

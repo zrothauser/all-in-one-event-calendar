@@ -81,6 +81,9 @@ define(
 			.on( 'click', '.ai1ec_update_ics', ics_event_handlers.update_feed )
 			// Edit feed.
 			.on( 'click', '.ai1ec_edit_ics' , ics_event_handlers.edit_feed )
+			// Cancel editing feed.
+			.on( 'click', '#ai1ec_cancel_ics' , ics_event_handlers.edit_cancel )
+			.on( 'click', '.ai1ec-panel-heading > a' , ics_event_handlers.edit_cancel )
 			// Checks import timezone option
 			.on( 'blur', '#ai1ec_feed_url', ics_event_handlers.feed_url_change );
 

@@ -78,6 +78,11 @@
 	</div>
 	<?php do_action( 'ai1ec_ics_row_after_settings', null ); ?>
 	<div class="ai1ec-pull-right">
+    	<button type="button" id="ai1ec_cancel_ics"
+			class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-sm">
+			<i class="ai1ec-fa ai1ec-fa-cancel"></i>
+			<?php _e( 'Cancel', AI1EC_PLUGIN_NAME ); ?>
+		</button>
 		<button type="button" id="ai1ec_add_new_ics"
 			class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-sm"
 			data-loading-text="<?php echo esc_attr(

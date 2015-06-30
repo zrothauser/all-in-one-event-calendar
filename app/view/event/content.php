@@ -152,10 +152,18 @@ HTML;
 			$event->get( 'post' )->post_content,
 			$matches
 		);
+
 		// Check if we have a result, otherwise a notice is issued.
 		if ( empty( $matches ) ) {
 			return null;
 		}
+
+		// Mark found image.
+		$event->get( 'post' )->post_content = str_replace(
+			$matches[1],
+			$matches[1] . ' data-ai1ec-hidden ',
+			$event->get( 'post' )->post_content
+		);
 
 		$url = $matches[2];
 		$size = array( 0, 0 );

@@ -2,13 +2,13 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.2.1.17\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.2.1.18\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2015-06-29 19:20:44+00:00\n"
+"POT-Creation-Date: 2015-06-30 11:09:28+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-06-29 21:20+0200\n"
+"PO-Revision-Date: 2015-06-30 13:09+0200\n"
 "Last-Translator: Timely <support@time.ly>\n"
 "Language-Team:\n"
 
@@ -1015,7 +1015,7 @@ msgid "There are no upcoming events to display at this time."
 msgstr "There are no upcoming events to display at this time."
 
 #: app/view/calendar/view/agenda.php:154 app/view/calendar/widget.php:373
-#: public/admin/feed_row.php:111
+#: public/admin/feed_row.php:112
 msgid "Edit"
 msgstr "Edit"
 
@@ -2230,15 +2230,15 @@ msgstr "Eventbrite Ticketing"
 msgid "Register this event with Eventbrite.com?"
 msgstr "Register this event with Eventbrite.com?"
 
-#: public/admin/box_eventbrite.php:12 public/admin/feed_row.php:42
-#: public/admin/feed_row.php:53 public/admin/feed_row.php:65
-#: public/admin/feed_row.php:77 public/admin/feed_row.php:90
+#: public/admin/box_eventbrite.php:12 public/admin/feed_row.php:43
+#: public/admin/feed_row.php:54 public/admin/feed_row.php:66
+#: public/admin/feed_row.php:78 public/admin/feed_row.php:91
 msgid "Yes"
 msgstr "Yes"
 
-#: public/admin/box_eventbrite.php:14 public/admin/feed_row.php:44
-#: public/admin/feed_row.php:55 public/admin/feed_row.php:67
-#: public/admin/feed_row.php:79 public/admin/feed_row.php:92
+#: public/admin/box_eventbrite.php:14 public/admin/feed_row.php:45
+#: public/admin/feed_row.php:56 public/admin/feed_row.php:68
+#: public/admin/feed_row.php:80 public/admin/feed_row.php:93
 msgid "No"
 msgstr "No"
 
@@ -2343,7 +2343,7 @@ msgid "Ending after"
 msgstr "Ending after"
 
 #: public/admin/box_repeat.php:109
-#: public/admin/plugins/ics/display_feeds.php:85
+#: public/admin/plugins/ics/display_feeds.php:90
 msgid "Please wait&#8230;"
 msgstr "Please wait&#8230;"
 
@@ -2352,6 +2352,7 @@ msgid "Apply"
 msgstr "Apply"
 
 #: public/admin/box_repeat.php:116
+#: public/admin/plugins/ics/display_feeds.php:84
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -2499,31 +2500,31 @@ msgstr "Hourly"
 msgid "Twice Daily"
 msgstr "Twice Daily"
 
-#: public/admin/feed_row.php:13 public/admin/plugins/ics/display_feeds.php:27
+#: public/admin/feed_row.php:14 public/admin/plugins/ics/display_feeds.php:27
 msgid "iCalendar/.ics Feed URL:"
 msgstr "iCalendar/.ics Feed URL:"
 
-#: public/admin/feed_row.php:23
+#: public/admin/feed_row.php:24
 msgid "Event categories:"
 msgstr "Event categories:"
 
-#: public/admin/feed_row.php:30
+#: public/admin/feed_row.php:31
 msgid "Tag with"
 msgstr "Tag with"
 
-#: public/admin/feed_row.php:39
+#: public/admin/feed_row.php:40
 msgid "Allow comments"
 msgstr "Allow comments"
 
-#: public/admin/feed_row.php:50
+#: public/admin/feed_row.php:51
 msgid "Show map"
 msgstr "Show map"
 
-#: public/admin/feed_row.php:62
+#: public/admin/feed_row.php:63
 msgid "Keep original events categories and tags"
 msgstr "Keep original events categories and tags"
 
-#: public/admin/feed_row.php:74 public/admin/plugins/ics/display_feeds.php:67
+#: public/admin/feed_row.php:75 public/admin/plugins/ics/display_feeds.php:67
 msgid ""
 "On refresh, preserve previously imported events that are missing from the "
 "feed"
@@ -2531,7 +2532,7 @@ msgstr ""
 "On refresh, preserve previously imported events that are missing from the "
 "feed"
 
-#: public/admin/feed_row.php:85 public/admin/plugins/ics/display_feeds.php:74
+#: public/admin/feed_row.php:86 public/admin/plugins/ics/display_feeds.php:74
 msgid ""
 "Guesses the time zone of events that have none specified; recommended for "
 "Google Calendar feeds"
@@ -2539,23 +2540,23 @@ msgstr ""
 "Guesses the time zone of events that have none specified; recommended for "
 "Google Calendar feeds"
 
-#: public/admin/feed_row.php:86 public/admin/plugins/ics/display_feeds.php:75
+#: public/admin/feed_row.php:87 public/admin/plugins/ics/display_feeds.php:75
 msgid "Assign default time zone to events in UTC"
 msgstr "Assign default time zone to events in UTC"
 
-#: public/admin/feed_row.php:103
+#: public/admin/feed_row.php:104
 msgid "Refreshing&#8230;"
 msgstr "Refreshing&#8230;"
 
-#: public/admin/feed_row.php:105
+#: public/admin/feed_row.php:106
 msgid "Refresh"
 msgstr "Refresh"
 
-#: public/admin/feed_row.php:118
+#: public/admin/feed_row.php:119
 msgid "Removing&#8230;"
 msgstr "Removing&#8230;"
 
-#: public/admin/feed_row.php:120
+#: public/admin/feed_row.php:121
 msgid "Remove"
 msgstr "Remove"
 
@@ -2593,11 +2594,11 @@ msgid ""
 msgstr ""
 "Import any tags/categories provided by feed, in addition those selected above"
 
-#: public/admin/plugins/ics/display_feeds.php:88
+#: public/admin/plugins/ics/display_feeds.php:93
 msgid "Add new subscription"
 msgstr "Add new subscription"
 
-#: public/admin/plugins/ics/display_feeds.php:91
+#: public/admin/plugins/ics/display_feeds.php:96
 msgid "Update subscription"
 msgstr "Update subscription"
 
@@ -2901,9 +2902,9 @@ msgstr "Today background"
 msgid "All-in-One Event Calendar by Time.ly"
 msgstr "All-in-One Event Calendar by Time.ly"
 
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.2.1.17)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.2.1.18)  #-#-#-#-#
 #. Plugin URI of the plugin/theme
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.2.1.17)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.2.1.18)  #-#-#-#-#
 #. Author URI of the plugin/theme
 msgid "http://time.ly/"
 msgstr "http://time.ly/"

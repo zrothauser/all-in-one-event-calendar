@@ -152,7 +152,6 @@ HTML;
 			$event->get( 'post' )->post_content,
 			$matches
 		);
-
 		// Check if we have a result, otherwise a notice is issued.
 		if ( empty( $matches ) ) {
 			return null;

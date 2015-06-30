@@ -162,9 +162,29 @@ define(
 					custom_groups[group].split( ',' ) || custom_groups[group]
 				);
 		}
-		// Scroll to the form.
-		window.scroll( 0, $form.offset().top - 40 );
+		// Move the form.
+		$( '.ai1ec-feed-content', $feed ).hide();
+		$( '#ai1ec_cancel_ics' ).show();
+		$( '#ai1ec-feeds-after' )
+			.removeClass( 'ai1ec-well ai1ec-well-sm' )
+			.insertAfter( '.ai1ec-feed-content' );	
 	}
+
+	/**
+	 * Cancel editing.
+	 *
+	 * @param {object} e Event object
+	 */
+	var edit_cancel = function( e ) {
+		$( '#ai1ec-feeds-after' )
+			.addClass( 'ai1ec-well ai1ec-well-sm' )
+			.insertAfter( '#ics .ai1ec-form-horizontal' );	
+		
+		$( '.ai1ec-feed-content' ).show();
+		ajax_handlers.reset_form();
+		$( this ).hide();
+		return false;
+	};
 
 	/**
 	 * User clicks "Remove" or "Keep" in ICS feed delete modal.
@@ -245,6 +265,7 @@ define(
 		'open_delete_modal'   : open_delete_modal,
 		'update_feed'         : update_feed,
 		'edit_feed'           : edit_feed,
+		'edit_cancel'         : edit_cancel,
 		'feed_url_change'     : feed_url_change
 	};
 

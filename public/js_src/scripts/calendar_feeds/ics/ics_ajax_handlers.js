@@ -25,22 +25,17 @@ define(
 			$( '#ics-alerts' ).append( $alert );
 		} else {
 			// Reset the form and add the feed to the bottom of the list.
-			$url.val( ' ' ).prop( 'readonly', false );
-			$( '#ai1ec-feeds-after input[type="checkbox"]' ).prop( 'checked', false );
-			$( '#ai1ec_feed_id' ).remove();
-			$( '#ai1ec_feed_category' ).select2( 'val', '' );
-			$( '#ai1ec_feed_tags' ).select2( 'val', '' );
-			$( '[id^="ai1ec_feed_cfg_"]' ).select2( 'val', '' );
+			reset_form();
+			$( '#ai1ec-feeds-after' )
+				.addClass( 'ai1ec-well ai1ec-well-sm' )
+				.insertAfter( '#ics .ai1ec-form-horizontal' );
+
 			var
 				feed_id    = response.update.data.ics_id,
 				$feed      = $( response.message ),
-				$add       = $( '#ai1ec_ics_add_new, #ai1ec_add_new_ics > i' ),
-				$update    = $( '#ai1ec_ics_update' ),
 				$container = $( '.ai1ec_feed_id[value="' + feed_id + '"] ')
 				.closest( '.ai1ec-feed-container' );;
 
-			$add.removeClass( 'ai1ec-hidden' );
-			$update.addClass( 'ai1ec-hidden' );
 			$feed.find( '.ai1ec-collapse' ).removeClass( 'ai1ec-collapse' );
 			var $container = $( '.ai1ec_feed_id[value="' + feed_id + '"] ')
 				.closest( '.ai1ec-feed-container' );
@@ -100,9 +95,28 @@ define(
 		$( '#ics-alerts' ).append( $alert );
 	};
 
+	var reset_form = function() {
+		$( '#ai1ec_feed_url' )
+			.val( ' ' )
+			.prop( 'readonly', false );
+
+		$( '#ai1ec-feeds-after input[type="checkbox"]' )
+			.prop( 'checked', false );
+
+		$( '#ai1ec_feed_id' ).remove();
+		$( '#ai1ec_feed_category' ).select2( 'val', '' );
+		$( '#ai1ec_feed_tags' ).select2( 'val', '' );
+		$( '[id^="ai1ec_feed_cfg_"]' ).select2( 'val', '' );
+		$( '#ai1ec_ics_add_new, #ai1ec_add_new_ics > i' )
+			.removeClass( 'ai1ec-hidden' );
+	
+		$( '#ai1ec_ics_update' ).addClass( 'ai1ec-hidden' );
+	}
+
 	return {
 		"handle_add_new_ics" : handle_add_new_ics,
 		"handle_delete_ics"  : handle_delete_ics,
-		"handle_update_ics"  : handle_update_ics
+		"handle_update_ics"  : handle_update_ics,
+		"reset_form"         : reset_form
 	};
 } );

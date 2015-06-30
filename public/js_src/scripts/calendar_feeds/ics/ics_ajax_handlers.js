@@ -34,7 +34,7 @@ define(
 				feed_id    = response.update.data.ics_id,
 				$feed      = $( response.message ),
 				$container = $( '.ai1ec_feed_id[value="' + feed_id + '"] ')
-				.closest( '.ai1ec-feed-container' );;
+					.closest( '.ai1ec-feed-container' );
 
 			$feed.find( '.ai1ec-collapse' ).removeClass( 'ai1ec-collapse' );
 			var $container = $( '.ai1ec_feed_id[value="' + feed_id + '"] ')
@@ -111,6 +111,7 @@ define(
 			.removeClass( 'ai1ec-hidden' );
 	
 		$( '#ai1ec_ics_update' ).addClass( 'ai1ec-hidden' );
+		$( '#ics .ai1ec-alert' ).remove();
 	}
 
 	return {

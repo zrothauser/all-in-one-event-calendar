@@ -163,11 +163,15 @@ define(
 				);
 		}
 		// Move the form.
-		$( '.ai1ec-feed-content', $feed ).hide();
+		var $feed_content = $( '.ai1ec-feed-content', $feed );
+		$feed_content.hide();
 		$( '#ai1ec_cancel_ics' ).show();
 		$( '#ai1ec-feeds-after' )
 			.removeClass( 'ai1ec-well ai1ec-well-sm' )
-			.insertAfter( '.ai1ec-feed-content' );	
+			.insertAfter( $feed_content );	
+			
+		// Remove alerts.
+		$( '#ics .ai1ec-alert' ).remove();
 	}
 
 	/**
@@ -182,7 +186,7 @@ define(
 		
 		$( '.ai1ec-feed-content' ).show();
 		ajax_handlers.reset_form();
-		$( this ).hide();
+		$( '#ai1ec_cancel_ics' ).hide();
 		return false;
 	};
 

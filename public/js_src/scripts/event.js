@@ -25,12 +25,26 @@ define(
 		);
 	};
 
+	var images_in_post_content = function() {
+		$( '#timely-description img[data-ai1ec-hidden]' ).each( function() {
+			var
+				$this        = $( this ),
+				post_img_src = $( '#timely-event-poster img' ).attr( 'src' );
+
+			if ( $this.attr( 'src' ) != post_img_src ) {
+				$this.removeAttr( 'data-ai1ec-hidden' );
+			}
+		} );
+	};
+
 	var start = function() {
 		domReady( function() {
 			// Initialize the page.
 			// We wait for the DOM to be loaded so we load the map only when able.
 			init();
 			attach_event_handlers();
+			// Don't hide image in description if it's not the same as the main one.
+			images_in_post_content();
 			// Trigger execution of any other actions to initialize event details.
 			$( document ).trigger( 'event_page_ready.ai1ec' );
 			// We need it for JS that will be loaded after this event.

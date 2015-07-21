@@ -667,10 +667,6 @@ class Ai1ec_Front_Controller {
 				array( 'view.admin.add-new-event', 'event_meta_box_container' )
 			);
 			$dispatcher->register_action(
-				'add_meta_boxes',
-				array( 'view.admin.add-new-event', 'event_banner_meta_box_container' )
-			);
-			$dispatcher->register_action(
 				'edit_form_after_title',
 				array( 'view.admin.add-new-event', 'event_inline_alert' )
 			);

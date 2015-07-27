@@ -159,8 +159,8 @@ HTML;
 
 		// Mark found image.
 		$event->get( 'post' )->post_content = str_replace(
-			$matches[1],
-			$matches[1] . ' data-ai1ec-hidden ',
+			'<img' . $matches[1],
+			'<img' . $matches[1] . ' data-ai1ec-hidden ',
 			$event->get( 'post' )->post_content
 		);
 

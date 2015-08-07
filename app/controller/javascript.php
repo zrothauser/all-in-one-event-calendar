@@ -416,7 +416,7 @@ class Ai1ec_Javascript_Controller {
 				'When the "Input coordinates" checkbox is checked, "Longitude" is a required field.'
 			),
 			'ai1ec_contact_url_not_valid'         => Ai1ec_I18n::__(
-				'The URL you have entered in the <b>Organizer Contact Info</b> &gt; <b>Your Website</b> seems to be invalid.'
+				'The URL you have entered in the <b>Organizer Contact Info</b> &gt; <b>Website URL</b> seems to be invalid.'
 			),
 			'ai1ec_ticket_url_not_valid'           => Ai1ec_I18n::__(
 				'The URL you have entered in the <b>Event Cost and Tickets</b> &gt; <b>Buy Tickets URL</b> seems to be invalid.'

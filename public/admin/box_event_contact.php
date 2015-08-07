@@ -53,7 +53,7 @@
 				<tr>
 					<td>
 						<label for="ai1ec_contact_url">
-							<?php _e( 'External URL:', AI1EC_PLUGIN_NAME ); ?>
+							<?php _e( 'Website URL:', AI1EC_PLUGIN_NAME ); ?>
 						</label>
 					</td>
 					<td>

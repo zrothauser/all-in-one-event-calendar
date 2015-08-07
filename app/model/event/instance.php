@@ -65,11 +65,11 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 		$instances     = $this->_create_instances_collection( $event );
 		$insert        = array();
 		foreach ( $instances as $instance ) {
-			if ( ! isset( $old_instances[$instance['start']] ) ) {
+			if ( ! isset( $old_instances[$instance['start'] . ':' . $instance['end']] ) ) {
 				$insert[] = $instance;
 				continue;
 			}
-			unset( $old_instances[$instance['start']] );
+			unset( $old_instances[$instance['start'] . ':' . $instance['end']] );
 		}
 		$this->_remove_instances_by_ids( array_values( $old_instances ) );
 		$this->_add_instances( $insert );
@@ -285,7 +285,7 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 	 */
 	protected function _load_instances( $post_id ) {
 		$query = $this->_dbi->prepare(
-			'SELECT id, start FROM ' .
+			'SELECT `id`, `start`, `end` FROM ' .
 			$this->_dbi->get_table_name( 'ai1ec_event_instances' ) .
 			' WHERE post_id = %d',
 			$post_id
@@ -293,7 +293,7 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 		$results   = $this->_dbi->get_results( $query );
 		$instances = array();
 		foreach ( $results as $result ) {
-			$instances[(int)$result->start] = (int)$result->id;
+			$instances[(int)$result->start . ':' . (int)$result->end] = (int)$result->id;
 		}
 		return $instances;
 	}

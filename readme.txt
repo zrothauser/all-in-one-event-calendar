@@ -98,7 +98,7 @@ You can help translate by going to
 If your goal is to run a community event calendar, Timely's All-in-one
 Event Calendar has everything you'll need.
 
-http://vimeo.com/55904173
+https://vimeo.com/135004810
 
 = Helpful Links =
 

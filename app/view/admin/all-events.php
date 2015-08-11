@@ -75,7 +75,8 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 	 * @return void
 	 **/
 	public function sortable_columns( $columns ) {
-		$columns["ai1ec_event_date"] = 'ai1ec_event_date';
+		$columns['author'] = 'author';
+		$columns['ai1ec_event_date'] = 'ai1ec_event_date';
 		return $columns;
 	}
 
@@ -109,6 +110,23 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 				));
 			}
 		}
+	}
+
+	/**
+	 * author_filter_restrict_manage_posts function
+	 *
+	 * Adds filter dropdowns for event authors
+	 *
+	 * @uses wp_dropdown_users To create a dropdown with current user selected 
+	 *
+	 * @return void
+	 */
+	function author_filter_restrict_manage_posts() {
+		$args = array('name' => 'author', 'show_option_all' => 'Show All Authors');
+		if (isset($_GET['user'])) {
+			$args['selected'] = (int)$_GET['user'];
+		}
+		wp_dropdown_users($args);
 	}
 	
 	/**

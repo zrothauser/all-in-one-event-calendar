@@ -181,6 +181,7 @@ class Ai1ec_Calendar_View_Month extends Ai1ec_Calendar_View_Abstract {
 		// Align date to first of month, month offset applied.
 
 		$orig_date
+			->set_timezone('UTC')
 			->set_date(
 				$orig_date->format( 'Y' ),
 				$orig_date->format( 'm' ) + $args['month_offset'],

@@ -18,6 +18,13 @@ class Ai1ec_Ics_Import_Export_Engine
 	 */
 	protected $_taxonomy_model = null;
 
+	/**
+	 * Recurrence rule class. Contains filter method.
+	 *
+	 * @var Ai1ec_Recurrence_Rule
+	 */
+	protected $_rule_filter = null;
+
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Import_Export_Engine::import()
 	 */
@@ -950,9 +957,10 @@ class Ai1ec_Ics_Import_Export_Engine
 		// ====================
 		$rrule = array();
 		$recurrence = $event->get( 'recurrence_rules' );
+		$recurrence = $this->_filter_rule( $recurrence );
 		if ( ! empty( $recurrence ) ) {
 			$rules = array();
-			foreach ( explode( ';', $event->get( 'recurrence_rules' ) ) as $v) {
+			foreach ( explode( ';', $recurrence ) as $v) {
 				if ( strpos( $v, '=' ) === false ) {
 					continue;
 				}
@@ -993,6 +1001,7 @@ class Ai1ec_Ics_Import_Export_Engine
 		// = Exception rules =
 		// ===================
 		$exceptions = $event->get( 'exception_rules' );
+		$exceptions = $this->_filter_rule( $exceptions );
 		$exrule = array();
 		if ( ! empty( $exceptions ) ) {
 			$rules = array();
@@ -1050,6 +1059,7 @@ class Ai1ec_Ics_Import_Export_Engine
 		// For other other events which use DATETIME, we must use that as well
 		// We must also match the exact starting time
 		$recurrence_dates = $event->get( 'recurrence_dates' );
+		$recurrence_dates = $this->_filter_rule( $recurrence_dates );
 		if ( ! empty( $recurrence_dates ) ) {
 			$params    = array(
 				'VALUE' => 'DATE-TIME',
@@ -1072,6 +1082,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			}
 		}
 		$exception_dates = $event->get( 'exception_dates' );
+		$exception_dates = $this->_filter_rule( $exception_dates );
 		if ( ! empty( $exception_dates ) ) {
 			$params    = array(
 				'VALUE' => 'DATE-TIME',
@@ -1222,6 +1233,20 @@ class Ai1ec_Ics_Import_Export_Engine
 		);
 		$exclusions[$e->getProperty( 'uid' )][] = $exdate;
 		return $exclusions;
+	}
+
+	/**
+	 * Filter recurrence / exclusion rule or dates. Avoid throwing exception for old, malformed values.
+	 *
+	 * @param string $rule Rule or dates value.
+	 *
+	 * @return string Fixed rule or dates value.
+	 */
+	protected function _filter_rule( $rule ) {
+		if ( null === $this->_rule_filter ) {
+			$this->_rule_filter = $this->_registry->get( 'recurrence.rule' );
+		}
+		return $this->_rule_filter->filter_rule( $rule );
 	}
 
 }

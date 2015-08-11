@@ -40,6 +40,8 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 					: '';
 			}
 
+			$rule = $this->_registry->get( 'recurrence.rule' )->filter_rule( $rule );
+
 			$rc = new SG_iCal_Recurrence(
 				new SG_iCal_Line( 'RRULE:' . $rule )
 			);

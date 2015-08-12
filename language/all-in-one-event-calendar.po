@@ -2,13 +2,13 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.2.1.23\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.2.1.24\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2015-08-07 16:49:14+00:00\n"
+"POT-Creation-Date: 2015-08-12 16:35:24+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-08-07 18:49+0200\n"
+"PO-Revision-Date: 2015-08-13 00:35+0800\n"
 "Last-Translator: Timely <support@time.ly>\n"
 "Language-Team:\n"
 
@@ -633,104 +633,104 @@ msgstr ""
 "Assign an optional image to the category. Recommended size: square, minimum "
 "400&times;400 pixels."
 
-#: app/view/admin/get-repeat-box.php:92
+#: app/view/admin/get-repeat-box.php:94
 msgid "times"
 msgstr "times"
 
-#: app/view/admin/get-repeat-box.php:162
+#: app/view/admin/get-repeat-box.php:164
 msgid "Recurrence rule cannot be empty."
 msgstr "Recurrence rule cannot be empty."
 
-#: app/view/admin/get-repeat-box.php:180
+#: app/view/admin/get-repeat-box.php:182
 msgid "Recurrence rule was not provided."
 msgstr "Recurrence rule was not provided."
 
-#: app/view/admin/get-repeat-box.php:207
+#: app/view/admin/get-repeat-box.php:209
 msgid "Never"
 msgstr "Never"
 
-#: app/view/admin/get-repeat-box.php:208
+#: app/view/admin/get-repeat-box.php:210
 msgid "After"
 msgstr "After"
 
-#: app/view/admin/get-repeat-box.php:209 public/admin/box_repeat.php:93
+#: app/view/admin/get-repeat-box.php:211 public/admin/box_repeat.php:93
 msgid "On date"
 msgstr "On date"
 
-#: app/view/admin/get-repeat-box.php:245
+#: app/view/admin/get-repeat-box.php:247
 msgid "day(s)"
 msgstr "day(s)"
 
-#: app/view/admin/get-repeat-box.php:328
+#: app/view/admin/get-repeat-box.php:330
 msgid "week(s)"
 msgstr "week(s)"
 
-#: app/view/admin/get-repeat-box.php:411 app/view/admin/get-repeat-box.php:483
-#: lib/recurrence/rule.php:279
+#: app/view/admin/get-repeat-box.php:413 app/view/admin/get-repeat-box.php:485
+#: lib/recurrence/rule.php:297
 msgid "last"
 msgstr "last"
 
-#: app/view/admin/get-repeat-box.php:424
+#: app/view/admin/get-repeat-box.php:426
 msgid "month(s)"
 msgstr "month(s)"
 
-#: app/view/admin/get-repeat-box.php:478
+#: app/view/admin/get-repeat-box.php:480
 msgid "first"
 msgstr "first"
 
-#: app/view/admin/get-repeat-box.php:479
+#: app/view/admin/get-repeat-box.php:481
 msgid "second"
 msgstr "second"
 
-#: app/view/admin/get-repeat-box.php:480
+#: app/view/admin/get-repeat-box.php:482
 msgid "third"
 msgstr "third"
 
-#: app/view/admin/get-repeat-box.php:481
+#: app/view/admin/get-repeat-box.php:483
 msgid "fourth"
 msgstr "fourth"
 
-#: app/view/admin/get-repeat-box.php:493
+#: app/view/admin/get-repeat-box.php:495
 msgid "Sunday"
 msgstr "Sunday"
 
-#: app/view/admin/get-repeat-box.php:494
+#: app/view/admin/get-repeat-box.php:496
 msgid "Monday"
 msgstr "Monday"
 
-#: app/view/admin/get-repeat-box.php:495
+#: app/view/admin/get-repeat-box.php:497
 msgid "Tuesday"
 msgstr "Tuesday"
 
-#: app/view/admin/get-repeat-box.php:496
+#: app/view/admin/get-repeat-box.php:498
 msgid "Wednesday"
 msgstr "Wednesday"
 
-#: app/view/admin/get-repeat-box.php:497
+#: app/view/admin/get-repeat-box.php:499
 msgid "Thursday"
 msgstr "Thursday"
 
-#: app/view/admin/get-repeat-box.php:498
+#: app/view/admin/get-repeat-box.php:500
 msgid "Friday"
 msgstr "Friday"
 
-#: app/view/admin/get-repeat-box.php:499
+#: app/view/admin/get-repeat-box.php:501
 msgid "Saturday"
 msgstr "Saturday"
 
-#: app/view/admin/get-repeat-box.php:501
+#: app/view/admin/get-repeat-box.php:503
 msgid "day"
 msgstr "day"
 
-#: app/view/admin/get-repeat-box.php:502
+#: app/view/admin/get-repeat-box.php:504
 msgid "weekday"
 msgstr "weekday"
 
-#: app/view/admin/get-repeat-box.php:503
+#: app/view/admin/get-repeat-box.php:505
 msgid "weekend day"
 msgstr "weekend day"
 
-#: app/view/admin/get-repeat-box.php:569
+#: app/view/admin/get-repeat-box.php:571
 msgid "year(s)"
 msgstr "year(s)"
 
@@ -1870,92 +1870,92 @@ msgstr ""
 msgid "All Events"
 msgstr "All Events"
 
-#: lib/recurrence/rule.php:225 lib/recurrence/rule.php:234
-#: lib/recurrence/rule.php:242
+#: lib/recurrence/rule.php:243 lib/recurrence/rule.php:252
+#: lib/recurrence/rule.php:260
 msgctxt "Recurrence editor - weekly tab"
 msgid "on"
 msgstr "on"
 
-#: lib/recurrence/rule.php:230 lib/recurrence/rule.php:259
-#: lib/recurrence/rule.php:307
+#: lib/recurrence/rule.php:248 lib/recurrence/rule.php:277
+#: lib/recurrence/rule.php:325
 msgid "and"
 msgstr "and"
 
-#: lib/recurrence/rule.php:255 lib/recurrence/rule.php:262
-#: lib/recurrence/rule.php:268 lib/recurrence/rule.php:289
+#: lib/recurrence/rule.php:273 lib/recurrence/rule.php:280
+#: lib/recurrence/rule.php:286 lib/recurrence/rule.php:307
 msgctxt "Recurrence editor - monthly tab"
 msgid "on"
 msgstr "on"
 
-#: lib/recurrence/rule.php:255 lib/recurrence/rule.php:262
-#: lib/recurrence/rule.php:268
+#: lib/recurrence/rule.php:273 lib/recurrence/rule.php:280
+#: lib/recurrence/rule.php:286
 msgid "of the month"
 msgstr "of the month"
 
-#: lib/recurrence/rule.php:302 lib/recurrence/rule.php:310
-#: lib/recurrence/rule.php:317
+#: lib/recurrence/rule.php:320 lib/recurrence/rule.php:328
+#: lib/recurrence/rule.php:335
 msgctxt "Recurrence editor - yearly tab"
 msgid "on"
 msgstr "on"
 
-#: lib/recurrence/rule.php:357 public/admin/box_repeat.php:16
+#: lib/recurrence/rule.php:375 public/admin/box_repeat.php:16
 #: public/admin/cron_freq.php:9
 msgid "Daily"
 msgstr "Daily"
 
-#: lib/recurrence/rule.php:360
+#: lib/recurrence/rule.php:378
 msgid "Every other day"
 msgstr "Every other day"
 
-#: lib/recurrence/rule.php:363
+#: lib/recurrence/rule.php:381
 msgid "Every %d days"
 msgstr "Every %d days"
 
-#: lib/recurrence/rule.php:372 public/admin/box_repeat.php:21
+#: lib/recurrence/rule.php:390 public/admin/box_repeat.php:21
 msgid "Weekly"
 msgstr "Weekly"
 
-#: lib/recurrence/rule.php:375
+#: lib/recurrence/rule.php:393
 msgid "Every other week"
 msgstr "Every other week"
 
-#: lib/recurrence/rule.php:378
+#: lib/recurrence/rule.php:396
 msgid "Every %d weeks"
 msgstr "Every %d weeks"
 
-#: lib/recurrence/rule.php:387 public/admin/box_repeat.php:26
+#: lib/recurrence/rule.php:405 public/admin/box_repeat.php:26
 msgid "Monthly"
 msgstr "Monthly"
 
-#: lib/recurrence/rule.php:390
+#: lib/recurrence/rule.php:408
 msgid "Every other month"
 msgstr "Every other month"
 
-#: lib/recurrence/rule.php:393
+#: lib/recurrence/rule.php:411
 msgid "Every %d months"
 msgstr "Every %d months"
 
-#: lib/recurrence/rule.php:402 public/admin/box_repeat.php:31
+#: lib/recurrence/rule.php:420 public/admin/box_repeat.php:31
 msgid "Yearly"
 msgstr "Yearly"
 
-#: lib/recurrence/rule.php:405
+#: lib/recurrence/rule.php:423
 msgid "Every other year"
 msgstr "Every other year"
 
-#: lib/recurrence/rule.php:408
+#: lib/recurrence/rule.php:426
 msgid "Every %d years"
 msgstr "Every %d years"
 
-#: lib/recurrence/rule.php:446
+#: lib/recurrence/rule.php:464
 msgid "until %s"
 msgstr "until %s"
 
-#: lib/recurrence/rule.php:456
+#: lib/recurrence/rule.php:474
 msgid "for %d occurrences"
 msgstr "for %d occurrences"
 
-#: lib/recurrence/rule.php:460
+#: lib/recurrence/rule.php:478
 msgid "forever"
 msgstr "forever"
 
@@ -2898,9 +2898,9 @@ msgstr "Today background"
 msgid "All-in-One Event Calendar by Time.ly"
 msgstr "All-in-One Event Calendar by Time.ly"
 
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.2.1.23)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.2.1.24)  #-#-#-#-#
 #. Plugin URI of the plugin/theme
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.2.1.23)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.2.1.24)  #-#-#-#-#
 #. Author URI of the plugin/theme
 msgid "http://time.ly/"
 msgstr "http://time.ly/"

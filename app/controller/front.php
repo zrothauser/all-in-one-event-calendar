@@ -677,6 +677,10 @@ class Ai1ec_Front_Controller {
 				2
 			);
 			$dispatcher->register_action(
+				'wp_publish_post',
+				array( 'model.event', 'admin_published_submitted_event_post' )
+			);
+			$dispatcher->register_action(
 				'wp_insert_post_data',
 				array( 'model.event.creating', 'wp_insert_post_data' )
 			);

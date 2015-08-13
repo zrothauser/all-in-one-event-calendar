@@ -232,7 +232,12 @@ define(
 	 *
 	 * @param {string} hash The hash string requesting a calendar view
 	 */
+	var loading_view_request = false;
+	var ajax_cache = {};
 	var load_view = function( $calendar, hash, type ) {
+		// Process links.
+		process_links( $calendar, hash );
+
 		// Reveal loader behind view
 		$calendar
 			.find( '.ai1ec-calendar-view-loading' )
@@ -242,19 +247,28 @@ define(
 				// After loader is visible, fetch new content
 				function() {
 					var query = {
-							request_type: type,
-							ai1ec_doing_ajax : true
+						request_type     : type,
+						ai1ec_doing_ajax : true
 					};
 					// remove alerts if present
 					$( '#ai1ec-container > .ai1ec-alert' ).remove();
+					// Abort active request
+					if ( loading_view_request && 1 === loading_view_request.readyState ) {
+						loading_view_request.abort( 'ai1ec_abort' );
+					}
 					// Fetch AJAX result
-					var request = $.ajax( {
-						url : hash,
-						dataType: type,
-						data: query,
-						method : 'get'
-					} )
-					request.done( function( data ) {
+					if ( ! ajax_cache[hash + query] ) {
+						loading_view_request = $.ajax( {
+							url      : hash,
+							dataType : type,
+							data     : query,
+							method   : 'GET'
+						} );
+						ajax_cache[hash + query] = loading_view_request.promise();
+					} else {
+						loading_view_request = ajax_cache[hash + query];
+					}
+					loading_view_request.done( function( data ) {
 						// trigger the event so that other addons can respond
 						$( document ).trigger( 'calendar_view_loaded.ai1ec', $calendar );
 
@@ -336,7 +350,10 @@ define(
 						// Do any general view initialization after loading
 						initialize_view( $calendar );
 					} );
-					request.fail( function( jqXHR, textStatus, errorThrown ) {
+					loading_view_request.fail( function( jqXHR, textStatus, errorThrown ) {
+						if ( 'ai1ec_abort' === textStatus ) {
+							return;
+						}
 						var message = ai1ec_config.load_views_error;
 						message = message.replace( '%STATUS%', jqXHR.status );
 						message = message.replace( '%ERROR%', errorThrown );
@@ -345,7 +362,7 @@ define(
 						destroy_view( $calendar );
 						initialize_view( $calendar );
 					} );
-					request.always( function() {
+					loading_view_request.always( function() {
 						// Hide loader
 						$calendar.find( '.ai1ec-calendar-view-loading' ).fadeOut( 'fast' );
 						$calendar.find( '.ai1ec-calendar-view' ).fadeTo( 'fast', 1.0 );
@@ -500,6 +517,143 @@ define(
 				$( this ).data( 'href' )
 		);
 	};
+
+	var process_links = function( $calendar, hash ) {
+		var
+			fixed_attrs = {},
+			set_links   = function( key, options ) {
+				var
+					$cat_links     = $(
+						'.ai1ec-filters .ai1ec-load-view.' +
+						options.filter_class,
+						$calendar
+					),
+					$filter_button = $( options.filter_button, $calendar ),
+					reg            = new RegExp( key + '~((,?[0-9]+)+)' ),
+					categories     = hash.match( reg ),
+					categories     = categories && categories[1]
+						? $.map( categories[1].split( ',' ), function( value ){
+							return parseInt( value, 10 );
+						})
+						: [];
+
+				fixed_attrs[key] = categories.join( ',' );
+				$cat_links.each( function() {
+					var
+						url             = this.href,
+						$div            = $( this ).closest( '[data-term]' ),
+						id              = $div.data( 'term' ),
+						link_categories = $.extend( true, [], categories );
+
+					if ( -1 < $.inArray( id, categories ) ) {
+						link_categories = $.grep( link_categories, function( value ) {
+							return id != value;
+						} );
+						$div.addClass( 'ai1ec-active' );
+					} else {
+						link_categories.push( id );
+						$div.removeClass( 'ai1ec-active' );
+					}
+
+					var output_cats = link_categories.length
+						? key + '~' + link_categories.join( ',' )
+						: '';
+
+					if ( url.match( reg ) ) {
+						this.href = url.replace( reg, output_cats );
+					} else if ( link_categories.length ) {
+						this.href += '/' + output_cats;
+					}
+
+					this.href = filter_slashes( this.href );
+				} );
+
+				if ( $( options.filter_items, $calendar ).length ) {
+					$filter_button.addClass( 'ai1ec-active' );
+				} else {
+					$filter_button.removeClass( 'ai1ec-active' );
+				}
+
+				$( '.ai1ec-clear-filter', $filter_button ).each( function() {
+					$( this ).attr(
+						'data-href',
+						filter_slashes(
+							$( this ).attr( 'data-href' )
+								.replace( reg, '' )
+						)
+					);
+				} );
+
+			};
+
+		var filters = {};
+		$( 'ul.ai1ec-filters > li', $calendar ).each( function() {
+			var
+				$this = $( this );
+				slug  = $this.data( 'slug' );
+
+			filters[slug + '_ids'] = {
+				filter_class  : 'ai1ec-' + slug,
+				filter_button : 'li.ai1ec-' + slug + '-filter',
+				filter_items  : '.ai1ec-' + slug + '-filter .ai1ec-active'
+			};
+		} );
+		for ( var key in filters ) {
+			set_links( key, filters[key] );
+		}
+
+		for ( var key in fixed_attrs ) {
+			var
+				val = fixed_attrs[key],
+				reg = new RegExp( key + '~((,?[0-9]+)+)' );
+
+			$( '.ai1ec-filters .ai1ec-load-view' ).each( function() {
+				if ( $( this ).hasClass( filters[key].filter_class ) ) return;
+				if ( val ) {
+					if ( this.href.match( reg ) ) {
+						this.href = this.href.replace( reg, key + '~' + val );
+					} else {
+						this.href = this.href + '/' + key + '~' + val;
+					}
+				} else {
+					this.href = filter_slashes( this.href.replace( reg, '' ) );
+				}
+			} );
+			$( '.ai1ec-clear-filter', $calendar ).each( function() {
+				var
+					$this = $( this ),
+					slug  = $this.closest( '[data-slug]' ).data( 'slug' );
+
+				if ( slug === key.substr( 0, key.length - 4 ) || ! val ){
+					$this.attr(
+						'data-href',
+						filter_slashes(
+							$this.attr( 'data-href' ).replace( reg, '' )
+						)
+					);
+				} else if ( $this.attr( 'data-href' ).match( reg ) ) {
+					$this.attr(
+						'data-href',
+						filter_slashes(
+							$this.attr( 'data-href' ).replace( reg, key + '~' + val )
+						)
+					);
+				} else {
+					$this.attr( 'data-href',  filter_slashes(
+						$this.attr( 'data-href' ) + '/' + key + '~' + val )
+					);
+				}
+			} );
+		};
+	};
+
+	// Remove double slashes from URLs.
+	var filter_slashes = function( str ) {
+		return str
+			.replace( /\/\//g, '/' )
+			.replace( /\/\//g, '/' )
+			.replace( /:\//g, '://' )
+	}
 
 	return {
 		initialize_view                    : initialize_view,

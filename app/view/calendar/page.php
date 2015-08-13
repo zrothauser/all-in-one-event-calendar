@@ -133,18 +133,10 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			// send data both for json and jsonp as shortcodes are jsonp
 			return array(
 				'html'               => $view,
-				'categories'         => $categories,
-				'tags'               => $tags,
 				'views_dropdown'     => $views_dropdown,
 				'subscribe_buttons'  => $subscribe_buttons,
 				'are_filters_set'    => $are_filters_set,
 				'is_json'            => $is_json,
-				'custom_filters'     => apply_filters(
-					'ai1ec_custom_filters_html',
-					'',
-					$view_args,
-					$request
-				),
 			);
 
 		} else {
@@ -233,18 +225,10 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			// send data both for json and jsonp as shortcodes are jsonp
 			return array(
 				'html'               => $calendar->get_content(),
-				'categories'         => $categories,
-				'tags'               => $tags,
 				'views_dropdown'     => $views_dropdown,
 				'subscribe_buttons'  => $subscribe_buttons,
 				'are_filters_set'    => $are_filters_set,
-				'is_json'            => $is_json,
-				'custom_filters'     => apply_filters(
-					'ai1ec_custom_filters_html',
-					'',
-					$view_args,
-					$request
-				),
+				'is_json'            => $is_json
 			);
 		}
 	}

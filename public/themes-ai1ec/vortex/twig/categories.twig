@@ -1,5 +1,6 @@
-<li class="ai1ec-dropdown ai1ec-category-filter
-	{% if selected_cat_ids is not empty %}ai1ec-active{% endif %}">
+<li class="ai1ec-dropdown ai1ec-category-filter ai1ec-cat-filter
+	{% if selected_cat_ids is not empty %}ai1ec-active{% endif %}"
+	data-slug="cat">
 	<a class="ai1ec-dropdown-toggle" data-toggle="ai1ec-dropdown">
 		<i class="ai1ec-fa ai1ec-fa-folder-open"></i>
 		<span class="ai1ec-clear-filter ai1ec-tooltip-trigger"
@@ -17,7 +18,7 @@
 				{% if term.term_id in selected_cat_ids %}
 					class="ai1ec-active"
 				{% endif %}>
-				<a class="ai1ec-load-view ai1ec-category"
+				<a class="ai1ec-load-view ai1ec-category ai1ec-cat"
 					{% if term.description is not empty %}
 						title="{{ term.description|e('html_attr') }}"
 					{% endif %}

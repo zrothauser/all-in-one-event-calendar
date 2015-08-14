@@ -1,7 +1,7 @@
 <?php
 
 class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
-	
+
 	/**
 	 * change_columns function
 	 *
@@ -30,10 +30,10 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 	 * @return void
 	 **/
 	public function orderby( $orderby, $wp_query ) {
-		
+
 		$db = $this->_registry->get( 'dbi.dbi' );
 		$aco = $this->_registry->get( 'acl.aco' );
-	
+
 		if( true === $aco->is_all_events_page() ) {
 			$wp_query->query = wp_parse_args( $wp_query->query );
 			$table_name = $db->get_table_name( 'ai1ec_events' );
@@ -46,7 +46,7 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 		}
 		return $orderby;
 	}
-	
+
 	/**
 	 * custom_columns function
 	 *
@@ -66,7 +66,7 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 			}
 		}
 	}
-	
+
 	/**
 	 * sortable_columns function
 	 *
@@ -75,7 +75,6 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 	 * @return void
 	 **/
 	public function sortable_columns( $columns ) {
-		$columns['author'] = 'author';
 		$columns['ai1ec_event_date'] = 'ai1ec_event_date';
 		return $columns;
 	}
@@ -89,7 +88,7 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 	 **/
 	function taxonomy_filter_restrict_manage_posts() {
 		global $typenow;
-	
+
 		// =============================================
 		// = add the dropdowns only on the events page =
 		// =============================================
@@ -113,21 +112,6 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 	}
 
 	/**
-	 * Adds filter dropdowns for event authors
-	 *
-	 * @uses wp_dropdown_users To create a dropdown with current user selected 
-	 *
-	 * @return void
-	 */
-	function author_filter_restrict_manage_posts() {
-		$args = array( 'name' => 'author', 'show_option_all' => 'Show All Authors' );
-		if (isset($_GET['user'])) {
-			$args['selected'] = (int)$_GET['user'];
-		}
-		wp_dropdown_users($args);
-	}
-	
-	/**
 	 * taxonomy_filter_post_type_request function
 	 *
 	 * Adds filtering of events list by event tags and event categories
@@ -142,13 +126,13 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 				$var = &$query->query_vars[$tax_slug];
 				if( isset( $var ) ) {
 					$term = null;
-	
+
 					if( is_numeric( $var ) ) {
 						$term = get_term_by( 'id', $var, $tax_slug );
 					} else {
 						$term = get_term_by( 'slug', $var, $tax_slug );
 					}
-	
+
 					if( isset( $term->slug ) ) {
 						$var = $term->slug;
 					}

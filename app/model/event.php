@@ -610,22 +610,6 @@ class Ai1ec_Event extends Ai1ec_Base {
 	}
 
 	/**
-	 * Handles notifying event submitter of published post.
-	 *
-	 * @param Ai1ec_Event $event Event data.
-	 *
-	 * @return void Method does not return.
-	 */
-	public function admin_published_submitted_event_post() {
-		$email = array( $_POST['ai1ec_contact_email'] );
-		$subject = 'Event Approved!';
-		$body = 'Your event '.array( $_POST['post_title'] ).' has been published and is now live.';
-		$headers = 'From: noreply@time.ly'. "\r\n";
-	
-		wp_mail( $email, $subject, $body, $headers );
-	}
-
-	/**
 	 * Prepare fields format flags to use in database operations.
 	 *
 	 * NOTICE: parameter $entity is ignored as of now.

@@ -154,7 +154,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					$result = $import_export->import_events( 'ics', $args );
 					do_action( 'ai1ec_ics_after_import' );
 					$count  = $result['count'];
-					$feed_name = $result['name'][1] ?: $feed->feed_url;
+					$feed_name = ! empty( $result['name'][1] ) ? $result['name'][1] : $feed->feed_url;
 					// we must flip again the array to iterate over it
 					if ( 0 == $feed->keep_old_events ) {
 						$events_to_delete = array_flip( $result['events_to_delete'] );

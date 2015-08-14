@@ -381,7 +381,7 @@ class Ai1ec_Javascript_Controller {
 		$locale          = $this->_registry->get( 'p28n.wpml' );
 		$blog_timezone   = $this->_registry->get( 'model.option' )
 			->get( 'gmt_offset' );
-
+		$application = $this->_registry->get( 'bootstrap.registry.application' );
 		$data            = array(
 			'calendar_feeds_nonce'           => wp_create_nonce( 'ai1ec_ics_feed_nonce'),
 			// ICS feed error messages
@@ -468,6 +468,7 @@ class Ai1ec_Javascript_Controller {
 			'disable_autocompletion'         => $settings->get( 'disable_autocompletion' ),
 			'end_must_be_after_start'        => __( 'The end date can\'t be earlier than the start date.', AI1EC_PLUGIN_NAME ),
 			'show_at_least_six_hours'        => __( 'For week and day view, you must select an interval of at least 6 hours.', AI1EC_PLUGIN_NAME ),
+			'ai1ec_permalinks_enabled'       => $application->get( 'permalinks_enabled' ),
 		);
 		return apply_filters( 'ai1ec_js_translations', $data );
 	}

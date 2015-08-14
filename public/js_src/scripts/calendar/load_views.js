@@ -518,6 +518,7 @@ define(
 		);
 	};
 
+	var separator = '/';
 	var process_links = function( $calendar, hash ) {
 		var
 			fixed_attrs = {},
@@ -562,7 +563,7 @@ define(
 					if ( url.match( reg ) ) {
 						this.href = url.replace( reg, output_cats );
 					} else if ( link_categories.length ) {
-						this.href += '/' + output_cats;
+						this.href += separator + output_cats;
 					}
 
 					this.href = filter_slashes( this.href );
@@ -613,7 +614,7 @@ define(
 					if ( this.href.match( reg ) ) {
 						this.href = this.href.replace( reg, key + '~' + val );
 					} else {
-						this.href = this.href + '/' + key + '~' + val;
+						this.href = this.href + separator + key + '~' + val;
 					}
 				} else {
 					this.href = filter_slashes( this.href.replace( reg, '' ) );
@@ -640,7 +641,7 @@ define(
 					);
 				} else {
 					$this.attr( 'data-href',  filter_slashes(
-						$this.attr( 'data-href' ) + '/' + key + '~' + val )
+						$this.attr( 'data-href' ) + separator + key + '~' + val )
 					);
 				}
 			} );
@@ -649,10 +650,16 @@ define(
 
 	// Remove double slashes from URLs.
 	var filter_slashes = function( str ) {
-		return str
-			.replace( /\/\//g, '/' )
-			.replace( /\/\//g, '/' )
-			.replace( /:\//g, '://' )
+		if ( '/' === separator) {
+			return str
+				.replace( /\/\//g, '/' )
+				.replace( /\/\//g, '/' )
+				.replace( /:\//g, '://' )
+		} else {
+			return str
+				.replace( /\|\|/g, '|' )
+				.replace( /\|\|/g, '|' );
+		}
 	}
 
 	return {

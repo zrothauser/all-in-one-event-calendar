@@ -76,13 +76,17 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 	 **/
 	public function sortable_columns( $columns ) {
 		$columns['ai1ec_event_date'] = 'ai1ec_event_date';
+		$columns['author']           = 'author';
 		return $columns;
 	}
 
 	/**
 	 * taxonomy_filter_restrict_manage_posts function
 	 *
-	 * Adds filter dropdowns for event categories and event tags
+	 * Adds filter dropdowns for event categories and event tags.
+	 * Adds filter dropdowns for event authors.
+	 *
+	 * @uses wp_dropdown_users To create a dropdown with current user selected.
 	 *
 	 * @return void
 	 **/
@@ -108,6 +112,14 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 				'value_field'     => 'slug',
 				));
 			}
+			$args = array(
+				'name'            => 'author',
+				'show_option_all' => __( 'Show All Authors', AI1EC_PLUGIN_NAME ),
+			);
+			if ( isset( $_GET['user'] ) ) {
+				$args['selected'] = (int)$_GET['user'];
+			}
+			wp_dropdown_users($args);
 		}
 	}
 
@@ -118,7 +130,7 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 	 *
 	 * @return void
 	 **/
-	function taxonomy_filter_post_type_request( $query ) {
+	public function taxonomy_filter_post_type_request( $query ) {
 		global $pagenow, $typenow;
 		if( 'edit.php' === $pagenow ) {
 			$filters = get_object_taxonomies( $typenow );

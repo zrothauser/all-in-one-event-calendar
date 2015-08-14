@@ -518,7 +518,7 @@ define(
 		);
 	};
 
-	var separator = '/';
+	var separator     = ai1ec_config.ai1ec_permalinks_enabled ? '/' : '|';
 	var process_links = function( $calendar, hash ) {
 		var
 			fixed_attrs = {},

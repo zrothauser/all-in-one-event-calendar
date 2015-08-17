@@ -16,7 +16,7 @@ class Ai1ec_Calendar_Updates extends Ai1ec_Base {
 	 *
 	 * @const string
 	 */
-	const PRIMARY_END_POINT = 'http://api.local/update';
+	const PRIMARY_END_POINT = 'http://update.time.ly/update';
 
 	/**
 	 * Alternative update endpoint.
@@ -80,6 +80,16 @@ class Ai1ec_Calendar_Updates extends Ai1ec_Base {
 		}
 
 		return $update_data->response[$plugin_identifier];
+	}
+
+	/**
+	 * Clear updates related transients.
+	 *
+	 * @return void
+	 */
+	public function clear_transients() {
+		delete_site_transient( 'ai1ec_update_plugins' );
+		delete_site_transient( 'update_plugins' );
 	}
 
 	/**

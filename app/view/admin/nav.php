@@ -25,7 +25,7 @@ class Ai1ec_View_Admin_Navigation extends Ai1ec_Base {
 		array_unshift( $links, $settings_link );
 		if ( current_user_can( 'activate_plugins' ) ) {
 			$updates_link = sprintf(
-				Ai1ec_I18n::__( '<a href="%s">Check updates</a>' ),
+				Ai1ec_I18n::__( '<a href="%s">Check for updates</a>' ),
 				ai1ec_admin_url( AI1EC_FORCE_UPDATES_URL )
 			);
 			array_push( $links, $updates_link );

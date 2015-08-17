@@ -738,6 +738,16 @@ class Ai1ec_Front_Controller {
 				'admin_menu',
 				array( 'view.admin.widget-creator', 'add_page' )
 			);
+			$dispatcher->register_filter(
+				'pre_set_site_transient_update_plugins',
+				array( 'calendar.updates', 'check_updates' )
+			);
+			$dispatcher->register_filter(
+				'plugins_api',
+				array( 'calendar.updates', 'plugins_api_filter' ),
+				10,
+				3
+			);
 
 		} else { // ! is_admin()
 			$dispatcher->register_action(

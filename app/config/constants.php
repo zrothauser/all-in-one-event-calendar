@@ -464,4 +464,14 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 			'agenda,oneday,week,month,posterboard,stream'
 		);
 	}
+
+	// ================================================
+	// = Force WordPress updates command link         =
+	// ================================================
+	if ( ! defined( 'AI1EC_FORCE_UPDATES_URL' ) ) {
+		define(
+			'AI1EC_FORCE_UPDATES_URL',
+			AI1EC_ADMIN_BASE_URL . '&ai1ec_force_updates=true'
+		);
+	}
 }

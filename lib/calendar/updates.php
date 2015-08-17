@@ -16,7 +16,7 @@ class Ai1ec_Calendar_Updates extends Ai1ec_Base {
 	 *
 	 * @const string
 	 */
-	const PRIMARY_END_POINT = 'http://update.time.ly/update';
+	const PRIMARY_END_POINT = 'https://update.time.ly/update';
 
 	/**
 	 * Alternative update endpoint.

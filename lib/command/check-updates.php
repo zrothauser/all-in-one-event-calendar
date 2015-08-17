@@ -4,7 +4,7 @@
  * The concrete command that compiles CSS.
  *
  * @author     Time.ly Network Inc.
- * @since      2.1
+ * @since      2.3
  *
  * @package    AI1EC
  * @subpackage AI1EC.Command

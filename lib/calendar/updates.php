@@ -85,7 +85,7 @@ class Ai1ec_Calendar_Updates extends Ai1ec_Base {
 	/**
 	 * Clear updates related transients.
 	 *
-	 * @return void
+	 * @return void Method does not return.
 	 */
 	public function clear_transients() {
 		delete_site_transient( 'ai1ec_update_plugins' );

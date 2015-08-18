@@ -101,7 +101,10 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			$this->get_html_for_views_dropdown( $dropdown_args, $view_obj );
 		// Add views dropdown markup to view args.
 		$view_args['views_dropdown'] = $views_dropdown;
-
+		$settings = $this->_registry->get( 'model.settings' );
+		if ( $settings->get( 'ai1ec_use_frontend_rendering' ) ) {
+			$view_args['request_format'] = 'json';
+		}
 		// Get HTML for categories and for tags
 		$taxonomy          = $this->_registry->get( 'view.calendar.taxonomy' );
 		$categories        = $taxonomy->get_html_for_categories(

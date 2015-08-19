@@ -448,7 +448,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 			$args          = array(
 				'feed_url'            => $row->feed_url,
-				'feed_name'           => $row->feed_name ?: $row->feed_url,
+				'feed_name'           => ! empty( $row->feed_name ) ? $row->feed_name : $row->feed_url,
 				'event_category'      => implode( ', ', $categories ),
 				'categories_ids'      => $row->feed_category,
 				'tags'                => stripslashes(

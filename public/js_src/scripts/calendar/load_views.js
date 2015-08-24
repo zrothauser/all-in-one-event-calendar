@@ -590,7 +590,7 @@ define(
 		var filters = {};
 		$( 'ul.ai1ec-filters > li', $calendar ).each( function() {
 			var
-				$this = $( this),
+				$this = $( this ),
 				slug  = $this.data( 'slug' );
 
 			filters[slug + '_ids'] = {

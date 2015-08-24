@@ -101,19 +101,11 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			$this->get_html_for_views_dropdown( $dropdown_args, $view_obj );
 		// Add views dropdown markup to view args.
 		$view_args['views_dropdown'] = $views_dropdown;
+
 		$settings = $this->_registry->get( 'model.settings' );
 		if ( $settings->get( 'ai1ec_use_frontend_rendering' ) ) {
 			$view_args['request_format'] = 'json';
 		}
-		// Get HTML for categories and for tags
-		$taxonomy          = $this->_registry->get( 'view.calendar.taxonomy' );
-		$categories        = $taxonomy->get_html_for_categories(
-			$view_args
-		);
-		$tags              = $taxonomy->get_html_for_tags(
-			$view_args,
-			true
-		);
 
 		// Get HTML for subscribe buttons.
 		$subscribe_buttons = $this->get_html_for_subscribe_buttons( $view_args );
@@ -127,29 +119,30 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		);
 
 		if (
-			( $view_args['no_navigation'] || $type !== 'html' ) && $is_json
+			$is_json &&
+			( $view_args['no_navigation'] || $type !== 'html' )
 		) {
-
 			// send data both for json and jsonp as shortcodes are jsonp
 			return array(
 				'html'               => $view,
-				'categories'         => $categories,
-				'tags'               => $tags,
 				'views_dropdown'     => $views_dropdown,
 				'subscribe_buttons'  => $subscribe_buttons,
 				'are_filters_set'    => $are_filters_set,
 				'is_json'            => $is_json,
-				'custom_filters'     => apply_filters(
-					'ai1ec_custom_filters_html',
-					'',
-					$view_args,
-					$request
-				),
 			);
 
 		} else {
-			$loader = $this->_registry->get( 'theme.loader' );
-			$empty  = $loader->get_file( 'empty.twig', array(), false );
+			$loader     = $this->_registry->get( 'theme.loader' );
+			$empty      = $loader->get_file( 'empty.twig', array(), false );
+			// Get HTML for categories and for tags
+			$taxonomy   = $this->_registry->get( 'view.calendar.taxonomy' );
+			$categories = $taxonomy->get_html_for_categories(
+				$view_args
+			);
+			$tags       = $taxonomy->get_html_for_tags(
+				$view_args,
+				true
+			);
 
 			// option to show filters in the super widget
 			// Define new arguments for overall calendar view
@@ -225,6 +218,10 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				),
 			);
 
+			if ( is_array( $calendar_args['view'] ) ) {
+				$view_args['request_format'] = 'html';
+				$calendar_args['view']       = $view_obj->get_content( $view_args );
+			}
 			$calendar = $loader->get_file( 'calendar.twig', $calendar_args, false );
 			// if it's just html, only the calendar html must be returned.
 			if ( 'html' === $type ) {
@@ -233,18 +230,10 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			// send data both for json and jsonp as shortcodes are jsonp
 			return array(
 				'html'               => $calendar->get_content(),
-				'categories'         => $categories,
-				'tags'               => $tags,
 				'views_dropdown'     => $views_dropdown,
 				'subscribe_buttons'  => $subscribe_buttons,
 				'are_filters_set'    => $are_filters_set,
-				'is_json'            => $is_json,
-				'custom_filters'     => apply_filters(
-					'ai1ec_custom_filters_html',
-					'',
-					$view_args,
-					$request
-				),
+				'is_json'            => $is_json
 			);
 		}
 	}

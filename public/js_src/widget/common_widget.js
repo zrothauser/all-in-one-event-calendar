@@ -190,7 +190,16 @@ function( page, load_views, evt, common, domReady, $, calendar, config, utils ) 
 					} )
 						.attr( 'data-widget-type', widget_type )
 						.html( loading_html )
-						.insertAfter( $el ),
+						.insertAfter( $el )
+						.css( -1 < $.inArray(
+								widget_type,
+								['ai1ec_superwidget', 'ai1ecfe_fe_widget']
+							)
+							? {
+								'min-height' : '392px'
+							}
+							: {}
+						),
 					url         = create_url( $el.data() ),
 					data        = {
 						ai1ec_doing_ajax : true,

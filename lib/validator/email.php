@@ -16,7 +16,7 @@ class Ai1ec_Validator_Email extends Ai1ec_Validator {
 	 */
 	public function validate() {
 		if (
-			! empty($this->_value) &&
+			! empty( $this->_value ) &&
 			! is_email( $this->_value )
 		) {
 			throw new Ai1ec_Value_Not_Valid_Exception();

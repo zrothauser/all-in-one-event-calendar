@@ -18,19 +18,19 @@ class Ai1ec_Validator_Human_Readable_Size extends Ai1ec_Validator {
 		$checked_string = trim( strtoupper( $this->_value ) );
 
 		// Bytes - Get the first number
-		$bytes = "0";
+		$bytes = '0';
 		preg_match( '/^([0-9\.]+)/', $checked_string, $matches );
 		if ( count( $matches ) == 2 ) {
 			$bytes = $matches[1];
 		}
 
 		// Unit - Get the first letter
-		$unit = "B";
+		$unit = 'B';
 		preg_match( '/([KMGT]{1})/', $checked_string, $matches );
 		if ( count( $matches ) == 2 ) {
 			$unit = $matches[1];
 		}
 
-		return "$bytes $unit";
+		return $bytes . ' ' . $unit;
 	}
 }

@@ -8,7 +8,7 @@
  * @package      Ai1EC
  * @subpackage   Ai1EC.Upload
  */
-class Ai1ec_Upload_Size_Determiner_Utility {
+class Ai1ec_Upload_Size_Determiner_Utility extends Ai1ec_Base {
 
 	/**
 	 * Returns the maximum upload file size in bytes
@@ -18,7 +18,7 @@ class Ai1ec_Upload_Size_Determiner_Utility {
 	 * @return int Maximum upload file size
 	 */
 	public function get_maximum_upload_file_size_bytes( $size ) {
-		$converter_utility = new Ai1ec_Size_Converter_Utility();
+		$converter_utility = $this->_registry->get( 'size.converter' );
 
 		$maximum_size = $converter_utility->convert_hr_to_bytes( $size );
 

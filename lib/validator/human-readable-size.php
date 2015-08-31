@@ -31,6 +31,6 @@ class Ai1ec_Validator_Human_Readable_Size extends Ai1ec_Validator {
 			$unit = $matches[1];
 		}
 
-		return $bytes . ' ' . $unit;
+		return $bytes . $unit;
 	}
 }

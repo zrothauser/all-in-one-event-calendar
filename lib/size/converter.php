@@ -18,7 +18,7 @@ class Ai1ec_Size_Converter_Utility {
 	 *
 	 * @return string Converted number of bytes from human readable size string
 	 */
-	public static function convert_hr_to_bytes( $size ) {
+	public function convert_hr_to_bytes( $size ) {
 		$size  = strtolower( $size );
 		$bytes = preg_replace( '/[^0-9\.]/', '', $size );
 

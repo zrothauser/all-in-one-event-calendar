@@ -8,7 +8,7 @@
  * @package      Ai1EC
  * @subpackage   Ai1EC.Size
  */
-class Ai1ec_Size_Converter_Utility {
+class Ai1ec_Size_Converter_Utility extends Ai1ec_Base {
 
 	/**
 	 * Returns number of bytes from human readable string

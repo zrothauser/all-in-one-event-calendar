@@ -131,12 +131,14 @@ class Ai1ec_Calendar_View_Month extends Ai1ec_Calendar_View_Abstract {
 
 		$local_date = $this->_registry
 			->get( 'date.time', $args['exact_date'], 'sys.default' );
-		$orig_date = $this->_registry->get( 'date.time',  $local_date );
+		$orig_date  = $this->_registry->get( 'date.time',  $local_date );
+		$default_tz = $this->_registry->get( 'date.timezone' )->get_default_timezone();
 		// =================
 		// = Previous year =
 		// =================
 		// Align date to first of month, month offset applied, 1 year behind.
 		$local_date
+			->set_timezone( $default_tz )
 			->set_date(
 				$local_date->format( 'Y' ) -1,
 				$local_date->format( 'm' ) + $args['month_offset'],
@@ -149,8 +151,7 @@ class Ai1ec_Calendar_View_Month extends Ai1ec_Calendar_View_Abstract {
 		$links[] = array(
 			'enabled' => true,
 			'class'=> 'ai1ec-prev-year',
-			'text' =>
-			'<i class="ai1ec-fa ai1ec-fa-angle-double-left"></i> ' .
+			'text' => '<i class="ai1ec-fa ai1ec-fa-angle-double-left"></i> ' .
 				$local_date->format_i18n( 'Y' ),
 			'href' => $href->generate_href(),
 		);
@@ -200,18 +201,19 @@ class Ai1ec_Calendar_View_Month extends Ai1ec_Calendar_View_Abstract {
 		// ==============
 		// Align date to first of month, month offset applied, 1 month ahead.
 		$orig_date
+			->set_timezone( $default_tz )
 			->set_date(
 				$orig_date->format( 'Y' ),
 				$orig_date->format( 'm' ) + 1,
 				1
-			);
+			)
+			->set_time( 0, 0, 0 );
 		$args['exact_date'] = $orig_date->format();
 		$href = $this->_registry->get( 'html.element.href', $args );
 		$links[] = array(
 			'enabled' => true,
 			'class'=> 'ai1ec-next-month',
-			'text' =>
-			$orig_date->format_i18n( 'M' ) .
+			'text' => $orig_date->format_i18n( 'M' ) .
 			' <i class="ai1ec-fa ai1ec-fa-angle-right"></i>',
 			'href' => $href->generate_href(),
 		);
@@ -231,8 +233,7 @@ class Ai1ec_Calendar_View_Month extends Ai1ec_Calendar_View_Abstract {
 		$links[] = array(
 			'enabled' => true,
 			'class'=> 'ai1ec-next-year',
-			'text' =>
-			$orig_date->format_i18n( 'Y' ) .
+			'text' => $orig_date->format_i18n( 'Y' ) .
 			' <i class="ai1ec-fa ai1ec-fa-angle-double-right"></i>',
 			'href' => $href->generate_href(),
 		);

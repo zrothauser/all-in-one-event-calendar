@@ -271,6 +271,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			if (
 				$this->_compatibility->use_backward_compatibility()
 			) {
+				$event->enddate_info = $event->_registry->get( 'model.event' )->get_end_info( $event );
 				$event_object = $event;
 			}
 			$dates[$timestamp]['events'][$category][] = $event_object;

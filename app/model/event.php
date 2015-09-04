@@ -286,6 +286,35 @@ class Ai1ec_Event extends Ai1ec_Base {
 	}
 
 	/**
+	 * Returns enddate specific info.
+	 *
+	 * @return array Date info structure.
+	 */
+	public function getenddate_info() {
+		$end = $this->get( 'end' );
+
+		if ( $this->is_allday() ) {
+			$end->set_time(
+				$end->format( 'H' ),
+				$end->format( 'i' ),
+				$end->format( 's' ) - 1
+			);
+			return array(
+				'month'   => $end->format( 'M' ),
+				'day'     => $end->format( 'j' ),
+				'weekday' => $end->format( 'D' ),
+				'year'    => $end->format( 'Y' ),
+			);
+		}
+		return array(
+			'month'   => $this->get( 'end' )->format( 'M' ),
+			'day'     => $this->get( 'end' )->format( 'j' ),
+			'weekday' => $this->get( 'end' )->format( 'D' ),
+			'year'    => $this->get( 'end' )->format( 'Y' ),
+		);
+	}
+
+	/**
 	 * Create new event object, using provided data for initialization.
 	 *
 	 * @param Ai1ec_Registry_Object $registry  Injected object registry.
@@ -506,21 +535,21 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 */
 	public function get_end_info( $event ) {
 		$end   = $event->_registry->get( 'date.time', $event->get( 'end' ) );
-	
+
 		if ( $event->is_allday() ) {
 			$end->set_time(
 				$end->format( 'H' ),
 				$end->format( 'i' ),
 				$end->format( 's' ) - 1
 			);
-			return array( 
+			return array(
 				'month'     => $end->format( 'M' ),
 				'day'       => $end->format( 'j' ),
 				'weekday'   => $end->format( 'D' ),
 				'year'      => $end->format( 'Y' ),
 			);
 		} else {
-			return array( 
+			return array(
 				'month'     => $event->get( 'end' )->format( 'M' ),
 				'day'       => $event->get( 'end' )->format( 'j' ),
 				'weekday'   => $event->get( 'end' )->format( 'D' ),

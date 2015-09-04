@@ -529,36 +529,6 @@ class Ai1ec_Event extends Ai1ec_Base {
 	}
 
 	/**
-	 * Get the info for the end time of the event
-	 *
-	 * @return array
-	 */
-	public function get_end_info( $event ) {
-		$end   = $event->_registry->get( 'date.time', $event->get( 'end' ) );
-
-		if ( $event->is_allday() ) {
-			$end->set_time(
-				$end->format( 'H' ),
-				$end->format( 'i' ),
-				$end->format( 's' ) - 1
-			);
-			return array(
-				'month'     => $end->format( 'M' ),
-				'day'       => $end->format( 'j' ),
-				'weekday'   => $end->format( 'D' ),
-				'year'      => $end->format( 'Y' ),
-			);
-		} else {
-			return array(
-				'month'     => $event->get( 'end' )->format( 'M' ),
-				'day'       => $event->get( 'end' )->format( 'j' ),
-				'weekday'   => $event->get( 'end' )->format( 'D' ),
-				'year'      => $event->get( 'end' )->format( 'Y' ),
-			);
-		}
-	}
-
-	/**
 	 * Create/update entity representation.
 	 *
 	 * Saves the current event data to the database. If $this->post_id exists,

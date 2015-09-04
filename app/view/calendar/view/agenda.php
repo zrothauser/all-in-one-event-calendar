@@ -257,7 +257,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$event_props['short_start_time']    = $event->get_runtime( 'short_start_time' );
 			$event_props['is_allday']           = $event->is_allday();
 			$event_props['is_multiday']         = $event->is_multiday();
-			$event_props['enddate_info']        = $event->_registry->get( 'model.event' )->get_end_info( $event );
+			$event_props['enddate_info']        = $event->getenddate_info();
 			$event_props['timespan_short']      = $event->_registry->
 				get( 'view.event.time' )->get_timespan_html( $event, 'short' );
 			$event_props['avatar']              = $event->getavatar();
@@ -271,7 +271,6 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			if (
 				$this->_compatibility->use_backward_compatibility()
 			) {
-				$event->enddate_info = $event->_registry->get( 'model.event' )->get_end_info( $event );
 				$event_object = $event;
 			}
 			$dates[$timestamp]['events'][$category][] = $event_object;

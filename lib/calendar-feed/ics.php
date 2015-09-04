@@ -261,8 +261,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			$table_name = $db->get_table_name( 'ai1ec_event_feeds' );
 			$sql = "CREATE TABLE $table_name (
 					feed_id bigint(20) NOT NULL AUTO_INCREMENT,
-					feed_url varchar(255) NOT NULL,
-					feed_name varchar(255) NOT NULL,
+					feed_url text NOT NULL,
+					feed_name text NOT NULL,
 					feed_category varchar(255) NOT NULL,
 					feed_tags varchar(255) NOT NULL,
 					comments_enabled tinyint(1) NOT NULL DEFAULT '1',
@@ -271,7 +271,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					keep_old_events tinyint(1) NOT NULL DEFAULT '0',
 					import_timezone tinyint(1) NOT NULL DEFAULT '0',
 					PRIMARY KEY  (feed_id),
-					UNIQUE KEY feed (feed_url)
+					UNIQUE KEY feed (feed_url(255))
 					) CHARACTER SET utf8;";
 
 			if ( $this->_registry->get( 'database.helper' )->apply_delta( $sql ) ) {

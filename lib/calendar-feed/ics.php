@@ -18,7 +18,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 	const ICS_OPTION_DB_VERSION = 'ai1ec_ics_db_version';
 
-	const ICS_DB_VERSION        = 221;
+	const ICS_DB_VERSION        = 234;
 
 	/**
 	 * @var array
@@ -251,9 +251,10 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		// version,
 		// or does not exist, then create/update table structure using
 		// dbDelta().
-		$option = $this->_registry->get( 'model.option' );
-		if ( $option->get( self::ICS_OPTION_DB_VERSION ) !=
-			 self::ICS_DB_VERSION ) {
+		$option             = $this->_registry->get( 'model.option' );
+		$current_db_version = $option->get( self::ICS_OPTION_DB_VERSION );
+		if ( $current_db_version != self::ICS_DB_VERSION ) {
+			/** @var $db Ai1ec_Dbi */
 			$db = $this->_registry->get( 'dbi.dbi' );
 			// ======================
 			// = Create table feeds =
@@ -273,7 +274,10 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					PRIMARY KEY  (feed_id),
 					UNIQUE KEY feed (feed_url(255))
 					) CHARACTER SET utf8;";
-
+			if ( 221 === (int)$current_db_version ) {
+				$query = 'ALTER TABLE ' . $table_name . ' DROP INDEX feed';
+				$db->query( $query );
+			}
 			if ( $this->_registry->get( 'database.helper' )->apply_delta( $sql ) ) {
 				$option->set( self::ICS_OPTION_DB_VERSION,
 					self::ICS_DB_VERSION );

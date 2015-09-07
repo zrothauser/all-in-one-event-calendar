@@ -506,7 +506,7 @@ class Ai1ec_Front_Controller {
 				'user_has_cap',
 				array( 'content.filter', 'display_trash_link' ),
 				10,
-				4
+				2
 			);
 		}
 		// post row action for parent/child

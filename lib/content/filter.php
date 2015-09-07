@@ -72,12 +72,10 @@ class Ai1ec_Content_Filters extends Ai1ec_Base {
 	 *
 	 * @param array $allcaps An array of all the user's capabilities.
 	 * @param array $caps    Actual capabilities for meta capability.
-	 * @param array $args    Optional parameters passed to has_cap(), typically object ID.
-	 * @param \WP_User $user The user object.
 	 *
 	 * @return array Capabilities or empty array.
 	 */
-	public function display_trash_link( $allcaps, $caps, $args, WP_User $user ) {
+	public function display_trash_link( $allcaps, $caps ) {
 		if (
 			isset( $_GET['instance'] ) &&
 			in_array( 'delete_published_ai1ec_events', $caps )

@@ -80,7 +80,7 @@
 				</a>
 			{% endif %}
 
-			{% if show_subscribe_buttons %}
+			{% if show_subscribe_buttons == 1 %}
 				{% include 'subscribe-buttons.twig' with {
 					'button_classes':     'ai1ec-btn-xs',
 					'export_url':         subscribe_url,

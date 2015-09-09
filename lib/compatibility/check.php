@@ -52,16 +52,16 @@ class Ai1ec_Compatibility_Check extends Ai1ec_Base {
 	public function ai1ec_settings_observer( $old_options, $new_options ) {
 
 		// Date format change checker
-		$old_value = isset( $old_options['input_date_format'] )
+		$old_date_format_value = isset( $old_options['input_date_format'] )
 			? $old_options['input_date_format']['value']
 			: null;
-		$new_value = isset( $new_options['input_date_format'] )
+		$new_date_format_value = isset( $new_options['input_date_format'] )
 			? $new_options['input_date_format']['value']
 			: null;
 		if (
-			$old_value != null &&
-			$new_value != null &&
-			$old_value != $new_value
+			$old_date_format_value != null &&
+			$new_date_format_value != null &&
+			$old_date_format_value != $new_date_format_value
 		) {
 			// Get "Default calendar start date"
 			$exact_date = isset( $old_options['exact_date'] )
@@ -71,7 +71,7 @@ class Ai1ec_Compatibility_Check extends Ai1ec_Base {
 				$date_system = $this->_registry->get( 'date.system' );
 
 				// Change "Default calendar start date" format
-				$new_exact_date = $date_system->convert_date_format( $exact_date, $old_value, $new_value );
+				$new_exact_date = $date_system->convert_date_format( $exact_date, $old_date_format_value, $new_date_format_value );
 
 				// Save new value
 				$settings = $this->_registry->get( 'model.settings' );

@@ -148,7 +148,7 @@ class Ai1ec_Ics_Import_Export_Engine
 
 		// Fetch default timezone in case individual properties don't define it
 		$tz = $v->getComponent( 'vtimezone' );
-		$timezone = 'sys.default';
+		$timezone = 'UTC';
 		if ( ! empty( $tz ) ) {
 			$timezone = $tz->getProperty( 'TZID' );
 		}
@@ -160,9 +160,6 @@ class Ai1ec_Ics_Import_Export_Engine
 			is_array( $x_wr_timezone )
 		) {
 			$forced_timezone = (string)$x_wr_timezone[1];
-			$timezone        = empty( $timezone )
-				? (string)$x_wr_timezone[1]
-				: $timezone;
 		}
 
 		$messages        = array();

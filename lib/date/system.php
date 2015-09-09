@@ -10,6 +10,7 @@
  * @package      Ai1EC
  * @subpackage   Ai1EC.Date
  */
+
 class Ai1ec_Date_System extends Ai1ec_Base {
 
 	/**
@@ -134,6 +135,31 @@ class Ai1ec_Date_System extends Ai1ec_Base {
 	) {
 		$date = $datetime->format( $this->get_date_format_patter( $pattern ) );
 		return str_replace( '/', '-', $date );
+	}
+
+	/**
+	 * Returns the date formatted with new pattern from a given date and old pattern.
+	 *
+	 * @see  self::get_date_patterns() for supported date formats.
+	 *
+	 * @param  string $date          Formatted date string
+	 * @param  string $old_pattern   Key of old date pattern (@see
+	 *                               self::get_date_format_patter())
+	 * @param  string $new_pattern   Key of new date pattern (@see
+	 *                               self::get_date_format_patter())
+	 * @return string                Formatted date string with new pattern
+	 */
+	public function convert_date_format( $date, $old_pattern, $new_pattern ) {
+		// Convert old date to timestamp
+		$timeArray = date_parse_from_format( $this->get_date_format_patter( $old_pattern ), $date );
+
+		$timestamp = mktime(
+			$timeArray['hour'], $timeArray['minute'], $timeArray['second'],
+			$timeArray['month'], $timeArray['day'], $timeArray['year']
+		);
+
+		// Convert to new date pattern
+		return $this->format_date( $timestamp, $new_pattern );
 	}
 
 	/**

@@ -35,8 +35,12 @@ class Ai1ec_Compatibility_Check extends Ai1ec_Base {
 	}
 
 	/**
-	 * Observes settings changes. If setting ai1ec_use_frontend_rendering
-	 * is changed and set to true perfoms theme check.
+	 * Observes settings changes.
+	 *
+	 * If setting ai1ec_use_frontend_rendering is changed and set to true
+	 * perfoms theme check.
+	 *
+	 * Checks if Date format was changed, and update dates to the new format
 	 *
 	 * @param array $old_options Old options array.
 	 * @param array $new_options New options array.
@@ -46,6 +50,36 @@ class Ai1ec_Compatibility_Check extends Ai1ec_Base {
 	 * @throws Ai1ec_Bootstrap_Exception
 	 */
 	public function ai1ec_settings_observer( $old_options, $new_options ) {
+
+		// Date format change checker
+		$old_value = isset( $old_options['input_date_format'] )
+			? $old_options['input_date_format']['value']
+			: null;
+		$new_value = isset( $new_options['input_date_format'] )
+			? $new_options['input_date_format']['value']
+			: null;
+		if (
+			$old_value != null &&
+			$new_value != null &&
+			$old_value != $new_value
+		) {
+			// Get "Default calendar start date"
+			$exact_date = isset( $old_options['exact_date'] )
+				? $old_options['exact_date']['value']
+				: '';
+			if ( $exact_date != '' ) {
+				$date_system = $this->_registry->get( 'date.system' );
+
+				// Change "Default calendar start date" format
+				$new_exact_date = $date_system->convert_date_format( $exact_date, $old_value, $new_value );
+
+				// Save new value
+				$settings = $this->_registry->get( 'model.settings' );
+				$settings->set( 'exact_date', $new_exact_date );
+			}
+		}
+
+		// Frontend rendering checker
 		$old_value = isset( $old_options['ai1ec_use_frontend_rendering'] )
 			? (bool)$old_options['ai1ec_use_frontend_rendering']['value']
 			: null;

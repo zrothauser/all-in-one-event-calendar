@@ -137,6 +137,29 @@ class Ai1ec_Date_System extends Ai1ec_Base {
 	}
 
 	/**
+	 * Returns the date formatted with new pattern from a given date and old pattern.
+	 *
+	 * @see  self::get_date_patterns() for supported date formats.
+	 *
+	 * @param  string $date          Formatted date string
+	 * @param  string $old_pattern   Key of date pattern (@see
+	 *                               self::get_date_format_patter()) to
+	 *                               format old date with
+	 * @param  string $new_pattern   Key of date pattern (@see
+	 *                               self::get_date_format_patter()) to
+	 *                               format new date with
+	 * @return string                Formatted date string with new pattern
+	 */
+	public function convert_date_format( $date, $old_pattern, $new_pattern ) {
+		// Convert to timestamp
+		$date = DateTime::createFromFormat( $this->get_date_format_patter( $old_pattern ), $date );
+		$timestamp = $date->getTimestamp();
+
+		// Convert to new date pattern
+		return $this->format_date( $timestamp, $new_pattern );
+	}
+
+	/**
 	 * Returns a formatted date given a timestamp, based on the given date format.
 	 *
 	 * @see  self::get_date_patterns() for supported date formats.

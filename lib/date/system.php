@@ -10,6 +10,91 @@
  * @package      Ai1EC
  * @subpackage   Ai1EC.Date
  */
+
+/*
+ * Date parser for PHP <= 5.2
+ *
+ * Source: http://stackoverflow.com/questions/6668223/php-date-parse-from-format-alternative-in-php-5-2
+ *
+ * Modified to always populate hour, minute and second.
+ *
+ */
+if ( ! function_exists( 'date_parse_from_format' ) ) {
+	function date_parse_from_format( $format, $date ) {
+		// reverse engineer date formats
+		$keys                      = array(
+			'Y' => array('year',   '\d{4}'),
+			'y' => array('year',   '\d{2}'),
+			'm' => array('month',  '\d{2}'),
+			'n' => array('month',  '\d{1,2}'),
+			'M' => array('month',  '[A-Z][a-z]{3}'),
+			'F' => array('month',  '[A-Z][a-z]{2,8}'),
+			'd' => array('day',    '\d{2}'),
+			'j' => array('day',    '\d{1,2}'),
+			'D' => array('day',    '[A-Z][a-z]{2}'),
+			'l' => array('day',    '[A-Z][a-z]{6,9}'),
+			'u' => array('hour',   '\d{1,6}'),
+			'h' => array('hour',   '\d{2}'),
+			'H' => array('hour',   '\d{2}'),
+			'g' => array('hour',   '\d{1,2}'),
+			'G' => array('hour',   '\d{1,2}'),
+			'i' => array('minute', '\d{2}'),
+			's' => array('second', '\d{2}')
+		);
+
+		// convert format string to regex
+		$regex                     = '';
+		$chars                     = str_split( $format );
+		foreach ( $chars AS $n => $char ) {
+			$lastChar = isset( $chars[$n - 1] ) ? $chars[$n - 1] : '';
+			$skipCurrent           = '\\' == $lastChar;
+			if ( !$skipCurrent && isset( $keys[$char] ) ) {
+				$regex            .= '(?P<' . $keys[$char][0] . '>' . $keys[$char][1] . ')';
+			} else if ( '\\' == $char ) {
+				$regex            .= $char;
+			} else {
+				$regex            .= preg_quote( $char );
+			}
+		}
+
+		$dt                        = array();
+		// now try to match it
+		if ( preg_match( '#^' . $regex . '$#', $date, $dt ) ) {
+			foreach ( $dt AS $k => $v ) {
+				if ( is_int( $k ) ) {
+					unset( $dt[$k] );
+				}
+			}
+			if ( ! checkdate( $dt['month'], $dt['day'], $dt['year'] ) ) {
+				$dt['error_count'] = 1;
+			} else {
+				$dt['error_count'] = 0;
+			}
+			if ( ! isset( $dt['hour'] ) ) {
+				$dt['hour']        = 0;
+			}
+			if ( ! isset( $dt['minute'] ) ) {
+				$dt['minute']      = 0;
+			}
+			if ( ! isset( $dt['second'] ) ) {
+				$dt['second']      = 0;
+			}
+		} else {
+			$dt['error_count']     = 1;
+		}
+		$dt['errors']              = array();
+		$dt['fraction']            = '';
+		$dt['warning_count']       = 0;
+		$dt['warnings']            = array();
+		$dt['is_localtime']        = 0;
+		$dt['zone_type']           = 0;
+		$dt['zone']                = 0;
+		$dt['is_dst']              = '';
+
+		return $dt;
+	}
+}
+
 class Ai1ec_Date_System extends Ai1ec_Base {
 
 	/**
@@ -142,18 +227,20 @@ class Ai1ec_Date_System extends Ai1ec_Base {
 	 * @see  self::get_date_patterns() for supported date formats.
 	 *
 	 * @param  string $date          Formatted date string
-	 * @param  string $old_pattern   Key of date pattern (@see
-	 *                               self::get_date_format_patter()) to
-	 *                               format old date with
-	 * @param  string $new_pattern   Key of date pattern (@see
-	 *                               self::get_date_format_patter()) to
-	 *                               format new date with
+	 * @param  string $old_pattern   Key of old date pattern (@see
+	 *                               self::get_date_format_patter())
+	 * @param  string $new_pattern   Key of new date pattern (@see
+	 *                               self::get_date_format_patter())
 	 * @return string                Formatted date string with new pattern
 	 */
 	public function convert_date_format( $date, $old_pattern, $new_pattern ) {
-		// Convert to timestamp
-		$date = DateTime::createFromFormat( $this->get_date_format_patter( $old_pattern ), $date );
-		$timestamp = $date->getTimestamp();
+		// Convert old date to timestamp
+		$timeArray = date_parse_from_format( $this->get_date_format_patter( $old_pattern ), $date );
+
+		$timestamp = mktime(
+			$timeArray['hour'], $timeArray['minute'], $timeArray['second'],
+			$timeArray['month'], $timeArray['day'], $timeArray['year']
+		);
 
 		// Convert to new date pattern
 		return $this->format_date( $timestamp, $new_pattern );

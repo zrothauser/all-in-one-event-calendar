@@ -237,7 +237,6 @@ define(
 	var load_view = function( $calendar, hash, type ) {
 		// Process links.
 		process_links( $calendar, hash );
-
 		// Reveal loader behind view
 		$calendar
 			.find( '.ai1ec-calendar-view-loading' )
@@ -513,9 +512,10 @@ define(
 		var $calendar = $( this ).closest( '.ai1ec-calendar' );
 		load_view_according_to_datatype(
 				$calendar,
-				$( this ).data( 'type' ),
-				$( this ).data( 'href' )
+				$( this ).attr( 'data-type' ),
+				$( this ).attr( 'data-href' )
 		);
+		return false;
 	};
 
 	var separator     = ai1ec_config.ai1ec_permalinks_enabled ? '/' : '|';

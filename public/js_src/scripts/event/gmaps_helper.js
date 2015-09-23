@@ -1,21 +1,23 @@
 define(
 		[
-		 "jquery_timely"
+		 'jquery_timely'
 		 ],
 		 function( $ ) {
-	"use strict"; // jshint ;_;
+	'use strict'; // jshint ;_;
 	var init_gmaps = function() {
 		var options = {
-				zoom      : 14,
-				mapTypeId : google.maps.MapTypeId.ROADMAP
+				zoom        : 14,
+				mapTypeId   : google.maps.MapTypeId.ROADMAP,
+				scrollwheel : false
 			};
-			var map = new google.maps.Map( document.getElementById( 'ai1ec-gmap-canvas' ), options );
-			var marker = new google.maps.Marker( { map: map } );
-			var geocoder = new google.maps.Geocoder();
+			var
+				map = new google.maps.Map( $( '#ai1ec-gmap-canvas' )[0], options ),
+				marker = new google.maps.Marker( { map: map } ),
+				geocoder = new google.maps.Geocoder();
 
 			geocoder.geocode(
 				{
-					'address': document.getElementById( 'ai1ec-gmap-address' ).value
+					'address': $( '#ai1ec-gmap-address' )[0].value
 				},
 				function( results, status ) {
 					if( status === google.maps.GeocoderStatus.OK ) {
@@ -26,7 +28,7 @@ define(
 			);
 	};
 	var handle_show_map_when_clicking_on_placeholder = function() {
-		var map_el = $( '.ai1ec-gmap-container-hidden:first');
+		var map_el = $( '.ai1ec-gmap-container-hidden:first' );
 		// delete placeholder
 		$( this ).remove();
 		// hide map

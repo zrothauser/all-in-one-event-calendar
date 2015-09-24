@@ -50,7 +50,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// = Plugin Version =
 	// ==================
 	if ( ! defined( 'AI1EC_VERSION' ) ) {
-		define( 'AI1EC_VERSION', '2.3.3.8' );
+		define( 'AI1EC_VERSION', '2.3.4.1' );
 	}
 
 	// ================
@@ -420,7 +420,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// you know what you are doing, because you will waste valuable
 	// resources - save the Earth, at least.
 	if ( ! defined( 'AI1EC_DEBUG' ) ) {
-		define( 'AI1EC_DEBUG', true );
+		define( 'AI1EC_DEBUG', false );
 	}
 
 	// Enable Ai1EC cache functionality. If you set this to false, only cache
@@ -428,7 +428,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// This is pointless in any case other than development, where literary
 	// every second refresh needs to take fresh copy of everything.
 	if ( ! defined( 'AI1EC_CACHE' ) ) {
-		define( 'AI1EC_CACHE', false );
+		define( 'AI1EC_CACHE', true );
 	}
 
 	if ( ! defined( 'AI1EC_DISABLE_FILE_CACHE' ) ) {

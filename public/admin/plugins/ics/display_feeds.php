@@ -27,7 +27,7 @@
 			<?php _e( 'iCalendar/.ics Feed URL:', AI1EC_PLUGIN_NAME ) ?>
 		</label>
 		<input type="text" name="ai1ec_feed_url" id="ai1ec_feed_url"
-			class="ai1ec-form-control">
+			class="ai1ec-form-control" maxlength="255">
 	</div>
 	<div class="ai1ec-row">
 		<div class="ai1ec-col-sm-6">

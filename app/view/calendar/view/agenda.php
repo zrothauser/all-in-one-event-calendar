@@ -22,6 +22,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 	 * @see Ai1ec_Calendar_View_Abstract::get_content()
 	*/
 	public function get_content( array $view_args ) {
+		
 		$type = $this->get_name();
 		$time = $this->_registry->get( 'date.system' );
 		// Get localized time
@@ -65,9 +66,10 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$view_args['request']
 		);
 
+
 		// Generate title of view based on date range month & year.
-		$range_start       = $results['date_first'] ? $results['date_first'] : $this->_registry->get( 'date.time', $timestamp );
-		$range_end         = $results['date_last']  ? $results['date_last'] : $this->_registry->get( 'date.time', $timestamp );
+		$range_start       = $results['date_first'] && $results['date_first']->is_empty() == false ? $results['date_first'] : $this->_registry->get( 'date.time', $timestamp );
+		$range_end         = $results['date_last'] && $results['date_last']->is_empty() == false  ? $results['date_last'] : $this->_registry->get( 'date.time', $timestamp );
 		$range_start       = $this->_registry->get( 'date.time', $range_start );
 		$range_end         = $this->_registry->get( 'date.time', $range_end );
 		$start_year        = $range_start->format_i18n( 'Y' );
@@ -86,12 +88,13 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$title = "$start_month $start_year – $end_month $end_year";
 			$title_short = "$start_month_short $start_year – $end_month_short $end_year";
 		}
-
+		
 		// Create navigation bar if requested.
 		$navigation       = '';
 		$loader           = $this->_registry->get( 'theme.loader' );
 		$pagination_links = '';
 		if ( ! $view_args['no_navigation'] ) {
+
 			$pagination_links = $this->_get_agenda_like_pagination_links(
 				$view_args,
 				$results['prev'],
@@ -99,7 +102,8 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 				$results['date_first'],
 				$results['date_last'],
 				$title,
-				$title_short
+				$title_short,
+				$view_args['time_limit'] == null || $view_args['time_limit'] == 0 ? $timestamp : $view_args['time_limit']
 			);
 
 			$pagination_links = $loader->get_file(
@@ -315,11 +319,11 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 	 *                               the current page
 	 * @param bool     $next         Whether there are more events after
 	 *                               the current page
-	 * @param int|null $date_first
-	 * @param int|null $date_last
+	 * @param Ai1ec_Date_Time|null $date_first
+	 * @param Ai1ec_Date_Time|null $date_last
 	 * @param string   $title        Title to display in datepicker button
 	 * @param string   $title_short  Short month names.
-	 *
+	 * @param int|null $default_time_limit  The default time limit in the case of pagination ends.	 
 	 * @return array      Array of links
 	 */
 	protected function _get_agenda_like_pagination_links(
@@ -329,9 +333,9 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		$date_first  = null,
 		$date_last   = null,
 		$title       = '',
-		$title_short = ''
-	) {
-
+		$title_short = '',
+		$default_time_limit = 0
+	) {		
 		$links = array();
 
 		if (
@@ -342,12 +346,16 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$args['request_format'] = 'json';
 		}
 		$args['page_offset'] = -1;
-		$args['time_limit']  = $this->_registry
-			->get( 'date.time', $date_first )->set_time(
-				$date_first->format( 'H' ),
-				$date_first->format( 'i' ),
-				$date_first->format( 's' ) - 1
-			)->format_to_gmt();
+		if ( $date_first == null || $date_first->is_empty() ) {
+			$args['time_limit'] = $default_time_limit;
+		} else {
+			$args['time_limit'] = $this->_registry
+				->get( 'date.time', $date_first )->set_time(
+					$date_first->format( 'H' ),
+					$date_first->format( 'i' ),
+					$date_first->format( 's' ) - 1
+				)->format_to_gmt();			
+		}
 		$href = $this->_registry->get(
 			'html.element.href',
 			$args
@@ -369,12 +377,16 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		);
 
 		$args['page_offset'] = 1;
-		$args['time_limit']  = $this->_registry
-			->get( 'date.time', $date_last )->set_time(
-				$date_last->format( 'H' ),
-				$date_last->format( 'i' ),
-				$date_last->format( 's' ) + 1
-			)->format_to_gmt();
+		if ( $date_last == null || $date_last->is_empty() ) {
+			$args['time_limit'] = $default_time_limit;
+		} else {
+			$args['time_limit'] = $this->_registry
+				->get( 'date.time', $date_last )->set_time(
+					$date_last->format( 'H' ),
+					$date_last->format( 'i' ),
+					$date_last->format( 's' ) + 1
+				)->format_to_gmt();			
+		}
 		$href = $this->_registry->get(
 			'html.element.href',
 			$args

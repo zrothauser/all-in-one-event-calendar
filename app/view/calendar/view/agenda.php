@@ -68,8 +68,14 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 
 
 		// Generate title of view based on date range month & year.
-		$range_start       = $results['date_first'] && $results['date_first']->is_empty() == false ? $results['date_first'] : $this->_registry->get( 'date.time', $timestamp );
-		$range_end         = $results['date_last'] && $results['date_last']->is_empty() == false  ? $results['date_last'] : $this->_registry->get( 'date.time', $timestamp );
+		$range_start       = $results['date_first'] && 
+								false === $results['date_first']->is_empty() ? 
+									$results['date_first'] : 
+									$this->_registry->get( 'date.time', $timestamp );
+		$range_end         = $results['date_last'] && 
+								false === $results['date_last']->is_empty() ? 
+									$results['date_last'] : 
+									$this->_registry->get( 'date.time', $timestamp );
 		$range_start       = $this->_registry->get( 'date.time', $range_start );
 		$range_end         = $this->_registry->get( 'date.time', $range_end );
 		$start_year        = $range_start->format_i18n( 'Y' );
@@ -103,7 +109,10 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 				$results['date_last'],
 				$title,
 				$title_short,
-				$view_args['time_limit'] == null || $view_args['time_limit'] == 0 ? $timestamp : $view_args['time_limit']
+				null === $view_args['time_limit'] || 
+							0 === $view_args['time_limit'] ? 
+								$timestamp : 
+								$view_args['time_limit']
 			);
 
 			$pagination_links = $loader->get_file(
@@ -328,12 +337,12 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 	 */
 	protected function _get_agenda_like_pagination_links(
 		$args,
-		$prev        = false,
-		$next        = false,
-		$date_first  = null,
-		$date_last   = null,
-		$title       = '',
-		$title_short = '',
+		$prev               = false,
+		$next               = false,
+		$date_first         = null,
+		$date_last          = null,
+		$title              = '',
+		$title_short        = '',
 		$default_time_limit = 0
 	) {		
 		$links = array();
@@ -346,7 +355,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$args['request_format'] = 'json';
 		}
 		$args['page_offset'] = -1;
-		if ( $date_first == null || $date_first->is_empty() ) {
+		if ( null === $date_first || $date_first->is_empty() ) {
 			$args['time_limit'] = $default_time_limit;
 		} else {
 			$args['time_limit'] = $this->_registry
@@ -377,7 +386,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		);
 
 		$args['page_offset'] = 1;
-		if ( $date_last == null || $date_last->is_empty() ) {
+		if ( null === $date_last || $date_last->is_empty() ) {
 			$args['time_limit'] = $default_time_limit;
 		} else {
 			$args['time_limit'] = $this->_registry

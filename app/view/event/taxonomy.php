@@ -319,6 +319,77 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 		return implode( ' ', $tags );
 	}
 
+	/**
+	 * Filter Groups as HTML, either as blocks or inline.
+	 *
+	 * @param Ai1ec_Event  $event  Rendered Event.
+	 * @param array        $filter_group Filter Group (Option Model)
+	 * @param string       $format Return 'blocks' or 'inline' formatted result.
+	 *
+	 * @return string String of HTML for filter group blocks.
+	 */
+	public function get_filter_group_html(
+		Ai1ec_Event $event,
+		$filter_group,
+		$format = 'blocks'
+	) {
+
+		$filter_groups = $this->_taxonomy_model->get_post_taxonomy(
+			$event->get( 'post_id' ), $filter_group['taxonomy_name']
+		);
+
+		$icon_name = '';
+		if ( 'ai1eccfgi-null' !== $filter_group['icon'] ) {
+			$icon_name = $filter_group['icon'];
+		}
+		
+		foreach ( $filter_groups as &$group ) {
+			$href = $this->_registry->get(
+				'html.element.href',
+				array( $filter_group['taxonomy_name'] . '_ids' => $group->term_id )
+			);
+
+			$class = $data_type = $title = '';
+			if ( $group->description ) {
+				$title = 'title="' .
+					esc_attr( $group->description ) . '" ';
+			}
+
+			$html        = '';
+			$class      .= ' ai1ec-category';
+			$color_style = '';
+			if ( 'inline' === $format ) {
+				$taxonomy = $this->_registry->get( 'model.taxonomy' );
+				$color_style = $taxonomy->get_category_color(
+					$group->term_id
+				);
+				if ( $color_style !== '' ) {
+					$color_style = 'style="color: ' . $color_style . ';" ';
+				}
+				$class .= '-inline';
+			}
+
+			$html .= '<a ' . $data_type . ' class="' . $class .
+			' ai1ec-term-id-' . $group->term_id . ' p-category" ' .
+			$title . $color_style . 'href="' . $href->generate_href() . '">';
+
+			if ( 'blocks' === $format ) {
+				$html .= $this->get_category_color_square($group->term_id) . ' ';
+			} else {
+				if ( false === empty( $icon_name ) ) {
+					$html = $html 
+					      . '<i ' . $color_style . ' class="ai1ec-fa '
+						  . $icon_name . '"></i>';					
+				}
+			}
+
+			$html .= esc_html( $group->name ) . '</a>';
+			$group = $html;
+		}
+
+		return implode( ' ', $filter_groups );
+	}
+
 	public function __construct( Ai1ec_Registry_Object $registry ) {
 		parent::__construct( $registry );
 		$this->_taxonomy_model = $this->_registry->get( 'model.taxonomy' );

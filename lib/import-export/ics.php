@@ -474,6 +474,16 @@ class Ai1ec_Ics_Import_Export_Engine
 				// If no contact name, default to organizer property.
 				$data['contact_name']    = $organizer;
 			}
+
+			$description = stripslashes(
+							str_replace(
+								'\n',
+								"\n",
+								$e->getProperty( 'description' )
+							));
+			
+			$description = $this->_remove_ticket_url( $description );				
+
 			// Store yet-unsaved values to the $data array.
 			$data += array(
 				'recurrence_rules'  => $rrule,
@@ -495,18 +505,12 @@ class Ai1ec_Ics_Import_Export_Engine
 				'feed'              => $feed,
 				'post'              => array(
 					'post_status'       => 'publish',
-						'comment_status'    => $comment_status,
-						'post_type'         => AI1EC_POST_TYPE,
-						'post_author'       => 1,
-						'post_title'        => $e->getProperty( 'summary' ),
-						'post_content'      => stripslashes(
-							str_replace(
-								'\n',
-								"\n",
-								$e->getProperty( 'description' )
-							)
-						),
-				),
+					'comment_status'    => $comment_status,
+					'post_type'         => AI1EC_POST_TYPE,
+					'post_author'       => 1,
+					'post_title'        => $e->getProperty( 'summary' ),
+					'post_content'      => $description
+				)
 			);
 			// register any custom exclusions for given event
 			$exclusions = $this->_add_recurring_events_exclusions(
@@ -740,6 +744,18 @@ class Ai1ec_Ics_Import_Export_Engine
 				$event->get( 'post' )->post_content
 			)
 		);
+
+		//Adding Ticket URL to the Description field
+		if ( $event->get( 'ticket_url' ) ) {					
+			$url     = $event->get( 'ticket_url' );
+			$content = $this->_remove_ticket_url( $content );	
+			$content = $content
+		             . '<p>' . __( 'Tickets: ', AI1EC_PLUGIN_NAME )
+		             . '<a class="ai1ec-ticket-url-exported" href="'
+		             . $url . '">' . $url
+		             . '</a>.</p>'; 
+		}
+
 		$content = str_replace(']]>', ']]&gt;', $content);
 		$content = html_entity_decode( $content, ENT_QUOTES, 'UTF-8' );
 
@@ -1245,6 +1261,15 @@ class Ai1ec_Ics_Import_Export_Engine
 			$this->_rule_filter = $this->_registry->get( 'recurrence.rule' );
 		}
 		return $this->_rule_filter->filter_rule( $rule );
+	}
+
+	/**
+	 * Remove the Ticket URL that maybe exists inside the field Description of the Event
+	 */
+	protected function _remove_ticket_url( $description ) {
+		return preg_replace( '/<p>[^<>]+<a[^<>]+class=[\'"]?ai1ec-ticket-url-exported[\'"]?[^<>]+>.[^<>]+<\/a>[\.\s]*<\/p>/'
+				, ''
+				, $description );
 	}
 
 }

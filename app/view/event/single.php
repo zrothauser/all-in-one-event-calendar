@@ -211,7 +211,14 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 	 * @return array Each position is a HTML block with a custom filter group
 	 */
 	public function get_filter_groups_html( $taxonomy, $event ) {
-		$filters  = $this->_registry->get( 'model.custom-filters.storage' );
+
+		$filters = null;
+		try {
+			$filters  = $this->_registry->get( 'model.custom-filters.storage' );	
+		} catch ( Ai1ec_Bootstrap_Exception $e) {
+			//custom filters groups not installed or activated
+			return null;
+		}	
 
 		//getting the custom filter groups existents
 		$filter_groups      = $filters->get_items();

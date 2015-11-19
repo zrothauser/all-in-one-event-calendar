@@ -341,6 +341,8 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 		$icon_name = '';
 		if ( 'ai1eccfgi-null' !== $filter_group['icon'] ) {
 			$icon_name = $filter_group['icon'];
+		} else {
+			$icon_name = 'ai1ec-icon-timely';
 		}
 		
 		foreach ( $filter_groups as &$group ) {
@@ -376,11 +378,9 @@ class Ai1ec_View_Event_Taxonomy extends Ai1ec_Base {
 			if ( 'blocks' === $format ) {
 				$html .= $this->get_category_color_square($group->term_id) . ' ';
 			} else {
-				if ( false === empty( $icon_name ) ) {
-					$html = $html 
-					      . '<i ' . $color_style . ' class="ai1ec-fa '
-						  . $icon_name . '"></i>';					
-				}
+				$html = $html 
+					  . '<i ' . $color_style . ' class="ai1ec-fa '
+					  . $icon_name . '"></i>';					
 			}
 
 			$html .= esc_html( $group->name ) . '</a>';

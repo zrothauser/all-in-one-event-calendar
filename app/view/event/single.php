@@ -218,23 +218,18 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 		$filter_groups_html = array();				
 
 		if ( false === empty( $filter_groups ) ) {					
-			$loader              = null;
-			$default_filter_icon = '';
 			foreach ( $filter_groups as $filter_group ) {	
 				$filter_group_html = $taxonomy->get_filter_group_html( $event, $filter_group );
 				if ( false === empty( $filter_group_html ) ) {
 					$icon_name = '';
 					if ( 'ai1eccfgi-null' !== $filter_group['icon'] ) {
 						$icon_name = $filter_group['icon'];
-					}				
-					if ( null === $loader ) {
-						$loader              = $this->_registry->get( 'theme.loader' );
-						$default_filter_icon = $loader->get_file( 'default-filter-group-icon.png' )->get_url();
-					}
+					} else {
+						$icon_name = 'ai1ec-icon-timely';
+					}		
 					$filter_groups_html[$filter_group['taxonomy_name']] = array(
 						'text'         => $filter_group['name'],
 						'icon_name'    => $icon_name,
-						'default_icon' => $default_filter_icon,
 						'html_value'   => $filter_group_html
 					);			
 				}

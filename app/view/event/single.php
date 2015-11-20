@@ -89,6 +89,8 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 		// objects are passed by reference so an action is ok
 		do_action( 'ai1ec_single_event_page_before_render', $event );
 
+		$filter_groups_html = apply_filters( 'ai1ec_get_filter_groups_html', $event );
+
 		$args = array(
 			'event'                   => $event,
 			'recurrence'              => $rrule->rrule_to_text( $event->get( 'recurrence_rules' ) ),
@@ -96,7 +98,7 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			'categories'              => $taxonomy->get_categories_html( $event ),
 			'tags'                    => $taxonomy->get_tags_html( $event ),
 			'location'                => $venues_html,
-			'filter_groups'           => $this->get_filter_groups_html( $taxonomy, $event ),
+			'filter_groups'           => $filter_groups_html,
 			'map'                     => $location->get_map_view( $event ),
 			'contact'                 => $ticket->get_contact_html( $event ),
 			'back_to_calendar'        => $content->get_back_to_calendar_button_html(),
@@ -201,48 +203,5 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 		$loader = $this->_registry->get( 'theme.loader' );
 		return $loader->get_file( 'event-single-full.twig', $args, false )
 			->get_content();
-	}
-
-	/**
-	 * Filter Groups as HTML, either as blocks or inline.
-	 *
-	 * @param Ai1ec_Event $event
-	 * @param taxonomy View Event Taxonomy Class
-	 * @return array Each position is a HTML block with a custom filter group
-	 */
-	public function get_filter_groups_html( $taxonomy, $event ) {
-
-		$filters = null;
-		try {
-			$filters = $this->_registry->get( 'model.custom-filters.storage' );
-		} catch ( Exception $e ) {
-			//custom filters groups not installed or activated
-			return null;
-		} 
-
-		//getting the custom filter groups existents
-		$filter_groups      = $filters->get_items();
-		$filter_groups_html = array();				
-
-		if ( false === empty( $filter_groups ) ) {					
-			foreach ( $filter_groups as $filter_group ) {	
-				$filter_group_html = $taxonomy->get_filter_group_html( $event, $filter_group );
-				if ( false === empty( $filter_group_html ) ) {
-					$icon_name = '';
-					if ( 'ai1eccfgi-null' !== $filter_group['icon'] ) {
-						$icon_name = $filter_group['icon'];
-					} else {
-						$icon_name = 'ai1ec-icon-timely';
-					}		
-					$filter_groups_html[$filter_group['taxonomy_name']] = array(
-						'text'         => $filter_group['name'],
-						'icon_name'    => $icon_name,
-						'html_value'   => $filter_group_html
-					);			
-				}
-			}			
-		}
-
-		return $filter_groups_html;
 	}
 }

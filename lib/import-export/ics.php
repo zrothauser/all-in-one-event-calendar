@@ -31,7 +31,6 @@ class Ai1ec_Ics_Import_Export_Engine
 	public function import( array $arguments ) {
 		$cal = $this->_registry->get( 'vcalendar' );
 		if ( $cal->parse( $arguments['source'] ) ) {
-			$count = 0;
 			try {
 				$result = $this->add_vcalendar_events_to_db(
 					$cal,
@@ -173,6 +172,7 @@ class Ai1ec_Ics_Import_Export_Engine
 		$exclusions        = array();
 		// go over each event
 		while ( $e = $v->getComponent( 'vevent' ) ) {
+
 			// Event data array.
 			$data = array();
 			// =====================
@@ -212,7 +212,6 @@ class Ai1ec_Ics_Import_Export_Engine
 					}
 				}
 			}
-
 			$categories = $e->getProperty( "CATEGORIES", false, true );
 			$imported_cat = array( Ai1ec_Event_Taxonomy::CATEGORIES => array() );
 			// If the user chose to preserve taxonomies during import, add categories.
@@ -234,7 +233,6 @@ class Ai1ec_Ics_Import_Export_Engine
 				);
 			}
 			$tags = $e->getProperty( "X-TAGS", false, true );
-
 			$imported_tags = array( Ai1ec_Event_Taxonomy::TAGS => array() );
 			// If the user chose to preserve taxonomies during import, add tags.
 			if( $tags && $feed->keep_tags_categories ) {
@@ -276,7 +274,6 @@ class Ai1ec_Ics_Import_Export_Engine
 				$event_timezone,
 				$feed->import_timezone ? $forced_timezone : null
 			);
-
 			if ( false === $start || false === $end ) {
 				throw new Ai1ec_Parse_Exception(
 					'Failed to parse one or more dates given timezone "' .
@@ -336,24 +333,27 @@ class Ai1ec_Ics_Import_Export_Engine
 							$excpt_date = trim( $particle );
 						}
 					}
-					// Google sends YYYYMMDD for all-day excluded events
-					if (
-						$allday &&
-						8 === strlen( $excpt_date )
-					) {
-						$excpt_date    .= 'T000000Z';
-						$excpt_timezone = 'UTC';
-					}
-					$ex_dt = $this->_registry->get(
-						'date.time',
-						$excpt_date,
-						$excpt_timezone
-					);
-					if ( $ex_dt ) {
-						if ( isset( $exdate{0} ) ) {
-							$exdate .= ',';
+					$exploded       = explode( ',', $excpt_date );
+					foreach ( $exploded as $particle ) {
+						// Google sends YYYYMMDD for all-day excluded events
+						if (
+							$allday &&
+							8 === strlen( $particle )
+						) {
+							$particle    .= 'T000000Z';
+							$excpt_timezone = 'UTC';
 						}
-						$exdate .= $ex_dt->format( 'Ymd\THis', $excpt_timezone );
+						$ex_dt = $this->_registry->get(
+							'date.time',
+							$particle,
+							$excpt_timezone
+						);
+						if ( $ex_dt ) {
+							if ( isset( $exdate{0} ) ) {
+								$exdate .= ',';
+							}
+							$exdate .= $ex_dt->format( 'Ymd\THis', $excpt_timezone );
+						}
 					}
 				}
 			}
@@ -393,7 +393,6 @@ class Ai1ec_Ics_Import_Export_Engine
 				// is not present on the edit event page
 				$data['show_coordinates'] = 1;
 			}
-
 			// ===================
 			// = Venue & address =
 			// ===================
@@ -430,7 +429,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			) {
 				$event_do_show_map = 0;
 			}
-
+				
 			// ==================
 			// = Cost & tickets =
 			// ==================
@@ -451,6 +450,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			}
 			$contact = $e->getProperty( 'contact' );
 			$elements = explode( ';', $contact, 4 );
+
 			foreach ( $elements as $el ) {
 				$el = trim( $el );
 				// Detect e-mail address.
@@ -523,7 +523,7 @@ class Ai1ec_Ics_Import_Export_Engine
 				$feed
 			);
 
-			$event = $this->_registry->get( 'model.event', $data );
+			$event = $this->_registry->get( 'model.event', $data );		
 
 			// Instant Event
 			$is_instant = $e->getProperty( 'X-INSTANT-EVENT' );
@@ -550,12 +550,13 @@ class Ai1ec_Ics_Import_Export_Engine
 					);
 			}
 			if ( null === $matching_event_id ) {
+				
 				// =================================================
 				// = Event was not found, so store it and the post =
 				// =================================================
-					$event->save();
-					$count++;
-			} else {
+				$event->save();
+				$count++;
+			} else {				
 				// ======================================================
 				// = Event was found, let's store the new event details =
 				// ======================================================
@@ -589,7 +590,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			}
 
 			unset( $events_in_db[$event->get( 'post_id' )] );
-		}
+		} //close while iteration
 
 		return array(
 			'count'            => $count,

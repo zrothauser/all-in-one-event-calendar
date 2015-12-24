@@ -287,6 +287,7 @@ class Ai1ec_Recurrence_Rule extends Ai1ec_Base {
 					}
 				} elseif( $rc->getByDay() ) {
 					$_days = '';
+					$dnum  = '';
 					foreach( $rc->getByDay() as $d ) {
 						if ( ! preg_match( '|^((-?)\d+)([A-Z]{2})$|', $d, $matches ) ) {
 							continue;

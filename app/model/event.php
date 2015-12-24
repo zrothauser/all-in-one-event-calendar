@@ -539,9 +539,12 @@ class Ai1ec_Event extends Ai1ec_Base {
 	 *
 	 * @param  bool  $update  Whether to update an existing event or create a
 	 *                        new one
+	 * @param  bool  $backward_compatibility The (wpdb) ofr the new wordpress 4.4 
+	 * now inserts NULL as null values. The previous version, if you insert a NULL
+	 * value in an int value, the values saved would be 0 instead of null.
 	 * @return int            The post_id of the new or existing event.
 	 */
-	function save( $update = false ) {
+	function save( $update = false, $backward_compatibility = true ) {
 		do_action( 'ai1ec_pre_save_event', $this, $update );
 		if ( ! $update ) {
 			$response = apply_filters( 'ai1ec_event_save_new', $this );
@@ -554,7 +557,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 
 		$dbi        = $this->_registry->get( 'dbi.dbi' );
 		$columns    = $this->prepare_store_entity();
-		$format     = $this->prepare_store_format( $columns );
+		$format     = $this->prepare_store_format( $columns, $backward_compatibility );
 		$table_name = $dbi->get_table_name( 'ai1ec_events' );
 		$post_id    = $columns['post_id'];
 
@@ -641,25 +644,11 @@ class Ai1ec_Event extends Ai1ec_Base {
 	/**
 	 * Prepare fields format flags to use in database operations.
 	 *
-	 * NOTICE: parameter $entity is ignored as of now.
-	 *
-	 * @param array $entity Serialized entity to prepare flags for.
+	 * @param array $columns Array of columns with data to insert.
 	 *
 	 * @return array List of format flags to use in integrations with DBI.
 	 */
-	public function prepare_store_format( array $entity ) {
-		// ===============================================================
-		// ====== Sample implementation to follow method signature: ======
-		// ===============================================================
-		// static $format = array(
-		// 	'post_id'       => '%d',
-		// 	'start'         => '%d',
-		// 	'end'           => '%d',
-		// 	'timezone_name' => '%s',
-		// 	// other keys to follow...
-		// );
-		// return array_values( array_intersect_key( $format, $entity ) );
-		// ===============================================================
+	public function prepare_store_format( array &$columns, $backward_compatibility = true ) {
 		$format = array(
 			'%d',  // post_id
 			'%d',  // start
@@ -691,6 +680,25 @@ class Ai1ec_Event extends Ai1ec_Base {
 			'%f',  // latitude
 			'%f',  // longitude
 		);
+
+		if ( $backward_compatibility ) {
+			$columns_count = count( $columns );
+			if ( count( $format ) !== $columns_count ) {
+				throw new Ai1ec_Event_Not_Found_Exception(
+					'Data columns count differs from format columns count'
+				);
+			}
+			$index = 0;
+			foreach ( $columns as $key => $value ) {
+				if ( '%d' === $format[ $index ] ) {
+					if ( is_null( $value ) ) {
+						$columns[ $key ] = 0;
+					}
+				}
+				$index++;
+			}
+		}
+		
 		return $format;
 	}
 
@@ -749,7 +757,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 		if (
 			isset( $this->_swizzable[$field] ) &&
 			$this->_swizzable[$field] <= 0
-		) {
+		) {		
 			$value = $this->{ '_handle_property_destruct_' . $field }( $value );
 		}
 		return $value;

@@ -50,7 +50,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// = Plugin Version =
 	// ==================
 	if ( ! defined( 'AI1EC_VERSION' ) ) {
-		define( 'AI1EC_VERSION', '2.3.4' );
+		define( 'AI1EC_VERSION', '2.3.5' );
 	}
 
 	// ================
@@ -428,7 +428,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// This is pointless in any case other than development, where literary
 	// every second refresh needs to take fresh copy of everything.
 	if ( ! defined( 'AI1EC_CACHE' ) ) {
-		define( 'AI1EC_CACHE', false );
+		define( 'AI1EC_CACHE', true );
 	}
 
 	if ( ! defined( 'AI1EC_DISABLE_FILE_CACHE' ) ) {

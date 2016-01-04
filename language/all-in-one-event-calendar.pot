@@ -1,14 +1,14 @@
-# Copyright (C) 2015 All-in-One Event Calendar by Time.ly
+# Copyright (C) 2016 All-in-One Event Calendar by Time.ly
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.3.2\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.3.5\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2015-08-19 10:27:58+00:00\n"
+"POT-Creation-Date: 2016-01-04 19:51:28+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
@@ -575,7 +575,7 @@ msgid "week(s)"
 msgstr ""
 
 #: app/view/admin/get-repeat-box.php:413 app/view/admin/get-repeat-box.php:485
-#: lib/recurrence/rule.php:297
+#: lib/recurrence/rule.php:298
 msgid "last"
 msgstr ""
 
@@ -821,15 +821,15 @@ msgid ""
 "Please check if you have installed the latest versions of calendar add-ons."
 msgstr ""
 
-#: app/view/calendar/page.php:268
+#: app/view/calendar/page.php:260
 msgid "Subscribe to filtered calendar"
 msgstr ""
 
-#: app/view/calendar/page.php:269
+#: app/view/calendar/page.php:261
 msgid "Subscribe"
 msgstr ""
 
-#: app/view/calendar/page.php:270 app/view/event/single.php:115
+#: app/view/calendar/page.php:262 app/view/event/single.php:118
 msgid "Get a Timely Calendar"
 msgstr ""
 
@@ -879,7 +879,7 @@ msgstr ""
 msgid "Clear category filter"
 msgstr ""
 
-#: app/view/calendar/taxonomy.php:98 app/view/event/single.php:121
+#: app/view/calendar/taxonomy.php:98 app/view/event/single.php:124
 #: lib/html/element/setting/tags-categories.php:47
 msgid "Categories"
 msgstr ""
@@ -888,42 +888,42 @@ msgstr ""
 msgid "Clear tag filter"
 msgstr ""
 
-#: app/view/calendar/taxonomy.php:100 app/view/event/single.php:122
+#: app/view/calendar/taxonomy.php:100 app/view/event/single.php:125
 #: lib/html/element/setting/tags-categories.php:39
 msgid "Tags"
 msgstr ""
 
-#: app/view/calendar/view/agenda.php:129
+#: app/view/calendar/view/agenda.php:142
 msgid "Collapse All"
 msgstr ""
 
-#: app/view/calendar/view/agenda.php:130
+#: app/view/calendar/view/agenda.php:143
 msgid "Expand All"
 msgstr ""
 
-#: app/view/calendar/view/agenda.php:153
+#: app/view/calendar/view/agenda.php:166
 msgid "There are no upcoming events to display at this time."
 msgstr ""
 
-#: app/view/calendar/view/agenda.php:154 app/view/calendar/widget.php:373
+#: app/view/calendar/view/agenda.php:167 app/view/calendar/widget.php:373
 #: public/admin/feed_row.php:112
 msgid "Edit"
 msgstr ""
 
-#: app/view/calendar/view/agenda.php:155
+#: app/view/calendar/view/agenda.php:168
 msgid "Read more"
 msgstr ""
 
-#: app/view/calendar/view/agenda.php:156
+#: app/view/calendar/view/agenda.php:169
 msgid "Categories:"
 msgstr ""
 
-#: app/view/calendar/view/agenda.php:157 lib/theme/list.php:320
+#: app/view/calendar/view/agenda.php:170 lib/theme/list.php:320
 #: public/admin/themes.php:29
 msgid "Tags:"
 msgstr ""
 
-#: app/view/calendar/view/agenda.php:158 app/view/calendar/view/month.php:87
+#: app/view/calendar/view/agenda.php:171 app/view/calendar/view/month.php:87
 #: app/view/calendar/view/oneday.php:105 app/view/calendar/view/week.php:118
 #: app/view/calendar/widget.php:374
 msgid "@ %s"
@@ -1001,16 +1001,16 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: app/view/event/content.php:33 app/view/event/single.php:116
+#: app/view/event/content.php:33 app/view/event/single.php:119
 msgid "When:"
 msgstr ""
 
-#: app/view/event/content.php:34 app/view/event/single.php:117
+#: app/view/event/content.php:34 app/view/event/single.php:120
 msgid "Where:"
 msgstr ""
 
 #: app/view/event/content.php:125
-msgid "Back to Calendar"
+msgid "Calendar"
 msgstr ""
 
 #: app/view/event/content.php:126
@@ -1077,34 +1077,34 @@ msgstr ""
 msgid "Event was created in the %s time zone"
 msgstr ""
 
-#: app/view/event/single.php:111
+#: app/view/event/single.php:114
 msgid "Add to Calendar"
 msgstr ""
 
-#: app/view/event/single.php:118
+#: app/view/event/single.php:121
 msgid "Cost:"
 msgstr ""
 
-#: app/view/event/single.php:119
+#: app/view/event/single.php:122
 msgid "Contact:"
 msgstr ""
 
-#: app/view/event/single.php:120
+#: app/view/event/single.php:123
 msgid "Free"
 msgstr ""
 
-#: app/view/event/single.php:145
+#: app/view/event/single.php:148
 msgid "Edit this occurrence (%s)"
 msgstr ""
 
-#: app/view/event/single.php:160
+#: app/view/event/single.php:163
 msgid ""
 "This post was replicated from another site's <a href=\"%s\" title="
 "\"iCalendar feed\"><i class=\"ai1ec-fa ai1ec-fa-calendar\"></i> calendar "
 "feed</a>."
 msgstr ""
 
-#: app/view/event/single.php:171
+#: app/view/event/single.php:174
 msgid "View original"
 msgstr ""
 
@@ -1178,40 +1178,40 @@ msgid_plural "Imported %s events"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/calendar-feed/ics.php:202 lib/calendar-feed/ics.php:707
+#: lib/calendar-feed/ics.php:202 lib/calendar-feed/ics.php:711
 msgid "Invalid ICS feed ID"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:350
+#: lib/calendar-feed/ics.php:354
 msgid "Categories (optional)"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:367
+#: lib/calendar-feed/ics.php:371
 msgid ""
 "Do you want to keep the events imported from the calendar or remove them?"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:373
+#: lib/calendar-feed/ics.php:377
 msgid "Removing ICS Feed"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:376
+#: lib/calendar-feed/ics.php:380
 msgid "Keep Events"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:379
+#: lib/calendar-feed/ics.php:383
 msgid "Remove Events"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:519
+#: lib/calendar-feed/ics.php:523
 msgid "Oh, submission was not accepted."
 msgstr ""
 
-#: lib/calendar-feed/ics.php:699
+#: lib/calendar-feed/ics.php:703
 msgid "Deleted %d events"
 msgstr ""
 
-#: lib/calendar-feed/ics.php:735
+#: lib/calendar-feed/ics.php:739
 msgid "Feed deleted"
 msgstr ""
 
@@ -1272,7 +1272,7 @@ msgid ""
 "cloned event</a></p>"
 msgstr ""
 
-#: lib/compatibility/check.php:63
+#: lib/compatibility/check.php:101
 msgid ""
 "You have turned on Frontend Rendering and you are using a custom calendar "
 "theme. If your theme does not support Frontend Rendering, your calendar may "
@@ -1331,7 +1331,7 @@ msgstr ""
 msgid "Error encountered: %s"
 msgstr ""
 
-#: lib/date/system.php:176
+#: lib/date/system.php:202
 msgid "GMT%+d:%02d"
 msgstr ""
 
@@ -1590,6 +1590,10 @@ msgid ""
 "already displays the calendar."
 msgstr ""
 
+#: lib/import-export/ics.php:753
+msgid "Tickets: "
+msgstr ""
+
 #: lib/less/variable/font.php:64
 msgid "Custom..."
 msgstr ""
@@ -1712,12 +1716,12 @@ msgid "on"
 msgstr ""
 
 #: lib/recurrence/rule.php:248 lib/recurrence/rule.php:277
-#: lib/recurrence/rule.php:325
+#: lib/recurrence/rule.php:326
 msgid "and"
 msgstr ""
 
 #: lib/recurrence/rule.php:273 lib/recurrence/rule.php:280
-#: lib/recurrence/rule.php:286 lib/recurrence/rule.php:307
+#: lib/recurrence/rule.php:286 lib/recurrence/rule.php:308
 msgctxt "Recurrence editor - monthly tab"
 msgid "on"
 msgstr ""
@@ -1727,70 +1731,70 @@ msgstr ""
 msgid "of the month"
 msgstr ""
 
-#: lib/recurrence/rule.php:320 lib/recurrence/rule.php:328
-#: lib/recurrence/rule.php:335
+#: lib/recurrence/rule.php:321 lib/recurrence/rule.php:329
+#: lib/recurrence/rule.php:336
 msgctxt "Recurrence editor - yearly tab"
 msgid "on"
 msgstr ""
 
-#: lib/recurrence/rule.php:375 public/admin/box_repeat.php:16
+#: lib/recurrence/rule.php:376 public/admin/box_repeat.php:16
 #: public/admin/cron_freq.php:9
 msgid "Daily"
 msgstr ""
 
-#: lib/recurrence/rule.php:378
+#: lib/recurrence/rule.php:379
 msgid "Every other day"
 msgstr ""
 
-#: lib/recurrence/rule.php:381
+#: lib/recurrence/rule.php:382
 msgid "Every %d days"
 msgstr ""
 
-#: lib/recurrence/rule.php:390 public/admin/box_repeat.php:21
+#: lib/recurrence/rule.php:391 public/admin/box_repeat.php:21
 msgid "Weekly"
 msgstr ""
 
-#: lib/recurrence/rule.php:393
+#: lib/recurrence/rule.php:394
 msgid "Every other week"
 msgstr ""
 
-#: lib/recurrence/rule.php:396
+#: lib/recurrence/rule.php:397
 msgid "Every %d weeks"
 msgstr ""
 
-#: lib/recurrence/rule.php:405 public/admin/box_repeat.php:26
+#: lib/recurrence/rule.php:406 public/admin/box_repeat.php:26
 msgid "Monthly"
 msgstr ""
 
-#: lib/recurrence/rule.php:408
+#: lib/recurrence/rule.php:409
 msgid "Every other month"
 msgstr ""
 
-#: lib/recurrence/rule.php:411
+#: lib/recurrence/rule.php:412
 msgid "Every %d months"
 msgstr ""
 
-#: lib/recurrence/rule.php:420 public/admin/box_repeat.php:31
+#: lib/recurrence/rule.php:421 public/admin/box_repeat.php:31
 msgid "Yearly"
 msgstr ""
 
-#: lib/recurrence/rule.php:423
+#: lib/recurrence/rule.php:424
 msgid "Every other year"
 msgstr ""
 
-#: lib/recurrence/rule.php:426
+#: lib/recurrence/rule.php:427
 msgid "Every %d years"
 msgstr ""
 
-#: lib/recurrence/rule.php:464
+#: lib/recurrence/rule.php:465
 msgid "until %s"
 msgstr ""
 
-#: lib/recurrence/rule.php:474
+#: lib/recurrence/rule.php:475
 msgid "for %d occurrences"
 msgstr ""
 
-#: lib/recurrence/rule.php:478
+#: lib/recurrence/rule.php:479
 msgid "forever"
 msgstr ""
 
@@ -2684,9 +2688,9 @@ msgstr ""
 msgid "All-in-One Event Calendar by Time.ly"
 msgstr ""
 
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.3.2)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.3.5)  #-#-#-#-#
 #. Plugin URI of the plugin/theme
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.3.2)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.3.5)  #-#-#-#-#
 #. Author URI of the plugin/theme
 msgid "http://time.ly/"
 msgstr ""

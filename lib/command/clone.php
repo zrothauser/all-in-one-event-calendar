@@ -31,7 +31,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 	public function do_execute() {
 		$id = 0;
 		foreach ( $this->_posts as $post ) {
-			$id = $this->duplicate_post_create_duplicate(
+			$id = $this->ai1ec_duplicate_post_create_duplicate(
 				$post['post'],
 				$post['status']
 			);
@@ -92,7 +92,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 
 		// duplicate single post
 		if (
-			$current_action === 'duplicate_post_save_as_new_post' &&
+			$current_action === 'ai1ec_duplicate_post_save_as_new_post' &&
 			! empty( $_REQUEST['post'] )
 		) {
 			check_admin_referer( 'ai1ec_clone_'. $_REQUEST['post'] );
@@ -106,7 +106,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 		}
 		// duplicate single post as draft
 		if (
-			$current_action === 'duplicate_post_save_as_new_post_draft' &&
+			$current_action === 'ai1ec_duplicate_post_save_as_new_post_draft' &&
 			! empty( $_REQUEST['post'] )
 		) {
 			check_admin_referer( 'ai1ec_clone_'. $_REQUEST['post'] );
@@ -138,9 +138,9 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 	/**
 	 * Create a duplicate from a posts' instance
 	 */
-	public function duplicate_post_create_duplicate( $post, $status = '' ) {
+	public function ai1ec_duplicate_post_create_duplicate( $post, $status = '' ) {
 		$post            = get_post( $post );
-		$new_post_author = $this->_duplicate_post_get_current_user();
+		$new_post_author = $this->_ai1ec_duplicate_post_get_current_user();
 		$new_post_status = $status;
 		if ( empty( $new_post_status ) ) {
 			$new_post_status = $post->post_status;
@@ -176,9 +176,9 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 		);
 		$notification   = $this->_registry->get( 'notification.admin' );
 		$notification->store( $message );
-		$this->_duplicate_post_copy_post_taxonomies( $new_post_id, $post );
-		$this->_duplicate_post_copy_attachments(     $new_post_id, $post );
-		$this->_duplicate_post_copy_post_meta_info(  $new_post_id, $post );
+		$this->_ai1ec_duplicate_post_copy_post_taxonomies( $new_post_id, $post );
+		$this->_ai1ec_duplicate_post_copy_attachments(     $new_post_id, $post );
+		$this->_ai1ec_duplicate_post_copy_post_meta_info(  $new_post_id, $post );
 
 		if ( $this->_registry->get( 'acl.aco' )->is_our_post_type( $post ) ) {
 			try {
@@ -227,7 +227,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 	/**
 	 * Copy the meta information of a post to another post
 	 */
-	protected function _duplicate_post_copy_post_meta_info( $new_id, $post ) {
+	protected function _ai1ec_duplicate_post_copy_post_meta_info( $new_id, $post ) {
 		$post_meta_keys = get_post_custom_keys( $post->ID );
 		if ( empty( $post_meta_keys ) ) {
 			return;
@@ -255,8 +255,8 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 	 * Copy the attachments
 	 * It simply copies the table entries, actual file won't be duplicated
 	 */
-	protected function _duplicate_post_copy_attachments( $new_id, $post ) {
-		//if (get_option('duplicate_post_copyattachments') == 0) return;
+	protected function _ai1ec_duplicate_post_copy_attachments( $new_id, $post ) {
+		//if (get_option('ai1ec_duplicate_post_copyattachments') == 0) return;
 
 		// get old attachments
 		$attachments = get_posts(
@@ -269,7 +269,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 		);
 		// clone old attachments
 		foreach ( $attachments as $att ) {
-			$new_att_author = $this->_duplicate_post_get_current_user();
+			$new_att_author = $this->_ai1ec_duplicate_post_get_current_user();
 
 			$new_att = array(
 				'menu_order'     => $att->menu_order,
@@ -316,7 +316,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 	/**
 	 * Copy the taxonomies of a post to another post
 	 */
-	protected function _duplicate_post_copy_post_taxonomies( $new_id, $post ) {
+	protected function _ai1ec_duplicate_post_copy_post_taxonomies( $new_id, $post ) {
 		$db = $this->_registry->get( 'dbi.dbi' );
 		if ( $db->are_terms_set() ) {
 			// Clear default category (added by wp_insert_post)
@@ -344,7 +344,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 	/**
 	 * Get the currently registered user
 	 */
-	protected function _duplicate_post_get_current_user() {
+	protected function _ai1ec_duplicate_post_get_current_user() {
 		if ( function_exists( 'wp_get_current_user' ) ) {
 			return wp_get_current_user();
 		} else {

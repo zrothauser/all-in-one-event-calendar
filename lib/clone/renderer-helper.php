@@ -38,12 +38,12 @@ class Ai1ec_Clone_Renderer_Helper extends Ai1ec_Base {
 	 * @wp_hook post_row_action
 	 *
 	 */
-	function duplicate_post_make_duplicate_link_row( $actions, $post ) {
+	function ai1ec_duplicate_post_make_duplicate_link_row( $actions, $post ) {
 		if ( $post->post_type == "ai1ec_event" ) {
-			$actions['clone'] = '<a href="'.$this->duplicate_post_get_clone_post_link( $post->ID, 'display', false).'" title="'
+			$actions['clone'] = '<a href="'.$this->ai1ec_duplicate_post_get_clone_post_link( $post->ID, 'display', false).'" title="'
 			. esc_attr(__("Make new copy of event", AI1EC_PLUGIN_NAME))
 			. '">' .  __( 'Clone', AI1EC_PLUGIN_NAME ) . '</a>';
-			$actions['edit_as_new_draft'] = '<a href="' . $this->duplicate_post_get_clone_post_link( $post->ID ) . '" title="'
+			$actions['edit_as_new_draft'] = '<a href="' . $this->ai1ec_duplicate_post_get_clone_post_link( $post->ID ) . '" title="'
 			. esc_attr(__( 'Copy to a new draft', AI1EC_PLUGIN_NAME ))
 			. '">' .  __( 'Clone to Draft', AI1EC_PLUGIN_NAME ) . '</a>';
 		}
@@ -59,7 +59,7 @@ class Ai1ec_Clone_Renderer_Helper extends Ai1ec_Base {
 	 * @param string $draft Optional, default to true
 	 * @return string
 	 */
-	function duplicate_post_get_clone_post_link( $id = 0, $context = 'display', $draft = true ) {
+	function ai1ec_duplicate_post_get_clone_post_link( $id = 0, $context = 'display', $draft = true ) {
 
 		if ( ! $post = get_post( $id ) ) {
 			return;
@@ -67,9 +67,9 @@ class Ai1ec_Clone_Renderer_Helper extends Ai1ec_Base {
 
 
 		if ( $draft ) {
-			$action_name = "duplicate_post_save_as_new_post_draft";
+			$action_name = "ai1ec_duplicate_post_save_as_new_post_draft";
 		} else {
-			$action_name = "duplicate_post_save_as_new_post";
+			$action_name = "ai1ec_duplicate_post_save_as_new_post";
 		}
 
 		if ( 'display' == $context ) {
@@ -84,7 +84,7 @@ class Ai1ec_Clone_Renderer_Helper extends Ai1ec_Base {
 		}
 
 		return apply_filters(
-			'duplicate_post_get_clone_post_link',
+			'ai1ec_duplicate_post_get_clone_post_link',
 			wp_nonce_url(
 				ai1ec_admin_url( 'admin.php' . $action ),
 				'ai1ec_clone_' . $post->ID

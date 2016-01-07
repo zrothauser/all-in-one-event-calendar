@@ -658,7 +658,7 @@ class Ai1ec_Front_Controller {
 			);
 			$dispatcher->register_filter(
 				'post_row_actions',
-				array( 'clone.renderer-helper', 'duplicate_post_make_duplicate_link_row' ),
+				array( 'clone.renderer-helper', 'ai1ec_duplicate_post_make_duplicate_link_row' ),
 				10,
 				2
 			);

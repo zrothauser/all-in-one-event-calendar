@@ -91,6 +91,17 @@ class Ai1ec_Command_Resolver {
 		);
 		$this->add_command(
 			$registry->get(
+				'command.api-ticketing-signup',
+				$request,
+				array(
+					'action'       => 'ai1ec_api_ticketing_signup',
+					'nonce_action' => Ai1ec_View_Tickets::NONCE_ACTION,
+					'nonce_name'   => Ai1ec_View_Tickets::NONCE_NAME,
+				)
+			)
+		);
+		$this->add_command(
+			$registry->get(
 				'command.clone', $request
 			)
 		);

@@ -156,9 +156,63 @@ define(
 				}
 			}
 		} );
+
+		var $additional_required_fields = $(
+			'#title, #ai1ec_contact_name, #ai1ec_contact_email, #ai1ec_contact_phone, #content'
+		);
+		if ( $( '#ai1ec_has_tickets' ).prop( 'checked' ) ) {
+			$additional_required_fields.addClass( 'ai1ec-required' );
+			check_form();
+			if ( $( '#content' ).hasClass( 'ai1ec-error' ) ) {
+				show_hide_description_error( true );
+			} else {
+				show_hide_description_error( false );	
+			}			
+			if ( $( '.ai1ec-error' ).not( '.ai1ec-hidden .ai1ec-error' ).length ) {
+				show_warning = true;
+				$( '#ai1ec-add-new-event-accordion > .ai1ec-panel-default > .ai1ec-panel-collapse' )
+					.removeClass( 'ai1ec-collapse' ).css( 'height', 'auto' );
+
+				warnings.push( ai1ec_config.ticketing_required_fields );
+			} else {
+				var i = 0;
+				$( '.ai1ec-tickets-edit-form' )
+					.not( '.ai1ec-tickets-form-template' )
+					.each( function() {
+						var $ticket = $( this );
+						$ticket.find( '.ai1ec-tickets-fields' ).remove();
+						$ticket.find( 'select, input' ).each( function() {
+							if ( ! this.name ) return;
+							var curr_value = this.value;
+							if ( 'checkbox' == this.type ) {
+					 			if ( true == this.checked ) {
+					 				curr_value = 'on';
+					 			} else {
+					 				curr_value = 'off';
+								}
+							}					
+							$( '<input />', {
+								type  : 'hidden',
+								name  : 'ai1ec_tickets[' + i + '][' + this.name + ']',
+								class : 'ai1ec-tickets-fields',
+								value : curr_value
+							} ).appendTo( $ticket );
+						} );
+						i ++;
+					} );
+			}
+		} else {
+			$additional_required_fields.removeClass( 'ai1ec-required' );
+		}
 		if ( show_warning ) {
-			warnings.push( ai1ec_config.general_url_not_valid );
 			prevent_form_submission( e, warnings );
+		} else {
+			// Remove the template form.
+			$( '.ai1ec-tickets-form-template' ).remove();
+			$( '.ai1ec-tickets-edit-form' )
+				.find( 'input, select' )
+				.not( '.ai1ec-tickets-fields' )
+					.prop( 'disabled', true );
 		}
 	};
 
@@ -197,9 +251,6 @@ define(
 
 		// Initialize showing/hiding of the exclude dates widget.
 		$( '#widgetField > a' ).on( 'click', date_time_event_handlers.handle_animation_of_calendar_widget );
-
-		// Free checkbox.
-		$( '#ai1ec_is_free' ).on( 'change', event_cost.handle_change_is_free );
 
 		// Banner image.
 		$( document ).on( 'click', '.ai1ec-set-banner-image', set_banner_image );
@@ -287,12 +338,201 @@ define(
 			.insertAfter( '#ai1ec_event_inline_alert' );
 		$( '#post' ).addClass( 'ai1ec-visible' );
 	};
+
 	/**
 	 * Initialize Select2 for timezones.
 	 */
 	var init_timezones_select = function() {
-		$('#timezone-select').select2();
+		$( '#timezone-select' ).select2();
+	}
+
+	/**
+	 * Ticketing datepickers.
+	 */
+	var init_tickets_date_time = function() {
+		
+		$( '.ai1ec-tickets-datepicker' )
+			.not( '.ai1ec-tickets-datepicker-inited' )
+			.not( '.ai1ec-tickets-form-template .ai1ec-tickets-datepicker' )
+			.each( function() {
+				var
+					$this      = $( this ),
+					$block     = $this.closest( '.ai1ec-tickets-dates-block' ),
+					$time      = $( '.ai1ec-tickets-time', $block ),
+					$full_date = $( 'input.ai1ec-tickets-full-date', $block ),
+					full_time  = $full_date.val();
+				
+				$this.val( full_time.substr( 0, 10 ) );
+				$time.val( full_time.substr( 11, 5 ) );
+				$time.on( 'change', function() {
+					full_time = $full_date.val();
+					$full_date.val( full_time.substr( 0, 10 ) + ' ' + this.value + ':00' );
+				} );
+
+				$this
+					.addClass( 'ai1ec-tickets-datepicker-inited' )
+					.datepicker( { autoclose: true } )
+						.on( 'changeDate', function(e) {
+							$full_date.val( this.value + ' ' + $time.val() + ':00' );
+						} );
+					;
+			} );
+
 	};
+
+	// Add/edit tickect form validation.
+	var check_form = function() {
+		$( '.ai1ec-tickets-edit-form' )
+			.not( '.ai1ec-tickets-form-template' )
+			.not( '.ai1ec-hidden' )					
+			.find( 'input[id="ai1ec_ticket_unlimited"]' ).each( function () {
+				var $this        = $( this );
+				var $parent_form = $this.closest( '.ai1ec-tickets-edit-form' );
+				var $sub_fields  = $( 'input[id="ai1ec_ticket_quantity"]', $parent_form );				
+				if ( false === $this.prop( 'checked' ) ) {
+					$sub_fields.addClass( 'ai1ec-required' );
+				} else {
+					$sub_fields.removeClass( 'ai1ec-required' );
+				}
+			} );
+		$( '.ai1ec-tickets-edit-form' )
+					.not( '.ai1ec-tickets-form-template' )
+					.not( '.ai1ec-hidden' )		
+					.find( 'input[id="ai1ec_ticket_avail"]' ).each( function () {
+			var $checkbox = $( this );
+			$checkbox
+				.closest( '.ai1ec-tickets-edit-form' )
+				.find( 'input[id="ai1ec_ticket_sale_start_date"],input[id="ai1ec_ticket_sale_end_date"]' )
+				.each( function () {	
+					if ( false === $checkbox.prop( 'checked' ) ) {
+						$( this ).addClass( 'ai1ec-required' );
+					} else {
+						$( this ).removeClass( 'ai1ec-required' );
+					}
+				});
+		} );		
+		$( '.ai1ec-ticket-field-error' ).hide();		
+		$( '.ai1ec-required' ).not( '.ai1ec-tickets-form-template .ai1ec-required' )
+			.each( function() {
+				var $this = $( this );
+				$this.removeClass( 'ai1ec-error' );
+				if ( ! $.trim( $this.val() ) ) {
+					$this.addClass( 'ai1ec-error' );
+					$this.parent().find( '.ai1ec-ticket-field-error' ).show();
+				}
+			} );
+		$( '[name="ticket_sale_start_date"], [name="ticket_sale_end_date"]')
+			.not( '.ai1ec-tickets-form-template input' )
+			.each( 
+				function() {
+					var
+						$this = $( this ),
+						$visible_fields = $this.closest( '.ai1ec-tickets-dates-block' )
+							.find( 'input[type="text"]' );
+							
+					$visible_fields.removeClass( 'ai1ec-error' );
+					if (
+						! $this.closest( '.ai1ec-avail-block' )
+							.find( 'input[name="availibility"]:checked' ).length 
+						&& null === this.value.match( /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/ )
+					) {
+						$visible_fields.addClass( 'ai1ec-error' );
+					}
+				}
+			);
+		if ( $( '.ai1ec-ticket-field-error:visible' ).length ) {
+			return false;
+		}
+		return true;
+	};
+
+	var on_change_unlimited = function ( $checkbox ) {
+		var $ticket = $checkbox.closest( '.ai1ec-tickets-edit-form' ),
+		$tickets_quantity_fields = $(
+			'#ai1ec_ticket_quantity', $ticket
+		);
+		if ( true == $checkbox.prop( 'checked' ) ) {
+			$tickets_quantity_fields.hide();
+		} else {
+			$tickets_quantity_fields.show();
+		
+		}
+	}
+
+	var on_change_availability = function ( $checkbox ) {
+		var
+			$ticket                  = $checkbox.closest( '.ai1ec-tickets-edit-form' ),
+			$tickets_avail_fields    = $(
+				'.ai1ec-tickets-dates', $ticket
+			);
+
+		if ( true == $checkbox.prop( 'checked' ) ) {
+			$tickets_avail_fields.hide();
+		} else {
+			$tickets_avail_fields.show();
+		}
+	}
+
+	var show_hide_description_error = function( show ) {
+		$( '#ai1ec-event-description-field-error' ).remove();
+		if ( show ) {			
+			$( '#postdivrich' ).before('<div id="ai1ec-event-description-field-error"><strong style="color: red;">* The Event description is required.</strong></div>');
+		}
+	}
+	
+	/**
+	 * Initialize Tickets.
+	 */
+	var init_tickets = function() {
+		$( document ).on( 'click change', '[id="ai1ec_ticket_unlimited"]', function () {
+			on_change_unlimited( $( this ) );
+		} );		
+		$( document ).on( 'click change', '[id="ai1ec_ticket_avail"]', function () {
+			on_change_availability( $( this ) );
+		} );
+		$( document ).on( 'click', '.ai1ec-remove-ticket', function() {
+			var
+				$to_remove = $( this ).closest( '.ai1ec-tickets-panel' ),
+				data_count = $to_remove.attr( 'data-count' );
+
+			if ( 0 === data_count ) {
+				$to_remove.remove();
+			} else {
+				$to_remove
+					.addClass( 'ai1ec-hidden' )
+					.append(
+						'<input type="hidden" name="remove" value="1">'
+					);
+			}
+			return false;
+		} );
+
+		// Create a ticket.
+		var create_ticket = function() {
+			var $form = $( '.ai1ec-tickets-form-template' ).clone();
+			$form
+				.removeClass( 'ai1ec-tickets-form-template' )
+				.appendTo( '#ai1ec-ticket-forms' );
+
+			$checkbox = $( '#ai1ec_ticket_unlimited', $form);
+			$checkbox.prop( 'checked', true );
+			on_change_unlimited( $checkbox );
+
+			$checkbox = $( '#ai1ec_ticket_avail', $form);
+			$checkbox.prop( 'checked', true );
+			on_change_availability( $checkbox );
+			init_tickets_date_time();
+
+			return false;
+		};
+
+		$( '#ai1ec_add_new_ticket' ).on( 'click', create_ticket );
+
+		if( ! $( '.ai1ec-tickets-edit-form' ).not( '.ai1ec-tickets-form-template' ).length ) {
+			create_ticket();
+		}
+	};
+
 
 	var start = function() {
 		// Initialize the page. We do this before domReady so we start loading other
@@ -306,6 +546,10 @@ define(
 			attach_event_handlers();
 			// Initialize Select2 for timezones.
 			init_timezones_select();
+			// Initialize Tickets.
+			init_tickets();
+			// Tickets datepickers.
+			init_tickets_date_time();
 		} );
 	};
 

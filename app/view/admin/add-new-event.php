@@ -66,7 +66,8 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		$contact_email    = '';
 		$contact_url      = '';
 		$cost             = '';
-		$is_free          = '';
+		$is_free          = 'checked="checked"';
+		$cost_type        = 'free';
 		$rrule            = '';
 		$rrule_text       = '';
 		$repeating_event  = false;
@@ -79,6 +80,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		$latitude         = '';
 		$coordinates      = '';
 		$ticket_url       = '';
+		$tickets          = array( null );
 
 		$instance_id = false;
 		if ( isset( $_REQUEST['instance'] ) ) {
@@ -275,15 +277,53 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			->get_file( 'box_event_location.php', $args, true )
 			->get_content();
 
-		// ======================
-		// = Display event cost =
-		// ======================
+		// ===================================
+		// = Display event ticketing options =
+		// ===================================
+		$settings              = $this->_registry->get( 'model.settings' );
+		$ticketing             = $settings->get( 'ticketing_enabled' );
+		$message               = $settings->get( 'ticketing_message' );
+		$loading_error         = null;
+		$ticket_event_imported = false;
+
+		if ( $event ) {
+			$api                   = $this->_registry->get( 'model.api' );
+			$ticket_event_imported = $api->is_ticket_event_imported( $event->get( 'post_id' ) );
+			if ( $ticketing || $ticket_event_imported ) {
+				$cost_type = get_post_meta(
+					$event->get( 'post_id' ),
+					'_ai1ec_cost_type',
+					true
+				);
+				if ( 'tickets' === $cost_type ) {
+					$response = json_decode( $api->get_ticket_types( $event->get( 'post_id' ) ) );
+					if ( isset( $response->data ) ) {
+						$tickets = array_merge( $tickets, $response->data );
+					}
+					if ( isset( $response->error ) ) {
+						$loading_error = $response->error;
+					}
+				}
+			}
+			$uid = $event->get_uid();
+		} else {
+			$uid = $empty_event->get_uid();
+		}
 		$args = array(
-			'cost'       => $cost,
-			'is_free'    => $is_free,
-			'ticket_url' => $ticket_url,
-			'event'      => $empty_event,
+			'cost'                  => $cost,
+			'cost_type'             => $cost_type,
+			'ticket_url'            => $ticket_url,
+			'event'                 => $empty_event,
+			'uid'                   => $uid,
+			'tickets'               => $tickets,
+			'ticketing'             => $ticketing,
+			'tickets_message'       => $message,
+			'start'                 => $start,
+			'end'                   => $end,
+			'tickets_loading_error' => $loading_error,
+			'ticket_event_imported' => $ticket_event_imported
 		);
+
 		$boxes[] = $theme_loader
 			->get_file( 'box_event_cost.php', $args, true )
 			->get_content();

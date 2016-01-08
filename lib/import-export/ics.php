@@ -593,6 +593,28 @@ class Ai1ec_Ics_Import_Export_Engine
 				wp_set_post_terms( $event->get( 'post_id' ), array_keys( $ids ), $tax_name );
 			}
 
+			// import the metadata used by ticket events
+
+			$cost_type    = $e->getProperty( 'X-COST-TYPE' );
+			if ( $cost_type && false === ai1ec_is_blank( $cost_type[1] ) ) {
+				update_post_meta( $event->get( 'post_id' ), '_ai1ec_cost_type', $cost_type[1] );
+			}
+
+			$api_event_id = $e->getProperty( 'X-API-EVENT-ID' );
+			if ( $api_event_id && false === ai1ec_is_blank( $api_event_id[1] ) ) {
+				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api::EVENT_ID_METADATA, $api_event_id[1] );	
+			}
+
+			$api_url = $e->getProperty( 'X-API-URL' );
+			if ( $api_url && false === ai1ec_is_blank( $api_url[1] ) ) {
+				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api::ICS_API_URL_METADATA, $api_url[1] );	
+			}
+
+			$checkout_url = $e->getProperty( 'X-CHECKOUT-URL' );
+			if ( $checkout_url && false === ai1ec_is_blank( $checkout_url[1] ) ) {
+				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api::ICS_CHECKOUT_URL_METADATA, $checkout_url[1] );	
+			}
+
 			unset( $events_in_db[$event->get( 'post_id' )] );
 		} //close while iteration
 
@@ -745,9 +767,65 @@ class Ai1ec_Ics_Import_Export_Engine
 			)
 		);
 
+		$post_meta_values = get_post_meta( $event->get( 'post_id' ), '', false );
+
+		//getting the metadata used by Ticket Event
+		$api_event_id = null;
+		$cost_type    = null;
+		$api_url      = null;
+		$checkout_url = null;
+		if ( $post_meta_values ) {
+			foreach ($post_meta_values as $key => $value) {				
+				if ( '_ai1ec_cost_type' === $key ) {
+					$cost_type    = $value[0];
+				} else if ( Ai1ec_Api::EVENT_ID_METADATA === $key ) {
+					$api_event_id = $value[0];					
+				} else if ( Ai1ec_Api::ICS_API_URL_METADATA === $key ) {
+					$api_url = $value[0];
+				} else if ( Ai1ec_Api::ICS_CHECKOUT_URL_METADATA === $key ) {
+					$checkout_url = $value[0];
+				}
+ 			}			
+		}
+
+		if ( false === ai1ec_is_blank( $cost_type ) ) {
+			$e->setProperty(
+				'X-COST-TYPE',
+				$this->_sanitize_value( $cost_type )
+			);
+		}
+		
+		$url = '';
+		if ( $api_event_id ) {
+
+			//getting all necessary informations that will be necessary on imported ticket events
+			
+			$e->setProperty(
+				'X-API-EVENT-ID',
+				$this->_sanitize_value( $api_event_id )
+			);
+
+			if ( ai1ec_is_blank( $api_url ) ) {
+				$e->setProperty( 'X-API-URL', AI1EC_API_URL );			
+			} else {
+				$e->setProperty( 'X-API-URL', $this->_sanitize_value( $api_url ) );			
+			}
+
+			$api = $this->_registry->get( 'model.api' );
+			if ( ai1ec_is_blank( $checkout_url ) ) {
+				$e->setProperty( 'X-CHECKOUT-URL', AI1EC_TICKETS_CHECKOUT_URL );			
+				$url = $api->create_checkout_url( $api_event_id );
+			} else {
+				$e->setProperty( 'X-CHECKOUT-URL', $this->_sanitize_value( $checkout_url ) );			
+				$url = $api->create_checkout_url( $api_event_id, $checkout_url );
+			}			
+
+		} else if ( $event->get( 'ticket_url' ) ) {					
+			$url = $event->get( 'ticket_url' );
+		}
+
 		//Adding Ticket URL to the Description field
-		if ( $event->get( 'ticket_url' ) ) {					
-			$url     = $event->get( 'ticket_url' );
+		if ( false === ai1ec_is_blank( $url ) ) {
 			$content = $this->_remove_ticket_url( $content );	
 			$content = $content
 		             . '<p>' . __( 'Tickets: ', AI1EC_PLUGIN_NAME )

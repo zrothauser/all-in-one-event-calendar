@@ -16,6 +16,11 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 		$columns['author']           = __( 'Author',          AI1EC_PLUGIN_NAME );
 		$columns['date']             = __( 'Post Date',       AI1EC_PLUGIN_NAME );
 		$columns['ai1ec_event_date'] = __( 'Event date/time', AI1EC_PLUGIN_NAME );
+		$settings                    = $this->_registry->get( 'model.settings' );
+		$ticketing                   = $settings->get( 'ticketing_enabled' );
+		if ( $ticketing ) {
+			$columns['tickets']      = __( 'Ticket Types',    AI1EC_PLUGIN_NAME );
+		}
 		return $columns;
 	}
 
@@ -60,9 +65,33 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 				$event = $this->_registry->get( 'model.event', $post_id );
 				$time  = $this->_registry->get( 'view.event.time' );
 				echo $time->get_timespan_html( $event );
-			} catch( Exception $e ) {
+			} catch ( Exception $e ) {
 				// event wasn't found, output empty string
 				echo '';
+			}
+		}
+		if ( 'tickets' === $column ) {
+			$api = $this->_registry->get( 'model.api' );
+			if ( $api->is_ticket_event_imported( $post_id ) ) {
+				echo '';
+			} else {
+				try {				
+					$event        = $this->_registry->get( 'model.event', $post_id );				
+					$api_event_id = get_post_meta(
+						$post_id,
+						Ai1ec_Api::EVENT_ID_METADATA,
+						true
+					);				
+					if ( $api_event_id ) {
+						echo '<a href="#" class="ai1ec-has-tickets" data-post-id="'
+							. $post_id . '">'
+							. __( 'Ticketing Details', AI1EC_PLUGIN_NAME ) . '</a>';
+					}
+
+				} catch ( Exception $e ) {
+					// event wasn't found, output empty string
+					echo '';
+				}
 			}
 		}
 	}
@@ -160,5 +189,42 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 				$query->query_vars['order']   = 'desc';
 			}
 		}
+	}
+
+	/**
+	 * CSS and templates files needed for ticketing.
+	 */
+	public function add_ticketing_styling() {
+		// Add CSS
+		$this->_registry->get( 'css.admin' )->admin_enqueue_scripts(
+			'ai1ec_event_page_all-in-one-event-calendar-settings'
+		);
+		$this->_registry->get( 'css.admin' )->process_enqueue(
+			array(
+				array( 'style', 'ticketing.css', ),
+			)
+		);
+	}
+
+	/**
+	 * Get ticket details by Event id.
+	 */
+	public function show_ticket_details() {
+		$post_id = $_POST['ai1ec_event_id'];
+		$api     = $this->_registry->get( 'model.api' );
+		$tickets = $api->get_ticket_types( $post_id );
+		echo $tickets;
+		wp_die();
+	}
+
+	/**
+	 * Get attendees list.
+	 */
+	public function show_attendees() {
+		$post_id  = $_POST['ai1ec_event_id'];
+		$api      = $this->_registry->get( 'model.api' );
+		$tickets  = $api->get_tickets( $post_id );
+		echo $tickets;
+		wp_die();
 	}
 }

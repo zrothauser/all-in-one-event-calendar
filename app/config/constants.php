@@ -465,6 +465,22 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		);
 	}
 
+	// Defines API URL.
+	if ( ! defined( 'AI1EC_API_URL' ) ) {
+		define(
+			'AI1EC_API_URL',
+			'https://ticketing.time.ly/api/'
+		);
+	}
+
+	// Defines Tickets checkout URL.
+	if ( ! defined( 'AI1EC_TICKETS_CHECKOUT_URL' ) ) {
+		define(
+			'AI1EC_TICKETS_CHECKOUT_URL',
+			'https://ticketing.time.ly/events/{event_id}/checkout'
+		);
+	}
+
 	// ================================================
 	// = Force WordPress updates command link         =
 	// ================================================

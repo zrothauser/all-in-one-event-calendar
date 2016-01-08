@@ -1,0 +1,5 @@
+require(
+		[ "scripts/ticketing" ],
+		function() {
+
+});

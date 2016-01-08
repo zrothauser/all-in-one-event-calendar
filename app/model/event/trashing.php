@@ -69,33 +69,126 @@ class Ai1ec_Event_Trashing extends Ai1ec_Base {
 	}
 
 	/**
-	 * Handle post (event) trashing.
+	 * Handle PRE (event) trashing.
 	 *
 	 * @wp_hook trash_post
 	 *
 	 * @param int $post_id ID of post, which was trashed.
 	 *
-	 * @return bool Success.
+	 * @return bool Success. 
 	 */
-	public function trash( $post_id ) {
-		return $this->trash_children( $post_id );
+	public function trash_post( $post_id ) {
+		$api             = $this->_registry->get( 'model.api' );
+		$post            = get_post( $post_id );
+		$restored_status = get_post_meta( $post_id, '_wp_trash_meta_status', true );
+		$fields          = array( 
+			'status' => 'trash'
+		);
+		$message = $api->update_api_event_fields( $post, $fields );
+		if ( null !== $message )  {						
+			if ( defined('DOING_AJAX') && DOING_AJAX ) {
+				wp_die( $message );
+			} else {
+				wp_redirect( $this->get_sendback_page( $post_id ) );
+				exit();	
+			}
+		}
+		return true;
 	}
 
 	/**
-	 * Handle post (event) untrashing.
+	 * Handle POST (event) trashing.
+	 *
+	 * @wp_hook trashed_post
+	 *
+	 * @param int $post_id ID of post, which was trashed.
+	 *
+	 * @return bool Success.
+	 */
+	public function trashed_post( $post_id ) {
+		return $this->trash_children( $post_id );
+	}
+
+	private function get_sendback_page( $post_id ) {
+		$sendback  = wp_get_referer();
+		$page_base = Ai1ec_Wp_Uri_Helper::get_pagebase( $sendback ); //$_SERVER['REQUEST_URI'] );
+		if ( 'post.php' === $page_base ) {
+			return get_edit_post_link( $post_id, 'url' );
+		} else {
+			return admin_url( 'edit.php?post_type=ai1ec_event' );
+		}
+	}
+
+	/**
+	 * Handle PRE (event) untrashing.
 	 *
 	 * @wp_hook untrash_post
 	 *
 	 * @param int $post_id ID of post, which was untrashed.
 	 *
+	 * @return bool Success. Interrupt the action with exit is 
+	 * the integration with API fails
+	 */
+    public function untrash_post ( $post_id ) {        	
+    	$api             = $this->_registry->get( 'model.api' );
+		$post            = get_post( $post_id );
+		$restored_status = get_post_meta( $post_id, '_wp_trash_meta_status', true );
+		$fields          = array( 
+			'status' => $restored_status 
+		);
+		$message = $api->update_api_event_fields( $post, $fields );
+		if ( null !== $message )  {						
+			if ( defined('DOING_AJAX') && DOING_AJAX ) {
+				wp_die( $message );
+			} else {
+				wp_redirect( $this->get_sendback_page( $post_id ) );
+				exit();	
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Handle POST (event) untrashing.
+	 *
+	 * @wp_hook untrashed_post
+	 *
+	 * @param int $post_id ID of post, which was untrashed.
+	 *
 	 * @return bool Success.
 	 */
-	public function untrash( $post_id ) {
+	public function untrashed_post( $post_id ) {
 		return $this->untrash_children( $post_id );
 	}
 
 	/**
-	 * Handle post (event) deletion.
+	 * Handle PRE (event) deletion.
+	 *
+	 * Executed before post is deleted, but after meta is removed.
+	 *
+	 * @wp_hook delete_post
+	 *
+	 * @param int $post_id ID of post, which was trashed.
+	 *
+	 * @return bool Success. Interrupt the action with exit is 
+	 * the integration with API fails
+	 */
+    public function before_delete_post( $post_id ) {
+    	$api     = $this->_registry->get( 'model.api' );
+    	$message = $api->delete_api_event( $post_id );
+		if ( null !==  $message )  {						
+			if ( defined('DOING_AJAX') && DOING_AJAX ) {
+				wp_die( $message );
+			} else {
+				wp_redirect( $this->get_sendback_page( $post_id ) );
+				exit();	
+			}
+		}	
+		return true;
+	}
+
+	/**
+	 * Handle POST (event) deletion.
 	 *
 	 * Executed before post is deleted, but after meta is removed.
 	 *

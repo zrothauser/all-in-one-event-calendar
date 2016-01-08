@@ -71,6 +71,146 @@
 	background-color: #f5f5f5;
 }
 
+.timely .ai1ec-cost-types {
+	margin-top: 8px;
+}
+.timely .ai1ec-cost-types label {
+	margin-right: 25px;
+}
+.timely .ai1ec-cost-types input {
+	margin-bottom: 3px;
+}
+.timely #ai1ec-event-cost-box tr {
+	height: 36px;
+}
+.timely #ai1ec-event-cost-box .ai1ec-tickets-panel {
+	border-color: #eee;
+	padding: 12px;
+	margin-top: 8px;
+	max-width: 550px;
+}
+.timely #ai1ec-event-cost-box .ai1ec-tickets-panel .ai1ec-first {
+	width: 100px;
+}
+.timely #ai1ec-event-cost-box .ai1ec-tickets-dates {
+	padding: 8px;
+	display: none;
+}
+.timely #ai1ec-event-cost-box .ai1ec-tickets-dates > div {
+	margin: 4px 0;
+}
+.timely #ai1ec-event-cost-box .ai1ec-tickets-dates label {
+	display: inline-block;
+	width: 50px;
+}
+.timely .ai1ec-tickets-dates-block {
+	margin-bottom: 3px;
+}
+.timely .ai1ec-tickets-list-cost {
+	width: 50px;
+}
+.timely .ai1ec-tickets-list-status {
+	width: 80px;
+	text-transform: capitalize;
+}
+.timely .ai1ec-tickets-list-buttons {
+	width: 125px;
+}
+.timely .ai1ec-ticket-field-error {
+	color: red;
+	font-size: 11px;
+	margin-top: 5px;
+	font-weight: bold;
+	display: none;
+}
+.timely .ai1ec-tickets-limits label {
+	display: inline;
+}
+.timely .ai1ec-tickets-limits input {
+	display: inline;
+	width: 50px;
+	margin-right: 8px;
+}
+.timely .ai1ec-tickets-datepicker {
+	background: no-repeat url(../img/date-field-icon.png) 95% 40%;
+	width: 110px;
+	display: inline-block;
+}
+.timely .ai1ec-tickets-time {
+	width: 55px;
+	display: inline-block;
+}
+.ai1ec-error {
+	border-color: #f00 !important;
+}
+.timely .ai1ec-ticket-editing {
+	background: #f5f5f5;
+}
+.timely a.ai1ec-remove-ticket {
+	color: #d9534f;
+	padding: 0;
+	margin-top: -12px;
+	margin-right: -9px;
+	margin-bottom: 7px;
+}
+#ai1ec-ticket-forms > .ai1ec-tickets-panel {
+	margin-bottom: 10px;
+}
+.ai1ec-tickets-form-template {
+	display: none !important;
+}
+#ai1ec_add_new_ticket {
+	margin: 15px 0 10px;
+}
+#ai1ec_cancel_edit_ticket {
+	margin-right: 6px;
+	display: none;
+}
+#ai1ec_save_ticket {
+	display: none;
+}
+#ai1ec_ticket_price {
+	width: 80px;
+	margin-right: 4px;
+	display: inline-block;
+}
+#ai1ec_ticket_quantity {
+	display: inline-block;
+	width: 60px;
+	margin: 0 16px 0 36px;
+}
+#ai1ec_new_ticket_status {
+	width: inherit;
+}
+#ai1ec_ticket_quantity,
+label.ai1ec_ticket_show_remaining {
+	display: none;
+}
+td.ai1ec-avail-block {
+	vertical-align: top;
+    padding-top: 7px;
+}
+.ai1ec-tickets-list-template {
+	display: none;
+}
+.ai1ec-tickets-list-cost {
+	font-weight: bold;
+}
+.ai1ec-tickets-external,
+.ai1ec-tickets-form,
+.ai1ec-tickets-list-container {
+	display: none;
+}
+#ai1ec_ticket_ext_cost {
+	width: 100px;
+}
+#ai1ec_ticket_ext_url {
+	max-width: 420px;
+}
+.ai1ec-tickets-list {
+	padding: 6px 12px !important;
+	margin: 0;
+}
 /* Recurrence fields */
 #ai1ec_repeat_text a,
 #ai1ec_exclude_text a,
@@ -355,4 +495,13 @@
 }
 #ai1ec_recurrence_calendar .ai1ec-datepicker-inline table {
 	width: 100%;
+}
+#ai1ec_event_inline_alert .ai1ec_ticketing_required_alert {
+	list-style: inherit;
+	line-height: 24px;
+	margin-bottom: 5px;
+}
+.ai1ec_ticketing_required_alert li {
+	margin-left: 30px;
+	margin-bottom: 0;
 }

@@ -1,0 +1,15 @@
+machine:
+  timezone:
+    America/Vancouver
+  php:
+    version: 5.5.21
+
+dependencies:
+  pre:
+    - echo "memory_limit = 64M" > ~/.phpenv/versions/$(phpenv global)/etc/conf.d/memory.ini
+
+deployment:
+  dev:
+    branch: develop
+    commands:
+      - ssh codedeploy@dev.time.ly "cd /var/www/html/wordpress431/wp-content/plugins/all-in-one-event-calendar && git pull github develop && sudo sh /var/www/copy-wordpress.sh"

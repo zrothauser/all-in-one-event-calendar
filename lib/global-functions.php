@@ -138,6 +138,24 @@ function ai1ec_is_ssl_forced() {
 	);
 }
 
+/**
+ * Check if an string is empty. 
+ * @return bool result
+ */
+function ai1ec_is_blank( $value ) {
+	if ( null === $value || false === isset( $value ) ) {
+		return true;
+	} else {
+	 	if ( is_string( $value ) ) {
+	 		return strlen( trim( $value ) ) <= 0;		
+	 	} else if ( is_array( $value ) ) {
+	 		return count( $value ) <= 0;
+	 	} else {
+	 		return false;
+	 	}		
+	}
+}
+
 /*
  * Date parser for PHP <= 5.2
  *

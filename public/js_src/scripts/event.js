@@ -23,6 +23,10 @@ define(
 		$( '.ai1ec-gmap-placeholder:first' ).click(
 			gmaps_helper.handle_show_map_when_clicking_on_placeholder
 		);
+		$( document ).on( 'click', '#ai1ec_tickets_submit', function() {
+			$( this ).closest( 'form' ).submit();
+			return false;
+		} );
 	};
 
 	var images_in_post_content = function() {

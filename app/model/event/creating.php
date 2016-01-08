@@ -11,31 +11,21 @@
  */
 class Ai1ec_Event_Creating extends Ai1ec_Base {
 
-	/**
-	 * Saves meta post data.
-	 *
-	 * @wp_hook save_post
-	 *
-	 * @param  int    $post_id Post ID.
-	 * @param  object $post    Post object.
-	 *
-	 * @return object|null Saved Ai1ec_Event object if successful or null.
-	 */
-	public function save_post( $post_id, $post ) {
-		// verify this came from the our screen and with proper authorization,
+	protected function is_valid_event( $post ) {
+			// verify this came from the our screen and with proper authorization,
 		// because save_post can be triggered at other times
 		if (
 			! isset( $_POST[AI1EC_POST_TYPE] ) ||
 			! wp_verify_nonce( $_POST[AI1EC_POST_TYPE], 'ai1ec' )
 		) {
-			return null;
+			return false;
 		}
 
 		if (
 			isset( $post->post_status ) &&
 			'auto-draft' === $post->post_status
 		) {
-			return null;
+			return false;
 		}
 
 		// verify if this is not inline-editing
@@ -43,13 +33,18 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 			isset( $_REQUEST['action'] ) &&
 			'inline-save' === $_REQUEST['action']
 		) {
-			return null;
+			return false;
 		}
 
 		// verify that the post_type is that of an event
-		if ( ! $this->_registry->get( 'acl.aco' )->is_our_post_type( $post ) ) {
-			return null;
+		if ( $post->post_type !==  AI1EC_POST_TYPE ) {
+			return false;
 		}
+
+		return true;
+	}
+
+	private function _parse_post_to_event( $post_id ) {		
 
 		/**
 		 * =====================================================================
@@ -61,10 +56,6 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 		 *
 		 * =====================================================================
 		 */
-
-		// LABEL:magicquotes
-		// remove WordPress `magical` slashes - we work around it ourselves
-		$_POST = stripslashes_deep( $_POST );
 
 		$all_day          = isset( $_POST['ai1ec_all_day_event'] )    ? 1                                             : 0;
 		$instant_event    = isset( $_POST['ai1ec_instant_event'] )    ? 1                                             : 0;
@@ -88,8 +79,6 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 		$show_coordinates = isset( $_POST['ai1ec_input_coordinates'] )? 1                                             : 0;
 		$longitude        = isset( $_POST['ai1ec_longitude'] )        ? $_POST['ai1ec_longitude']                     : '';
 		$latitude         = isset( $_POST['ai1ec_latitude'] )         ? $_POST['ai1ec_latitude']                      : '';
-		$banner_image     = isset( $_POST['ai1ec_banner_image'] )     ? $_POST['ai1ec_banner_image']                  : '';
-
 		$rrule  = null;
 		$exrule = null;
 		$exdate = null;
@@ -131,7 +120,6 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 		}
 
 		$is_new = false;
-		$event  = null;
 		try {
 			$event =  $this->_registry->get(
 				'model.event',
@@ -191,21 +179,188 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 		$event->set( 'show_coordinates', $show_coordinates );
 		$event->set( 'longitude',        trim( $longitude ) );
 		$event->set( 'latitude',         trim( $latitude ) );
-		$event->set( 'ical_uid',         $event->get_uid() );
+		$event->set( 'ical_uid',         $event->get_uid() );		
+
+		return array( 
+			'event'        => $event,
+			'is_new'       => $is_new
+		);
+	}
+
+	/**
+	 * Saves meta post data.
+	 *
+	 * @wp_hook save_post
+	 *
+	 * @param  int    $post_id Post ID.
+	 * @param  object $post    Post object.
+	 * @param  update 
+	 *
+	 * @return object|null Saved Ai1ec_Event object if successful or null.
+	 */
+	public function save_post( $post_id, $post, $update ) {
+		
+		if ( false === $this->is_valid_event( $post ) ) {
+			return null;
+		}
+
+		// LABEL:magicquotes
+		// remove WordPress `magical` slashes - we work around it ourselves
+		$_POST = stripslashes_deep( $_POST );
+
+		$data = $this->_parse_post_to_event( $post_id );
+		if ( ! $data ) {
+			return null;
+		}
+		$event        = $data['event'];
+		$is_new       = $data[ 'is_new'];
+
+		$banner_image = isset( $_POST['ai1ec_banner_image'] )     ? $_POST['ai1ec_banner_image'] : '';
+		$cost_type    = isset( $_POST['ai1ec_cost_type'] )        ? $_POST['ai1ec_cost_type'] : '';
 
 		update_post_meta( $post_id, 'ai1ec_banner_image', $banner_image );
+		if ( $cost_type ) {
+			update_post_meta( $post_id, '_ai1ec_cost_type', $cost_type );
+		}
+
+		if ( $update === false ) {
+			//this method just creates the API event, the update action
+			//is treated by another hook (pre_update_event inside api )
+			$api = $this->_registry->get( 'model.api' );
+			if ( 'tickets' === $cost_type ) {			
+				$api->store_event( $event, $post );
+			}			
+		}
 
 		// let other extensions save their fields.
 		do_action( 'ai1ec_save_post', $event );
 
 		$event->save( ! $is_new );
 
+		// LABEL:magicquotes
+		// restore `magic` WordPress quotes to maintain compatibility
+		$_POST = add_magic_quotes( $_POST );
+
+		return $event;
+	}
+
+	private function get_sendback_page( $post_id ) {
+		$sendback  = wp_get_referer();
+		$page_base = Ai1ec_Wp_Uri_Helper::get_pagebase( $sendback ); //$_SERVER['REQUEST_URI'] );
+		if ( 'post.php' === $page_base ) {
+			return get_edit_post_link( $post_id, 'url' );
+		} else {
+			return admin_url( 'edit.php?post_type=ai1ec_event' );
+		}
+	}
+
+	/**
+	 * Handle PRE (ticket event) update.
+	 * Just handle the Ticket Events, other kind of post are ignored
+	 * @wp_hook pre_post_update
+	 *
+	 */
+    public function pre_post_update ( $post_id, $new_post_data ) {        	
+
+    	// LABEL:magicquotes
+		// remove WordPress `magical` slashes - we work around it ourselves
+		$_POST = stripslashes_deep( $_POST );
+
+    	$api    = $this->_registry->get( 'model.api' );
+    	$action = $this->current_action();
+		switch( $action ) {
+		case 'inline-save': //quick edit from edit page
+			$fields = array();
+			if ( false === ai1ec_is_blank( $_REQUEST['post_title'] ) ) {
+				$fields['title'] = $_REQUEST['post_title'];
+			}			 
+			if ( false === ai1ec_is_blank( $_REQUEST['_status'] ) ) {
+				$fields['status'] = $_REQUEST['_status'];
+			}
+			if ( isset( $_REQUEST['keep_private'] ) && 'private' === $_REQUEST['keep_private'] ) {
+				$fields['visibility'] = 'private';
+			} else if ( isset( $_REQUEST['post_password'] ) && false === ai1ec_is_blank( $_REQUEST['post_password'] ) ) {
+				$fields['visibility'] = 'password';
+			}
+			if ( 0 < count( $fields ) ) {
+				$post    = get_post( $post_id );
+				$message = $api->update_api_event_fields( $post, $fields );
+				if ( null !== $message )  {						
+					if ( defined('DOING_AJAX') && DOING_AJAX ) {
+						wp_die( $message );
+					} else {
+						wp_redirect( $this->get_sendback_page( $post_id ) );
+						exit();
+					}										
+				}				
+			}
+			return;
+		case 'edit': //bulk edition from edit page
+			$fields          = array();
+			if ( false === ai1ec_is_blank( $_REQUEST['_status'] ) ) {
+				$fields['status'] = $_REQUEST['_status'];
+			}
+			if ( 0 < count( $fields ) ) {
+				$post    = get_post( $post_id );
+				$message = $api->update_api_event_fields( $post, $fields );
+				if ( null !== $message )  {			
+					if ( defined('DOING_AJAX') && DOING_AJAX ) {
+						wp_die( $message );
+					} else {	
+						wp_redirect( $this->get_sendback_page( $post_id ) );
+						exit();	
+					}
+				}				
+			}
+			return;
+		case 'editpost': //edition from post page
+			$new_post_data['ID'] = $post_id;
+	    	$post = new WP_Post( (object) $new_post_data );
+	    	if ( false === $this->is_valid_event( $post ) ) {    		
+				break;
+			}
+	    	$data  = $this->_parse_post_to_event( $post_id );
+			if ( ! $data ) {			
+				break;
+			}
+			$event     = $data['event'];	  
+			$cost_type = isset( $_REQUEST['ai1ec_cost_type'] ) ? $_REQUEST['ai1ec_cost_type'] : '';
+			if ( 'tickets' === $cost_type ) {
+		    	if ( false === $api->store_event( $event, $post ) ) {    		
+					wp_redirect( $this->get_sendback_page( $post_id ) );
+					exit();	
+		    	}				
+			} else {
+				$message = $api->delete_api_event( $post_id );
+				if ( null !== $message )  {											
+					wp_redirect( $this->get_sendback_page( $post_id ) );
+					exit();	
+				}	
+			}
+	    	break;
+		default:
+			break;									
+		}		
 
 		// LABEL:magicquotes
 		// restore `magic` WordPress quotes to maintain compatibility
 		$_POST = add_magic_quotes( $_POST );
-		return $event;
-	}
+    }
+
+    protected function current_action() {
+		$action = '';
+		if ( isset( $_REQUEST['delete_all'] ) || isset( $_REQUEST['delete_all2'] ) ) {
+			$action = 'delete';
+		} else {
+			if ( isset( $_REQUEST['action'] ) && -1 != $_REQUEST['action'] ) {
+				$action = $_REQUEST['action'];
+			}
+			if ( isset( $_REQUEST['action2'] ) && -1 != $_REQUEST['action2'] ) {
+				$action = $_REQUEST['action2'];
+			}					
+		}
+		return $action;    	
+    }
 
 	/**
 	 * _create_duplicate_post method

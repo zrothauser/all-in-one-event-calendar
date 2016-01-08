@@ -24,8 +24,8 @@ class Ai1ec_View_Calendar_Feeds extends Ai1ec_View_Admin_Abstract {
 		// =======================
 		$calendar_feeds = add_submenu_page(
 			AI1EC_ADMIN_BASE_URL,
-			Ai1ec_I18n::__( 'Calendar Feeds' ),
-			Ai1ec_I18n::__( 'Calendar Feeds' ),
+			Ai1ec_I18n::__( 'Import Feeds' ),
+			Ai1ec_I18n::__( 'Import Feeds' ),
 			'manage_ai1ec_feeds',
 			AI1EC_PLUGIN_NAME . '-feeds',
 			array( $this, 'display_page' )
@@ -63,7 +63,7 @@ class Ai1ec_View_Calendar_Feeds extends Ai1ec_View_Admin_Abstract {
 		$loader   = $this->_registry->get( 'theme.loader' );
 		$args     = array(
 			'title'             => __(
-				'All-in-One Event Calendar: Calendar Feeds',
+				'All-in-One Event Calendar: Import Feeds',
 				AI1EC_PLUGIN_NAME
 			),
 			'settings_page'     => $settings->get( 'feeds_page' ),

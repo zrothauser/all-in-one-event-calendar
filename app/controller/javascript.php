@@ -60,6 +60,9 @@ class Ai1ec_Javascript_Controller {
 
 	//widget creator page
 	CONST WIDGET_CREATOR = 'widget-creator.js';
+
+	//ticketing page
+	CONST TICKETING = 'ticketing.js';
 	/**
 	 * @var Ai1ec_Registry_Object
 	 */
@@ -80,6 +83,7 @@ class Ai1ec_Javascript_Controller {
 		self::EVENT_PAGE_JS       => true,
 		self::CALENDAR_PAGE_JS    => true,
 		self::WIDGET_CREATOR      => true,
+		self::TICKETING           => true,
 	);
 
 	/**
@@ -286,16 +290,16 @@ class Ai1ec_Javascript_Controller {
 		$script_to_load = FALSE;
 		if ( $this->are_we_on_calendar_feeds_page() === TRUE ) {
 			// Load script for the importer plugins
-			$script_to_load = self::CALENDAR_FEEDS_PAGE;
+			$script_to_load[] = self::CALENDAR_FEEDS_PAGE;
 		}
 		// Start the scripts for the event category page
 		if ( $this->_are_we_editing_event_categories() === TRUE ) {
 			// Load script required when editing categories
-			$script_to_load = self::EVENT_CATEGORY_PAGE;
+			$script_to_load[] = self::EVENT_CATEGORY_PAGE;
 		}
 		if ( $this->_are_we_editing_less_variables() === TRUE ) {
 			// Load script required when editing categories
-			$script_to_load = self::LESS_VARIBALES_PAGE;
+			$script_to_load[] = self::LESS_VARIBALES_PAGE;
 		}
 		// Load the js needed when you edit an event / add a new event
 		if (
@@ -303,19 +307,27 @@ class Ai1ec_Javascript_Controller {
 			true === $this->_are_we_editing_an_event()
 		) {
 			// Load script for adding / modifying events
-			$script_to_load = self::ADD_NEW_EVENT_PAGE;
+			$script_to_load[] = self::ADD_NEW_EVENT_PAGE;
 		}
 		if ( $this->_are_we_accessing_the_calendar_settings_page() === TRUE ) {
-			$script_to_load = self::SETTINGS_PAGE;
+			$script_to_load[] = self::SETTINGS_PAGE;
 		}
 		if ( true === $this->_are_we_creating_widgets() ) {
-			$script_to_load = self::WIDGET_CREATOR;
+			$script_to_load[] = self::WIDGET_CREATOR;
+		}
+		
+		if (
+			true === $this->_are_we_managing_tickets() ||
+			true === $this->_are_we_managing_events_list()
+		) {
+			$script_to_load[] = self::TICKETING;
 		}
 		if ( false === $script_to_load ) {
-			$script_to_load = apply_filters( 'ai1ec_backend_js', self::LOAD_ONLY_BACKEND_SCRIPTS );
+			$script_to_load[] = apply_filters( 'ai1ec_backend_js', self::LOAD_ONLY_BACKEND_SCRIPTS );
 		}
-		$this->add_link_to_render_js( $script_to_load, true );
-
+		foreach ($script_to_load as $value) {
+			$this->add_link_to_render_js( $value, true );
+		}		
 	}
 
 	/**
@@ -427,6 +439,9 @@ class Ai1ec_Javascript_Controller {
 			'calendar_loading'               => Ai1ec_I18n::__(
 				'Loading&hellip;'
 			),
+			'ticketing_required_fields'      => Ai1ec_I18n::__(
+				'<p class="ai1ec_ticketing_required_alert"><b>Some fields required for Ticketing are missing.</b><br><i>Missing or incorrect fields are outlined red.</i></p>'
+			),
 			'language'                       => $this->_registry->get( 'p28n.wpml' )->get_lang(),
 			'ajax_url'                       => $ajax_url,
 			// 24h time format for time pickers
@@ -458,6 +473,33 @@ class Ai1ec_Javascript_Controller {
 				'preview_loading' => Ai1ec_I18n::__(
 					'Loading preview&nbsp;<i class="ai1ec-fa ai1ec-fa-spin ai1ec-fa-spinner"></i>'
 				)
+			),
+			'ticketing'                       => array(
+				'details'         => Ai1ec_I18n::__( 'Ticketing Details' ),
+				'hide_details'    => Ai1ec_I18n::__( 'Hide Ticketing Details' ),
+				'loading_details' => Ai1ec_I18n::__( 'Loading tickets details...' ),
+				'type_and_price'  => Ai1ec_I18n::__( 'Type and price' ),
+				'info'            => Ai1ec_I18n::__( 'Info' ),
+				'report'          => Ai1ec_I18n::__( 'Report' ),
+				'sale_dates'      => Ai1ec_I18n::__( 'Sale dates' ),
+				'limits'          => Ai1ec_I18n::__( 'Limits' ),
+				'actions'         => Ai1ec_I18n::__( 'Actions' ),
+				'sold'            => Ai1ec_I18n::__( 'Sold:' ),
+				'left'            => Ai1ec_I18n::__( 'Left:' ),
+				'start'           => Ai1ec_I18n::__( 'Start:' ),
+				'end'             => Ai1ec_I18n::__( 'End:' ),
+				'min'             => Ai1ec_I18n::__( 'Min:' ),
+				'max'             => Ai1ec_I18n::__( 'Max:' ),
+				'attendees'       => Ai1ec_I18n::__( 'Attendees' ),
+				'hide_attendees'  => Ai1ec_I18n::__( 'Hide Attendees' ),
+				'attendees_list'  => Ai1ec_I18n::__( 'Attendees List' ),
+				'guest_name'      => Ai1ec_I18n::__( 'Guest Name' ),
+				'status'          => Ai1ec_I18n::__( 'Status' ),
+				'email'           => Ai1ec_I18n::__( 'Email' ),
+				'no_attendees'    => Ai1ec_I18n::__( 'No attendees for this ticket type.' ),
+				'edit'            => Ai1ec_I18n::__( 'Edit' ),
+				'code'            => Ai1ec_I18n::__( 'Code' ),
+				'unlimited'       => Ai1ec_I18n::__( 'Unlimited' )
 			),
 			'load_views_error'                 => Ai1ec_I18n::__(
 				'Something went wrong while fetching events.<br>The request status is: %STATUS% <br>The error thrown was: %ERROR%'
@@ -647,12 +689,30 @@ JSC;
 	}
 
 	/**
+	 * check if we are viewing events list
+	 *
+	 * @return boolean TRUE if we are on the events list FALSE otherwise
+	 */
+	private function _are_we_managing_events_list() {
+		$path_details = pathinfo( $_SERVER['SCRIPT_NAME'] );
+		$post_type    = isset( $_GET['post_type'] ) ? $_GET['post_type'] : FALSE;
+		if ( FALSE === $post_type ) {
+			return FALSE;
+		}
+		$events_list = (
+			'edit.php'    === $path_details['basename'] &&
+			'ai1ec_event' === $post_type
+		);
+		return $events_list;
+	}
+
+	/**
 	 * check if we are creating a new event
 	 *
 	 * @return boolean TRUE if we are creating a new event FALSE otherwise
 	 */
 	private function _are_we_creating_a_new_event() {
-		$path_details = pathinfo( $_SERVER["SCRIPT_NAME"] );
+		$path_details = pathinfo( $_SERVER['SCRIPT_NAME'] );
 		$post_type = isset( $_GET['post_type'] ) ? $_GET['post_type'] : '';
 		return $path_details['basename'] === 'post-new.php' &&
 				$post_type === AI1EC_POST_TYPE;
@@ -676,6 +736,14 @@ JSC;
 		return $path_details['basename'] === 'edit.php' &&
 			$page === AI1EC_PLUGIN_NAME . '-widget-creator';
 	}
+
+	protected function _are_we_managing_tickets() {
+		$path_details = pathinfo( $_SERVER['SCRIPT_NAME'] );
+		$page = isset( $_GET['page'] ) ? $_GET['page'] : '';
+		return $path_details['basename'] === 'edit.php' &&
+			$page === AI1EC_PLUGIN_NAME . '-tickets';
+	}
+
 	/**
 	 * Check if we are editing less variables
 	 *

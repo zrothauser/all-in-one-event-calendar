@@ -376,6 +376,22 @@ class Ai1ec_Settings extends Ai1ec_App {
 				'type'    => 'deprecated',
 				'default' => true,
 			),
+			'ticketing_message' => array(
+				'type'    => 'string',
+				'default' => false,
+			),
+			'ticketing_token' => array(
+				'type'    => 'string',
+				'default' => '',
+			),			
+			'ticketing_enabled' => array(
+				'type'    => 'boolean',
+				'default' => false,
+			),
+			'ticketing_calendar_id' => array(
+				'type'    => 'int',
+				'default' => 0,
+			),
 			'calendar_page_id' => array(
 				'type' => 'mixed',
 				'renderer' => array(

@@ -25,6 +25,8 @@ class Ai1ec_Api extends Ai1ec_App {
 	private $_missing_tickets_error;
 	private $_get_purchaes_error;
 
+	private $_settings;
+
 	/**
 	 * Post construction routine.
 	 *
@@ -33,6 +35,8 @@ class Ai1ec_Api extends Ai1ec_App {
 	 * @return void Return from this method is ignored.
 	 */
 	protected function _initialize() {
+		$this->_settings                = $this->_registry->get( 'model.settings' );
+
 		$this->_get_ticket_types_error  = __( 'We were unable to get the Tickets Details from Time.ly Ticketing'                   , AI1EC_PLUGIN_NAME );
 		$this->_get_tickets_error       = __( 'We were unable to get the Tickets Attendees from Time.ly Ticketing'                 , AI1EC_PLUGIN_NAME );
 		$this->_sign_up_error           = __( 'We were unable to Sign you Up for Time.ly Ticketing'                                , AI1EC_PLUGIN_NAME );
@@ -56,8 +60,7 @@ class Ai1ec_Api extends Ai1ec_App {
 			'content-type' => 'application/json'
 		);
 		if ( true === $with_authorizaton ) {
-			$settings                 = $this->_registry->get( 'model.settings' );
-			$headers['Authorization'] = 'Basic ' . $settings->get( 'ticketing_token' );
+			$headers['Authorization'] = 'Basic ' . $this->_settings->get( 'ticketing_token' );
 		}
 		return $headers;
 	}
@@ -250,8 +253,8 @@ class Ai1ec_Api extends Ai1ec_App {
 	 */
 	public function get_payment_preferences() {
 		$calendar_id = $this->_get_ticket_calendar();
-
-		if(!empty($calendar_id)) {
+		$settings    = null;
+		if( ! empty( $calendar_id ) ) {
 			$request       = array(
 						'method'  => 'GET',
 						'headers' => $this->_get_headers(),
@@ -259,13 +262,16 @@ class Ai1ec_Api extends Ai1ec_App {
 				        );
 			$response      = wp_remote_request( AI1EC_API_URL."calendars/$calendar_id/payment", $request );
 			$response_code = wp_remote_retrieve_response_code( $response );
-			$settings      = json_decode( $response['body'] );
+			if ( 200 === $response_code ) {				
+				$settings      = json_decode( $response['body'] );			
+			}
 		}
 
-		if ( 200 !== $response_code || is_null($settings) )
+		if ( is_null( $settings ) ) {
 			return (object) array('payment_method'=>'cheque', 'paypal_email'=> '', 'first_name'=>'',  'last_name'=>'', 'street'=> '', 'city'=> '', 'state'=> '', 'postcode'=> '', 'country'=> '');
-
-		return $settings;
+		} else {
+			return $settings;	
+		}		
 	}
 
 	/**
@@ -567,12 +573,15 @@ class Ai1ec_Api extends Ai1ec_App {
 	 * Clean the ticketing settings on WP database only
 	 */
 	public function signout() {
-		$settings = $this->_registry->get( 'model.settings' );
-		$settings->set( 'ticketing_message'    , '' );
-		$settings->set( 'ticketing_enabled'    , false );
-		$settings->set( 'ticketing_token'      , '' );
-		$settings->set( 'ticketing_calendar_id', '' );
+		$this->_save_settings( '', false, '', 0 );
 		return array( 'message' => '');
+	}
+
+	private function _save_settings( $message, $enabled, $token, $calendar_id ) {
+		$this->_settings->set( 'ticketing_message'    , $message );
+		$this->_settings->set( 'ticketing_enabled'    , $enabled );
+		$this->_settings->set( 'ticketing_token'      , $token );
+		$this->_settings->set( 'ticketing_calendar_id', $calendar_id );		
 	}
 
 	/**
@@ -589,19 +598,12 @@ class Ai1ec_Api extends Ai1ec_App {
 		$url              = AI1EC_API_URL . 'auth/authenticate';
 		$response         = wp_remote_post( $url, $request );
 		$response_code    = wp_remote_retrieve_response_code( $response );
-		$settings         = $this->_registry->get( 'model.settings' );
 		if ( 200 === $response_code ) {
 			$response_body = json_decode( $response['body'], true );
-			$settings->set( 'ticketing_message'    , $response_body['message'] );
-			$settings->set( 'ticketing_enabled'    , true );
-			$settings->set( 'ticketing_token'      , $response_body['auth_token'] );
-			$settings->set( 'ticketing_calendar_id', $this->_find_user_calendar() );
+			$this->_save_settings( $response_body['message'], true, $response_body['auth_token'], $this->_find_user_calendar() );
 		} else {
 			$error_message = $this->_transform_error_message( $this->_sign_in_error, $response, AI1EC_API_URL );
-			$settings->set( 'ticketing_message'    , $error_message );
-			$settings->set( 'ticketing_enabled'    , false );
-			$settings->set( 'ticketing_token'      , '' );
-			$settings->set( 'ticketing_calendar_id', 0 );
+			$this->_save_settings( $error_message, false, '', 0 );
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
 		}
@@ -625,19 +627,12 @@ class Ai1ec_Api extends Ai1ec_App {
 		$url           = AI1EC_API_URL . 'auth/register';
 		$response      = wp_remote_post( $url, $request );
 		$response_code = wp_remote_retrieve_response_code( $response );
-		$settings      = $this->_registry->get( 'model.settings' );
 		if ( 200 === $response_code ) {
 			$response_body = json_decode( $response['body'], true );
-			$settings->set( 'ticketing_message'    , $response_body['Registration'] );
-			$settings->set( 'ticketing_enabled'    , true );
-			$settings->set( 'ticketing_token'      , $response_body['auth_token'] );
-			$settings->set( 'ticketing_calendar_id', $this->_create_calendar() );
+			$this->_save_settings( $response_body['Registration'], true, $response_body['auth_token'] , $this->_create_calendar() );
 		} else {
 			$error_message = $this->_transform_error_message( $this->_sign_up_error, $response, AI1EC_API_URL );
-			$settings->set( 'ticketing_message'    , $error_message );
-			$settings->set( 'ticketing_enabled'    , false );
-			$settings->set( 'ticketing_token'      , '' );
-			$settings->set( 'ticketing_calendar_id', 0 );
+			$this->_save_settings( $error_message, false, '', 0 );
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
 		}
@@ -744,21 +739,20 @@ class Ai1ec_Api extends Ai1ec_App {
 	 * @return string JSON.
 	 */
 	protected function _get_ticket_calendar() {
-		$settings              = $this->_registry->get( 'model.settings' );
-		$ticketing_calendar_id = $settings->get( 'ticketing_calendar_id' );
+		$ticketing_calendar_id = $this->_settings->get( 'ticketing_calendar_id' );
 		if ( isset( $ticketing_calendar_id ) && $ticketing_calendar_id > 0) {
 			return $ticketing_calendar_id;
 		} else {
 			//if the calendar is not saved on settings it should exists on API
 			$ticketing_calendar_id = $this->_find_user_calendar();
 			if ( $ticketing_calendar_id > 0 ) {
-				$settings->set( 'ticketing_calendar_id', $ticketing_calendar_id );
+				$this->_settings->set( 'ticketing_calendar_id', $ticketing_calendar_id );
 				return $ticketing_calendar_id;
 			} else {
 				//if the calendar should not exist on API, we will created
 				$ticketing_calendar_id = $this->_create_calendar();
 				if ( $ticketing_calendar_id > 0 ) {
-					$settings->set( 'ticketing_calendar_id', $ticketing_calendar_id );
+					$this->_settings->set( 'ticketing_calendar_id', $ticketing_calendar_id );
 				} else {
 					return 0;
 				}
@@ -796,11 +790,10 @@ class Ai1ec_Api extends Ai1ec_App {
 	 * Create a calendar when the user is signup
 	 */
 	protected function _create_calendar() {
-		$settings      = $this->_registry->get( 'model.settings' );
 		$body = array(
 			'title'    => get_bloginfo( 'name' ),
 			'url'      => ai1ec_site_url(),
-			'timezone' => $settings->get( 'timezone_string' )
+			'timezone' => $this->_settings->get( 'timezone_string' )
 			);
  		$request = array(
 			'headers' => $this->_get_headers(),
@@ -934,5 +927,26 @@ class Ai1ec_Api extends Ai1ec_App {
 
     public function create_checkout_url( $api_event_id , $url_checkout = AI1EC_TICKETS_CHECKOUT_URL) {
     	return str_replace( '{event_id}', $api_event_id, $url_checkout );
+    }
+
+    /**
+     * Check if the current WP instance is signed into the API
+     */
+    public function is_signed() {
+    	return $this->_settings->get( 'ticketing_enabled' ) === true;
+    }
+
+    /**
+     * Get the last message return by Signup or Signup process
+     */
+    public function get_sign_message() {
+    	return $this->_settings->get( 'ticketing_message' );
+    }
+
+	/**
+     * Clear the last message return by Signup or Signup process
+     */
+    public function clear_sign_message() {
+    	return $this->_settings->set( 'ticketing_message', '' );
     }
 }

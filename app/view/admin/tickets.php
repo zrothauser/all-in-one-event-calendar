@@ -54,16 +54,15 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 	 */
 	public function display_page() {
 
-		$settings          = $this->_registry->get( 'model.settings' );
-		$ticketing_message = $settings->get( 'ticketing_message' );
-		$ticketing_enabled = $settings->get( 'ticketing_enabled' );
+		$api               = $this->_registry->get( 'model.api' );
+		$ticketing_enabled = $api->is_signed();
+		$ticketing_message = $api->get_sign_message();
 		$loader            = $this->_registry->get( 'theme.loader' );
 
 		if ( ! $ticketing_enabled ) {
 
 			if ( false === ai1ec_is_blank( $ticketing_message ) ) {
-				//clear the message to the user see the message just once in case of error
-				$settings->set( 'ticketing_message', '');
+				$api->clear_sign_message();
 			}
 
 			$args = array(
@@ -96,7 +95,6 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 			);
 			$file = $loader->get_file( 'ticketing/signup.twig', $args, true );
 		} else {
-			$api       = $this->_registry->get( 'model.api' );
 			$response  = $api->get_payment_preferences();
 			$purchases = $api->get_purchases();
 			$args      = array(
@@ -152,7 +150,6 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 			)
 		);
 		if ( isset( $_POST['ai1ec_save_settings'] ) ) {
-			$api      = $this->_registry->get( 'model.api' );
 			$response = $api->save_payment_preferences();
 
 			// this redirect makes sure that the error messages appear on the screen

@@ -933,7 +933,7 @@ class Ai1ec_Api extends Ai1ec_App {
      * Check if the current WP instance is signed into the API
      */
     public function is_signed() {
-    	return $this->_settings->get( 'ticketing_enabled' ) === true;
+    	return true === $this->_settings->get( 'ticketing_enabled' );
     }
 
     /**

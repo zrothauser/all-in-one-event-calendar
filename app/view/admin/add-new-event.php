@@ -280,14 +280,14 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		// ===================================
 		// = Display event ticketing options =
 		// ===================================
-		$settings              = $this->_registry->get( 'model.settings' );
-		$ticketing             = $settings->get( 'ticketing_enabled' );
-		$message               = $settings->get( 'ticketing_message' );
+		$api                   = $this->_registry->get( 'model.api' );
+		$ticketing             = $api->is_signed();
+		$message               = $api->get_sign_message();
 		$loading_error         = null;
 		$ticket_event_imported = false;
 
 		if ( $event ) {
-			$api                   = $this->_registry->get( 'model.api' );
+			
 			$ticket_event_imported = $api->is_ticket_event_imported( $event->get( 'post_id' ) );
 			if ( $ticketing || $ticket_event_imported ) {
 				$cost_type = get_post_meta(

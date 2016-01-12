@@ -80,21 +80,28 @@ class Ai1ec_Api extends Ai1ec_App {
 	}
 
 	/**
+	*  Create or update a Ticket Event on API server
 	 * @return object Response body in JSON.
 	 */
 	public function store_event( Ai1ec_Event $event, WP_Post $post ) {
-
-		if ( $this->is_ticket_event_imported( $event->get( 'post_id' ) ) )  {
-			$notification = $this->_registry->get( 'notification.admin' );
-			$notification->store( $this->_tickets_imported_error, 'updated', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
-			return null;
-		}
+		
 		if ( isset( $_POST['ai1ec_tickets_loading_error'] ) ) {
 			//do not update tickets because is unsafe. There was a problem to load the tickets,
 			//the customer received the same message when the event was loaded.
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( $_POST['ai1ec_tickets_loading_error'], 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
 			return null;
+		}
+		if ( $this->is_ticket_event_imported( $event->get( 'post_id' ) ) )  {
+			//prevent changes on Ticket Events that were imported
+			$notification = $this->_registry->get( 'notification.admin' );
+			$notification->store( $this->_tickets_imported_error, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
+			return null;
+		} else if ( false === ai1ec_is_blank( $event->get( 'ical_feed_url' ) ) ) {
+			//prevent ticket creating inside Regular Events that were imported
+			$notification = $this->_registry->get( 'notification.admin' );
+			$notification->store( $this->_tickets_imported_error, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
+			return null;			
 		}
 		$api_event_id = get_post_meta(
 					$event->get( 'post_id' ),

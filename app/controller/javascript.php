@@ -699,9 +699,11 @@ JSC;
 		if ( FALSE === $post_type ) {
 			return FALSE;
 		}
+		$page = isset( $_GET['page'] ) ? $_GET['page'] : '';
 		$events_list = (
 			'edit.php'    === $path_details['basename'] &&
-			'ai1ec_event' === $post_type
+			'ai1ec_event' === $post_type &&
+			ai1ec_is_blank( $page )	
 		);
 		return $events_list;
 	}

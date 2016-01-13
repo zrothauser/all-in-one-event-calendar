@@ -47,8 +47,7 @@ class Ai1ec_Filesystem_Misc extends Ai1ec_Base {
 	 */
 	public function build_dir_hashmap( $directory, $exclusions = array() ) {
 		$directory_iterator = new RecursiveDirectoryIterator(
-			$directory,
-			RecursiveDirectoryIterator::SKIP_DOTS
+			$directory
 		);
 		$recursive_iterator = new RecursiveIteratorIterator(
 			$directory_iterator
@@ -60,6 +59,17 @@ class Ai1ec_Filesystem_Misc extends Ai1ec_Base {
 		);
 		$hashmap            = array();
 		foreach ( $files as $file ) {
+			if ( is_callable( $file, 'isDot' ) ) {
+				// isDot() Requires PHP >= 5.3
+				if ( $file->isDot() ) {
+					continue;
+				}
+			} else {
+				// Required for PHP 5.2 support.
+				if ( basename( $file ) == '..' || basename( $file ) == '.' ) {
+					continue;
+				}
+			}
 			$file_info = new SplFileInfo( $file[0] );
 			$file_path = $file_info->getPathname();
 			if ( in_array( $file_info->getFilename(), $exclusions ) ) {

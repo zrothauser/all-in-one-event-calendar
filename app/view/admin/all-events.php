@@ -226,4 +226,29 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 		echo $tickets;
 		wp_die();
 	}
+
+	/**
+	 * count_future_events function
+	 *
+	 * @return Count future events
+	 **/
+	public function count_future_events( $user_id = null ) {
+		if ( is_admin() ) {
+			$settings            = $this->_registry->get( 'model.settings' );		
+			$current_time        = $this->_registry->get( 'date.time' );
+			$current_time->set_timezone( $settings->get( 'timezone_string' ) );			
+			$current_time        = $current_time->format_to_gmt();
+			$user_id             = get_current_user_id();
+			$where               = get_posts_by_author_sql( AI1EC_POST_TYPE, true, $user_id );
+			$db                  = $this->_registry->get( 'dbi.dbi' );
+			$posts               = $db->get_table_name( 'posts' );
+			$table_name          = $db->get_table_name( 'ai1ec_events' );
+			$sql                 = "SELECT COUNT(*) FROM $table_name INNER JOIN $posts on $table_name.post_id = {$posts}.ID"
+				. " $where AND $table_name.start > $current_time"; //future event		
+			return $db->get_var( $sql );					
+		} else {
+			return 0;
+		}
+	}
+
 }

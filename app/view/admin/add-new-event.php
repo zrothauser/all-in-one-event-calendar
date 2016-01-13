@@ -377,6 +377,19 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		$args = array(
 			'boxes'          => $boxes,
 		);
+		
+		if ( $this->_is_post_event( $post ) ) {
+			// ======================
+			// = Display Box Review =
+			// ======================
+			$review = $this->_registry->get( 'model.review' );
+			$review_content = $review->get_content( $theme_loader );
+
+			if ( false === ai1ec_is_blank( $review_content ) ) {
+				$args['review_box'] = $review_content;			
+			}
+		}
+
 		echo $theme_loader
 			->get_file( 'add_new_event_meta_box.php', $args, true )
 			->get_content();
@@ -428,15 +441,15 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 	 * @return void Method does not return.
 	 */
 	public function event_inline_alert( $post ) {
-		if (
-			! isset( $post->post_type ) ||
-			AI1EC_POST_TYPE != $post->post_type
-		) {
-			return;
+		if ( $this->_is_post_event( $post ) ) {
+			$theme_loader = $this->_registry->get( 'theme.loader' );
+			echo $theme_loader->get_file( 'box_inline_warning.php', null, true )
+				->get_content();			
 		}
-		$theme_loader = $this->_registry->get( 'theme.loader' );
-		echo $theme_loader->get_file( 'box_inline_warning.php', null, true )
-			->get_content();
+	}
+
+	private function _is_post_event( $post ) {
+		return isset( $post->post_type ) && AI1EC_POST_TYPE === $post->post_type;
 	}
 
 }

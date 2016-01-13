@@ -382,7 +382,18 @@ td.ai1ec-avail-block {
 .timely #ai1ec_repeat_box .ai1ec-nav > li > a {
 	padding: 10px 0;
 }
-
+.timely .ai1ec-text-error {
+	color: red;
+	font-size: 11px;
+	margin-top: 5px;
+	font-weight: bold;
+	display: none;
+}
+#ai1ec_review_enjoying_question,
+#ai1ec_review_not_enjoying_question,
+#ai1ec_not_enjoying_popup {
+	padding-top: 30px;
+}
 /* Range input (from jQuery Tools) */
 
 /* slider root element */

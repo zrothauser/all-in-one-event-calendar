@@ -4,8 +4,8 @@ Tags: calendar, events, ics, ics feed, wordpress ical importer, google
 calendar, ical, iCalendar, all-in-one, events sync, events widget,
 calendar widget
 Requires WordPress at least: 3.5
-Tested up to: 4.4
-Stable tag: 2.3.5
+Tested up to: 4.4.1
+Stable tag: 2.3.6
 License: GNU General Public License, version 3 (GPL-3.0)
 
 A calendar system with many views, upcoming events widget, color-coded
@@ -135,7 +135,15 @@ https://vimeo.com/135004810
 * Filter by post ids (separate IDs by comma):
 **[ai1ec post_id="1, 2"]**
 
+* Hide filter toolbar: **[ai1ec display_filters="false"]**
+* Limit number of events per page: **[ai1ec events_limit="5"]**
+* Select a different start date: 
+**[ai1ec exact_date="5-10-2015"]**
+
 == Changelog ==
+
+= Version 2.3.6 =
+* Fixed compatibility with PHP 5.2
 
 = Version 2.3.5 =
 * Fixed compatibility with WordPress 4.4

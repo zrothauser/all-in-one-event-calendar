@@ -47,8 +47,7 @@ class Ai1ec_Filesystem_Misc extends Ai1ec_Base {
 	 */
 	public function build_dir_hashmap( $directory, $exclusions = array() ) {
 		$directory_iterator = new RecursiveDirectoryIterator(
-			$directory,
-			RecursiveDirectoryIterator::SKIP_DOTS
+			$directory
 		);
 		$recursive_iterator = new RecursiveIteratorIterator(
 			$directory_iterator

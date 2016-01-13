@@ -40,14 +40,16 @@ class Ai1ec_Email_Notification extends Ai1ec_Notification {
 		$this->_subject    = $subject;
 	}
 
-	public function send() {
-		$this->_parse_text();
-		return wp_mail( $this->_recipients, $this->_subject, $this->_message );
+	public function send( $headers = null ) {
+		$this->_parse_text();		
+		return wp_mail( $this->_recipients, $this->_subject, $this->_message, $headers );
 	}
 
 	private function _parse_text() {
-		$this->_message = strtr( $this->_message, $this->_translations );
-		$this->_subject = strtr( $this->_subject, $this->_translations );
+		if ( null !== $this->_translations ) {
+			$this->_message = strtr( $this->_message, $this->_translations );
+			$this->_subject = strtr( $this->_subject, $this->_translations );
+		}
 	}
 
 }

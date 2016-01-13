@@ -386,6 +386,53 @@ ul.ai1ec-dropdown-menu {
 	}
 }
 
+.ai1ec-alert-highlight {
+	.ai1ec-alert-variant(@background-alert-highlight; @border-alert-highlight; @text-color-alert-highlight);
+	border-radius: 0px;	
+	font-size: @font-size-text-highlight!important;
+}
+
+.ai1ec-btn-primary-highlight {
+	//color, background, border
+	.ai1ec-button-variant(@background-alert-highlight; @text-color-alert-highlight; @background-alert-highlight);	
+	font-size: @font-size-text-highlight!important;
+
+	border-color: @background-alert-highlight!important;
+	color: @background-alert-highlight!important;
+ 	background-color: @text-color-alert-highlight!important;	
+
+	&:hover,
+  	&:focus,
+  	&:active,
+  	&.ai1ec-active,
+  	.ai1ec-open {
+  		border-color: @background-alert-highlight!important;
+	    color: @background-alert-highlight!important;
+    	background-color: darken(@text-color-alert-highlight, 8%)!important;
+  	}
+}
+
+.ai1ec-btn-default-highlight {
+	//color, background, border
+	.ai1ec-button-variant(@text-color-alert-highlight; @background-alert-highlight; @text-color-alert-highlight);	
+	font-size: @font-size-text-highlight!important;
+	
+	border-color: @text-color-alert-highlight!important;
+	color: @text-color-alert-highlight!important;
+    background-color: @background-alert-highlight!important;
+
+	&:hover,
+  	&:focus,
+  	&:active,
+  	&.ai1ec-active,
+  	.ai1ec-open {
+  		border-color: @text-color-alert-highlight!important;
+	    color: @text-color-alert-highlight!important;
+    	background-color: darken(@background-alert-highlight, 8%)!important;
+  	}
+}
+
+
 // ===========================
 // = Dashboard common styles =
 // ===========================

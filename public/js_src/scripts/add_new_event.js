@@ -533,6 +533,108 @@ define(
 		}
 	};
 
+    var init_customer_review_box = function() {
+
+   		//Close positive review question modal
+	    var close_all_review_modals = function() {
+	    	//hide the modal
+    	    $('.ai1ec_review_modal').modal('hide');    
+    	    //hide the alerts
+    	    $('.ai1ec_review_modal').hide();    
+    	}; 
+
+    	var send_feedback_message = function() {
+    		var $required_fields = $(
+				'.ai1ec_review_negative_feedback, .ai1ec_review_contact_name, .ai1ec_review_contact_email, .ai1ec_review_site_url'
+			);
+    		$required_fields.each( function() {
+				var $this = $( this );
+				$this.removeClass( 'ai1ec-error' );
+				$this.closest( 'td' ).find( '.ai1ec-required-message' ).hide();
+				$this.closest( 'td' ).find( '.ai1ec-invalid-email-message' ).hide();
+				$this.closest( 'td' ).find( '.ai1ec-invalid-site-message' ).hide();
+				if ( ! $.trim( $this.val() ) ) {
+					$this.addClass( 'ai1ec-error' );
+					$this.closest( 'td' ).find('.ai1ec-required-message' ).show();
+				} else if ( $this.hasClass( 'ai1ec_review_contact_email' ) ) {
+					var email_regex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+					if ( false === email_regex.test( $this.val() ) ) {
+						$this.addClass( 'ai1ec-error' );
+						$this.closest( 'td' ).find('.ai1ec-invalid-email-message' ).show();
+					}
+				} else if ( $this.hasClass( 'ai1ec_review_site_url' ) ) {
+					var site_regex = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+					if ( false === site_regex.test( $this.val() ) ) {
+						$this.addClass( 'ai1ec-error' );
+						$this.closest( 'td' ).find('.ai1ec-invalid-site-message' ).show();
+					}
+				}
+			});
+			if ( false === $required_fields.hasClass( 'ai1ec-error' ) ) {
+				$( '.ai1ec_review_send_feedback' ).button( 'loading' );
+				$required_fields.prop( 'disabled', true );
+	    		$.ajax( {
+					url     : ai1ec_config.ajax_url,
+					type    : 'POST',
+					data    : {
+						action  : 'ai1ec_send_feedback_message',
+						message : $( '.ai1ec_review_negative_feedback' ).val(),
+						name    : $( '.ai1ec_review_contact_name' ).val(),
+						email   : $( '.ai1ec_review_contact_email' ).val(),
+						site    : $( '.ai1ec_review_site_url' ).val()
+					},
+					success : function( response ) {
+						$( '.ai1ec_review_messages' ).remove();
+						$( '.ai1ec-review-form' ).prepend(
+							'<div class="timely ai1ec-alert ai1ec-alert-success ai1ec_review_messages"><strong>'
+								+ ai1ec_config.review.message_sent
+								+ '</strong></div>'
+							);
+						//just giving time to the user read the success message
+						setTimeout( function() { 
+							$( '.ai1ec_review_send_feedback' ).button( 'reset' );
+							$( '.ai1ec_not_enjoying_popup' ).prop( 'disabled', true );	
+							close_all_review_modals();						
+						}, 3000);
+					},
+					error : function( response ) {
+						$required_fields.prop( 'disabled', false );
+						$( '.ai1ec_review_messages' ).remove();
+						$( '.ai1ec-review-form' ).prepend(
+							'<div class="timely ai1ec-alert ai1ec-alert-danger ai1ec_review_messages"><strong>Error!</strong> '
+							+ ai1ec_config.review.message_error
+							+ '</div>'
+						);
+					}
+				} );
+	    	}
+    	}
+
+    	var save_feedback_review_yes = function() {
+    		save_and_close( 'y' );
+    	}
+
+    	var save_feedback_review_no = function() {
+    		save_and_close( 'n' );
+    	}
+		
+		var save_and_close = function( feedback ) {
+			close_all_review_modals();
+			$.ajax( {
+				url     : ai1ec_config.ajax_url,
+				type    : 'POST',
+				data    : {
+					action   : 'ai1ec_save_feedback_review',
+					feedback : feedback
+				}
+			} );    		
+		}
+
+		$( '.ai1ec_review_enjoying_no_rating, .ai1ec_review_enjoying_go_wordpress' ).on( 'click', save_feedback_review_yes );				
+		$( '.ai1ec_review_send_feedback' ).on( 'click', send_feedback_message );	
+		$( '.ai1ec_review_not_enjoying_no_rating' ).on( 'click', save_feedback_review_no );		
+    }
+
 
 	var start = function() {
 		// Initialize the page. We do this before domReady so we start loading other
@@ -550,6 +652,8 @@ define(
 			init_tickets();
 			// Tickets datepickers.
 			init_tickets_date_time();
+			// Customer Review Box
+			init_customer_review_box();
 		} );
 	};
 

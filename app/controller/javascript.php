@@ -501,6 +501,10 @@ class Ai1ec_Javascript_Controller {
 				'code'            => Ai1ec_I18n::__( 'Code' ),
 				'unlimited'       => Ai1ec_I18n::__( 'Unlimited' )
 			),
+			'review'                         => array(
+				'message_sent'  => Ai1ec_I18n::__( 'Your message has been sent. Thank you for your feedback.' ),
+				'message_error' => Ai1ec_I18n::__( 'Your message has not been sent. Please try again or contact us.' )
+			),
 			'load_views_error'                 => Ai1ec_I18n::__(
 				'Something went wrong while fetching events.<br>The request status is: %STATUS% <br>The error thrown was: %ERROR%'
 			),

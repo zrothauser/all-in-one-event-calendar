@@ -673,6 +673,14 @@ class Ai1ec_Front_Controller {
 				array( 'calendar-feed.ics', 'handle_feeds_page_post' )
 			);
 			$dispatcher->register_action(
+				'wp_ajax_ai1ec_send_feedback_message',
+				array( 'model.review', 'send_feedback_message' )
+			);
+			$dispatcher->register_action(
+				'wp_ajax_ai1ec_save_feedback_review',
+				array( 'model.review', 'save_feedback_review' )
+			);
+			$dispatcher->register_action(
 				'network_admin_notices',
 				array( 'notification.admin', 'send' )
 			);
@@ -733,6 +741,12 @@ class Ai1ec_Front_Controller {
 				array( 'view.admin.all-events', 'orderby' ),
 				10,
 				2
+			);
+			$dispatcher->register_filter(
+				'ai1ec_count_future_events',
+				array( 'view.admin.all-events', 'count_future_events' ),
+				10,
+				1
 			);
 			$dispatcher->register_filter(
 				'post_updated_messages',

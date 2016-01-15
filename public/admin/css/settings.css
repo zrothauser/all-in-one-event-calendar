@@ -213,3 +213,46 @@
 div.ai1ec-form-group > .ai1ec-setting-fieldset {
 	margin: 40px 15px 0px 15px;
 }
+
+/* Timely Network Sign Up form */
+.timely-api table.ai1ec-ticketing-signup {
+	width: 100%;
+	max-width: 450px;
+	margin: 0 auto;
+	margin-top: 10px;
+}
+.timely-api td {
+	padding: 2px;
+}
+.timely-api table input[type=text],
+.timely-api table input[type=password] {
+	font-size: 16px;
+	width: 100%;
+}
+.timely-api .ai1ec_label_field {
+	width: 135px;
+}
+.timely-api .ai1ec_input_field {
+	width: 280px;
+}
+.timely-api #ai1ec_tickets_submit {
+	margin-top: 5px;
+}
+.timely-api sup {
+	color: #85c248;
+}
+.timely-api .ai1ec_tickets_logo {
+	background: url(../img/timely-logo.png) no-repeat 45px 35px;
+	-webkit-background-size: 250px auto;
+	background-size: 250px auto;
+}
+.timely-api .ai1ec-ticket-field-error {
+	color: red;
+	font-size: 11px;
+	margin-top: 5px;
+	font-weight: bold;
+	display: none;
+}
+.timely-api .ai1ec-error {
+	border-color: #f00;
+}

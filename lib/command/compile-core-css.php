@@ -15,7 +15,6 @@ class Ai1ec_Command_Compile_Core_Css extends Ai1ec_Command {
 	 */
 	public function is_this_to_execute() {
 		if ( isset( $_GET['ai1ec_compile_css'] ) &&
-			$_SERVER['SERVER_ADDR'] === $_SERVER['REMOTE_ADDR'] &&
 			AI1EC_DEBUG
 		) {
 			return true;

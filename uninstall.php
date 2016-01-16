@@ -53,7 +53,7 @@ function ai1ec_uninstall_options() {
 	global $wpdb;
 	$options = $wpdb->get_col(
 		'SELECT `option_name` FROM ' . $wpdb->options .
-		' WHERE `option_name` LIKE \'ai1ec_%\''
+		' WHERE `option_name` LIKE \'%ai1ec%\''
 	);
 	foreach ( $options as $option ) {
 		delete_option( $option );
@@ -107,11 +107,80 @@ function ai1ec_clean_up_tables() {
 	ai1ec_delete_table_and_backup( $table_name );
 }
 
+/**
+ * Deletes custom user roles and capabilities
+ */
+function ai1ec_remove_custom_user_roles_capabilities() {
+	global $wp_roles; // global class wp-includes/capabilities.php
+
+	// Remove AI1EC custom role
+	remove_role( 'ai1ec_event_assistant' );
+
+	// List of roles
+	$roles = array(
+		'administrator',
+		'editor',
+		'author',
+		'subscriber'
+	);
+
+	// Complete list of AI1EC capabilities
+	$caps = array(
+		'delete_ai1ec_event',
+		'delete_ai1ec_events',
+		'delete_others_ai1ec_events',
+		'delete_private_ai1ec_events',
+		'delete_published_ai1ec_events',
+		'edit_ai1ec_event',
+		'edit_ai1ec_events',
+		'edit_others_ai1ec_events',
+		'edit_private_ai1ec_events',
+		'edit_published_ai1ec_events',
+		'manage_ai1ec_feeds',
+		'manage_ai1ec_options',
+		'publish_ai1ec_events',
+		'read_ai1ec_event',
+		'read_ai1ec_events',
+		'read_private_ai1ec_events',
+		'switch_ai1ec_themes'
+	);
+
+	foreach ( $roles as $role ) {
+		foreach ( $caps as $cap ) {
+			// Remove the capability.
+			$wp_roles->remove_cap( $role, $cap );
+		}
+	}
+}
+
+/**
+ * Deletes custom user meta
+ */
+function ai1ec_remove_custom_user_meta() {
+
+	// List of custom user meta
+	$metas = array(
+			'closedpostboxes_ai1ec_event',
+			'metaboxhidden_ai1ec_event'
+	);
+
+	$users = get_users('');
+
+	foreach ($users as $user) {
+		foreach ( $metas as $meta )
+		delete_user_meta( $user->ID, $meta );
+	}
+}
+
 function ai1ec_clean_up_site() {
 	// Delete event categories taxonomy
 	ai1ec_remove_taxonomy( 'events_categories' );
 	// Delete event tags taxonomy
 	ai1ec_remove_taxonomy( 'events_tags' );
+	// Delete custom user roles and capabilities
+	ai1ec_remove_custom_user_roles_capabilities();
+	// Delete custom user meta
+	ai1ec_remove_custom_user_meta();
 	ai1ec_uninstall_crons();
 	ai1ec_uninstall_options();
 	ai1ec_clean_up_tables();

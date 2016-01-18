@@ -134,7 +134,7 @@
 									   name="buy_min_limit"
 									   min="0"
 									   data-default="0"
-									   value="0">
+									   value="<?php if ( isset( $ticket->buy_min_limit ) ){echo esc_attr( $ticket->buy_min_limit ); } else {echo 0;}?>">
 								<label for="ai1ec_buy_max_limit">
 									<?php _e( 'Max:', AI1EC_PLUGIN_NAME ); ?>
 								</label>
@@ -144,7 +144,7 @@
 									   name="buy_max_limit"
 									   min="0"
 									   data-default="25"
-									   value="25">
+									   value="<?php if ( isset( $ticket->buy_max_limit ) ){echo esc_attr( $ticket->buy_max_limit );} else {echo 25;}?>">
 							</td>
 						</tr>
 						<tr>

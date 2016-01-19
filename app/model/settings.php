@@ -918,7 +918,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 						'Renders calendar views on the client rather than the server; can improve performance.'
 					),
 				),
-				'default'  => false,
+				'default'  => true,
 			),
 			'render_css_as_link' => array(
 				'type' => 'bool',

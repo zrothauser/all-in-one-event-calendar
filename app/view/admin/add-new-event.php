@@ -47,40 +47,44 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		// ATTENTION - When adding new fields to the event remember that you must
 		// also set up the duplicate-controller.
 		// TODO: Fix this duplication.
-		$all_day_event    = '';
-		$instant_event    = '';
-		$start            = $this->_registry->get( 'date.time' );
-		$end              = $this->_registry->get( 'date.time', '+1 hour' );
-		$timezone_name    = null;
-		$timezones_list   = $this->_registry->get( 'date.timezone' )->get_timezones( true );
-		$show_map         = false;
-		$google_map       = '';
-		$venue            = '';
-		$country          = '';
-		$address          = '';
-		$city             = '';
-		$province         = '';
-		$postal_code      = '';
-		$contact_name     = '';
-		$contact_phone    = '';
-		$contact_email    = '';
-		$contact_url      = '';
-		$cost             = '';
-		$is_free          = 'checked="checked"';
-		$cost_type        = 'free';
-		$rrule            = '';
-		$rrule_text       = '';
-		$repeating_event  = false;
-		$exrule           = '';
-		$exrule_text      = '';
-		$exclude_event    = false;
-		$exdate           = '';
-		$show_coordinates = false;
-		$longitude        = '';
-		$latitude         = '';
-		$coordinates      = '';
-		$ticket_url       = '';
-		$tickets          = array( null );
+		$all_day_event         = '';
+		$instant_event         = '';
+		$start                 = $this->_registry->get( 'date.time' );
+		$end                   = $this->_registry->get( 'date.time', '+1 hour' );
+		$timezone_name         = null;
+		$timezones_list        = $this->_registry->get( 'date.timezone' )->get_timezones( true );
+		$show_map              = false;
+		$google_map            = '';
+		$venue                 = '';
+		$country               = '';
+		$address               = '';
+		$city                  = '';
+		$province              = '';
+		$postal_code           = '';
+		$contact_name          = '';
+		$contact_phone         = '';
+		$contact_email         = '';
+		$contact_url           = '';
+		$cost                  = '';
+		$is_free               = 'checked="checked"';
+		$cost_type             = 'free';
+		$rrule                 = '';
+		$rrule_text            = '';
+		$repeating_event       = false;
+		$exrule                = '';
+		$exrule_text           = '';
+		$exclude_event         = false;
+		$exdate                = '';
+		$show_coordinates      = false;
+		$longitude             = '';
+		$latitude              = '';
+		$coordinates           = '';
+		$ticket_url            = '';
+		$tickets               = array( null );
+		$ticketing             = false;
+		$message               = false;
+		$loading_error         = false;
+		$ticket_event_imported = false;
 
 		$instance_id = false;
 		if ( isset( $_REQUEST['instance'] ) ) {
@@ -280,35 +284,45 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		// ===================================
 		// = Display event ticketing options =
 		// ===================================
-		$api                   = $this->_registry->get( 'model.api' );
-		$ticketing             = $api->is_signed();
-		$message               = $api->get_sign_message();
-		$loading_error         = null;
-		$ticket_event_imported = false;
-
-		if ( $event ) {
-			
-			$ticket_event_imported = $api->is_ticket_event_imported( $event->get( 'post_id' ) );
-			if ( $ticketing || $ticket_event_imported ) {
-				$cost_type = get_post_meta(
-					$event->get( 'post_id' ),
-					'_ai1ec_cost_type',
-					true
-				);
-				if ( 'tickets' === $cost_type ) {
-					$response = json_decode( $api->get_ticket_types( $event->get( 'post_id' ) ) );
-					if ( isset( $response->data ) ) {
-						$tickets = array_merge( $tickets, $response->data );
-					}
-					if ( isset( $response->error ) ) {
-						$loading_error = $response->error;
+		if ( AI1EC_API && AI1EC_API_TICKETING ) {
+			$api                   = $this->_registry->get( 'model.api' );
+			$ticketing             = $api->is_signed();
+			$message               = $api->get_sign_message();
+			$loading_error         = null;
+			$ticket_event_imported = false;
+	
+			if ( $event ) {
+				
+				$ticket_event_imported = $api->is_ticket_event_imported( $event->get( 'post_id' ) );
+				if ( $ticketing || $ticket_event_imported ) {
+					$cost_type = get_post_meta(
+						$event->get( 'post_id' ),
+						'_ai1ec_cost_type',
+						true
+					);
+					if ( 'tickets' === $cost_type ) {
+						$response = json_decode( $api->get_ticket_types( $event->get( 'post_id' ) ) );
+						if ( isset( $response->data ) ) {
+							$tickets = array_merge( $tickets, $response->data );
+						}
+						if ( isset( $response->error ) ) {
+							$loading_error = $response->error;
+						}
 					}
 				}
+				$uid = $event->get_uid();
+			} else {
+				$uid = $empty_event->get_uid();
 			}
+			
+		}
+
+		if ( $event ) {
 			$uid = $event->get_uid();
 		} else {
 			$uid = $empty_event->get_uid();
 		}
+
 		$args = array(
 			'cost'                  => $cost,
 			'cost_type'             => $cost_type,

@@ -152,7 +152,7 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			);
 		}
 
-		if ( AI1EC_API && AI1EC_API_TICKETING ) { 
+		if ( AI1EC_API_TICKETING ) { 
 			$api_event_id = get_post_meta(
 				$event->get( 'post_id' ),
 				Ai1ec_Api::EVENT_ID_METADATA,

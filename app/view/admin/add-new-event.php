@@ -284,15 +284,14 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		// ===================================
 		// = Display event ticketing options =
 		// ===================================
-		if ( AI1EC_API && AI1EC_API_TICKETING ) {
+		if ( AI1EC_API_TICKETING ) {
 			$api                   = $this->_registry->get( 'model.api' );
 			$ticketing             = $api->is_signed();
 			$message               = $api->get_sign_message();
 			$loading_error         = null;
 			$ticket_event_imported = false;
 	
-			if ( $event ) {
-				
+			if ( $event ) {				
 				$ticket_event_imported = $api->is_ticket_event_imported( $event->get( 'post_id' ) );
 				if ( $ticketing || $ticket_event_imported ) {
 					$cost_type = get_post_meta(
@@ -310,9 +309,6 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 						}
 					}
 				}
-				$uid = $event->get_uid();
-			} else {
-				$uid = $empty_event->get_uid();
 			}
 			
 		}

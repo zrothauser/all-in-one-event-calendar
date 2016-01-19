@@ -596,7 +596,7 @@ class Ai1ec_Front_Controller {
 				'wp_ajax_ai1ec_rrule_to_text',
 				array( 'view.admin.get-repeat-box', 'convert_rrule_to_text' )
 			);
-			if ( AI1EC_API_TICKETING ) {
+			if ( AI1EC_API && AI1EC_API_TICKETING ) {
 				// display ticketing details in the events list
 				$dispatcher->register_action(
 					'wp_ajax_ai1ec_show_ticket_details',

@@ -17,7 +17,7 @@
 	<?php
 	if ( $ticket_event_imported ):?>
 
-		<p>Ticket options not available - event imported from external calendar.</p>
+		<p><?php _e( 'Ticket options not available - event imported from external calendar.', AI1EC_PLUGIN_NAME ); ?></p>
 
 	<?php else: ?>
 
@@ -27,11 +27,14 @@
 					   name="ai1ec_cost_type" <?php if ( 'free' == $cost_type ) { echo 'checked'; } ?>>
 				<?php _e( 'Free event', AI1EC_PLUGIN_NAME ); ?>
 			</label>
-			<label for="ai1ec_has_tickets">
-				<input type="radio" value="tickets" id="ai1ec_has_tickets"
-					   name="ai1ec_cost_type" <?php if ( 'tickets' == $cost_type ) { echo 'checked'; } ?>>
-				<?php _e( 'Tickets', AI1EC_PLUGIN_NAME ); ?>
-			</label>
+			<?php
+			if ( AI1EC_API && AI1EC_API_TICKETING ):?>
+				<label for="ai1ec_has_tickets">
+					<input type="radio" value="tickets" id="ai1ec_has_tickets"
+						   name="ai1ec_cost_type" <?php if ( 'tickets' == $cost_type ) { echo 'checked'; } ?>>
+					<?php _e( 'Tickets', AI1EC_PLUGIN_NAME ); ?>
+				</label>
+			<?php endif; ?>
 			<label for="ai1ec_external_tickets">
 				<input type="radio" value="external" id="ai1ec_external_tickets"
 					   name="ai1ec_cost_type" <?php if ( 'external' == $cost_type ) { echo 'checked'; } ?>>
@@ -39,15 +42,17 @@
 			</label>
 		</div>
 
-		<?php
+	<?php
+	if ( AI1EC_API && AI1EC_API_TICKETING ):		
+
 		if ( ! $ticketing ): ?>
 			<div class="ai1ec-panel ai1ec-tickets-panel ai1ec-tickets-form">
 				<?php
 				if ( ! $tickets_message ): ?>
-					<p>Ticketing allows you to sell tickets directly to the users.</p>
-					<a href="edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-tickets"
+					<p><?php _e( 'Ticketing allows you to sell tickets directly to the users.', AI1EC_PLUGIN_NAME ); ?></p>
+					<a href="edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings"
 					   class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg">
-							Sign Up for Time.ly Ticketing<sup>beta</sup>
+							<?php _e( 'Sign Up for Timely Network', AI1EC_PLUGIN_NAME ); ?>
 					</a>
 				<?php 
 				else: ?>
@@ -250,6 +255,8 @@
 				</a>
 			</div>
 		<?php endif; ?>
+
+	<?php endif; ?>
 
 		<div class="ai1ec-tickets-external">
 			<table class="ai1ec-form">

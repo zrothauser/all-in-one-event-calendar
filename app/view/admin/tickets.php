@@ -30,14 +30,16 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 	 * Adds the page to the correct menu.
 	 */
 	public function add_page() {
-		add_submenu_page(
-			AI1EC_ADMIN_BASE_URL,
-			__( 'Ticketing', AI1EC_PLUGIN_NAME ),
-			__( 'Ticketing<sup>beta</sup>', AI1EC_PLUGIN_NAME ),
-			'manage_ai1ec_feeds',
-			AI1EC_PLUGIN_NAME . '-tickets',
-			array( $this, 'display_page' )
-		);
+		if ( AI1EC_API && AI1EC_API_TICKETING ) { 
+			add_submenu_page(
+				AI1EC_ADMIN_BASE_URL,
+				__( 'Ticketing', AI1EC_PLUGIN_NAME ),
+				__( 'Ticketing<sup>beta</sup>', AI1EC_PLUGIN_NAME ),
+				'manage_ai1ec_feeds',
+				AI1EC_PLUGIN_NAME . '-tickets',
+				array( $this, 'display_page' )
+			);
+		}
 	}
 
 	/**

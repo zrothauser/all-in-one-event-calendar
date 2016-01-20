@@ -167,7 +167,11 @@ class Ai1ec_Javascript_Controller {
 	 *
 	 * @return void
 	 */
-	public function render_js() {
+	public function render_js() { 
+		$scripts_updated = $this->_registry
+			->get( 'model.option' )
+				->get( 'calendar_js_updated' );
+
 		$js_path      = AI1EC_ADMIN_THEME_JS_PATH . DIRECTORY_SEPARATOR;
 		$common_js    = '';
 		if ( ! isset( $_GET[self::LOAD_JS_PARAMETER] ) ) {
@@ -187,10 +191,12 @@ class Ai1ec_Javascript_Controller {
 		) {
 			if (
 				$page_to_load === self::LOAD_ONLY_FRONTEND_SCRIPTS &&
-				true === $this->_frontend_scripts_loaded
+				true === $this->_frontend_scripts_loaded &&
+				$scripts_updated
 			) {
 				return;
 			}
+
 			if ( false === $this->_frontend_scripts_loaded ) {
 				$common_js = file_get_contents(
 					$js_path . 'pages/common_frontend.js'
@@ -261,7 +267,18 @@ class Ai1ec_Javascript_Controller {
 		// add to blank spaces to fix issues with js
 		// being truncated onn some installs
 		$javascript .= '  ';
-		$this->_echo_javascript( $javascript );
+		
+		if ( ! $scripts_updated &&
+			$page_to_load === self::EVENT_PAGE_JS ||
+			$page_to_load === self::CALENDAR_PAGE_JS ||
+			$page_to_load === self::LOAD_ONLY_FRONTEND_SCRIPTS
+		) {
+			$js_saved = file_put_contents( $js_path. '../calendar-compiled.js', $javascript );
+			$this->_registry->get( 'model.option' )
+				->set( 'calendar_js_updated', true );
+			$javascript = '';
+		} 
+			$this->_echo_javascript( $javascript );
 	}
 
 

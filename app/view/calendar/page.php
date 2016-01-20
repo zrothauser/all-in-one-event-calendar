@@ -225,7 +225,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			$calendar = $loader->get_file( 'calendar.twig', $calendar_args, false );
 			// if it's just html, only the calendar html must be returned.
 			if ( 'html' === $type ) {
-				return $calendar->get_content();
+				return $calendar->get_content() . '<script src="http://localhost/wp-content/plugins/all-in-one-event-calendar/public/calendar-compiled.js"></script>';
 			}
 			// send data both for json and jsonp as shortcodes are jsonp
 			return array(

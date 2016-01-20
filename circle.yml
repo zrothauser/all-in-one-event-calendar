@@ -12,4 +12,4 @@ deployment:
   dev:
     branch: develop
     commands:
-      - ssh codedeploy@dev.time.ly "cd /var/www/html/wordpress431/wp-content/plugins/all-in-one-event-calendar && git pull github develop && sudo sh /var/www/copy-wordpress.sh"
+      - ssh codedeploy@dev.time.ly "cd /var/www && ./update-plugins-and-copy-to-wp-template.sh && ./copy-wordpress.sh"

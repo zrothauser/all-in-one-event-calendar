@@ -585,6 +585,11 @@ class Ai1ec_Front_Controller {
 				array( 'controller.javascript', 'revalidate_cache' ),
 				PHP_INT_MAX - 1
 			);
+			$dispatcher->register_action(
+				'ai1ec_settings_updated',
+				array( 'controller.javascript-widget', 'render_javascript' ),
+				PHP_INT_MAX - 1
+			);
 		}
 
 		if ( is_admin() ) {

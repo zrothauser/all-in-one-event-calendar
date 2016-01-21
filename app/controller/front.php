@@ -579,6 +579,13 @@ class Ai1ec_Front_Controller {
 			PHP_INT_MAX - 1,
 			2
 		);
+		if ( true === AI1EC_STATIC_JS ) {
+			$dispatcher->register_action(
+				'ai1ec_settings_updated',
+				array( 'controller.javascript', 'revalidate_cache' ),
+				PHP_INT_MAX - 1
+			);
+		}
 
 		if ( is_admin() ) {
 			// get the repeat box

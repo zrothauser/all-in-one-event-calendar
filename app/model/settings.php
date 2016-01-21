@@ -210,8 +210,6 @@ class Ai1ec_Settings extends Ai1ec_App {
 		if ( $success ) {
 			$this->_change_update_status( false );
 		}
-		$this->_registry->get( 'model.option' )
-			->set( 'calendar_js_updated', false );
 		return $success;
 	}
 

@@ -63,6 +63,7 @@ class Ai1ec_Javascript_Controller {
 
 	//ticketing page
 	CONST TICKETING = 'ticketing.js';
+	
 	/**
 	 * @var Ai1ec_Registry_Object
 	 */
@@ -160,6 +161,7 @@ class Ai1ec_Javascript_Controller {
 		if( null !== $page ) {
 			$this->add_link_to_render_js( $page, false );
 		}
+	
 	}
 
 	/**
@@ -167,17 +169,23 @@ class Ai1ec_Javascript_Controller {
 	 *
 	 * @return void
 	 */
-	public function render_js() { 
-		$scripts_updated = $this->_registry
-			->get( 'model.option' )
-				->get( 'calendar_js_updated' );
-
+	public function render_js() {
 		$js_path      = AI1EC_ADMIN_THEME_JS_PATH . DIRECTORY_SEPARATOR;
 		$common_js    = '';
 		if ( ! isset( $_GET[self::LOAD_JS_PARAMETER] ) ) {
 			return null;
 		}
 		$page_to_load = $_GET[self::LOAD_JS_PARAMETER];
+		$scripts_updated = $this->_registry->get( 'model.option' )->get( 'calendarjsupdated' );
+	
+		if (
+			true === AI1EC_STATIC_JS &&
+			$page_to_load === self::CALENDAR_PAGE_JS && 
+			'1' === $scripts_updated
+		) {	
+			Ai1ec_Http_Response_Helper::stop( 0 );
+			return;	
+		}
 
 		if (
 			isset( $_GET[self::IS_BACKEND_PARAMETER] ) &&
@@ -191,12 +199,10 @@ class Ai1ec_Javascript_Controller {
 		) {
 			if (
 				$page_to_load === self::LOAD_ONLY_FRONTEND_SCRIPTS &&
-				true === $this->_frontend_scripts_loaded &&
-				$scripts_updated
+				true === $this->_frontend_scripts_loaded
 			) {
 				return;
 			}
-
 			if ( false === $this->_frontend_scripts_loaded ) {
 				$common_js = file_get_contents(
 					$js_path . 'pages/common_frontend.js'
@@ -267,20 +273,32 @@ class Ai1ec_Javascript_Controller {
 		// add to blank spaces to fix issues with js
 		// being truncated onn some installs
 		$javascript .= '  ';
-		
-		if ( ! $scripts_updated &&
-			$page_to_load === self::EVENT_PAGE_JS ||
-			$page_to_load === self::CALENDAR_PAGE_JS ||
-			$page_to_load === self::LOAD_ONLY_FRONTEND_SCRIPTS
+
+		if (
+			true === AI1EC_STATIC_JS &&
+			$page_to_load === self::CALENDAR_PAGE_JS &&
+			'0' === $scripts_updated
 		) {
-			$js_saved = file_put_contents( $js_path. '../calendar-compiled.js', $javascript );
-			$this->_registry->get( 'model.option' )
-				->set( 'calendar_js_updated', true );
-			$javascript = '';
-		} 
-			$this->_echo_javascript( $javascript );
+				
+			$js_saved = file_put_contents(
+				$js_path . '../js_cache/' . self::CALENDAR_PAGE_JS,
+				$javascript
+			);
+			if ( $js_saved ) {
+				$this->_registry->get( 'model.option' )->set( 'calendarjsupdated', '1' );
+			}
+		}
+		
+		$this->_echo_javascript( $javascript );
 	}
 
+
+	/**
+	 * Sets the flag to revalidate cached js files on next render.
+	 */
+	public function revalidate_cache() {
+		$this->_registry->get( 'model.option' )->set( 'calendarjsupdated', '0' );
+	}
 
 	/**
 	 * Get a compiled javascript file ( used by extensions )
@@ -672,6 +690,15 @@ JSC;
 			),
 			trailingslashit( ai1ec_get_site_url() )
 		);
+
+		if (
+			AI1EC_STATIC_JS &&
+			$is_calendar_page &&
+			'1' === $this->_registry->get( 'model.option' )->get( 'calendarjsupdated' )
+		) {
+			$url = plugin_dir_url( 'all-in-one-event-calendar/public/js_cache/.' ) . 'calendar.js';
+		}
+
 		if ( true === $backend ) {
 			$this->_scripts_helper->enqueue_script(
 					self::JS_HANDLE,

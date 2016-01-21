@@ -40,6 +40,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		Ai1ec_Request_Parser $request,
 		$caller = 'render-command'
 	) {
+		
 		// Get args for the current view; required to generate HTML for views
 		// dropdown list, categories, tags, subscribe buttons, and of course the
 		// view itself.
@@ -225,7 +226,14 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 			$calendar = $loader->get_file( 'calendar.twig', $calendar_args, false );
 			// if it's just html, only the calendar html must be returned.
 			if ( 'html' === $type ) {
-				return $calendar->get_content() . '<script src="http://localhost/wp-content/plugins/all-in-one-event-calendar/public/calendar-compiled.js"></script>';
+				$html_to_add = '';
+					
+				if ( true === AI1EC_STATIC_JS ) {
+					
+					//$html_to_add .= '<script type="text/javascript" src="http://localhost/wp-content/plugins/all-in-one-event-calendar/public/js_cache/calendar.js"></script>';
+				}
+				$html_to_add .= $calendar->get_content();
+				return $html_to_add;
 			}
 			// send data both for json and jsonp as shortcodes are jsonp
 			return array(

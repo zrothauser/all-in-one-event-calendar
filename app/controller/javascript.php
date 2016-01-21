@@ -696,7 +696,7 @@ JSC;
 			$is_calendar_page &&
 			'1' === $this->_registry->get( 'model.option' )->get( 'calendarjsupdated' )
 		) {
-			$url = plugin_dir_url( 'all-in-one-event-calendar/public/js_cache/.' ) . 'calendar.js';
+			$url = plugin_dir_url( 'all-in-one-event-calendar/public/js_cache/.' ) . $page;
 		}
 
 		if ( true === $backend ) {

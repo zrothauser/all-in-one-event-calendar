@@ -485,7 +485,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	if ( ! defined( 'AI1EC_API' ) ) {
 		define(
 			'AI1EC_API',
-			true
+			false
 		);
 	}
 	
@@ -493,7 +493,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	if ( ! defined( 'AI1EC_API_TICKETING' ) ) {
 		define(
 			'AI1EC_API_TICKETING',
-			true
+			false
 		);
 	}
 

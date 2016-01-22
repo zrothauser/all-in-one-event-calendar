@@ -174,6 +174,16 @@ class Ai1ec_Javascript_Controller {
 			return null;
 		}
 		$page_to_load = $_GET[self::LOAD_JS_PARAMETER];
+		$scripts_updated = $this->_registry->get( 'model.option' )->get( 'calendarjsupdated' );
+	
+		if (
+			true === AI1EC_STATIC_JS &&
+			$page_to_load === self::CALENDAR_PAGE_JS && 
+			'1' === $scripts_updated
+		) {	
+			Ai1ec_Http_Response_Helper::stop( 0 );
+			return;	
+		}
 
 		if (
 			isset( $_GET[self::IS_BACKEND_PARAMETER] ) &&
@@ -261,9 +271,32 @@ class Ai1ec_Javascript_Controller {
 		// add to blank spaces to fix issues with js
 		// being truncated onn some installs
 		$javascript .= '  ';
+
+		if (
+			true === AI1EC_STATIC_JS &&
+			$page_to_load === self::CALENDAR_PAGE_JS &&
+			'0' === $scripts_updated
+		) {
+				
+			$js_saved = file_put_contents(
+				$js_path . '../js_cache/' . self::CALENDAR_PAGE_JS,
+				$javascript
+			);
+			if ( $js_saved ) {
+				$this->_registry->get( 'model.option' )->set( 'calendarjsupdated', '1' );
+			}
+		}
+		
 		$this->_echo_javascript( $javascript );
 	}
 
+
+	/**
+	 * Sets the flag to revalidate cached js files on next render.
+	 */
+	public function revalidate_cache() {
+		$this->_registry->get( 'model.option' )->set( 'calendarjsupdated', '0' );
+	}
 
 	/**
 	 * Get a compiled javascript file ( used by extensions )
@@ -655,6 +688,15 @@ JSC;
 			),
 			trailingslashit( ai1ec_get_site_url() )
 		);
+
+		if (
+			AI1EC_STATIC_JS &&
+			$is_calendar_page &&
+			'1' === $this->_registry->get( 'model.option' )->get( 'calendarjsupdated' )
+		) {
+			$url = plugin_dir_url( 'all-in-one-event-calendar/public/js_cache/.' ) . $page;
+		}
+
 		if ( true === $backend ) {
 			$this->_scripts_helper->enqueue_script(
 					self::JS_HANDLE,

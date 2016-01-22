@@ -56,6 +56,7 @@ class Ai1ec_Controller_Javascript_Widget extends Ai1ec_Base {
 	 * Renders everything that's needed for the embedded widget.
 	 */
 	public function render_js_widget() {
+
 		if ( isset( $_GET['render'] ) && 'true' === $_GET['render'] ) {
 			if ( isset( $_GET[self::WIDGET_PARAMETER] ) ){
 				$widget = $_GET[self::WIDGET_PARAMETER];
@@ -71,17 +72,29 @@ class Ai1ec_Controller_Javascript_Widget extends Ai1ec_Base {
 			}
 			$widget_instance = $this->_registry->get( $widget_class );
 			$this->render_content( $widget_instance );
+		} else {
+			if ( false === AI1EC_STATIC_JS ) {
+				$this->render_javascript();
+			} else {
+				header(
+					'Location: '
+						. plugin_dir_url( 'all-in-one-event-calendar/public/js_cache/.' )
+						. 'ai1ec_js_widget.js'
+				);
+				exit( 0 );
+			}
 		}
-		$this->render_javascript();
 	}
 
 	public function render_javascript() {
-		header( 'Content-Type: application/javascript' );
-		header(
-			'Expires: ' . gmdate( 'D, d M Y H:i:s', time() + 31536000 ) . ' GMT'
-		);
-		header( 'Cache-Control: public, max-age=31536000' );
-
+		
+		if ( false === AI1EC_STATIC_JS ) {
+			header( 'Content-Type: application/javascript' );
+			header(
+				'Expires: ' . gmdate( 'D, d M Y H:i:s', time() + 31536000 ) . ' GMT'
+			);
+			header( 'Cache-Control: public, max-age=31536000' );
+		}
 
 		$jscontroller   = $this->_registry->get( 'controller.javascript' );
 		$css_controller = $this->_registry->get( 'css.frontend' );
@@ -172,7 +185,15 @@ class Ai1ec_Controller_Javascript_Widget extends Ai1ec_Base {
 JS;
 			$compatibility_ob->gzip_if_possible( $js );
 
+		if ( true === AI1EC_STATIC_JS ) {	
+			$js_path      = AI1EC_ADMIN_THEME_JS_PATH . DIRECTORY_SEPARATOR;
+			$js_saved = file_put_contents(
+				$js_path . '../js_cache/ai1ec_js_widget.js',
+				$js
+			);
+		} else {
 			exit( 0 );
+		}
 	}
 
 	public function render_content( Ai1ec_Embeddable $widget_instance ) {

@@ -579,6 +579,18 @@ class Ai1ec_Front_Controller {
 			PHP_INT_MAX - 1,
 			2
 		);
+		if ( true === AI1EC_STATIC_JS ) {
+			$dispatcher->register_action(
+				'ai1ec_settings_updated',
+				array( 'controller.javascript', 'revalidate_cache' ),
+				PHP_INT_MAX - 1
+			);
+			$dispatcher->register_action(
+				'ai1ec_settings_updated',
+				array( 'controller.javascript-widget', 'render_javascript' ),
+				PHP_INT_MAX - 1
+			);
+		}
 
 		if ( is_admin() ) {
 			// get the repeat box
@@ -775,6 +787,20 @@ class Ai1ec_Front_Controller {
 				'upgrader_post_install',
 				array( 'environment.check', 'check_bulk_addons_activation' )
 			);
+			if ( true === AI1EC_STATIC_JS ) {
+				$dispatcher->register_action(
+					'activated_plugin',
+					array( 'controller.javascript', 'revalidate_cache' )
+				);
+				$dispatcher->register_action(
+					'deactivated_plugin',
+					array( 'controller.javascript', 'revalidate_cache' )
+				);
+				$dispatcher->register_action(
+					'upgrader_post_install',
+					array( 'controller.javascript', 'revalidate_cache' )
+				);
+			}
 			// Widget Creator
 			$dispatcher->register_action(
 				'admin_enqueue_scripts',

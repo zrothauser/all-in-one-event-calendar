@@ -63,7 +63,6 @@ class Ai1ec_Javascript_Controller {
 
 	//ticketing page
 	CONST TICKETING = 'ticketing.js';
-	
 	/**
 	 * @var Ai1ec_Registry_Object
 	 */
@@ -161,7 +160,6 @@ class Ai1ec_Javascript_Controller {
 		if( null !== $page ) {
 			$this->add_link_to_render_js( $page, false );
 		}
-	
 	}
 
 	/**

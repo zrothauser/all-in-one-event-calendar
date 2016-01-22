@@ -40,7 +40,6 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 		Ai1ec_Request_Parser $request,
 		$caller = 'render-command'
 	) {
-		
 		// Get args for the current view; required to generate HTML for views
 		// dropdown list, categories, tags, subscribe buttons, and of course the
 		// view itself.

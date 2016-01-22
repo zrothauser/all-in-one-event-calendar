@@ -13,6 +13,7 @@ local.properties
 .settings/
 .loadpath
 /public/js/build.txt
+/public/js_cache/**
 
 # External tool builders
 .externalToolBuilders/

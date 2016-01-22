@@ -10,6 +10,6 @@ dependencies:
 
 deployment:
   dev:
-    branch: master
+    branch: develop
     commands:
       - ssh codedeploy@dev.time.ly "cd /var/www && ./update-plugins-and-copy-to-wp-template.sh && ./copy-wordpress.sh dev.time.ly"

@@ -256,7 +256,9 @@
 #suggested td.ai1ec-suggested-events-count {
 	width: 75px;
 }
-
+.ai1ec-ics-signup-box {
+	margin-bottom: 30px;
+}
 
 /* Calendar theme options */
 

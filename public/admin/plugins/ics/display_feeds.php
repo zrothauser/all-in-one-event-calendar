@@ -14,6 +14,7 @@
 	endif;
 ?>
 <div id="ics-alerts"></div>
+<!--
 <div class="ai1ec-form-horizontal">
 	<div class="ai1ec-form-group">
 		<div class="ai1ec-col-md-12">
@@ -26,7 +27,11 @@
 		</div>
 	</div>
 </div>
-
+-->
+<p></p>
+<h5>My imported Feeds:</h5>
 <div class="timely ai1ec-form-inline ai1ec-panel-group" id="ai1ec-feeds-accordion">
 	<?php echo $feed_rows; ?>
 </div>
+<br />
+<h5>My imported Events:</h5>

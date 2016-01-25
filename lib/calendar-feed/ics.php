@@ -35,7 +35,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	protected $_xguard   = null;
 
 	public function get_tab_title() {
-		return Ai1ec_I18n::__( 'ICS' );
+		return Ai1ec_I18n::__( 'My Feeds' );
 	}
 
 	public function __construct( Ai1ec_Registry_Object $registry ) {
@@ -336,9 +336,10 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		// Render the opening div
 		$this->render_opening_div_of_tab();
 		// Render the body of the tab
-		$settings = $this->_registry->get( 'model.settings' );
-
-		$factory = $this->_registry->get(
+		$api        = $this->_registry->get( 'model.api' );
+		$api_signed = $api->is_signed();
+		$settings   = $this->_registry->get( 'model.settings' );
+		$factory    = $this->_registry->get(
 			'factory.html'
 		);
 		$select2_cats = $factory->create_select2_multiselect(
@@ -392,6 +393,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'event_tags'       => $select2_tags,
 			'feed_rows'        => $this->_get_feed_rows(),
 			'modal'            => $modal,
+			'api_signed'       => $api->is_signed(),
 		);
 
 		$display_feeds = $loader->get_file(
@@ -430,6 +432,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 		$html         = '';
 		$theme_loader = $this->_registry->get( 'theme.loader' );
+		$api          = $this->_registry->get( 'model.api' );
+		$api_signed   = $api->is_signed();
 
 		foreach ( $rows as $row ) {
 			$feed_categories = explode( ',', $row->feed_category );
@@ -471,6 +475,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				'feed_import_timezone' => (bool) intval(
 					$row->import_timezone
 				),
+				'api_signed'           => $api->is_signed(),
 			);
 			$html .= $theme_loader->get_file( 'feed_row.php', $args, true )
 				->get_content();

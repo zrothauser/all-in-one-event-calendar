@@ -200,6 +200,66 @@
 	margin-bottom: 10px;
 }
 
+.ai1ec-feeds-page {
+	max-width: 900px;
+}
+
+#suggested .ai1ec-suggested-feeds-list {
+	width: 100% !important;
+	background: #fff;
+	border: 1px solid #ccc;
+	margin-right: 15px;
+	margin-bottom: 20px;
+	border-collapse: collapse;
+}
+#suggested .ai1ec-suggested-feeds-list th {
+	color: #fff;
+	background: #999;
+	font-weight: bold;
+	padding: 8px;
+	padding-left: 0;
+	margin: 0;
+}
+#suggested .ai1ec-suggested-feeds-list tr {
+	border-bottom: 1px solid #ddd;
+}
+#suggested .ai1ec-suggested-feeds-list td {
+	padding: 5px 0;
+}
+#suggested .ai1ec-suggested-feed-title {
+	font-weight: bold;
+}
+#suggested .ai1ec-suggested-feeds-description {
+	color: #999;
+	font-size: 11px;
+}
+#suggested .ai1ec-suggested-add-feed {
+	display: inline-block;
+}
+#suggested .ai1ec-suggested-secondary-action {
+	font-size: 12px;
+	display: inline-block;
+	margin: 0 15px;
+}
+#suggested td.ai1ec-suggested-primary-actions {
+	width: 1px;
+}
+#suggested td.ai1ec-suggested-secondary-actions {
+	width: 1px;
+	white-space: nowrap;
+}
+#suggested td.ai1ec-suggested-favourite {
+	text-align: center;
+	width: 35px;
+	vertical-align: top;
+}
+#suggested td.ai1ec-suggested-events-count {
+	width: 75px;
+}
+.ai1ec-ics-signup-box {
+	margin-bottom: 30px;
+}
+
 /* Calendar theme options */
 
 #ai1ec-less-variables-tabs .inside {

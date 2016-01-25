@@ -29,9 +29,9 @@
 </div>
 -->
 <p></p>
-<h5>My imported Feeds:</h5>
+<h5><?php _e( 'My imported Feeds:', AI1EC_PLUGIN_NAME ) ?></h5>
 <div class="timely ai1ec-form-inline ai1ec-panel-group" id="ai1ec-feeds-accordion">
 	<?php echo $feed_rows; ?>
 </div>
 <br />
-<h5>My imported Events:</h5>
+<h5><?php _e( 'My imported Events:', AI1EC_PLUGIN_NAME ) ?></h5>

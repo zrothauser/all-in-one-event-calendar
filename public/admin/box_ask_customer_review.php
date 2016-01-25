@@ -30,7 +30,7 @@
 		<div class="timely ai1ec-alert ai1ec-alert-highlight">			   
 			<div class="ai1ec-row">		   
 				<div class="ai1ec-col-xs-12 ai1ec-text-center">
-					<?php _e( 'How about rating our FREE calendar ★★★★★ to help keeping it in Wordpress.org.', AI1EC_PLUGIN_NAME ); ?><br/>
+					<?php _e( 'Please rate our FREE calendar with 5 stars to help keeping it in Wordpress.org.', AI1EC_PLUGIN_NAME ); ?><br/>
 					<h6><?php _e( 'Thanks from the hard working fellas at Time.ly.', AI1EC_PLUGIN_NAME ) ?></h6>
 				</div>
 			</div>

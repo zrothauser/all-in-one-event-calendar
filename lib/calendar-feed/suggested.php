@@ -21,7 +21,7 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 	);
 
 	public function get_tab_title() {
-		return Ai1ec_I18n::__( 'Feeds Discovery' );
+		return Ai1ec_I18n::__( 'Discover Events' );
 	}
 
 	public function __construct( Ai1ec_Registry_Object $registry ) {

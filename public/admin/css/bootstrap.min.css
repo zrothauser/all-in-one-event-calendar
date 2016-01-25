@@ -6601,6 +6601,10 @@ ul.ai1ec-dropdown-menu li {
   border-radius: 0px;
   font-size: 23px !important;
 }
+.ai1ec-alert-highlight h6 {
+  color: #FFFFFF;
+}
+
 .ai1ec-alert-highlight hr {
   border-top-color: #44b7b1;
 }

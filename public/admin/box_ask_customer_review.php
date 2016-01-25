@@ -30,7 +30,8 @@
 		<div class="timely ai1ec-alert ai1ec-alert-highlight">			   
 			<div class="ai1ec-row">		   
 				<div class="ai1ec-col-xs-12 ai1ec-text-center">
-					<?php _e( 'How about a rating on the Wordpress?', AI1EC_PLUGIN_NAME ); ?>
+					<?php _e( 'How about rating our FREE calendar ★★★★★ to help keeping it in Wordpress.org.', AI1EC_PLUGIN_NAME ); ?><br/>
+					<h6><?php _e( 'Thanks from the hard working fellas at Time.ly.', AI1EC_PLUGIN_NAME ) ?></h6>
 				</div>
 			</div>
 			<div class="ai1ec-row" style="padding-top: 15px!important"> 
@@ -43,7 +44,7 @@
 					</button>
 				</div>
 				<div class="ai1ec-col-xs-6 ai1ec-text-center">
-					<a target="_blank" href="https://wordpress.org/support/view/plugin-reviews/all-in-one-event-calendar#postform"
+					<a target="_blank" href="https://wordpress.org/support/view/plugin-reviews/all-in-one-event-calendar?filter=5"
 						class="ai1ec-btn ai1ec-btn-primary-highlight ai1ec-btn-lg ai1ec-btn-block
 							   ai1ec_review_enjoying_go_wordpress"
 						role="button">
@@ -63,7 +64,7 @@
 		<div class="timely ai1ec-alert ai1ec-alert-highlight">
 			<div class="ai1ec-row">		   
 				<div class="ai1ec-col-xs-12 ai1ec-text-center">
-					<?php _e( 'Would you mind giving us some feedback?', AI1EC_PLUGIN_NAME ); ?>
+					<?php _e( 'Would you please give us some feedback on how can we improve?', AI1EC_PLUGIN_NAME ); ?>
 				</div>
 			</div>
 			<div class="ai1ec-row" style="padding-top: 15px!important"> 
@@ -172,6 +173,7 @@
 					<br/>
 					<?php _e( 'Thank you for being our customer,' ); ?><br/>
 					<?php _e( 'Aristotel Dascal, VP of Product, Time.ly' ); ?><br/>
+					<?php _e( 'VPproduct@time.ly' ); ?>
 				</p>				
 			</div>
 			 <div class="ai1ec-modal-footer ai1ec-clearfix">			 

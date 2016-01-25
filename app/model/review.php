@@ -16,7 +16,7 @@ class Ai1ec_Review extends Ai1ec_Base {
 	const RELEASE_DATE_FIELD         = 'release_date';
 	const PUBLISHED_THRESHOLD        = 15;
 	const FUTURE_EVENTS_THRESHOLD    = 3;
-	const WEEK_OFFSET_SEC_FIELD      = 1209600; //2 weeks in seconds (14 * 86400)
+	const WEEK_OFFSET_SEC_FIELD      = 604800; //1 week in seconds (7 * 86400)
 
 	/**
 	 * review colletion.

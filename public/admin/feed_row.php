@@ -96,6 +96,9 @@
 				</div>
 				<?php do_action( 'ai1ec_ics_row_after_settings', $feed_id ); ?>
 				<div class="ai1ec-btn-group ai1ec-pull-right ai1ec-feed-actions">
+					<?php
+						if ( $api_signed ):
+					?>
 					<button type="button"
 						class="ai1ec-btn ai1ec-btn-sm ai1ec-btn-default ai1ec-text-primary
 							ai1ec_update_ics"
@@ -111,6 +114,9 @@
 						<i class="ai1ec-fa ai1ec-fa-edit ai1ec-fa-fw"></i>
 						<?php _e( 'Edit', AI1EC_PLUGIN_NAME ); ?>
 					</button>
+					<?php
+						endif;
+					?>
 					<button type="button"
 						class="ai1ec-btn ai1ec-btn-sm ai1ec-btn-default ai1ec-text-danger
 							ai1ec_delete_ics"

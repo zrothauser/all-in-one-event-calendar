@@ -168,8 +168,10 @@ class Ai1ec_Javascript_Controller {
 	 * @return void
 	 */
 	public function render_js() {
-		$js_path      = AI1EC_ADMIN_THEME_JS_PATH . DIRECTORY_SEPARATOR;
-		$common_js    = '';
+		$js_path   = AI1EC_ADMIN_THEME_JS_PATH . DIRECTORY_SEPARATOR;
+		$common_js = '';
+		$js_cache  = $this->_settings->get( 'cache_dynamic_js' );
+
 		if ( ! isset( $_GET[self::LOAD_JS_PARAMETER] ) ) {
 			return null;
 		}
@@ -177,7 +179,7 @@ class Ai1ec_Javascript_Controller {
 		$scripts_updated = $this->_registry->get( 'model.option' )->get( 'calendarjsupdated' );
 	
 		if (
-			true === AI1EC_STATIC_JS &&
+			$js_cache &&
 			$page_to_load === self::CALENDAR_PAGE_JS && 
 			'1' === $scripts_updated
 		) {	
@@ -273,17 +275,21 @@ class Ai1ec_Javascript_Controller {
 		$javascript .= '  ';
 
 		if (
-			true === AI1EC_STATIC_JS &&
+			$js_cache &&
 			$page_to_load === self::CALENDAR_PAGE_JS &&
 			'0' === $scripts_updated
 		) {
-				
-			$js_saved = file_put_contents(
-				$js_path . '../js_cache/' . self::CALENDAR_PAGE_JS,
-				$javascript
-			);
-			if ( $js_saved ) {
-				$this->_registry->get( 'model.option' )->set( 'calendarjsupdated', '1' );
+			$js_saved = false;
+			try {
+				$js_saved = file_put_contents(
+					$js_path . '../js_cache/' . self::CALENDAR_PAGE_JS,
+					$javascript
+				);
+				if ( $js_saved ) {
+					$this->_registry->get( 'model.option' )->set( 'calendarjsupdated', '1' );
+				}
+			} catch ( Exception $e ) {
+				$this->_settings->set( 'cache_dynamic_js', false );
 			}
 		}
 		
@@ -690,7 +696,7 @@ JSC;
 		);
 
 		if (
-			AI1EC_STATIC_JS &&
+			$this->_settings->get( 'cache_dynamic_js' ) &&
 			$is_calendar_page &&
 			'1' === $this->_registry->get( 'model.option' )->get( 'calendarjsupdated' )
 		) {

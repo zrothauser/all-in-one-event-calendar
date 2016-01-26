@@ -53,6 +53,13 @@ class Ai1ec_Controller_Javascript_Widget extends Ai1ec_Base {
 	}
 
 	/**
+	 * Sets the flag to revalidate cached js files on next render.
+	 */
+	public function revalidate_cache() {
+		$this->_registry->get( 'model.option' )->set( 'jswidgetupdated', '0' );
+	}
+
+	/**
 	 * Renders everything that's needed for the embedded widget.
 	 */
 	public function render_js_widget() {
@@ -73,7 +80,10 @@ class Ai1ec_Controller_Javascript_Widget extends Ai1ec_Base {
 			$widget_instance = $this->_registry->get( $widget_class );
 			$this->render_content( $widget_instance );
 		} else {
-			if ( false === AI1EC_STATIC_JS ) {
+			if (
+				! $this->_registry->get( 'model.settings' )->get( 'cache_dynamic_js' ) ||
+				'1' != $this->_registry->get( 'model.option' )->get( 'jswidgetupdated' )
+			) {
 				$this->render_javascript();
 			} else {
 				header(
@@ -88,13 +98,11 @@ class Ai1ec_Controller_Javascript_Widget extends Ai1ec_Base {
 
 	public function render_javascript() {
 		
-		if ( false === AI1EC_STATIC_JS ) {
-			header( 'Content-Type: application/javascript' );
-			header(
-				'Expires: ' . gmdate( 'D, d M Y H:i:s', time() + 31536000 ) . ' GMT'
-			);
-			header( 'Cache-Control: public, max-age=31536000' );
-		}
+		header( 'Content-Type: application/javascript' );
+		header(
+			'Expires: ' . gmdate( 'D, d M Y H:i:s', time() + 31536000 ) . ' GMT'
+		);
+		header( 'Cache-Control: public, max-age=31536000' );
 
 		$jscontroller   = $this->_registry->get( 'controller.javascript' );
 		$css_controller = $this->_registry->get( 'css.frontend' );
@@ -185,15 +193,24 @@ class Ai1ec_Controller_Javascript_Widget extends Ai1ec_Base {
 JS;
 			$compatibility_ob->gzip_if_possible( $js );
 
-		if ( true === AI1EC_STATIC_JS ) {	
-			$js_path      = AI1EC_ADMIN_THEME_JS_PATH . DIRECTORY_SEPARATOR;
-			$js_saved = file_put_contents(
-				$js_path . '../js_cache/ai1ec_js_widget.js',
-				$js
-			);
-		} else {
-			exit( 0 );
+		if (
+			$this->_registry->get( 'model.settings' )->get( 'cache_dynamic_js' ) &&
+			'0' === $this->_registry->get( 'model.option' )->get( 'jswidgetupdated' )
+		) {	
+			try {
+				$js_path  = AI1EC_ADMIN_THEME_JS_PATH . DIRECTORY_SEPARATOR;
+				$js_saved = file_put_contents(
+					$js_path . '../js_cache/ai1ec_js_widget.js',
+					$js
+				);
+				if ( $js_saved ) {
+					$this->_registry->get( 'model.option' )->set( 'jswidgetupdated', '1' );
+				}
+			} catch ( Exception $e ) {
+				$this->_registry->get( 'model.settings' )->set( 'cache_dynamic_js', false );
+			}
 		}
+		exit( 0 );
 	}
 
 	public function render_content( Ai1ec_Embeddable $widget_instance ) {

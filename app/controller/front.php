@@ -130,6 +130,16 @@ class Ai1ec_Front_Controller {
 	}
 
 	/**
+	 * If Advanced JS cache enabled.
+	 *
+	 * @return boolean
+	 */
+	protected function if_js_cache_enabled() {
+		$settings = $this->_registry->get( 'model.settings' );
+		return $settings->get( 'cache_dynamic_js' );
+	}
+
+	/**
 	 * If LEGACY_WIDGET_PARAMETER is set.
 	 *
 	 * @return boolean
@@ -579,7 +589,7 @@ class Ai1ec_Front_Controller {
 			PHP_INT_MAX - 1,
 			2
 		);
-		if ( true === AI1EC_STATIC_JS ) {
+		if ( $this->if_js_cache_enabled() ) {
 			$dispatcher->register_action(
 				'ai1ec_settings_updated',
 				array( 'controller.javascript', 'revalidate_cache' ),
@@ -587,7 +597,7 @@ class Ai1ec_Front_Controller {
 			);
 			$dispatcher->register_action(
 				'ai1ec_settings_updated',
-				array( 'controller.javascript-widget', 'render_javascript' ),
+				array( 'controller.javascript-widget', 'revalidate_cache' ),
 				PHP_INT_MAX - 1
 			);
 		}
@@ -787,7 +797,7 @@ class Ai1ec_Front_Controller {
 				'upgrader_post_install',
 				array( 'environment.check', 'check_bulk_addons_activation' )
 			);
-			if ( true === AI1EC_STATIC_JS ) {
+			if ( $this->if_js_cache_enabled() ) {
 				$dispatcher->register_action(
 					'activated_plugin',
 					array( 'controller.javascript', 'revalidate_cache' )
@@ -800,6 +810,19 @@ class Ai1ec_Front_Controller {
 					'upgrader_post_install',
 					array( 'controller.javascript', 'revalidate_cache' )
 				);
+				$dispatcher->register_action(
+					'activated_plugin',
+					array( 'controller.javascript-widget', 'revalidate_cache' )
+				);
+				$dispatcher->register_action(
+					'deactivated_plugin',
+					array( 'controller.javascript-widget', 'revalidate_cache' )
+				);
+				$dispatcher->register_action(
+					'upgrader_post_install',
+					array( 'controller.javascript-widget', 'revalidate_cache' )
+				);
+
 			}
 			// Widget Creator
 			$dispatcher->register_action(

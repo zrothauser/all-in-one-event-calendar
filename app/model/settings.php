@@ -920,6 +920,21 @@ class Ai1ec_Settings extends Ai1ec_App {
 				),
 				'default'  => true,
 			),
+			'cache_dynamic_js' => array(
+				'type' => 'bool',
+				'renderer' => array(
+					'class' => 'checkbox',
+					'tab'   => 'advanced',
+					'item'  => 'advanced',
+					'label' => Ai1ec_I18n::__(
+						'Use advanced JS cache.'
+					),
+					'help'  => Ai1ec_I18n::__(
+						'Cache dynamically generated JS files. Improves performance.'
+					),
+				),
+				'default'  => true,
+			),
 			'render_css_as_link' => array(
 				'type' => 'bool',
 				'renderer' => array(

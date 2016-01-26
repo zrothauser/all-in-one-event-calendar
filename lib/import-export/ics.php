@@ -306,8 +306,17 @@ class Ai1ec_Ics_Import_Export_Engine
 			}
 
 			if ( $rdate = $e->createRdate() ) {
-				$rdate = explode( ':', $rdate );
-				$rdate = trim( end( $rdate ) );
+				$arr     = explode( 'RDATE', $rdate );
+				$matches = null;
+				foreach ( $arr as $value ) {
+					$arr2 = explode( ':', $value );
+					if ( 2 === count( $arr2 ) ) {
+						$matches[] = $arr2[1];
+					}
+				}
+				$rdate = implode( ',', $matches );
+				unset( $matches ); 
+				unset( $arr ); 
 			}
 
 			// ===================

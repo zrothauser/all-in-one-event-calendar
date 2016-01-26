@@ -506,5 +506,4 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 			AI1EC_ADMIN_BASE_URL . '&ai1ec_force_updates=true'
 		);
 	}
-
 }

@@ -314,9 +314,13 @@ class Ai1ec_Ics_Import_Export_Engine
 						$matches[] = $arr2[1];
 					}
 				}
-				$rdate = implode( ',', $matches );
-				unset( $matches ); 
-				unset( $arr ); 
+				if ( null !== $matches ) {
+					$rdate = implode( ',', $matches );	
+					unset( $matches ); 
+					unset( $arr ); 
+				} else {
+					$rdate = null;
+				}				
 			}
 
 			// ===================

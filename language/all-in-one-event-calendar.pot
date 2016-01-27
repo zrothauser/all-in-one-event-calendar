@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.3.7.1beta\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.3.8\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2016-01-21 18:57:09+00:00\n"
+"POT-Creation-Date: 2016-01-27 15:34:46+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,19 +17,19 @@ msgstr ""
 msgid "Add-ons"
 msgstr ""
 
-#: app/controller/front.php:343
+#: app/controller/front.php:353
 msgid ""
 "Your active calendar theme could not be properly initialized. The default "
 "theme has been activated instead. Please visit %s and try reactivating your "
 "theme manually."
 msgstr ""
 
-#: app/controller/front.php:347 app/view/admin/theme-switching.php:54
+#: app/controller/front.php:357 app/view/admin/theme-switching.php:54
 #: app/view/admin/theme-switching.php:55
 msgid "Calendar Themes"
 msgstr ""
 
-#: app/controller/front.php:990
+#: app/controller/front.php:1039
 msgid ""
 "Your database is found to be corrupt. Likely previous update has failed. "
 "Please restore All-in-One Event Calendar tables from a backup and retry."
@@ -40,214 +40,214 @@ msgstr ""
 msgid "You must choose the Calendar page before using the Super Widget"
 msgstr ""
 
-#: app/controller/javascript.php:402
+#: app/controller/javascript.php:441
 msgid "This feed is already being imported."
 msgstr ""
 
-#: app/controller/javascript.php:405
+#: app/controller/javascript.php:444
 msgid "Please enter a valid iCalendar URL."
 msgstr ""
 
-#: app/controller/javascript.php:408
+#: app/controller/javascript.php:447
 msgid "Please enter a valid email address."
 msgstr ""
 
-#: app/controller/javascript.php:410
+#: app/controller/javascript.php:449
 msgid "Choose Image"
 msgstr ""
 
-#: app/controller/javascript.php:413
+#: app/controller/javascript.php:452
 msgid "The value you have entered is not a valid CSS length."
 msgstr ""
 
-#: app/controller/javascript.php:416
+#: app/controller/javascript.php:455
 msgid ""
 "Are you sure you want to reset your theme options to their default values?"
 msgstr ""
 
-#: app/controller/javascript.php:419
+#: app/controller/javascript.php:458
 msgid ""
 "Please enter a valid latitude. A valid latitude is comprised between +90 and "
 "-90."
 msgstr ""
 
-#: app/controller/javascript.php:422
+#: app/controller/javascript.php:461
 msgid ""
 "Please enter a valid longitude. A valid longitude is comprised between +180 "
 "and -180."
 msgstr ""
 
-#: app/controller/javascript.php:425
+#: app/controller/javascript.php:464
 msgid ""
 "When the \"Input coordinates\" checkbox is checked, \"Latitude\" is a "
 "required field."
 msgstr ""
 
-#: app/controller/javascript.php:428
+#: app/controller/javascript.php:467
 msgid ""
 "When the \"Input coordinates\" checkbox is checked, \"Longitude\" is a "
 "required field."
 msgstr ""
 
-#: app/controller/javascript.php:431
+#: app/controller/javascript.php:470
 msgid ""
 "The URL you have entered in the <b>Organizer Contact Info</b> &gt; "
 "<b>Website URL</b> seems to be invalid."
 msgstr ""
 
-#: app/controller/javascript.php:434
+#: app/controller/javascript.php:473
 msgid ""
 "The URL you have entered in the <b>Event Cost and Tickets</b> &gt; <b>Buy "
 "Tickets URL</b> seems to be invalid."
 msgstr ""
 
-#: app/controller/javascript.php:437
+#: app/controller/javascript.php:476
 msgid ""
 "Please remember that URLs must start with either \"http://\" or \"https://\"."
 msgstr ""
 
-#: app/controller/javascript.php:440
+#: app/controller/javascript.php:479
 msgid "Loading&hellip;"
 msgstr ""
 
-#: app/controller/javascript.php:443
+#: app/controller/javascript.php:482
 msgid ""
 "<p class=\"ai1ec_ticketing_required_alert\"><b>Some fields required for "
 "Ticketing are missing.</b><br><i>Missing or incorrect fields are outlined "
 "red.</i></p>"
 msgstr ""
 
-#: app/controller/javascript.php:473 app/view/admin/widget-creator.php:139
+#: app/controller/javascript.php:512 app/view/admin/widget-creator.php:139
 msgid "Preview:"
 msgstr ""
 
-#: app/controller/javascript.php:474
+#: app/controller/javascript.php:513
 msgid ""
 "Loading preview&nbsp;<i class=\"ai1ec-fa ai1ec-fa-spin ai1ec-fa-spinner\"></"
 "i>"
 msgstr ""
 
-#: app/controller/javascript.php:479 app/view/admin/all-events.php:89
+#: app/controller/javascript.php:518 app/view/admin/all-events.php:89
 msgid "Ticketing Details"
 msgstr ""
 
-#: app/controller/javascript.php:480
+#: app/controller/javascript.php:519
 msgid "Hide Ticketing Details"
 msgstr ""
 
-#: app/controller/javascript.php:481
+#: app/controller/javascript.php:520
 msgid "Loading tickets details..."
 msgstr ""
 
-#: app/controller/javascript.php:482
+#: app/controller/javascript.php:521
 msgid "Type and price"
 msgstr ""
 
-#: app/controller/javascript.php:483
+#: app/controller/javascript.php:522
 msgid "Info"
 msgstr ""
 
-#: app/controller/javascript.php:484
+#: app/controller/javascript.php:523
 msgid "Report"
 msgstr ""
 
-#: app/controller/javascript.php:485
+#: app/controller/javascript.php:524
 msgid "Sale dates"
 msgstr ""
 
-#: app/controller/javascript.php:486
+#: app/controller/javascript.php:525
 msgid "Limits"
 msgstr ""
 
-#: app/controller/javascript.php:487
+#: app/controller/javascript.php:526
 msgid "Actions"
 msgstr ""
 
-#: app/controller/javascript.php:488
+#: app/controller/javascript.php:527
 msgid "Sold:"
 msgstr ""
 
-#: app/controller/javascript.php:489
+#: app/controller/javascript.php:528
 msgid "Left:"
 msgstr ""
 
-#: app/controller/javascript.php:490
+#: app/controller/javascript.php:529
 msgid "Start:"
 msgstr ""
 
-#: app/controller/javascript.php:491
+#: app/controller/javascript.php:530
 msgid "End:"
 msgstr ""
 
-#: app/controller/javascript.php:492 public/admin/box_event_cost.php:134
+#: app/controller/javascript.php:531 public/admin/box_event_cost.php:134
 msgid "Min:"
 msgstr ""
 
-#: app/controller/javascript.php:493 public/admin/box_event_cost.php:144
+#: app/controller/javascript.php:532 public/admin/box_event_cost.php:144
 msgid "Max:"
 msgstr ""
 
-#: app/controller/javascript.php:494
+#: app/controller/javascript.php:533
 msgid "Attendees"
 msgstr ""
 
-#: app/controller/javascript.php:495
+#: app/controller/javascript.php:534
 msgid "Hide Attendees"
 msgstr ""
 
-#: app/controller/javascript.php:496
+#: app/controller/javascript.php:535
 msgid "Attendees List"
 msgstr ""
 
-#: app/controller/javascript.php:497
+#: app/controller/javascript.php:536
 msgid "Guest Name"
 msgstr ""
 
-#: app/controller/javascript.php:498 app/view/admin/tickets.php:100
+#: app/controller/javascript.php:537 app/view/admin/tickets.php:100
 msgid "Status"
 msgstr ""
 
-#: app/controller/javascript.php:499 app/view/admin/tickets.php:99
+#: app/controller/javascript.php:538 app/view/admin/tickets.php:99
 #: app/view/event/ticket.php:71
 msgid "Email"
 msgstr ""
 
-#: app/controller/javascript.php:500
+#: app/controller/javascript.php:539
 msgid "No attendees for this ticket type."
 msgstr ""
 
-#: app/controller/javascript.php:501 app/view/calendar/view/agenda.php:167
+#: app/controller/javascript.php:540 app/view/calendar/view/agenda.php:167
 #: app/view/calendar/widget.php:373 public/admin/feed_row.php:112
 msgid "Edit"
 msgstr ""
 
-#: app/controller/javascript.php:502
+#: app/controller/javascript.php:541
 msgid "Code"
 msgstr ""
 
-#: app/controller/javascript.php:503 public/admin/box_event_cost.php:165
+#: app/controller/javascript.php:542 public/admin/box_event_cost.php:165
 msgid "Unlimited"
 msgstr ""
 
-#: app/controller/javascript.php:506
+#: app/controller/javascript.php:545
 msgid "Your message has been sent. Thank you for your feedback."
 msgstr ""
 
-#: app/controller/javascript.php:507
+#: app/controller/javascript.php:546
 msgid "Your message has not been sent. Please try again or contact us."
 msgstr ""
 
-#: app/controller/javascript.php:509
+#: app/controller/javascript.php:548
 msgid ""
 "Something went wrong while fetching events.<br>The request status is: %STATUS"
 "% <br>The error thrown was: %ERROR%"
 msgstr ""
 
-#: app/controller/javascript.php:516
+#: app/controller/javascript.php:555
 msgid "The end date can't be earlier than the start date."
 msgstr ""
 
-#: app/controller/javascript.php:517
+#: app/controller/javascript.php:556
 msgid "For week and day view, you must select an interval of at least 6 hours."
 msgstr ""
 
@@ -631,22 +631,30 @@ msgid ""
 msgstr ""
 
 #: app/model/settings.php:929
+msgid "Use advanced JS cache."
+msgstr ""
+
+#: app/model/settings.php:932
+msgid "Cache dynamically generated JS files. Improves performance."
+msgstr ""
+
+#: app/model/settings.php:944
 msgid ""
 "<strong>Link CSS</strong> in <code>&lt;head&gt;</code> section when file "
 "cache is unavailable."
 msgstr ""
 
-#: app/model/settings.php:932
+#: app/model/settings.php:947
 msgid ""
 "Use this option if file cache is unavailable and you would prefer to serve "
 "CSS as a link rather than have it output inline."
 msgstr ""
 
-#: app/model/settings.php:944
+#: app/model/settings.php:959
 msgid "Current <strong>robots.txt</strong> on this site"
 msgstr ""
 
-#: app/model/settings.php:948
+#: app/model/settings.php:963
 msgid ""
 "The Robot Exclusion Standard, also known as the Robots Exclusion Protocol "
 "or\n"
@@ -660,21 +668,21 @@ msgid ""
 "your root WordPress directory."
 msgstr ""
 
-#: app/model/settings.php:965
+#: app/model/settings.php:980
 msgid ""
 "<strong>Publicize, promote, and share my events</strong> marked as public on "
 "the Timely network. (<a href=\"%s\" target=\"_blank\">Learn more &#187;</a>)"
 msgstr ""
 
-#: app/model/settings.php:988
+#: app/model/settings.php:1003
 msgid "Templates cache improves site performance"
 msgstr ""
 
-#: app/model/settings.php:1001
+#: app/model/settings.php:1016
 msgid "Display events in <strong>calendar time zone</strong>"
 msgstr ""
 
-#: app/model/settings.php:1004
+#: app/model/settings.php:1019
 msgid ""
 "If this box is checked events will appear in the calendar time zone with "
 "time zone information displayed on the event details page."
@@ -951,10 +959,10 @@ msgid "Sign Up for a <b>Timely Network</b> account. It's free."
 msgstr ""
 
 #: app/view/admin/settings.php:182 app/view/admin/tickets.php:93
-#: public/admin/box_ask_customer_review.php:112
-#: public/admin/box_ask_customer_review.php:126
-#: public/admin/box_ask_customer_review.php:140
-#: public/admin/box_ask_customer_review.php:158
+#: public/admin/box_ask_customer_review.php:113
+#: public/admin/box_ask_customer_review.php:127
+#: public/admin/box_ask_customer_review.php:141
+#: public/admin/box_ask_customer_review.php:159
 #: public/admin/box_event_cost.php:95 public/admin/box_event_cost.php:118
 msgid "This field is required."
 msgstr ""
@@ -1959,7 +1967,7 @@ msgid ""
 "already displays the calendar."
 msgstr ""
 
-#: lib/import-export/ics.php:831
+#: lib/import-export/ics.php:844
 msgid "Tickets: "
 msgstr ""
 
@@ -2321,65 +2329,75 @@ msgid "Yes!"
 msgstr ""
 
 #: public/admin/box_ask_customer_review.php:33
-msgid "How about a rating on the Wordpress?"
+msgid ""
+"Please rate our FREE calendar with 5 stars to help keeping it in Wordpress."
+"org."
 msgstr ""
 
-#: public/admin/box_ask_customer_review.php:42
-#: public/admin/box_ask_customer_review.php:75
+#: public/admin/box_ask_customer_review.php:34
+msgid "Thanks from the hard working fellas at Time.ly."
+msgstr ""
+
+#: public/admin/box_ask_customer_review.php:43
+#: public/admin/box_ask_customer_review.php:76
 msgid "No, thanks"
 msgstr ""
 
-#: public/admin/box_ask_customer_review.php:50
-#: public/admin/box_ask_customer_review.php:84
+#: public/admin/box_ask_customer_review.php:51
+#: public/admin/box_ask_customer_review.php:85
 msgid "Ok, sure!"
 msgstr ""
 
-#: public/admin/box_ask_customer_review.php:66
-msgid "Would you mind giving us some feedback?"
+#: public/admin/box_ask_customer_review.php:67
+msgid "Would you please give us some feedback on how can we improve?"
 msgstr ""
 
-#: public/admin/box_ask_customer_review.php:101
+#: public/admin/box_ask_customer_review.php:102
 msgid "Please provide some feedback"
 msgstr ""
 
-#: public/admin/box_ask_customer_review.php:108
+#: public/admin/box_ask_customer_review.php:109
 msgid "Message:"
 msgstr ""
 
-#: public/admin/box_ask_customer_review.php:121
+#: public/admin/box_ask_customer_review.php:122
 msgid "Name:"
 msgstr ""
 
-#: public/admin/box_ask_customer_review.php:136
+#: public/admin/box_ask_customer_review.php:137
 #: public/admin/box_event_contact.php:43
 msgid "E-mail:"
 msgstr ""
 
-#: public/admin/box_ask_customer_review.php:143
+#: public/admin/box_ask_customer_review.php:144
 msgid "E-mail is invalid."
 msgstr ""
 
-#: public/admin/box_ask_customer_review.php:154
+#: public/admin/box_ask_customer_review.php:155
 msgid "Site URL:"
 msgstr ""
 
-#: public/admin/box_ask_customer_review.php:161
+#: public/admin/box_ask_customer_review.php:162
 msgid "Site URL is invalid."
 msgstr ""
 
-#: public/admin/box_ask_customer_review.php:173
+#: public/admin/box_ask_customer_review.php:174
 msgid "Thank you for being our customer,"
 msgstr ""
 
-#: public/admin/box_ask_customer_review.php:174
+#: public/admin/box_ask_customer_review.php:175
 msgid "Aristotel Dascal, VP of Product, Time.ly"
 msgstr ""
 
-#: public/admin/box_ask_customer_review.php:180
+#: public/admin/box_ask_customer_review.php:176
+msgid "VPproduct@time.ly"
+msgstr ""
+
+#: public/admin/box_ask_customer_review.php:182
 msgid "Sending..."
 msgstr ""
 
-#: public/admin/box_ask_customer_review.php:181
+#: public/admin/box_ask_customer_review.php:183
 msgid "Send Message"
 msgstr ""
 
@@ -3196,9 +3214,9 @@ msgstr ""
 msgid "All-in-One Event Calendar by Time.ly"
 msgstr ""
 
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.3.7.1beta)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.3.8)  #-#-#-#-#
 #. Plugin URI of the plugin/theme
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.3.7.1beta)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.3.8)  #-#-#-#-#
 #. Author URI of the plugin/theme
 msgid "http://time.ly/"
 msgstr ""

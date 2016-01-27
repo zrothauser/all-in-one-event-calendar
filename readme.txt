@@ -143,12 +143,12 @@ https://vimeo.com/135004810
 == Changelog ==
 
 = Version 2.3.8 =
-* Improved Calendar views loading speed and caching.
-* Improved loading speed of SuperWidget and other external widgets.
-* Improved Enabled Frontend Rendering by default.
-* Fixed: Plugin does not clean up DB after being uninstalled.
-* Fixed: Translations are not working anymore for all words.
-* Fixed: Feed import feature does not import for Repeat custom dates.
+* Improved Calendar views loading speed and caching
+* Improved loading speed of SuperWidget and other external widgets
+* Improved Enabled Frontend Rendering by default
+* Fixed: Plugin does not clean up DB after being uninstalled
+* Fixed: Translations are not working anymore for all words
+* Fixed: Feed import feature does not import for Repeat custom dates
 
 = Version 2.3.7 =
 * Fixes DB update issue on some sites. Reverted changes made on version 2.3.5 related to the ICS Feed URL column type.

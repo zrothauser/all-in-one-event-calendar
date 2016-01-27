@@ -12,9 +12,9 @@ deployment:
   staging:
     branch: master
     commands:
-      - ssh codedeploy@dev.time.ly "cd /var/www && ./update-plugins-and-copy-to-wp-template.sh master && ./copy-wordpress.sh staging.time.ly"
+      - ssh codedeploy@dev.time.ly "cd /var/www && sudo ./update-plugins-and-copy-to-wp-template.sh master && sudo ./copy-wordpress.sh staging.time.ly"
   dev:
     branch: develop
     commands:
-      - ssh codedeploy@dev.time.ly "cd /var/www && ./update-plugins-and-copy-to-wp-template.sh develop && ./copy-wordpress.sh dev.time.ly"
+      - ssh codedeploy@dev.time.ly "cd /var/www && sudo ./update-plugins-and-copy-to-wp-template.sh develop && sudo ./copy-wordpress.sh dev.time.ly"
 

@@ -45,12 +45,38 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 		// Render the opening div
 		$this->render_opening_div_of_tab();
 	
-		echo "Placeholder for suggested feeds.";
+		$api           = $this->_registry->get( 'model.api' );
+		$feeds         = $api->get_suggested_events();
+		$args          = array(
+			'suggested_feeds' => $feeds
+		);
+		$loader        = $this->_registry->get( 'theme.loader' );
+		$display_feeds = $loader->get_file(
+			'plugins/suggested/display_feeds.php',
+			$args,
+			true
+		);
+		$display_feeds->render();
 
 		// Render the body of the tab
 		$this->render_closing_div_of_tab();
 	}
 
+	/**
+	 * Import suggested event
+	 */
+	public function import_event( $event_id ) {
+		echo 1;
+		exit( 0 );
+	}
+
+	/**
+	 * Remove suggested event
+	 */
+	public function remove_event( $event_id ) {
+		echo 1;
+		exit( 0 );
+	}
 
 	/**
 	 * (non-PHPdoc)

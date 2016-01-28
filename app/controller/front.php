@@ -603,6 +603,16 @@ class Ai1ec_Front_Controller {
 		}
 
 		if ( is_admin() ) {
+			// Import suggested event
+			$dispatcher->register_action(
+				'wp_ajax_ai1ec_import_suggested_event',
+				array( 'calendar-feed.suggested', 'import_event' )
+			);
+			// Remove suggested event
+			$dispatcher->register_action(
+				'wp_ajax_ai1ec_remove_suggested_event',
+				array( 'calendar-feed.suggested', 'remove_event' )
+			);
 			// get the repeat box
 			$dispatcher->register_action(
 				'wp_ajax_ai1ec_get_repeat_box',

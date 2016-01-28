@@ -520,7 +520,16 @@ class Ai1ec_Api extends Ai1ec_App {
 			return json_encode( array( 'data' => array(), 'error' => $error_message ) );
 		}
 	}
-	
+
+	/**
+	 * That's currently a mock for getting a suggested events list.
+	 * @return object Response body in JSON.
+	 */
+	public function get_suggested_events() {
+		$feeds = '[]';
+		return json_decode( $feeds );
+	}
+
 	public function _order_comparator( $order1, $order2 ) {
 		return strcmp( $order1->created_at, $order2->created_at ) * -1;
 	}

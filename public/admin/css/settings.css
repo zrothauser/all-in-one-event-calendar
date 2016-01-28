@@ -259,6 +259,61 @@
 .ai1ec-ics-signup-box {
 	margin-bottom: 30px;
 }
+#suggested .ai1ec-suggested-events-container {
+	padding: 7px !important;
+	background: #eee;
+}
+#suggested table.ai1ec-suggested-events {
+	width: 100%;
+	background: #fff;
+	table-layout: fixed;
+}
+#suggested table.ai1ec-suggested-events tr {
+	border: 1px solid #ccc;
+	margin: 10px;
+}
+#suggested table.ai1ec-suggested-events td {
+	padding: 5px;
+	vertical-align: top;
+	border: none;
+}
+#suggested td.ai1ec-suggested-event-import {
+	width: 136px;
+}
+#suggested td.ai1ec-suggested-event-import a {
+ 	width: 100%;
+}
+#suggested td.ai1ec-suggested-image {
+	width: 100px;
+	height: 100px;
+	background-position: center center;
+	background-size: cover;
+}
+#suggested td.ai1ec-suggested-content {
+	padding: 5px 10px !important;
+	overflow: hidden;
+}
+#suggested div.ai1ec-suggested-description {
+	font-size: 12px;
+	color: #666;
+	max-height: 45px;
+	margin-top: 7px;
+}
+#suggested .ai1ec-suggested-date {
+	font-size: 11px;
+	font-weight: bold;
+	color: #666;
+}
+#suggested a.ai1ec-suggested-title {
+	font-weight: bold;
+}
+#suggested a.ai1ec-suggested-whole-feed {
+	font-size: 11px;
+	border: none !important;
+	white-space: nowrap;
+	margin-top: 4px;
+	display: inline-block;
+}
 
 /* Calendar theme options */
 

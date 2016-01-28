@@ -6,6 +6,7 @@ define(
 		'libs/select2_multiselect_helper',
 		'libs/tags_select',
 		'libs/utils',
+		'ai1ec_config',
 		'external_libs/jquery_cookie',
 		'external_libs/bootstrap/tab',
 		'external_libs/bootstrap/alert',
@@ -19,7 +20,8 @@ define(
 		ics_event_handlers,
 		select2_multiselect_helper,
 		tags_select,
-		utils
+		utils,
+		ai1ec_config
 	) {
 
 	"use strict"; // jshint ;_;
@@ -88,6 +90,59 @@ define(
 			.on( 'blur', '#ai1ec_feed_url', ics_event_handlers.feed_url_change );
 
 	};
+	
+	var init_suggested_events = function() {
+		$( document ).on( 'click', '.ai1ec-suggested-import-event', function() {
+			var
+				$this      = $( this ),
+				$container = $this.closest( 'td.ai1ec-suggested-event-import' ),
+				event_id   = $this.closest( 'tr' ).attr( 'data-event-id' );
+				
+			$( 'a.ai1ec-suggested-processing', $container ).removeClass( 'ai1ec-hidden' );
+			$this.addClass( 'ai1ec-hidden' );
+			
+			$.ajax( {
+				url      : ai1ec_config.ajax_url,
+				type     : 'POST',
+				data     : {
+					action         : 'ai1ec_import_suggested_event',
+					ai1ec_event_id : event_id
+				},
+				success  : function( response ) {
+					$( 'a.ai1ec-suggested-processing', $container ).addClass( 'ai1ec-hidden' );
+					$( 'a.ai1ec-suggested-remove-event', $container ).removeClass( 'ai1ec-hidden' );
+				}
+			} );
+
+			return false;
+		} );
+		
+		$( document ).on( 'click', '.ai1ec-suggested-remove-event', function() {
+			var
+				$this      = $( this ),
+				$container = $this.closest( 'td.ai1ec-suggested-event-import' ),
+				event_id   = $this.closest( 'tr' ).attr( 'data-event-id' );
+				
+			$( 'a.ai1ec-suggested-processing', $container ).removeClass( 'ai1ec-hidden' );
+			$this.addClass( 'ai1ec-hidden' );
+			
+			$.ajax( {
+				url      : ai1ec_config.ajax_url,
+				type     : 'POST',
+				data     : {
+					action         : 'ai1ec_remove_suggested_event',
+					ai1ec_event_id : event_id
+				},
+				success  : function( response ) {
+					$( 'a.ai1ec-suggested-processing', $container ).addClass( 'ai1ec-hidden' );
+					$( 'a.ai1ec-suggested-import-event', $container ).removeClass( 'ai1ec-hidden' );
+				}
+			} );
+
+			return false;
+		} );
+		
+	};
 
 	var start = function() {
 		domReady( function(){
@@ -95,6 +150,8 @@ define(
 			utils.activate_saved_tab_on_page_load( $.cookie( 'feeds_active_tab' ) );
 			// Attach the event handlers
 			attach_event_handlers();
+			// Init suggested events handlers;
+			init_suggested_events();
 		} );
 	};
 

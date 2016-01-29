@@ -525,9 +525,31 @@ class Ai1ec_Api extends Ai1ec_App {
 	 * That's currently a mock for getting a suggested events list.
 	 * @return object Response body in JSON.
 	 */
-	public function get_suggested_events() {
-		$feeds = '[]';
-		return json_decode( $feeds );
+	public function get_suggested_events( $page = 0, $max = 20 ) {
+		$calendar_id = $this->_get_ticket_calendar();
+		if ( 0 >= $calendar_id ) {
+			return null;
+		}
+		$request  = array(
+			'headers' => $this->_get_headers(),
+			'timeout' => self::DEFAULT_TIMEOUT
+			);
+		$url           = AI1EC_API_URL . "calendars/$calendar_id/discover/events?page=$page&max=$max";
+		$response      = wp_remote_get( $url, $request );
+		$response_code = wp_remote_retrieve_response_code( $response );
+		if ( 200 === $response_code ) {			
+			$result = json_decode( $response['body'] );
+			//if needed we can get more information to paginate here
+			//{"total":37,"per_page":10000,"current_page":1,"last_page":1,"next_page_url":null,"prev_page_url":null,"from":1,"to":37,"data":[{"id": ...},{}]}
+			return $result->data;
+		} else {
+			$error_message = $this->_transform_error_message( 
+				  __( 'We were unable to get the Suggested Events from Time.ly Ticketing', AI1EC_PLUGIN_NAME )
+				, $response, $url, true );
+			$notification = $this->_registry->get( 'notification.admin' );
+			$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
+			return array();
+		}
 	}
 
 	public function _order_comparator( $order1, $order2 ) {

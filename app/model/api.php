@@ -539,12 +539,10 @@ class Ai1ec_Api extends Ai1ec_App {
 		$response_code = wp_remote_retrieve_response_code( $response );
 		if ( 200 === $response_code ) {			
 			$result = json_decode( $response['body'] );
-			//if needed we can get more information to paginate here
-			//{"total":37,"per_page":10000,"current_page":1,"last_page":1,"next_page_url":null,"prev_page_url":null,"from":1,"to":37,"data":[{"id": ...},{}]}
 			return $result->data;
 		} else {
 			$error_message = $this->_transform_error_message( 
-				  __( 'We were unable to get the Suggested Events from Time.ly Ticketing', AI1EC_PLUGIN_NAME )
+				  __( 'We were unable to get the Suggested Events from Time.ly Network', AI1EC_PLUGIN_NAME )
 				, $response, $url, true );
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );

@@ -84,7 +84,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 				);
 		$is_new       = ! $api_event_id;
 		if ( 0 === $this->_count_valid_tickets( $_POST['ai1ec_tickets'] ) ) {
-			$message      = __( 'The event has the option Tickets selected but any ticket was added.' , AI1EC_PLUGIN_NAME );
+			$message      = __( 'The event has a Ticketing option selected but no ticket was added.', AI1EC_PLUGIN_NAME );
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
 			return null;
@@ -97,9 +97,9 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			$_POST['ai1ec_tickets'],
 			$fields
 		);
-		$url       = AI1EC_API_URL . 'events';
+		$url = AI1EC_API_URL . 'events';
 		if ( $api_event_id ) {
-			$url    = $url . '/' . $api_event_id;
+			$url = $url . '/' . $api_event_id;
 		}
 
 		//get the thumbnail id saved previously
@@ -113,7 +113,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			$post_thumbnail_id = 0;
 		}
 		$update_image = ( $event_thumbnail_id !== $post_thumbnail_id );
-		$payload = '';
+		$payload      = '';
 		if ( true === $update_image && 0 < $post_thumbnail_id ) {
 			$boundary                  = wp_generate_password( 24 );
 			$headers['content-type']   = 'multipart/form-data; boundary=' . $boundary;
@@ -177,9 +177,9 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		} else {
 			$error_message = '';
 			if ( $is_new ) {
-				$error_message = __( 'We were unable to create the Event on Time.ly Ticketing' , AI1EC_PLUGIN_NAME );				
+				$error_message = __( 'We were unable to create the Event on Time.ly Ticketing', AI1EC_PLUGIN_NAME );				
 			} else {
-				$error_message = __( 'We were unable to update the Event on Time.ly Ticketing' , AI1EC_PLUGIN_NAME );
+				$error_message = __( 'We were unable to update the Event on Time.ly Ticketing', AI1EC_PLUGIN_NAME );
 			}
 			$error_message = $this->_transform_error_message( $error_message, $response, $url, false );
 			$notification  = $this->_registry->get( 'notification.admin' );
@@ -221,7 +221,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		$notification  = $this->_registry->get('notification.admin');
 		if ( 200 !== $response_code ) {
 			$error_message = $this->_transform_error_message( 
-				__( 'Payment preferences were not saved.' , AI1EC_PLUGIN_NAME ), 
+				__( 'Payment preferences were not saved.', AI1EC_PLUGIN_NAME ), 
 				$response, 
 				AI1EC_API_URL 
 			);
@@ -229,7 +229,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			return false;
 		}else{
 			$notification->store( 
-				__( 'Payment preferences were saved.' , AI1EC_PLUGIN_NAME ), 
+				__( 'Payment preferences were saved.', AI1EC_PLUGIN_NAME ), 
 				'updated', 
 				0, 
 				array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 
@@ -475,7 +475,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			}
 		} else {
 			$error_message = $this->_transform_error_message( 
-				__( 'We were unable to get the Tickets Details from Time.ly Ticketing' , AI1EC_PLUGIN_NAME ), 
+				__( 'We were unable to get the Tickets Details from Time.ly Ticketing', AI1EC_PLUGIN_NAME ), 
 				$response, $url, 
 				true 
 			);
@@ -534,7 +534,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			}
 		} else {
 			$error_message = $this->_transform_error_message( 
-				__( 'We were unable to get the Sales information from Time.ly Ticketing' , AI1EC_PLUGIN_NAME ), 
+				__( 'We were unable to get the Sales information from Time.ly Ticketing', AI1EC_PLUGIN_NAME ), 
 				$response, 
 				$url, 
 				true 
@@ -611,7 +611,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 				$post_id ? $post_id : null
 			);
 		} catch ( Ai1ec_Event_Not_Found_Exception $excpt ) {
-			$message      = __( 'Event not found inside the database.' , AI1EC_PLUGIN_NAME );
+			$message      = __( 'Event not found inside the database.', AI1EC_PLUGIN_NAME );
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
 			return $message;

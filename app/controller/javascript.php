@@ -330,7 +330,7 @@ class Ai1ec_Javascript_Controller {
 		if ( $this->are_we_on_calendar_feeds_page() === TRUE ) {
 			// Load script for the importer plugins
 			$script_to_load[] = self::CALENDAR_FEEDS_PAGE;
-		}
+		} 
 		// Start the scripts for the event category page
 		if ( $this->_are_we_editing_event_categories() === TRUE ) {
 			// Load script required when editing categories

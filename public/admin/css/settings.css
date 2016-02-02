@@ -277,17 +277,29 @@
 	vertical-align: top;
 	border: none;
 }
-#suggested td.ai1ec-suggested-event-import {
+#suggested td.ai1ec-suggested-event-actions {
 	width: 136px;
 }
-#suggested td.ai1ec-suggested-event-import a {
+#suggested .ai1ec-suggested-event-import a {
  	width: 100%;
 }
+#suggested .ai1ec-suggested-map-container .ai1ec-suggested-event-import a {
+	width: 80px;
+	font-size: 11px;
+	padding: 3px 6px;
+	border-radius: 2px;
+	line-height: 1.2;
+	margin-top: 7px;
+}
+#suggested .ai1ec-suggested-map-container .ai1ec-suggested-event-import .ai1ec-suggested-whole-feed {
+	display: none;
+} 
 #suggested td.ai1ec-suggested-image {
 	width: 100px;
 	height: 100px;
 	background-position: center center;
 	background-size: cover;
+	background-image: url(./public/themes-ai1ec/vortex/img/default-event-avatar.png) norepeat;
 }
 #suggested td.ai1ec-suggested-content {
 	padding: 5px 10px !important;
@@ -314,7 +326,27 @@
 	margin-top: 4px;
 	display: inline-block;
 }
-
+#suggested #ai1ec_events_map_canvas {
+	height: 500px;
+	border: 1px solid #999;
+}
+#suggested .ai1ec-suggested-view-selector {
+	text-align: right;
+	color: #ddd;
+	font-size: 16px;
+	margin-bottom: 15px;
+}
+#suggested .ai1ec-suggested-view-selector a {
+	font-size: 14px;
+	color: #6AAB2D;
+	
+}
+#suggested .ai1ec-suggested-view-selector a.ai1ec-active {
+	font-size: 14px;
+	color: #666;
+	font-weight: bold;
+	
+}
 /* Calendar theme options */
 
 #ai1ec-less-variables-tabs .inside {

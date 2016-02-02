@@ -7,6 +7,7 @@ define(
 		'libs/tags_select',
 		'libs/utils',
 		'ai1ec_config',
+		'libs/gmaps',
 		'external_libs/jquery_cookie',
 		'external_libs/bootstrap/tab',
 		'external_libs/bootstrap/alert',
@@ -21,7 +22,8 @@ define(
 		select2_multiselect_helper,
 		tags_select,
 		utils,
-		ai1ec_config
+		ai1ec_config,
+		gMapsLoader
 	) {
 
 	"use strict"; // jshint ;_;
@@ -95,8 +97,8 @@ define(
 		$( document ).on( 'click', '.ai1ec-suggested-import-event', function() {
 			var
 				$this      = $( this ),
-				$container = $this.closest( 'td.ai1ec-suggested-event-import' ),
-				event_id   = $this.closest( 'tr' ).attr( 'data-event-id' );
+				$container = $this.closest( '.ai1ec-suggested-event-import' ),
+				event_id   = $this.closest( '.ai1ec-infowindow, tr' ).attr( 'data-event-id' );
 				
 			$( 'a.ai1ec-suggested-processing', $container ).removeClass( 'ai1ec-hidden' );
 			$this.addClass( 'ai1ec-hidden' );
@@ -120,9 +122,9 @@ define(
 		$( document ).on( 'click', '.ai1ec-suggested-remove-event', function() {
 			var
 				$this      = $( this ),
-				$container = $this.closest( 'td.ai1ec-suggested-event-import' ),
-				event_id   = $this.closest( 'tr' ).attr( 'data-event-id' );
-				
+				$container = $this.closest( '.ai1ec-suggested-event-import' ),
+				event_id   = $this.closest( '.ai1ec-infowindow, tr' ).attr( 'data-event-id' );
+
 			$( 'a.ai1ec-suggested-processing', $container ).removeClass( 'ai1ec-hidden' );
 			$this.addClass( 'ai1ec-hidden' );
 			
@@ -142,6 +144,86 @@ define(
 			return false;
 		} );
 		
+		// Init Events map
+		var init_gmaps = function() {
+			var
+				$events     = $( 'tr.ai1ec-suggested-event' ),
+				markers     = [],
+				bounds      = new google.maps.LatLngBounds();
+				map_options = {
+					mapTypeId      : google.maps.MapTypeId.ROADMAP,
+					mapTypeControl : true,
+					zoomControl    : true,
+					scaleControl   : true
+				},
+				buttons    = $( '.ai1ec-suggested-events-actions-template' ).html(),
+				events_map = new google.maps.Map(
+					$( '#ai1ec_events_map_canvas' ).get( 0 ), map_options
+				),
+				infowindow = new google.maps.InfoWindow({
+					maxWidth: 260
+				} ),
+				create_info = function( event ) {
+					var s = '<div class="ai1ec-infowindow" data-event-id="'
+						+ event.id +  '"><a href="#" class="ai1ec-infowindow-title"><b>'
+						+ event.title + '</b></a><br>'
+						+ event.dtstart.substr( 0, 10 )
+						+ ' @ ' + event.venue_name
+						+ '<br>' + buttons + '</div>';
+
+					infowindow.setContent( s );
+				};
+
+			$events.each( function() {
+				var
+					$this = $( this ),
+					event = $.parseJSON( $this.attr( 'data-event' ) );
+				
+				if ( ! event || ! event.latitude || ! event.longitude ) return;
+				
+				var marker = new google.maps.Marker( {
+					map      : events_map,
+					title    : event.title,
+					position : new google.maps.LatLng( event.latitude , event.longitude )
+				} );
+
+				marker.addListener( 'click', function() {
+					create_info( event );
+					infowindow.open( events_map, this );
+			 	} );
+				
+				bounds.extend( marker.getPosition() );
+				markers.push( marker );
+			} );
+
+			events_map.fitBounds( bounds );
+		};
+
+		
+
+		$( document ).on( 'click',  '.ai1ec-suggested-view-list', function() {
+			if ( $(this).hasClass( 'ai1ec-active' ) ) return false;
+			$( '.ai1ec-suggested-map-container' ).addClass( 'ai1ec-hidden' );
+			$( '.ai1ec-suggested-events' ).removeClass( 'ai1ec-hidden' );
+			$( '.ai1ec-suggested-view-selector .ai1ec-active' ).removeClass( 'ai1ec-active' );
+			$( this ).addClass( 'ai1ec-active' );
+			return false;
+		} );
+		
+		$( document ).on( 'click',  '.ai1ec-suggested-view-map', function() {
+			if ( $(this).hasClass( 'ai1ec-active' ) ) return false;
+			$( '.ai1ec-suggested-map-container' ).removeClass( 'ai1ec-hidden' );
+			$( '.ai1ec-suggested-events' ).addClass( 'ai1ec-hidden' );
+			$( '.ai1ec-suggested-view-selector .ai1ec-active' ).removeClass( 'ai1ec-active' );
+			$( this ).addClass( 'ai1ec-active' );
+			if ( ! $( this ).attr( 'data-ai1ec-gmaps' ) ) {
+				gMapsLoader( init_gmaps );
+				$( this ).attr( 'data-ai1ec-gmaps', 1 )
+			}
+			
+			return false;
+		} );
+
 	};
 
 	var start = function() {

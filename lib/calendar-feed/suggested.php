@@ -47,10 +47,16 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 	
 		$api           = $this->_registry->get( 'model.api' );
 		$feeds         = $api->get_suggested_events();
-		$args          = array(
-			'suggested_feeds' => $feeds
-		);
 		$loader        = $this->_registry->get( 'theme.loader' );
+		$event_actions = $loader->get_file(
+			'plugins/suggested/event_actions.php',
+			array(),
+			true
+		);
+		$args          = array(
+			'suggested_feeds' => $feeds,
+			'event_actions'   => $event_actions
+		);
 		$display_feeds = $loader->get_file(
 			'plugins/suggested/display_feeds.php',
 			$args,

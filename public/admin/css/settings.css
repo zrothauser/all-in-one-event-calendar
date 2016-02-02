@@ -299,7 +299,6 @@
 	height: 100px;
 	background-position: center center;
 	background-size: cover;
-	background-image: url(./public/themes-ai1ec/vortex/img/default-event-avatar.png) norepeat;
 }
 #suggested td.ai1ec-suggested-content {
 	padding: 5px 10px !important;

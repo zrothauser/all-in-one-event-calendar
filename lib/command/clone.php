@@ -180,7 +180,7 @@ class Ai1ec_Command_Clone extends Ai1ec_Command {
 		$this->_ai1ec_duplicate_post_copy_attachments(     $new_post_id, $post );
 		$this->_ai1ec_duplicate_post_copy_post_meta_info(  $new_post_id, $post );
 
-		$api = $this->_registry->get( 'model.api' );		
+		$api = $this->_registry->get( 'model.api.api-ticketing' );		
 		$api->clear_event_metadata( $new_post_id );
 
 		if ( $this->_registry->get( 'acl.aco' )->is_our_post_type( $post ) ) {

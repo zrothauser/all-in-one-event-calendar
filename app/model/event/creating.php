@@ -226,7 +226,7 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 		if ( $update === false ) {
 			//this method just creates the API event, the update action
 			//is treated by another hook (pre_update_event inside api )
-			$api = $this->_registry->get( 'model.api' );
+			$api = $this->_registry->get( 'model.api.api-ticketing' );
 			if ( 'tickets' === $cost_type ) {			
 				$api->store_event( $event, $post );
 			}			
@@ -266,7 +266,7 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 		// remove WordPress `magical` slashes - we work around it ourselves
 		$_POST = stripslashes_deep( $_POST );
 
-    	$api    = $this->_registry->get( 'model.api' );
+    	$api    = $this->_registry->get( 'model.api.api-ticketing' );
     	$action = $this->current_action();
 		switch( $action ) {
 		case 'inline-save': //quick edit from edit page

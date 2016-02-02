@@ -1,31 +1,20 @@
 <?php
 
 /**
- * Class for Timely API communication.
+ * Class for Timely API communication for Ticketing.
  *
  * @author     Time.ly Network, Inc.
  * @since      2.4
  * @package    Ai1EC
  * @subpackage Ai1EC.Model
  */
-class Ai1ec_Api extends Ai1ec_App {
+class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 
-	const DEFAULT_TIMEOUT           = 30; //30 seconds (Wordpress default is 5)
 	const EVENT_ID_METADATA         = '_ai1ec_api_event_id';
 	const THUMBNAIL_ID_METADATA     = '_ai1ec_thumbnail_id';
 	const ICS_CHECKOUT_URL_METADATA = '_ai1ec_ics_checkout_url';
 	const ICS_API_URL_METADATA      = '_ai1ec_ics_api_url';
 	const MAX_TICKET_TO_BUY_DEFAULT = 25;
-
-	private $_get_ticket_types_error;
-	private $_get_tickets_error;
-	private $_sign_up_error;
-	private $_sign_in_error;
-	private $_update_event_error;
-	private $_missing_tickets_error;
-	private $_get_purchaes_error;
-
-	private $_settings;
 
 	/**
 	 * Post construction routine.
@@ -35,34 +24,7 @@ class Ai1ec_Api extends Ai1ec_App {
 	 * @return void Return from this method is ignored.
 	 */
 	protected function _initialize() {
-		$this->_settings                = $this->_registry->get( 'model.settings' );
-
-		$this->_get_ticket_types_error  = __( 'We were unable to get the Tickets Details from Time.ly Ticketing'                   , AI1EC_PLUGIN_NAME );
-		$this->_get_tickets_error       = __( 'We were unable to get the Tickets Attendees from Time.ly Ticketing'                 , AI1EC_PLUGIN_NAME );
-		$this->_sign_up_error           = __( 'We were unable to Sign you Up for Time.ly Ticketing'                                , AI1EC_PLUGIN_NAME );
-		$this->_sign_in_error           = __( 'We were unable to Sign you In for Time.ly Ticketing'                                , AI1EC_PLUGIN_NAME );
-		$this->_create_event_error      = __( 'We were unable to create the Event on Time.ly Ticketing'                            , AI1EC_PLUGIN_NAME );
-		$this->_update_event_error      = __( 'We were unable to update the Event on Time.ly Ticketing'                            , AI1EC_PLUGIN_NAME );
-		$this->_missing_tickets_error   = __( 'The event has the option Tickets selected but any ticket was added.'                , AI1EC_PLUGIN_NAME );
-		$this->_tickets_removed_error   = __( 'We were unable to remove the Tickets from Time.ly Ticketing'                        , AI1EC_PLUGIN_NAME );
-		$this->_tickets_imported_error  = __( 'This Event was replicated from another site. Any changes on Tickets were discarded.', AI1EC_PLUGIN_NAME );
-		$this->_save_pref_error         = __( 'Payment preferences were not saved.'                                                , AI1EC_PLUGIN_NAME );
-		$this->_save_pref_success       = __( 'Payment preferences were saved.'                                                    , AI1EC_PLUGIN_NAME );
-		$this->_event_not_found_error   = __( 'Event not found inside the database.'                                               , AI1EC_PLUGIN_NAME );
-		$this->_get_purchases_error     = __( 'We were unable to get the Sales information from Time.ly Ticketing'                 , AI1EC_PLUGIN_NAME );
-	}
-
-	/**
-	 * Get the header array with authorization token
-	 */
-	protected function _get_headers( $with_authorizaton = true ) {
-		$headers  = array(
-			'content-type' => 'application/json'
-		);
-		if ( true === $with_authorizaton ) {
-			$headers['Authorization'] = 'Basic ' . $this->_settings->get( 'ticketing_token' );
-		}
-		return $headers;
+		parent::_initialize();
 	}
 
 	private function _count_valid_tickets( $post_ticket_types ) {
@@ -95,12 +57,24 @@ class Ai1ec_Api extends Ai1ec_App {
 		if ( $this->is_ticket_event_imported( $event->get( 'post_id' ) ) )  {
 			//prevent changes on Ticket Events that were imported
 			$notification = $this->_registry->get( 'notification.admin' );
-			$notification->store( $this->_tickets_imported_error, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
+			$notification->store( 
+				__( 'This Event was replicated from another site. Any changes on Tickets were discarded.', AI1EC_PLUGIN_NAME ), 
+				'error', 
+				0, 
+				array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 
+				false 
+			);
 			return null;
 		} else if ( false === ai1ec_is_blank( $event->get( 'ical_feed_url' ) ) ) {
 			//prevent ticket creating inside Regular Events that were imported
 			$notification = $this->_registry->get( 'notification.admin' );
-			$notification->store( $this->_tickets_imported_error, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
+			$notification->store( 
+				__( 'This Event was replicated from another site. Any changes on Tickets were discarded.', AI1EC_PLUGIN_NAME ),  
+				'error', 
+				0, 
+				array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 
+				false 
+			);
 			return null;			
 		}
 		$api_event_id = get_post_meta(
@@ -110,7 +84,7 @@ class Ai1ec_Api extends Ai1ec_App {
 				);
 		$is_new       = ! $api_event_id;
 		if ( 0 === $this->_count_valid_tickets( $_POST['ai1ec_tickets'] ) ) {
-			$message      = $this->_missing_tickets_error;
+			$message      = __( 'The event has the option Tickets selected but any ticket was added.' , AI1EC_PLUGIN_NAME );
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
 			return null;
@@ -185,7 +159,7 @@ class Ai1ec_Api extends Ai1ec_App {
 			'method'  => 'POST',
 			'headers' => $headers,
 			'body'    => $payload,
-			'timeout' => self::DEFAULT_TIMEOUT
+			'timeout' => parent::DEFAULT_TIMEOUT
 		);
 		$response      = wp_remote_request( $url, $request );
 		$response_code = wp_remote_retrieve_response_code( $response );
@@ -203,10 +177,11 @@ class Ai1ec_Api extends Ai1ec_App {
 		} else {
 			$error_message = '';
 			if ( $is_new ) {
-				$error_message = $this->_transform_error_message( $this->_create_event_error, $response, $url, false );
+				$error_message = __( 'We were unable to create the Event on Time.ly Ticketing' , AI1EC_PLUGIN_NAME );				
 			} else {
-				$error_message = $this->_transform_error_message( $this->_update_event_error, $response, $url, false );
+				$error_message = __( 'We were unable to update the Event on Time.ly Ticketing' , AI1EC_PLUGIN_NAME );
 			}
+			$error_message = $this->_transform_error_message( $error_message, $response, $url, false );
 			$notification  = $this->_registry->get( 'notification.admin' );
 			$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
 			return false;
@@ -239,17 +214,27 @@ class Ai1ec_Api extends Ai1ec_App {
 			'method'  => 'PUT',
 			'headers' => $headers,
 			'body'    => $settings,
-			'timeout' => self::DEFAULT_TIMEOUT
+			'timeout' => parent::DEFAULT_TIMEOUT
 		);
 		$response      = wp_remote_request( $url, $request );
 		$response_code = wp_remote_retrieve_response_code( $response );
 		$notification  = $this->_registry->get('notification.admin');
 		if ( 200 !== $response_code ) {
-			$error_message = $this->_transform_error_message( $this->_save_pref_error, $response, AI1EC_API_URL );
+			$error_message = $this->_transform_error_message( 
+				__( 'Payment preferences were not saved.' , AI1EC_PLUGIN_NAME ), 
+				$response, 
+				AI1EC_API_URL 
+			);
 			$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
 			return false;
 		}else{
-			$notification->store( $this->_save_pref_success, 'updated', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
+			$notification->store( 
+				__( 'Payment preferences were saved.' , AI1EC_PLUGIN_NAME ), 
+				'updated', 
+				0, 
+				array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 
+				false 
+			);
 		}
 		$response_json = json_decode( $response['body'] );
 		return $response_json;
@@ -265,7 +250,7 @@ class Ai1ec_Api extends Ai1ec_App {
 			$request       = array(
 						'method'  => 'GET',
 						'headers' => $this->_get_headers(),
-						'timeout' => self::DEFAULT_TIMEOUT
+						'timeout' => parent::DEFAULT_TIMEOUT
 				        );
 			$response      = wp_remote_request( AI1EC_API_URL."calendars/$calendar_id/payment", $request );
 			$response_code = wp_remote_retrieve_response_code( $response );
@@ -465,7 +450,7 @@ class Ai1ec_Api extends Ai1ec_App {
 	public function get_ticket_types( $post_id ) {
 		$api_event_id = get_post_meta(
 			$post_id,
-			Ai1ec_Api::EVENT_ID_METADATA,
+			self::EVENT_ID_METADATA,
 			true
 		);
 		if ( ! $api_event_id ) {
@@ -473,7 +458,7 @@ class Ai1ec_Api extends Ai1ec_App {
 		}
 		$request = array(
 			'headers' => $this->_get_headers(),
-			'timeout' => self::DEFAULT_TIMEOUT
+			'timeout' => parent::DEFAULT_TIMEOUT
 			);
 		$url           = $this->get_api_url( $post_id ) . 'events/' . $api_event_id . '/ticket_types';
 		$response      = wp_remote_get( $url, $request );
@@ -489,7 +474,11 @@ class Ai1ec_Api extends Ai1ec_App {
 				return json_encode( array( 'data' => array() ) );
 			}
 		} else {
-			$error_message = $this->_transform_error_message( $this->_get_ticket_types_error, $response, $url, true );
+			$error_message = $this->_transform_error_message( 
+				__( 'We were unable to get the Tickets Details from Time.ly Ticketing' , AI1EC_PLUGIN_NAME ), 
+				$response, $url, 
+				true 
+			);
 			return json_encode( array( 'data' => array(), 'error' => $error_message ) );
 		}
 	}
@@ -498,17 +487,12 @@ class Ai1ec_Api extends Ai1ec_App {
 	 * @return object Response body in JSON.
 	 */
 	public function get_tickets( $post_id ) {
-		$api_event_id = get_post_meta(
-			$post_id,
-			Ai1ec_Api::EVENT_ID_METADATA,
-			true
-		);
 		if ( ! $api_event_id ) {
 			return json_encode( array( 'data' => array() ) );
 		}
 		$request  = array(
 			'headers' => $this->_get_headers(),
-			'timeout' => self::DEFAULT_TIMEOUT
+			'timeout' => parent::DEFAULT_TIMEOUT
 			);
 		$url           = $this->get_api_url( $post_id ) . 'events/' . $api_event_id . '/tickets';
 		$response      = wp_remote_get( $url, $request );
@@ -516,7 +500,11 @@ class Ai1ec_Api extends Ai1ec_App {
 		if ( 200 === $response_code ) {
 			return $response['body'];
 		} else {
-			$error_message = $this->_transform_error_message( $this->_get_tickets_error, $response, $url, true );
+			$error_message = $this->_transform_error_message( 
+				__( 'We were unable to get the Tickets Attendees from Time.ly Ticketing', AI1EC_PLUGIN_NAME ),
+				$response, $url, 
+				true 
+			);
 			return json_encode( array( 'data' => array(), 'error' => $error_message ) );
 		}
 	}
@@ -560,7 +548,7 @@ class Ai1ec_Api extends Ai1ec_App {
 	public function get_purchases() {
 		$request  = array(
 			'headers' => $this->_get_headers(),
-			'timeout' => self::DEFAULT_TIMEOUT
+			'timeout' => parent::DEFAULT_TIMEOUT
 			);
 		$url           = AI1EC_API_URL . 'calendars/' . $this->_get_ticket_calendar() . '/sales';
 		$response      = wp_remote_get( $url, $request );
@@ -568,13 +556,18 @@ class Ai1ec_Api extends Ai1ec_App {
 		if ( 200 === $response_code ) {
 			$result = json_decode( $response['body'] );
 			if ( isset( $result->orders ) ) {
-				usort( $result->orders, array( "Ai1ec_Api", "_order_comparator" ) );
+				usort( $result->orders, array( "Ai1ec_Api_Ticketing", "_order_comparator" ) );
 				return $result->orders;
 			} else {
 				return array();
 			}
 		} else {
-			$error_message = $this->_transform_error_message( $this->_get_purchases_error, $response, $url, true );
+			$error_message = $this->_transform_error_message( 
+				__( 'We were unable to get the Sales information from Time.ly Ticketing' , AI1EC_PLUGIN_NAME ), 
+				$response, 
+				$url, 
+				true 
+			);
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
 			return array();
@@ -585,7 +578,7 @@ class Ai1ec_Api extends Ai1ec_App {
 		//if the event is imported, the ICS added the api url on metadata information
 		$api_url = get_post_meta(
 					$post_id,
-					Ai1ec_Api::ICS_API_URL_METADATA,
+					self::ICS_API_URL_METADATA,
 					true
 				);
 		return (false === ai1ec_is_blank ( $api_url ));
@@ -595,7 +588,7 @@ class Ai1ec_Api extends Ai1ec_App {
 		//if the event is imported, the ICS added the api url on metadata informatino
 		$api_url = get_post_meta(
 					$post_id,
-					Ai1ec_Api::ICS_API_URL_METADATA,
+					self::ICS_API_URL_METADATA,
 					true
 				);
 		if ( ai1ec_is_blank ( $api_url ) ) {
@@ -603,150 +596,6 @@ class Ai1ec_Api extends Ai1ec_App {
 		} else {
 			return $api_url;
 		}
-	}
-
-	/**
-	 * Clean the ticketing settings on WP database only
-	 */
-	public function signout() {
-		$this->_save_settings( '', false, '', 0 );
-		return array( 'message' => '');
-	}
-
-	private function _save_settings( $message, $enabled, $token, $calendar_id ) {
-		$this->_settings->set( 'ticketing_message'    , $message );
-		$this->_settings->set( 'ticketing_enabled'    , $enabled );
-		$this->_settings->set( 'ticketing_token'      , $token );
-		$this->_settings->set( 'ticketing_calendar_id', $calendar_id );		
-	}
-
-	/**
-	 * @return object Response body in JSON.
-	 */
-	public function signin() {
-		$body['email']    = $_POST['ai1ec_email'];
-		$body['password'] = $_POST['ai1ec_password'];
-		$request          = array(
-			'headers' => $this->_get_headers( false ),
-			'body'    => json_encode( $body ),
-			'timeout' => self::DEFAULT_TIMEOUT
-		);
-		$url              = AI1EC_API_URL . 'auth/authenticate';
-		$response         = wp_remote_post( $url, $request );
-		$response_code    = wp_remote_retrieve_response_code( $response );
-		if ( 200 === $response_code ) {
-			$response_body = json_decode( $response['body'], true );
-			$this->_save_settings( $response_body['message'], true, $response_body['auth_token'], $this->_find_user_calendar() );
-		} else {
-			$error_message = $this->_transform_error_message( $this->_sign_in_error, $response, AI1EC_API_URL );
-			$this->_save_settings( $error_message, false, '', 0 );
-			$notification = $this->_registry->get( 'notification.admin' );
-			$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
-		}
-	}
-
-	/**
-	 * @return object Response body in JSON.
-	 */
-	public function signup() {
-		$body['name']                  = $_POST['ai1ec_name'];
-		$body['email']                 = $_POST['ai1ec_email'];
-		$body['password']              = $_POST['ai1ec_password'];
-		$body['password_confirmation'] = $_POST['ai1ec_password_confirmation'];
-		$body['phone']                 = $_POST['ai1ec_phone'];
-		$body['terms']                 = $_POST['ai1ec_terms'];
-		$request      = array(
-			'headers' => $this->_get_headers( false ),
-			'body'    => json_encode( $body ),
-			'timeout' => self::DEFAULT_TIMEOUT
-		);
-		$url           = AI1EC_API_URL . 'auth/register';
-		$response      = wp_remote_post( $url, $request );
-		$response_code = wp_remote_retrieve_response_code( $response );
-		if ( 200 === $response_code ) {
-			$response_body = json_decode( $response['body'], true );
-			$this->_save_settings( $response_body['Registration'], true, $response_body['auth_token'] , $this->_create_calendar() );
-		} else {
-			$error_message = $this->_transform_error_message( $this->_sign_up_error, $response, AI1EC_API_URL );
-			$this->_save_settings( $error_message, false, '', 0 );
-			$notification = $this->_registry->get( 'notification.admin' );
-			$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
-		}
-	}
-
-	/**
-	 * Create a standarized message to return
-	 * 1) If the API respond with http code 400 and with a JSON body, so, we will consider the API message to append in the base message.
-	 * 2) If the API does not responde with http code 400 or does not have a valid a JSON body, we will show the API URL and the http message error.
-	 */
-	protected function _transform_error_message( $base_message, $response, $url, $ask_for_reload = false ) {
-		$http_response_code = wp_remote_retrieve_response_code( $response );
-		$api_error          = $this->_get_api_error_msg( $response );
-		$result = null;
-		if ( false === ai1ec_is_blank( $api_error ) ) {
-			$result = sprintf(
-				__( '%s.<br/>Detail: %s.', AI1EC_PLUGIN_NAME ),
-				$base_message, $api_error
-			);
-		} else {
-			$error_message = sprintf(
-				__( 'API URL: %s.<br/>Detail: %s - %s', AI1EC_PLUGIN_NAME ),
-				$url,
-				wp_remote_retrieve_response_code( $response ),
-				wp_remote_retrieve_response_message( $response )
-			);
-			$mailto = '<a href="mailto:betasupport@time.ly" target="_top">betasupport@time.ly</a>';
-			if ( true === $ask_for_reload ) {
-				$result = sprintf(
-					__( '%s. Please reload this page to try again. If this error persists, please contact us at %s. In your report please include the information below.<br/>%s.', AI1EC_PLUGIN_NAME ),
-					$base_message,
-					$mailto,
-					$error_message
-				);
-			} else {
-				$result = sprintf(
-					__( '%s. Please try again. If this error persists, please contact us at %s. In your report please include the information below.<br/>%s.', AI1EC_PLUGIN_NAME ),
-					$base_message,
-					$mailto,
-					$error_message
-				);
-			}
-		}
-		$result = trim( $result );
-		$result = str_replace( '..', '.', $result );
-		$result = str_replace( '.,', '.', $result );
-		return $result;
-	}
-
-
-	/**
-	 * Search for the API message error
-	 */
-	protected function _get_api_error_msg( $response ) {
-		if ( isset( $response ) && false === is_wp_error( $response ) ) {
-			$response_body = json_decode( $response['body'], true );
-			if ( json_last_error() === JSON_ERROR_NONE &&
-				isset( $response_body ) &&
-				isset( $response_body['errors'] ) ) {
-				$errors = $response_body['errors'];
-				if ( false === is_array( $errors )) {
-					$errors = array( $errors );
-				}
-				$messages = null;
-				foreach ($errors as $key => $value) {
-					if ( false === ai1ec_is_blank( $value ) ) {
-						if ( is_array( $value ) ) {
-							$value = implode ( ', ', $value );
-						}
-						$messages[] = $value;
-					}
-				}
-				if ( null !== $messages && false === empty( $messages ) ) {
-					return implode ( ', ', $messages);
-				}
-			}
-		}
-		return null;
 	}
 
 	/**
@@ -767,84 +616,6 @@ class Ai1ec_Api extends Ai1ec_App {
 		}
 		return false;
     }
-
-
-	/**
-	 * Get the ticket calendar from settings, if the calendar does not exists in
-	 * settings, then we will try to find on the API
-	 * @return string JSON.
-	 */
-	protected function _get_ticket_calendar() {
-		$ticketing_calendar_id = $this->_settings->get( 'ticketing_calendar_id' );
-		if ( isset( $ticketing_calendar_id ) && $ticketing_calendar_id > 0) {
-			return $ticketing_calendar_id;
-		} else {
-			//if the calendar is not saved on settings it should exists on API
-			$ticketing_calendar_id = $this->_find_user_calendar();
-			if ( $ticketing_calendar_id > 0 ) {
-				$this->_settings->set( 'ticketing_calendar_id', $ticketing_calendar_id );
-				return $ticketing_calendar_id;
-			} else {
-				//if the calendar should not exist on API, we will created
-				$ticketing_calendar_id = $this->_create_calendar();
-				if ( $ticketing_calendar_id > 0 ) {
-					$this->_settings->set( 'ticketing_calendar_id', $ticketing_calendar_id );
-				} else {
-					return 0;
-				}
-			}
-		}
-	}
-
-	/**
-	 * Find the existent calendar when the user is signing in
-	 */
-	protected function _find_user_calendar() {
-		$body = array(
-			'title'    => get_bloginfo( 'name' )
-		);
- 		$request = array(
-			'headers' => $this->_get_headers(),
-			'body'    => json_encode( $body ),
-			'timeout' => self::DEFAULT_TIMEOUT
-		);
-		$response      = wp_remote_get( AI1EC_API_URL . 'calendars', $request );
-		$response_code = wp_remote_retrieve_response_code( $response );
-		$response_body = json_decode( $response['body'] );
-		if ( 200 === $response_code ) {
-			if ( is_array( $response_body ) ) {
-				return $response_body[0]->id;
-			} else {
-				return $response_body->id;
-			}
-		} else {
-			return 0;
-		}
-	}
-
-	/**
-	 * Create a calendar when the user is signup
-	 */
-	protected function _create_calendar() {
-		$body = array(
-			'title'    => get_bloginfo( 'name' ),
-			'url'      => ai1ec_site_url(),
-			'timezone' => $this->_settings->get( 'timezone_string' )
-			);
- 		$request = array(
-			'headers' => $this->_get_headers(),
-			'body'    => json_encode( $body ),
-			'timeout' => self::DEFAULT_TIMEOUT
-		);
-		$response      = wp_remote_post( AI1EC_API_URL . 'calendars', $request );
-		$response_code = wp_remote_retrieve_response_code( $response );
-		$response_body = json_decode( $response['body'] );
-		if ( 200 === $response_code ) {
-			return $response_body->id;
-		} else {
-			return 0;
-		}
-	}
 
 	/**
 	 * @return NULL in case of success or an error string in case of error
@@ -869,7 +640,7 @@ class Ai1ec_Api extends Ai1ec_App {
 				$post_id ? $post_id : null
 			);
 		} catch ( Ai1ec_Event_Not_Found_Exception $excpt ) {
-			$message      = $this->_event_not_found_error;
+			$message      = __( 'Event not found inside the database.' , AI1EC_PLUGIN_NAME );
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
 			return $message;
@@ -886,7 +657,7 @@ class Ai1ec_Api extends Ai1ec_App {
 			'method'  => 'POST',
 			'headers' => $headers,
 			'body'    => json_encode( $body_data ),
-			'timeout' => self::DEFAULT_TIMEOUT
+			'timeout' => parent::DEFAULT_TIMEOUT
 		);
 		$response      = wp_remote_request( $url, $request );
 		$response_code = wp_remote_retrieve_response_code( $response );
@@ -929,7 +700,7 @@ class Ai1ec_Api extends Ai1ec_App {
 		$request   = array(
 			'method'  => 'DELETE',
 			'headers' => $this->_get_headers(),
-			'timeout' => self::DEFAULT_TIMEOUT
+			'timeout' => parent::DEFAULT_TIMEOUT
 		);
 		$url           = AI1EC_API_URL . 'events/' . $api_event_id;
 		$response      = wp_remote_request( $url, $request );
@@ -944,7 +715,12 @@ class Ai1ec_Api extends Ai1ec_App {
 				//move to trash
 				return null;
 			}
-        	$message      = $this->_transform_error_message( $this->_tickets_removed_error, $response, $url, true );
+        	$message      = $this->_transform_error_message( 
+        		__( 'We were unable to remove the Tickets from Time.ly Ticketing', AI1EC_PLUGIN_NAME ), 
+        		$response, 
+        		$url, 
+        		true 
+        	);
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
 			return $message;
@@ -965,24 +741,4 @@ class Ai1ec_Api extends Ai1ec_App {
     	return str_replace( '{event_id}', $api_event_id, $url_checkout );
     }
 
-    /**
-     * Check if the current WP instance is signed into the API
-     */
-    public function is_signed() {
-    	return true === $this->_settings->get( 'ticketing_enabled' );
-    }
-
-    /**
-     * Get the last message return by Signup or Signup process
-     */
-    public function get_sign_message() {
-    	return $this->_settings->get( 'ticketing_message' );
-    }
-
-	/**
-     * Clear the last message return by Signup or Signup process
-     */
-    public function clear_sign_message() {
-    	return $this->_settings->set( 'ticketing_message', '' );
-    }
 }

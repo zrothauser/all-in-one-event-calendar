@@ -336,7 +336,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		// Render the opening div
 		$this->render_opening_div_of_tab();
 		// Render the body of the tab
-		$api        = $this->_registry->get( 'model.api' );
+		$api        = $this->_registry->get( 'model.api.api-feeds' );
 		$api_signed = $api->is_signed();
 		$settings   = $this->_registry->get( 'model.settings' );
 		$factory    = $this->_registry->get(
@@ -432,7 +432,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 		$html         = '';
 		$theme_loader = $this->_registry->get( 'theme.loader' );
-		$api          = $this->_registry->get( 'model.api' );
+		$api          = $this->_registry->get( 'model.api.api-feeds' );
 		$api_signed   = $api->is_signed();
 
 		foreach ( $rows as $row ) {

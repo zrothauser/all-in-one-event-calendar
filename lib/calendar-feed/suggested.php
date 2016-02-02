@@ -45,7 +45,7 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 		// Render the opening div
 		$this->render_opening_div_of_tab();
 	
-		$api           = $this->_registry->get( 'model.api' );
+		$api           = $this->_registry->get( 'model.api.api-feeds' );
 		$feeds         = $api->get_suggested_events();
 		$loader        = $this->_registry->get( 'theme.loader' );
 		$event_actions = $loader->get_file(

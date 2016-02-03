@@ -18,7 +18,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 	const ICS_OPTION_DB_VERSION = 'ai1ec_ics_db_version';
 
-	const ICS_DB_VERSION        = 236;
+	const ICS_DB_VERSION        = 237;
 
 	/**
 	 * @var array
@@ -106,20 +106,13 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 			$count    = 0;
 			$message  = false;
-			// reimport the feed
-			$response = wp_remote_get(
-				$feed->feed_url,
-				array( 'sslverify' => false, 'timeout' => 120 )
-			);
+			$api      = $this->_registry->get( 'model.api.api-feeds' );
+			$response = $api->import_feed( $feed->feed_url );			
 
-			if (
-				! is_wp_error( $response )             &&
-				isset( $response['response'] )         &&
-				isset( $response['response']['code'] ) &&
-				$response['response']['code'] == 200   &&
-				isset( $response['body'] )             &&
-				! empty( $response['body'] )
-			) {
+			if ( $response != null &&
+					//if the API returned this status is because this is a new feed and not yet processed by the cralwer 
+					'c' !== $response->status 
+				) {
 				try {
 
 					$import_export = $this->_registry->get(
@@ -149,9 +142,9 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					) {
 						$args['do_show_map'] = 1;
 					}
-					$args['source'] = $response['body'];
+					$args['source'] = $response;
 					do_action( 'ai1ec_ics_before_import', $args );
-					$result = $import_export->import_events( 'ics', $args );
+					$result = $import_export->import_events( 'api-ics', $args );
 					do_action( 'ai1ec_ics_after_import' );
 					$count  = $result['count'];
 					$feed_name = ! empty( $result['name'][1] ) ? $result['name'][1] : $feed->feed_url;
@@ -271,6 +264,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					keep_tags_categories tinyint(1) NOT NULL DEFAULT '0',
 					keep_old_events tinyint(1) NOT NULL DEFAULT '0',
 					import_timezone tinyint(1) NOT NULL DEFAULT '0',
+					feed_processed tinyint(1) NOT NULL DEFAULT '0',
 					PRIMARY KEY  (feed_id),
 					UNIQUE KEY feed (feed_url)
 					) CHARACTER SET utf8;";

@@ -41,6 +41,9 @@ define(
 	var handle_set_tab_cookie = function( e ) {
 		var active = $( this ).attr( 'href' );
 		$.cookie( 'feeds_active_tab', active );
+		if ( '#suggested' === active ) {
+			maps_init_wrapper();
+		}
 	};
 
 	var attach_event_handlers = function() {
@@ -90,10 +93,7 @@ define(
 			.on( 'click', '.ai1ec-panel-heading > a' , ics_event_handlers.edit_cancel )
 			// Checks import timezone option
 			.on( 'blur', '#ai1ec_feed_url', ics_event_handlers.feed_url_change );
-
-	};
-	
-	var init_suggested_events = function() {
+			
 		$( document ).on( 'click', '.ai1ec-suggested-import-event', function() {
 			var
 				$this      = $( this ),
@@ -143,87 +143,137 @@ define(
 
 			return false;
 		} );
-		
-		// Init Events map
-		var init_gmaps = function() {
+
+		$( document ).on( 'click',  '.ai1ec-suggested-view-selector > a', function() {
 			var
-				$events     = $( 'tr.ai1ec-suggested-event' ),
-				markers     = [],
-				bounds      = new google.maps.LatLngBounds();
-				map_options = {
-					mapTypeId      : google.maps.MapTypeId.ROADMAP,
-					mapTypeControl : true,
-					zoomControl    : true,
-					scaleControl   : true
-				},
-				buttons    = $( '.ai1ec-suggested-events-actions-template' ).html(),
-				events_map = new google.maps.Map(
-					$( '#ai1ec_events_map_canvas' ).get( 0 ), map_options
-				),
-				infowindow = new google.maps.InfoWindow({
-					maxWidth: 260
-				} ),
-				create_info = function( event ) {
-					var s = '<div class="ai1ec-infowindow" data-event-id="'
-						+ event.id +  '"><a href="#" class="ai1ec-infowindow-title"><b>'
-						+ event.title + '</b></a><br>'
-						+ event.dtstart.substr( 0, 10 )
-						+ ' @ ' + event.venue_name
-						+ '<br>' + buttons + '</div>';
+				$this      = $( this ),
+				$selectors = $this.parent(),
+				view      = $this.attr( 'data-ai1ec-view' );
 
-					infowindow.setContent( s );
-				};
+			$( '#suggested' ).removeClass( function ( i, v ) {
+				return ( v.match ( /(^|\s)ai1ec-feeds-\S+/g ) || [] ).join( ' ' );
+			} ).addClass( 'ai1ec-feeds-' + view );
 
-			$events.each( function() {
-				var
-					$this = $( this ),
-					event = $.parseJSON( $this.attr( 'data-event' ) );
+			$selectors.find( 'a.ai1ec-active' ).removeClass( 'ai1ec-active' );
+			$this.addClass( 'ai1ec-active' ).blur();
+			
+			$( '[data-ai1ec-show]' ).hide()
+				.filter( '[data-ai1ec-show~="' + view + '"]' ).show();	
 				
-				if ( ! event || ! event.latitude || ! event.longitude ) return;
-				
-				var marker = new google.maps.Marker( {
-					map      : events_map,
-					title    : event.title,
-					position : new google.maps.LatLng( event.latitude , event.longitude )
-				} );
+			gMapsLoader( init_gmaps );			
+			return false;
+		} );
 
-				marker.addListener( 'click', function() {
-					create_info( event );
-					infowindow.open( events_map, this );
-			 	} );
+		$( document ).on( 'click', 'a.ai1ec-suggested-title', function() {
+			var
+				$this = $( this ),
+				$tr   = $this.closest( 'tr' ),
+				event = $.parseJSON( $tr.attr( 'data-event' ) );
+
+			if ( $tr.hasClass( 'ai1ec-suggested-hover' ) ) {
+				$( '#ai1ec_events_map_canvas' ).removeClass( 'goes-left' );
+				$tr.removeClass( 'ai1ec-suggested-hover' );
+			} else {
+				$( '.ai1ec-suggested-hover' ).removeClass( 'ai1ec-suggested-hover' );
+				$tr.addClass( 'ai1ec-suggested-hover' );
+				$( '#ai1ec_events_map_canvas' ).addClass( 'goes-left' );
 				
-				bounds.extend( marker.getPosition() );
-				markers.push( marker );
+				var $details = $( '#ai1ec_events_extra_details' ).html( '' );
+				if ( event.image ) {
+					$details.append(
+						$( '<img />', {
+							src : event.image,
+							alt : ''
+						} )
+					)
+				}
+				$details
+					.append( $( '<div class="ai1ec-extra-title"></div>' )
+						.text( event.title ) )
+					.append( $( '<div class="ai1ec-extra-date"></div>' )
+						.text( event.dtstart + ' (' + event.timezone + ')' ) )
+					.append( $( '<div class="ai1ec-extra-venue"></div>' )
+						.text( event.venue_name ) )
+					.append( $( '<div class="ai1ec-extra-location"></div>' )
+						.text( event.location ) )
+					.append( $( '<div class="ai1ec-extra-description"></div>' )
+						.text( event.description ) );
+			}
+			$this.blur();
+			return false;	
+		} );
+
+	};
+	
+	// Init Events map
+	var init_gmaps = function() {
+		var
+			$events     = $( 'tr.ai1ec-suggested-event' ),
+			markers     = [],
+			bounds      = new google.maps.LatLngBounds();
+			map_options = {
+				mapTypeId      : google.maps.MapTypeId.ROADMAP,
+				mapTypeControl : true,
+				zoomControl    : true,
+				scaleControl   : true
+			},
+			buttons    = $( '.ai1ec-suggested-events-actions-template' ).html(),
+			events_map = new google.maps.Map(
+				$( '#ai1ec_events_map_canvas' ).get( 0 ), map_options
+			),
+			infowindow = new google.maps.InfoWindow({
+				maxWidth: 260
+			} ),
+			create_info = function( event ) {
+				var s = '<div class="ai1ec-infowindow" data-event-id="'
+					+ event.id +  '"><div class="ai1ec-infowindow-title"><b>'
+					+ event.title + '</b></div>'
+					+ event.dtstart.substr( 0, 10 )
+					+ ' @ ' + event.venue_name
+					+ '<br>' + buttons + '</div>';
+
+				infowindow.setContent( s );
+			};
+
+		$events.each( function() {
+			var
+				$this = $( this ),
+				event = $.parseJSON( $this.attr( 'data-event' ) );
+			
+			if ( ! event || ! event.latitude || ! event.longitude ) return;
+			
+			var marker = new google.maps.Marker( {
+				map      : events_map,
+				title    : event.title,
+				position : new google.maps.LatLng( event.latitude , event.longitude )
 			} );
 
-			events_map.fitBounds( bounds );
-		};
-
-		
-
-		$( document ).on( 'click',  '.ai1ec-suggested-view-list', function() {
-			if ( $(this).hasClass( 'ai1ec-active' ) ) return false;
-			$( '.ai1ec-suggested-map-container' ).addClass( 'ai1ec-hidden' );
-			$( '.ai1ec-suggested-events' ).removeClass( 'ai1ec-hidden' );
-			$( '.ai1ec-suggested-view-selector .ai1ec-active' ).removeClass( 'ai1ec-active' );
-			$( this ).addClass( 'ai1ec-active' );
-			return false;
-		} );
-		
-		$( document ).on( 'click',  '.ai1ec-suggested-view-map', function() {
-			if ( $(this).hasClass( 'ai1ec-active' ) ) return false;
-			$( '.ai1ec-suggested-map-container' ).removeClass( 'ai1ec-hidden' );
-			$( '.ai1ec-suggested-events' ).addClass( 'ai1ec-hidden' );
-			$( '.ai1ec-suggested-view-selector .ai1ec-active' ).removeClass( 'ai1ec-active' );
-			$( this ).addClass( 'ai1ec-active' );
-			if ( ! $( this ).attr( 'data-ai1ec-gmaps' ) ) {
-				gMapsLoader( init_gmaps );
-				$( this ).attr( 'data-ai1ec-gmaps', 1 )
-			}
+			marker.event_id = event.id;
+			marker.addListener( 'click', function() {
+				create_info( event );
+				infowindow.open( events_map, this );
+		 	} );
+		 	marker.addListener( 'mouseover', function() {
+				$( 'tr[data-event-id="' + this.event_id + '"]' )
+					.addClass( 'ai1ec-suggested-hover' )
+		 	} );
+		 	marker.addListener( 'mouseout', function() {
+				$( 'tr[data-event-id="' + this.event_id + '"]' )
+					.removeClass( 'ai1ec-suggested-hover' )
+		 	} );
 			
-			return false;
+			bounds.extend( marker.getPosition() );
+			markers.push( marker );
 		} );
 
+		events_map.fitBounds( bounds );
+	};
+	
+	
+	var maps_init_wrapper = function() {
+		setTimeout( function() {
+			gMapsLoader( init_gmaps );
+		}, 0 );
 	};
 
 	var start = function() {
@@ -232,8 +282,9 @@ define(
 			utils.activate_saved_tab_on_page_load( $.cookie( 'feeds_active_tab' ) );
 			// Attach the event handlers
 			attach_event_handlers();
-			// Init suggested events handlers;
-			init_suggested_events();
+			if ( '#suggested' === $.cookie( 'feeds_active_tab' ) ) {
+				maps_init_wrapper();
+			}
 		} );
 	};
 

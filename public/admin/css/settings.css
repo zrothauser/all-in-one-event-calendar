@@ -248,14 +248,6 @@
 	width: 1px;
 	white-space: nowrap;
 }
-#suggested td.ai1ec-suggested-favourite {
-	text-align: center;
-	width: 35px;
-	vertical-align: top;
-}
-#suggested td.ai1ec-suggested-events-count {
-	width: 75px;
-}
 .ai1ec-ics-signup-box {
 	margin-bottom: 30px;
 }
@@ -268,9 +260,54 @@
 	background: #fff;
 	table-layout: fixed;
 }
+#suggested.ai1ec-feeds-both table.ai1ec-suggested-events {
+	width: 55%;
+	background: #fff;
+	table-layout: fixed;
+}
 #suggested table.ai1ec-suggested-events tr {
-	border: 1px solid #ccc;
+	border: 1px solid #ddd;
 	margin: 10px;
+	transition: background-color 0.2s ease;
+}
+#ai1ec_events_map_canvas {
+	left: 0;
+	opacity: 1;
+	transition: all 0.2s ease;
+	z-index: 10;
+}
+#suggested.ai1ec-feeds-both .goes-left {
+	left: -395px;
+	opacity: 0.8;
+	-webkit-filter: grayscale(100%) !important; 
+	pointer-events: none;
+}
+#ai1ec_events_extra_details {
+	position: absolute;
+	z-index: 1;
+	width: 44%;
+	height: 417px;
+	border: 1px solid #ddd;
+	background: #f5f5f5;
+	padding: 20px;
+	overflow-y: auto;
+}
+#ai1ec_events_extra_details img {
+	height: 100px;
+	border: 1px solid #eee;
+	margin-bottom: 10px;
+}
+#ai1ec_events_extra_details .ai1ec-extra-title {
+	font-weight: bold;
+}
+#ai1ec_events_extra_details .ai1ec-extra-date {
+	
+}
+#ai1ec_events_extra_details .ai1ec-extra-description {
+	margin-top: 20px;
+}
+#suggested {
+	min-height: 455px;
 }
 #suggested table.ai1ec-suggested-events td {
 	padding: 5px;
@@ -278,10 +315,24 @@
 	border: none;
 }
 #suggested td.ai1ec-suggested-event-actions {
-	width: 136px;
+	width: 125px;
+	text-align: center;
+}
+#suggested.ai1ec-feeds-both td.ai1ec-suggested-event-actions {
+	width: 95px;
 }
 #suggested .ai1ec-suggested-event-import a {
  	width: 100%;
+ 	font-size: 12px;
+ 	padding: 3px 5px;
+}
+#suggested.ai1ec-feeds-both .ai1ec-suggested-event-import a {
+ 	font-size: 11px;
+ 	padding: 1px 4px;
+}
+#suggested.ai1ec-feeds-both .ai1ec-suggested-map-container {
+	width: 45%;
+	float: left;
 }
 #suggested .ai1ec-suggested-map-container .ai1ec-suggested-event-import a {
 	width: 80px;
@@ -296,13 +347,29 @@
 } 
 #suggested td.ai1ec-suggested-image {
 	width: 100px;
-	height: 100px;
+	background: #fcfcfc;
+	border-right: 1px solid #f5f5f5;
 	background-position: center center;
 	background-size: cover;
+	background-repeat: no-repeat;
+}
+#suggested.ai1ec-feeds-both td.ai1ec-suggested-image {
+	width: 52px;
+}
+#suggested.ai1ec-feeds-both td.ai1ec-suggested-image {
+	transition: background-color 0.2s ease;
+}
+#suggested.ai1ec-feeds-both .ai1ec-suggested-hover td.ai1ec-suggested-image {
+	background: #feb;
 }
 #suggested td.ai1ec-suggested-content {
 	padding: 5px 10px !important;
 	overflow: hidden;
+	display: block;
+}
+#suggested.ai1ec-feeds-both td.ai1ec-suggested-content {
+	padding: 4px 10px !important;
+	height: 40px;
 }
 #suggested div.ai1ec-suggested-description {
 	font-size: 12px;
@@ -310,24 +377,35 @@
 	max-height: 45px;
 	margin-top: 7px;
 }
+#suggested.ai1ec-feeds-both div.ai1ec-suggested-description {
+	display: none;
+}
 #suggested .ai1ec-suggested-date {
-	font-size: 11px;
-	font-weight: bold;
+	font-size: 12px;
 	color: #666;
 }
 #suggested a.ai1ec-suggested-title {
 	font-weight: bold;
+	pointer-events: none;
+}
+#suggested.ai1ec-feeds-both a.ai1ec-suggested-title {
+	pointer-events: all;
 }
 #suggested a.ai1ec-suggested-whole-feed {
-	font-size: 11px;
+	font-size: 12px;
 	border: none !important;
-	white-space: nowrap;
-	margin-top: 4px;
+	margin-top: 3px;
 	display: inline-block;
 }
+#suggested.ai1ec-feeds-both a.ai1ec-suggested-whole-feed {
+	white-space: nowrap;
+	font-size: 11px;
+}
 #suggested #ai1ec_events_map_canvas {
-	height: 500px;
-	border: 1px solid #999;
+	height: 100%;
+	min-height: 417px;
+	border: 1px solid #ddd;
+	background: #f5f5f5;
 }
 #suggested .ai1ec-suggested-view-selector {
 	text-align: right;
@@ -344,8 +422,16 @@
 	font-size: 14px;
 	color: #666;
 	font-weight: bold;
-	
+	pointer-events: none;
 }
+#suggested.ai1ec-feeds-both .ai1ec-suggested-hover {
+	background: #feb;
+}
+
+#suggested .ai1ec-infowindow-title {
+	font-weight: bold;
+}
+
 /* Calendar theme options */
 
 #ai1ec-less-variables-tabs .inside {

@@ -276,7 +276,6 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		);
 		$notification  = $this->_registry->get( 'notification.admin' );
 		$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );				
-		$result->error = $error_message;
 	}
 
 	/**

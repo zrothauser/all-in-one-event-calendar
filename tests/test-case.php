@@ -27,5 +27,14 @@ class BaseTestCase extends WP_UnitTestCase {
 			$this->fail( $message );
 		}
 	}
+
+	protected function assertArrayNotEmpty( $value, $message = '' ) {
+		if ( is_null( $value ) || 
+			! is_array( $value ) || 
+			0 === count( $value ) ) {
+			$this->fail( $message );
+		}
+	}
+
 }
 

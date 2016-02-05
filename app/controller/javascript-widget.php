@@ -13,7 +13,7 @@ class Ai1ec_Controller_Javascript_Widget extends Ai1ec_Base {
 
 	const WIDGET_PARAMETER = 'ai1ec_js_widget';
 	const LEGACY_WIDGET_PARAMETER = 'ai1ec_super_widget';
-	const WIDGET_JS_CACHE_FILE = AI1EC_PATH . '/public/js_cache/ai1ec_js_widget.js';
+	const WIDGET_JS_CACHE_FILE = '/public/js_cache/ai1ec_js_widget.js';
 
 	protected $_widgets = array();
 
@@ -84,7 +84,10 @@ class Ai1ec_Controller_Javascript_Widget extends Ai1ec_Base {
 			if (
 				! $this->_registry->get( 'model.settings' )->get( 'cache_dynamic_js' ) ||
 				'1' != $this->_registry->get( 'model.option' )->get( 'jswidgetupdated' ) ||
-				! $this->_registry->get( 'filesystem.checker' )->check_file_exists( self::WIDGET_JS_CACHE_FILE, true )
+				! $this->_registry->get( 'filesystem.checker' )->check_file_exists(
+					AI1EC_PATH . self::WIDGET_JS_CACHE_FILE,
+					true
+				)
 			) {
 				$this->render_javascript();
 			} else {
@@ -199,7 +202,10 @@ JS;
 			$this->_registry->get( 'model.settings' )->get( 'cache_dynamic_js' ) &&
 			(
 				'0' === $this->_registry->get( 'model.option' )->get( 'jswidgetupdated' ) ||
-				! $this->_registry->get( 'filesystem.checker' )->check_file_exists( self::WIDGET_JS_CACHE_FILE, true )
+				! $this->_registry->get( 'filesystem.checker' )->check_file_exists(
+					AI1EC_PATH . self::WIDGET_JS_CACHE_FILE,
+					true
+				)
 			)
 		) {	
 			try {

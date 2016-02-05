@@ -142,7 +142,7 @@ class Ai1ec_Filesystem_Checker {
 			if ( ! file_exists( $file ) ) {
 				return false;
 			} else {
-				if ( $check_is_empty && filesize( $file ) == 0 ) {
+				if ( $check_is_empty && 0 == filesize( $file ) ) {
 					return false;
 				} else {
 					return true;

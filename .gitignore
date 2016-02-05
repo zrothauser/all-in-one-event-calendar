@@ -40,3 +40,6 @@ local.properties
 /public/themes-ai1ec/plana/css/ai1ec_parsed_css.css
 /public/themes-ai1ec/vortex/less.sha1.map.php
 /public/themes-ai1ec/vortex/css/ai1ec_parsed_css.css
+
+.travis.yml
+phpunit.xml.dist

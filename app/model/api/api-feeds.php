@@ -30,23 +30,42 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 		if ( 0 >= $calendar_id ) {
 			return null;
 		}
-		$request  = array(
-			'headers' => $this->_get_headers(),
-			'timeout' => parent::DEFAULT_TIMEOUT
+		$response = $this->request_api( 'GET',
+			"calendars/$calendar_id/discover/events?page=$page&max=$max",
+			null, 
+			true //decode body response
+		);
+		if ( $this->is_response_success( $response ) ) {
+			return $response->body->data; 	
+		}  else {
+			$this->save_error_notification( 
+				$response, 
+				__( 'We were unable to get the Suggested Events from Time.ly Network', AI1EC_PLUGIN_NAME )
 			);
-		$url           = AI1EC_API_URL . "calendars/$calendar_id/discover/events?page=$page&max=$max";
-		$response      = wp_remote_get( $url, $request );
-		$response_code = wp_remote_retrieve_response_code( $response );
-		if ( 200 === $response_code ) {			
-			$result = json_decode( $response['body'] );
-			return $result->data;
-		} else {
-			$error_message = $this->_transform_error_message( 
-				  __( 'We were unable to get the Suggested Events from Time.ly Network', AI1EC_PLUGIN_NAME )
-				, $response, $url, true );
-			$notification = $this->_registry->get( 'notification.admin' );
-			$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
-			return array();
+			return [];
+		}
+	}
+
+	/**
+	 * Call the API to Process and Import the Feed
+	 */
+	public function import_feed( $feed_url ) {	
+		$calendar_id = $this->_get_ticket_calendar();
+		if ( 0 >= $calendar_id ) {
+			return null;
+		}		
+		$response = $this->request_api( 'POST',
+			"calendars/$calendar_id/feeds/import",
+			json_encode( [ "url" => $feed_url ] )			
+		);
+		if ( $this->is_response_success( $response ) ) {
+			return $response->body; 	
+		}  else {
+			$this->save_error_notification( 
+				$response, 
+				__( 'We were unable to Import de Feed', AI1EC_PLUGIN_NAME )
+			);
+			return null;
 		}
 	}
 

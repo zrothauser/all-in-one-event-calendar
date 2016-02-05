@@ -18,7 +18,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 	const ICS_OPTION_DB_VERSION = 'ai1ec_ics_db_version';
 
-	const ICS_DB_VERSION        = 236;
+	const ICS_DB_VERSION        = 238;
 
 	/**
 	 * @var array
@@ -106,20 +106,13 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 			$count    = 0;
 			$message  = false;
-			// reimport the feed
-			$response = wp_remote_get(
-				$feed->feed_url,
-				array( 'sslverify' => false, 'timeout' => 120 )
-			);
+			$api      = $this->_registry->get( 'model.api.api-feeds' );
+			$response = $api->import_feed( $feed->feed_url );			
 
-			if (
-				! is_wp_error( $response )             &&
-				isset( $response['response'] )         &&
-				isset( $response['response']['code'] ) &&
-				$response['response']['code'] == 200   &&
-				isset( $response['body'] )             &&
-				! empty( $response['body'] )
-			) {
+			if ( $response != null &&
+					//if the API returned this status is because this is a new feed and not yet processed by the cralwer 
+					'c' !== $response->status 
+				) {
 				try {
 
 					$import_export = $this->_registry->get(
@@ -149,19 +142,28 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					) {
 						$args['do_show_map'] = 1;
 					}
-					$args['source'] = $response['body'];
+					$args['source'] = $response;
 					do_action( 'ai1ec_ics_before_import', $args );
-					$result = $import_export->import_events( 'ics', $args );
+					$result = $import_export->import_events( 'api-ics', $args );
 					do_action( 'ai1ec_ics_after_import' );
 					$count  = $result['count'];
-					$feed_name = ! empty( $result['name'][1] ) ? $result['name'][1] : $feed->feed_url;
+					$feed_name = ! empty( $result['name'] ) ? $result['name'] : $feed->feed_url;
 					// we must flip again the array to iterate over it
 					if ( 0 == $feed->keep_old_events ) {
 						$events_to_delete = array_flip( $result['events_to_delete'] );
 						foreach ( $events_to_delete as $event_id ) {
 							wp_delete_post( $event_id, true );
 						}
-					}
+					}		
+					$db->update(
+						$table_name,
+						array(
+							'feed_name'      => $feed_name,
+							'feed_status'    => $response->status,
+							'updated_at_gmt' => current_time( 'mysql', 1 )
+						),
+						array( 'feed_id' => $feed_id )
+					);
 				} catch ( Ai1ec_Parse_Exception $e ) {
 					$message = "The provided feed didn't return valid ics data";
 				} catch ( Ai1ec_Engine_Not_Set_Exception $e ) {
@@ -196,6 +198,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 						'name'    => $feed_name,
 				);
 			}
+
 		} else {
 			$output['data'] = array(
 					'error' 	=> true,
@@ -271,6 +274,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					keep_tags_categories tinyint(1) NOT NULL DEFAULT '0',
 					keep_old_events tinyint(1) NOT NULL DEFAULT '0',
 					import_timezone tinyint(1) NOT NULL DEFAULT '0',
+					feed_status char(1) NOT NULL DEFAULT 'c',
+					updated_at_gmt datetime NULL,
 					PRIMARY KEY  (feed_id),
 					UNIQUE KEY feed (feed_url)
 					) CHARACTER SET utf8;";
@@ -427,6 +432,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				'keep_tags_categories',
 				'keep_old_events',
 				'import_timezone',
+				'feed_status',
+				'updated_at_gmt'
 			)
 		);
 
@@ -475,6 +482,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				'feed_import_timezone' => (bool) intval(
 					$row->import_timezone
 				),
+				'feed_status'          => $row->feed_status,
 				'api_signed'           => $api->is_signed(),
 			);
 			$html .= $theme_loader->get_file( 'feed_row.php', $args, true )
@@ -547,7 +555,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			),
 			'import_timezone' => Ai1ec_Primitive_Int::db_bool(
 				$_REQUEST['feed_import_timezone']
-			),
+			)
 		);
 		$entry = apply_filters( 'ai1ec_ics_feed_entry', $entry );
 		$json_strategy = $this->_registry->get(
@@ -582,14 +590,6 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			$this->delete_ics_feed( false, $feed_id );
 			return $json_strategy->render( $update );
 		}
-		$feed_name = $update['data']['name'];
-		$db->update(
-			$table_name,
-			array(
-				'feed_name' => $feed_name
-			),
-			array( 'feed_id' => $feed_id )
-		);
 
 		$cat_ids = '';
 		if ( ! empty( $_REQUEST['feed_category'] ) ) {

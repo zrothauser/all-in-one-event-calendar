@@ -261,7 +261,8 @@ class Ai1ec_Loader {
 		$class_list = array();
 		$directory	= opendir( $path );
 		while ( false !== ( $entry = readdir( $directory ) ) ) {
-			if ( '.' === $entry{0} ) {
+			if ( '.' === $entry{0} ||
+				'tests' === $entry ) {
 					continue; // ignore hidden files
 			}
 			$local_path = $path . DIRECTORY_SEPARATOR . $entry;

@@ -40,7 +40,7 @@ class Ai1ec_Import_Export_Controller {
 	 */
 	public function __construct(
 			Ai1ec_Registry_Object $registry,
-			array $core_engines = array( 'ics' ),
+			array $core_engines = array( 'ics', 'api-ics' ),
 			array $params = array()
 	) {
 		$this->_registry = $registry;

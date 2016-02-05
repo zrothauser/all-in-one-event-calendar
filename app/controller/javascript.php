@@ -59,10 +59,14 @@ class Ai1ec_Javascript_Controller {
 	const SETTINGS_PAGE = 'admin_settings.js';
 
 	//widget creator page
-	CONST WIDGET_CREATOR = 'widget-creator.js';
+	const WIDGET_CREATOR = 'widget-creator.js';
 
 	//ticketing page
-	CONST TICKETING = 'ticketing.js';
+	const TICKETING = 'ticketing.js';
+
+	//cache file
+	const CALENDAR_JS_CACHE_FILE = '/public/js_cache/calendar.js';
+
 	/**
 	 * @var Ai1ec_Registry_Object
 	 */
@@ -181,7 +185,11 @@ class Ai1ec_Javascript_Controller {
 		if (
 			$js_cache &&
 			$page_to_load === self::CALENDAR_PAGE_JS && 
-			'1' === $scripts_updated
+			'1' === $scripts_updated &&
+			$this->_registry->get( 'filesystem.checker' )->check_file_exists(
+				AI1EC_PATH . self::CALENDAR_JS_CACHE_FILE,
+				true
+			)
 		) {	
 			Ai1ec_Http_Response_Helper::stop( 0 );
 			return;	
@@ -277,7 +285,13 @@ class Ai1ec_Javascript_Controller {
 		if (
 			$js_cache &&
 			$page_to_load === self::CALENDAR_PAGE_JS &&
-			'0' === $scripts_updated
+			(
+				'0' === $scripts_updated ||
+				! $this->_registry->get( 'filesystem.checker' )->check_file_exists(
+					AI1EC_PATH . self::CALENDAR_JS_CACHE_FILE,
+					true
+				)
+			)
 		) {
 			$js_saved = false;
 			try {
@@ -698,7 +712,11 @@ JSC;
 		if (
 			$this->_settings->get( 'cache_dynamic_js' ) &&
 			$is_calendar_page &&
-			'1' === $this->_registry->get( 'model.option' )->get( 'calendarjsupdated' )
+			'1' === $this->_registry->get( 'model.option' )->get( 'calendarjsupdated' ) &&
+			$this->_registry->get( 'filesystem.checker' )->check_file_exists(
+				AI1EC_PATH . self::CALENDAR_JS_CACHE_FILE,
+				true
+			)
 		) {
 			$url = plugin_dir_url( 'all-in-one-event-calendar/public/js_cache/.' ) . $page;
 		}

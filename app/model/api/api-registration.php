@@ -38,6 +38,7 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 		if ( 200 === $response_code ) {
 			$response_body = json_decode( $response['body'], true );
 			$this->_save_settings( $response_body['message'], true, $response_body['auth_token'], $this->_find_user_calendar() );
+			return true;
 		} else {
 			$error_message = $this->_transform_error_message( 
 				__( 'We were unable to Sign you In for Time.ly Ticketing', AI1EC_PLUGIN_NAME ), 
@@ -47,6 +48,7 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 			$this->_save_settings( $error_message, false, '', 0 );
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
+			return false;
 		}
 	}
 

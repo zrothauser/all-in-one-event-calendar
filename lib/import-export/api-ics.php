@@ -38,7 +38,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Import_Export_Engine::import()
 	 */
-	public function import( array $arguments ) {
+	public function import( array $arguments ) {		
 		$cal = $arguments['source'];
 		if ( $this->is_valid( $cal ) ) {
 			try {
@@ -79,21 +79,21 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 		$cal,
 		array $args
 	) {
-		$forced_timezone = null;
-		$feed            = isset( $args['feed'] ) ? $args['feed'] : null;
-		$comment_status  = isset( $args['comment_status'] ) ? $args['comment_status'] : 'open';
-		$do_show_map     = isset( $args['do_show_map'] ) ? $args['do_show_map'] : 0;
-		$count           = 0;
-		$events_in_db    = isset( $args['events_in_db'] ) ? $args['events_in_db'] : 0;
 
+		$feed              = isset( $args['feed'] ) ? $args['feed'] : null;
+		$comment_status    = isset( $args['comment_status'] ) ? $args['comment_status'] : 'open';
+		$do_show_map       = isset( $args['do_show_map'] ) ? $args['do_show_map'] : 0;
+		$count             = 0;
+		$events_in_db      = isset( $args['events_in_db'] ) ? $args['events_in_db'] : 0;
 		usort( $cal->events, array( "Ai1ec_Api_Ics_Import_Export_Engine", "events_order_comparator" ) );
-
+		$timezone_wp       = $this->_registry->get( 'date.timezone' )->get_default_timezone();
+		$feed_name         = $cal->name;
 		$messages          = array();
 		$current_timestamp = $this->_registry->get( 'date.time' )->format_to_gmt();
-		// initialize empty custom exclusions structure
 		$exclusions        = array();
+
 		// go over each event
-		foreach ( $cal->events as $event ) {
+		foreach ( $cal->events as $e ) {
 
 			// Event data array.
 			$data         = array();
@@ -101,13 +101,13 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			// =====================
 			// = Start & end times =
 			// =====================
-			$start        = $event->dtstart;
-			$end          = $event->dtend;
+			$start        = $e->dtstart;
+			$end          = $e->dtend;
 
 			// =====================
 			// = Terms =
 			// =====================			
-			$categories   = $event->categories;
+			$categories   = $e->categories;
 			$imported_cat = array( Ai1ec_Event_Taxonomy::CATEGORIES => array() );
 			// If the user chose to preserve taxonomies during import, add categories.
 			if( ! empty( $categories ) && $feed->keep_tags_categories ) {
@@ -128,7 +128,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 				);
 			}
 
-			$tags          = $event->tags;
+			$tags          = $e->tags;
 			$imported_tags = array( Ai1ec_Event_Taxonomy::TAGS => array() );
 			// If the user chose to preserve taxonomies during import, add tags.
 			if( ! empty( $tags ) && $feed->keep_tags_categories ) {
@@ -148,26 +148,25 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 						true
 				);
 			}
-			// Event is all-day if no time components are defined
-			$allday = $this->_is_timeless( $start['value'] ) &&
-				$this->_is_timeless( $end['value'] );
-			// Also check the proprietary MS all-day field.
-			$ms_allday = $e->getProperty( 'X-MICROSOFT-CDO-ALLDAYEVENT' );
-			if ( ! empty( $ms_allday ) && $ms_allday[1] == 'TRUE' ) {
-				$allday = true;
+
+			// event is all-day if no time components are defined
+			$allday         = $e->all_day;
+			$timezone_event = $e->timezone;
+			if ( empty( $timezone_event ) ) {
+				if ( empty( $cal->timezone ) ) {
+					$timezone_event = $timezone_wp;
+				} else {
+					$timezone_event = $cal->timezone;
+				}
 			}
-			$event_timezone = $timezone;
-			if ( $allday ) {
-				$event_timezone = $local_timezone;
-			}
-			$start = $this->_time_array_to_datetime(
+			$start = $this->_string_to_datetime(
 				$start,
-				$event_timezone,
+				$timezone_event,
 				$feed->import_timezone ? $forced_timezone : null
 			);
-			$end   = $this->_time_array_to_datetime(
+			$end   = $this->_string_to_datetime(
 				$end,
-				$event_timezone,
+				$timezone_event,
 				$feed->import_timezone ? $forced_timezone : null
 			);
 			if ( false === $start || false === $end ) {
@@ -191,142 +190,34 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			// =======================================
 			// = Recurrence rules & recurrence dates =
 			// =======================================
-			if ( $rrule = $e->createRrule() ) {
-				$rrule = explode( ':', $rrule );
-				$rrule = trim( end( $rrule ) );
-			}
+			$rrule    = $e->recurrence_rules;
+			$exrule   = $e->exception_rules;
+			$rdate    = $e->recurrence_dates;
+			$exdate   = $e->exception_dates;
 
-			if ( $exrule = $e->createExrule() ) {
-				$exrule = explode( ':', $exrule );
-				$exrule = trim( end( $exrule ) );
-			}
-
-			if ( $rdate = $e->createRdate() ) {
-				$arr     = explode( 'RDATE', $rdate );
-				$matches = null;
-				foreach ( $arr as $value ) {
-					$arr2 = explode( ':', $value );
-					if ( 2 === count( $arr2 ) ) {
-						$matches[] = $arr2[1];
-					}
-				}
-				if ( null !== $matches ) {
-					$rdate = implode( ',', $matches );	
-					unset( $matches ); 
-					unset( $arr ); 
-				} else {
-					$rdate = null;
-				}				
-			}
-
-			// ===================
-			// = Exception dates =
-			// ===================
-			$exdate = '';
-			if ( $exdates = $e->createExdate() ){
-				// We may have two formats:
-				// one exdate with many dates ot more EXDATE rules
-				$exdates      = explode( 'EXDATE', $exdates );
-				$def_timezone = $this->_get_import_timezone( $event_timezone );
-				foreach ( $exdates as $exd ) {
-					if ( empty( $exd ) ) {
-						continue;
-					}
-					$exploded       = explode( ':', $exd );
-					$excpt_timezone = $def_timezone;
-					$excpt_date     = null;
-					foreach ( $exploded as $particle ) {
-						if ( ';TZID=' === substr( $particle, 0, 6 ) ) {
-							$excpt_timezone = substr( $particle, 6 );
-						} else {
-							$excpt_date = trim( $particle );
-						}
-					}
-					$exploded       = explode( ',', $excpt_date );
-					foreach ( $exploded as $particle ) {
-						// Google sends YYYYMMDD for all-day excluded events
-						if (
-							$allday &&
-							8 === strlen( $particle )
-						) {
-							$particle    .= 'T000000Z';
-							$excpt_timezone = 'UTC';
-						}
-						$ex_dt = $this->_registry->get(
-							'date.time',
-							$particle,
-							$excpt_timezone
-						);
-						if ( $ex_dt ) {
-							if ( isset( $exdate{0} ) ) {
-								$exdate .= ',';
-							}
-							$exdate .= $ex_dt->format( 'Ymd\THis', $excpt_timezone );
-						}
-					}
-				}
-			}
-			// Add custom exclusions if there any
-			$recurrence_id = $e->getProperty( 'recurrence-id' );
-			if (
-				false === $recurrence_id &&
-				! empty( $exclusions[$e->getProperty( 'uid' )] )
-			) {
-				if ( isset( $exdate{0} ) ) {
-					$exdate .= ',';
-				}
-				$exdate .= implode( ',', $exclusions[$e->getProperty( 'uid' )] );
-			}
 			// ========================
 			// = Latitude & longitude =
 			// ========================
 			$latitude = $longitude = NULL;
-			$geo_tag  = $e->getProperty( 'geo' );
-			if ( is_array( $geo_tag ) ) {
-				if (
-					isset( $geo_tag['latitude'] ) &&
-					isset( $geo_tag['longitude'] )
-				) {
-					$latitude  = (float)$geo_tag['latitude'];
-					$longitude = (float)$geo_tag['longitude'];
-				}
-			} else if ( ! empty( $geo_tag ) && false !== strpos( $geo_tag, ';' ) ) {
-				list( $latitude, $longitude ) = explode( ';', $geo_tag, 2 );
-				$latitude  = (float)$latitude;
-				$longitude = (float)$longitude;
-			}
-			unset( $geo_tag );
-			if ( NULL !== $latitude ) {
+			if ( ! empty( $e->latitude ) && ! empty( $e->longitude ) ) {
+				$latitude  = (float) $e->latitude;
+				$longitude = (float) $e->longitude;
 				$data += compact( 'latitude', 'longitude' );
 				// Check the input coordinates checkbox, otherwise lat/long data
 				// is not present on the edit event page
 				$data['show_coordinates'] = 1;
 			}
+
 			// ===================
 			// = Venue & address =
 			// ===================
-			$address = $venue = '';
-			$location = $e->getProperty( 'location' );
-			$matches = array();
-			// This regexp matches a venue / address in the format
-			// "venue @ address" or "venue - address".
-			preg_match( '/\s*(.*\S)\s+[\-@]\s+(.*)\s*/', $location, $matches );
-			// if there is no match, it's not a combined venue + address
-			if ( empty( $matches ) ) {
-				// temporary fix for Mac ICS import. Se AIOEC-2187
-				// and https://github.com/iCalcreator/iCalcreator/issues/13
-				$location = str_replace( '\n', "\n", $location );
-				// if there is a comma, probably it's an address
-				if ( false === strpos( $location, ',' ) ) {
-					$venue = $location;
-				} else {
-					$address = $location;
-				}
-			} else {
-				$venue = isset( $matches[1] ) ? $matches[1] : '';
-				$address = isset( $matches[2] ) ? $matches[2] : '';
+			$address  = $venue = '';
+			if ( ! empty( $e->venue_name ) ) {
+				$venue = $e->venue_name;
 			}
-
+			if ( ! empty( $e->address ) ) {
+				$address = $e->address;
+			}
 			// =====================================================
 			// = Set show map status based on presence of location =
 			// =====================================================
@@ -342,55 +233,43 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			// ==================
 			// = Cost & tickets =
 			// ==================
-			$cost       = $e->getProperty( 'X-COST' );
-			$cost       = $cost ? $cost[1] : '';
-			$ticket_url = $e->getProperty( 'X-TICKETS-URL' );
-			$ticket_url = $ticket_url ? $ticket_url[1] : '';
+			$cost       = $e->cost;
+			$ticket_url = $e->ticket_url;
 
 			// ===============================
 			// = Contact name, phone, e-mail =
-			// ===============================
-			$organizer = $e->getProperty( 'organizer' );
-			if (
-				'MAILTO:' === substr( $organizer, 0, 7 ) &&
-				false === strpos( $organizer, '@' )
-			) {
-				$organizer = substr( $organizer, 7 );
+			// ===============================			
+			if ( ! empty( $e->contact_name ) ) {
+				$data['contact_name'] = $e->contact_name;	
 			}
-			$contact = $e->getProperty( 'contact' );
-			$elements = explode( ';', $contact, 4 );
-
-			foreach ( $elements as $el ) {
-				$el = trim( $el );
-				// Detect e-mail address.
-				if ( false !== strpos( $el, '@' ) ) {
-					$data['contact_email'] = $el;
-				}
-				// Detect URL.
-				elseif ( false !== strpos( $el, '://' ) ) {
-					$data['contact_url']   = $el;
-				}
-				// Detect phone number.
-				elseif ( preg_match( '/\d/', $el ) ) {
-					$data['contact_phone'] = $el;
-				}
-				// Default to name.
-				else {
-					$data['contact_name']  = $el;
-				}
+			if ( ! empty( $e->contact_phone ) ) {
+				$data['contact_phone'] = $e->contact_phone;	
+			}
+			if ( ! empty( $e->contact_email ) ) {
+				$data['contact_email'] = $e->contact_email;	
+			}
+			if ( ! empty( $e->contact_url ) ) {
+				$data['contact_url'] = $e->contact_url;	
 			}
 			if ( ! isset( $data['contact_name'] ) || ! $data['contact_name'] ) {
 				// If no contact name, default to organizer property.
 				$data['contact_name']    = $organizer;
 			}
 
+			$organizer = $e->ical_organizer;
+			if (
+				'MAILTO:' === substr( $organizer, 0, 7 ) &&
+				false === strpos( $organizer, '@' )
+			) {
+				$organizer = substr( $organizer, 7 );
+			}
+
 			$description = stripslashes(
 							str_replace(
 								'\n',
 								"\n",
-								$e->getProperty( 'description' )
-							));
-			
+								$e->description
+							));			
 			$description = $this->_remove_ticket_url( $description );				
 
 			// Store yet-unsaved values to the $data array.
@@ -405,10 +284,10 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 				'ticket_url'        => $ticket_url,
 				'show_map'          => $event_do_show_map,
 				'ical_feed_url'     => $feed->feed_url,
-				'ical_source_url'   => $e->getProperty( 'url' ),
+				'ical_source_url'   => $e->ical_source_url,
 				'ical_organizer'    => $organizer,
-				'ical_contact'      => $contact,
-				'ical_uid'          => $this->_get_ical_uid( $e ),
+				'ical_contact'      => $e->ical_contact,
+				'ical_uid'          => $e->ical_uid,
 				'categories'        => array_keys( $imported_cat[Ai1ec_Event_Taxonomy::CATEGORIES] ),
 				'tags'              => array_keys( $imported_tags[Ai1ec_Event_Taxonomy::TAGS] ),
 				'feed'              => $feed,
@@ -417,15 +296,9 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 					'comment_status'    => $comment_status,
 					'post_type'         => AI1EC_POST_TYPE,
 					'post_author'       => 1,
-					'post_title'        => $e->getProperty( 'summary' ),
+					'post_title'        => $e->title,
 					'post_content'      => $description
 				)
-			);
-			// register any custom exclusions for given event
-			$exclusions = $this->_add_recurring_events_exclusions(
-				$e,
-				$exclusions,
-				$start
 			);
 
 			// Create event object.
@@ -439,7 +312,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			$event = $this->_registry->get( 'model.event', $data );		
 
 			// Instant Event
-			$is_instant = $e->getProperty( 'X-INSTANT-EVENT' );
+			$is_instant = $e->instant_event;
 			if ( $is_instant ) {
 				$event->set_no_end_time();
 			}
@@ -504,24 +377,24 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 
 			// import the metadata used by ticket events
 
-			$cost_type    = $e->getProperty( 'X-COST-TYPE' );
-			if ( $cost_type && false === ai1ec_is_blank( $cost_type[1] ) ) {
-				update_post_meta( $event->get( 'post_id' ), '_ai1ec_cost_type', $cost_type[1] );
+			$cost_type    = $e->cost_type;
+			if ( false === ai1ec_is_blank( $cost_type ) ) {
+				update_post_meta( $event->get( 'post_id' ), '_ai1ec_cost_type', $cost_type );
 			}
 
-			$api_event_id = $e->getProperty( 'X-API-EVENT-ID' );
-			if ( $api_event_id && false === ai1ec_is_blank( $api_event_id[1] ) ) {
-				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api_Ticketing::EVENT_ID_METADATA, $api_event_id[1] );	
+			$api_event_id = $e->api_event_id;
+			if ( false === ai1ec_is_blank( $api_event_id ) ) {
+				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api_Ticketing::EVENT_ID_METADATA, $api_event_id );	
 			}
 
-			$api_url = $e->getProperty( 'X-API-URL' );
-			if ( $api_url && false === ai1ec_is_blank( $api_url[1] ) ) {
-				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api_Ticketing::ICS_API_URL_METADATA, $api_url[1] );	
+			$api_url = $e->api_url;
+			if ( false === ai1ec_is_blank( $api_url ) ) {
+				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api_Ticketing::ICS_API_URL_METADATA, $api_url );	
 			}
 
-			$checkout_url = $e->getProperty( 'X-CHECKOUT-URL' );
-			if ( $checkout_url && false === ai1ec_is_blank( $checkout_url[1] ) ) {
-				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api_Ticketing::ICS_CHECKOUT_URL_METADATA, $checkout_url[1] );	
+			$checkout_url = $e->checkout_url;
+			if ( false === ai1ec_is_blank( $checkout_url ) ) {
+				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api_Ticketing::ICS_CHECKOUT_URL_METADATA, $checkout_url );	
 			}
 
 			unset( $events_in_db[$event->get( 'post_id' )] );
@@ -552,9 +425,9 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 	}
 
 	/**
-	 * time_array_to_timestamp function
+	 * _string_to_datetime function
 	 *
-	 * Converts time array to time string.
+	 * Converts time string "Y-m-d H:i:s" to DateTime object.
 	 * Passed array: Array( 'year', 'month', 'day', ['hour', 'min', 'sec', ['tz']] )
 	 * Return int: UNIX timestamp in GMT
 	 *
@@ -566,54 +439,17 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 	 *
 	 * @return int UNIX timestamp
 	 **/
-	protected function _time_array_to_datetime(
-		array $time,
+	protected function _string_to_datetime(
+		$time,
 		$def_timezone,
 		$forced_timezone = null
 	) {
-		$timezone = '';
-		if ( isset( $time['params']['TZID'] ) ) {
-			$timezone = $time['params']['TZID'];
-		} elseif (
-				isset( $time['value']['tz'] ) &&
-				'Z' === $time['value']['tz']
-		) {
-			$timezone = 'UTC';
-		}
-		if ( empty( $timezone ) ) {
-			$timezone = $def_timezone;
-		}
-
-		$date_time = $this->_registry->get( 'date.time' );
-
-		if ( ! empty( $timezone ) ) {
-			$parser   = $this->_registry->get( 'date.timezone' );
-			$timezone = $parser->get_name( $timezone );
-			if ( false === $timezone ) {
-				return false;
-			}
-			$date_time->set_timezone( $timezone );
-		}
-
-		if ( ! isset( $time['value']['hour'] ) ) {
-			$time['value']['hour'] = $time['value']['min'] =
-				$time['value']['sec'] = 0;
-		}
-
-		$date_time->set_date(
-			$time['value']['year'],
-			$time['value']['month'],
-			$time['value']['day']
-		)->set_time(
-			$time['value']['hour'],
-			$time['value']['min'],
-			$time['value']['sec']
-		);
-		if (
-			'UTC' === $timezone &&
-			null !== $forced_timezone
-		) {
-			$date_time->set_timezone( $forced_timezone );
+		$date_time = null;
+		if ( 0 === strcasecmp( $def_timezone, 'utc' ) && 
+			null !== $forced_timezone ) {
+			$date_time = $this->_registry->get( 'date.time',  $time, $forced_timezone );
+		} else {
+			$date_time = $this->_registry->get( 'date.time',  $time, $def_timezone );
 		}
 		return $date_time;
 	}
@@ -659,67 +495,6 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 	}
 
 	/**
-	 * Returns modified ical uid for google recurring edited events.
-	 *
-	 * @param vevent $e Vevent object.
-	 *
-	 * @return string ICAL uid.
-	 */
-	protected function _get_ical_uid( $e ) {
-		$ical_uid      = $e->getProperty( 'uid' );
-		$recurrence_id = $e->getProperty( 'recurrence-id' );
-		if ( false !== $recurrence_id ) {
-			$ical_uid = implode( '', array_values( $recurrence_id ) ) . '-' .
-				$ical_uid;
-		}
-
-		return $ical_uid;
-	}
-
-	/**
-	 * Returns modified exclusions structure for given event.
-	 *
-	 * @param vcalendar       $e          Vcalendar event object.
-	 * @param array           $exclusions Exclusions.
-	 * @param Ai1ec_Date_Time $start Date time object.
-	 *
-	 * @return array Modified exclusions structure.
-	 */
-	protected function _add_recurring_events_exclusions( $e, $exclusions, $start ) {
-		$recurrence_id = $e->getProperty( 'recurrence-id' );
-		if (
-			false === $recurrence_id ||
-			! isset( $recurrence_id['year'] ) ||
-			! isset( $recurrence_id['month'] ) ||
-			! isset( $recurrence_id['day'] )
-		) {
-			return $exclusions;
-		}
-		$year = $month = $day = $hour = $min = $sec = null;
-		extract( $recurrence_id, EXTR_IF_EXISTS );
-		$timezone = '';
-		$exdate   = sprintf( '%04d%02d%02d', $year, $month, $day );
-		if (
-			null === $hour ||
-			null === $min ||
-			null === $sec
-		) {
-			$hour = $min = $sec = '00';
-			$timezone = 'Z';
-		}
-		$exdate .= sprintf(
-			'T%02d%02d%02d%s',
-			$hour,
-			$min,
-			$sec,
-			$timezone
-		);
-		$exclusions[$e->getProperty( 'uid' )][] = $exdate;
-		return $exclusions;
-	}
-
-
-	/**
 	 * Remove the Ticket URL that maybe exists inside the field Description of the Event
 	 */
 	protected function _remove_ticket_url( $description ) {
@@ -735,23 +510,4 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 		throw new Exception( 'Export not supported' );
 	}
 
-	/**
-	 * Check if date-time specification has no (empty) time component.
-	 *
-	 * @param array $datetime Datetime array returned by iCalcreator.
-	 *
-	 * @return bool Timelessness.
-	 */
-	protected function _is_timeless( array $datetime ) {
-		$timeless = true;
-		foreach ( array( 'hour', 'min', 'sec' ) as $field ) {
-			$timeless &= (
-					isset( $datetime[$field] ) &&
-					0 != $datetime[$field]
-			)
-			? false
-			: true;
-		}
-		return $timeless;
-	}
 }

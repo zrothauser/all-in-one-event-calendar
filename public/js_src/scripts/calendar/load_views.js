@@ -256,16 +256,17 @@ define(
 						loading_view_request.abort( 'ai1ec_abort' );
 					}
 					// Fetch AJAX result
-					if ( ! ajax_cache[hash + query] ) {
+					var query_str = '-'+ query.request_type + '-' + query.ai1ec_doing_ajax;
+					if ( ! ajax_cache[hash + query_str] ) {
 						loading_view_request = $.ajax( {
 							url      : hash,
 							dataType : type,
 							data     : query,
 							method   : 'GET'
 						} );
-						ajax_cache[hash + query] = loading_view_request.promise();
+						ajax_cache[hash + query_str] = loading_view_request.promise();
 					} else {
-						loading_view_request = ajax_cache[hash + query];
+						loading_view_request = ajax_cache[hash + query_str];
 					}
 					loading_view_request.done( function( data ) {
 						// trigger the event so that other addons can respond

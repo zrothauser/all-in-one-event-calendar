@@ -509,35 +509,6 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		}
 	}
 
-	/**
-	 * That's currently a mock for getting a suggested events list.
-	 * @return object Response body in JSON.
-	 */
-	public function get_suggested_events( $page = 0, $max = 8 ) {
-		$calendar_id = $this->_get_ticket_calendar();
-		if ( 0 >= $calendar_id ) {
-			return null;
-		}
-		$request  = array(
-			'headers' => $this->_get_headers(),
-			'timeout' => self::DEFAULT_TIMEOUT
-			);
-		$url           = AI1EC_API_URL . "calendars/$calendar_id/discover/events?page=$page&max=$max";
-		$response      = wp_remote_get( $url, $request );
-		$response_code = wp_remote_retrieve_response_code( $response );
-		if ( 200 === $response_code ) {			
-			$result = json_decode( $response['body'] );
-			return $result->data;
-		} else {
-			$error_message = $this->_transform_error_message( 
-				  __( 'We were unable to get the Suggested Events from Time.ly Network', AI1EC_PLUGIN_NAME )
-				, $response, $url, true );
-			$notification = $this->_registry->get( 'notification.admin' );
-			$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
-			return array();
-		}
-	}
-
 	public function _order_comparator( $order1, $order2 ) {
 		return strcmp( $order1->created_at, $order2->created_at ) * -1;
 	}

@@ -30,9 +30,22 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 		if ( 0 >= $calendar_id ) {
 			return null;
 		}
+
+		$body = null;
+	 	if ( isset( $_POST[ 'lat1' ] ) &&
+	 		isset( $_POST[ 'lng1' ] ) &&
+	 		isset( $_POST[ 'lat2' ] ) &&
+	 		isset( $_POST[ 'lng2' ] ) ) {
+			$body=[ 
+				'lat1' => $_POST[ 'lat1' ],
+				'lng1' => $_POST[ 'lng1' ],
+				'lat2' => $_POST[ 'lat2' ],
+				'lng2' => $_POST[ 'lng2' ]
+			];
+	 	}
 		$response = $this->request_api( 'GET',
 			"calendars/$calendar_id/discover/events?page=$page&max=$max",
-			null, 
+			null !== $body ? json_encode( $body ) : null, 
 			true //decode body response
 		);
 		if ( $this->is_response_success( $response ) ) {

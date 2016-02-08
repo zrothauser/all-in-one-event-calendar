@@ -51,5 +51,39 @@ class FeedsTests extends BaseTestCase {
 		//TODO Improve the assert
 		//get the event from another endpoint and check with the event saved inside the WP db
 	}
+
+	/**
+	 * @group feeds
+	 */
+	function testGetSuggestedEvents() {				
+		global $ai1ec_registry;
+
+		$this->api_sign();
+
+		$api   = $ai1ec_registry->get( 'model.api.api-feeds' );
+		$feeds = $api->get_suggested_events(0, 1);
+		
+		$this->assertArrayNotEmpty( $feeds, "Feeds list is empty" );		
+	}
+
+		/**
+	 * @group feeds
+	 */
+	function testGetSuggestedEventsMapBounds() {				
+		global $ai1ec_registry;
+
+		$this->api_sign();
+
+		$api   = $ai1ec_registry->get( 'model.api.api-feeds' );
+
+		$_POST[ 'lat1' ] = 37;
+		$_POST[ 'lng1' ] = -127;
+		$_POST[ 'lat2' ] = 237;
+		$_POST[ 'lng2' ] = -327;
+
+		$feeds = $api->get_suggested_events(0, 1);
+		
+		$this->assertNotNull( $feeds, "Feeds list is empty" );		
+	}
 }
 

@@ -97,7 +97,7 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			'exclude'                 => $time->get_exclude_html( $event, $rrule ),
 			'categories'              => $taxonomy->get_categories_html( $event ),
 			'tags'                    => $taxonomy->get_tags_html( $event ),
-			'location'                => $venues_html,
+			'location'                => html_entity_decode( $venues_html ),
 			'filter_groups'           => $filter_groups_html,
 			'map'                     => $location->get_map_view( $event ),
 			'contact'                 => $ticket->get_contact_html( $event ),

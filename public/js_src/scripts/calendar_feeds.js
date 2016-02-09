@@ -208,7 +208,6 @@ define(
 	// Init Events map
 	var init_gmaps = function() {
 		var
-			$events     = $( 'tr.ai1ec-suggested-event' ),
 			markers     = [],
 			bounds      = new google.maps.LatLngBounds();
 			map_options = {
@@ -217,6 +216,8 @@ define(
 				zoomControl    : true,
 				scaleControl   : true
 			},
+			timeout    = null,
+			update_xhr = null,
 			buttons    = $( '.ai1ec-suggested-events-actions-template' ).html(),
 			events_map = new google.maps.Map(
 				$( '#ai1ec_events_map_canvas' ).get( 0 ), map_options
@@ -233,40 +234,91 @@ define(
 					+ '<br>' + buttons + '</div>';
 
 				infowindow.setContent( s );
+			},
+			update_events = function() {
+				var old_markers_ids = [];
+				for ( var i = 0; i < markers.length; i++ ) {
+					if ( ! $( 'tr[data-event-id="' + markers[i].event_id + '"]' ).length ) {
+						markers[i].setMap( null );
+					} else {
+						old_markers_ids.push( markers[i].event_id );
+					}
+				}
+				$( 'tr.ai1ec-suggested-event' ).each( function() {
+					var
+						$this = $( this ),
+						event = $.parseJSON( $this.attr( 'data-event' ) );
+					
+					if ( ! event || ! event.latitude || ! event.longitude ) return;
+					if ( -1 != $.inArray( old_markers_ids, event.id) ) return;
+					
+					var marker = new google.maps.Marker( {
+						map      : events_map,
+						title    : event.title,
+						position : new google.maps.LatLng( event.latitude , event.longitude )
+					} );
+		
+					marker.event_id = event.id;
+					marker.addListener( 'click', function() {
+						create_info( event );
+						infowindow.open( events_map, this );
+				 	} );
+				 	marker.addListener( 'mouseover', function() {
+						$( 'tr[data-event-id="' + this.event_id + '"]' )
+							.addClass( 'ai1ec-suggested-hover' )
+				 	} );
+				 	marker.addListener( 'mouseout', function() {
+						$( 'tr[data-event-id="' + this.event_id + '"]' )
+							.removeClass( 'ai1ec-suggested-hover' )
+				 	} );
+					
+					bounds.extend( marker.getPosition() );
+					markers.push( marker );
+				} );
 			};
-
-		$events.each( function() {
-			var
-				$this = $( this ),
-				event = $.parseJSON( $this.attr( 'data-event' ) );
 			
-			if ( ! event || ! event.latitude || ! event.longitude ) return;
-			
-			var marker = new google.maps.Marker( {
-				map      : events_map,
-				title    : event.title,
-				position : new google.maps.LatLng( event.latitude , event.longitude )
-			} );
-
-			marker.event_id = event.id;
-			marker.addListener( 'click', function() {
-				create_info( event );
-				infowindow.open( events_map, this );
-		 	} );
-		 	marker.addListener( 'mouseover', function() {
-				$( 'tr[data-event-id="' + this.event_id + '"]' )
-					.addClass( 'ai1ec-suggested-hover' )
-		 	} );
-		 	marker.addListener( 'mouseout', function() {
-				$( 'tr[data-event-id="' + this.event_id + '"]' )
-					.removeClass( 'ai1ec-suggested-hover' )
-		 	} );
-			
-			bounds.extend( marker.getPosition() );
-			markers.push( marker );
-		} );
-
+		update_events();
 		events_map.fitBounds( bounds );
+		
+		events_map.addListener( 'bounds_changed', function() {
+			if ( null === timeout ) {
+				timeout = false;
+				return;
+			}
+			clearTimeout( timeout );
+			if( update_xhr && 4 != update_xhr.readystate ){
+				update_xhr.abort();
+				update_xhr = null;
+			}
+			timeout = setTimeout( function() {
+				var
+					bounds = events_map.getBounds(),
+					ne     = bounds.getNorthEast(),
+					sw     = bounds.getSouthWest();
+
+				update_xhr = $.ajax( {
+					url      : ai1ec_config.ajax_url,
+					type     : 'POST',
+					data     : {
+						action : 'ai1ec_map_updated',
+						lat1   : sw.lat(),
+						lng1   : sw.lng(),
+						lat2   : ne.lat(),
+						lng2   : ne.lng()
+					},
+					success  : function( response ) {
+						response = $.parseJSON( response );
+						if ( response && response.list ) {
+							$( '.ai1ec-feeds-list-container' ).html( response.list );
+							update_events();
+						}
+					}
+				} );
+				
+				
+				
+			}, 1000 );
+		});
 	};
 	
 	

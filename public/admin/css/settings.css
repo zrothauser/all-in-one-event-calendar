@@ -260,10 +260,9 @@
 	background: #fff;
 	table-layout: fixed;
 }
-#suggested.ai1ec-feeds-both table.ai1ec-suggested-events {
+#suggested.ai1ec-feeds-both .ai1ec-feeds-list-container {
 	width: 55%;
-	background: #fff;
-	table-layout: fixed;
+	float: left;
 }
 #suggested table.ai1ec-suggested-events tr {
 	border: 1px solid #ddd;

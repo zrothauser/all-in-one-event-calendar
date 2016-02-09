@@ -256,7 +256,7 @@ define(
 						loading_view_request.abort( 'ai1ec_abort' );
 					}
 					// Fetch AJAX result
-					var query_str = '-'+ query.request_type + '-' + query.ai1ec_doing_ajax;
+					var query_str = '-'+ query.request_type;
 					if ( ! ajax_cache[hash + query_str] ) {
 						loading_view_request = $.ajax( {
 							url      : hash,

@@ -122,7 +122,7 @@ class iCalcnv {
     		$this->log->log( "OUTPUT.FILE:$outputdirFile", PEAR_LOG_NOTICE );
     	}
     	/** read csv file into input array */
-	ini_set('auto_detect_line_endings', true);
+	ini_set( 'auto_detect_line_endings', true );
     	$fp = fopen( $inputdirFile, "r" );
     	if( FALSE === $fp ) {
     		if( $this->log ) {
@@ -137,7 +137,7 @@ class iCalcnv {
     while ( FALSE !== ( $row = fgetcsv( $fp, FALSE, $conf['sep'], $conf['del'] )))
       $rows[] = $row;
     fclose( $fp );
-    ini_set('auto_detect_line_endings', false);
+    ini_set( 'auto_detect_line_endings', false );
     $cntrows = count( $rows );
             /** iCalcreator checks when setting directory and filename */
     $calendar = new vcalendar();

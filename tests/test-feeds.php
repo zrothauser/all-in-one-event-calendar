@@ -60,9 +60,10 @@ class FeedsTests extends BaseTestCase {
 
 		$this->api_sign();
 
-		$api   = $ai1ec_registry->get( 'model.api.api-feeds' );
-		$feeds = $api->get_suggested_events(0, 1);
-		
+		$api    = $ai1ec_registry->get( 'model.api.api-feeds' );
+		$result = $api->get_suggested_events();
+		$this->assertNotNull( $result, "Result of get_suggested_events is null" );
+		$feeds  = $result->data;	
 		$this->assertArrayNotEmpty( $feeds, "Feeds list is empty" );		
 	}
 
@@ -81,8 +82,9 @@ class FeedsTests extends BaseTestCase {
 		$_POST[ 'lat2' ] = 237;
 		$_POST[ 'lng2' ] = -327;
 
-		$feeds = $api->get_suggested_events(0, 1);
-		
+		$result = $api->get_suggested_events();
+		$this->assertNotNull( $result, "Result of get_suggested_events is null" );
+		$feeds  = $result->data;
 		$this->assertNotNull( $feeds, "Feeds list is empty" );		
 	}
 }

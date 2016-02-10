@@ -25,7 +25,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 	 * Getting a suggested events list.
 	 * @return object Response body in JSON.
 	 */
-	public function get_suggested_events( $page = 0, $max = 8 ) {
+	public function get_suggested_events( $page = 1, $max = 8 ) {
 		$calendar_id = $this->_get_ticket_calendar();
 		if ( 0 >= $calendar_id ) {
 			return null;
@@ -49,7 +49,17 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 			true //decode body response
 		);
 		if ( $this->is_response_success( $response ) ) {
-			return $response->body->data; 	
+			// $response->body format
+			// [total] => 10
+			// [per_page] => 8
+			// [current_page] => 1
+			// [last_page] => 2
+			// [next_page_url] => http://dev.time.ly:882/api/calendars/4/discover/events?page=2
+			// [prev_page_url] => 
+			// [from] => 1
+			// [to] => 8
+			// [data] => Array
+			return $response->body; 	
 		}  else {
 			$this->save_error_notification( 
 				$response, 

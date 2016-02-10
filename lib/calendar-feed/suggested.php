@@ -46,7 +46,7 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$this->render_opening_div_of_tab();
 	
 		$api           = $this->_registry->get( 'model.api.api-feeds' );
-		$feeds         = $api->get_suggested_events();
+		$events        = $api->get_suggested_events();
 		$loader        = $this->_registry->get( 'theme.loader' );
 		$event_actions = $loader->get_file(
 			'plugins/suggested/event_actions.php',
@@ -56,7 +56,9 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$feeds_list    = $loader->get_file(
 			'plugins/suggested/feeds_list.php',
 			array(
-				'suggested_feeds' => $feeds,
+				'suggested_feeds' => $events->data,
+				'total_events'    => $events->total,
+				'last_page'       => $events->last_page,
 				'event_actions'   => $event_actions
 			),
 			true
@@ -105,7 +107,7 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 	 */
 	public function map_updated() {
 		$api           = $this->_registry->get( 'model.api.api-feeds' );
-		$feeds         = $api->get_suggested_events();
+		$events        = $api->get_suggested_events();
 		$loader        = $this->_registry->get( 'theme.loader' );
 		$event_actions = $loader->get_file(
 			'plugins/suggested/event_actions.php',
@@ -115,7 +117,9 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$feeds_list    = $loader->get_file(
 			'plugins/suggested/feeds_list.php',
 			array(
-				'suggested_feeds' => $feeds,
+				'suggested_feeds' => $events->data,
+				'total_events'    => $events->total,
+				'last_page'       => $events->last_page,
 				'event_actions'   => $event_actions
 			),
 			true

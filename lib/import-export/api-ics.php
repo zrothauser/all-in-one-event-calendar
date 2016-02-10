@@ -253,7 +253,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			}
 			if ( ! isset( $data['contact_name'] ) || ! $data['contact_name'] ) {
 				// If no contact name, default to organizer property.
-				$data['contact_name']    = $organizer;
+				$data['contact_name']    = $e->ical_organizer;
 			}
 
 			$organizer = $e->ical_organizer;

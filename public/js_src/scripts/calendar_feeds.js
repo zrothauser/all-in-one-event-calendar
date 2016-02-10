@@ -358,7 +358,6 @@ define(
 			bounds.extend( markers[i].getPosition() );
 		}
 		events_map.fitBounds( bounds );
-		//update = true;
 	};
 	
 	

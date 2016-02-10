@@ -306,7 +306,7 @@
 	margin-top: 20px;
 }
 #suggested {
-	min-height: 455px;
+	min-height: 465px;
 }
 #suggested table.ai1ec-suggested-events td {
 	padding: 5px;
@@ -360,8 +360,9 @@
 	font-weight: bold;
 }
 #suggested .ai1ec-feeds-pagination {
-	margin-right: 20%;
+	margin: auto 0;
 	color: #666;
+	margin-bottom: 30px;
 }
 #suggested .ai1ec-feeds-pagination .current {
 	font-weight: bold;
@@ -409,6 +410,11 @@
 }
 #suggested.ai1ec-feeds-both div.ai1ec-suggested-description {
 	display: none;
+}
+#suggested .ai1ec-feeds-loading {
+	opacity: 0.3;
+	pointer-events: none;
+	-webkit-filter: grayscale(100%) !important; 
 }
 #suggested .ai1ec-suggested-date {
 	font-size: 12px;

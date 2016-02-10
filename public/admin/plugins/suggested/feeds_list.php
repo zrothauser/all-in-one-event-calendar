@@ -42,3 +42,12 @@
 <?php
 	endif;
 ?>
+<div class="ai1ec-feeds-pagination">
+<?php
+if ( $page_links ) {
+    echo '<div class="tablenav"><div class="tablenav-pages">'
+    	. $page_links
+    . '</div></div>';
+}
+?>
+</div>

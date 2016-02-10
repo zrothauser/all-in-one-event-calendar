@@ -22,10 +22,10 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 	}
 
 	/**
-	 * That's currently a mock for getting a suggested events list.
+	 * Getting a suggested events list.
 	 * @return object Response body in JSON.
 	 */
-	public function get_suggested_events( $page = 0, $max = 20 ) {
+	public function get_suggested_events( $page = 0, $max = 8 ) {
 		$calendar_id = $this->_get_ticket_calendar();
 		if ( 0 >= $calendar_id ) {
 			return null;

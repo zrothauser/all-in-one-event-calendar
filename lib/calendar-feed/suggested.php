@@ -53,13 +53,20 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 			array(),
 			true
 		);
-		$args          = array(
-			'suggested_feeds' => $feeds,
-			'event_actions'   => $event_actions
+		$feeds_list    = $loader->get_file(
+			'plugins/suggested/feeds_list.php',
+			array(
+				'suggested_feeds' => $feeds,
+				'event_actions'   => $event_actions
+			),
+			true
 		);
 		$display_feeds = $loader->get_file(
 			'plugins/suggested/display_feeds.php',
-			$args,
+			array(
+				'event_actions'   => $event_actions,
+				'feeds_list'      => $feeds_list
+			),
 			true
 		);
 		$display_feeds->render();
@@ -92,6 +99,34 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 	public function display_admin_notices() {
 		return;
 	}
+
+	/**
+	 * Remove suggested event
+	 */
+	public function map_updated() {
+		$api           = $this->_registry->get( 'model.api.api-feeds' );
+		$feeds         = $api->get_suggested_events();
+		$loader        = $this->_registry->get( 'theme.loader' );
+		$event_actions = $loader->get_file(
+			'plugins/suggested/event_actions.php',
+			array(),
+			true
+		);
+		$feeds_list    = $loader->get_file(
+			'plugins/suggested/feeds_list.php',
+			array(
+				'suggested_feeds' => $feeds,
+				'event_actions'   => $event_actions
+			),
+			true
+		);
+		$feeds_list = array(
+			'list' => $feeds_list->get_content()
+		);
+		echo json_encode( $feeds_list );
+		exit( 0 );
+	}
+	
 
 	/**
 	 * (non-PHPdoc)

@@ -16,6 +16,24 @@
 <div class="ai1ec-feeds-list-container">
 	<?php echo $feeds_list;?>
 </div>
+<div class="ai1ec-feeds-pagination">
+<?php
+$page_links = paginate_links( array(
+    'base' => add_query_arg( 'pagenum', '%#%' ),
+    'format' => '',
+    'prev_text' => __( '&laquo;', 'text-domain' ),
+    'next_text' => __( '&raquo;', 'text-domain' ),
+    'total' => 65,
+    'current' => 1
+) );
+
+if ( $page_links ) {
+    echo '<div class="tablenav"><div class="tablenav-pages">'
+    	. $page_links
+    . '</div></div>';
+}
+?>
+</div>
 <div class="ai1ec-suggested-events-actions-template ai1ec-hidden">
 	<?php echo $event_actions; ?>
 </div>

@@ -299,6 +299,12 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	 * @return void
 	 */
 	public function cron() {
+		
+		$api = $this->_registry->get( 'model.api.api-registration' );
+		if ( false === $api->is_signed() ) {
+			return;
+		}
+
 		$db = $this->_registry->get( 'dbi.dbi' );
 		// Initializing custom post type and custom taxonomies
 		$post_type = $this->_registry->get( 'post.custom-type' );

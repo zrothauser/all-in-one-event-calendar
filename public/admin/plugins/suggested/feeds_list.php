@@ -1,7 +1,7 @@
 <?php
 	if ( 0 === count( $suggested_feeds ) ):
 ?>
-<p><?php _e( 'No feeds to display.', AI1EC_PLUGIN_NAME ); ?></p>
+<p class="ai1ec-suggested-no-events"><?php _e( 'No events found.', AI1EC_PLUGIN_NAME ); ?></p>
 <?php
 	else:
 ?>
@@ -12,7 +12,10 @@
 			data-event="<?php echo esc_attr( json_encode( $event ) ); ?>"
 			data-event-id="<?php echo $event->id;?>">
 			<td class="ai1ec-suggested-image"
-				style="background-image:url(<?php if ( isset( $event->image ) ) { echo esc_attr( $event->image ); }?>)">&nbsp;
+				style="background-image:url(<?php
+					if ( isset( $event->image_url ) ) {
+						echo esc_attr( $event->image_url );
+					}?>)">&nbsp;
 			</td>
 			<td class="ai1ec-suggested-content">
 				<a href="<?php echo $event->url;?>" class="ai1ec-suggested-title">
@@ -21,7 +24,7 @@
 				<div class="ai1ec-suggested-date">
 					<?php
 						$date = new DateTime( $event->dtstart );
-						echo $date->format( 'l jS M \'y' ) . '@';
+						echo $date->format( 'l jS M \'y' ) . ' @ ';
 						echo $event->venue_name;
 					?>
 				</div>
@@ -39,3 +42,12 @@
 <?php
 	endif;
 ?>
+<div class="ai1ec-feeds-pagination">
+<?php
+if ( $page_links ) {
+    echo '<div class="tablenav"><div class="tablenav-pages">'
+    	. $page_links
+    . '</div></div>';
+}
+?>
+</div>

@@ -46,8 +46,17 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$this->render_opening_div_of_tab();
 	
 		$api           = $this->_registry->get( 'model.api.api-feeds' );
-		$events        = $api->get_suggested_events();
+		$events        = $api->get_suggested_events( 1, 8 );
 		$loader        = $this->_registry->get( 'theme.loader' );
+
+		$page_links = paginate_links( array(
+			'base'      => add_query_arg( 'pagenum', '%#%' ),
+			'format'    => '',
+			'prev_text' => __( '&laquo;', AI1EC_PLUGIN_NAME ),
+			'next_text' => __( '&raquo;', AI1EC_PLUGIN_NAME ),
+			'total'     => $events->last_page,
+			'current'   => $events->current_page
+		) );
 		$event_actions = $loader->get_file(
 			'plugins/suggested/event_actions.php',
 			array(),
@@ -57,9 +66,8 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'plugins/suggested/feeds_list.php',
 			array(
 				'suggested_feeds' => $events->data,
-				'total_events'    => $events->total,
-				'last_page'       => $events->last_page,
-				'event_actions'   => $event_actions
+				'event_actions'   => $event_actions,
+				'page_links'      => $page_links
 			),
 			true
 		);
@@ -107,20 +115,28 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 	 */
 	public function map_updated() {
 		$api           = $this->_registry->get( 'model.api.api-feeds' );
-		$events        = $api->get_suggested_events();
+		$page          = isset( $_POST[ 'page' ] ) ? $_POST[ 'page' ] : 1;
+		$events        = $api->get_suggested_events( $page, 8 );
 		$loader        = $this->_registry->get( 'theme.loader' );
 		$event_actions = $loader->get_file(
 			'plugins/suggested/event_actions.php',
 			array(),
 			true
 		);
+		$page_links = paginate_links( array(
+			'base'      => add_query_arg( 'pagenum', '%#%' ),
+			'format'    => '',
+			'prev_text' => __( '&laquo;', AI1EC_PLUGIN_NAME ),
+			'next_text' => __( '&raquo;', AI1EC_PLUGIN_NAME ),
+			'total'     => $events->last_page,
+			'current'   => $events->current_page
+		) );
 		$feeds_list    = $loader->get_file(
 			'plugins/suggested/feeds_list.php',
 			array(
 				'suggested_feeds' => $events->data,
-				'total_events'    => $events->total,
-				'last_page'       => $events->last_page,
-				'event_actions'   => $event_actions
+				'event_actions'   => $event_actions,
+				'page_links'      => $page_links
 			),
 			true
 		);

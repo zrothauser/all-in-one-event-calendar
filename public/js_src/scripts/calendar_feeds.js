@@ -148,7 +148,7 @@ define(
 			var
 				$this      = $( this ),
 				$selectors = $this.parent(),
-				view      = $this.attr( 'data-ai1ec-view' );
+				view       = $this.attr( 'data-ai1ec-view' );
 
 			$( '#suggested' ).removeClass( function ( i, v ) {
 				return ( v.match ( /(^|\s)ai1ec-feeds-\S+/g ) || [] ).join( ' ' );
@@ -159,8 +159,10 @@ define(
 			
 			$( '[data-ai1ec-show]' ).hide()
 				.filter( '[data-ai1ec-show~="' + view + '"]' ).show();	
-				
-			gMapsLoader( init_gmaps );			
+			
+			if ( 'list' !== view ) {
+				gMapsLoader( init_gmaps );
+			}
 			return false;
 		} );
 
@@ -179,10 +181,10 @@ define(
 				$( '#ai1ec_events_map_canvas' ).addClass( 'goes-left' );
 				
 				var $details = $( '#ai1ec_events_extra_details' ).html( '' );
-				if ( event.image ) {
+				if ( event.image_url ) {
 					$details.append(
 						$( '<img />', {
-							src : event.image,
+							src : event.image_url,
 							alt : ''
 						} )
 					)
@@ -202,30 +204,52 @@ define(
 			$this.blur();
 			return false;	
 		} );
+		
+		$( document ).on( 'click', '.ai1ec-feeds-list-container a.page-numbers',  function() {
+			var page = this.href.match( /pagenum=(\d+)/ );
+			if ( page && 1 < page.length ) {
+				page = page[1];
+				$( '.ai1ec-suggested-events' ).addClass( 'ai1ec-feeds-loading' );
+				$.ajax( {
+					url      : ai1ec_config.ajax_url,
+					type     : 'POST',
+					data     : {
+						action : 'ai1ec_map_updated',
+						page   : page
+					},
+					success  : function( response ) {
+						response = $.parseJSON( response );
+						if ( response && response.list ) {
+							$( '.ai1ec-feeds-list-container' ).html( response.list );
+							update_events();
+							update_maps();
+						}
+					}
+				} );
+			}
+
+			return false;
+		} );
 
 	};
 	
 	// Init Events map
+	var events_map, markers = [], update_events;
 	var init_gmaps = function() {
 		var
-			markers     = [],
-			bounds      = new google.maps.LatLngBounds();
-			map_options = {
+			map_options   = {
 				mapTypeId      : google.maps.MapTypeId.ROADMAP,
 				mapTypeControl : true,
 				zoomControl    : true,
 				scaleControl   : true
 			},
-			timeout    = null,
-			update_xhr = null,
-			buttons    = $( '.ai1ec-suggested-events-actions-template' ).html(),
-			events_map = new google.maps.Map(
-				$( '#ai1ec_events_map_canvas' ).get( 0 ), map_options
-			),
-			infowindow = new google.maps.InfoWindow({
+			timeout       = null,
+			update_xhr    = null,
+			buttons       = $( '.ai1ec-suggested-events-actions-template' ).html(),
+			infowindow    = new google.maps.InfoWindow({
 				maxWidth: 260
 			} ),
-			create_info = function( event ) {
+			create_info   = function( event ) {
 				var s = '<div class="ai1ec-infowindow" data-event-id="'
 					+ event.id +  '"><div class="ai1ec-infowindow-title"><b>'
 					+ event.title + '</b></div>'
@@ -234,53 +258,59 @@ define(
 					+ '<br>' + buttons + '</div>';
 
 				infowindow.setContent( s );
-			},
-			update_events = function() {
-				var old_markers_ids = [];
-				for ( var i = 0; i < markers.length; i++ ) {
-					if ( ! $( 'tr[data-event-id="' + markers[i].event_id + '"]' ).length ) {
-						markers[i].setMap( null );
-					} else {
-						old_markers_ids.push( markers[i].event_id );
-					}
-				}
-				$( 'tr.ai1ec-suggested-event' ).each( function() {
-					var
-						$this = $( this ),
-						event = $.parseJSON( $this.attr( 'data-event' ) );
-					
-					if ( ! event || ! event.latitude || ! event.longitude ) return;
-					if ( -1 != $.inArray( old_markers_ids, event.id) ) return;
-					
-					var marker = new google.maps.Marker( {
-						map      : events_map,
-						title    : event.title,
-						position : new google.maps.LatLng( event.latitude , event.longitude )
-					} );
-		
-					marker.event_id = event.id;
-					marker.addListener( 'click', function() {
-						create_info( event );
-						infowindow.open( events_map, this );
-				 	} );
-				 	marker.addListener( 'mouseover', function() {
-						$( 'tr[data-event-id="' + this.event_id + '"]' )
-							.addClass( 'ai1ec-suggested-hover' )
-				 	} );
-				 	marker.addListener( 'mouseout', function() {
-						$( 'tr[data-event-id="' + this.event_id + '"]' )
-							.removeClass( 'ai1ec-suggested-hover' )
-				 	} );
-					
-					bounds.extend( marker.getPosition() );
-					markers.push( marker );
-				} );
 			};
 			
-		update_events();
-		events_map.fitBounds( bounds );
+		update_events = function() {
+			var old_markers_ids = [];
+			for ( var i = 0; i < markers.length; i++ ) {
+				if ( ! $( 'tr[data-event-id="' + markers[i].event_id + '"]' ).length ) {
+					markers[i].setMap( null );
+					markers[i] = null;
+				} else {
+					old_markers_ids.push( markers[i].event_id );
+				}
+			}
+			$( 'tr.ai1ec-suggested-event' ).each( function() {
+				var
+					$this = $( this ),
+					event = $.parseJSON( $this.attr( 'data-event' ) );
+				
+				if ( ! event || ! event.latitude || ! event.longitude ) return;
+				if ( -1 != $.inArray( old_markers_ids, event.id) ) return;
+				
+				var marker = new google.maps.Marker( {
+					map      : events_map,
+					title    : event.title,
+					position : new google.maps.LatLng( event.latitude , event.longitude )
+				} );
+	
+				marker.event_id = event.id;
+				marker.addListener( 'click', function() {
+					create_info( event );
+					infowindow.open( events_map, this );
+			 	} );
+			 	marker.addListener( 'mouseover', function() {
+					$( 'tr[data-event-id="' + this.event_id + '"]' )
+						.addClass( 'ai1ec-suggested-hover' )
+			 	} );
+			 	marker.addListener( 'mouseout', function() {
+					$( 'tr[data-event-id="' + this.event_id + '"]' )
+						.removeClass( 'ai1ec-suggested-hover' )
+			 	} );
+				
+				markers.push( marker );
+			} );
+			markers = markers.filter( function( v ) { return v!==null } );
+		};
 		
-		events_map.addListener( 'bounds_changed', function() {
+		events_map = new google.maps.Map(
+			$( '#ai1ec_events_map_canvas' ).get( 0 ), map_options
+		);
+		
+		update_events();
+		update_maps();
+
+		var load_events = function() {
 			if ( null === timeout ) {
 				timeout = false;
 				return;
@@ -289,6 +319,7 @@ define(
 			if( update_xhr && 4 != update_xhr.readystate ){
 				update_xhr.abort();
 				update_xhr = null;
+				$( '.ai1ec-suggested-events' ).removeClass( 'ai1ec-feeds-loading' );
 			}
 			timeout = setTimeout( function() {
 				var
@@ -296,6 +327,7 @@ define(
 					ne     = bounds.getNorthEast(),
 					sw     = bounds.getSouthWest();
 
+				$( '.ai1ec-suggested-events' ).addClass( 'ai1ec-feeds-loading' );
 				update_xhr = $.ajax( {
 					url      : ai1ec_config.ajax_url,
 					type     : 'POST',
@@ -314,11 +346,18 @@ define(
 						}
 					}
 				} );
-				
-				
-				
 			}, 1000 );
-		});
+		};
+		
+		events_map.addListener( 'dragend', load_events );
+	};
+	// Redraw the map and fit markers in the visible area.
+	var update_maps = function() {
+		var bounds = new google.maps.LatLngBounds();
+		for ( var i = 0; i < markers.length; i++ ) {
+			bounds.extend( markers[i].getPosition() );
+		}
+		events_map.fitBounds( bounds );
 	};
 	
 	

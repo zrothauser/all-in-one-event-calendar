@@ -324,17 +324,17 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 			'FROM ' . $this->_dbi->get_table_name( 'ai1ec_events' ) . ' e ' .
 			'INNER JOIN ' . $this->_dbi->get_table_name( 'posts' ) . ' p ON e.post_id = p.ID ' .
 			$wpml_join_particle .
-			'INNER JOIN ' . $this->_dbi->get_table_name( 'ai1ec_event_instances' ) . ' i ON e.post_id = i.post_id ' .
+			' INNER JOIN ' . $this->_dbi->get_table_name( 'ai1ec_event_instances' ) . ' i ON e.post_id = i.post_id ' .
 			$filter['filter_join'] .
-			"WHERE post_type = '" . AI1EC_POST_TYPE . "' " .
-			'AND ' . $filter_date_clause .
+			" WHERE post_type = '" . AI1EC_POST_TYPE . "' " .
+			' AND ' . $filter_date_clause .
 			$wpml_where_particle .
 			$filter['filter_where'] .
 			$post_status_where .
-			( $unique ? 'GROUP BY e.post_id ' : '' ) .
+			( $unique ? ' GROUP BY e.post_id' : '' ) .
 			// Reverse order when viewing negative pages, to get correct set of
 			// records. Then reverse results later to order them properly.
-			'ORDER BY i.start ' . $order_direction .
+			' ORDER BY i.start ' . $order_direction .
 			', post_title ' . $order_direction .
 			' LIMIT ' . $first_record . ', ' . $upper_boundary,
 			$args
@@ -713,7 +713,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	 */
 	public function get_distinct_types_operator() {
 		static $operators = array( 'AND' => 1, 'OR' => 2 );
-		$default          = key( $operators );
+		$default          = 'AND';
 		$where_operator   = strtoupper( trim( (string)apply_filters(
 			'ai1ec_filter_distinct_types_logic',
 			$default

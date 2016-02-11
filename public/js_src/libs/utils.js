@@ -116,9 +116,10 @@ define(
 				 */
 				"make_popup_content_link": function( linkText, popupTitle, popupContent ) {
 					return '<div class="timely">' +
-						'<button type="button"' +
-							'class="timely ai1ec-btn ai1ec-btn-link ai1ec-btn-block-text-left"' +
-							'data-toggle="ai1ec-modal" data-target="#popupMoreInfoInline">' + linkText + '</button>' +
+						'<a href="#" ' +
+							'class="timely ai1ec-link"' +
+							'data-toggle="ai1ec-modal" data-target="#popupMoreInfoInline">'
+								+ $( '<div />' ).text( linkText ).html() + '</a>' +
 						'<div id="popupMoreInfoInline" class="timely ai1ec-modal ai1ec-fade"' +
 							'role="dialog" aria-hidden="true" style="display: none;">' +
 							'<div class="ai1ec-modal-dialog">' +
@@ -126,10 +127,12 @@ define(
 									'<div class="ai1ec-modal-header">' +
 										'<button type="button" class="ai1ec-close"' +
 											'data-dismiss="ai1ec-modal" aria-hidden="true">×</button>' +
-										'<strong>' + popupTitle + '</strong>' +
+										'<strong>' + $( '<div />' ).text( popupTitle ).html() + '</strong>' +
 									'</div>' +
 									'<div class="ai1ec-modal-body ai1ec-clearfix">' +
-										'<textarea class="ai1ec-form-control code" rows="8" cols="40">' + popupContent + '</textarea>' +
+										'<textarea class="ai1ec-form-control code" rows="8" cols="40">'
+											+ $( '<div />' ).text( popupContent ).html()
+										+ '</textarea>' +
 									'</div>' +
 								'</div>' +
 							'</div>' +

@@ -536,7 +536,7 @@ class Ai1ec_Front_Controller {
 		$dispatcher->register_action(
 			'post_row_actions',
 			array( 'model.event.parent', 'post_row_actions' ),
-			10,
+			100,
 			2
 		);
 		// Category colors
@@ -719,7 +719,7 @@ class Ai1ec_Front_Controller {
 			$dispatcher->register_filter(
 				'post_row_actions',
 				array( 'clone.renderer-helper', 'ai1ec_duplicate_post_make_duplicate_link_row' ),
-				10,
+				100,
 				2
 			);
 			$dispatcher->register_action(

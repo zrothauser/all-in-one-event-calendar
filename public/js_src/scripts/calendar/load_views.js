@@ -357,6 +357,11 @@ define(
 						var message = ai1ec_config.load_views_error;
 						message = message.replace( '%STATUS%', jqXHR.status );
 						message = message.replace( '%ERROR%', errorThrown );
+						message = message + '<br/>' + utils.make_popup_content_link( 
+							ai1ec_config.load_views_error_link_popup,
+							ai1ec_config.load_views_error_popup_title,
+							jqXHR.responseText							
+						);
 						var alert = utils.make_alert( message, 'error', true );
 						$( '#ai1ec-container' ).prepend( alert );
 						destroy_view( $calendar );

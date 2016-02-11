@@ -563,7 +563,7 @@ class Ai1ec_Javascript_Controller {
 				'Something went wrong while fetching events.<br>The request status is: %STATUS% <br>The error thrown was: %ERROR%'
 			),
 			'load_views_error_popup_title'   => Ai1ec_I18n::__( 'Response text received from server' ),
-			'load_views_error_link_popup'    => Ai1ec_I18n::__( 'Click here to see more information about the error' ),
+			'load_views_error_link_popup'    => Ai1ec_I18n::__( 'Click here for technical details' ),
 			'cookie_path'                    => $this->_registry->get(
 				'cookie.utility'
 			)->get_path_for_cookie(),

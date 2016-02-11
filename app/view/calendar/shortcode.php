@@ -113,15 +113,12 @@ class Ai1ec_View_Calendar_Shortcode extends Ai1ec_Base {
 				}
 			}
 		}
-		$request_type = $this->_registry->get(
-			'model.settings'
-		)->get( 'ai1ec_use_frontend_rendering' ) ? 'json' : 'jsonp';
 		$query = array(
 			'ai1ec_cat_ids'	 => implode( ',', $_events_categories ),
 			'ai1ec_tag_ids'	 => implode( ',', $_events_tags ),
 			'ai1ec_post_ids' => implode( ',', $post_ids ),
 			'action'         => $view,
-			'request_type'   => $request_type,
+			'request_type'   => 'jsonp',
 			'events_limit'   => isset( $atts['events_limit'] )
 			// definition above casts values as array, so we take first element,
 			// as there won't be others

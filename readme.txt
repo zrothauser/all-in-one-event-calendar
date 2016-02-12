@@ -152,6 +152,7 @@ https://vimeo.com/135004810
 * Fixed: Empty Calendar view caused by a MySQL error in the server log
 * Fixed: The last version was showing the event as "free event" unless you enter a ticket url
 * Fixed: "Cost" and "External Tickets URL" fields are no longer required for paid events
+* Fixed: Featured images appears on the Event details popup
 
 = Version 2.3.8 =
 * Improved Calendar views loading speed and caching

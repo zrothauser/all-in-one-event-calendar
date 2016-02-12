@@ -44,7 +44,7 @@
 					</button>
 				</div>
 				<div class="ai1ec-col-xs-6 ai1ec-text-center">
-					<a target="_blank" href="https://wordpress.org/support/view/plugin-reviews/all-in-one-event-calendar?filter=5"
+					<a target="_blank" href="https://wordpress.org/support/view/plugin-reviews/all-in-one-event-calendar?filter=5#postform"
 						class="ai1ec-btn ai1ec-btn-primary-highlight ai1ec-btn-lg ai1ec-btn-block
 							   ai1ec_review_enjoying_go_wordpress"
 						role="button">

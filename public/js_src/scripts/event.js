@@ -30,15 +30,16 @@ define(
 	};
 
 	var images_in_post_content = function() {
-		$( '#timely-description img[data-ai1ec-hidden]' ).each( function() {
-			var
-				$this        = $( this ),
-				post_img_src = $( '#timely-event-poster img' ).attr( 'src' );
-
-			if ( $this.attr( 'src' ) != post_img_src ) {
-				$this.removeAttr( 'data-ai1ec-hidden' );
-			}
-		} );
+		$( 'img[data-ai1ec-hidden]', '#timely-description, #ai1ec-event-modal' )
+			.each( function() {
+				var
+					$this        = $( this ),
+					post_img_src = $( '#timely-event-poster img' ).attr( 'src' );
+	
+				if ( $this.attr( 'src' ) != post_img_src ) {
+					$this.removeAttr( 'data-ai1ec-hidden' );
+				}
+			} );
 	};
 
 	var start = function() {

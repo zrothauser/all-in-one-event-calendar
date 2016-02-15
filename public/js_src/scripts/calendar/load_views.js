@@ -593,6 +593,7 @@ define(
 						filter_slashes(
 							$( this ).attr( 'data-href' )
 								.replace( reg, '' )
+								.replace( /action~(\w+)/, 'action~' + action )
 						)
 					);
 				} );

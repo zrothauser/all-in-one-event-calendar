@@ -538,6 +538,8 @@ define(
 					$filter_button = $( options.filter_button, $calendar ),
 					reg            = new RegExp( key + '~((,?[0-9]+)+)' ),
 					categories     = hash.match( reg ),
+					action         = hash.match( /action~(\w+)/ ),
+					action         = action && action[1] ? action[1] : null,
 					categories     = categories && categories[1]
 						? $.map( categories[1].split( ',' ), function( value ){
 							return parseInt( value, 10 );
@@ -572,6 +574,10 @@ define(
 						this.href += separator + output_cats;
 					}
 
+					if ( action ) {
+						this.href = this.href.replace( /action~(\w+)/, 'action~' + action );
+					}
+
 					this.href = filter_slashes( this.href );
 				} );
 
@@ -587,6 +593,7 @@ define(
 						filter_slashes(
 							$( this ).attr( 'data-href' )
 								.replace( reg, '' )
+								.replace( /action~(\w+)/, 'action~' + action )
 						)
 					);
 				} );

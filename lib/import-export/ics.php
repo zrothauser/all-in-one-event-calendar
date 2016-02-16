@@ -627,6 +627,17 @@ class Ai1ec_Ics_Import_Export_Engine
 			if ( $checkout_url && false === ai1ec_is_blank( $checkout_url[1] ) ) {
 				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api::ICS_CHECKOUT_URL_METADATA, $checkout_url[1] );	
 			}
+			
+			$wp_images_url  = $e->getProperty( 'X-WP-IMAGES-URL' );
+			if ( $wp_images_url && false === ai1ec_is_blank( $wp_images_url[1] ) ) {
+				$images_arr = explode( ',', $wp_images_url[1] );
+				foreach ( $images_arr as $key => $value ) {
+					$images_arr[ $key ] = explode( ';', $value );
+				}
+				if ( count( $images_arr ) > 0 ) {
+					update_post_meta( $event->get( 'post_id' ), '_featured_image', $images_arr );	
+				}	
+			}
 
 			unset( $events_in_db[$event->get( 'post_id' )] );
 		} //close while iteration
@@ -851,11 +862,35 @@ class Ai1ec_Ics_Import_Export_Engine
 		$content = html_entity_decode( $content, ENT_QUOTES, 'UTF-8' );
 
 		// Prepend featured image if available.
-		$size = null;
-		$avatar = $this->_registry->get( 'view.event.avatar' );
+		$size    = null;
+		$avatar  = $this->_registry->get( 'view.event.avatar' );
 		$matches = $avatar->get_image_from_content( $content );
 		// if no img is already present - add thumbnail
 		if ( empty( $matches ) ) {
+
+			$post_id = get_post_thumbnail_id( $event->get( 'post_id' ) );
+			$images  = null;			
+			$added   = null;
+			foreach ( array( 'thumbnail', 'medium', 'large', 'full' ) as $_size ) {
+				$attributes = wp_get_attachment_image_src( $post_id, $_size );	
+				if ( false !== $attributes ) {
+					$key_str    = sprintf( '%d_%d', $attributes[1], $attributes[2]);	
+					if ( null === $added || false === isset( $added[$key_str] ) ) {
+						$added[$key_str] = true; 
+						array_unshift( $attributes, $_size );
+						$images[] = implode( ';', $attributes );
+					}
+				}	 					
+			}
+			if ( null !== $images ) {
+				$e->setProperty(
+					'X-WP-IMAGES-URL',
+					$this->_sanitize_value(
+						implode( ',', $images )
+					)
+				);
+			}
+
 			if ( $img_url = $avatar->get_post_thumbnail_url( $event, $size ) ) {
 				$content = '<div class="ai1ec-event-avatar alignleft timely"><img src="' .
 					esc_attr( $img_url ) . '" width="' . $size[0] . '" height="' .

@@ -256,16 +256,17 @@ define(
 						loading_view_request.abort( 'ai1ec_abort' );
 					}
 					// Fetch AJAX result
-					if ( ! ajax_cache[hash + query] ) {
+					var query_str = '-'+ query.request_type;
+					if ( ! ajax_cache[hash + query_str] ) {
 						loading_view_request = $.ajax( {
 							url      : hash,
 							dataType : type,
 							data     : query,
 							method   : 'GET'
 						} );
-						ajax_cache[hash + query] = loading_view_request.promise();
+						ajax_cache[hash + query_str] = loading_view_request.promise();
 					} else {
-						loading_view_request = ajax_cache[hash + query];
+						loading_view_request = ajax_cache[hash + query_str];
 					}
 					loading_view_request.done( function( data ) {
 						// trigger the event so that other addons can respond
@@ -356,6 +357,11 @@ define(
 						var message = ai1ec_config.load_views_error;
 						message = message.replace( '%STATUS%', jqXHR.status );
 						message = message.replace( '%ERROR%', errorThrown );
+						message = message + '<br/>' + utils.make_popup_content_link( 
+							ai1ec_config.load_views_error_link_popup,
+							ai1ec_config.load_views_error_popup_title,
+							jqXHR.responseText							
+						);
 						var alert = utils.make_alert( message, 'error', true );
 						$( '#ai1ec-container' ).prepend( alert );
 						destroy_view( $calendar );
@@ -532,6 +538,8 @@ define(
 					$filter_button = $( options.filter_button, $calendar ),
 					reg            = new RegExp( key + '~((,?[0-9]+)+)' ),
 					categories     = hash.match( reg ),
+					action         = hash.match( /action~(\w+)/ ),
+					action         = action && action[1] ? action[1] : null,
 					categories     = categories && categories[1]
 						? $.map( categories[1].split( ',' ), function( value ){
 							return parseInt( value, 10 );
@@ -566,6 +574,10 @@ define(
 						this.href += separator + output_cats;
 					}
 
+					if ( action ) {
+						this.href = this.href.replace( /action~(\w+)/, 'action~' + action );
+					}
+
 					this.href = filter_slashes( this.href );
 				} );
 
@@ -581,6 +593,7 @@ define(
 						filter_slashes(
 							$( this ).attr( 'data-href' )
 								.replace( reg, '' )
+								.replace( /action~(\w+)/, 'action~' + action )
 						)
 					);
 				} );

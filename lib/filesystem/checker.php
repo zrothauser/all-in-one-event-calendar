@@ -132,4 +132,25 @@ class Ai1ec_Filesystem_Checker {
 		return $static_dir;
 	}
 
+	/**
+	 * Check if specified file exists
+	 *
+	 * @return boolean
+	 */
+	public function check_file_exists( $file, $check_is_empty ) {
+		try {
+			if ( ! file_exists( $file ) ) {
+				return false;
+			} else {
+				if ( $check_is_empty && 0 == filesize( $file ) ) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+		} catch ( Exception $e ) {
+		}
+
+		return false;
+	}
 }

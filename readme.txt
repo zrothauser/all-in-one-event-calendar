@@ -1,11 +1,11 @@
 === All-in-One Event Calendar ===
-Contributors: hubrik, vtowel, yani.iliev, nicolapeluchetti, jbutkus, lpawlik, bangelov
+Contributors: uchu, calvinyeh, elirenato, hubrik, vtowel, yani.iliev, nicolapeluchetti, jbutkus, lpawlik, bangelov
 Tags: calendar, events, ics, ics feed, wordpress ical importer, google
 calendar, ical, iCalendar, all-in-one, events sync, events widget,
 calendar widget
 Requires WordPress at least: 3.5
-Tested up to: 4.4.1
-Stable tag: 2.3.7
+Tested up to: 4.4.2
+Stable tag: 2.3.9
 License: GNU General Public License, version 3 (GPL-3.0)
 
 A calendar system with many views, upcoming events widget, color-coded
@@ -141,6 +141,26 @@ https://vimeo.com/135004810
 **[ai1ec exact_date="5-10-2015"]**
 
 == Changelog ==
+
+= Version 2.3.9 =
+* Improved JS caching stability in different environments
+* Improved automatically detection of line ending style and fixed CSV import issues for files created in Mac OS X
+* Improved the alert displaying an error (often a "Syntax error") with the details of the wrong response received from server
+* Fixed the text in the "Venue location" - correct symbols instead of HTML
+* Fixed cloning events with Duplicate Post plugin conflicts are resolved
+* Fixed: "Shortcodes" Calendars now work correctly
+* Fixed: Empty Calendar view caused by a MySQL error in the server log
+* Fixed: The last version was showing the event as "free event" unless you enter a ticket url
+* Fixed: "Cost" and "External Tickets URL" fields are no longer required for paid events
+* Fixed: Featured images appears on the Event details popup
+
+= Version 2.3.8 =
+* Improved Calendar views loading speed and caching
+* Improved loading speed of SuperWidget and other external widgets
+* Improved Enabled Frontend Rendering by default
+* Fixed: Plugin does not clean up DB after being uninstalled
+* Fixed: Translations are not working anymore for all words
+* Fixed: Feed import feature does not import for Repeat custom dates
 
 = Version 2.3.7 =
 * Fixes DB update issue on some sites. Reverted changes made on version 2.3.5 related to the ICS Feed URL column type.

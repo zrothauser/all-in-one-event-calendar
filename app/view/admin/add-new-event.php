@@ -284,6 +284,20 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		// ===================================
 		// = Display event ticketing options =
 		// ===================================
+		if ( $event ) {
+			$cost_type = get_post_meta(
+				$event->get( 'post_id' ),
+				'_ai1ec_cost_type',
+				true
+			);
+			if ( ! $cost_type ) {
+				if ( $ticket_url || $cost ) {
+					$cost_type = 'external';
+				} else {
+					$cost_type = 'free';
+				}
+			}
+		}
 		if ( AI1EC_API && AI1EC_API_TICKETING ) {
 			$api                   = $this->_registry->get( 'model.api.api-ticketing' );
 			$ticketing             = $api->is_signed();
@@ -292,14 +306,8 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			$ticket_event_imported = false;
 	
 			if ( $event ) {
-				
 				$ticket_event_imported = $api->is_ticket_event_imported( $event->get( 'post_id' ) );
 				if ( $ticketing || $ticket_event_imported ) {
-					$cost_type = get_post_meta(
-						$event->get( 'post_id' ),
-						'_ai1ec_cost_type',
-						true
-					);
 					if ( 'tickets' === $cost_type ) {
 						$response = json_decode( $api->get_ticket_types( $event->get( 'post_id' ) ) );
 						if ( isset( $response->data ) ) {

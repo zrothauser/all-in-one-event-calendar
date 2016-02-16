@@ -9,7 +9,12 @@ dependencies:
     - echo "memory_limit = 64M" > ~/.phpenv/versions/$(phpenv global)/etc/conf.d/memory.ini
 
 deployment:
+  staging:
+    branch: master
+    commands:
+      - ssh codedeploy@dev.time.ly "cd /var/www && sudo ./update-plugins-and-copy-to-wp-template.sh master && sudo ./copy-wordpress.sh staging.time.ly"
   dev:
     branch: develop
     commands:
-      - ssh codedeploy@dev.time.ly "cd /var/www && ./update-plugins-and-copy-to-wp-template.sh && ./copy-wordpress.sh dev.time.ly"
+      - ssh codedeploy@dev.time.ly "cd /var/www && sudo ./update-plugins-and-copy-to-wp-template.sh develop && sudo ./copy-wordpress.sh dev.time.ly"
+

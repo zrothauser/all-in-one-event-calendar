@@ -178,6 +178,54 @@ class Ai1ec_View_Event_Avatar extends Ai1ec_Base {
 	}
 
 	/**
+	 * Read post meta for featured image and return its URL as a string.
+	 *
+	 * @param Ai1ec_Event $event Event object.
+	 * @param null        $size  (width, height) array of returned image.
+	 *
+	 * @return  string|null
+	 */
+	public function get_featured_image_url( Ai1ec_Event $event, &$size = null ) {
+		 $featured_image = get_post_meta(  $event->get( 'post_id' ) , '_featured_image', true );
+		 if ( empty( $featured_image ) ) {
+			return $this->_get_post_attachment_url(
+				$event,
+				array(
+					'full',
+					'large',
+					'medium'
+				),
+				$size
+			);
+		} else {			
+			$priority_order = array( 'large', 'full', 'medium', 'thumbnail' );
+			$url            = null;
+			foreach ( $priority_order as $priority ) {
+				foreach ( $featured_image as $values_arr ) {				
+					if ( $values_arr[0] === $priority ) {
+						$url  = $values_arr[1];
+						$size = array( $values_arr[2], $values_arr[3] );
+						break;
+					}
+				}
+				if ( null !== $url ) {
+					break;
+				}
+			}			
+			return $url;
+		}
+	}
+
+	/**
+	 * Remove the avatar url from the event content
+	 */
+	public function remove_avatar_url( $content ) {
+		return preg_replace( '/<div[^<>]+class=[\'"]?ai1ec-event-avatar[^<>]*[\'"]?[^<>]+>.+<\/div>[.\s]*/'
+				, ''
+				, $content );
+	}
+
+	/**
 	 * Simple regex-parse of post_content for matches of <img src="foo" />; if
 	 * one is found, return its URL.
 	 *
@@ -347,6 +395,7 @@ class Ai1ec_View_Event_Avatar extends Ai1ec_Base {
 					'content_img'     => 'get_content_img_url',
 					'category_avatar' => 'get_category_avatar_url',
 					'default_avatar'  => 'get_default_avatar_url',
+					'featured_image'  => 'get_featured_image_url'
 				)
 			);
 		}

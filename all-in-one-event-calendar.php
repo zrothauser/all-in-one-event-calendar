@@ -12,6 +12,8 @@
 $ai1ec_base_dir = dirname( __FILE__ );
 $ai1ec_base_url = plugins_url( '', __FILE__ );
 
+$AI1EC_DEBUG=true;
+
 $ai1ec_config_path = $ai1ec_base_dir . DIRECTORY_SEPARATOR . 'app' .
 		DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR;
 

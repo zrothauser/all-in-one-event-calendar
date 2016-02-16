@@ -80,6 +80,17 @@ class Ai1ec_Command_Resolver {
 		);
 		$this->add_command(
 			$registry->get(
+				'command.save-ticketing-invitation',
+				$request,
+				array(
+					'action' => 'ai1ec_ticketing_invitation_save',
+					'nonce_action' => Ai1ec_View_Admin_Settings::NONCE_ACTION,
+					'nonce_name' => Ai1ec_View_Admin_Settings::NONCE_NAME,
+				)
+			)
+		);
+		$this->add_command(
+			$registry->get(
 				'command.save-theme-options',
 				$request,
 				array(

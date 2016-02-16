@@ -1,0 +1,14 @@
+{% if submit is defined %}
+{% from 'form-elements/input.twig' import button %}
+
+    </br>
+    <input  type="checkbox"
+            name={{ invitation_chk.id }}
+            value={{ invitation_chk.id }}
+            {{ invitation_chk.checked  }}> Enable Ticketing beta.
+
+    <div class="span12 ai1ec-text-right">
+        {{ button( submit.id, submit.id, submit.value, 'submit', submit.args ) }}
+    </div>
+
+{% endif %}

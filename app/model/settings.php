@@ -347,8 +347,11 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 *
 	 */
 	protected function _set_standard_values() {
-		
 		$this->_standard_options = array(
+            'enabling_ticket_invitation_page' => array(
+				'type'                        => 'string',
+				'default'                     => false,
+			),
 			'ai1ec_api'   => array(
 				'type'    => 'boolean',
 				'default' => false,
@@ -368,10 +371,6 @@ class Ai1ec_Settings extends Ai1ec_App {
 			'settings_page' => array(
 				'type' => 'string',
 				'default'  => false,
-			),
-			'enabling_ticket_invitation_page' => array(
-				'type'                        => 'string',
-				'default'                     => false,
 			),
 			'less_variables_page' => array(
 				'type' => 'string',

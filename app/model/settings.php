@@ -347,6 +347,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 *
 	 */
 	protected function _set_standard_values() {
+		
 		$this->_standard_options = array(
 			'ai1ec_api'   => array(
 				'type'    => 'boolean',

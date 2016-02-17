@@ -28,12 +28,17 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	/**
 	 * Get the header array with authorization token
 	 */
-	protected function _get_headers( $with_authorizaton = true ) {
+	protected function _get_headers( $with_authorizaton = true, $custom_headers = null ) {
 		$headers  = array(
 			'content-type' => 'application/json'
 		);
 		if ( true === $with_authorizaton ) {
 			$headers['Authorization'] = 'Basic ' . $this->_settings->get( 'ticketing_token' );
+		}
+		if ( null !== $custom_headers ) {
+			foreach ( $custom_headers as $key => $value ) {
+				$headers[$key] = $value;
+			}
 		}
 		return $headers;
 	}
@@ -214,16 +219,16 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	 *        $body The body to send the message 
 	 *        $method POST | GET | PUT, etc	 
 	 *        or send a customized message to be showed in case of error
-	 *        $decode_body TRUE (default) to decode the body response
+	 *        $decode_response_body TRUE (default) to decode the body response
 	 * @return stdClass with the the fields:
 	 *         is_error TRUE or FALSE
 	 *         error in case of is_error be true
 	 *         body in case of is_error be false 
 	 */
-	protected function request_api(  $method, $url, $body = null, $decode_body = true ) {
+	protected function request_api(  $method, $url, $body = null, $decode_response_body = true, $custom_headers = null ) {
 		$request = array(
 			'method'  => $method,
-			'headers' => $this->_get_headers(),
+			'headers' => $this->_get_headers( true, $custom_headers ),
 			'timeout' => self::DEFAULT_TIMEOUT
 		);
 		if ( ! is_null( $body ) ) {
@@ -238,7 +243,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		} else {
 			$response_code = wp_remote_retrieve_response_code( $response );			
 			if ( 200 === $response_code ) {							
-				if ( true === $decode_body ) {
+				if ( true === $decode_response_body ) {
 					$result->body     = json_decode( $response['body'] );
 					if ( JSON_ERROR_NONE === json_last_error() ) {
 						$result->is_error = false;	
@@ -266,6 +271,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	 * Save an error notification to be showed to the user on WP header of the page
 	 * @param $response The response got from request_api method.
 	 *        $custom_error_message The custom message to show before the detailed message
+	 * @return full error message
 	 */
 	protected function save_error_notification( $response, $custom_error_response ) {
 		$error_message = $this->_transform_error_message( 
@@ -276,6 +282,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		);
 		$notification  = $this->_registry->get( 'notification.admin' );
 		$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );				
+		return $error_message;
 	}
 
 	/**

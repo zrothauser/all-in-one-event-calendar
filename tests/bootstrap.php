@@ -4,9 +4,10 @@ define( 'AI1EC_API', true );
 define( 'AI1EC_API_TICKETING', true );
 define( 'AI1EC_DEBUG', true );
 define( 'AI1EC_CACHE', false );
-// define( 'AI1EC_API_URL', 'http://dev.time.ly:882/api/');
+
+//plese do not run tests on dev
 define( 'AI1EC_API_URL', 'http://localhost/ticketing/public/api/');
-define('AI1EC_TICKETS_CHECKOUT_URL', 'http://dev.time.ly:882/events/{event_id}/checkout');
+
 
 $_tests_dir = getenv( 'WP_TESTS_DIR' );
 
@@ -89,6 +90,9 @@ function _manually_load_plugin() {
 	$ai1ec_loader = new Ai1ec_Loader( $ai1ec_base_dir );
 	@ini_set( 'unserialize_callback_func', 'spl_autoload_call' );
 	spl_autoload_register( array( $ai1ec_loader, 'load' ) );
+	
+	//defined to register filter and actions exclusive for is_admin
+	define( 'WP_ADMIN', true ); 
 
 	$ai1ec_front_controller = new Ai1ec_Front_Controller();
 	$ai1ec_front_controller->initialize( $ai1ec_loader );			

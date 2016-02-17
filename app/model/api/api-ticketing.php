@@ -52,30 +52,32 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			//the customer received the same message when the event was loaded.
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( $_POST['ai1ec_tickets_loading_error'], 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
-			return null;
+			return $_POST['ai1ec_tickets_loading_error'];
 		}
 		if ( $this->is_ticket_event_imported( $event->get( 'post_id' ) ) )  {
 			//prevent changes on Ticket Events that were imported
+			$error        = __( 'This Event was replicated from another site. Any changes on Tickets were discarded.', AI1EC_PLUGIN_NAME );
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( 
-				__( 'This Event was replicated from another site. Any changes on Tickets were discarded.', AI1EC_PLUGIN_NAME ), 
+				$error, 
 				'error', 
 				0, 
 				array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 
 				false 
 			);
-			return null;
-		} else if ( false === ai1ec_is_blank( $event->get( 'ical_feed_url' ) ) ) {
+			return $error;
+		} else if ( false === ai1ec_is_blank( $event->get( 'ical_feed_url' ) ) ) {			
 			//prevent ticket creating inside Regular Events that were imported
+			$error        = __( 'This Event was replicated from another site. Any changes on Tickets were discarded.', AI1EC_PLUGIN_NAME );
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( 
-				__( 'This Event was replicated from another site. Any changes on Tickets were discarded.', AI1EC_PLUGIN_NAME ),  
+				$error,  
 				'error', 
 				0, 
 				array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 
 				false 
 			);
-			return null;			
+			return $error;			
 		}
 		$api_event_id = get_post_meta(
 					$event->get( 'post_id' ),
@@ -87,9 +89,8 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			$message      = __( 'The event has a Ticketing option selected but no ticket was added.', AI1EC_PLUGIN_NAME );
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
-			return null;
+			return $message;
 		}
-		$headers   = $this->_get_headers();
 		$fields    = array( 'visibility' => $_POST['visibility'] );
 		$body_data = $this->_parse_event_fields_to_api_structure(
 			$event,
@@ -97,7 +98,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			$_POST['ai1ec_tickets'],
 			$fields
 		);
-		$url = AI1EC_API_URL . 'events';
+		$url = 'events';
 		if ( $api_event_id ) {
 			$url = $url . '/' . $api_event_id;
 		}
@@ -112,12 +113,14 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		if ( false === isset( $post_thumbnail_id ) ) {
 			$post_thumbnail_id = 0;
 		}
-		$update_image = ( $event_thumbnail_id !== $post_thumbnail_id );
-		$payload      = '';
+		$update_image   = ( $event_thumbnail_id !== $post_thumbnail_id );
+		$payload        = '';
+		$custom_headers = null;
+
 		if ( true === $update_image && 0 < $post_thumbnail_id ) {
-			$boundary                  = wp_generate_password( 24 );
-			$headers['content-type']   = 'multipart/form-data; boundary=' . $boundary;
-			$body_data['update_image'] = '1';
+			$boundary                       = wp_generate_password( 24 );
+			$custom_headers['content-type'] = 'multipart/form-data; boundary=' . $boundary;
+			$body_data['update_image']      = '1';
 			foreach ($body_data as $key => $value) {
 	            if ( is_array( $value ) ) {
 	            	$index = 0;
@@ -155,18 +158,13 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			$body_data['update_image'] = (true === $update_image) ? '1' : '0';
 		 	$payload                   = json_encode( $body_data );
 		}
-		$request   = array(
-			'method'  => 'POST',
-			'headers' => $headers,
-			'body'    => $payload,
-			'timeout' => parent::DEFAULT_TIMEOUT
-		);
-		$response      = wp_remote_request( $url, $request );
-		$response_code = wp_remote_retrieve_response_code( $response );
-		if ( 200 === $response_code ) {
-			$response_json = json_decode( $response['body'] );
-			if ( $is_new && isset( $response_json->id ) ) {
-				update_post_meta( $event->get( 'post_id' ), self::EVENT_ID_METADATA, $response_json->id );
+		$response = $this->request_api( 'POST', $url, $payload, 
+			true, //true to decode response body
+			$custom_headers
+			);
+		if ( $this->is_response_success( $response ) ) {
+			if ( $is_new && isset( $response->body->id ) ) {
+				update_post_meta( $event->get( 'post_id' ), self::EVENT_ID_METADATA, $response->body->id );
 			}
 			if ( $post_thumbnail_id > 0 ) {
 				update_post_meta( $event->get( 'post_id' ), self::THUMBNAIL_ID_METADATA, $post_thumbnail_id );
@@ -181,10 +179,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			} else {
 				$error_message = __( 'We were unable to update the Event on Time.ly Ticketing', AI1EC_PLUGIN_NAME );
 			}
-			$error_message = $this->_transform_error_message( $error_message, $response, $url, false );
-			$notification  = $this->_registry->get( 'notification.admin' );
-			$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
-			return false;
+			return $this->save_error_notification( $response, $error_message );
 		}
 	}
 
@@ -196,7 +191,6 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		if ( 0 >= $calendar_id ) {
 			return null;
 		}
-		$url       = AI1EC_API_URL . 'calendars/' . $calendar_id . '/payment' ;
 		$settings  = array(
 			'payment_method' => $_POST['ai1ec_payment_method'],
 			'paypal_email'   => $_POST['ai1ec_paypal_email'],
@@ -208,26 +202,14 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			'country'        => $_POST['ai1ec_country'],
 			'postcode'       => $_POST['ai1ec_postcode']
 		);
-		$headers   = $this->_get_headers();
-		$headers['content-type'] = 'application/x-www-form-urlencoded';
-		$request   = array(
-			'method'  => 'PUT',
-			'headers' => $headers,
-			'body'    => $settings,
-			'timeout' => parent::DEFAULT_TIMEOUT
+		$custom_headers['content-type'] = 'application/x-www-form-urlencoded';
+		$response = $this->request_api( 'PUT', 'calendars/' . $calendar_id . '/payment', 
+			$settings, 
+			true, //decode response body
+			$custom_headers 
 		);
-		$response      = wp_remote_request( $url, $request );
-		$response_code = wp_remote_retrieve_response_code( $response );
-		$notification  = $this->_registry->get('notification.admin');
-		if ( 200 !== $response_code ) {
-			$error_message = $this->_transform_error_message( 
-				__( 'Payment preferences were not saved.', AI1EC_PLUGIN_NAME ), 
-				$response, 
-				AI1EC_API_URL 
-			);
-			$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
-			return false;
-		}else{
+		if ( $this->is_response_success( $response ) ) {
+			$notification  = $this->_registry->get( 'notification.admin' );
 			$notification->store( 
 				__( 'Payment preferences were saved.', AI1EC_PLUGIN_NAME ), 
 				'updated', 
@@ -235,9 +217,13 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 				array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 
 				false 
 			);
+			return $response->body;
+		} else {
+			$this->save_error_notification( $response, 
+				__( 'Payment preferences were not saved.', AI1EC_PLUGIN_NAME )
+			);
+			return false;
 		}
-		$response_json = json_decode( $response['body'] );
-		return $response_json;
 	}
 
 	/**
@@ -246,19 +232,15 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	public function get_payment_preferences() {
 		$calendar_id = $this->_get_ticket_calendar();
 		$settings    = null;
-		if( ! empty( $calendar_id ) ) {
-			$request       = array(
-						'method'  => 'GET',
-						'headers' => $this->_get_headers(),
-						'timeout' => parent::DEFAULT_TIMEOUT
-				        );
-			$response      = wp_remote_request( AI1EC_API_URL."calendars/$calendar_id/payment", $request );
-			$response_code = wp_remote_retrieve_response_code( $response );
-			if ( 200 === $response_code ) {				
-				$settings      = json_decode( $response['body'] );			
+		if ( 0 < $calendar_id ) {
+			$response = $this->request_api( 'GET', "calendars/$calendar_id/payment", 
+				null, //no body 
+				true //decode response body
+			);
+			if ( $this->is_response_success( $response ) ) {
+				$settings = $response->body;
 			}
 		}
-
 		if ( is_null( $settings ) ) {
 			return (object) array('payment_method'=>'cheque', 'paypal_email'=> '', 'first_name'=>'',  'last_name'=>'', 'street'=> '', 'city'=> '', 'state'=> '', 'postcode'=> '', 'country'=> '');
 		} else {
@@ -313,7 +295,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		}
 
 		if ( null !== $api_fields_values && is_array( $api_fields_values )) {
-			foreach ($api_fields_values as $key => $value) {
+			foreach ( $api_fields_values as $key => $value ) {
 				$body[$key] = $api_fields_values[$key];
 				if ( 'visibility' === $key ) {
 					if ( 0 === strcasecmp( 'private', $value ) ) {
@@ -487,6 +469,11 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	 * @return object Response body in JSON.
 	 */
 	public function get_tickets( $post_id ) {
+		$api_event_id = get_post_meta(
+			$post_id,
+			self::EVENT_ID_METADATA,
+			true
+		);
 		if ( ! $api_event_id ) {
 			return json_encode( array( 'data' => array() ) );
 		}

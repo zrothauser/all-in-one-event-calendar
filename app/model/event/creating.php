@@ -228,7 +228,10 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 			//is treated by another hook (pre_update_event inside api )
 			$api = $this->_registry->get( 'model.api.api-ticketing' );
 			if ( 'tickets' === $cost_type ) {			
-				$api->store_event( $event, $post );
+				$result = $api->store_event( $event, $post );
+				if ( true !== $result ) {
+					$_POST['_ticket_store_event_error'] = $result;
+				}
 			}			
 		}
 
@@ -326,7 +329,8 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 			$event     = $data['event'];	  
 			$cost_type = isset( $_REQUEST['ai1ec_cost_type'] ) ? $_REQUEST['ai1ec_cost_type'] : '';
 			if ( 'tickets' === $cost_type ) {
-		    	if ( false === $api->store_event( $event, $post ) ) {    		
+				$result = $api->store_event( $event, $post );
+		    	if ( true !== $result ) {    		
 					wp_redirect( $this->get_sendback_page( $post_id ) );
 					exit();	
 		    	}				

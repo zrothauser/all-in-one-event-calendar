@@ -147,20 +147,15 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		$body = array(
 			'title'    => get_bloginfo( 'name' )
 		);
- 		$request = array(
-			'headers' => $this->_get_headers(),
-			'body'    => json_encode( $body ),
-			'timeout' => self::DEFAULT_TIMEOUT
-		);
-		$response      = wp_remote_get( AI1EC_API_URL . 'calendars', $request );
-		$response_code = wp_remote_retrieve_response_code( $response );
-		$response_body = json_decode( $response['body'] );
-		if ( 200 === $response_code ) {
-			if ( is_array( $response_body ) ) {
-				return $response_body[0]->id;
+		$response = $this->request_api( 'GET', 'calendars', 
+			json_encode( $body )
+		); 		
+		if ( $this->is_response_success( $response ) ) {
+			if ( is_array( $response->body ) ) {
+				return $response->body[0]->id;
 			} else {
-				return $response_body->id;
-			}
+				return $response->body->id;
+			}			
 		} else {
 			return 0;
 		}
@@ -175,16 +170,11 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 			'url'      => ai1ec_site_url(),
 			'timezone' => $this->_settings->get( 'timezone_string' )
 			);
- 		$request = array(
-			'headers' => $this->_get_headers(),
-			'body'    => json_encode( $body ),
-			'timeout' => self::DEFAULT_TIMEOUT
+		$response = $this->request_api( 'POST', 'calendars', 
+			json_encode( $body )
 		);
-		$response      = wp_remote_post( AI1EC_API_URL . 'calendars', $request );
-		$response_code = wp_remote_retrieve_response_code( $response );
-		$response_body = json_decode( $response['body'] );
-		if ( 200 === $response_code ) {
-			return $response_body->id;
+		if ( $this->is_response_success( $response ) ) {
+			return $response->body->id;
 		} else {
 			return 0;
 		}
@@ -216,6 +206,85 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		$this->_settings->set( 'ticketing_enabled'    , $enabled );
 		$this->_settings->set( 'ticketing_token'      , $token );
 		$this->_settings->set( 'ticketing_calendar_id', $calendar_id );		
+	}
+
+	/**
+	 * Make the request to the API endpons
+	 * @param $url The end part of the url to make the request.
+	 *        $body The body to send the message 
+	 *        $method POST | GET | PUT, etc	 
+	 *        or send a customized message to be showed in case of error
+	 *        $decode_body TRUE (default) to decode the body response
+	 * @return stdClass with the the fields:
+	 *         is_error TRUE or FALSE
+	 *         error in case of is_error be true
+	 *         body in case of is_error be false 
+	 */
+	protected function request_api(  $method, $url, $body = null, $decode_body = true ) {
+		$request = array(
+			'method'  => $method,
+			'headers' => $this->_get_headers(),
+			'timeout' => self::DEFAULT_TIMEOUT
+		);
+		if ( ! is_null( $body ) ) {
+			$request[ 'body' ] = $body;
+		}
+		$url      = AI1EC_API_URL . $url;
+		$response = wp_remote_request( $url, $request );
+		$result   = new stdClass();
+		if ( is_wp_error( $response ) ) {
+			$result->is_error = true;
+			$result->error    = $response->get_error_message();
+		} else {
+			$response_code = wp_remote_retrieve_response_code( $response );			
+			if ( 200 === $response_code ) {							
+				if ( true === $decode_body ) {
+					$result->body     = json_decode( $response['body'] );
+					if ( JSON_ERROR_NONE === json_last_error() ) {
+						$result->is_error = false;	
+					} else {
+						$result->is_error = true;
+						$result->raw      = $response; 
+						$result->error    = __( 'Error decoding the response', AI1EC_PLUGIN_NAME );
+						unset( $result->body );
+					}
+				} else {
+					$result->is_error = false;
+					$result->body     = $response['body'];
+				}				
+			} else {
+				$result->is_error = true;
+				$result->error    = wp_remote_retrieve_response_message( $response );
+				$result->raw      = $response; 
+				$result->url      = $url; 
+			}
+		}
+		return $result;
+	}
+
+	/**
+	 * Save an error notification to be showed to the user on WP header of the page
+	 * @param $response The response got from request_api method.
+	 *        $custom_error_message The custom message to show before the detailed message
+	 */
+	protected function save_error_notification( $response, $custom_error_response ) {
+		$error_message = $this->_transform_error_message( 
+			$custom_error_response, 
+			$response->raw, 
+			$response->url, 
+			true 
+		);
+		$notification  = $this->_registry->get( 'notification.admin' );
+		$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );				
+	}
+
+	/**
+	 * Useful method to check if the response of request_api is a successful message
+	 */
+	protected function is_response_success( $response ) {
+		return $response != null && 
+			isset( $response->is_error ) && 
+			false === $response->is_error;
 	}
 
 }

@@ -14,6 +14,9 @@ local.properties
 .loadpath
 /public/js/build.txt
 /public/js_cache/**
+/phpunit.xml.dist
+/tests/.travis.yml
+/tests/test-sample.php
 
 # External tool builders
 .externalToolBuilders/

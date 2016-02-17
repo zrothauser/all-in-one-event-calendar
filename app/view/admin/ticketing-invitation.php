@@ -13,7 +13,7 @@ class Ai1ec_View_Admin_Ticketing_Invitation extends Ai1ec_View_Admin_Abstract {
     /**
      * @var string The id/name of the submit button.
      */
-    const SUBMIT_ID = 'ai1ec_save_themes_options';
+    const SUBMIT_ID = 'ai1ec_ticketing_invitation';
     /**
      * @var string The nonce action
      */
@@ -66,10 +66,10 @@ class Ai1ec_View_Admin_Ticketing_Invitation extends Ai1ec_View_Admin_Abstract {
             'stacked'        => true,
             'content_class'  => 'ai1ec-form-horizontal',
             'submit'         => array(
-                'id'    => self::SUBMIT_ID,
-                'value' => '<i class="ai1ec-fa ai1ec-fa-save ai1ec-fa-fw"></i> ' .
+                'id'         => self::SUBMIT_ID,
+                'value'      => '<i class="ai1ec-fa ai1ec-fa-save ai1ec-fa-fw"></i> ' .
                            Ai1ec_I18n::__( 'Save Settings' ),
-                'args'  => array(
+                'args'       => array(
                     'class' => 'ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg',
                 ),
             ),
@@ -91,8 +91,8 @@ class Ai1ec_View_Admin_Ticketing_Invitation extends Ai1ec_View_Admin_Abstract {
     public function display_page() {
         $settings = $this->_registry->get( 'model.settings' );
         $args     = array(
-            'title'   => Ai1ec_I18n::__( 'Time.ly Ticketing beta' ),
-            'nonce'   => array(
+            'title'        => Ai1ec_I18n::__( 'Time.ly Ticketing beta' ),
+            'nonce'        => array(
                 'action'   => self::NONCE_ACTION,
                 'name'     => self::NONCE_NAME,
                 'referrer' => false,

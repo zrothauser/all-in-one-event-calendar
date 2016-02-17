@@ -299,7 +299,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			}
 		}
 		if ( AI1EC_API && AI1EC_API_TICKETING ) {
-			$api                   = $this->_registry->get( 'model.api' );
+			$api                   = $this->_registry->get( 'model.api.api-ticketing' );
 			$ticketing             = $api->is_signed();
 			$message               = $api->get_sign_message();
 			$loading_error         = null;

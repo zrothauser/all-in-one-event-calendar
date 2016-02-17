@@ -83,9 +83,9 @@ class Ai1ec_Command_Resolver {
 				'command.save-ticketing-invitation',
 				$request,
 				array(
-					'action' => 'ai1ec_ticketing_invitation_save',
-					'nonce_action' => Ai1ec_View_Admin_Settings::NONCE_ACTION,
-					'nonce_name' => Ai1ec_View_Admin_Settings::NONCE_NAME,
+					'action'       => 'ai1ec_ticketing_invitation_save',
+					'nonce_action' => Ai1ec_View_Admin_Ticketing_Invitation::NONCE_ACTION,
+					'nonce_name'   => Ai1ec_View_Admin_Ticketing_Invitation::NONCE_NAME,
 				)
 			)
 		);

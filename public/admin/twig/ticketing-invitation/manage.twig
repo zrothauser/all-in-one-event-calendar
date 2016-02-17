@@ -3,9 +3,10 @@
 
     </br>
     <input  type="checkbox"
-            name={{ invitation_chk.id }}
-            value={{ invitation_chk.id }}
-            {{ invitation_chk.checked  }}> Enable Ticketing beta.
+            id={{ invitation_chk.id }}
+            name={{ invitation_chk.name }}
+            value={{ invitation_chk.value }}
+            {{ invitation_chk.checked  }}> Enable Ticketing Beta
 
     <div class="span12 ai1ec-text-right">
         {{ button( submit.id, submit.id, submit.value, 'submit', submit.args ) }}

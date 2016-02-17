@@ -18,7 +18,7 @@ class Ai1ec_Ticketing_Invitation_Save extends Ai1ec_Command_Save_Abstract {
 
         $api_settings = $this->_registry->get( 'helper.api-settings' );
 
-        if ( isset( $_POST['ai1ec_ticketing'] ) && $_POST['ai1ec_ticketing'] == 'Yes' ) {
+        if ( isset( $_POST['ai1ec_ticketing'] ) && $_POST['ai1ec_ticketing'] == '1' ) {
             $api_settings->ai1ec_setting_up_api_flags( true );
         } else {
             $api_settings->ai1ec_setting_up_api_flags( false );
@@ -28,7 +28,7 @@ class Ai1ec_Ticketing_Invitation_Save extends Ai1ec_Command_Save_Abstract {
             'url'        => ai1ec_admin_url(
                 'edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-invitation'
             ),
-            'query_args' => array(
+            'query_args'  => array(
                 'updated' => 1
             )
         );

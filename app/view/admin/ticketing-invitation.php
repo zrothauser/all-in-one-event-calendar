@@ -61,23 +61,23 @@ class Ai1ec_View_Admin_Ticketing_Invitation extends Ai1ec_View_Admin_Abstract {
      */
     public function display_meta_box( $object, $box ) {
         $api_settings       = $this->_registry->get( 'helper.api-settings' );
-        $invitation_checked = ( $api_settings->ai1ec_api_enabled() ) ? 'checked' : null;
+        $invitation_checked = ( $api_settings->ai1ec_api_enabled() ) ? 'checked' : '';
         $args               = array(
             'stacked'        => true,
             'content_class'  => 'ai1ec-form-horizontal',
             'submit'         => array(
                 'id'         => self::SUBMIT_ID,
                 'value'      => '<i class="ai1ec-fa ai1ec-fa-save ai1ec-fa-fw"></i> ' .
-                           Ai1ec_I18n::__( 'Save Settings' ),
+                                 Ai1ec_I18n::__( 'Save Settings' ),
                 'args'       => array(
-                    'class' => 'ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg',
+                    'class'  => 'ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg',
                 ),
             ),
             'invitation_chk' => array(
-                'id'      => 'ai1ec_ticketing',
-                'name'    => 'ai1ec_ticketing',
-                'value'   => 'Yes',
-                'checked' => $invitation_checked,
+                'id'         => 'ai1ec_ticketing',
+                'name'       => 'ai1ec_ticketing',
+                'value'      => '1',
+                'checked'    => $invitation_checked,
             ),
         );
         $loader = $this->_registry->get( 'theme.loader' );
@@ -97,7 +97,7 @@ class Ai1ec_View_Admin_Ticketing_Invitation extends Ai1ec_View_Admin_Abstract {
                 'name'     => self::NONCE_NAME,
                 'referrer' => false,
             ),
-            'metabox' => array(
+            'metabox'    => array(
                 'screen' => $settings->get( 'enabling_ticket_invitation_page' ),
                 'action' => 'left',
                 'object' => null

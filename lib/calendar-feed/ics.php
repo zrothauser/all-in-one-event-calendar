@@ -186,20 +186,20 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			if ( $message ) {
 				// If we already got an error message, display it.
 				$output['data'] = array(
-					'error'   => true,
-					'message' => $message,
+						'error'   => true,
+						'message' => $message,
 				);
 			} else {
 				$output['data'] = array(
-					'error'   => false,
-					'message' => sprintf( _n( 'Imported %s event', 'Imported %s events', $count, AI1EC_PLUGIN_NAME ), $count ),
-					'name'    => $feed_name,
+						'error'   => false,
+						'message' => sprintf( _n( 'Imported %s event', 'Imported %s events', $count, AI1EC_PLUGIN_NAME ), $count ),
+						'name'    => $feed_name,
 				);
 			}
 		} else {
 			$output['data'] = array(
-				'error' 	=> true,
-				'message'	=> __( 'Invalid ICS feed ID', AI1EC_PLUGIN_NAME )
+					'error' 	=> true,
+					'message'	=> __( 'Invalid ICS feed ID', AI1EC_PLUGIN_NAME )
 			);
 		}
 		$output['data']['ics_id'] = $feed_id;

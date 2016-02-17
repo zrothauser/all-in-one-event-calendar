@@ -29,7 +29,7 @@ class BaseTestCase extends WP_UnitTestCase {
 	 */
 	protected function api_sign() {
 		global $ai1ec_registry;
-		$_POST['ai1ec_email']    = 'eli@time.ly';
+		$_POST['ai1ec_email']    = 'phpunit@time.ly';
 		$_POST['ai1ec_password'] = '123456';
 		$api                     = $ai1ec_registry->get( 'model.api.api-registration' );
 		if ( false === $api->is_signed() ) {

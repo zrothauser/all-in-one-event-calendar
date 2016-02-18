@@ -884,7 +884,6 @@ class Ai1ec_Front_Controller {
 				'wp_head',
 				array( 'view.event.single', 'add_meta_tags' )
 			);
-
 		}
 	}
 	/**

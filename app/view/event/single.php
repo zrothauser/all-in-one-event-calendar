@@ -11,8 +11,6 @@
  */
 class Ai1ec_View_Event_Single extends Ai1ec_Base {
 
-
-
 	/**
 	 * Renders the html of the page and returns it.
 	 *
@@ -21,7 +19,6 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 	 * @return string the html of the page
 	 */
 	public function get_content( Ai1ec_Event $event ) {
-		
 		$settings = $this->_registry->get( 'model.settings' );
 		$rrule    = $this->_registry->get( 'recurrence.rule' );
 		$taxonomy = $this->_registry->get( 'view.event.taxonomy' );

@@ -16,13 +16,8 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 		$columns['author']           = __( 'Author',          AI1EC_PLUGIN_NAME );
 		$columns['date']             = __( 'Post Date',       AI1EC_PLUGIN_NAME );
 		$columns['ai1ec_event_date'] = __( 'Event date/time', AI1EC_PLUGIN_NAME );
-<<<<<<< HEAD
 		if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ) {
 			$api = $this->_registry->get( 'model.api' );
-=======
-		if ( AI1EC_API && AI1EC_API_TICKETING ) {
-			$api = $this->_registry->get( 'model.api.api-ticketing' );
->>>>>>> 382be6d911eb83f5a2ef3c5ea4a2428e1fb25103
 			if ( $api->is_signed() ) {
 				$columns['tickets'] = __( 'Ticket Types',    AI1EC_PLUGIN_NAME );
 			}

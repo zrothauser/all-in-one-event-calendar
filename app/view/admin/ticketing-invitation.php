@@ -28,7 +28,7 @@ class Ai1ec_View_Admin_Ticketing_Invitation extends Ai1ec_View_Admin_Abstract {
      */
     public function add_page() {
         $ticketing_invitation_page = add_submenu_page(
-            null,
+            AI1EC_ADMIN_BASE_URL,
             Ai1ec_I18n::__( 'Invitation' ),
             Ai1ec_I18n::__( 'Invitation' ),
             'manage_ai1ec_options',

@@ -136,7 +136,10 @@ class Ai1ec_Ics_Import_Export_Engine
 		$do_show_map     = isset( $args['do_show_map'] ) ? $args['do_show_map'] : 0;
 		$count           = 0;
 		$events_in_db    = isset( $args['events_in_db'] ) ? $args['events_in_db'] : 0;
+
+		//sort by event date function _cmpfcn of iCalcreator.class.php
 		$v->sort();
+
 		// Reverse the sort order, so that RECURRENCE-IDs are listed before the
 		// defining recurrence events, and therefore take precedence during
 		// caching.
@@ -615,17 +618,17 @@ class Ai1ec_Ics_Import_Export_Engine
 
 			$api_event_id = $e->getProperty( 'X-API-EVENT-ID' );
 			if ( $api_event_id && false === ai1ec_is_blank( $api_event_id[1] ) ) {
-				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api::EVENT_ID_METADATA, $api_event_id[1] );	
+				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api_Ticketing::EVENT_ID_METADATA, $api_event_id[1] );	
 			}
 
 			$api_url = $e->getProperty( 'X-API-URL' );
 			if ( $api_url && false === ai1ec_is_blank( $api_url[1] ) ) {
-				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api::ICS_API_URL_METADATA, $api_url[1] );	
+				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api_Ticketing::ICS_API_URL_METADATA, $api_url[1] );	
 			}
 
 			$checkout_url = $e->getProperty( 'X-CHECKOUT-URL' );
 			if ( $checkout_url && false === ai1ec_is_blank( $checkout_url[1] ) ) {
-				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api::ICS_CHECKOUT_URL_METADATA, $checkout_url[1] );	
+				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api_Ticketing::ICS_CHECKOUT_URL_METADATA, $checkout_url[1] );	
 			}
 			
 			$wp_images_url  = $e->getProperty( 'X-WP-IMAGES-URL' );
@@ -802,11 +805,11 @@ class Ai1ec_Ics_Import_Export_Engine
 			foreach ($post_meta_values as $key => $value) {				
 				if ( '_ai1ec_cost_type' === $key ) {
 					$cost_type    = $value[0];
-				} else if ( Ai1ec_Api::EVENT_ID_METADATA === $key ) {
+				} else if ( Ai1ec_Api_Ticketing::EVENT_ID_METADATA === $key ) {
 					$api_event_id = $value[0];					
-				} else if ( Ai1ec_Api::ICS_API_URL_METADATA === $key ) {
+				} else if ( Ai1ec_Api_Ticketing::ICS_API_URL_METADATA === $key ) {
 					$api_url = $value[0];
-				} else if ( Ai1ec_Api::ICS_CHECKOUT_URL_METADATA === $key ) {
+				} else if ( Ai1ec_Api_Ticketing::ICS_CHECKOUT_URL_METADATA === $key ) {
 					$checkout_url = $value[0];
 				}
  			}			
@@ -835,7 +838,7 @@ class Ai1ec_Ics_Import_Export_Engine
 				$e->setProperty( 'X-API-URL', $this->_sanitize_value( $api_url ) );			
 			}
 
-			$api = $this->_registry->get( 'model.api' );
+			$api = $this->_registry->get( 'model.api.api-ticketing' );
 			if ( ai1ec_is_blank( $checkout_url ) ) {
 				$e->setProperty( 'X-CHECKOUT-URL', AI1EC_TICKETS_CHECKOUT_URL );			
 				$url = $api->create_checkout_url( $api_event_id );

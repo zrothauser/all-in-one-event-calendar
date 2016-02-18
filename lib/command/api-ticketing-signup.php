@@ -15,7 +15,7 @@ class Ai1ec_Command_Api_Ticketing_Signup extends Ai1ec_Command_Save_Abstract {
 	 * @see Ai1ec_Command::is_this_to_execute()
 	*/
 	public function do_execute() {
-		$api      = $this->_registry->get( 'model.api' );
+		$api      = $this->_registry->get( 'model.api.api-registration' );
 		$response = '';
 		
 		if ( true === isset($_POST['ai1ec_signout']) && '1' === $_POST['ai1ec_signout'] ) {

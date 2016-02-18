@@ -16,8 +16,13 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 		$columns['author']           = __( 'Author',          AI1EC_PLUGIN_NAME );
 		$columns['date']             = __( 'Post Date',       AI1EC_PLUGIN_NAME );
 		$columns['ai1ec_event_date'] = __( 'Event date/time', AI1EC_PLUGIN_NAME );
+<<<<<<< HEAD
 		if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ) {
 			$api = $this->_registry->get( 'model.api' );
+=======
+		if ( AI1EC_API && AI1EC_API_TICKETING ) {
+			$api = $this->_registry->get( 'model.api.api-ticketing' );
+>>>>>>> 382be6d911eb83f5a2ef3c5ea4a2428e1fb25103
 			if ( $api->is_signed() ) {
 				$columns['tickets'] = __( 'Ticket Types',    AI1EC_PLUGIN_NAME );
 			}
@@ -72,7 +77,7 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 			}
 		}
 		if ( 'tickets' === $column ) {
-			$api = $this->_registry->get( 'model.api' );
+			$api = $this->_registry->get( 'model.api.api-ticketing' );
 			if ( $api->is_ticket_event_imported( $post_id ) ) {
 				echo '';
 			} else {
@@ -80,7 +85,7 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 					$event        = $this->_registry->get( 'model.event', $post_id );				
 					$api_event_id = get_post_meta(
 						$post_id,
-						Ai1ec_Api::EVENT_ID_METADATA,
+						Ai1ec_Api_Ticketing::EVENT_ID_METADATA,
 						true
 					);				
 					if ( $api_event_id ) {
@@ -212,7 +217,7 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 	 */
 	public function show_ticket_details() {
 		$post_id = $_POST['ai1ec_event_id'];
-		$api     = $this->_registry->get( 'model.api' );
+		$api     = $this->_registry->get( 'model.api.api-ticketing' );
 		$tickets = $api->get_ticket_types( $post_id );
 		echo $tickets;
 		wp_die();
@@ -223,7 +228,7 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 	 */
 	public function show_attendees() {
 		$post_id  = $_POST['ai1ec_event_id'];
-		$api      = $this->_registry->get( 'model.api' );
+		$api      = $this->_registry->get( 'model.api.api-ticketing' );
 		$tickets  = $api->get_tickets( $post_id );
 		echo $tickets;
 		wp_die();

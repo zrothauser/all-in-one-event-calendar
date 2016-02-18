@@ -4,7 +4,7 @@
  * The concrete command that save settings.
  *
  * @author     Time.ly Network Inc.
- * @since      2.0
+ * @since      2.3
  *
  * @package    AI1EC
  * @subpackage AI1EC.Command

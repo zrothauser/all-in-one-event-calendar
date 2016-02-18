@@ -4,7 +4,7 @@
  * Tickets page.
  *
  * @author     Time.ly Network Inc.
- * @since      2.4
+ * @since      2.3
  *
  * @package    AI1EC
  * @subpackage AI1EC.View

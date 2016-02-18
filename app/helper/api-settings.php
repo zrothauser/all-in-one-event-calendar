@@ -21,7 +21,6 @@ class Ai1ec_Api_Settings extends Ai1ec_Settings {
     public function ai1ec_setting_up_api_flags( $status ) {
 
         $settings = $this->_registry->get( 'helper.api-settings' );
-        $settings->set( 'ai1ec_api_ticketing', $status );
         $settings->set( 'ai1ec_api', $status );
     }
 
@@ -35,13 +34,8 @@ class Ai1ec_Api_Settings extends Ai1ec_Settings {
     public function ai1ec_api_enabled() {
 
         $settings = $this->_registry->get( 'helper.api-settings' );
-
-        $api_ticketing = $settings->get( 'ai1ec_api_ticketing' );
-        $api           = $settings->get( 'ai1ec_api' );
-
-        $result = ( $api_ticketing && $api );
-
-        return $result;
+        $api      = $settings->get( 'ai1ec_api' );
+        return $api;
     }
 
 }

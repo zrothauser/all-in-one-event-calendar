@@ -356,10 +356,6 @@ class Ai1ec_Settings extends Ai1ec_App {
                     'type'    => 'boolean',
                     'default' => false,
             ),
-            'ai1ec_api_ticketing' => array(
-                    'type'        => 'boolean',
-                    'default'     => false,
-            ),
 			'ai1ec_db_version' => array(
 				'type' => 'int',
 				'default'  => false,

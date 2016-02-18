@@ -12,12 +12,12 @@ class TestApiRegistration extends BaseTestCase {
 		//sign wordpress
 		$this->wp_sign();
 		
-		$data['ai1ec_name']			   	     = 'Eli';
-		$data['ai1ec_email']				 = 'phpunit@time.ly';
+		$data['ai1ec_name']                  = 'Eli';
+		$data['ai1ec_email']                 = 'phpunit@time.ly';
 		$data['ai1ec_password']              = '123456';
 		$data['ai1ec_password_confirmation'] = '123456';
-		$data['ai1ec_phone']				 = '0000000';
-		$data['ai1ec_terms']				 = 1;
+		$data['ai1ec_phone']                 = '0000000';
+		$data['ai1ec_terms']                 = 1;
 		
 		$this->create_post_request( $data );
 
@@ -54,7 +54,7 @@ class TestApiRegistration extends BaseTestCase {
 		$this->assertTrue( isset ( $response->raw ) );
 		$response_code = wp_remote_retrieve_response_code( $response->raw );
 		$this->assertEquals( $response_code, 400 );
-		$message = $api->get_api_error_msg( $response->raw );
+		$message       = $api->get_api_error_msg( $response->raw );
 		$this->assertEquals( "Signin Failed. Please verify your account information and try again.", $message );
 	}
 

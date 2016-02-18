@@ -477,20 +477,21 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 				)
 			)
 		);
-		$add_defaults = array(
-			'cat_ids' => 'categories',
-			'tag_ids' => 'tags',
-		);
-		foreach ( $add_defaults as $query => $default ) {
-			if ( empty( $view_args[$query] ) ) {
-				$setting = $settings->get( 'default_tags_categories' );
-				if ( isset( $setting[$default] ) ) {
-					$view_args[$query] = $setting[$default];
+		$type = $request->get( 'request_type' );
+		if ( 'html' === $type ) {
+			$add_defaults = array(
+				'cat_ids' => 'categories',
+				'tag_ids' => 'tags',
+			);
+			foreach ( $add_defaults as $query => $default ) {
+				if ( empty( $view_args[$query] ) ) {
+					$setting = $settings->get( 'default_tags_categories' );
+					if ( isset( $setting[$default] ) ) {
+						$view_args[$query] = $setting[$default];
+					}
 				}
 			}
 		}
-
-		$type = $request->get( 'request_type' );
 
 		$view_args['data_type'] = $this->return_data_type_for_request_type(
 			$type

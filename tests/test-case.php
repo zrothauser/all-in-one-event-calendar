@@ -33,7 +33,8 @@ class BaseTestCase extends WP_UnitTestCase {
 		$_POST['ai1ec_password'] = '123456';
 		$api                     = $ai1ec_registry->get( 'model.api.api-registration' );
 		if ( false === $api->is_signed() ) {
-			$this->assertTrue( $api->signin(), 'Authentication error. Check the user name and password to access the API' );
+			$response = $api->signin();
+			$this->assertTrue( $api->is_response_success( $response ), 'Authentication error. Check the user name and password to access the API' );
 		} 		
 	}	
 

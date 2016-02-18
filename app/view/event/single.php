@@ -187,6 +187,39 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 	}
 
 	/**
+	 * Add meta OG tags to the event details page
+	 */
+	public function add_meta_tags() {
+		// Add tags only on Event Details page
+		$aco = $this->_registry->get( 'acl.aco' );
+		if ( ! $aco->is_our_post_type() ) return;
+
+		// Get Event and process desciption
+		$event   = $this->_registry->get( 'model.event', get_the_ID() );
+		$content = $this->_registry->get( 'view.event.content' );
+		$desc    = $event->get( 'post' )->post_content;
+		$desc    = apply_filters( 'the_excerpt', $desc );
+		$desc    = strip_shortcodes( $desc );
+		$desc    = str_replace( ']]>', ']]&gt;', $desc );
+		$desc    = strip_tags( $desc );
+		$desc    = preg_replace( '/\n+/', ' ', $desc);
+		$desc    = substr( $desc, 0, 300 );
+		$og      = array(
+			'url'         => get_permalink( $event->get( 'post_id' ) ),
+			'title'       => htmlspecialchars(
+				$event->get( 'post' )->post_title .
+				' (' . substr( $event->get( 'start' ) , 0, 10 ) . ')'
+			),
+			'type'        => 'article',
+			'description' => htmlspecialchars( $desc ),
+			'image'       => $content->get_content_img_url( $event )
+		);
+		foreach ( $og as $key => $val ) {
+			echo "<meta property=\"og:$key\" content=\"$val\" />\n";
+		}
+	}
+
+	/**
 	 * @param Ai1ec_Event $event
 	 *
 	 * @return The html of the footer

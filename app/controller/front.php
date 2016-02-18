@@ -880,6 +880,10 @@ class Ai1ec_Front_Controller {
 				'send_headers',
 				array( 'request.redirect', 'handle_categories_and_tags' )
 			);
+			$dispatcher->register_action(
+				'wp_head',
+				array( 'view.event.single', 'add_meta_tags' )
+			);
 		}
 	}
 	/**

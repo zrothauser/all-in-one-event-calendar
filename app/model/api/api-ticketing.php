@@ -46,7 +46,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	 * @return object Response body in JSON.
 	 */
 	public function store_event( Ai1ec_Event $event, WP_Post $post ) {
-
+		
 		if ( isset( $_POST['ai1ec_tickets_loading_error'] ) ) {
 			//do not update tickets because is unsafe. There was a problem to load the tickets,
 			//the customer received the same message when the event was loaded.
@@ -58,26 +58,26 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			//prevent changes on Ticket Events that were imported
 			$error        = __( 'This Event was replicated from another site. Any changes on Tickets were discarded.', AI1EC_PLUGIN_NAME );
 			$notification = $this->_registry->get( 'notification.admin' );
-			$notification->store(
-				$error,
-				'error',
-				0,
-				array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
-				false
+			$notification->store( 
+				$error, 
+				'error', 
+				0, 
+				array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 
+				false 
 			);
 			return $error;
-		} else if ( false === ai1ec_is_blank( $event->get( 'ical_feed_url' ) ) ) {
+		} else if ( false === ai1ec_is_blank( $event->get( 'ical_feed_url' ) ) ) {			
 			//prevent ticket creating inside Regular Events that were imported
 			$error        = __( 'This Event was replicated from another site. Any changes on Tickets were discarded.', AI1EC_PLUGIN_NAME );
 			$notification = $this->_registry->get( 'notification.admin' );
-			$notification->store(
-				$error,
-				'error',
-				0,
-				array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
-				false
+			$notification->store( 
+				$error,  
+				'error', 
+				0, 
+				array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 
+				false 
 			);
-			return $error;
+			return $error;			
 		}
 		$api_event_id = get_post_meta(
 					$event->get( 'post_id' ),
@@ -158,7 +158,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			$body_data['update_image'] = (true === $update_image) ? '1' : '0';
 		 	$payload                   = json_encode( $body_data );
 		}
-		$response = $this->request_api( 'POST', $url, $payload,
+		$response = $this->request_api( 'POST', $url, $payload, 
 			true, //true to decode response body
 			$custom_headers
 			);
@@ -175,7 +175,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		} else {
 			$error_message = '';
 			if ( $is_new ) {
-				$error_message = __( 'We were unable to create the Event on Time.ly Ticketing', AI1EC_PLUGIN_NAME );
+				$error_message = __( 'We were unable to create the Event on Time.ly Ticketing', AI1EC_PLUGIN_NAME );				
 			} else {
 				$error_message = __( 'We were unable to update the Event on Time.ly Ticketing', AI1EC_PLUGIN_NAME );
 			}
@@ -203,23 +203,23 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			'postcode'       => $_POST['ai1ec_postcode']
 		);
 		$custom_headers['content-type'] = 'application/x-www-form-urlencoded';
-		$response = $this->request_api( 'PUT', 'calendars/' . $calendar_id . '/payment',
-			$settings,
+		$response = $this->request_api( 'PUT', 'calendars/' . $calendar_id . '/payment', 
+			$settings, 
 			true, //decode response body
-			$custom_headers
+			$custom_headers 
 		);
 		if ( $this->is_response_success( $response ) ) {
 			$notification  = $this->_registry->get( 'notification.admin' );
-			$notification->store(
-				__( 'Payment preferences were saved.', AI1EC_PLUGIN_NAME ),
-				'updated',
-				0,
-				array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
-				false
+			$notification->store( 
+				__( 'Payment preferences were saved.', AI1EC_PLUGIN_NAME ), 
+				'updated', 
+				0, 
+				array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 
+				false 
 			);
 			return $response->body;
 		} else {
-			$this->save_error_notification( $response,
+			$this->save_error_notification( $response, 
 				__( 'Payment preferences were not saved.', AI1EC_PLUGIN_NAME )
 			);
 			return false;
@@ -233,8 +233,8 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		$calendar_id = $this->_get_ticket_calendar();
 		$settings    = null;
 		if ( 0 < $calendar_id ) {
-			$response = $this->request_api( 'GET', "calendars/$calendar_id/payment",
-				null, //no body
+			$response = $this->request_api( 'GET', "calendars/$calendar_id/payment", 
+				null, //no body 
 				true //decode response body
 			);
 			if ( $this->is_response_success( $response ) ) {
@@ -244,8 +244,8 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		if ( is_null( $settings ) ) {
 			return (object) array('payment_method'=>'cheque', 'paypal_email'=> '', 'first_name'=>'',  'last_name'=>'', 'street'=> '', 'city'=> '', 'state'=> '', 'postcode'=> '', 'country'=> '');
 		} else {
-			return $settings;
-		}
+			return $settings;	
+		}		
 	}
 
 	/**
@@ -285,7 +285,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 
 		$utc_current_time         = $this->_registry->get( 'date.time')->format_to_javascript();
 		$body['created_at']       = $utc_current_time;
-		$body['updated_at']       = $utc_current_time;
+		$body['updated_at']       = $utc_current_time;		
 
 		//removing blank values
 		foreach ($body as $key => $value) {
@@ -342,18 +342,18 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		if ( 0 === strcasecmp( 'on',  $ticket_type_ite['unlimited'] ) ) {
 			$ticket_type['quantity'] = null;
 		} else {
-			$ticket_type['quantity'] = $ticket_type_ite['quantity'];
+			$ticket_type['quantity'] = $ticket_type_ite['quantity'];			
 		}
 		$ticket_type['buy_min_qty']   = $ticket_type_ite['buy_min_limit'];
 		if ( ai1ec_is_blank( $ticket_type_ite['buy_max_limit'] ) ) {
 			$ticket_type['buy_max_qty'] = null;
 		} else {
 			$ticket_type['buy_max_qty'] = $ticket_type_ite['buy_max_limit'];
-		}
+		}		
 		if ( 0 === strcasecmp( 'on',  $ticket_type_ite['availibility'] ) ) {
 			//immediate availability
 			$timezone_start_time            = $this->_registry->get( 'date.time' );
-			$timezone_start_time->set_timezone( $event->get('timezone_name') );
+			$timezone_start_time->set_timezone( $event->get('timezone_name') );						
 			$ticket_type['sale_start_date'] = $timezone_start_time->format_to_javascript( $event->get('timezone_name') );
 			$ticket_type['sale_end_date']   = $event->get( 'end' )->format_to_javascript();
 		} else {
@@ -377,14 +377,14 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			$ticket_type->buy_max_limit = self::MAX_TICKET_TO_BUY_DEFAULT;
 		} else {
 			$ticket_type->buy_max_limit = $ticket_type_api->buy_max_qty;
-		}
+		}		
 		$ticket_type->ticket_sale_start_date = $ticket_type_api->sale_start_date; //YYYY-MM-YY HH:NN:SS
 		$ticket_type->ticket_sale_end_date   = $ticket_type_api->sale_end_date; //YYYY-MM-YY HH:NN:SS
 		$ticket_type->ticket_status 	     = $ticket_type_api->status;
 		if ( false === isset( $ticket_type_api->quantity ) ||
 			null === $ticket_type_api->quantity ) {
 		 	$ticket_type->unlimited          = 'on';
-		} else {
+		} else {		
  			$ticket_type->unlimited          = 'off';
 		}
 		$ticket_type->ticket_type_id = $ticket_type_api->id;
@@ -392,7 +392,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		$ticket_type->availability   = $this->_parse_availability_message( $ticket_type_api->availability );
 
 		//derived property to set the max quantity of dropdown
-		if ( $ticket_type->available !== null ) {
+		if ( $ticket_type->available !== null ) {			
 			if ( $ticket_type->available > $ticket_type->buy_max_limit ) {
 				$ticket_type->buy_max_available = $ticket_type->buy_max_limit;
 			} else {
@@ -400,7 +400,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			}
 		} else {
 			$ticket_type->buy_max_available = $ticket_type->buy_max_limit;
-		}
+		}					
 		return $ticket_type;
 	}
 
@@ -412,13 +412,13 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 				case 'past_event':
 					return __( 'Past Event' );
 				case 'event_closed':
-					return __( 'Event closed' );
+					return __( 'Event closed' );		
 				case 'not_available_yet':
-					return __( 'Not available yet' );
+					return __( 'Not available yet' );					
 				case 'sale_closed':
 					return __( 'Sale closed' );
 				case 'sold_out':
-					return __( 'Sold out' );
+					return __( 'Sold out' );														
 				default:
 					return __( 'Not available' );
 			}
@@ -456,10 +456,10 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 				return json_encode( array( 'data' => array() ) );
 			}
 		} else {
-			$error_message = $this->_transform_error_message(
-				__( 'We were unable to get the Tickets Details from Time.ly Ticketing', AI1EC_PLUGIN_NAME ),
-				$response, $url,
-				true
+			$error_message = $this->_transform_error_message( 
+				__( 'We were unable to get the Tickets Details from Time.ly Ticketing', AI1EC_PLUGIN_NAME ), 
+				$response, $url, 
+				true 
 			);
 			return json_encode( array( 'data' => array(), 'error' => $error_message ) );
 		}
@@ -487,15 +487,15 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		if ( 200 === $response_code ) {
 			return $response['body'];
 		} else {
-			$error_message = $this->_transform_error_message(
+			$error_message = $this->_transform_error_message( 
 				__( 'We were unable to get the Tickets Attendees from Time.ly Ticketing', AI1EC_PLUGIN_NAME ),
-				$response, $url,
-				true
+				$response, $url, 
+				true 
 			);
 			return json_encode( array( 'data' => array(), 'error' => $error_message ) );
 		}
 	}
-
+	
 	public function _order_comparator( $order1, $order2 ) {
 		return strcmp( $order1->created_at, $order2->created_at ) * -1;
 	}
@@ -520,11 +520,11 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 				return array();
 			}
 		} else {
-			$error_message = $this->_transform_error_message(
-				__( 'We were unable to get the Sales information from Time.ly Ticketing', AI1EC_PLUGIN_NAME ),
-				$response,
-				$url,
-				true
+			$error_message = $this->_transform_error_message( 
+				__( 'We were unable to get the Sales information from Time.ly Ticketing', AI1EC_PLUGIN_NAME ), 
+				$response, 
+				$url, 
+				true 
 			);
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
@@ -673,11 +673,11 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 				//move to trash
 				return null;
 			}
-        	$message      = $this->_transform_error_message(
-        		__( 'We were unable to remove the Tickets from Time.ly Ticketing', AI1EC_PLUGIN_NAME ),
-        		$response,
-        		$url,
-        		true
+        	$message      = $this->_transform_error_message( 
+        		__( 'We were unable to remove the Tickets from Time.ly Ticketing', AI1EC_PLUGIN_NAME ), 
+        		$response, 
+        		$url, 
+        		true 
         	);
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );

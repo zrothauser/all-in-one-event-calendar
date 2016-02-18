@@ -14,6 +14,9 @@ local.properties
 .loadpath
 /public/js/build.txt
 /public/js_cache/**
+/phpunit.xml.dist
+/tests/.travis.yml
+/tests/test-sample.php
 
 # External tool builders
 .externalToolBuilders/
@@ -21,22 +24,22 @@ local.properties
 # Locally stored "Eclipse launch configurations"
 *.launch
 
-# CDTspecific
+# CDT-specific
 .cproject
 
-# PDTspecific
+# PDT-specific
 .buildpath
 
 .DS_Store
 
-/app/config/constantslocal.php
+/app/config/constants-local.php
 /app/public/js/build.txt
-/lib/bootstrap/loadermap.php
-/public/themesai1ec/umbra/less.sha1.map.php
-/public/themesai1ec/umbra/css/ai1ec_parsed_css.css
-/public/themesai1ec/gamma/less.sha1.map.php
-/public/themesai1ec/gamma/css/ai1ec_parsed_css.css
-/public/themesai1ec/plana/less.sha1.map.php
-/public/themesai1ec/plana/css/ai1ec_parsed_css.css
-/public/themesai1ec/vortex/less.sha1.map.php
-/public/themesai1ec/vortex/css/ai1ec_parsed_css.css
+/lib/bootstrap/loader-map.php
+/public/themes-ai1ec/umbra/less.sha1.map.php
+/public/themes-ai1ec/umbra/css/ai1ec_parsed_css.css
+/public/themes-ai1ec/gamma/less.sha1.map.php
+/public/themes-ai1ec/gamma/css/ai1ec_parsed_css.css
+/public/themes-ai1ec/plana/less.sha1.map.php
+/public/themes-ai1ec/plana/css/ai1ec_parsed_css.css
+/public/themes-ai1ec/vortex/less.sha1.map.php
+/public/themes-ai1ec/vortex/css/ai1ec_parsed_css.css

@@ -63,21 +63,22 @@ class Ai1ec_View_Admin_Ticketing_Invitation extends Ai1ec_View_Admin_Abstract {
         $api_settings       = $this->_registry->get( 'helper.api-settings' );
         $invitation_checked = ( $api_settings->ai1ec_api_enabled() ) ? 'checked' : '';
         $args               = array(
-            'stacked'        => true,
-            'content_class'  => 'ai1ec-form-horizontal',
-            'submit'         => array(
-                'id'         => self::SUBMIT_ID,
-                'value'      => '<i class="ai1ec-fa ai1ec-fa-save ai1ec-fa-fw"></i> ' .
-                                 Ai1ec_I18n::__( 'Save Settings' ),
-                'args'       => array(
-                    'class'  => 'ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg',
+            'stacked'               => true,
+            'content_class'         => 'ai1ec-form-horizontal',
+            'enable_ticketing_text' => Ai1ec_I18n::__( 'Enable Ticketing Beta' ),
+            'submit'                => array(
+                'id'                => self::SUBMIT_ID,
+                'value'             => '<i class="ai1ec-fa ai1ec-fa-save ai1ec-fa-fw"></i> ' .
+                                        Ai1ec_I18n::__( 'Save Settings' ),
+                'args'              => array(
+                    'class'         => 'ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg',
                 ),
             ),
-            'invitation_chk' => array(
-                'id'         => 'ai1ec_ticketing',
-                'name'       => 'ai1ec_ticketing',
-                'value'      => '1',
-                'checked'    => $invitation_checked,
+            'invitation_chk'        => array(
+                'id'                => 'ai1ec_ticketing',
+                'name'              => 'ai1ec_ticketing',
+                'value'             => '1',
+                'checked'           => $invitation_checked,
             ),
         );
         $loader = $this->_registry->get( 'theme.loader' );

@@ -4,7 +4,7 @@
  * Model used for storing/retrieving api settings.
  *
  * @author     Time.ly Network, Inc.
- * @since      2.0
+ * @since      2.3
  * @package    Ai1EC
  * @subpackage Ai1EC.Model
  */

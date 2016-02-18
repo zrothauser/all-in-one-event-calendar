@@ -5,7 +5,7 @@ calendar, ical, iCalendar, all-in-one, events sync, events widget,
 calendar widget
 Requires WordPress at least: 3.5
 Tested up to: 4.4.2
-Stable tag: 2.3.9
+Stable tag: 2.3.10
 License: GNU General Public License, version 3 (GPL-3.0)
 
 A calendar system with many views, upcoming events widget, color-coded
@@ -141,6 +141,9 @@ https://vimeo.com/135004810
 **[ai1ec exact_date="5-10-2015"]**
 
 == Changelog ==
+
+= Version 2.3.10 =
+* Initial ticketing implementation - If you want to be a Beta user for this exciting new feature, then please visit [this page](https://time.ly/ticketing_beta).
 
 = Version 2.3.9 =
 * Improved JS caching stability in different environments

@@ -152,7 +152,7 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			);
 		}
 
-		if ( AI1EC_API && AI1EC_API_TICKETING ) { 
+		if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ) {
 			$api_event_id = get_post_meta(
 				$event->get( 'post_id' ),
 				Ai1ec_Api_Ticketing::EVENT_ID_METADATA,

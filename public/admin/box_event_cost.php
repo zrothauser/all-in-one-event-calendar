@@ -28,7 +28,7 @@
 				<?php _e( 'Free event', AI1EC_PLUGIN_NAME ); ?>
 			</label>
 			<?php
-			if ( AI1EC_API && AI1EC_API_TICKETING ):?>
+			if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ):?>
 				<label for="ai1ec_has_tickets">
 					<input type="radio" value="tickets" id="ai1ec_has_tickets"
 						   name="ai1ec_cost_type" <?php if ( 'tickets' == $cost_type ) { echo 'checked'; } ?>>
@@ -43,7 +43,7 @@
 		</div>
 
 	<?php
-	if ( AI1EC_API && AI1EC_API_TICKETING ):		
+	if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ):
 
 		if ( ! $ticketing ): ?>
 			<div class="ai1ec-panel ai1ec-tickets-panel ai1ec-tickets-form">

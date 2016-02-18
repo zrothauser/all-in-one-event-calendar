@@ -369,7 +369,7 @@ class Ai1ec_Javascript_Controller {
 			$script_to_load[] = self::WIDGET_CREATOR;
 		}
 		
-		if ( ( AI1EC_API && AI1EC_API_TICKETING ) && (
+		if ( ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ) && (
 				true === $this->_are_we_managing_tickets() ||
 				true === $this->_are_we_managing_events_list()
 			)

@@ -298,7 +298,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 				}
 			}
 		}
-		if ( AI1EC_API && AI1EC_API_TICKETING ) {
+		if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ) {
 			$api                   = $this->_registry->get( 'model.api' );
 			$ticketing             = $api->is_signed();
 			$message               = $api->get_sign_message();

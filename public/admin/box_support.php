@@ -12,27 +12,27 @@
 		</h2>
 		<div class="ai1ec-support-buttons ai1ec-row">
 			<div class="ai1ec-col-lg-4" id="ai1ec-addons-col">
-				<a class="ai1ec-btn ai1ec-btn-info ai1ec-btn-block ai1ec-btn-lg"
+				<a class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-block ai1ec-btn-lg"
 					target="_blank"
-					href="http://time.ly/add-ons/?utm_source=dashboard&amp;utm_medium=button&amp;utm_campaign=addons">
-					<i class="ai1ec-fa ai1ec-fa-magic ai1ec-fa-fw"></i>
-					<?php _e( 'Get Add-ons', AI1EC_PLUGIN_NAME ); ?>
+					href="http://time.ly/document/user-guide/">
+					<i class="ai1ec-fa ai1ec-fa-book ai1ec-fa-fw"></i>
+					<?php _e( 'User Guide', AI1EC_PLUGIN_NAME ); ?>
 				</a>
 			</div>
 			<div class="ai1ec-col-lg-4" id="ai1ec-support-col">
 				<a class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-block ai1ec-btn-lg"
 					target="_blank"
-					href="http://time.ly/support/?utm_source=dashboard&amp;utm_medium=button&amp;utm_campaign=support">
+					href="https://wordpress.org/support/plugin/all-in-one-event-calendar">
 					<i class="ai1ec-fa ai1ec-fa-comments ai1ec-fa-fw"></i>
 					<?php _e( 'Support', AI1EC_PLUGIN_NAME ); ?>
 				</a>
 			</div>
 			<div class="ai1ec-col-lg-4" id="ai1ec-events-col">
-				<a class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-block ai1ec-btn-lg"
+				<a class="ai1ec-btn ai1ec-btn-info ai1ec-btn-block ai1ec-btn-lg"
 					target="_blank"
-					href="http://time.ly/calendar/?utm_source=dashboard&amp;utm_medium=button&amp;utm_campaign=events">
-					<i class="ai1ec-fa ai1ec-fa-calendar ai1ec-fa-fw"></i>
-					<?php _e( 'Timely Events', AI1EC_PLUGIN_NAME ); ?>
+					href="https://time.ly/wordpress-calendar-plugin/addons/">
+					<i class="ai1ec-fa ai1ec-fa-magic ai1ec-fa-fw"></i>
+					<?php _e( 'Get Add-ons', AI1EC_PLUGIN_NAME ); ?>
 				</a>
 			</div>
 		</div>

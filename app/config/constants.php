@@ -147,7 +147,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	if ( ! defined( 'AI1EC_TWIG_CACHE_PATH' ) ) {
 		define(
 		'AI1EC_TWIG_CACHE_PATH',
-		AI1EC_CACHE_PATH . DIRECTORY_SEPARATOR . 'twig' .
+		AI1EC_CACHE_PATH . 'twig' .
 			DIRECTORY_SEPARATOR
 		);
 	}

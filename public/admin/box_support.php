@@ -32,7 +32,7 @@
 					target="_blank"
 					href="https://time.ly/wordpress-calendar-plugin/addons/">
 					<i class="ai1ec-fa ai1ec-fa-magic ai1ec-fa-fw"></i>
-                    <?php _e( 'Get Add-ons', AI1EC_PLUGIN_NAME ); ?>					
+					<?php _e( 'Get Add-ons', AI1EC_PLUGIN_NAME ); ?>
 				</a>
 			</div>
 		</div>

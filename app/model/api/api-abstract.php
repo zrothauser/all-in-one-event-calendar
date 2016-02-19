@@ -35,7 +35,11 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		$headers['Authorization'] = 'Basic ' . $this->_settings->get( 'ticketing_token' );
 		if ( null !== $custom_headers ) {
 			foreach ( $custom_headers as $key => $value ) {
-				$headers[$key] = $value;	
+				if ( null === $value ) {
+					unset( $headers[$key] );
+				} else {
+					$headers[$key] = $value;	
+				}				
 			}
 		}
 		return $headers;
@@ -150,7 +154,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		$body = array(
 			'title'    => get_bloginfo( 'name' )
 		);
-		$response = $this->request_api( 'GET', 'calendars', 
+		$response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars', 
 			json_encode( $body )
 		); 		
 		if ( $this->is_response_success( $response ) ) {
@@ -173,7 +177,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 			'url'      => ai1ec_site_url(),
 			'timezone' => $this->_settings->get( 'timezone_string' )
 			);
-		$response = $this->request_api( 'POST', 'calendars', 
+		$response = $this->request_api( 'POST', AI1EC_API_URL . 'calendars', 
 			json_encode( $body )
 		);
 		if ( $this->is_response_success( $response ) ) {
@@ -232,7 +236,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		if ( ! is_null( $body ) ) {
 			$request[ 'body' ] = $body;
 		}
-		$url      = AI1EC_API_URL . $url;
+		$url      = $url;
 		$response = wp_remote_request( $url, $request );
 		$result   = new stdClass();
 		if ( is_wp_error( $response ) ) {

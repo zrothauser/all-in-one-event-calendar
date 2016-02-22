@@ -908,7 +908,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 						'Disable <strong>gzip</strong> compression.'
 					),
 					'help'  => Ai1ec_I18n::__(
-						'Use this option if calendar is unresponsive. <a href="http://support.time.ly/disable-gzip-compression/">Read more</a> about the issue. (From version 2.1 onwards, gzip is disabled by default for maximum compatibility.)'
+						'Use this option if calendar is unresponsive. <a target="_blank" href="http://time.ly/document/user-guide/troubleshooting/disable-gzip-compression/">Read more</a> about the issue. (From version 2.1 onwards, gzip is disabled by default for maximum compatibility.)'
 					),
 				),
 				'default'  => true,

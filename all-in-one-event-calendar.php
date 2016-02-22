@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: All-in-One Event Calendar by Time.ly
- * Plugin URI: http://time.ly/
+ * Plugin URI: http://wordpress.org/plugins/all-in-one-event-calendar/
  * Description: A calendar system with month, week, day, agenda views, upcoming events widget, color-coded categories, recurrence, and import/export of .ics feeds.
  * Author: Time.ly Network Inc.
  * Author URI: http://time.ly/

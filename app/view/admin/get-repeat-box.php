@@ -621,7 +621,7 @@ class Ai1ec_View_Admin_Get_repeat_Box extends Ai1ec_Base {
 		$dates_as_strings = array();
 		foreach ( $dates as $date ) {
 			$date = str_replace( array( 'RDATE=', 'EXDATE=' ), '', $date );
-			$date = $this->_registry->get( 'date.time', $date );
+			$date = $this->_registry->get( 'date.time', $date )->set_preferred_timezone('UTC');
 			$dates_as_strings[] = $date->format('m/d/Y');
 		}
 		return $dates_as_strings;

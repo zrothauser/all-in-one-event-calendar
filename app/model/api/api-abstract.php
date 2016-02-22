@@ -236,7 +236,6 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		if ( ! is_null( $body ) ) {
 			$request[ 'body' ] = $body;
 		}
-		$url      = $url;
 		$response = wp_remote_request( $url, $request );
 		$result   = new stdClass();
 		if ( is_wp_error( $response ) ) {

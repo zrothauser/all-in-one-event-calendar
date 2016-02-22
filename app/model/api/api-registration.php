@@ -27,7 +27,7 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 	public function signin() {
 		$body['email']    = $_POST['ai1ec_email'];
 		$body['password'] = $_POST['ai1ec_password'];
-		$response         = $this->request_api( 'POST', 'auth/authenticate', json_encode( $body ), true );
+		$response         = $this->request_api( 'POST', AI1EC_API_URL . 'auth/authenticate', json_encode( $body ), true, array( 'Authorization' => null ) );
 		if ( $this->is_response_success( $response ) ) {
 			$response_body = (array) $response->body;
 			$this->_save_settings( $response_body['message'], true, $response_body['auth_token'], $this->_find_user_calendar() );			
@@ -48,7 +48,7 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 		$body['password_confirmation'] = $_POST['ai1ec_password_confirmation'];
 		$body['phone']                 = $_POST['ai1ec_phone'];
 		$body['terms']                 = $_POST['ai1ec_terms'];
-		$response                      = $this->request_api( 'POST', 'auth/register', json_encode( $body ), true );
+		$response                      = $this->request_api( 'POST', AI1EC_API_URL . 'auth/register', json_encode( $body ), true );
 		if ( $this->is_response_success( $response ) ) {
 			$response_body = (array) $response->body;
 			$this->_save_settings( $response_body['Registration'], true, $response_body['auth_token'] , $this->_create_calendar() );			

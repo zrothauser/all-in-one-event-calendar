@@ -24,6 +24,7 @@ class Ai1ec_View_Calendar_SubscribeButton {
 				'outlook'   => Ai1ec_I18n::__( 'Add to Outlook' ),
 				'apple'     => Ai1ec_I18n::__( 'Add to Apple Calendar' ),
 				'plaintext' => Ai1ec_I18n::__( 'Add to other calendar' ),
+				'xml'       => Ai1ec_I18n::__( 'Export to XML' ),
 			),
 			'title' => array(
 				'timely'    => Ai1ec_I18n::__( 'Copy this URL for your own Timely calendar or click to add to your rich-text calendar' ),

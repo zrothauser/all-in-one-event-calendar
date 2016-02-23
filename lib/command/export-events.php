@@ -57,6 +57,10 @@ class Ai1ec_Command_Export_Events extends Ai1ec_Command {
 				'no_html',
 				false
 			);
+			$params['xml'] = (bool)Ai1ec_Request_Parser::get_param(
+				'xml',
+				false
+			);
 			$this->_params = $params;
 			return true;
 		}
@@ -67,9 +71,15 @@ class Ai1ec_Command_Export_Events extends Ai1ec_Command {
 	 * @see Ai1ec_Command::set_render_strategy()
 	 */
 	public function set_render_strategy( Ai1ec_Request_Parser $request ) {
-		$this->_render_strategy = $this->_registry->get(
-			'http.response.render.strategy.ical'
-		);
+		if ( isset( $_GET['xml']) ) {
+			$this->_render_strategy = $this->_registry->get(
+				'http.response.render.strategy.xcal'
+			);
+		} else {
+			$this->_render_strategy = $this->_registry->get(
+				'http.response.render.strategy.ical'
+			);
+		}
 	}
 
 
@@ -114,6 +124,7 @@ class Ai1ec_Command_Export_Events extends Ai1ec_Command {
 		$search = $this->_registry->get( 'model.search' );
 		$params = array(
 			'no_html' => $this->_params['no_html'],
+			'xml'     => $this->_params['xml'],
 		);
 		$export_controller = $this->_registry->get(
 			'controller.import-export',

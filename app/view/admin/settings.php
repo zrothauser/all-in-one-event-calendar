@@ -163,7 +163,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 		$loader           = $this->_registry->get( 'theme.loader' );
 
 		if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ) {
-			$api              = $this->_registry->get( 'model.api' );
+			$api              = $this->_registry->get( 'model.api.api-registration' );
 			$api_signed       = $api->is_signed();
 	
 			$args = array(

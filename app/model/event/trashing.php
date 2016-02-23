@@ -78,7 +78,7 @@ class Ai1ec_Event_Trashing extends Ai1ec_Base {
 	 * @return bool Success. 
 	 */
 	public function trash_post( $post_id ) {
-		$api             = $this->_registry->get( 'model.api' );
+		$api             = $this->_registry->get( 'model.api.api-ticketing' );
 		$post            = get_post( $post_id );
 		$restored_status = get_post_meta( $post_id, '_wp_trash_meta_status', true );
 		$fields          = array( 
@@ -130,7 +130,7 @@ class Ai1ec_Event_Trashing extends Ai1ec_Base {
 	 * the integration with API fails
 	 */
     public function untrash_post ( $post_id ) {        	
-    	$api             = $this->_registry->get( 'model.api' );
+    	$api             = $this->_registry->get( 'model.api.api-ticketing' );
 		$post            = get_post( $post_id );
 		$restored_status = get_post_meta( $post_id, '_wp_trash_meta_status', true );
 		$fields          = array( 
@@ -174,7 +174,7 @@ class Ai1ec_Event_Trashing extends Ai1ec_Base {
 	 * the integration with API fails
 	 */
     public function before_delete_post( $post_id ) {
-    	$api     = $this->_registry->get( 'model.api' );
+    	$api     = $this->_registry->get( 'model.api.api-ticketing' );
     	$message = $api->delete_api_event( $post_id );
 		if ( null !==  $message )  {						
 			if ( defined('DOING_AJAX') && DOING_AJAX ) {

@@ -15,25 +15,22 @@ class Ai1ec_Command_Api_Ticketing_Signup extends Ai1ec_Command_Save_Abstract {
 	 * @see Ai1ec_Command::is_this_to_execute()
 	*/
 	public function do_execute() {
-		$api      = $this->_registry->get( 'model.api' );
-		$response = '';
-		
+		$api      = $this->_registry->get( 'model.api.api-registration' );
 		if ( true === isset($_POST['ai1ec_signout']) && '1' === $_POST['ai1ec_signout'] ) {
-			$response = $api->signout();	
+			$api->signout();	
 		} else {
 			if ( '1' === $_POST['ai1ec_signing'] ) {
-				$response = $api->signup();	
+				$api->signup();	
 			} else {
-				$response = $api->signin();	
+				$api->signin();	
 			}			
-		}
-		
+		}		
 		return array(
 			'url'        => ai1ec_admin_url(
 				'edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings'
 			),
 			'query_args' => array(			
-				'message' => urlencode( $response['message'] )	
+				'message' => ''
 			),
 		);
 	}

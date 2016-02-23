@@ -136,7 +136,10 @@ class Ai1ec_Ics_Import_Export_Engine
 		$do_show_map     = isset( $args['do_show_map'] ) ? $args['do_show_map'] : 0;
 		$count           = 0;
 		$events_in_db    = isset( $args['events_in_db'] ) ? $args['events_in_db'] : 0;
+
+		//sort by event date function _cmpfcn of iCalcreator.class.php
 		$v->sort();
+
 		// Reverse the sort order, so that RECURRENCE-IDs are listed before the
 		// defining recurrence events, and therefore take precedence during
 		// caching.
@@ -615,17 +618,28 @@ class Ai1ec_Ics_Import_Export_Engine
 
 			$api_event_id = $e->getProperty( 'X-API-EVENT-ID' );
 			if ( $api_event_id && false === ai1ec_is_blank( $api_event_id[1] ) ) {
-				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api::EVENT_ID_METADATA, $api_event_id[1] );	
+				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api_Ticketing::EVENT_ID_METADATA, $api_event_id[1] );	
 			}
 
 			$api_url = $e->getProperty( 'X-API-URL' );
 			if ( $api_url && false === ai1ec_is_blank( $api_url[1] ) ) {
-				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api::ICS_API_URL_METADATA, $api_url[1] );	
+				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api_Ticketing::ICS_API_URL_METADATA, $api_url[1] );	
 			}
 
 			$checkout_url = $e->getProperty( 'X-CHECKOUT-URL' );
 			if ( $checkout_url && false === ai1ec_is_blank( $checkout_url[1] ) ) {
-				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api::ICS_CHECKOUT_URL_METADATA, $checkout_url[1] );	
+				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api_Ticketing::ICS_CHECKOUT_URL_METADATA, $checkout_url[1] );	
+			}
+			
+			$wp_images_url  = $e->getProperty( 'X-WP-IMAGES-URL' );
+			if ( $wp_images_url && false === ai1ec_is_blank( $wp_images_url[1] ) ) {
+				$images_arr = explode( ',', $wp_images_url[1] );
+				foreach ( $images_arr as $key => $value ) {
+					$images_arr[ $key ] = explode( ';', $value );
+				}
+				if ( count( $images_arr ) > 0 ) {
+					update_post_meta( $event->get( 'post_id' ), '_featured_image', $images_arr );	
+				}	
 			}
 
 			unset( $events_in_db[$event->get( 'post_id' )] );
@@ -791,11 +805,11 @@ class Ai1ec_Ics_Import_Export_Engine
 			foreach ($post_meta_values as $key => $value) {				
 				if ( '_ai1ec_cost_type' === $key ) {
 					$cost_type    = $value[0];
-				} else if ( Ai1ec_Api::EVENT_ID_METADATA === $key ) {
+				} else if ( Ai1ec_Api_Ticketing::EVENT_ID_METADATA === $key ) {
 					$api_event_id = $value[0];					
-				} else if ( Ai1ec_Api::ICS_API_URL_METADATA === $key ) {
+				} else if ( Ai1ec_Api_Ticketing::ICS_API_URL_METADATA === $key ) {
 					$api_url = $value[0];
-				} else if ( Ai1ec_Api::ICS_CHECKOUT_URL_METADATA === $key ) {
+				} else if ( Ai1ec_Api_Ticketing::ICS_CHECKOUT_URL_METADATA === $key ) {
 					$checkout_url = $value[0];
 				}
  			}			
@@ -824,7 +838,7 @@ class Ai1ec_Ics_Import_Export_Engine
 				$e->setProperty( 'X-API-URL', $this->_sanitize_value( $api_url ) );			
 			}
 
-			$api = $this->_registry->get( 'model.api' );
+			$api = $this->_registry->get( 'model.api.api-ticketing' );
 			if ( ai1ec_is_blank( $checkout_url ) ) {
 				$e->setProperty( 'X-CHECKOUT-URL', AI1EC_TICKETS_CHECKOUT_URL );			
 				$url = $api->create_checkout_url( $api_event_id );
@@ -851,11 +865,35 @@ class Ai1ec_Ics_Import_Export_Engine
 		$content = html_entity_decode( $content, ENT_QUOTES, 'UTF-8' );
 
 		// Prepend featured image if available.
-		$size = null;
-		$avatar = $this->_registry->get( 'view.event.avatar' );
+		$size    = null;
+		$avatar  = $this->_registry->get( 'view.event.avatar' );
 		$matches = $avatar->get_image_from_content( $content );
 		// if no img is already present - add thumbnail
 		if ( empty( $matches ) ) {
+
+			$post_id = get_post_thumbnail_id( $event->get( 'post_id' ) );
+			$images  = null;			
+			$added   = null;
+			foreach ( array( 'thumbnail', 'medium', 'large', 'full' ) as $_size ) {
+				$attributes = wp_get_attachment_image_src( $post_id, $_size );	
+				if ( false !== $attributes ) {
+					$key_str    = sprintf( '%d_%d', $attributes[1], $attributes[2]);	
+					if ( null === $added || false === isset( $added[$key_str] ) ) {
+						$added[$key_str] = true; 
+						array_unshift( $attributes, $_size );
+						$images[] = implode( ';', $attributes );
+					}
+				}	 					
+			}
+			if ( null !== $images ) {
+				$e->setProperty(
+					'X-WP-IMAGES-URL',
+					$this->_sanitize_value(
+						implode( ',', $images )
+					)
+				);
+			}
+
 			if ( $img_url = $avatar->get_post_thumbnail_url( $event, $size ) ) {
 				$content = '<div class="ai1ec-event-avatar alignleft timely"><img src="' .
 					esc_attr( $img_url ) . '" width="' . $size[0] . '" height="' .

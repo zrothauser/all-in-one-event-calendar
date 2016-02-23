@@ -56,7 +56,7 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 	 */
 	public function display_page() {
 
-		$api               = $this->_registry->get( 'model.api' );
+		$api               = $this->_registry->get( 'model.api.api-ticketing' );
 		$ticketing_enabled = $api->is_signed();
 		$ticketing_message = $api->get_sign_message();
 		$loader            = $this->_registry->get( 'theme.loader' );

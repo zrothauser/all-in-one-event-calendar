@@ -50,6 +50,10 @@ class Ai1ec_Settings extends Ai1ec_App {
 
 		if ( 'deprecated' === $type ) {
 			unset( $this->_options[$option] );
+		} else if ( 'hidden' === $type ) {
+			if ( isset( $this->_options[$option] ) && isset( $this->_options[$option]['renderer'] )  ) {
+				$this->_options[$option]['renderer'] = null;
+			}
 		} else if (
 			! isset( $this->_options[$option] ) ||
 			! isset( $this->_options[$option]['version'] ) ||
@@ -310,7 +314,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 			->get( self::WP_OPTION_KEY, array() );
 		$this->_change_update_status( false );
 		$test_version = false;
-		if ( is_array( $values ) ) { // always assign existing values, if any
+		if ( is_array( $values ) ) { // always assign existing values, if any			
 			$this->_options = $values;
 			if ( isset( $values['calendar_page_id'] ) ) {
 				$test_version = $values['calendar_page_id']['version'];

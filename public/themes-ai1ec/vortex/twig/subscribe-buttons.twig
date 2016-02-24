@@ -63,6 +63,14 @@
 				{{ text.label.plaintext }}
 			</a>
 		</li>
+		<li>
+			<a class="ai1ec-tooltip-trigger ai1ec-tooltip-auto"
+			  data-placement="{{ alignment }}" title="{{ text.title.xml }}"
+			  href="{{ url | e('html_attr') }}&xml=true">
+				<i class="ai1ec-fa ai1ec-fa-file-text ai1ec-fa-lg ai1ec-fa-fw"></i>
+				{{ text.label.xml }}
+			</a>
+		</li>
 	</ul>
 </div>
 

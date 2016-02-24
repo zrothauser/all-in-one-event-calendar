@@ -148,6 +148,7 @@ https://vimeo.com/135004810
 * Fixed: Deselecting preselected filters wasn't loading correct views
 * Fixed: The link in Advanced Settings about the GZIP compression issue was wrong
 * Fixed: Event recurrence: "Custom Repeat" preselected days would be off 1 day on some timezones
+* Fixed: Export to Google Calendar was exporting wrong content
 * Updated: The admin dashboard links on the right side in the Settings page
 * Updated: Increased the "Medium size" for the images of imported events from 300px to 600px
 * Ticketing Beta: Fixed: User could not update the status of a ticket type if there were sold tickets for it

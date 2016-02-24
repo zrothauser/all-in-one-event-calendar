@@ -5,7 +5,7 @@ calendar, ical, iCalendar, all-in-one, events sync, events widget,
 calendar widget
 Requires WordPress at least: 3.5
 Tested up to: 4.4.2
-Stable tag: 2.3.10
+Stable tag: 2.3.11
 License: GNU General Public License, version 3 (GPL-3.0)
 
 A calendar system with many views, upcoming events widget, color-coded
@@ -141,6 +141,17 @@ https://vimeo.com/135004810
 **[ai1ec exact_date="5-10-2015"]**
 
 == Changelog ==
+
+= Version 2.3.11 =
+* New: User can now select 1 out of the 3 available posterboard views (Tile, Grid and Bulletin)
+* Fixed: "View details" link in the plugin's page was leading to a blank page
+* Fixed: Deselecting preselected filters wasn't loading correct views
+* Fixed: The link in Advanced Settings about the GZIP compression issue was wrong
+* Fixed: Event recurrence: "Custom Repeat" preselected days would be off 1 day on some timezones
+* Updated: The admin dashboard links on the right side in the Settings page
+* Updated: Increased the "Medium size" for the images of imported events from 300px to 600px
+* Ticketing Beta: Fixed: User could not update the status of a ticket type if there were sold tickets for it
+* Ticketing Beta: Fixed: Block users from creating tickets for a recurrent event
 
 = Version 2.3.10 =
 * Initial ticketing implementation - If you want to be a Beta user for this exciting new feature, then please visit [this page](https://time.ly/ticketing_beta).

@@ -66,7 +66,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 				wp_remote_retrieve_response_code( $response ),
 				wp_remote_retrieve_response_message( $response )
 			);
-			$mailto = '<a href="mailto:betasupport@time.ly" target="_top">betasupport@time.ly</a>';
+			$mailto = '<a href="mailto:labs@time.ly" target="_top">labs@time.ly</a>';
 			if ( true === $ask_for_reload ) {
 				$result = sprintf(
 					__( '%s. Please reload this page to try again. If this error persists, please contact us at %s. In your report please include the information below.<br/>%s.', AI1EC_PLUGIN_NAME ),

@@ -1767,7 +1767,9 @@ class vcalendar {
       $component->setConfig( $this->getConfig(), FALSE, TRUE );
       $calendar .= $component->createComponent( $this->xcaldecl );
     }
-    if(( 'xcal' == $this->format ) && ( 0 < count( $this->xcaldecl ))) { // xCal only
+    if( false 
+    	// We bypass adding xcaldecl as they are not needed here.
+    	&& ( 'xcal' == $this->format ) && ( 0 < count( $this->xcaldecl ))) { // xCal only
       $calendarInit .= ' [';
       $old_xcaldecl  = array();
       foreach( $this->xcaldecl as $declix => $declPart ) {

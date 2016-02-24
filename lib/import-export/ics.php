@@ -51,7 +51,11 @@ class Ai1ec_Ics_Import_Export_Engine
 	 * @see Ai1ec_Import_Export_Engine::export()
 	 */
 	public function export( array $arguments, array $params = array() ) {
-		$c = new vcalendar();
+		$vparams = array();
+		if ( isset( $params['xml'] ) && true === $params['xml'] ) {
+			$vparams['format'] = 'xcal';
+		}
+		$c = new vcalendar( $vparams );
 		$c->setProperty( 'calscale', 'GREGORIAN' );
 		$c->setProperty( 'method', 'PUBLISH' );
 		// if no post id are specified do not export those properties

@@ -144,6 +144,7 @@ https://vimeo.com/135004810
 
 = Version 2.3.11 =
 * New: User can now select 1 out of the 3 available posterboard views (Tile, Grid and Bulletin)
+* New: Now you can export the calendar to XML format
 * Fixed: "View details" link in the plugin's page was leading to a blank page
 * Fixed: Deselecting preselected filters wasn't loading correct views
 * Fixed: The link in Advanced Settings about the GZIP compression issue was wrong

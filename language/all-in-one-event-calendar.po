@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.3.8\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.3.11\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
 "POT-Creation-Date: 2016-01-27 15:34:46+00:00\n"
 "MIME-Version: 1.0\n"
@@ -3444,9 +3444,9 @@ msgstr "Today background"
 msgid "All-in-One Event Calendar by Time.ly"
 msgstr "All-in-One Event Calendar by Time.ly"
 
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.3.8)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.3.11)  #-#-#-#-#
 #. Plugin URI of the plugin/theme
-#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.3.8)  #-#-#-#-#
+#. #-#-#-#-#  all-in-one-event-calendar.pot (All-in-One Event Calendar by Time.ly 2.3.11)  #-#-#-#-#
 #. Author URI of the plugin/theme
 msgid "http://time.ly/"
 msgstr "http://time.ly/"

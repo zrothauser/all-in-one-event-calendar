@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.3.9\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.3.11\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
 "POT-Creation-Date: 2016-02-12 15:46:59+00:00\n"
 "MIME-Version: 1.0\n"

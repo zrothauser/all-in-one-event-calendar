@@ -6,16 +6,6 @@
 
 <a id="ai1ec-event"></a>
 
-{% if not hide_featured_image %}
-	{% if content_img_url is empty %}
-		{{ event | avatar( [
-			'post_thumbnail',
-			'location_avatar',
-			'category_avatar'
-		], 'timely', false ) | raw }}
-	{% endif %}
-{% endif %}
-
 <div class="ai1ec-actions">
 	<div class="ai1ec-btn-group-vertical ai1ec-clearfix">
 		{{ back_to_calendar | raw }}
@@ -210,6 +200,16 @@
 {% else %}
 		</div>{# /.ai1ec-col-sm-7 #}
 	</div>{# /.ai1ec-event-details.ai1ec-row #}
+{% endif %}
+
+{% if not hide_featured_image %}
+	{% if content_img_url is empty %}
+		{{ event | avatar( [
+			'post_thumbnail',
+			'location_avatar',
+			'category_avatar'
+		], 'timely alignleft', false ) | raw }}
+	{% endif %}
 {% endif %}
 
 {% if API_URL is not empty %}

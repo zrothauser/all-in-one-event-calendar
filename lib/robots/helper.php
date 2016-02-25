@@ -155,6 +155,8 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 				"Disallow: /$page_base/action~month/",
 				"Disallow: /$page_base/action~week/",
 				"Disallow: /$page_base/action~stream/",
+				"Disallow: /$page_base/action~undefined/",
+				"Disallow: /$page_base/action~action~http:/",
 			);
 		}
 

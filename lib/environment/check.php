@@ -46,26 +46,34 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 		}
 		do_action( 'ai1ec_env_check' );
 		global $plugin_page;
-		$settings      = $this->_registry->get( 'model.settings' );
-		$notification  = $this->_registry->get( 'notification.admin' );
-		$notifications = array();
+		$settings              = $this->_registry->get( 'model.settings' );
+		$notification          = $this->_registry->get( 'notification.admin' );
+		$created_calendar_page = false;
 
 		// check if is set calendar page
 		if ( ! $settings->get( 'calendar_page_id' ) ) {
-			$msg = Ai1ec_I18n::__(
-				'Select an option in the <strong>Calendar page</strong> dropdown list.'
+			$calendar_page_id = wp_insert_post(
+				array(
+					'post_title'     => 'Calendar',
+					'post_type'      => 'page',
+					'post_status'    => 'publish',
+					'comment_status' => 'closed'
+				)
 			);
-			$notifications[] = $msg;
+			$settings->set( 'calendar_page_id', $calendar_page_id );
+			$created_calendar_page = true;
 		}
 		if (
 			$plugin_page !== AI1EC_PLUGIN_NAME . '-settings' &&
-			! empty( $notifications )
+			$created_calendar_page
 		) {
 			if (
 				$current_user->has_cap( 'manage_ai1ec_options' )
 			) {
 				$msg = sprintf(
-					Ai1ec_I18n::__( 'The plugin is installed, but has not been configured. <a href="%s">Click here to set it up now &raquo;</a>' ),
+					Ai1ec_I18n::__( 'The plugin is successfully installed! <a href="%s">Add some events</a> and see them on your <a href="%s">Calendar page</a>.<br />Visit the <a href="%s">Settings page</a> to configure the plugin and get most of it.' ),
+					'post-new.php?post_type=ai1ec_event',
+					get_page_link( $calendar_page_id ),
 					ai1ec_admin_url( AI1EC_SETTINGS_BASE_URL )
 				);
 				$notification->store(
@@ -86,14 +94,6 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 				);
 			}
 			return;
-		}
-		foreach ( $notifications as $msg ) {
-			$notification->store(
-				$msg,
-				'updated',
-				2,
-				array( Ai1ec_Notification_Admin::RCPT_ADMIN )
-			);
 		}
 		global $wp_rewrite;
 		$option  = $this->_registry->get( 'model.option' );

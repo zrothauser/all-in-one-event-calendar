@@ -151,6 +151,7 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 				$event->get( 'start' )->format_i18n( 'M j' )
 			);
 		}
+		$loader = $this->_registry->get( 'theme.loader' );
 
 		if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ) {
 			$api_event_id = get_post_meta(
@@ -160,7 +161,6 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			);
 			if ( $api_event_id ) {
 				$api                  = $this->_registry->get( 'model.api.api-ticketing' );
-				$args['api_event_id'] = $api_event_id;
 				$checkout_url         = null;
 				if ( false === ai1ec_is_blank( $event->get( 'ical_feed_url' ) ) ) {
 					//if this ticket event is imported, uses the api and checkout url from the imported information
@@ -173,15 +173,24 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 				if ( ai1ec_is_blank( $checkout_url )) {
 					$checkout_url = AI1EC_TICKETS_CHECKOUT_URL;
 				}
-				$args['tickets_checkout_url'] = $api->create_checkout_url( $api_event_id, $checkout_url );
+
 				$ticket_types                 = json_decode( $api->get_ticket_types( $event->get( 'post_id' ) ) );
-				$args['tickets']              = $ticket_types->data;
 				$args['has_tickets']          = true;
 				$args['API_URL']              = AI1EC_API_URL;
+				$args['tickets_block']        = $loader->get_file(
+					'tickets.twig',
+					array(
+						'tickets_checkout_url' => $api->create_checkout_url( $api_event_id, $checkout_url ),
+						'tickets'              => $ticket_types->data,
+						'text_tickets'         => $args['text_tickets'],
+						'buy_tickets_text'     => $args['buy_tickets_text'],
+						'api_event_id'         => $api_event_id
+					), false
+				)->get_content();
 			}
 		}
 
-		$loader = $this->_registry->get( 'theme.loader' );
+		
 		return $loader->get_file( 'event-single.twig', $args, false )
 			->get_content();
 	}

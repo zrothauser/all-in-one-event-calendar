@@ -4,7 +4,7 @@ Tags: calendar, events, ics, ics feed, wordpress ical importer, google
 calendar, ical, iCalendar, all-in-one, events sync, events widget,
 calendar widget
 Requires WordPress at least: 3.5
-Tested up to: 4.4.2
+Tested up to: 4.4.1
 Stable tag: 2.3.11
 License: GNU General Public License, version 3 (GPL-3.0)
 
@@ -12,6 +12,10 @@ A calendar system with many views, upcoming events widget, color-coded
 categories, recurrence, and import/export of .ics feeds.
 
 == Description ==
+
+><strong>Support considerations:</strong> Due to very limited resources (only one support person) the purpose of the WorPress.org support forum is mainly to capture bugs while checking it daily for severe issues. Still, we're doing our best to debug and troubleshoot  users subscribed to Core+, paid add-ons and free customers, in that order with an expected response of up to 7 days or more. Please read our [sticky post](https://wordpress.org/support/topic/read-this-first-welcome-to-all-in-one-event-calendar-support-forum?replies=1) before creating a new support thread. 
+>
+> Please check-out our [Hub and Pro hosted plans](http://time.ly/products) for many extra features and 24h to 48h response time via "Get Help" feature inside the plugin.
 
 The [All-in-One Event Calendar](http://time.ly/) from
 [Timely](http://time.ly/) is a beautiful way to list your events in
@@ -22,11 +26,11 @@ WordPress.
 
 = Get Add-ons =
 
-Download add-ons at [time.ly](http://time.ly) to get more features,
+Download add-ons at [Time.ly](http://time.ly) to get more features,
 like [Extended Views](https://time.ly/downloads/extended-views/),
 [Frontend Submission
 form](https://time.ly/downloads/front-end-event-form/),
-[SuperWidget](https://time.ly/downloads/superwidget/),
+[Super Widget](https://time.ly/downloads/superwidget/),
 [Venues](https://time.ly/downloads/venues/), [Twitter
 integration](https://time.ly/downloads/twitter/) and
 [more](https://time.ly/wordpress-calendar-plugin/addons/).
@@ -54,11 +58,14 @@ any other system that accepts iCalendar (.ics) feeds.
 * Embedded **Google Maps**.
 * **Color-coded** events based on category.
 * Featured **event images** and **category images**.
-* **Month**, **week**, **day**, **agenda**, and **posterboard**
-views.
+* **Day** view
+* **Week** view
+* **Month** view
+* **Agenda** view
+* **Posterboard** view
 * **Upcoming Events** widget.
 * Direct links to **filtered calendar views**.
-* **Theme** options to customize your calendar appearence.
+* **Theme** options to customize your calendar appearance.
 * Inline **Calendar Theme editor**.
 * Import other calendars automatically to display in your calendar.
 * Categorize and tag imported calendar feeds automatically.
@@ -103,7 +110,7 @@ https://vimeo.com/135004810
 = Helpful Links =
 
 * [**Access our User Guide**](http://time.ly/document/user-guide/).
-* [**Visit our Community Forums**](https://time.ly/forums/).
+* [**Raise feature ideas**](https://ideas.time.ly/).
 
 == Frequently Asked Questions ==
 
@@ -171,12 +178,13 @@ https://vimeo.com/135004810
 * Fixed: Featured images appears on the Event details popup
 
 = Version 2.3.8 =
-* Improved Calendar views loading speed and caching
+* Improved loading speed of Calendar views by caching
 * Improved loading speed of SuperWidget and other external widgets
-* Improved Enabled Frontend Rendering by default
+* Improved loading speed by enabling Front-end Rendering by default
 * Fixed: Plugin does not clean up DB after being uninstalled
 * Fixed: Translations are not working anymore for all words
 * Fixed: Feed import feature does not import for Repeat custom dates
+* Tweak: Included translations in the plugin, thanks to @netaction for pointing this
 
 = Version 2.3.7 =
 * Fixes DB update issue on some sites. Reverted changes made on version 2.3.5 related to the ICS Feed URL column type.

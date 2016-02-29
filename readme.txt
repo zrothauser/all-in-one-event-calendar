@@ -150,17 +150,17 @@ https://vimeo.com/135004810
 == Changelog ==
 
 = Version 2.3.11 =
-* New: User can now select 1 out of the 3 available posterboard views (Tile, Grid and Bulletin)
 * New: Now you can export the calendar to XML format
+* New: Extended Views - User can now select 1 out of the 3 available posterboard views (Tile, Grid and Bulletin)
 * Fixed: "View details" link in the plugin's page was leading to a blank page
 * Fixed: Deselecting preselected filters wasn't loading correct views
 * Fixed: The link in Advanced Settings about the GZIP compression issue was wrong
 * Fixed: Event recurrence: "Custom Repeat" preselected days would be off 1 day on some timezones
 * Fixed: Export to Google Calendar was exporting wrong content
+* Fixed: Ticketing Beta - User could not update the status of a ticket type if there were sold tickets for it
+* Fixed: Ticketing Beta - Block users from creating tickets for a recurrent event
 * Updated: The admin dashboard links on the right side in the Settings page
 * Updated: Increased the "Medium size" for the images of imported events from 300px to 600px
-* Ticketing Beta: Fixed: User could not update the status of a ticket type if there were sold tickets for it
-* Ticketing Beta: Fixed: Block users from creating tickets for a recurrent event
 
 = Version 2.3.10 =
 * Initial ticketing implementation - If you want to be a Beta user for this exciting new feature, then please visit [this page](https://time.ly/ticketing_beta).

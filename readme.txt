@@ -150,6 +150,7 @@ https://vimeo.com/135004810
 == Changelog ==
 
 = Version 2.3.11 =
+* New: Now the calendar is set up automatically when you install the plug-in for the first time
 * New: Now you can export the calendar to XML format
 * New: Extended Views - User can now select 1 out of the 3 available posterboard views (Tile, Grid and Bulletin)
 * Fixed: "View details" link in the plugin's page was leading to a blank page

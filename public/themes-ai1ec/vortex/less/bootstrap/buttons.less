@@ -72,6 +72,12 @@
 .ai1ec-btn-info {
   .ai1ec-button-variant(@btn-info-color; @btn-info-bg; @btn-info-border);
 }
+// Button appears as inactive (with opacity)
+.ai1ec-btn-inactive {
+    cursor: default;
+    .ai1ec-opacity(.65);
+    .ai1ec-box-shadow(none);
+}
 
 
 // Link buttons

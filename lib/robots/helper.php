@@ -158,6 +158,7 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 				"Disallow: /$page_base/action~undefined/",
 				"Disallow: /$page_base/action~http:/",
 				"Disallow: /$page_base/action~default/",
+				"Disallow: /*controller=ai1ec_exporter_controller*",
 			);
 		}
 

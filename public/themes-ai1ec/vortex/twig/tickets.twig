@@ -3,7 +3,7 @@
 		<input type="hidden" name="event_id" value="{{ api_event_id }}">
 		<table class="ai1ec-table">
 		<tbody>
-		{% set ticket_count = 0 %}
+		{% set first_ticket = true %}
 		{% for ticket in tickets %}
 			{% if ticket.status != 'hidden' %}
 				<tr>
@@ -11,8 +11,25 @@
 						{% if ticket.availability == null %}
 							<select class="select2 ai1ec-select2"
 									name="ticket_type_{{ ticket.ticket_type_id }}">
+							{% if false == first_ticket %}
+								{% set value_to_select = 0 %}
+							{% else %}
+								{% set first_ticket = false %}
+								{% if 2 < ticket.buy_min_limit %}
+									{% set value_to_select = ticket.buy_min_limit %}	
+								{% else %}
+									{% if 2 < ticket.buy_max_available %}
+										{% set value_to_select = 2 %}	
+									{% else %}
+										{% set value_to_select = ticket.buy_max_available %}	
+									{% endif %}
+								{% endif %}
+							{% endif %}
+							{% if 0 < ticket.buy_min_limit %}
+								<option {% if 0 == value_to_select %}selected{% endif %}>0</option>
+							{% endif %}	
 							{% for i in ticket.buy_min_limit..ticket.buy_max_available %}
-								<option {% if i == 1 %}selected{% endif %}>{{ i }}</option>
+								<option {% if i == value_to_select %}selected{% endif %}>{{ i }}</option>
 							{% endfor %}
 							</select>
 						{% else %}
@@ -28,7 +45,7 @@
 						<div class="ai1ec-tickets-description">{{ ticket.description }}</div>
 					</td>								
 				</tr>
-			{% endif %}
+			{% endif %}			
 		{% endfor %}
 			<tr>
 				<td></td>

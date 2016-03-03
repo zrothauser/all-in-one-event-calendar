@@ -31,7 +31,7 @@
 				<a class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-block ai1ec-btn-lg"
 					target="_blank"
 					href="https://www.youtube.com/playlist?list=PL0BLCDSrRmI5RJ1Pg4IPQScQQHShQzVn8">
-					<i class="ai1ec-fa ai1ec-fa-magic ai1ec-fa-fw"></i>
+					<i class="ai1ec-fa ai1ec-fa-film ai1ec-fa-fw"></i>
 					<?php _e( 'Videos', AI1EC_PLUGIN_NAME ); ?>
 				</a>
 			</div>

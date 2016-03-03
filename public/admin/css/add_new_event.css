@@ -203,6 +203,14 @@ td.ai1ec-avail-block {
 }
 #ai1ec_ticket_ext_cost {
 	width: 100px;
+	display: inline;
+	margin-left: 5px;
+}
+.ai1ec-no-tickets {
+	margin-top: 15px;
+}
+.ai1ec-no-tickets .ai1ec-first {
+	padding-bottom: 4px;
 }
 #ai1ec_ticket_ext_url {
 	max-width: 420px;

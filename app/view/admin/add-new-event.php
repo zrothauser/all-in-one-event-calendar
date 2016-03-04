@@ -343,7 +343,8 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			'start'                 => $start,
 			'end'                   => $end,
 			'tickets_loading_error' => $loading_error,
-			'ticket_event_imported' => $ticket_event_imported
+			'ticket_event_imported' => $ticket_event_imported,
+			'is_free'               => $is_free
 		);
 
 		$boxes[] = $theme_loader

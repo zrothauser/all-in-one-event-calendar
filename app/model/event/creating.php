@@ -79,10 +79,15 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 		$show_coordinates = isset( $_POST['ai1ec_input_coordinates'] )? 1                                             : 0;
 		$longitude        = isset( $_POST['ai1ec_longitude'] )        ? $_POST['ai1ec_longitude']                     : '';
 		$latitude         = isset( $_POST['ai1ec_latitude'] )         ? $_POST['ai1ec_latitude']                      : '';
+		$cost_type        = isset( $_POST['ai1ec_cost_type'] )        ? $_POST['ai1ec_cost_type']                     : '';
 		$rrule  = null;
 		$exrule = null;
 		$exdate = null;
 		$rdate  = null;
+
+		if ( 'external' !== $cost_type ) {
+			$ticket_url = '';
+		}
 
 		$this->_remap_recurrence_dates();
 		// if rrule is set, convert it from local to UTC time

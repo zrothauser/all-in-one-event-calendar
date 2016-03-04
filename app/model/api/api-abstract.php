@@ -243,12 +243,13 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		if ( ! is_null( $body ) ) {
 			$request[ 'body' ] = $body;
 		}
-		$response = wp_remote_request( $url, $request );
-		$result   = new stdClass();
+		$response    = wp_remote_request( $url, $request );
+		$result      = new stdClass();
+		$result->url = $url; 
+		$result->raw = $response; 
 		if ( is_wp_error( $response ) ) {
 			$result->is_error = true;
 			$result->error    = $response->get_error_message();
-			$result->raw      = $response; 
 		} else {
 			$response_code = wp_remote_retrieve_response_code( $response );			
 			if ( 200 === $response_code ) {							
@@ -258,7 +259,6 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 						$result->is_error = false;	
 					} else {
 						$result->is_error = true;
-						$result->raw      = $response; 
 						$result->error    = __( 'Error decoding the response', AI1EC_PLUGIN_NAME );
 						unset( $result->body );
 					}
@@ -269,8 +269,6 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 			} else {
 				$result->is_error = true;
 				$result->error    = wp_remote_retrieve_response_message( $response );
-				$result->raw      = $response; 
-				$result->url      = $url; 
 			}
 		}
 		return $result;

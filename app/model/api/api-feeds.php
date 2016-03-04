@@ -53,7 +53,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 			];
 	 	}
 		$response = $this->request_api( 'GET',
-			"calendars/$calendar_id/discover/events?page=$page&max=$max",
+			AI1EC_API_URL . "calendars/$calendar_id/discover/events?page=$page&max=$max",
 			null !== $body ? json_encode( $body ) : null, 
 			true //decode body response
 		);

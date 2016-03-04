@@ -51,36 +51,43 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	 * 2) If the API does not responde with http code 400 or does not have a valid a JSON body, we will show the API URL and the http message error.
 	 */
 	protected function _transform_error_message( $base_message, $response, $url, $ask_for_reload = false ) {
-		$http_response_code = wp_remote_retrieve_response_code( $response );
-		$api_error          = $this->get_api_error_msg( $response );
-		$result = null;
+		$api_error = $this->get_api_error_msg( $response );
+		$result    = null;
 		if ( false === ai1ec_is_blank( $api_error ) ) {
 			$result = sprintf(
 				__( '%s.<br/>Detail: %s.', AI1EC_PLUGIN_NAME ),
 				$base_message, $api_error
 			);
 		} else {
-			$error_message = sprintf(
-				__( 'API URL: %s.<br/>Detail: %s - %s', AI1EC_PLUGIN_NAME ),
-				$url,
-				wp_remote_retrieve_response_code( $response ),
-				wp_remote_retrieve_response_message( $response )
-			);
-			$mailto = '<a href="mailto:labs@time.ly" target="_top">labs@time.ly</a>';
-			if ( true === $ask_for_reload ) {
-				$result = sprintf(
-					__( '%s. Please reload this page to try again. If this error persists, please contact us at %s. In your report please include the information below.<br/>%s.', AI1EC_PLUGIN_NAME ),
-					$base_message,
-					$mailto,
-					$error_message
+			if ( is_wp_error( $response ) ) {
+				$error_message = sprintf(
+					__( 'API URL: %s.<br/>Detail: %s', AI1EC_PLUGIN_NAME ),
+					$url,					
+					$response->get_error_message()
 				);
 			} else {
-				$result = sprintf(
-					__( '%s. Please try again. If this error persists, please contact us at %s. In your report please include the information below.<br/>%s.', AI1EC_PLUGIN_NAME ),
-					$base_message,
-					$mailto,
-					$error_message
+				$error_message = sprintf(
+					__( 'API URL: %s.<br/>Detail: %s - %s', AI1EC_PLUGIN_NAME ),
+					$url,
+					wp_remote_retrieve_response_code( $response ),
+					wp_remote_retrieve_response_message( $response )
 				);
+				$mailto = '<a href="mailto:labs@time.ly" target="_top">labs@time.ly</a>';
+				if ( true === $ask_for_reload ) {
+					$result = sprintf(
+						__( '%s. Please reload this page to try again. If this error persists, please contact us at %s. In your report please include the information below.<br/>%s.', AI1EC_PLUGIN_NAME ),
+						$base_message,
+						$mailto,
+						$error_message
+					);
+				} else {
+					$result = sprintf(
+						__( '%s. Please try again. If this error persists, please contact us at %s. In your report please include the information below.<br/>%s.', AI1EC_PLUGIN_NAME ),
+						$base_message,
+						$mailto,
+						$error_message
+					);
+				}
 			}
 		}
 		$result = trim( $result );
@@ -241,6 +248,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		if ( is_wp_error( $response ) ) {
 			$result->is_error = true;
 			$result->error    = $response->get_error_message();
+			$result->raw      = $response; 
 		} else {
 			$response_code = wp_remote_retrieve_response_code( $response );			
 			if ( 200 === $response_code ) {							

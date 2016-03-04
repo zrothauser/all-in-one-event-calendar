@@ -52,8 +52,9 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 				'lng2' => $_POST[ 'lng2' ]
 			];
 	 	}
+	 	$url      = AI1EC_API_URL . "calendars/$calendar_id/discover/events?page=$page&max=$max";
 		$response = $this->request_api( 'GET',
-			AI1EC_API_URL . "calendars/$calendar_id/discover/events?page=$page&max=$max",
+			$url,
 			null !== $body ? json_encode( $body ) : null, 
 			true //decode body response
 		);
@@ -64,7 +65,17 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 				$response, 
 				__( 'We were unable to get the Suggested Events from Time.ly Network', AI1EC_PLUGIN_NAME )
 			);
-			return [];
+			$result                = new stdClass();		
+			$result->total         = 0;
+			$result->per_page      = 0;
+			$result->current_page  = 0;
+			$result->last_page     = 0;
+			$result->next_page_url = $url;
+			$result->prev_page_url = $url;
+			$result->from          = 0;
+			$result->to            = 0;
+			$result->data          = [];
+			return $result;
 		}
 	}
 

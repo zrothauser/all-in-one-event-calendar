@@ -50,6 +50,10 @@ class Ai1ec_Settings extends Ai1ec_App {
 
 		if ( 'deprecated' === $type ) {
 			unset( $this->_options[$option] );
+		} else if ( 'hidden' === $type ) {
+			if ( isset( $this->_options[$option] ) && isset( $this->_options[$option]['renderer'] )  ) {
+				$this->_options[$option]['renderer'] = null;
+			}
 		} else if (
 			! isset( $this->_options[$option] ) ||
 			! isset( $this->_options[$option]['version'] ) ||
@@ -310,7 +314,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 			->get( self::WP_OPTION_KEY, array() );
 		$this->_change_update_status( false );
 		$test_version = false;
-		if ( is_array( $values ) ) { // always assign existing values, if any
+		if ( is_array( $values ) ) { // always assign existing values, if any			
 			$this->_options = $values;
 			if ( isset( $values['calendar_page_id'] ) ) {
 				$test_version = $values['calendar_page_id']['version'];
@@ -347,7 +351,15 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 *
 	 */
 	protected function _set_standard_values() {
-		$this->_standard_options = array(
+       $this->_standard_options = array(
+            'enabling_ticket_invitation_page' => array(
+                   'type'                     => 'string',
+                   'default'                  => false,
+            ),
+            'ai1ec_api'       => array(
+                    'type'    => 'boolean',
+                    'default' => false,
+            ),
 			'ai1ec_db_version' => array(
 				'type' => 'int',
 				'default'  => false,
@@ -900,7 +912,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 						'Disable <strong>gzip</strong> compression.'
 					),
 					'help'  => Ai1ec_I18n::__(
-						'Use this option if calendar is unresponsive. <a href="http://support.time.ly/disable-gzip-compression/">Read more</a> about the issue. (From version 2.1 onwards, gzip is disabled by default for maximum compatibility.)'
+						'Use this option if calendar is unresponsive. <a target="_blank" href="http://time.ly/document/user-guide/troubleshooting/disable-gzip-compression/">Read more</a> about the issue. (From version 2.1 onwards, gzip is disabled by default for maximum compatibility.)'
 					),
 				),
 				'default'  => true,

@@ -151,8 +151,9 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 				$event->get( 'start' )->format_i18n( 'M j' )
 			);
 		}
+		$loader = $this->_registry->get( 'theme.loader' );
 
-		if ( AI1EC_API && AI1EC_API_TICKETING ) { 
+		if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ) {
 			$api_event_id = get_post_meta(
 				$event->get( 'post_id' ),
 				Ai1ec_Api_Ticketing::EVENT_ID_METADATA,
@@ -160,7 +161,6 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			);
 			if ( $api_event_id ) {
 				$api                  = $this->_registry->get( 'model.api.api-ticketing' );
-				$args['api_event_id'] = $api_event_id;
 				$checkout_url         = null;
 				if ( false === ai1ec_is_blank( $event->get( 'ical_feed_url' ) ) ) {
 					//if this ticket event is imported, uses the api and checkout url from the imported information
@@ -173,17 +173,59 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 				if ( ai1ec_is_blank( $checkout_url )) {
 					$checkout_url = AI1EC_TICKETS_CHECKOUT_URL;
 				}
-				$args['tickets_checkout_url'] = $api->create_checkout_url( $api_event_id, $checkout_url );
+
 				$ticket_types                 = json_decode( $api->get_ticket_types( $event->get( 'post_id' ) ) );
-				$args['tickets']              = $ticket_types->data;
 				$args['has_tickets']          = true;
 				$args['API_URL']              = AI1EC_API_URL;
+				$args['tickets_block']        = $loader->get_file(
+					'tickets.twig',
+					array(
+						'tickets_checkout_url' => $api->create_checkout_url( $api_event_id, $checkout_url ),
+						'tickets'              => $ticket_types->data,
+						'text_tickets'         => $args['text_tickets'],
+						'buy_tickets_text'     => $args['buy_tickets_text'],
+						'api_event_id'         => $api_event_id
+					), false
+				)->get_content();
 			}
 		}
 
-		$loader = $this->_registry->get( 'theme.loader' );
+		
 		return $loader->get_file( 'event-single.twig', $args, false )
 			->get_content();
+	}
+
+	/**
+	 * Add meta OG tags to the event details page
+	 */
+	public function add_meta_tags() {
+		// Add tags only on Event Details page
+		$aco = $this->_registry->get( 'acl.aco' );
+		if ( ! $aco->is_our_post_type() ) return;
+
+		// Get Event and process desciption
+		$event   = $this->_registry->get( 'model.event', get_the_ID() );
+		$content = $this->_registry->get( 'view.event.content' );
+		$desc    = $event->get( 'post' )->post_content;
+		$desc    = apply_filters( 'the_excerpt', $desc );
+		$desc    = strip_shortcodes( $desc );
+		$desc    = str_replace( ']]>', ']]&gt;', $desc );
+		$desc    = strip_tags( $desc );
+		$desc    = preg_replace( '/\n+/', ' ', $desc);
+		$desc    = substr( $desc, 0, 300 );
+		$og      = array(
+			'url'         => get_permalink( $event->get( 'post_id' ) ),
+			'title'       => htmlspecialchars(
+				$event->get( 'post' )->post_title .
+				' (' . substr( $event->get( 'start' ) , 0, 10 ) . ')'
+			),
+			'type'        => 'article',
+			'description' => htmlspecialchars( $desc ),
+			'image'       => $content->get_content_img_url( $event )
+		);
+		foreach ( $og as $key => $val ) {
+			echo "<meta property=\"og:$key\" content=\"$val\" />\n";
+		}
 	}
 
 	/**

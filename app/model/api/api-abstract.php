@@ -28,16 +28,18 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	/**
 	 * Get the header array with authorization token
 	 */
-	protected function _get_headers( $with_authorizaton = true, $custom_headers = null ) {
+	protected function _get_headers( $custom_headers = null ) {
 		$headers  = array(
 			'content-type' => 'application/json'
-		);
-		if ( true === $with_authorizaton ) {
-			$headers['Authorization'] = 'Basic ' . $this->_settings->get( 'ticketing_token' );
-		}
+		);		
+		$headers['Authorization'] = 'Basic ' . $this->_settings->get( 'ticketing_token' );
 		if ( null !== $custom_headers ) {
 			foreach ( $custom_headers as $key => $value ) {
-				$headers[$key] = $value;
+				if ( null === $value ) {
+					unset( $headers[$key] );
+				} else {
+					$headers[$key] = $value;	
+				}				
 			}
 		}
 		return $headers;
@@ -50,7 +52,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	 */
 	protected function _transform_error_message( $base_message, $response, $url, $ask_for_reload = false ) {
 		$http_response_code = wp_remote_retrieve_response_code( $response );
-		$api_error          = $this->_get_api_error_msg( $response );
+		$api_error          = $this->get_api_error_msg( $response );
 		$result = null;
 		if ( false === ai1ec_is_blank( $api_error ) ) {
 			$result = sprintf(
@@ -64,7 +66,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 				wp_remote_retrieve_response_code( $response ),
 				wp_remote_retrieve_response_message( $response )
 			);
-			$mailto = '<a href="mailto:betasupport@time.ly" target="_top">betasupport@time.ly</a>';
+			$mailto = '<a href="mailto:labs@time.ly" target="_top">labs@time.ly</a>';
 			if ( true === $ask_for_reload ) {
 				$result = sprintf(
 					__( '%s. Please reload this page to try again. If this error persists, please contact us at %s. In your report please include the information below.<br/>%s.', AI1EC_PLUGIN_NAME ),
@@ -91,7 +93,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	/**
 	 * Search for the API message error
 	 */
-	protected function _get_api_error_msg( $response ) {
+	public function get_api_error_msg( $response ) {
 		if ( isset( $response ) && false === is_wp_error( $response ) ) {
 			$response_body = json_decode( $response['body'], true );
 			if ( json_last_error() === JSON_ERROR_NONE &&
@@ -152,7 +154,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		$body = array(
 			'title'    => get_bloginfo( 'name' )
 		);
-		$response = $this->request_api( 'GET', 'calendars', 
+		$response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars', 
 			json_encode( $body )
 		); 		
 		if ( $this->is_response_success( $response ) ) {
@@ -175,7 +177,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 			'url'      => ai1ec_site_url(),
 			'timezone' => $this->_settings->get( 'timezone_string' )
 			);
-		$response = $this->request_api( 'POST', 'calendars', 
+		$response = $this->request_api( 'POST', AI1EC_API_URL . 'calendars', 
 			json_encode( $body )
 		);
 		if ( $this->is_response_success( $response ) ) {
@@ -228,13 +230,12 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	protected function request_api(  $method, $url, $body = null, $decode_response_body = true, $custom_headers = null ) {
 		$request = array(
 			'method'  => $method,
-			'headers' => $this->_get_headers( true, $custom_headers ),
+			'headers' => $this->_get_headers( $custom_headers ),
 			'timeout' => self::DEFAULT_TIMEOUT
 		);
 		if ( ! is_null( $body ) ) {
 			$request[ 'body' ] = $body;
 		}
-		$url      = AI1EC_API_URL . $url;
 		$response = wp_remote_request( $url, $request );
 		$result   = new stdClass();
 		if ( is_wp_error( $response ) ) {
@@ -280,7 +281,8 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 			$response->url, 
 			true 
 		);
-		$notification  = $this->_registry->get( 'notification.admin' );
+		$response->error_message = $error_message;
+		$notification            = $this->_registry->get( 'notification.admin' );
 		$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );				
 		return $error_message;
 	}
@@ -288,7 +290,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	/**
 	 * Useful method to check if the response of request_api is a successful message
 	 */
-	protected function is_response_success( $response ) {
+	public function is_response_success( $response ) {
 		return $response != null && 
 			isset( $response->is_error ) && 
 			false === $response->is_error;

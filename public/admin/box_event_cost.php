@@ -28,7 +28,7 @@
 				<?php _e( 'Free event', AI1EC_PLUGIN_NAME ); ?>
 			</label>
 			<?php
-			if ( AI1EC_API && AI1EC_API_TICKETING ):?>
+			if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ):?>
 				<label for="ai1ec_has_tickets">
 					<input type="radio" value="tickets" id="ai1ec_has_tickets"
 						   name="ai1ec_cost_type" <?php if ( 'tickets' == $cost_type ) { echo 'checked'; } ?>>
@@ -43,7 +43,7 @@
 		</div>
 
 	<?php
-	if ( AI1EC_API && AI1EC_API_TICKETING ):		
+	if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ):
 
 		if ( ! $ticketing ): ?>
 			<div class="ai1ec-panel ai1ec-tickets-panel ai1ec-tickets-form">
@@ -77,7 +77,9 @@
 				 <?php if ( 0 === $i ){ echo 'ai1ec-tickets-form-template';} ?>"
 				 data-count="<?php echo $i;?>">
 				<a href="#" class="ai1ec-btn ai1ec-btn-lg ai1ec-pull-right ai1ec-remove-ticket"
-				   alt="" title="<?php _e( 'Remove Ticket Type', AI1EC_PLUGIN_NAME ); ?>">
+				   alt="" title="<?php _e( 'Remove Ticket Type', AI1EC_PLUGIN_NAME ); ?>"
+				   <?php if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { echo 'disabled';}?>
+				   >
 					<i class="ai1ec-fa ai1ec-fa-times"></i>
 				</a>
 				<?php if ( isset( $ticket->id ) ):?>
@@ -120,7 +122,9 @@
 								<input class="ai1ec-form-control ai1ec-required"
 									   name="ticket_price"
 									   value="<?php if ( isset( $ticket->ticket_price ) ){echo esc_attr( $ticket->ticket_price );}?>"
-									   id="ai1ec_ticket_price">
+									   id="ai1ec_ticket_price"
+									   <?php if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { echo 'disabled'; }?>
+									   >
 								<?php _e( 'USD', AI1EC_PLUGIN_NAME ); ?>
 							</td>
 						</tr>
@@ -158,10 +162,11 @@
 								<label>
 									<input type="checkbox" id="ai1ec_ticket_unlimited"
 										   name="unlimited"
-									<?php
-										if ( isset( $ticket->unlimited ) && 'on' == $ticket->unlimited ) {
-											echo 'checked="checked"';
-										} ?>>
+										<?php
+											if ( isset( $ticket->unlimited ) && 'on' == $ticket->unlimited ) { echo 'checked="checked"';} 
+											if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { echo 'disabled';}
+										?>
+									>
 									<?php _e( 'Unlimited', AI1EC_PLUGIN_NAME ); ?>
 								</label>
 								<input type="number" class="ai1ec-form-control" id="ai1ec_ticket_quantity"
@@ -173,7 +178,10 @@
 											if ( isset ( $ticket->quantity ) ) {
 												echo 'value="' . esc_attr( $ticket->quantity ) . '"; style="display:inline-block"';
 											}
-									} ?>>
+										} 
+										if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { echo 'disabled';}
+									?>
+								>
 							</td>
 						</tr>
 						<tr>
@@ -181,7 +189,9 @@
 							<td class="ai1ec-avail-block">
 								<label>
 									<input type="checkbox" id="ai1ec_ticket_avail"
-										   name="availibility">
+										   name="availibility"
+										   <?php if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { echo 'disabled';}?>
+										   >
 									<?php _e( 'Immediately', AI1EC_PLUGIN_NAME ); ?>
 								</label>
 								<div class="ai1ec-tickets-dates" style="display:block">
@@ -189,9 +199,13 @@
 										<div class="ai1ec-tickets-dates-block">
 											<label><?php _e( 'From:', AI1EC_PLUGIN_NAME ); ?></label>
 											<input type="text" class="ai1ec-form-control ai1ec-tickets-datepicker"
-												   data-date-format="yyyy-mm-dd" size="12" />
+												   data-date-format="yyyy-mm-dd" size="12" 
+												   <?php if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { echo 'disabled';}?>
+												   />
 											<input type="text" class="ai1ec-form-control ai1ec-tickets-time"
-												   value="00:00" size="5" maxlength="5" /><br>
+												   value="00:00" size="5" maxlength="5" 
+												   <?php if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { echo 'disabled';}?>
+												   /><br>
 											<input type="hidden" id="ai1ec_ticket_sale_start_date"
 												   name="ticket_sale_start_date"
 												   class="ai1ec-tickets-full-date"

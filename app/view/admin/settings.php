@@ -162,7 +162,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 		$tabs             = $this->_get_tabs_to_show( $plugin_settings, $tabs );
 		$loader           = $this->_registry->get( 'theme.loader' );
 
-		if ( AI1EC_API ) { 
+		if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ) {
 			$api              = $this->_registry->get( 'model.api.api-registration' );
 			$api_signed       = $api->is_signed();
 	

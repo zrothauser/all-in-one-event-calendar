@@ -5,13 +5,17 @@ calendar, ical, iCalendar, all-in-one, events sync, events widget,
 calendar widget
 Requires WordPress at least: 3.5
 Tested up to: 4.4.2
-Stable tag: 2.3.9
+Stable tag: 2.3.11
 License: GNU General Public License, version 3 (GPL-3.0)
 
 A calendar system with many views, upcoming events widget, color-coded
 categories, recurrence, and import/export of .ics feeds.
 
 == Description ==
+
+><strong>Note on support:</strong> The purpose of the [support forum](https://wordpress.org/support/plugin/all-in-one-event-calendar) is to capture bugs, but we need to set the expectation that troubleshooting  issues can take up to one week or more, having a very small team (1 support person). Please read our [sticky](https://wordpress.org/support/topic/read-this-first-welcome-to-all-in-one-event-calendar-support-forum) post before creating a new support thread and [vote/raise ideas here](http://ideas.time.ly/).
+>
+> Please check-out our [Hub and Pro hosted plans](http://time.ly/products) for many extra features and prioritized support.
 
 The [All-in-One Event Calendar](http://time.ly/) from
 [Timely](http://time.ly/) is a beautiful way to list your events in
@@ -22,11 +26,11 @@ WordPress.
 
 = Get Add-ons =
 
-Download add-ons at [time.ly](http://time.ly) to get more features,
+Download add-ons at [Time.ly](http://time.ly) to get more features,
 like [Extended Views](https://time.ly/downloads/extended-views/),
 [Frontend Submission
 form](https://time.ly/downloads/front-end-event-form/),
-[SuperWidget](https://time.ly/downloads/superwidget/),
+[Super Widget](https://time.ly/downloads/superwidget/),
 [Venues](https://time.ly/downloads/venues/), [Twitter
 integration](https://time.ly/downloads/twitter/) and
 [more](https://time.ly/wordpress-calendar-plugin/addons/).
@@ -54,11 +58,14 @@ any other system that accepts iCalendar (.ics) feeds.
 * Embedded **Google Maps**.
 * **Color-coded** events based on category.
 * Featured **event images** and **category images**.
-* **Month**, **week**, **day**, **agenda**, and **posterboard**
-views.
+* **Day** view
+* **Week** view
+* **Month** view
+* **Agenda** view
+* **Posterboard** view
 * **Upcoming Events** widget.
 * Direct links to **filtered calendar views**.
-* **Theme** options to customize your calendar appearence.
+* **Theme** options to customize your calendar appearance.
 * Inline **Calendar Theme editor**.
 * Import other calendars automatically to display in your calendar.
 * Categorize and tag imported calendar feeds automatically.
@@ -103,7 +110,7 @@ https://vimeo.com/135004810
 = Helpful Links =
 
 * [**Access our User Guide**](http://time.ly/document/user-guide/).
-* [**Visit our Community Forums**](https://time.ly/forums/).
+* [**Raise feature ideas**](https://ideas.time.ly/).
 
 == Frequently Asked Questions ==
 
@@ -142,6 +149,23 @@ https://vimeo.com/135004810
 
 == Changelog ==
 
+= Version 2.3.11 =
+* New: Now the calendar is set up automatically when you install the plug-in for the first time
+* New: Now you can export the calendar to XML format
+* New: Extended Views - User can now select 1 out of the 3 available posterboard views (Tile, Grid and Bulletin)
+* Fixed: "View details" link in the plugin's page was leading to a blank page
+* Fixed: Deselecting preselected filters wasn't loading correct views
+* Fixed: The link in Advanced Settings about the GZIP compression issue was wrong
+* Fixed: Event recurrence: "Custom Repeat" preselected days would be off 1 day on some timezones
+* Fixed: Export to Google Calendar was exporting wrong content
+* Fixed: Ticketing Beta - User could not update the status of a ticket type if there were sold tickets for it
+* Fixed: Ticketing Beta - Block users from creating tickets for a recurrent event
+* Updated: The admin dashboard links on the right side in the Settings page
+* Updated: Increased the "Medium size" for the images of imported events from 300px to 600px
+
+= Version 2.3.10 =
+* Initial ticketing implementation - If you want to be a Beta user for this exciting new feature, then please visit [this page](https://time.ly/ticketing_beta).
+
 = Version 2.3.9 =
 * Improved JS caching stability in different environments
 * Improved automatically detection of line ending style and fixed CSV import issues for files created in Mac OS X
@@ -155,12 +179,13 @@ https://vimeo.com/135004810
 * Fixed: Featured images appears on the Event details popup
 
 = Version 2.3.8 =
-* Improved Calendar views loading speed and caching
+* Improved loading speed of Calendar views by caching
 * Improved loading speed of SuperWidget and other external widgets
-* Improved Enabled Frontend Rendering by default
+* Improved loading speed by enabling Front-end Rendering by default
 * Fixed: Plugin does not clean up DB after being uninstalled
 * Fixed: Translations are not working anymore for all words
 * Fixed: Feed import feature does not import for Repeat custom dates
+* Tweak: Included translations in the plugin, thanks to @netaction for pointing this
 
 = Version 2.3.7 =
 * Fixes DB update issue on some sites. Reverted changes made on version 2.3.5 related to the ICS Feed URL column type.

@@ -21,6 +21,7 @@
 		</span>
 	</span>
 	{% set url = export_url | replace( {"webcal://": "http://"} ) ~ url_args %}
+	{% set url_no_html = export_url_no_html | replace( {"webcal://": "http://"} ) ~ url_args %}
 	<ul class="ai1ec-dropdown-menu ai1ec-pull-{{ alignment2 }}" role="menu">
 		<li>
 			<a class="ai1ec-tooltip-trigger ai1ec-tooltip-auto" target="_blank"
@@ -33,7 +34,7 @@
 		<li>
 			<a class="ai1ec-tooltip-trigger ai1ec-tooltip-auto" target="_blank"
 			  data-placement="{{ alignment }}" title="{{ text.title.google }}"
-			  href="http://www.google.com/calendar/render?cid={{ url | url_encode | e('html_attr') }}">
+			  href="http://www.google.com/calendar/render?cid={{ url_no_html | url_encode | e('html_attr') }}">
 				<i class="ai1ec-fa ai1ec-icon-google ai1ec-fa-lg ai1ec-fa-fw"></i>
 				{{ text.label.google }}
 			</a>
@@ -61,6 +62,14 @@
 			  href="{{ ( export_url_no_html_http ~ url_args ) | e('html_attr') }}">
 				<i class="ai1ec-fa ai1ec-icon-calendar ai1ec-fa-fw"></i>
 				{{ text.label.plaintext }}
+			</a>
+		</li>
+		<li>
+			<a class="ai1ec-tooltip-trigger ai1ec-tooltip-auto"
+			  data-placement="{{ alignment }}" title="{{ text.title.xml }}"
+			  href="{{ url | e('html_attr') }}&xml=true">
+				<i class="ai1ec-fa ai1ec-fa-file-text ai1ec-fa-lg ai1ec-fa-fw"></i>
+				{{ text.label.xml }}
 			</a>
 		</li>
 	</ul>

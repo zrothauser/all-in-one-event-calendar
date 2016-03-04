@@ -4,6 +4,62 @@ class TestApiRegistration extends BaseTestCase {
 
  	/**
 	 * @group api-ticketing
+	 * @group api-ticketing-sign-up
+	 */
+	function testSignup() {	
+		global $ai1ec_registry;
+
+		//sign wordpress
+		$this->wp_sign();
+		
+		$data['ai1ec_name']                  = 'Eli';
+		$data['ai1ec_email']                 = 'phpunit@time.ly';
+		$data['ai1ec_password']              = '123456';
+		$data['ai1ec_password_confirmation'] = '123456';
+		$data['ai1ec_phone']                 = '0000000';
+		$data['ai1ec_terms']                 = 1;
+		
+		$this->create_post_request( $data );
+
+		$api           = $ai1ec_registry->get( 'model.api.api-registration' );
+		$response      = $api->signup();		
+		$this->assertNotNull( $response );
+		$this->assertTrue( isset ( $response->raw ) );
+		$response_code = wp_remote_retrieve_response_code( $response->raw );
+		$this->assertEquals( $response_code, 400 );
+		$message = $api->get_api_error_msg( $response->raw );
+		$this->assertEquals( "The email has already been taken.", $message );
+
+		//Signin Failed. Please verify your account information and try again.
+	}
+
+	/**
+	 * @group api-ticketing
+	 * @group api-ticketing-sign-in
+	 */
+	function testSignin() {	
+		global $ai1ec_registry;
+
+		//sign wordpress
+		$this->wp_sign();
+
+		$data['ai1ec_email']	= 'not_existent_user@time.ly';
+		$data['ai1ec_password'] = 'anyone';
+
+		$this->create_post_request( $data );
+
+		$api           = $ai1ec_registry->get( 'model.api.api-registration' );
+		$response      = $api->signin();		
+		$this->assertNotNull( $response );
+		$this->assertTrue( isset ( $response->raw ) );
+		$response_code = wp_remote_retrieve_response_code( $response->raw );
+		$this->assertEquals( $response_code, 400 );
+		$message       = $api->get_api_error_msg( $response->raw );
+		$this->assertEquals( "Signin Failed. Please verify your account information and try again.", $message );
+	}
+
+ 	/**
+	 * @group api-ticketing
 	 * @group api-ticketing-payment-settings
 	 */
 	function testSavePaymentSettings() {	
@@ -26,6 +82,7 @@ class TestApiRegistration extends BaseTestCase {
 		$data['ai1ec_postcode']       = '00000';
 
 		$this->create_post_request( $data );
+
 		$api = $ai1ec_registry->get( 'model.api.api-ticketing' );
 		$response = $api->save_payment_preferences();
 		$this->assertNotFalse( $response );

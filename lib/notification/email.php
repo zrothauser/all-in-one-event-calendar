@@ -41,8 +41,35 @@ class Ai1ec_Email_Notification extends Ai1ec_Notification {
 	}
 
 	public function send( $headers = null ) {
-		$this->_parse_text();		
-		return wp_mail( $this->_recipients, $this->_subject, $this->_message, $headers );
+		
+		$this->_parse_text();	
+
+		$is_html = false;	
+		if ( null !== $headers ) {			
+			foreach ( $headers as $key => $value ) {
+				if ( 0 === strcasecmp( "content-type", $key ) && 
+					0 === strcasecmp( "text/html", $value ) ) {
+					$is_html = true;
+					break;
+				}
+			}
+		} 
+
+		if ( false === $is_html ) {
+			$handler = array( $this, 'mandrill_avoid_nl2br' );
+			add_filter( 'mandrill_nl2br', $handler );
+		}
+			
+		$result = wp_mail( $this->_recipients, $this->_subject, $this->_message, $headers );
+
+		if ( false === $is_html ) {
+			remove_filter( 'mandrill_nl2br', $handler );
+		}
+		return $result;		
+	}
+
+	public function mandrill_avoid_nl2br( $nl2br, $message ) {
+		return false;
 	}
 
 	private function _parse_text() {

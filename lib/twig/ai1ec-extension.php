@@ -50,6 +50,7 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 			new Twig_SimpleFilter( 'avatar',            array( $this, 'avatar' ) ),
 			new Twig_SimpleFilter( 'avatar_url',        array( $this, 'avatar_url' ) ),
 			new Twig_SimpleFilter( 'remove_avatar_url', array( $this, 'remove_avatar_url' ) ),		
+			new Twig_SimpleFilter( 'remove_paragraph',  array( $this, 'remove_paragraph' ) ),		
 			new Twig_SimpleFilter( 'hour_to_datetime',  array( $this, 'hour_to_datetime' ) ),
 			new Twig_SimpleFilter( 'weekday',           array( $this, 'weekday' ) ),
 			new Twig_SimpleFilter( 'day',               array( $this, 'day' ) ),
@@ -149,6 +150,21 @@ class Ai1ec_Twig_Ai1ec_Extension extends Twig_Extension {
 	) {
 		return $this->_registry->get( 'view.event.avatar' )
 			->remove_avatar_url( $content );
+	}
+
+	/**
+	 * Remove the First paragraph (<p>....</p>) from the content
+	 * @return 
+	 * <p>This is a text</p> returns This is a text
+	 * <p><p>This is a text</p></p> returns <p>This is a text</p>
+	 */
+	public function remove_paragraph( $content ) {
+		if ( preg_match( '/^<p>(.+)<\\/p>$/is', $content, $matches ) ) {
+			return $matches[1];
+		} else {
+			return $content;			
+		}
+
 	}
 
 	/**

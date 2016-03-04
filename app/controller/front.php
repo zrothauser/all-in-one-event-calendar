@@ -633,7 +633,7 @@ class Ai1ec_Front_Controller {
 				'wp_ajax_ai1ec_rrule_to_text',
 				array( 'view.admin.get-repeat-box', 'convert_rrule_to_text' )
 			);
-			if ( AI1EC_API && AI1EC_API_TICKETING ) {
+			if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ) {
 				// display ticketing details in the events list
 				$dispatcher->register_action(
 					'wp_ajax_ai1ec_show_ticket_details',
@@ -670,6 +670,14 @@ class Ai1ec_Front_Controller {
 			$dispatcher->register_action(
 				'admin_menu',
 				array( 'view.admin.add-ons', 'add_page' )
+			);
+			$dispatcher->register_action(
+				'admin_menu',
+				array( 'view.admin.ticketing-invitation', 'add_page' )
+			);
+			$dispatcher->register_action(
+				'admin_menu',
+				array( 'view.admin.ticketing-invitation', 'add_meta_box' )
 			);
 			$dispatcher->register_action(
 				'admin_menu',
@@ -748,6 +756,12 @@ class Ai1ec_Front_Controller {
 			$dispatcher->register_action(
 				'save_post',
 				array( 'model.event.creating', 'save_post' ),
+				10,
+				3
+			);
+			$dispatcher->register_action(
+				'save_post',
+				array( 'view.admin.ticketing-invitation', 'handle_post' ),
 				10,
 				3
 			);
@@ -880,6 +894,10 @@ class Ai1ec_Front_Controller {
 			$dispatcher->register_action(
 				'send_headers',
 				array( 'request.redirect', 'handle_categories_and_tags' )
+			);
+			$dispatcher->register_action(
+				'wp_head',
+				array( 'view.event.single', 'add_meta_tags' )
 			);
 		}
 	}

@@ -524,3 +524,6 @@ div.ai1ec-form-group > .ai1ec-setting-fieldset {
 .timely-api .ai1ec-error {
 	border-color: #f00;
 }
+#posterboard_mode {
+	width: 120px;
+}

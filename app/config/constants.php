@@ -50,7 +50,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// = Plugin Version =
 	// ==================
 	if ( ! defined( 'AI1EC_VERSION' ) ) {
-		define( 'AI1EC_VERSION', '2.3.9' );
+		define( 'AI1EC_VERSION', '2.3.11' );
 	}
 
 	// ================
@@ -147,7 +147,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	if ( ! defined( 'AI1EC_TWIG_CACHE_PATH' ) ) {
 		define(
 		'AI1EC_TWIG_CACHE_PATH',
-		AI1EC_CACHE_PATH . DIRECTORY_SEPARATOR . 'twig' .
+		AI1EC_CACHE_PATH . 'twig' .
 			DIRECTORY_SEPARATOR
 		);
 	}

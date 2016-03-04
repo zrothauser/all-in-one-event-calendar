@@ -27,6 +27,9 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		parent::_initialize();
 	}
 
+	/**
+	 * Count the valid Tickets Types (not removed) included inside the Ticket Event
+	 */
 	private function _count_valid_tickets( $post_ticket_types ) {
 		if (false === isset( $post_ticket_types ) || 0 === count( $post_ticket_types ) ) {
 			return 0;
@@ -42,11 +45,19 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	}
 
 	/**
-	*  Create or update a Ticket Event on API server
-	 * @return object Response body in JSON.
+	 * Run some validations inside the _POST request to check if the Event 
+	 * submmited is a valid event for Tickets
+	 * @return NULL in case of success or a Message in case of error
 	 */
-	public function store_event( Ai1ec_Event $event, WP_Post $post ) {
-		
+	private function _is_valid_post( Ai1ec_Event $event ) {
+		if ( ( isset( $_POST['ai1ec_rdate'] ) && ! empty( $_POST['ai1ec_rdate'] ) ) || 
+			 ( isset( $_POST['ai1ec_repeat'] ) && ! empty( $_POST['ai1ec_repeat'] ) ) 
+			 ) {
+ 			$notification = $this->_registry->get( 'notification.admin' );
+			$error        = __( 'The Repeat option was selected but recurrence is not supported by Event with Tickets.', AI1EC_PLUGIN_NAME );
+			$notification->store( $error, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
+			return $error;			
+		}
 		if ( isset( $_POST['ai1ec_tickets_loading_error'] ) ) {
 			//do not update tickets because is unsafe. There was a problem to load the tickets,
 			//the customer received the same message when the event was loaded.
@@ -79,18 +90,32 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			);
 			return $error;			
 		}
+		if ( 0 === $this->_count_valid_tickets( $_POST['ai1ec_tickets'] ) ) {
+			$message      = __( 'The Event has the Cost option Ticket selected but no ticket was added.', AI1EC_PLUGIN_NAME );
+			$notification = $this->_registry->get( 'notification.admin' );
+			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
+			return $message;
+		}
+		return null;
+	}	
+
+	/**
+	*  Create or update a Ticket Event on API server
+	 * @return object Response body in JSON.
+	 */
+	public function store_event( Ai1ec_Event $event, WP_Post $post ) {
+		
+		$error = $this->_is_valid_post( $event );
+		if ( null !== $error ) {
+			return $error;
+		}		
+
 		$api_event_id = get_post_meta(
 					$event->get( 'post_id' ),
 					self::EVENT_ID_METADATA,
 					true
 				);
 		$is_new       = ! $api_event_id;
-		if ( 0 === $this->_count_valid_tickets( $_POST['ai1ec_tickets'] ) ) {
-			$message      = __( 'The event has a Ticketing option selected but no ticket was added.', AI1EC_PLUGIN_NAME );
-			$notification = $this->_registry->get( 'notification.admin' );
-			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
-			return $message;
-		}
 		$fields    = array( 'visibility' => $_POST['visibility'] );
 		$body_data = $this->_parse_event_fields_to_api_structure(
 			$event,
@@ -98,7 +123,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			$_POST['ai1ec_tickets'],
 			$fields
 		);
-		$url = 'events';
+		$url = AI1EC_API_URL . 'events';
 		if ( $api_event_id ) {
 			$url = $url . '/' . $api_event_id;
 		}
@@ -203,7 +228,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			'postcode'       => $_POST['ai1ec_postcode']
 		);
 		$custom_headers['content-type'] = 'application/x-www-form-urlencoded';
-		$response = $this->request_api( 'PUT', 'calendars/' . $calendar_id . '/payment', 
+		$response = $this->request_api( 'PUT', AI1EC_API_URL . 'calendars/' . $calendar_id . '/payment', 
 			$settings, 
 			true, //decode response body
 			$custom_headers 
@@ -233,7 +258,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		$calendar_id = $this->_get_ticket_calendar();
 		$settings    = null;
 		if ( 0 < $calendar_id ) {
-			$response = $this->request_api( 'GET', "calendars/$calendar_id/payment", 
+			$response = $this->request_api( 'GET', AI1EC_API_URL . "calendars/$calendar_id/payment", 
 				null, //no body 
 				true //decode response body
 			);
@@ -438,27 +463,20 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		if ( ! $api_event_id ) {
 			return json_encode( array( 'data' => array() ) );
 		}
-		$request = array(
-			'headers' => $this->_get_headers(),
-			'timeout' => parent::DEFAULT_TIMEOUT
-			);
-		$url           = $this->get_api_url( $post_id ) . 'events/' . $api_event_id . '/ticket_types';
-		$response      = wp_remote_get( $url, $request );
-		$response_code = wp_remote_retrieve_response_code( $response );
-		if ( 200 === $response_code ) {
-			$result = json_decode( $response['body'] );
-			if ( isset( $result->ticket_types ) ) {
-		 		foreach ( $result->ticket_types as $ticket_api ) {
+		$response = $this->request_api( 'GET', $this->get_api_url( $post_id ) . 'events/' . $api_event_id . '/ticket_types', null);
+		if ( $this->is_response_success( $response ) ) {
+			if ( isset( $response->body->ticket_types ) ) {
+		 		foreach ( $response->body->ticket_types as $ticket_api ) {
 		 			$this->_unparse_tickets_type_from_api_structure( $ticket_api );
 				}
-				return json_encode( array( 'data' => $result->ticket_types ) );
+				return json_encode( array( 'data' => $response->body->ticket_types ) );
 			} else {
 				return json_encode( array( 'data' => array() ) );
 			}
 		} else {
 			$error_message = $this->_transform_error_message( 
 				__( 'We were unable to get the Tickets Details from Time.ly Ticketing', AI1EC_PLUGIN_NAME ), 
-				$response, $url, 
+				$response->raw, $response->url, 
 				true 
 			);
 			return json_encode( array( 'data' => array(), 'error' => $error_message ) );

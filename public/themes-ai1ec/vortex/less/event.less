@@ -115,8 +115,7 @@
 	line-height: @event-line-height;
 	// Event avatar/featured image.
 	.ai1ec-event-avatar {
-		margin: auto;
-		max-width: 25%;
+		max-width: 40%;
 		img {
 			max-width: 300px;
 			max-height: 300px;
@@ -145,16 +144,29 @@
 	.timely-tickets-row {
 		td {
 			vertical-align: top;
+			padding-bottom: 10px;
 		}
 		td.ai1ec-tickets-info {
 			padding-left: 12px;
-			div {
-				color: #999;
+			.ai1ec-tickets-description {
+				color: #666;
+				line-height: 1.1;
 				font-size: 12px;
 			}
 		}
-		#ai1ec_tickets_submit {
-			margin-top: 10px;
+		.ai1ec-tickets-info-inactive {
+			.ai1ec-tickets-title {
+				text-decoration: line-through;
+				color: #666;
+			}
+		}
+		.ai1ec-tickets-availability {
+			font-size: 12px;
+			white-space: nowrap;
+		}
+		.ai1ec-tickets-amount {
+			text-align: right;
+			width: 1px;
 		}
 	}
 }

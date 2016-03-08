@@ -400,8 +400,7 @@ define(
 				cacheLength  : 100,
 				width        : 400,
 				scroll       : true,
-				scrollHeight : 450,
-				region       : ai1ec_config.region
+				scrollHeight : 450
 			}
 		)
 		.result(

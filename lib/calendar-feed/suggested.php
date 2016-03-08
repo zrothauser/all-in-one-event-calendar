@@ -44,38 +44,17 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 	public function render_tab_content() {
 		// Render the opening div
 		$this->render_opening_div_of_tab();
-	
-		$api           = $this->_registry->get( 'model.api.api-feeds' );
-		$events        = $api->get_suggested_events( 1, 8 );
-		$loader        = $this->_registry->get( 'theme.loader' );
 
-		$page_links = paginate_links( array(
-			'base'      => add_query_arg( 'pagenum', '%#%' ),
-			'format'    => '',
-			'prev_text' => __( '&laquo;', AI1EC_PLUGIN_NAME ),
-			'next_text' => __( '&raquo;', AI1EC_PLUGIN_NAME ),
-			'total'     => $events->last_page,
-			'current'   => $events->current_page
-		) );
+		$loader        = $this->_registry->get( 'theme.loader' );
 		$event_actions = $loader->get_file(
 			'plugins/suggested/event_actions.php',
 			array(),
 			true
 		);
-		$feeds_list    = $loader->get_file(
-			'plugins/suggested/feeds_list.php',
-			array(
-				'suggested_feeds' => $events->data,
-				'event_actions'   => $event_actions,
-				'page_links'      => $page_links
-			),
-			true
-		);
 		$display_feeds = $loader->get_file(
 			'plugins/suggested/display_feeds.php',
 			array(
-				'event_actions'   => $event_actions,
-				'feeds_list'      => $feeds_list
+				'event_actions'   => $event_actions
 			),
 			true
 		);
@@ -109,20 +88,28 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 	public function display_admin_notices() {
 		return;
 	}
-
+	
 	/**
-	 * Remove suggested event
+	 * Events search
 	 */
-	public function map_updated() {
+	public function search_events() {
 		$api           = $this->_registry->get( 'model.api.api-feeds' );
-		$page          = isset( $_POST[ 'page' ] ) ? $_POST[ 'page' ] : 1;
-		$events        = $api->get_suggested_events( $page, 8 );
+		$events        = $api->get_suggested_events();
 		$loader        = $this->_registry->get( 'theme.loader' );
 		$event_actions = $loader->get_file(
 			'plugins/suggested/event_actions.php',
 			array(),
 			true
 		);
+		if ( null === $events ) {
+			echo json_encode(
+				array(
+					'list'  => '',
+					'total' => 0
+				)
+			);
+			exit( 0 );
+		}
 		$page_links = paginate_links( array(
 			'base'      => add_query_arg( 'pagenum', '%#%' ),
 			'format'    => '',
@@ -141,12 +128,12 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 			true
 		);
 		$feeds_list = array(
-			'list' => $feeds_list->get_content()
+			'list'  => $feeds_list->get_content(),
+			'total' => $events->total
 		);
 		echo json_encode( $feeds_list );
 		exit( 0 );
 	}
-	
 
 	/**
 	 * (non-PHPdoc)

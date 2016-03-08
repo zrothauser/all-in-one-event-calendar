@@ -13,7 +13,11 @@ define(
 		'external_libs/bootstrap/alert',
 		'external_libs/bootstrap/modal',
 		'external_libs/bootstrap/button',
-		'external_libs/bootstrap/collapse'
+		'external_libs/bootstrap/collapse',
+		'scripts/add_new_event/event_location/input_coordinates_utility_functions',
+		'external_libs/jquery.autocomplete_geomod',
+		'external_libs/geo_autocomplete',
+
 	],
 	function(
 		$,
@@ -210,24 +214,19 @@ define(
 			if ( page && 1 < page.length ) {
 				page = page[1];
 				$( '.ai1ec-suggested-events' ).addClass( 'ai1ec-feeds-loading' );
-				$.ajax( {
-					url      : ai1ec_config.ajax_url,
-					type     : 'POST',
-					data     : {
-						action : 'ai1ec_map_updated',
-						page   : page
-					},
-					success  : function( response ) {
-						response = $.parseJSON( response );
-						if ( response && response.list ) {
-							$( '.ai1ec-feeds-list-container' ).html( response.list );
-							update_events();
-							update_maps();
-						}
-					}
-				} );
+				perform_search( { page : page } );
 			}
 
+			return false;
+		} );
+		
+		$( '#ai1ec_suggested_search' ).on( 'click', function() {
+			
+			var
+				term     = $.trim( $( '#ai1ec_suggested_term' ).val() ),
+				location = $( '#ai1ec_suggested_location' ).val();
+			
+			perform_search();
 			return false;
 		} );
 
@@ -311,10 +310,6 @@ define(
 		update_maps();
 
 		var load_events = function() {
-			if ( null === timeout ) {
-				timeout = false;
-				return;
-			}
 			clearTimeout( timeout );
 			if( update_xhr && 4 != update_xhr.readystate ){
 				update_xhr.abort();
@@ -328,24 +323,16 @@ define(
 					sw     = bounds.getSouthWest();
 
 				$( '.ai1ec-suggested-events' ).addClass( 'ai1ec-feeds-loading' );
-				update_xhr = $.ajax( {
-					url      : ai1ec_config.ajax_url,
-					type     : 'POST',
-					data     : {
-						action : 'ai1ec_map_updated',
+				update_xhr = perform_search(
+					{
 						lat1   : sw.lat(),
 						lng1   : sw.lng(),
 						lat2   : ne.lat(),
 						lng2   : ne.lng()
-					},
-					success  : function( response ) {
-						response = $.parseJSON( response );
-						if ( response && response.list ) {
-							$( '.ai1ec-feeds-list-container' ).html( response.list );
-							update_events();
-						}
-					}
-				} );
+					},  
+					update_events
+				);
+
 			}, 1000 );
 		};
 		
@@ -360,11 +347,72 @@ define(
 		events_map.fitBounds( bounds );
 	};
 	
+	var perform_search = function( options, callback ) {
+		
+		options = $.extend(
+			{
+				action   : 'ai1ec_search_events',
+				term     : $.trim( $( '#ai1ec_suggested_term' ).val() )
+			},
+			options
+		);
+		
+		return $.ajax( {
+			url      : ai1ec_config.ajax_url,
+			type     : 'POST',
+			data     : options,
+			success  : function( response ) {
+				response = $.parseJSON( response );
+				if ( ! response ) return;
+				
+				if ( response.total ) {
+					$( '#suggested' ).addClass( 'ai1ec-has-map' );
+					$( '.ai1ec-suggested-results' ).show();
+					$( '.ai1ec-suggested-no-results' ).hide();
+					$( '.ai1ec-feeds-list-container' ).html( response.list );
+					$( '.ai1ec-suggested-results-found').text( response.total );
+					gMapsLoader( init_gmaps );
+				} else {
+					$( '#suggested' ).removeClass( 'ai1ec-has-map' );
+					$( '.ai1ec-suggested-results' ).hide();
+					$( '.ai1ec-suggested-no-results' ).show();
+					$( '.ai1ec-feeds-list-container' ).html( '' );
+				}
+				if ( callback ) {
+					callback.apply();
+				}
+			}
+		} );
+	};
 	
 	var maps_init_wrapper = function() {
 		setTimeout( function() {
 			gMapsLoader( init_gmaps );
 		}, 0 );
+	};
+	
+	var init_geocoder = function() {
+		$( '#ai1ec_suggested_location' ).geo_autocomplete(
+			new google.maps.Geocoder(),
+			{
+				selectFirst  : false,
+				minChars     : 2,
+				cacheLength  : 100,
+				width        : 400,
+				scroll       : true,
+				scrollHeight : 450,
+				region       : ai1ec_config.region
+			}
+		)
+		.result(
+			function( _event, _data ) {
+				if( _data ) {
+					if ( _data.formatted_address ) {
+						$( '#ai1ec_suggested_location' ).val( _data.formatted_address );
+					}
+				}
+			}
+		);
 	};
 
 	var start = function() {
@@ -373,9 +421,7 @@ define(
 			utils.activate_saved_tab_on_page_load( $.cookie( 'feeds_active_tab' ) );
 			// Attach the event handlers
 			attach_event_handlers();
-			if ( '#suggested' === $.cookie( 'feeds_active_tab' ) ) {
-				maps_init_wrapper();
-			}
+			gMapsLoader( init_geocoder );
 		} );
 	};
 

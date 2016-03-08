@@ -34,7 +34,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 	 * [to] => 8
 	 * [data] => Array list of suggested events
 	 */
-	public function get_suggested_events( $page = 1, $max = 8 ) {
+	public function get_suggested_events() {
 		$calendar_id = $this->_get_ticket_calendar();
 		if ( 0 >= $calendar_id ) {
 			return null;
@@ -52,30 +52,38 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 				'lng2' => $_POST[ 'lng2' ]
 			];
 	 	}
-	 	$url      = AI1EC_API_URL . "calendars/$calendar_id/discover/events?page=$page&max=$max";
+	 	
+	 	$page     = isset( $_POST[ 'page' ] ) ? $_POST[ 'page' ] : 1;
+	 	$max      = isset( $_POST[ 'max' ] ) ? $_POST[ 'max' ] : 8;
+	 	$term     = isset( $_POST[ 'term' ] ) && $_POST[ 'term' ] 
+	 		? urlencode( $_POST[ 'term' ] )
+	 		: null;
+	 	$location = isset( $_POST[ 'location' ] ) && $_POST[ 'location' ]
+	 		? '&location=' . urlencode( $_POST[ 'location' ] ) 
+	 		: '';
+
+	 	if ( null === $term ) {
+			return null;
+		}
+		
+	 	$url      = AI1EC_API_URL .
+	 		"calendars/$calendar_id/discover/events?page=$page&max=$max&term=$term" .
+	 		$location;
+
 		$response = $this->request_api( 'GET',
 			$url,
 			null !== $body ? json_encode( $body ) : null, 
 			true //decode body response
 		);
-		if ( $this->is_response_success( $response ) ) {			
+
+		if ( $this->is_response_success( $response ) ) {
 			return $response->body; 	
 		}  else {
 			$this->save_error_notification( 
 				$response, 
 				__( 'We were unable to get the Suggested Events from Time.ly Network', AI1EC_PLUGIN_NAME )
 			);
-			$result                = new stdClass();		
-			$result->total         = 0;
-			$result->per_page      = 0;
-			$result->current_page  = 0;
-			$result->last_page     = 0;
-			$result->next_page_url = $url;
-			$result->prev_page_url = $url;
-			$result->from          = 0;
-			$result->to            = 0;
-			$result->data          = [];
-			return $result;
+			return null;
 		}
 	}
 

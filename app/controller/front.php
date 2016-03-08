@@ -613,10 +613,10 @@ class Ai1ec_Front_Controller {
 				'wp_ajax_ai1ec_remove_suggested_event',
 				array( 'calendar-feed.suggested', 'remove_event' )
 			);
-			// Get suggested events on moving the map
+			// Search for events
 			$dispatcher->register_action(
-				'wp_ajax_ai1ec_map_updated',
-				array( 'calendar-feed.suggested', 'map_updated' )
+				'wp_ajax_ai1ec_search_events',
+				array( 'calendar-feed.suggested', 'search_events' )
 			);
 			// get the repeat box
 			$dispatcher->register_action(

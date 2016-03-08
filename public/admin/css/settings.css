@@ -305,8 +305,8 @@
 #ai1ec_events_extra_details .ai1ec-extra-description {
 	margin-top: 20px;
 }
-#suggested {
-	min-height: 465px;
+#suggested.ai1ec-has-map {
+	min-height: 552px;
 }
 #suggested table.ai1ec-suggested-events td {
 	padding: 5px;
@@ -467,6 +467,35 @@
 #suggested .ai1ec-infowindow-title {
 	font-weight: bold;
 }
+#ai1ec_suggested_search {
+	margin-top: 12px;
+	min-width: 90px;
+}
+#suggested .ai1ec-suggested-search-form {
+	padding: 10px 20px;
+}
+#suggested .ai1ec-suggested-search-form label {
+	color: #333;
+	font-size: 13px;
+	margin-right: 4px;
+}
+#suggested .ai1ec-suggested-search-form input {
+	margin-top: 2px;
+}
+#ai1ec_suggested_term {
+	min-width: 320px;
+}
+#suggested .ai1ec-suggested-results,
+#suggested .ai1ec-suggested-no-results {
+	display: none;
+}
+#suggested .ai1ec-suggested-no-results {
+	padding: 20px;
+}
+#suggested .ai1ec-suggested-no-results p {
+	color: #666;
+}
+
 
 /* Calendar theme options */
 

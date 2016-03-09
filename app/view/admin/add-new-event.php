@@ -365,7 +365,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 				} else if ( isset( $submitter_info['email'] ) &&
 					isset( $submitter_info['name'] ) ) {
 					$submitter_html = sprintf( Ai1ec_I18n::__( '<span class="ai1ec-info-text">The event was submitted by <strong>%s</strong>, email: <a href="mailto:%s" target="_top">%s</a>.</span>' ), 
-						$submitter_info['name'],
+						htmlspecialchars( $submitter_info['name'] ),
 						$submitter_info['email'],
 						$submitter_info['email'] );
 				}

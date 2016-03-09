@@ -22,7 +22,12 @@
 							id="ai1ec_contact_name"
 							class="ai1ec-form-control"
 							value="<?php echo esc_attr( $contact_name ); ?>">
+					</td>					
+					<?php if ( null !== $submitter_html ): ?>
+					<td rowspan="4" style="vertical-align: top;">
+						<?php echo $submitter_html; ?>
 					</td>
+					<?php endif; ?>
 				</tr>
 				<tr>
 					<td>

@@ -356,12 +356,28 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		// =========================================
 		// = Display organizer contact information =
 		// =========================================
+		$submitter_html = null;
+		if ( $event ) {
+			$submitter_info = $event->get_submitter_info();
+			if (  null !== $submitter_info ) {
+				if ( 1 === $submitter_info['is_organizer'] ) {
+					$submitter_html = Ai1ec_I18n::__( '<span class="ai1ec-info-text">The event was submitted by this Organizer.</span>' );
+				} else if ( isset( $submitter_info['email'] ) &&
+					isset( $submitter_info['name'] ) ) {
+					$submitter_html = sprintf( Ai1ec_I18n::__( '<span class="ai1ec-info-text">The event was submitted by <strong>%s</strong>, email: <a href="mailto:%s" target="_top">%s</a>.</span>' ), 
+						$submitter_info['name'],
+						$submitter_info['email'],
+						$submitter_info['email'] );
+				}
+			} 
+		}
 		$args = array(
 			'contact_name'    => $contact_name,
 			'contact_phone'   => $contact_phone,
 			'contact_email'   => $contact_email,
 			'contact_url'     => $contact_url,
 			'event'           => $empty_event,
+			'submitter_html'  => $submitter_html
 		);
 		$boxes[] = $theme_loader
 			->get_file( 'box_event_contact.php', $args, true )

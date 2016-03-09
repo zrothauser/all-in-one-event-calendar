@@ -2,6 +2,7 @@ define(
 	[
 		"jquery_timely",
 		'domReady',
+		"libs/utils",
 		'ai1ec_config',
 		'scripts/add_new_event/event_location/gmaps_helper',
 		'scripts/add_new_event/event_location/input_coordinates_event_handlers',
@@ -22,6 +23,7 @@ define(
 	function (
 		$,
 		domReady,
+		utils,
 		ai1ec_config,
 		gmaps_helper,
 		input_coordinates_event_handlers,
@@ -139,8 +141,7 @@ define(
 				.addClass( 'ai1ec-hidden' ).parent()
 				.css( 'color', '' );
 			if ( '' !== url ) {
-				var urlPattern = /(http|https):\/\//;
-				if ( ! urlPattern.test( url ) ) {
+				if ( false === utils.isValidUrl( url ) ) {
 					$( this ).closest( '.ai1ec-panel-collapse' ).parent()
 						.find( '.ai1ec-panel-heading .ai1ec-fa-warning' )
 						.removeClass( 'ai1ec-hidden' ).parent()
@@ -156,6 +157,32 @@ define(
 				}
 			}
 		} );
+
+		$( '#ai1ec_contact_email' ).each( function () {
+			var email = this.value;
+			$( this ).removeClass( 'ai1ec-input-warn' );
+			$( this ).closest( '.ai1ec-panel-collapse' ).parent()
+				.find( '.ai1ec-panel-heading .ai1ec-fa-warning' )
+				.addClass( 'ai1ec-hidden' ).parent()
+				.css( 'color', '' );
+			if ( '' !== email ) {
+				if ( false === utils.isValidEmail( email ) ) {
+					$( this ).closest( '.ai1ec-panel-collapse' ).parent()
+						.find( '.ai1ec-panel-heading .ai1ec-fa-warning' )
+						.removeClass( 'ai1ec-hidden' ).parent()
+						.css( 'color', 'rgb(255, 79, 79)' );
+					if ( ! show_warning ) {
+						$( this ).closest( '.ai1ec-panel-collapse' )
+							.collapse( 'show' );
+					}
+					show_warning = true;
+					var text = $( this ).attr( 'id' ) + '_not_valid';
+					warnings.push( ai1ec_config[text] );
+					$( this ).addClass( 'ai1ec-input-warn' );
+				}
+			}
+		} );
+
 
 		var $additional_required_fields = $(
 			'#title, #ai1ec_contact_name, #ai1ec_contact_email, #ai1ec_contact_phone, #content'

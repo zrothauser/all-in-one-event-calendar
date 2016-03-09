@@ -54,7 +54,7 @@ class Ai1ec_Email_Notification extends Ai1ec_Notification {
 			}
 		} 
 		if ( $is_plain_text ) {			
-			$nl2br_handler             = array( $this, 'mandrill_avoid_nl2br' );
+			$nl2br_handler             = array( $this, 'mandrill_nl2br' );
 			add_filter( 'mandrill_nl2br', $nl2br_handler );
 			$is_mandril_active         = apply_filters ( 'ai1ec_is_mandril_active', null );
 			if ( $is_mandril_active ) {
@@ -81,7 +81,7 @@ class Ai1ec_Email_Notification extends Ai1ec_Notification {
 	 * Handle the wp_mail_filter when sending Plain texts emails and Mandril 
 	 * is used to send notifications. 
 	 */
-	public function convert_single_to_double_line_break( $atts ) {
+	public function convert_single_to_double_line_break( $atts = null ) {
 		//As MC-AutoHtml is set to true, mandril will convert the text/plain to generate the text/html 
 		//this conversion will Ignores the line break (\n) from the text message. The only way to keep 
 		//the lines breaks is have double line breaks as instructed by mandril twiter account here:
@@ -97,9 +97,9 @@ class Ai1ec_Email_Notification extends Ai1ec_Notification {
 	/**
 	 * Handle the wp_mail_failed hook to log the error
 	 */
-	public function send_mail_failed( $error ) {
-		if ( is_wp_error( $error ) ) {
-			error_log( 'wp_mail failed, code: %d, message: %s', $error->get_code(), $error->get_error_message() );
+	public function send_mail_failed( $error = null) {
+		if ( null != $error && is_wp_error( $error ) ) {
+			error_log( 'wp_mail failed, code: %d, message: %s', $error->get_error_code(), $error->get_error_message() );
 		} else {
 			error_log( 'wp_mail failed, unknow error' );
 		}
@@ -109,8 +109,8 @@ class Ai1ec_Email_Notification extends Ai1ec_Notification {
 	 * Handle the mandrill_nl2br hook.
 	 * When sending text/plain nl2br should be avoided
 	 */
-	public function mandrill_avoid_nl2br( $nl2br, $message ) {
-		return false;
+	public function mandrill_nl2br( $nl2br = false, $message = null ) {
+		return true;
 	}
 
 	private function _parse_text() {

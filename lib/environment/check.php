@@ -95,6 +95,31 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 			}
 			return;
 		}
+		// Check for needed PHP extensions.
+		if ( ! function_exists( 'iconv' ) ) {
+			$msg = Ai1ec_I18n::__(
+					'PHP extension "iconv" needed for All-In-One-Event-Calendar is missing. Please, check your PHP configuration.<br />'
+				);
+			$notification->store(
+				$msg,
+				'error',
+				2,
+				array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
+				true
+			);
+		}
+		if ( ! function_exists( 'mb_check_encoding' ) ) {
+			$msg = Ai1ec_I18n::__(
+					'PHP extension "mbstring" needed for All-In-One-Event-Calendar is missing. Please, check your PHP configuration.<br />'
+				);
+			$notification->store(
+				$msg,
+				'error',
+				2,
+				array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
+				true
+			);
+		}
 		global $wp_rewrite;
 		$option  = $this->_registry->get( 'model.option' );
 		$rewrite = $option->get( 'ai1ec_force_flush_rewrite_rules' );

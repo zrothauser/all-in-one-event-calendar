@@ -857,8 +857,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 		);			
 		if ( false == ai1ec_is_blank( $submitter_info ) ) {
 			$submitter_info = json_decode( $submitter_info, true );					
-			if ( JSON_ERROR_NONE === json_last_error() && 
-				is_array( $submitter_info ) ) {
+			if ( is_array( $submitter_info ) ) {
 				return $submitter_info;
 			}
 		} 

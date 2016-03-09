@@ -103,8 +103,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	public function get_api_error_msg( $response ) {
 		if ( isset( $response ) && false === is_wp_error( $response ) ) {
 			$response_body = json_decode( $response['body'], true );
-			if ( json_last_error() === JSON_ERROR_NONE &&
-				isset( $response_body ) &&
+			if ( is_array( $response_body ) &&
 				isset( $response_body['errors'] ) ) {
 				$errors = $response_body['errors'];
 				if ( false === is_array( $errors )) {
@@ -255,7 +254,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 			if ( 200 === $response_code ) {							
 				if ( true === $decode_response_body ) {
 					$result->body     = json_decode( $response['body'] );
-					if ( JSON_ERROR_NONE === json_last_error() ) {
+					if ( false === is_null( $result->body ) ) {
 						$result->is_error = false;	
 					} else {
 						$result->is_error = true;

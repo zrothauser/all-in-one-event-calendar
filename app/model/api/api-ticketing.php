@@ -581,8 +581,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
     	if ( 404 === $response_code ) {
 			if ( isset( $response['body'] ) ) {
 				$response_body = json_decode( $response['body'], true );
-				if ( json_last_error() === JSON_ERROR_NONE &&
-					$response_body &&
+				if ( is_array( $response_body ) &&
 					isset( $response_body['message'] ) ) {
 					if ( false !== stripos( $response_body['message'], 'event not found') ) {
 						return true;

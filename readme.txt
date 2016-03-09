@@ -156,7 +156,7 @@ https://vimeo.com/135004810
 * Improved: Added error notices if required PHP extensions (mbstring and iconv) are missing when the plugin is installed.
 * Improved: Performance optimizations for embedded widgets.
 * Improved: Optimizations to reduce the traffic from search engine robots.
-* Fixed: The email notification was not breaking lines for hosted plans or when wpMandril was installed.
+* Fixed: Image does not appear in the month view pop-up window.
 * Fixed: Ticketing Beta - Every ticket type dropdown defaults to 1 instead of the actual minimum.
 * Fixed: Ticketing Beta - Ticket Types got misaligned when one ticket is closed.
 * If you want to see the release notes for Add-ons, then please visit [this page](http://time.ly/document/release-notes).

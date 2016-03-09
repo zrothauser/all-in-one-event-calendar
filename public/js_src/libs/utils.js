@@ -167,6 +167,19 @@ define(
 				},
 
 				/**
+				 * isUrl checks to see if the passed parameter is a valid url
+				 * and returns true on access and false on failure
+				 *
+				 * @param String s String to validate
+				 *
+				 * @return boolean True if the string is a valid url, false otherwise
+				 */
+				 "isValidUrl" : function( s ) {				 	
+					var regexp = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+					return regexp.test( s ); 
+				},
+
+				/**
 				 * isValidEmail checks if the mail passed is valid.
 				 *
 				 * @param email string

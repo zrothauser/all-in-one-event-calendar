@@ -397,6 +397,11 @@ td.ai1ec-avail-block {
 	font-weight: bold;
 	display: none;
 }
+
+.timely .ai1ec-tab-title-error {
+	color: red;
+}
+
 #ai1ec_review_enjoying_question,
 #ai1ec_review_not_enjoying_question,
 #ai1ec_not_enjoying_popup {

@@ -513,16 +513,11 @@ define(
 			var
 				$to_remove = $( this ).closest( '.ai1ec-tickets-panel' ),
 				data_count = $to_remove.attr( 'data-count' );
-
-			if ( 0 === data_count ) {
-				$to_remove.remove();
-			} else {
-				$to_remove
-					.addClass( 'ai1ec-hidden' )
-					.append(
-						'<input type="hidden" name="remove" value="1">'
-					);
-			}
+			$to_remove
+				.addClass( 'ai1ec-hidden' )
+				.append(
+					'<input type="hidden" name="remove" value="1">'
+				);				
 			return false;
 		} );
 

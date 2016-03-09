@@ -336,6 +336,11 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		if ( isset( $post_ticket_types )) {
 			$index         = 0;
 			foreach ( $post_ticket_types as $ticket_type_ite ) {
+				if ( false === isset( $ticket_type_ite['id'] ) && 
+					 isset( $ticket_type_ite['remove'] ) ) {
+					//ignoring new tickets that didn't go to api yet
+					continue;
+				}
 				$tickets_types[$index++] = $this->_parse_tickets_type_post_to_api_structure(
 					$ticket_type_ite,
 					$event

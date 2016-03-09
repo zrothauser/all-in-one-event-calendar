@@ -5,7 +5,7 @@ calendar, ical, iCalendar, all-in-one, events sync, events widget,
 calendar widget
 Requires WordPress at least: 3.5
 Tested up to: 4.4.2
-Stable tag: 2.3.11
+Stable tag: 2.3.12
 License: GNU General Public License, version 3 (GPL-3.0)
 
 A calendar system with many views, upcoming events widget, color-coded
@@ -148,6 +148,18 @@ https://vimeo.com/135004810
 **[ai1ec exact_date="5-10-2015"]**
 
 == Changelog ==
+
+= Version 2.3.12 = 
+* Improved: Added "Videos" button in the box support section.
+* Improved: Restructured event cost vs ticketing for a better user experience.
+* Improved: Edit event page to accept Ticket URL and Organizer website URL without protocol (http or https). Organizer email validation was also added to prevent invalid emails.
+* Improved: Added error notices if required PHP extensions (mbstring and iconv) are missing when the plugin is installed.
+* Improved: Performance optimizations for embedded widgets.
+* Improved: Optimizations to reduce the traffic from search engine robots.
+* Fixed: The email notification was not breaking lines for hosted plans or when wpMandril was installed.
+* Fixed: Ticketing Beta - Every ticket type dropdown defaults to 1 instead of the actual minimum.
+* Fixed: Ticketing Beta - Ticket Types got misaligned when one ticket is closed.
+* If you want to see the release notes for Add-ons, then please visit [this page](http://time.ly/document/release-notes).
 
 = Version 2.3.11 =
 * New: Now the calendar is set up automatically when you install the plug-in for the first time

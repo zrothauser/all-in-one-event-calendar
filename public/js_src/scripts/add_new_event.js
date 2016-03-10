@@ -133,7 +133,7 @@ define(
 		// Validate URL fields.
 		var show_warning = false;
 		var warnings     = [];
-		$( '#ai1ec_ticket_url, #ai1ec_contact_url' ).each( function () {
+		$( '#ai1ec_ticket_ext_url, #ai1ec_contact_url' ).each( function () {
 			var url = this.value;
 			$( this ).removeClass( 'ai1ec-input-warn' );
 			var $parent_url = $( this ).closest( '.ai1ec-panel-collapse' ).parent()
@@ -141,7 +141,9 @@ define(
 			if ( ! show_warning ) {
 				$parent_url.addClass( 'ai1ec-hidden' ).parent().removeClass( 'ai1ec-tab-title-error' );
 			}
-			if ( '' !== url && false === utils.isValidUrl( url ) ) {
+			var id                = $( this ).attr( 'id' );
+			var requires_protocol = ( 'ai1ec_ticket_ext_url' === id );
+			if ( '' !== url && false === utils.isValidUrl( url, requires_protocol ) ) {
 				$parent_url.removeClass( 'ai1ec-hidden' ).parent()
 					.addClass( 'ai1ec-tab-title-error' );
 				if ( ! show_warning ) {
@@ -149,7 +151,7 @@ define(
 						.collapse( 'show' );
 				}
 				show_warning = true;
-				var text = $( this ).attr( 'id' ) + '_not_valid';
+				var text = id + '_not_valid';
 				warnings.push( ai1ec_config[text] );
 				$( this ).addClass( 'ai1ec-input-warn' );
 			}

@@ -152,7 +152,7 @@ https://vimeo.com/135004810
 = Version 2.3.12 = 
 * Improved: Added "Videos" button in the box support section.
 * Improved: Restructured event cost vs ticketing for a better user experience.
-* Improved: Edit event page to accept Ticket URL and Organizer website URL without protocol (http or https). Organizer email validation was also added to prevent invalid emails.
+* Improved: Edit event page to prevent invalid email for Organizer.
 * Improved: Added error notices if required PHP extensions (mbstring and iconv) are missing when the plugin is installed.
 * Improved: Performance optimizations for embedded widgets.
 * Improved: Optimizations to reduce the traffic from search engine robots.

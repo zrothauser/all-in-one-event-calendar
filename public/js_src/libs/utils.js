@@ -174,9 +174,13 @@ define(
 				 *
 				 * @return boolean True if the string is a valid url, false otherwise
 				 */
-				 "isValidUrl" : function( s ) {				 	
-					var regexp = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
-					return regexp.test( s ); 
+				"isValidUrl" : function( s, requires_protocol ) {
+					if ( true === requires_protocol ) {
+						var urlPattern = /^(http|https):\/\//;	
+						return urlPattern.test( s ); 
+					} else {
+						return true;
+					}
 				},
 
 				/**

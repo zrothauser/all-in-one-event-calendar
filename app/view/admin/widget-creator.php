@@ -127,7 +127,7 @@ class Ai1ec_View_Widget_Creator extends Ai1ec_View_Admin_Abstract {
 			'widget-creator/super-widget-contents.twig',
 			array(
 				'tabs'              => $tabs,
-				'siteurl'           => trailingslashit( ai1ec_get_site_url() ),
+				'siteurl'           => trailingslashit( preg_replace( '/^.*?:/', '', ai1ec_get_site_url() ) ),
 				'text_common_info'  => Ai1ec_I18n::__( 'Use this tool to generate code snippets you can add to <strong>an external website</strong> to embed new calendars and widgets.' ),
 				'text_alert'        => Ai1ec_I18n::__( '<h4>Attention!</h4><p>These widgets are designed to be embedded in <strong>external sites only</strong> and may cause conflicts if used within the same WordPress site.</p>' ),
 				'text_alternatives' => sprintf(

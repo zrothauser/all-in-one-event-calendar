@@ -155,7 +155,6 @@ https://vimeo.com/135004810
 * Improved: Edit event page to prevent invalid email for Organizer.
 * Improved: Added error notices if required PHP extensions (mbstring and iconv) are missing when the plugin is installed.
 * Improved: Performance optimizations for embedded widgets.
-* Improved: Optimizations to reduce the traffic from search engine robots.
 * Improved: External widgets snippet code for better compatibility with SSL sites.
 * Fixed: Image does not appear in the month view pop-up window.
 * Fixed: Ticketing Beta - Every ticket type dropdown defaults to 1 instead of the actual minimum.

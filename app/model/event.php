@@ -872,18 +872,23 @@ class Ai1ec_Event extends Ai1ec_Base {
 		if ( empty( $post_id ) ) {
 			throw new Exception( 'Post id empty' );
 		}
+		$save = false;
 		if ( 1 === intval( $is_submitter ) ) {
 			$submitter_info['is_organizer'] = 1;
+			if ( false === ai1ec_is_blank( $this->get( 'contact_email' ) ) ) {
+				$save = true;
+			}
 		} else {
 			$submitter_info['is_organizer'] = 0;
 			if ( false === ai1ec_is_blank( $submitter_email ) ) {
-				$submitter_info['email'] = trim( $submitter_email );	
+				$submitter_info['email'] = trim( $submitter_email );
+				$submitter_info['name']  = trim( $submitter_name );
+				$save                    = true;
 			}
-			if ( false === ai1ec_is_blank( $submitter_name ) ) {
-				$submitter_info['name'] = trim( $submitter_name );	
-			}						
 		}
-		update_post_meta( $post_id, '_submitter_info', json_encode( $submitter_info ) );
+		if ( $save ) {
+			update_post_meta( $post_id, '_submitter_info', json_encode( $submitter_info ) );
+		}		
 	}
 
 }

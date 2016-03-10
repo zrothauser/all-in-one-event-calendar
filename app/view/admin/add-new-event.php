@@ -362,12 +362,21 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			if (  null !== $submitter_info ) {
 				if ( 1 === $submitter_info['is_organizer'] ) {
 					$submitter_html = Ai1ec_I18n::__( '<span class="ai1ec-info-text">The event was submitted by this Organizer.</span>' );
-				} else if ( isset( $submitter_info['email'] ) &&
+				} else if ( isset( $submitter_info['email'] ) ||
 					isset( $submitter_info['name'] ) ) {
-					$submitter_html = sprintf( Ai1ec_I18n::__( '<span class="ai1ec-info-text">The event was submitted by <strong>%s</strong>, email: <a href="mailto:%s" target="_top">%s</a>.</span>' ), 
-						htmlspecialchars( $submitter_info['name'] ),
-						$submitter_info['email'],
-						$submitter_info['email'] );
+					$submitted_by   = '';
+					if ( false === ai1ec_is_blank ( $submitter_info['name'] ) ) {
+						$submitted_by = sprintf( '<strong>%s</strong>', htmlspecialchars( $submitter_info['name'] ) );
+					}
+					if ( false === ai1ec_is_blank( $submitter_info['email'] ) ) {
+						if ( '' !== $submitted_by ) {
+							$submitted_by .= Ai1ec_I18n::__( ', email: ' );
+						}	
+						$submitted_by .= sprintf( '<a href="mailto:%s" target="_top">%s</a>', $submitter_info['email'], $submitter_info['email'] ) ;
+					}
+					$submitter_html = sprintf( Ai1ec_I18n::__( '<span class="ai1ec-info-text">The event was submitted by %s.</span>' ), 
+							$submitted_by 
+						);
 				}
 			} 
 		}

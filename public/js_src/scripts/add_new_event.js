@@ -510,9 +510,7 @@ define(
 			on_change_availability( $( this ) );
 		} );
 		$( document ).on( 'click', '.ai1ec-remove-ticket', function() {
-			var
-				$to_remove = $( this ).closest( '.ai1ec-tickets-panel' ),
-				data_count = $to_remove.attr( 'data-count' );
+			var $to_remove = $( this ).closest( '.ai1ec-tickets-panel' );
 			$to_remove
 				.addClass( 'ai1ec-hidden' )
 				.append(

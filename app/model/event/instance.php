@@ -321,15 +321,8 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 		$events[$_start] = $event_item;
 
 		if ( $event->get( 'recurrence_rules' ) || $event->get( 'recurrence_dates' ) ) {
-			/**
-			 * NOTE: this timezone switch is intentional, because underlying
-			 * library doesn't allow us to pass it as an argument. Though no
-			 * lesser importance shall be given to the restore call bellow.
-			 */
-			$start_datetime = $event->get( 'start' );
-			$start_datetime->assert_utc_timezone();
-			$start_timezone = $this->_registry->get( 'date.timezone' )
-			                                  ->get_name( $start_datetime->get_timezone() );
+			$start_timezone = $this->_registry->get( 'model.option' )
+			                                  ->get( 'timezone_string' );
 			$events += $this->create_instances_by_recurrence(
 				$event,
 				$event_item,

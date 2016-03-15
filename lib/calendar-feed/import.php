@@ -88,29 +88,11 @@ class Ai1ecImportConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$select2_tags = $factory->create_select2_input(
 			array( 'id' => 'ai1ec_feed_tags')
 		);
-		$modal = $this->_registry->get(
-			'html.element.legacy.bootstrap.modal',
-			esc_html__(
-				"Do you want to keep the events imported from the calendar or remove them?",
-				AI1EC_PLUGIN_NAME
-			)
-		);
-		$modal->set_header_text(
-			esc_html__( 'Removing ICS Feed', AI1EC_PLUGIN_NAME )
-		);
-		$modal->set_keep_button_text(
-			esc_html__( 'Keep Events', AI1EC_PLUGIN_NAME )
-		);
-		$modal->set_delete_button_text(
-			esc_html__( 'Remove Events', AI1EC_PLUGIN_NAME )
-		);
-		$modal->set_id( 'ai1ec-ics-modal' );
 		$loader    = $this->_registry->get( 'theme.loader' );
 
 		$args = array(
 			'event_categories' => $select2_cats,
 			'event_tags'       => $select2_tags,
-			'modal'            => $modal,
 			'api_signed'       => $api->is_signed(),
 		);
 

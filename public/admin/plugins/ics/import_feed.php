@@ -94,6 +94,3 @@
 <?php
 	endif;
 ?>
-
-<?php echo $modal->render(); ?>
-

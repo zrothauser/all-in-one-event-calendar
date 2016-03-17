@@ -1,0 +1,11 @@
+<div class="ai1ec-sas-actions ai1ec-btn-group ai1ec-clearfix">
+	{{ action_buttons | raw }}{% if tickets_button %}<a href="#" class="ai1ec-sas-action ai1ec-sas-action-share ai1ec-btn
+			{% if single %}ai1ec-btn-sm{% else %}ai1ec-btn-xs{% endif %}
+			ai1ec-btn-sm ai1ec-btn-primary"
+			data-toggle="ai1ec-modal"
+			data-target="#ai1ec-share-modal">
+			<i class="ai1ec-fa ai1ec-fa-ticket"></i>
+			<span class="ai1ec-hidden-xs">{{ text_tickets }}</span>
+		</a>
+	{% endif %}
+</div>

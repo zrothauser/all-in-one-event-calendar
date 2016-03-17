@@ -150,6 +150,10 @@ define(
 					$( button ).closest( '.ai1ec-message' ).remove();
 				} );
 			} );
+
+			$( document ).on( 'click', '.ai1ec-alert-trigger',
+				event_handlers.handle_alert_click );
+
 	};
 
 	/**

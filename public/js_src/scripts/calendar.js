@@ -124,7 +124,6 @@ define(
 		css_selector_replacement();
 	};
 
-
 	/**
 	 * Attach event handlers for calendar page.
 	 */

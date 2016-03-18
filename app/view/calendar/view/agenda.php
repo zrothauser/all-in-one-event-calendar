@@ -282,8 +282,10 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			);
 
 			if (
-				true === $this->_registry->get( 'model.eventpromote.repository')
-					->has_product_buy_button()
+				true === apply_filters(
+					'ai1ec_buy_button_product',
+					false
+				)
 			) {
 				$meta         = $this->_registry->get( 'model.meta-post' );
 				$full_details = $meta->get(

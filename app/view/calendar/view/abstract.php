@@ -67,6 +67,12 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	public function get_extra_template_arguments( array $args ) {
 		$loader                 = $this->_registry->get( 'theme.loader' );
 		$args['action_buttons'] = $this->_action_buttons();
+		if (
+			true === $this->_registry->get( 'model.eventpromote.repository')
+				->has_product_buy_button()
+		) {
+			$args['has_product_buy_button'] = true;
+		}
 		return $args;
 	}
 
@@ -94,6 +100,8 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 				),
 				'tickets_button' => true,
 				'text_tickets'   => __( 'Tickets', AI1EC_PLUGIN_NAME ),
+				'has_buy_tickets_product' => $this->_registry
+					->get( 'model.eventpromote.repository')->has_product_buy_button()
 			),
 			false
 		);

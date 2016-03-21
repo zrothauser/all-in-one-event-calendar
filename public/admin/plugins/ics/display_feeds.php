@@ -35,3 +35,6 @@
 </div>
 <br />
 <h5><?php _e( 'My imported Events:', AI1EC_PLUGIN_NAME ) ?></h5>
+
+<?php echo $modal->render(); ?>
+

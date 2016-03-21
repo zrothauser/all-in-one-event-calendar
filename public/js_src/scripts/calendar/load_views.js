@@ -116,13 +116,19 @@ define(
 			.find( '.ai1ec-calendar-toolbar' )
 				.trigger( 'ai1ec-affix.reinit' );
 				
-		$( '.ai1ec-event[data-ticket-url]' ).each( function() {
-			var
-				$this      = $( this ),
-				ticket_url = $this.data( 'ticket-url' ),
-				$button    = $( '.ai1ec-sas-action-tickets', $this )
-					.attr( 'href', ticket_url );
-		} );
+		$( '.ai1ec-event[data-ticket-url], .ai1ec-has-tickets-button' )
+			.each( function() {
+				var
+					$this      = $( this ),
+					ticket_url = $this.data( 'ticket-url' ),
+					$button    = $.merge(
+						$( '.ai1ec-sas-action-tickets', $this ),
+						$(
+							'.ai1ec-sas-action-tickets',
+							$this.parent( 'a' ).next( '.ai1ec-popover' )
+						)
+					).attr( 'href', ticket_url );
+			} );
 	};
 
 	/**

@@ -67,7 +67,11 @@
 
 									<div class="ai1ec-popover ai1ec-popup ai1ec-popup-in-{{ type }}-view
 									            ai1ec-event-id-{{ event.post_id }}
-									            ai1ec-event-instance-id-{{ event.instance_id }}">
+									            ai1ec-event-instance-id-{{ event.instance_id }}
+									            {% if event.ticket_url is not empty %}
+									                ai1ec-has-tickets-button
+									            {% endif %}>
+									            ">
 										{% if event.category_colors %}
 											<div class="ai1ec-color-swatches">{{ event.category_colors | raw }}</div>
 										{% endif %}

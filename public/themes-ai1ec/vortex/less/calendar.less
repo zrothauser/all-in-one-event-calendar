@@ -845,19 +845,28 @@ table.ai1ec-oneday-view-original {
 		width: 20px;
 	}
 }
-
 .ai1ec-event:hover,
 .ai1ec-popover {
-	.ai1ec-sas-action {
-		display: inline-block;
+	.ai1ec-sas-actions {
+		display: block;
+		white-space: nowrap;
+		.ai1ec-sas-action {
+			display: inline-block;
+		}
+		.ai1ec-sas-action-tickets {
+			display: none;
+		}
 	}
 }
-.ai1ec-has-product-buy-button .ai1ec-event[data-ticket-url] {
+
+.ai1ec-event[data-ticket-url],
+.ai1ec-popover.ai1ec-has-tickets-button {
 	.ai1ec-sas-action-tickets {
 		display: inline-block !important;
 	}
 }
-:not( .ai1ec-has-product-buy-button ) .ai1ec-event:not( [data-ticket-url] ) {
+:not( .ai1ec-has-product-buy-button ) .ai1ec-event:not( [data-ticket-url] ),
+:not( .ai1ec-has-product-buy-button ) .ai1ec-popover:not( .ai1ec-has-tickets-button ) {
 	.ai1ec-sas-action-tickets {
 		display: none !important;
 	}
@@ -906,6 +915,7 @@ table.ai1ec-oneday-view-original {
 		}
 	}
 }
+
 // Posterboard
 .ai1ec-posterboard-view,
 .ai1ec-popover  {
@@ -916,6 +926,13 @@ table.ai1ec-oneday-view-original {
 		}
 	}
 }
+.ai1ec-posterboard-view {
+	.ai1ec-sas-action-tickets {
+		float: left !important;
+		margin-top: 1px;
+	}
+}
+
 // Stream view.
 .ai1ec-stream-view {
 	.ai1ec-sas-actions {

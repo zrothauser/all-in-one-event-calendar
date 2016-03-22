@@ -189,6 +189,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		if ( $this->is_response_success( $response ) ) {
 			return $response->body->id;
 		} else {
+			$this->log_error( $response, 'Created calendar' );
 			return 0;
 		}
 	}
@@ -289,6 +290,23 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		$response->error_message = $error_message;
 		$notification            = $this->_registry->get( 'notification.admin' );
 		$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );				
+		return $error_message;
+	}
+
+	/**
+	 * Save an error notification to be showed to the user on WP header of the page
+	 * @param $response The response got from request_api method.
+	 *        $custom_error_message The custom message to show before the detailed message
+	 * @return full error message
+	 */
+	protected function log_error( $response, $custom_error_response ) {
+		$error_message = $this->_transform_error_message( 
+			$custom_error_response, 
+			$response->raw, 
+			$response->url, 
+			true 
+		);
+		error_log( $custom_error_response . ': ' . $error_message );
 		return $error_message;
 	}
 

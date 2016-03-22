@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.3.12\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.3.12.1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2016-03-09 15:36:37+00:00\n"
+"POT-Creation-Date: 2016-03-22 18:01:07+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -83,7 +83,7 @@ msgid "The URL you have entered in the <b>Organizer Contact Info</b> &gt; <b>Web
 msgstr ""
 
 #: app/controller/javascript.php:490
-msgid "The URL you have entered in the <b>Event Cost and Tickets</b> &gt; <b>Buy Tickets URL</b> seems to be invalid."
+msgid "The URL you have entered in the <b>Event Cost and Tickets</b> &gt; <b>Tickets or Registration URL</b> seems to be invalid."
 msgstr ""
 
 #: app/controller/javascript.php:493
@@ -304,47 +304,47 @@ msgstr ""
 msgid "Payment preferences were not saved."
 msgstr ""
 
-#: app/model/api/api-ticketing.php:438
+#: app/model/api/api-ticketing.php:450
 msgid "Past Event"
 msgstr ""
 
-#: app/model/api/api-ticketing.php:440
+#: app/model/api/api-ticketing.php:452
 msgid "Event closed"
 msgstr ""
 
-#: app/model/api/api-ticketing.php:442
+#: app/model/api/api-ticketing.php:454
 msgid "Not available yet"
 msgstr ""
 
-#: app/model/api/api-ticketing.php:444
+#: app/model/api/api-ticketing.php:456
 msgid "Sale closed"
 msgstr ""
 
-#: app/model/api/api-ticketing.php:446
+#: app/model/api/api-ticketing.php:458
 msgid "Sold out"
 msgstr ""
 
-#: app/model/api/api-ticketing.php:448
+#: app/model/api/api-ticketing.php:460
 msgid "Not available"
 msgstr ""
 
-#: app/model/api/api-ticketing.php:478
+#: app/model/api/api-ticketing.php:490
 msgid "We were unable to get the Tickets Details from Time.ly Ticketing"
 msgstr ""
 
-#: app/model/api/api-ticketing.php:509
+#: app/model/api/api-ticketing.php:521
 msgid "We were unable to get the Tickets Attendees from Time.ly Ticketing"
 msgstr ""
 
-#: app/model/api/api-ticketing.php:542
+#: app/model/api/api-ticketing.php:554
 msgid "We were unable to get the Sales information from Time.ly Ticketing"
 msgstr ""
 
-#: app/model/api/api-ticketing.php:619
+#: app/model/api/api-ticketing.php:630
 msgid "Event not found inside the database."
 msgstr ""
 
-#: app/model/api/api-ticketing.php:695
+#: app/model/api/api-ticketing.php:706
 msgid "We were unable to remove the Tickets from Time.ly Ticketing"
 msgstr ""
 
@@ -655,15 +655,19 @@ msgstr ""
 msgid "<span class=\"ai1ec-info-text\">The event was submitted by this Organizer.</span>"
 msgstr ""
 
-#: app/view/admin/add-new-event.php:367
-msgid "<span class=\"ai1ec-info-text\">The event was submitted by <strong>%s</strong>, email: <a href=\"mailto:%s\" target=\"_top\">%s</a>.</span>"
+#: app/view/admin/add-new-event.php:373
+msgid ", email: "
 msgstr ""
 
-#: app/view/admin/add-new-event.php:448
+#: app/view/admin/add-new-event.php:377
+msgid "<span class=\"ai1ec-info-text\">The event was submitted by %s.</span>"
+msgstr ""
+
+#: app/view/admin/add-new-event.php:457
 msgid "Set banner image"
 msgstr ""
 
-#: app/view/admin/add-new-event.php:449
+#: app/view/admin/add-new-event.php:458
 msgid "Remove banner image"
 msgstr ""
 
@@ -1111,7 +1115,8 @@ msgstr ""
 msgid "Purchaser"
 msgstr ""
 
-#: app/view/admin/tickets.php:98 app/view/event/ticket.php:39
+#: app/view/admin/tickets.php:98 app/view/calendar/view/abstract.php:107
+#: app/view/event/ticket.php:39
 msgid "Tickets"
 msgstr ""
 
@@ -1418,7 +1423,7 @@ msgstr ""
 msgid "Add to Calendar"
 msgstr ""
 
-#: app/view/event/single.php:121 public/admin/box_event_cost.php:292
+#: app/view/event/single.php:121 public/admin/box_event_cost.php:308
 msgid "Cost:"
 msgstr ""
 
@@ -1442,11 +1447,11 @@ msgstr ""
 msgid "Edit this occurrence (%s)"
 msgstr ""
 
-#: app/view/event/single.php:237
+#: app/view/event/single.php:238
 msgid "This post was replicated from another site's <a href=\"%s\" title=\"iCalendar feed\"><i class=\"ai1ec-fa ai1ec-fa-calendar\"></i> calendar feed</a>."
 msgstr ""
 
-#: app/view/event/single.php:248
+#: app/view/event/single.php:249
 msgid "View original"
 msgstr ""
 
@@ -1476,8 +1481,8 @@ msgstr ""
 msgid ", and "
 msgstr ""
 
-#: cache/twig/78/3e/57d2212e2837aee7813ecc844f345947f68d3edb57d31388f926a75264db.php:31
-#: cache/twig/78/3e/57d2212e2837aee7813ecc844f345947f68d3edb57d31388f926a75264db.php:35
+#: cache/twig/78/3e/57d2212e2837aee7813ecc844f345947f68d3edb57d31388f926a75264db.php:32
+#: cache/twig/78/3e/57d2212e2837aee7813ecc844f345947f68d3edb57d31388f926a75264db.php:36
 msgid "Products"
 msgstr ""
 
@@ -1672,19 +1677,19 @@ msgstr ""
 msgid "The plugin is installed, but has not been configured. Please log in as an Administrator to set it up."
 msgstr ""
 
-#: lib/environment/check.php:100
+#: lib/environment/check.php:104
 msgid "PHP extension \"iconv\" needed for All-In-One-Event-Calendar is missing. Please, check your PHP configuration.<br />"
 msgstr ""
 
-#: lib/environment/check.php:112
+#: lib/environment/check.php:120
 msgid "PHP extension \"mbstring\" needed for All-In-One-Event-Calendar is missing. Please, check your PHP configuration.<br />"
 msgstr ""
 
-#: lib/environment/check.php:221
+#: lib/environment/check.php:230
 msgid "The add-on <strong>%s</strong> must be updated to at least version %s to maintain compatibility with the core calendar."
 msgstr ""
 
-#: lib/environment/check.php:222
+#: lib/environment/check.php:231
 msgid "If you do not see update notices below, ensure you have properly <a href=\"https://time.ly/document/user-guide/getting-started/license-keys/\" target=\"_blank\">entered your licence keys</a>. Alternatively, navigate to <a href=\"https://time.ly/your-account/\">your account</a> to download the latest version of the add-on(s) and <a href=\"http://time.ly/document/user-guide/troubleshooting/perform-manual-upgrade/\">update manually</a>. Please <a href=\"https://time.ly/forums/\">post in the forum</a> if you have trouble. We are happy to help."
 msgstr ""
 
@@ -2386,43 +2391,43 @@ msgstr ""
 msgid "Available:"
 msgstr ""
 
-#: public/admin/box_event_cost.php:195
+#: public/admin/box_event_cost.php:203
 msgid "Immediately"
 msgstr ""
 
-#: public/admin/box_event_cost.php:200
+#: public/admin/box_event_cost.php:216
 msgid "From:"
 msgstr ""
 
-#: public/admin/box_event_cost.php:221
+#: public/admin/box_event_cost.php:237
 msgid "Till:"
 msgstr ""
 
-#: public/admin/box_event_cost.php:242
+#: public/admin/box_event_cost.php:258
 msgid "Status:"
 msgstr ""
 
-#: public/admin/box_event_cost.php:249
+#: public/admin/box_event_cost.php:265
 msgid "Open"
 msgstr ""
 
-#: public/admin/box_event_cost.php:253
+#: public/admin/box_event_cost.php:269
 msgid "Closed"
 msgstr ""
 
-#: public/admin/box_event_cost.php:268
+#: public/admin/box_event_cost.php:284
 msgid "Add New Ticket Type"
 msgstr ""
 
-#: public/admin/box_event_cost.php:286
+#: public/admin/box_event_cost.php:302
 msgid "Free Event"
 msgstr ""
 
-#: public/admin/box_event_cost.php:312
+#: public/admin/box_event_cost.php:328
 msgid "Tickets URL:"
 msgstr ""
 
-#: public/admin/box_event_cost.php:316
+#: public/admin/box_event_cost.php:332
 msgid "Registration URL:"
 msgstr ""
 

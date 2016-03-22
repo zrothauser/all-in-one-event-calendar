@@ -66,7 +66,10 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	 */
 	public function get_extra_template_arguments( array $args ) {
 		$loader                 = $this->_registry->get( 'theme.loader' );
-		$args['action_buttons'] = $this->_action_buttons();
+		$args['action_buttons'] = apply_filters(
+			'ai1ec_add_action_buttons',
+			$this->_action_buttons()
+		);
 		if (
 			true === apply_filters(
 				'ai1ec_buy_button_product',

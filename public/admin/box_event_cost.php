@@ -190,11 +190,27 @@
 								<label>
 									<input type="checkbox" id="ai1ec_ticket_avail"
 										   name="availibility"
-										   <?php if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { echo 'disabled';}?>
+										   <?php 
+												if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { 
+													echo 'disabled';
+												}
+												if ( isset( $ticket->availibility ) && 
+													'on' == $ticket->availibility ) {
+													echo ' checked="checked" ';
+												}
+										   ?>
 										   >
 									<?php _e( 'Immediately', AI1EC_PLUGIN_NAME ); ?>
 								</label>
-								<div class="ai1ec-tickets-dates" style="display:block">
+								<div class="ai1ec-tickets-dates" style="display:
+									<?php
+										if ( isset( $ticket->availibility ) && 
+										   		'on' == $ticket->availibility ) {
+											echo 'none';
+										} else {
+											echo 'block';
+										}
+									?>;">
 									<div>
 										<div class="ai1ec-tickets-dates-block">
 											<label><?php _e( 'From:', AI1EC_PLUGIN_NAME ); ?></label>

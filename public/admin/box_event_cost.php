@@ -22,23 +22,23 @@
 	<?php else: ?>
 
 		<div class="ai1ec-cost-types">
-			<label for="ai1ec_is_free">
-				<input type="radio" value="free" id="ai1ec_is_free"
+			<label for="ai1ec_no_tickets">
+				<input type="radio" value="free" id="ai1ec_no_tickets"
 					   name="ai1ec_cost_type" <?php if ( 'free' == $cost_type ) { echo 'checked'; } ?>>
-				<?php _e( 'Free event', AI1EC_PLUGIN_NAME ); ?>
+				<?php _e( 'No Tickets', AI1EC_PLUGIN_NAME ); ?>
 			</label>
 			<?php
 			if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ):?>
 				<label for="ai1ec_has_tickets">
 					<input type="radio" value="tickets" id="ai1ec_has_tickets"
 						   name="ai1ec_cost_type" <?php if ( 'tickets' == $cost_type ) { echo 'checked'; } ?>>
-					<?php _e( 'Tickets', AI1EC_PLUGIN_NAME ); ?>
+					<?php _e( 'Time.ly Tickets<sup>beta</sup>', AI1EC_PLUGIN_NAME ); ?>
 				</label>
 			<?php endif; ?>
 			<label for="ai1ec_external_tickets">
 				<input type="radio" value="external" id="ai1ec_external_tickets"
 					   name="ai1ec_cost_type" <?php if ( 'external' == $cost_type ) { echo 'checked'; } ?>>
-				<?php _e( 'External Tickets URL', AI1EC_PLUGIN_NAME ); ?>
+				<?php _e( 'External Tickets', AI1EC_PLUGIN_NAME ); ?>
 			</label>
 		</div>
 
@@ -190,11 +190,27 @@
 								<label>
 									<input type="checkbox" id="ai1ec_ticket_avail"
 										   name="availibility"
-										   <?php if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { echo 'disabled';}?>
+										   <?php 
+												if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { 
+													echo 'disabled';
+												}
+												if ( isset( $ticket->availibility ) && 
+													'on' == $ticket->availibility ) {
+													echo ' checked="checked" ';
+												}
+										   ?>
 										   >
 									<?php _e( 'Immediately', AI1EC_PLUGIN_NAME ); ?>
 								</label>
-								<div class="ai1ec-tickets-dates" style="display:block">
+								<div class="ai1ec-tickets-dates" style="display:
+									<?php
+										if ( isset( $ticket->availibility ) && 
+										   		'on' == $ticket->availibility ) {
+											echo 'none';
+										} else {
+											echo 'block';
+										}
+									?>;">
 									<div>
 										<div class="ai1ec-tickets-dates-block">
 											<label><?php _e( 'From:', AI1EC_PLUGIN_NAME ); ?></label>
@@ -272,30 +288,62 @@
 
 	<?php endif; ?>
 
+		<div class="ai1ec-no-tickets">
+			<table class="ai1ec-form">
+				<tbody>
+					<tr>
+						<td class="ai1ec-first">
+							<label for="ai1ec_is_free">
+								<input type="checkbox"
+									   id="ai1ec_is_free"
+									   name="ai1ec_is_free"
+									   value="1"
+									   <?php echo $is_free; ?>>
+								<?php _e( 'Free Event', AI1EC_PLUGIN_NAME ); ?>
+							</label>
+						</td>
+						<td class="ai1ec-tickets-cost 
+								   <?php if ( ! empty( $is_free ) ) { echo 'ai1ec-hidden'; }?>">
+							<label for="ai1ec_ticket_ext_cost">
+							<?php _e( 'Cost:', AI1EC_PLUGIN_NAME ); ?>
+								<input class="ai1ec-form-control"
+									   id="ai1ec_ticket_ext_cost"
+									   name="ai1ec_cost"
+									   value="<?php echo esc_attr( $cost ); ?>">
+							</label>
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+
 		<div class="ai1ec-tickets-external">
 			<table class="ai1ec-form">
 				<tbody>
 					<tr>
-						<td class="ai1ec-first"><?php _e( 'Cost:', AI1EC_PLUGIN_NAME ); ?></td>
-						<td>
-							<input class="ai1ec-form-control"
-								   id="ai1ec_ticket_ext_cost"
-								   name="ai1ec_cost"
-								   value="<?php echo esc_attr( $cost ); ?>">
+						<td class="ai1ec-first">
+							<span class="ai1ec-tickets-url-text
+										<?php if ( ! empty( $is_free ) ) { echo 'ai1ec-hidden'; }?>">
+								<?php _e( 'Tickets URL:', AI1EC_PLUGIN_NAME ); ?>
+							</span>
+							<span class="ai1ec-register-url-text
+										<?php if ( empty( $is_free ) ) { echo 'ai1ec-hidden'; }?>">
+								<?php _e( 'Registration URL:', AI1EC_PLUGIN_NAME ); ?>
+							</span>
 						</td>
-					</tr>
-					<tr>
-						<td class="ai1ec-first"><?php _e( 'Tickets URL:', AI1EC_PLUGIN_NAME ); ?></td>
 						<td>
 							<input class="ai1ec-form-control"
 								   id="ai1ec_ticket_ext_url"
 								   name="ai1ec_ticket_url"
-								   value="<?php echo esc_attr( $ticket_url ); ?>">
+								   value="<?php echo esc_attr( $ticket_url ); ?>"
+								   placeholder="http://">
 						</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
+
 	<?php endif; ?>
 	</div>
 </div>

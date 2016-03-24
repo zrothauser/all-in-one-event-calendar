@@ -837,4 +837,58 @@ class Ai1ec_Event extends Ai1ec_Base {
 		return serialize( $cost );
 	}
 
+	/**
+	 * Get the submitter information array
+	 * @return array (
+	 *    is_organizer => 1 if the organizer is the submitter,
+	 *    email => if is_organizer is 0, them this property has the email of the submitter,
+	 *    name => if is_organizer is 0, them this property has the name of the submitter
+	 * )
+	 */
+	public function get_submitter_info() {
+		$post_id        = $this->get( 'post_id' );		 
+		if ( empty( $post_id ) ) {
+			return null;
+		}
+		$submitter_info = get_post_meta(
+			$post_id,
+			'_submitter_info',
+			true
+		);			
+		if ( false == ai1ec_is_blank( $submitter_info ) ) {
+			$submitter_info = json_decode( $submitter_info, true );					
+			if ( is_array( $submitter_info ) ) {
+				return $submitter_info;
+			}
+		} 
+		return null;
+	}
+
+	/**
+	 * Save the submitter information into post metadata
+	 */
+	public function save_submitter_info( $is_submitter, $submitter_email, $submitter_name ) {
+		$post_id        = $this->get( 'post_id' );		 
+		if ( empty( $post_id ) ) {
+			throw new Exception( 'Post id empty' );
+		}
+		$save = false;
+		if ( 1 === intval( $is_submitter ) ) {
+			$submitter_info['is_organizer'] = 1;
+			if ( false === ai1ec_is_blank( $this->get( 'contact_email' ) ) ) {
+				$save = true;
+			}
+		} else {
+			$submitter_info['is_organizer'] = 0;
+			if ( false === ai1ec_is_blank( $submitter_email ) ) {
+				$submitter_info['email'] = trim( $submitter_email );
+				$submitter_info['name']  = trim( $submitter_name );
+				$save                    = true;
+			}
+		}
+		if ( $save ) {
+			update_post_meta( $post_id, '_submitter_info', json_encode( $submitter_info ) );
+		}		
+	}
+
 }

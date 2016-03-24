@@ -121,7 +121,13 @@ class Ai1ec_Compatibility_Check extends Ai1ec_Base {
 		$theme_root = dirname( AI1EC_DEFAULT_THEME_ROOT );
 		return (
 			isset( $cur_theme['theme_root'] ) &&
-			$theme_root !== dirname( $cur_theme['theme_root'] )
+			(
+				$theme_root !== dirname( $cur_theme['theme_root'] ) &&
+				false === strpos(
+					$cur_theme['theme_root'],
+					'all-in-one-event-calendar-saas-theme'
+				)
+			)
 		);
 	}
 }

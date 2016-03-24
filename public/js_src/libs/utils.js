@@ -167,6 +167,23 @@ define(
 				},
 
 				/**
+				 * isUrl checks to see if the passed parameter is a valid url
+				 * and returns true on access and false on failure
+				 *
+				 * @param String s String to validate
+				 *
+				 * @return boolean True if the string is a valid url, false otherwise
+				 */
+				"isValidUrl" : function( s, requires_protocol ) {
+					if ( true === requires_protocol ) {
+						var urlPattern = /^(http|https):\/\//;	
+						return urlPattern.test( s ); 
+					} else {
+						return true;
+					}
+				},
+
+				/**
 				 * isValidEmail checks if the mail passed is valid.
 				 *
 				 * @param email string

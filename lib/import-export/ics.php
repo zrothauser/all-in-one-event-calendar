@@ -355,7 +355,9 @@ class Ai1ec_Ics_Import_Export_Engine
 			)
 			as $cat
 		) {
-			$categories[] = $cat->name;
+			if ( 'events_categories' === $cat->taxonomy ) {
+				$categories[] = $cat->name;
+			}			
 		}
 		$e->setProperty(
 			'categories',

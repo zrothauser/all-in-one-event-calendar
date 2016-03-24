@@ -214,7 +214,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	public function save_payment_preferences() {
 		$calendar_id = $this->_get_ticket_calendar();
 		if ( 0 >= $calendar_id ) {
-			return null;
+			return false;
 		}
 		$settings  = array(
 			'payment_method' => $_POST['ai1ec_payment_method'],
@@ -336,6 +336,11 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		if ( isset( $post_ticket_types )) {
 			$index         = 0;
 			foreach ( $post_ticket_types as $ticket_type_ite ) {
+				if ( false === isset( $ticket_type_ite['id'] ) && 
+					 isset( $ticket_type_ite['remove'] ) ) {
+					//ignoring new tickets that didn't go to api yet
+					continue;
+				}
 				$tickets_types[$index++] = $this->_parse_tickets_type_post_to_api_structure(
 					$ticket_type_ite,
 					$event
@@ -379,9 +384,11 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			//immediate availability
 			$timezone_start_time            = $this->_registry->get( 'date.time' );
 			$timezone_start_time->set_timezone( $event->get('timezone_name') );						
+			$ticket_type['immediately']     = true;
 			$ticket_type['sale_start_date'] = $timezone_start_time->format_to_javascript( $event->get('timezone_name') );
 			$ticket_type['sale_end_date']   = $event->get( 'end' )->format_to_javascript();
 		} else {
+			$ticket_type['immediately']     = false;
 			$ticket_type['sale_start_date'] =  $ticket_type_ite['ticket_sale_start_date'];
 			$ticket_type['sale_end_date']   =  $ticket_type_ite['ticket_sale_end_date'];
 		}
@@ -403,6 +410,11 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		} else {
 			$ticket_type->buy_max_limit = $ticket_type_api->buy_max_qty;
 		}		
+		if ( true === ( ( bool ) $ticket_type_api->immediately ) ) {
+			$ticket_type->availibility = 'on';
+		} else {
+			$ticket_type->availibility = 'off';
+		}
 		$ticket_type->ticket_sale_start_date = $ticket_type_api->sale_start_date; //YYYY-MM-YY HH:NN:SS
 		$ticket_type->ticket_sale_end_date   = $ticket_type_api->sale_end_date; //YYYY-MM-YY HH:NN:SS
 		$ticket_type->ticket_status 	     = $ticket_type_api->status;
@@ -581,8 +593,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
     	if ( 404 === $response_code ) {
 			if ( isset( $response['body'] ) ) {
 				$response_body = json_decode( $response['body'], true );
-				if ( json_last_error() === JSON_ERROR_NONE &&
-					$response_body &&
+				if ( is_array( $response_body ) &&
 					isset( $response_body['message'] ) ) {
 					if ( false !== stripos( $response_body['message'], 'event not found') ) {
 						return true;

@@ -76,7 +76,7 @@
 		</div>
 	{% endif %}
 
-	{% if cost is not empty or event.is_free %}
+	{% if ( cost is not empty or event.is_free ) and tickets_block is empty %}
 		<div class="ai1ec-cost ai1ec-row">
 			<div class="ai1ec-field-label {{ col1 }}">{{ text_cost }}</div>
 			<div class="ai1ec-field-value {{ col2 }}">

@@ -43,33 +43,74 @@ class Ai1ec_Email_Notification extends Ai1ec_Notification {
 	public function send( $headers = null ) {
 		
 		$this->_parse_text();	
-
-		$is_html = false;	
+		$is_plain_text = true;	
 		if ( null !== $headers ) {			
 			foreach ( $headers as $key => $value ) {
 				if ( 0 === strcasecmp( "content-type", $key ) && 
 					0 === strcasecmp( "text/html", $value ) ) {
-					$is_html = true;
+					$is_plain_text = false;
 					break;
 				}
 			}
 		} 
-
-		if ( false === $is_html ) {
-			$handler = array( $this, 'mandrill_avoid_nl2br' );
-			add_filter( 'mandrill_nl2br', $handler );
+		if ( $is_plain_text ) {			
+			$nl2br_handler             = array( $this, 'mandrill_nl2br' );
+			add_filter( 'mandrill_nl2br', $nl2br_handler );
+			$is_mandril_active         = apply_filters ( 'ai1ec_is_mandril_active', null );
+			if ( $is_mandril_active ) {
+				$double_line_break_handler = array( $this, 'convert_single_to_double_line_break' );
+				add_filter( 'wp_mail', $double_line_break_handler );						
+			}		
 		}
-			
+		$failed_handler = array( $this, 'send_mail_failed' );
+		add_filter( 'wp_mail_failed', $failed_handler );
+		
 		$result = wp_mail( $this->_recipients, $this->_subject, $this->_message, $headers );
 
-		if ( false === $is_html ) {
-			remove_filter( 'mandrill_nl2br', $handler );
+		remove_filter( 'wp_mail_failed', $failed_handler );
+		if ( $is_plain_text ) {
+			remove_filter( 'mandrill_nl2br', $nl2br_handler );
+			if ( $is_mandril_active ) {
+				remove_filter( 'wp_mail', $double_line_break_handler );	
+			}		
 		}
 		return $result;		
 	}
 
-	public function mandrill_avoid_nl2br( $nl2br, $message ) {
-		return false;
+	/**
+	 * Handle the wp_mail_filter when sending Plain texts emails and Mandril 
+	 * is used to send notifications. 
+	 */
+	public function convert_single_to_double_line_break( $atts = null ) {
+		//As MC-AutoHtml is set to true, mandril will convert the text/plain to generate the text/html 
+		//this conversion will Ignores the line break (\n) from the text message. The only way to keep 
+		//the lines breaks is have double line breaks as instructed by mandril twiter account here:
+		//https://twitter.com/mandrillapp/status/397377474541010944
+		if ( isset( $atts['message'] ) && false === empty( $atts['message'] ) )  {
+			$temp = str_replace( "\n\r", "\n", $atts['message'] );
+			$temp = str_replace( "\r\n", "\n", $temp );
+			$atts['message'] = str_replace( "\n", "\n\n", $temp );
+		}
+		return $atts;
+	}
+
+	/**
+	 * Handle the wp_mail_failed hook to log the error
+	 */
+	public function send_mail_failed( $error = null) {
+		if ( null != $error && is_wp_error( $error ) ) {
+			error_log( 'wp_mail failed, code: %d, message: %s', $error->get_error_code(), $error->get_error_message() );
+		} else {
+			error_log( 'wp_mail failed, unknow error' );
+		}
+	}
+
+	/**
+	 * Handle the mandrill_nl2br hook.
+	 * When sending text/plain nl2br should be avoided
+	 */
+	public function mandrill_nl2br( $nl2br = false, $message = null ) {
+		return true;
 	}
 
 	private function _parse_text() {

@@ -300,26 +300,27 @@ class Ai1ec_Calendar_View_Oneday extends Ai1ec_Calendar_View_Abstract {
 		foreach ( $all_events[$day_start_ts] as $event_type => &$events ) {
 			foreach ( $events as &$evt ) {
 				$event = array(
-					'filtered_title'   => $evt->get_runtime( 'filtered_title' ),
-					'post_excerpt'     => $evt->get_runtime( 'post_excerpt' ),
-					'color_style'      => $evt->get_runtime( 'color_style' ),
-					'category_colors'  => $evt->get_runtime( 'category_colors' ),
-					'permalink'        => $evt->get_runtime( 'instance_permalink' ),
-					'ticket_url_label' => $evt->get_runtime( 'ticket_url_label' ),
-					'edit_post_link'   => $evt->get_runtime( 'edit_post_link' ),
-					'faded_color'      => $evt->get_runtime( 'faded_color' ),
-					'rgba_color'       => $evt->get_runtime( 'rgba_color' ),
-					'short_start_time' => $evt->get_runtime( 'short_start_time' ),
-					'instance_id'      => $evt->get( 'instance_id' ),
-					'post_id'          => $evt->get( 'post_id' ),
-					'is_multiday'      => $evt->get( 'is_multiday' ),
-					'venue'            => $evt->get( 'venue' ),
-					'ticket_url'       => $evt->get( 'ticket_url' ),
-					'start_truncated'  => $evt->get( 'start_truncated' ),
-					'end_truncated'    => $evt->get( 'end_truncated' ),
-					'popup_timespan'   => $this->_registry
+					'filtered_title'     => $evt->get_runtime( 'filtered_title' ),
+					'post_excerpt'       => $evt->get_runtime( 'post_excerpt' ),
+					'color_style'        => $evt->get_runtime( 'color_style' ),
+					'category_colors'    => $evt->get_runtime( 'category_colors' ),
+					'permalink'          => $evt->get_runtime( 'instance_permalink' ),
+					'ticket_url_label'   => $evt->get_runtime( 'ticket_url_label' ),
+					'edit_post_link'     => $evt->get_runtime( 'edit_post_link' ),
+					'faded_color'        => $evt->get_runtime( 'faded_color' ),
+					'rgba_color'         => $evt->get_runtime( 'rgba_color' ),
+					'short_start_time'   => $evt->get_runtime( 'short_start_time' ),
+					'instance_id'        => $evt->get( 'instance_id' ),
+					'post_id'            => $evt->get( 'post_id' ),
+					'is_multiday'        => $evt->get( 'is_multiday' ),
+					'venue'              => $evt->get( 'venue' ),
+					'ticket_url'         => $evt->get( 'ticket_url' ),
+					'start_truncated'    => $evt->get( 'start_truncated' ),
+					'end_truncated'      => $evt->get( 'end_truncated' ),
+					'popup_timespan'     => $this->_registry
 						->get( 'twig.ai1ec-extension')->timespan( $evt, 'short' ),
-					'avatar'           => $this->_registry
+					'avatar_not_wrapped' => $evt->getavatar( false ),
+					'avatar'             => $this->_registry
 						->get( 'twig.ai1ec-extension')->avatar(
 							$evt,
 							array(
@@ -331,6 +332,33 @@ class Ai1ec_Calendar_View_Oneday extends Ai1ec_Calendar_View_Abstract {
 							'',
 							false ),
 				);
+				
+				if (
+					true === apply_filters(
+						'ai1ec_buy_button_product',
+						false
+					)
+				) {
+					$meta         = $this->_registry->get( 'model.meta-post' );
+					$full_details = $meta->get(
+						$evt->get( 'post_id' ),
+						'_ai1ec_ep_product_details',
+						null
+					);
+					if (
+						is_array( $full_details ) &&
+						isset( $full_details['show_buy_button'] ) &&
+						true === $full_details['show_buy_button']
+						&& $event['ticket_url']
+					) {
+						// Tickets button is shown by default in this case.
+					} else {
+						// Otherwise not.
+						$event['ticket_url'] = false;
+					}
+					$evt->set( 'ticket_url', $event['ticket_url'] );
+				}
+
 				if (
 					$this->_compatibility->use_backward_compatibility()
 				) {

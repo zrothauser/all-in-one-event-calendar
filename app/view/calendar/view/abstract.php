@@ -65,10 +65,19 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	 * @return array The template arguments with the extra parameters added.
 	 */
 	public function get_extra_template_arguments( array $args ) {
+		$loader                 = $this->_registry->get( 'theme.loader' );
 		$args['action_buttons'] = apply_filters(
-			'ai1ec_action_buttons',
-			''
+			'ai1ec_add_action_buttons',
+			$this->_action_buttons()
 		);
+		if (
+			true === apply_filters(
+				'ai1ec_buy_button_product',
+				false
+			)
+		) {
+			$args['has_product_buy_button'] = true;
+		}
 		return $args;
 	}
 
@@ -80,6 +89,32 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 	 * @return string the html of the view
 	 */
 	abstract public function get_content( array $view_args );
+
+	/**
+	 *
+	 * @return string HTML of action buttons
+	 */
+	protected function _action_buttons() {
+		$loader         = $this->_registry->get( 'theme.loader' );
+		$action_buttons = $loader->get_file(
+			'buttons.twig',
+			array(
+				'action_buttons' => apply_filters(
+					'ai1ec_action_buttons',
+					''
+				),
+				'tickets_button' => true,
+				'text_tickets'   => __( 'Tickets', AI1EC_PLUGIN_NAME ),
+				'has_buy_tickets_product' => apply_filters(
+					'ai1ec_buy_button_product',
+					false
+				)
+			),
+			false
+		);
+		return $action_buttons;
+	}
+
 
 	/**
 	 *

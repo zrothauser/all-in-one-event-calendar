@@ -2,6 +2,7 @@ define(
 	[
 		"jquery_timely",
 		'domReady',
+		"libs/utils",
 		'ai1ec_config',
 		'scripts/add_new_event/event_location/gmaps_helper',
 		'scripts/add_new_event/event_location/input_coordinates_event_handlers',
@@ -22,6 +23,7 @@ define(
 	function (
 		$,
 		domReady,
+		utils,
 		ai1ec_config,
 		gmaps_helper,
 		input_coordinates_event_handlers,
@@ -131,31 +133,50 @@ define(
 		// Validate URL fields.
 		var show_warning = false;
 		var warnings     = [];
-		$( '#ai1ec_ticket_url, #ai1ec_contact_url' ).each( function () {
+		$( '#ai1ec_ticket_ext_url, #ai1ec_contact_url' ).each( function () {
 			var url = this.value;
 			$( this ).removeClass( 'ai1ec-input-warn' );
-			$( this ).closest( '.ai1ec-panel-collapse' ).parent()
-				.find( '.ai1ec-panel-heading .ai1ec-fa-warning' )
-				.addClass( 'ai1ec-hidden' ).parent()
-				.css( 'color', '' );
-			if ( '' !== url ) {
-				var urlPattern = /(http|https):\/\//;
-				if ( ! urlPattern.test( url ) ) {
-					$( this ).closest( '.ai1ec-panel-collapse' ).parent()
-						.find( '.ai1ec-panel-heading .ai1ec-fa-warning' )
-						.removeClass( 'ai1ec-hidden' ).parent()
-						.css( 'color', 'rgb(255, 79, 79)' );
-					if ( ! show_warning ) {
-						$( this ).closest( '.ai1ec-panel-collapse' )
-							.collapse( 'show' );
-					}
-					show_warning = true;
-					var text = $( this ).attr( 'id' ) + '_not_valid';
-					warnings.push( ai1ec_config[text] );
-					$( this ).addClass( 'ai1ec-input-warn' );
+			var $parent_url = $( this ).closest( '.ai1ec-panel-collapse' ).parent()
+				.find( '.ai1ec-panel-heading .ai1ec-fa-warning' );
+			if ( ! show_warning ) {
+				$parent_url.addClass( 'ai1ec-hidden' ).parent().removeClass( 'ai1ec-tab-title-error' );
+			}
+			var id                = $( this ).attr( 'id' );
+			var requires_protocol = ( 'ai1ec_ticket_ext_url' === id );
+			if ( '' !== url && false === utils.isValidUrl( url, requires_protocol ) ) {
+				$parent_url.removeClass( 'ai1ec-hidden' ).parent()
+					.addClass( 'ai1ec-tab-title-error' );
+				if ( ! show_warning ) {
+					$( this ).closest( '.ai1ec-panel-collapse' )
+						.collapse( 'show' );
 				}
+				show_warning = true;
+				var text = id + '_not_valid';
+				warnings.push( ai1ec_config[text] );
+				$( this ).addClass( 'ai1ec-input-warn' );
 			}
 		} );
+
+		var $email_field  = $( '#ai1ec_contact_email' );		
+		var $parent_email = $email_field.closest( '.ai1ec-panel-collapse' ).parent()
+		 		.find( '.ai1ec-panel-heading .ai1ec-fa-warning' );		
+		$email_field.removeClass( 'ai1ec-input-warn' );
+		if ( ! show_warning ) {
+			$parent_email.addClass( 'ai1ec-hidden' ).parent().removeClass( 'ai1ec-tab-title-error' );
+		}
+		var email_value  = $.trim( $email_field.val() );		
+		if ( '' !== email_value && false === utils.isValidEmail( email_value ) ) {
+			$parent_email.removeClass( 'ai1ec-hidden' ).parent()
+				.addClass( 'ai1ec-tab-title-error' );
+			if ( ! show_warning ) {
+				$email_field.closest( '.ai1ec-panel-collapse' )
+					.collapse( 'show' );
+			}
+			show_warning = true;
+			var text = $email_field.attr( 'id' ) + '_not_valid';
+			warnings.push( ai1ec_config[text] );
+			$email_field.addClass( 'ai1ec-input-warn' );
+		}
 
 		var $additional_required_fields = $(
 			'#title, #ai1ec_contact_name, #ai1ec_contact_email, #ai1ec_contact_phone, #content'
@@ -491,19 +512,12 @@ define(
 			on_change_availability( $( this ) );
 		} );
 		$( document ).on( 'click', '.ai1ec-remove-ticket', function() {
-			var
-				$to_remove = $( this ).closest( '.ai1ec-tickets-panel' ),
-				data_count = $to_remove.attr( 'data-count' );
-
-			if ( 0 === data_count ) {
-				$to_remove.remove();
-			} else {
-				$to_remove
-					.addClass( 'ai1ec-hidden' )
-					.append(
-						'<input type="hidden" name="remove" value="1">'
-					);
-			}
+			var $to_remove = $( this ).closest( '.ai1ec-tickets-panel' );
+			$to_remove
+				.addClass( 'ai1ec-hidden' )
+				.append(
+					'<input type="hidden" name="remove" value="1">'
+				);				
 			return false;
 		} );
 

@@ -343,7 +343,8 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			'start'                 => $start,
 			'end'                   => $end,
 			'tickets_loading_error' => $loading_error,
-			'ticket_event_imported' => $ticket_event_imported
+			'ticket_event_imported' => $ticket_event_imported,
+			'is_free'               => $is_free
 		);
 
 		$boxes[] = $theme_loader
@@ -355,12 +356,37 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		// =========================================
 		// = Display organizer contact information =
 		// =========================================
+		$submitter_html = null;
+		if ( $event ) {
+			$submitter_info = $event->get_submitter_info();
+			if (  null !== $submitter_info ) {
+				if ( 1 === $submitter_info['is_organizer'] ) {
+					$submitter_html = Ai1ec_I18n::__( '<span class="ai1ec-info-text">The event was submitted by this Organizer.</span>' );
+				} else if ( isset( $submitter_info['email'] ) ||
+					isset( $submitter_info['name'] ) ) {
+					$submitted_by   = '';
+					if ( false === ai1ec_is_blank ( $submitter_info['name'] ) ) {
+						$submitted_by = sprintf( '<strong>%s</strong>', htmlspecialchars( $submitter_info['name'] ) );
+					}
+					if ( false === ai1ec_is_blank( $submitter_info['email'] ) ) {
+						if ( '' !== $submitted_by ) {
+							$submitted_by .= Ai1ec_I18n::__( ', email: ' );
+						}	
+						$submitted_by .= sprintf( '<a href="mailto:%s" target="_top">%s</a>', $submitter_info['email'], $submitter_info['email'] ) ;
+					}
+					$submitter_html = sprintf( Ai1ec_I18n::__( '<span class="ai1ec-info-text">The event was submitted by %s.</span>' ), 
+							$submitted_by 
+						);
+				}
+			} 
+		}
 		$args = array(
 			'contact_name'    => $contact_name,
 			'contact_phone'   => $contact_phone,
 			'contact_email'   => $contact_email,
 			'contact_url'     => $contact_url,
 			'event'           => $empty_event,
+			'submitter_html'  => $submitter_html
 		);
 		$boxes[] = $theme_loader
 			->get_file( 'box_event_contact.php', $args, true )

@@ -280,7 +280,34 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			$event_props['category_divider_color'] = $event->get_runtime(
 				'category_divider_color'
 			);
-			$event_object                          = $event_props;
+
+			if (
+				true === apply_filters(
+					'ai1ec_buy_button_product',
+					false
+				)
+			) {
+				$meta         = $this->_registry->get( 'model.meta-post' );
+				$full_details = $meta->get(
+					$event->get( 'post_id' ),
+					'_ai1ec_ep_product_details',
+					null
+				);
+				if (
+					is_array( $full_details ) &&
+					isset( $full_details['show_buy_button'] ) &&
+					true === $full_details['show_buy_button']
+					&& $event_props['ticket_url']
+				) {
+					// Tickets button is shown by default in this case.
+				} else {
+					// Otherwise not.
+					$event_props['ticket_url'] = false;
+				}
+				$event->set( 'ticket_url', $event_props['ticket_url'] );
+			}
+			
+			$event_object = $event_props;
 			if (
 				$this->_compatibility->use_backward_compatibility()
 			) {

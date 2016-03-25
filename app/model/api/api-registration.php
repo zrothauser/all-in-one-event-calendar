@@ -58,6 +58,20 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 		}
 		return $response;
 	}
+
+	/**
+	 * @return object Response body in JSON.
+	 */
+	public function availability() {
+		$response = $this->request_api( 'GET', AI1EC_API_URL . 'feature/availability', null, true );
+		if ( $this->is_response_success( $response ) ) {
+			return $response->body;
+		} else {
+			$error_message = $this->save_error_notification( $response, __( 'We were unable to communicate with the Time.ly Network', AI1EC_PLUGIN_NAME ) );
+			$this->_save_settings( $error_message, false, '', 0 );
+		}
+		return $response;
+	}
  
  	/**
 	 * Clean the ticketing settings on WP database only

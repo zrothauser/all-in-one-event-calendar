@@ -69,7 +69,6 @@ class TestApiRegistration extends BaseTestCase {
 		$this->assertNotNull( $response, "response should not be null" );
 		echo print_r( $response, true );
 		$this->assertTrue( is_array( $response ), "response must be an array" );
-		$has_signup_code    = false;
 		$has_ticketing_code = false;
 		foreach ( $response as $value) {
 			$this->assertTrue( isset( $value->code ), "code attribute not defined" );
@@ -77,15 +76,10 @@ class TestApiRegistration extends BaseTestCase {
 			if ( false === $value->available ) {
 				$this->assertTrue( isset( $value->not_available_reason ), "not_available_reason should be defined if code is not available" );
 			}
-			if ( 'signup' === $value->code ) {
-				$has_signup_code = true;
-			}
 			if ( 'ticketing' === $value->code ) {
 				$has_ticketing_code = true;
 			}
 		}
-
-		$this->assertTrue( $has_signup_code, "feature signup not defined" );
 		$this->assertTrue( $has_ticketing_code, "feature ticketing not defined" );
 	}
 }

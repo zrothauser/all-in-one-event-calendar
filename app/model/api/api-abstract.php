@@ -290,6 +290,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		$response->error_message = $error_message;
 		$notification            = $this->_registry->get( 'notification.admin' );
 		$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );				
+		error_log( $custom_error_response . ': ' . $error_message . ' - raw error: ' . print_r( $response->raw, true ) );
 		return $error_message;
 	}
 
@@ -306,7 +307,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 			$response->url, 
 			true 
 		);
-		error_log( $custom_error_response . ': ' . $error_message );
+		error_log( $custom_error_response . ': ' . $error_message . ' - raw error: ' . print_r( $response->raw, true ) );
 		return $error_message;
 	}
 

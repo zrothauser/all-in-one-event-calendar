@@ -10,9 +10,11 @@
  */
 abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 
-	const DEFAULT_TIMEOUT           = 30; //30 seconds (Wordpress default is 5)
+	const WP_OPTION_KEY   = 'ai1ec_api_settings';
+	const DEFAULT_TIMEOUT = 30;
 
 	protected $_settings;
+	protected $_api_settings;
 
 	/**
 	 * Post construction routine.
@@ -22,7 +24,41 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	 * @return void Return from this method is ignored.
 	 */
 	protected function _initialize() {
-		$this->_settings = $this->_registry->get( 'model.settings' );
+		$this->_settings     = $this->_registry->get( 'model.settings' );	
+		$this->_api_settings = $this->_registry->get( 'model.option' )->get( self::WP_OPTION_KEY, null );
+		if ( is_null( $this->_api_settings ) ) {
+			$this->_api_settings = array( 
+				'enabled'              => $this->_settings->get( 'ticketing_enabled' ),
+				'message'              => $this->_settings->get( 'ticketing_message' ),
+				'token'                => $this->_settings->get( 'ticketing_token' ),
+				'calendar_id'          => $this->_settings->get( 'ticketing_calendar_id' ),
+				'has_payment_settings' => false,
+				'version'              => 1
+			);
+			$this->persist_api_settings();		
+		}		
+	}
+
+    protected function _save_settings( $message, $enabled, $token, $calendar_id ) {
+		$this->_api_settings['message']     = $message;
+		$this->_api_settings['enabled']     = $enabled;
+		$this->_api_settings['token']       = $token;
+		$this->_api_settings['calendar_id'] = $calendar_id;		
+		$this->persist_api_settings();
+	}
+
+	protected function save_has_payment_setting( $option_value ) {
+		$this->_api_settings['has_payment_settings'] = $option_value;
+		$this->persist_api_settings();
+	}
+
+	protected function save_calendar_id ( $calendar_id ) {
+		$this->_api_settings['calendar_id'] = $calendar_id;
+		$this->persist_api_settings();
+	} 
+
+	protected function persist_api_settings() {
+		$this->_registry->get( 'model.option' )->set( self::WP_OPTION_KEY, $this->_api_settings );		
 	}
 
 	/**
@@ -32,7 +68,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		$headers  = array(
 			'content-type' => 'application/json'
 		);		
-		$headers['Authorization'] = 'Basic ' . $this->_settings->get( 'ticketing_token' );
+		$headers['Authorization'] = 'Basic ' . $this->_api_settings['token'];
 		if ( null !== $custom_headers ) {
 			foreach ( $custom_headers as $key => $value ) {
 				if ( null === $value ) {
@@ -132,20 +168,20 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	 * @return string JSON.
 	 */
 	protected function _get_ticket_calendar() {
-		$ticketing_calendar_id = $this->_settings->get( 'ticketing_calendar_id' );
+		$ticketing_calendar_id = $this->_api_settings['calendar_id'];
 		if ( isset( $ticketing_calendar_id ) && 0 < $ticketing_calendar_id ) {
 			return $ticketing_calendar_id;
 		} else {
 			//if the calendar is not saved on settings it should exists on API
 			$ticketing_calendar_id = $this->_find_user_calendar();
 			if ( 0 < $ticketing_calendar_id  ) {
-				$this->_settings->set( 'ticketing_calendar_id', $ticketing_calendar_id );
+				$this->save_calendar_id( $ticketing_calendar_id );				
 				return $ticketing_calendar_id;
 			} else {
 				//if the calendar should not exist on API, we will created
 				$ticketing_calendar_id = $this->_create_calendar();
 				if ( 0 < $ticketing_calendar_id ) {
-					$this->_settings->set( 'ticketing_calendar_id', $ticketing_calendar_id );
+					$this->save_calendar_id( $ticketing_calendar_id );
 				} else {
 					return 0;
 				}
@@ -194,33 +230,34 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		}
 	}
 
+	/**
+     * Check if the current WP instance has payments settings configured
+     */
+    public function has_payment_settings() {
+    	return ( true === $this->_api_settings['has_payment_settings'] );
+    }
+
     /**
      * Check if the current WP instance is signed into the API
      */
     public function is_signed() {
-    	return true === $this->_settings->get( 'ticketing_enabled' );
+    	return ( true === $this->_api_settings['enabled'] );
     }
 
        /**
      * Get the last message return by Signup or Signup process
      */
     public function get_sign_message() {
-    	return $this->_settings->get( 'ticketing_message' );
+    	return $this->_api_settings['message'];
     }
 
 	/**
      * Clear the last message return by Signup or Signup process
      */
     public function clear_sign_message() {
-    	return $this->_settings->set( 'ticketing_message', '' );
+    	$this->_api_settings['message'] = '';
+    	$this->persist_api_settings();
     }
-
-    protected function _save_settings( $message, $enabled, $token, $calendar_id ) {
-		$this->_settings->set( 'ticketing_message'    , $message );
-		$this->_settings->set( 'ticketing_enabled'    , $enabled );
-		$this->_settings->set( 'ticketing_token'      , $token );
-		$this->_settings->set( 'ticketing_calendar_id', $calendar_id );		
-	}
 
 	/**
 	 * Make the request to the API endpons

@@ -78,6 +78,7 @@ class Ai1ec_Ics_Import_Export_Engine
 		$post_ids = array();
 		foreach ( $arguments['events'] as $event ) {
 			$post_ids[] = $event->get( 'post_id' );
+			
 		}
 		$this->_taxonomy_model->prepare_meta_for_ics( $post_ids );
 		$this->_registry->get( 'controller.content-filter' )
@@ -816,7 +817,17 @@ class Ai1ec_Ics_Import_Export_Engine
 				} else if ( Ai1ec_Api_Ticketing::ICS_CHECKOUT_URL_METADATA === $key ) {
 					$checkout_url = $value[0];
 				}
- 			}			
+				if (
+					isset( $params['xml'] ) &&
+					$params['xml'] &&
+					false !== preg_match( '/^x\-meta\-/i', $key )
+				) {
+					$e->setProperty(
+						$key,
+						$this->_sanitize_value( $value )
+					);
+				}
+ 			}
 		}
 
 		if ( false === ai1ec_is_blank( $cost_type ) ) {

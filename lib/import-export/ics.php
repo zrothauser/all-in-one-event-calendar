@@ -78,7 +78,6 @@ class Ai1ec_Ics_Import_Export_Engine
 		$post_ids = array();
 		foreach ( $arguments['events'] as $event ) {
 			$post_ids[] = $event->get( 'post_id' );
-			
 		}
 		$this->_taxonomy_model->prepare_meta_for_ics( $post_ids );
 		$this->_registry->get( 'controller.content-filter' )

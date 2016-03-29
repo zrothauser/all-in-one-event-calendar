@@ -96,6 +96,13 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
 			return $message;
 		}
+		if ( false === $this->has_payment_settings() ) {
+			$message      = __( 'You need to save the payments settings to create ticket events.', AI1EC_PLUGIN_NAME );
+			$notification = $this->_registry->get( 'notification.admin' );
+			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
+			return $message;
+
+		}
 		return null;
 	}	
 
@@ -234,6 +241,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			$custom_headers 
 		);
 		if ( $this->is_response_success( $response ) ) {
+			$this->save_has_payment_setting( true );
 			$notification  = $this->_registry->get( 'notification.admin' );
 			$notification->store( 
 				__( 'Payment preferences were saved.', AI1EC_PLUGIN_NAME ), 
@@ -244,6 +252,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			);
 			return $response->body;
 		} else {
+			$this->save_has_payment_setting( false );
 			$this->save_error_notification( $response, 
 				__( 'Payment preferences were not saved.', AI1EC_PLUGIN_NAME )
 			);

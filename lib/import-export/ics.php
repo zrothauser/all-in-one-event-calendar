@@ -622,19 +622,38 @@ class Ai1ec_Ics_Import_Export_Engine
 
 			$api_event_id = $e->getProperty( 'X-API-EVENT-ID' );
 			if ( $api_event_id && false === ai1ec_is_blank( $api_event_id[1] ) ) {
-				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api_Ticketing::EVENT_ID_METADATA, $api_event_id[1] );	
+				$api_event_id = $api_event_id[1];
+			} else {
+				$api_event_id = null;
 			}
 
 			$api_url = $e->getProperty( 'X-API-URL' );
 			if ( $api_url && false === ai1ec_is_blank( $api_url[1] ) ) {
-				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api_Ticketing::ICS_API_URL_METADATA, $api_url[1] );	
+				$api_url = $api_url[1];
+			} else {
+				$api_url = null;
 			}
 
 			$checkout_url = $e->getProperty( 'X-CHECKOUT-URL' );
 			if ( $checkout_url && false === ai1ec_is_blank( $checkout_url[1] ) ) {
-				update_post_meta( $event->get( 'post_id' ), Ai1ec_Api_Ticketing::ICS_CHECKOUT_URL_METADATA, $checkout_url[1] );	
+				$checkout_url = $checkout_url[1];
+			} else {
+				$checkout_url = null;
 			}
 			
+			$currency = $e->getProperty( 'X-API-EVENT-CURRENCY' );
+			if ( $currency && false === ai1ec_is_blank( $currency[1] ) ) {
+				$currency = $currency[1];
+			} else {
+				$currency = null;
+			}
+			if ( $api_event_id || $api_url || $checkout_url || $currency ) {
+				if ( ! isset( $api ) ) {
+					$api = $this->_registry->get( 'model.api.api-ticketing' );
+				}				
+				$api->save_api_event_data( $event->get( 'post_id' ), $api_event_id, $api_url, $checkout_url, $currency );
+			}			
+
 			$wp_images_url  = $e->getProperty( 'X-WP-IMAGES-URL' );
 			if ( $wp_images_url && false === ai1ec_is_blank( $wp_images_url[1] ) ) {
 				$images_arr = explode( ',', $wp_images_url[1] );
@@ -799,22 +818,11 @@ class Ai1ec_Ics_Import_Export_Engine
 		);
 
 		$post_meta_values = get_post_meta( $event->get( 'post_id' ), '', false );
-
-		//getting the metadata used by Ticket Event
-		$api_event_id = null;
-		$cost_type    = null;
-		$api_url      = null;
-		$checkout_url = null;
+		$cost_type        = null;
 		if ( $post_meta_values ) {
 			foreach ($post_meta_values as $key => $value) {				
 				if ( '_ai1ec_cost_type' === $key ) {
 					$cost_type    = $value[0];
-				} else if ( Ai1ec_Api_Ticketing::EVENT_ID_METADATA === $key ) {
-					$api_event_id = $value[0];					
-				} else if ( Ai1ec_Api_Ticketing::ICS_API_URL_METADATA === $key ) {
-					$api_url = $value[0];
-				} else if ( Ai1ec_Api_Ticketing::ICS_CHECKOUT_URL_METADATA === $key ) {
-					$checkout_url = $value[0];
 				}
 				if (
 					isset( $params['xml'] ) &&
@@ -836,31 +844,15 @@ class Ai1ec_Ics_Import_Export_Engine
 			);
 		}
 		
-		$url = '';
+		$url          = '';
+		$api          = $this->_registry->get( 'model.api.api-ticketing' );
+		$api_event_id = $api->get_api_event_id( $event->get( 'post_id' ) );
 		if ( $api_event_id ) {
-
-			//getting all necessary informations that will be necessary on imported ticket events
-			
-			$e->setProperty(
-				'X-API-EVENT-ID',
-				$this->_sanitize_value( $api_event_id )
-			);
-
-			if ( ai1ec_is_blank( $api_url ) ) {
-				$e->setProperty( 'X-API-URL', AI1EC_API_URL );			
-			} else {
-				$e->setProperty( 'X-API-URL', $this->_sanitize_value( $api_url ) );			
-			}
-
-			$api = $this->_registry->get( 'model.api.api-ticketing' );
-			if ( ai1ec_is_blank( $checkout_url ) ) {
-				$e->setProperty( 'X-CHECKOUT-URL', AI1EC_TICKETS_CHECKOUT_URL );			
-				$url = $api->create_checkout_url( $api_event_id );
-			} else {
-				$e->setProperty( 'X-CHECKOUT-URL', $this->_sanitize_value( $checkout_url ) );			
-				$url = $api->create_checkout_url( $api_event_id, $checkout_url );
-			}			
-
+			//getting all necessary informations that will be necessary on imported ticket events		
+			$e->setProperty( 'X-API-EVENT-ID'      , $api_event_id );
+			$e->setProperty( 'X-API-URL'           , $api->get_api_event_url( $event->get( 'post_id' ) ) );
+			$e->setProperty( 'X-CHECKOUT-URL'      , $api->get_api_event_checkout_url( $event->get( 'post_id' ) ) );
+			$e->setProperty( 'X-API-EVENT-CURRENCY', $api->get_api_event_currency( $event->get( 'post_id' ) ) );
 		} else if ( $event->get( 'ticket_url' ) ) {					
 			$url = $event->get( 'ticket_url' );
 		}

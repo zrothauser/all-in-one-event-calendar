@@ -77,12 +77,9 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 				echo '';
 			} else {
 				try {				
-					$event        = $this->_registry->get( 'model.event', $post_id );				
-					$api_event_id = get_post_meta(
-						$post_id,
-						Ai1ec_Api_Ticketing::EVENT_ID_METADATA,
-						true
-					);				
+					$event        = $this->_registry->get( 'model.event', $post_id );
+					$api          = $this->_registry->get( 'model.api.api-ticketing' );
+					$api_event_id = $api->get_api_event_id( $post_id );
 					if ( $api_event_id ) {
 						echo '<a href="#" class="ai1ec-has-tickets" data-post-id="'
 							. $post_id . '">'

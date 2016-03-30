@@ -317,6 +317,19 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 						$loading_error = $response->error;
 					}
 				}
+				$uid = $event->get_uid();
+			} else {
+				$uid = $empty_event->get_uid();
+			}			
+			if ( $ticketing ) {
+				$ticket_currency = $api->get_api_event_currency( $event->get( 'post_id' ) );
+			} else {
+				$payments_settings = $api->get_payment_settings();
+				if ( null !== $payments_settings ) {
+					$ticket_currency = $payments_settings->currency;
+				} else {
+					$ticket_currency = 'USD';
+				}
 			}
 			$uid = $event->get_uid();
 		} else {
@@ -343,7 +356,8 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			'end'                   => $end,
 			'tickets_loading_error' => $loading_error,
 			'ticket_event_imported' => $ticket_event_imported,
-			'is_free'               => $is_free
+			'is_free'               => $is_free,
+			'ticket_currency'       => $ticket_currency			
 		);
 
 		$boxes[] = $theme_loader

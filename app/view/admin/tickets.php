@@ -141,6 +141,7 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 				'state'                             => $response->state,
 				'postcode'                          => $response->postcode,
 				'country'                           => $response->country,
+				'currency'  	                    => $response->currency,
 				'nonce'                             => array(
 					'action'   => self::NONCE_ACTION,
 					'name'     => self::NONCE_NAME,
@@ -149,7 +150,34 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 				'action'                            =>
 					'?controller=front&action=ai1ec_api_ticketing_signup&plugin=' .
 					AI1EC_PLUGIN_NAME,
-				'purchases'                         => $purchases
+				'purchases'                         => $purchases,
+				'paypal_currencies'					=> array (
+					array( 'description' => Ai1ec_I18n::__( 'United States Dollar' ), 'code' => 'USD' ),
+					array( 'description' => Ai1ec_I18n::__( 'Canadian Dollar' ), 'code' => 'CAD' ),
+					array( 'description' => Ai1ec_I18n::__( 'Australian Dollar' ), 'code' => 'AUD' ),
+					array( 'description' => Ai1ec_I18n::__( 'Brazilian Real' ), 'code' => 'BRL', 'note' => Ai1ec_I18n::__( 'Note: This currency is supported as a payment currency and a currency balance for in-country PayPal accounts only.' ) ),
+					array( 'description' => Ai1ec_I18n::__( 'Czech Koruna' ), 'code' => 'CZK' ),
+					array( 'description' => Ai1ec_I18n::__( 'Danish Krone' ), 'code' => 'DKK' ),
+					array( 'description' => Ai1ec_I18n::__( 'Euro' ), 'code' => 'EUR' ),
+					array( 'description' => Ai1ec_I18n::__( 'Hong Kong Dollar' ), 'code' => 'HKD' ),
+					array( 'description' => Ai1ec_I18n::__( 'Hungarian Forint' ), 'code' => 'HUF', 'note' => Ai1ec_I18n::__( 'Note: Decimal amounts are not supported for this currency. Passing a decimal amount will throw an error.' ) ),
+					array( 'description' => Ai1ec_I18n::__( 'Israeli New Sheqel' ), 'code' => 'ILS' ),
+					array( 'description' => Ai1ec_I18n::__( 'Japanese Yen' ), 'code' => 'JPY', 'note' => Ai1ec_I18n::__( 'Note: This currency does not support decimals. Passing a decimal amount will throw an error. 1,000,000' ) ),
+					array( 'description' => Ai1ec_I18n::__( 'Malaysian Ringgit' ), 'code' => 'MYR', 'note' => Ai1ec_I18n::__( 'Note: This currency is supported as a payment currency and a currency balance for in-country PayPal accounts only.' ) ),
+					array( 'description' => Ai1ec_I18n::__( 'Mexican Peso' ), 'code' => 'MXN' ),
+					array( 'description' => Ai1ec_I18n::__( 'Norwegian Krone' ), 'code' => 'NOK' ),
+					array( 'description' => Ai1ec_I18n::__( 'New Zealand Dollar' ), 'code' => 'NZD' ),
+					array( 'description' => Ai1ec_I18n::__( 'Philippine Peso' ), 'code' => 'PHP' ),
+					array( 'description' => Ai1ec_I18n::__( 'Polish Zloty' ), 'code' => 'PLN' ),
+					array( 'description' => Ai1ec_I18n::__( 'Pound Sterling' ), 'code' => 'GBP' ),
+					array( 'description' => Ai1ec_I18n::__( 'Russian Ruble' ), 'code' => 'RUB', 'note' => Ai1ec_I18n::__( 'For in-border payments (payments made within Russia), the Russian Ruble is the only accepted currency. If you use another currency for in-border payments, the transaction will fail' ) ),
+					array( 'description' => Ai1ec_I18n::__( 'Singapore Dollar' ), 'code' => 'SGD' ),
+					array( 'description' => Ai1ec_I18n::__( 'Swedish Krona' ), 'code' => 'SEK' ),
+					array( 'description' => Ai1ec_I18n::__( 'Swiss Franc' ), 'code' => 'CHF' ),
+					array( 'description' => Ai1ec_I18n::__( 'Taiwan New Dollar' ), 'code' => 'TWD', 'note' => Ai1ec_I18n::__( 'Note: Decimal amounts are not supported for this currency. Passing a decimal amount will throw an error.' ) ),
+					array( 'description' => Ai1ec_I18n::__( 'Thai Baht' ), 'code' => 'THB' ),
+					array( 'description' => Ai1ec_I18n::__( 'Turkish Lira' ), 'code' => 'TRY', 'note' => Ai1ec_I18n::__( 'Note: This currency is supported as a payment currency and a currency balance for in-country PayPal accounts only.' ) ),
+				)
 			);
 			$file = $loader->get_file( 'ticketing/manage.twig', $args, true );
 		}

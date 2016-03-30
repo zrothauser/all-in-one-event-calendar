@@ -480,22 +480,6 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 			'https://ticketing.time.ly/events/{event_id}/checkout'
 		);
 	}
-	
-	// Defines if Timely API is enabled.
-	if ( ! defined( 'AI1EC_API' ) ) {
-		define(
-			'AI1EC_API',
-			false
-		);
-	}
-	
-	// Enables Ticketing features.
-	if ( ! defined( 'AI1EC_API_TICKETING' ) ) {
-		define(
-			'AI1EC_API_TICKETING',
-			false
-		);
-	}
 
 	// ================================================
 	// = Force WordPress updates command link         =

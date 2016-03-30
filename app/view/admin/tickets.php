@@ -112,7 +112,6 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 		} else {
 			$response  = $api->get_payment_preferences();
 			$purchases = $api->get_purchases();
-			//echo "<pre>";var_dump($response); die();
 			$args      = array(
 				'title'                             => Ai1ec_I18n::__(
 					'Time.ly Ticketing<sup>beta</sup>'

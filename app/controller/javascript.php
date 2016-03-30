@@ -362,9 +362,7 @@ class Ai1ec_Javascript_Controller {
 			// Load script for adding / modifying events
 			$script_to_load[] = self::ADD_NEW_EVENT_PAGE;
 		}
-		if (
-			true === $this->_are_we_accessing_the_calendar_settings_page()
-		) {
+		if ( true === $this->_are_we_accessing_the_calendar_settings_page() ) {
 			$script_to_load[] = self::SETTINGS_PAGE;
 		}
 		if ( true === $this->_are_we_creating_widgets() ) {

@@ -30,16 +30,14 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 	 * Adds the page to the correct menu.
 	 */
 	public function add_page() {
-		if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ) {
-			add_submenu_page(
-				AI1EC_ADMIN_BASE_URL,
-				__( 'Ticketing', AI1EC_PLUGIN_NAME ),
-				__( 'Ticketing<sup>beta</sup>', AI1EC_PLUGIN_NAME ),
-				'manage_ai1ec_feeds',
-				AI1EC_PLUGIN_NAME . '-tickets',
-				array( $this, 'display_page' )
-			);
-		}
+		add_submenu_page(
+			AI1EC_ADMIN_BASE_URL,
+			__( 'Ticketing', AI1EC_PLUGIN_NAME ),
+			__( 'Ticketing<sup>beta</sup>', AI1EC_PLUGIN_NAME ),
+			'manage_ai1ec_feeds',
+			AI1EC_PLUGIN_NAME . '-tickets',
+			array( $this, 'display_page' )
+		);
 	}
 
 	/**
@@ -57,21 +55,54 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 	public function display_page() {
 
 		$api               = $this->_registry->get( 'model.api.api-ticketing' );
-		$ticketing_enabled = $api->is_signed();
+		$signed_to_api     = $api->is_signed();
 		$ticketing_message = $api->get_sign_message();
 		$loader            = $this->_registry->get( 'theme.loader' );
 
-		if ( ! $ticketing_enabled ) {
+		if ( ! $signed_to_api ) {
 
 			if ( false === ai1ec_is_blank( $ticketing_message ) ) {
 				$api->clear_sign_message();
 			}
+			
+			$signup_args = array(
+				'api_signed' => false,
+				'title'      => Ai1ec_I18n::__(
+					'Please, Sign Up to Time.ly Network.'
+				),
+				'nonce'      => array(
+					'action'   => 'ai1ec_api_ticketing_signup',
+					'name'     => 'ai1ec_api_ticketing_nonce',
+					'referrer' => true,
+				),
+				'api_action' =>
+					'?controller=front&action=ai1ec_api_ticketing_signup&plugin=' .
+					AI1EC_PLUGIN_NAME,
+				'required_text'         => Ai1ec_I18n::__( 'This field is required.' ),
+				'register_text'         => Ai1ec_I18n::__( 'Register' ),
+				'sign_in_text'          => Ai1ec_I18n::__( 'Sign in' ),
+				'signed_in_text'        => Ai1ec_I18n::__( 'You are successfully signed in to <b>Timely Network</b>.' ),
+				'sign_out_text'         => Ai1ec_I18n::__( 'Sign out' ),
+				'hide_form_text'        => Ai1ec_I18n::__( '' ),
+				'show_form_text'        => Ai1ec_I18n::__( '' ),
+				'full_name_text'        => Ai1ec_I18n::__( 'Full Name:' ),
+				'email_text'            => Ai1ec_I18n::__( 'Email:' ),
+				'password_text'         => Ai1ec_I18n::__( 'Password:' ),
+				'confirm_password_text' => Ai1ec_I18n::__( 'Confirm Password:' ),
+				'phone_number_text'     => Ai1ec_I18n::__( 'Phone Number:' ),
+				'terms_text'            => Ai1ec_I18n::__(
+					'I confirm that I have read, understand and agree with the <a href="https://ticketing.time.ly/terms">terms and conditions</a>.'
+				),
+				'sign_up_button_text'   => Ai1ec_I18n::__( 'Sign Up' ),
+				'sign_in_button_text'   => Ai1ec_I18n::__( 'Sign In' ),
+			);
 
 			$args = array(
 				'title' => Ai1ec_I18n::__(
 					'Time.ly Ticketing<sup>beta</sup>'
 				),
-				'sign_up_text' => 'Please, <a href="edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings">Sign Up for a Timely Network account</a> to use Ticketing.'
+				'sign_up_text' => 'Please, <a href="edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings">Sign Up for a Timely Network account</a> to use Ticketing.',
+				'signup_form' => $loader->get_file( 'setting/api-signup.twig', $signup_args, true )
 
 			);
 			$file = $loader->get_file( 'ticketing/signup.twig', $args, true );

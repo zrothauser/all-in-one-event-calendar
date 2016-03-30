@@ -298,31 +298,29 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 				}
 			}
 		}
-		if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ) {
-			$api                   = $this->_registry->get( 'model.api.api-ticketing' );
-			$ticketing             = $api->is_signed();
-			$message               = $api->get_sign_message();
-			$loading_error         = null;
-			$ticket_event_imported = false;
-	
-			if ( $event ) {
-				$ticket_event_imported = $api->is_ticket_event_imported( $event->get( 'post_id' ) );
-				if ( $ticketing || $ticket_event_imported ) {
-					if ( 'tickets' === $cost_type ) {
-						$response = json_decode( $api->get_ticket_types( $event->get( 'post_id' ) ) );
-						if ( isset( $response->data ) ) {
-							$tickets = array_merge( $tickets, $response->data );
-						}
-						if ( isset( $response->error ) ) {
-							$loading_error = $response->error;
-						}
+
+		$api                   = $this->_registry->get( 'model.api.api-ticketing' );
+		$ticketing             = $api->is_signed();
+		$message               = $api->get_sign_message();
+		$loading_error         = null;
+		$ticket_event_imported = false;
+
+		if ( $event ) {
+			$ticket_event_imported = $api->is_ticket_event_imported( $event->get( 'post_id' ) );
+			if ( $ticketing || $ticket_event_imported ) {
+				if ( 'tickets' === $cost_type ) {
+					$response = json_decode( $api->get_ticket_types( $event->get( 'post_id' ) ) );
+					if ( isset( $response->data ) ) {
+						$tickets = array_merge( $tickets, $response->data );
+					}
+					if ( isset( $response->error ) ) {
+						$loading_error = $response->error;
 					}
 				}
-				$uid = $event->get_uid();
-			} else {
-				$uid = $empty_event->get_uid();
 			}
-			
+			$uid = $event->get_uid();
+		} else {
+			$uid = $empty_event->get_uid();
 		}
 
 		if ( $event ) {
@@ -339,6 +337,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			'uid'                   => $uid,
 			'tickets'               => $tickets,
 			'ticketing'             => $ticketing,
+			'valid_payout_details'  => $api->has_payment_settings(),
 			'tickets_message'       => $message,
 			'start'                 => $start,
 			'end'                   => $end,

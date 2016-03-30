@@ -6,14 +6,12 @@
 	   data-action="{{ api_action }}">{{ sign_out_text }}</a>
 	{{ wp_nonce_field( nonce.action, nonce.name, nonce.referrer ) }}
 </div>
-{% else %}
+{% elseif signup_available %}
 <div class="timely-api ai1ec-well">
 	{% if title is not empty %}
 		<span>{{ title | raw }}</span>
 	{% endif %}
-	<a href="#" class="ai1ec-pull-right ai1ec-api-signup-hide ai1ec-hidden">{{ hide_form_text }}</a>
-	<a href="#" class="ai1ec-pull-right ai1ec-signup-show">{{ show_form_text }}</a>
-	<div id="ai1ec-api-signup-form" data-action="{{ api_action }}" class="ai1ec-hidden">
+	<div id="ai1ec-api-signup-form" data-action="{{ api_action }}">
 		<!-- Trick to disable autocomplete -->
 		<input type="hidden" name="ai1ec_email" class="ai1ec-noauto" />
 		<input type="hidden" name="ai1ec_password" class="ai1ec-noauto" />
@@ -105,7 +103,7 @@
 									   name="ai1ec_terms" class="ai1ec-required" />
 								{{ terms_text | raw }}
 							</label>
-							<a href="#" name="ai1ec_tickets_submit"  style="margin-top:20px;"
+							<a href="#" name="ai1ec_tickets_signin"  style="margin-top:20px;"
 							   class="ai1ec-btn ai1ec-btn-lg ai1ec-btn-primary">
 								{{ sign_up_button_text }}
 							</a>
@@ -115,7 +113,7 @@
 						<td>
 						</td>
 						<td>
-							<a href="#" name="ai1ec_tickets_submit"  style="margin-top:20px;"
+							<a href="#" name="ai1ec_tickets_signin"  style="margin-top:20px;"
 							   class="ai1ec-btn ai1ec-btn-lg ai1ec-btn-primary">
 								{{ sign_in_button_text }}
 							</a>
@@ -125,5 +123,9 @@
 			</div>
 		</div>
 	</div>
+</div>
+{% else %}
+<div class="timely-api ai1ec-well">
+	{{ not_avail_text | raw }}
 </div>
 {% endif %}

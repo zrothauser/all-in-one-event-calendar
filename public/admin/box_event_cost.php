@@ -17,7 +17,7 @@
 	<?php
 	if ( $ticket_event_imported ):?>
 
-		<p><?php _e( 'Ticket options not available - event imported from external calendar.', AI1EC_PLUGIN_NAME ); ?></p>
+		<p><?php _e( 'Ticket options not available - event was imported from an external calendar.', AI1EC_PLUGIN_NAME ); ?></p>
 
 	<?php else: ?>
 
@@ -27,14 +27,13 @@
 					   name="ai1ec_cost_type" <?php if ( 'free' == $cost_type ) { echo 'checked'; } ?>>
 				<?php _e( 'No Tickets', AI1EC_PLUGIN_NAME ); ?>
 			</label>
-			<?php
-			if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ):?>
-				<label for="ai1ec_has_tickets">
-					<input type="radio" value="tickets" id="ai1ec_has_tickets"
-						   name="ai1ec_cost_type" <?php if ( 'tickets' == $cost_type ) { echo 'checked'; } ?>>
-					<?php _e( 'Time.ly Tickets<sup>beta</sup>', AI1EC_PLUGIN_NAME ); ?>
-				</label>
-			<?php endif; ?>
+
+			<label for="ai1ec_has_tickets">
+				<input type="radio" value="tickets" id="ai1ec_has_tickets"
+					   name="ai1ec_cost_type" <?php if ( 'tickets' == $cost_type ) { echo 'checked'; } ?>>
+				<?php _e( 'Time.ly Tickets<sup>beta</sup>', AI1EC_PLUGIN_NAME ); ?>
+			</label>
+
 			<label for="ai1ec_external_tickets">
 				<input type="radio" value="external" id="ai1ec_external_tickets"
 					   name="ai1ec_cost_type" <?php if ( 'external' == $cost_type ) { echo 'checked'; } ?>>
@@ -42,28 +41,35 @@
 			</label>
 		</div>
 
-	<?php
-	if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ):
 
+		<?php
 		if ( ! $ticketing ): ?>
 			<div class="ai1ec-panel ai1ec-tickets-panel ai1ec-tickets-form">
 				<?php
 				if ( ! $tickets_message ): ?>
 					<p><?php _e( 'Ticketing allows you to sell tickets directly to the users.', AI1EC_PLUGIN_NAME ); ?></p>
-					<a href="edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings"
+					<a href="edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-tickets"
 					   class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg">
 							<?php _e( 'Sign Up for Timely Network', AI1EC_PLUGIN_NAME ); ?>
 					</a>
 				<?php 
-				else: ?>
+				else:
 					echo $tickets_message;	
-				<?php 
 				endif; ?>
 			</div>
 		<?php
 		elseif ( $tickets_loading_error ): ?>
 			<div class="ai1ec-panel ai1ec-tickets-panel ai1ec-tickets-form">
 				<p><?php echo $tickets_loading_error; ?></p>
+			</div>
+		<?php
+		elseif ( ! $valid_payout_details ): ?>
+			<div class="ai1ec-panel ai1ec-tickets-panel ai1ec-tickets-form">
+				<p><?php _e( 'Please, provide valid payout details to use Ticketing.', AI1EC_PLUGIN_NAME ); ?></p>
+				<a href="edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-tickets"
+				   class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg">
+						<?php _e( 'Ticketing Settings', AI1EC_PLUGIN_NAME ); ?>
+				</a>
 			</div>
 		<?php
 		else:
@@ -285,8 +291,6 @@
 				</a>
 			</div>
 		<?php endif; ?>
-
-	<?php endif; ?>
 
 		<div class="ai1ec-no-tickets">
 			<table class="ai1ec-form">

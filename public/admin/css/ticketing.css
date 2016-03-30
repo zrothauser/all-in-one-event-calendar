@@ -150,3 +150,7 @@ a.ai1ec-tickets-edit {
 .ai1ec-ticket-details-row .ai1ec-ticket-attendees td {
 	background: #fff;
 }
+#ai1ec-api-signed-in {
+	margin-top: 10px;
+	max-width: 500px;
+}

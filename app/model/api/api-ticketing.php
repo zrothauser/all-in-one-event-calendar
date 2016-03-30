@@ -227,12 +227,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			'payment_method' => $_POST['ai1ec_payment_method'],
 			'paypal_email'   => $_POST['ai1ec_paypal_email'],
 			'first_name'     => $_POST['ai1ec_first_name'],
-			'last_name'      => $_POST['ai1ec_last_name'],
-			'street'         => $_POST['ai1ec_street'],
-			'city'           => $_POST['ai1ec_city'],
-			'state'          => $_POST['ai1ec_state'],
-			'country'        => $_POST['ai1ec_country'],
-			'postcode'       => $_POST['ai1ec_postcode']
+			'last_name'      => $_POST['ai1ec_last_name']
 		);
 		$custom_headers['content-type'] = 'application/x-www-form-urlencoded';
 		$response = $this->request_api( 'PUT', AI1EC_API_URL . 'calendars/' . $calendar_id . '/payment', 
@@ -276,7 +271,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			}
 		}
 		if ( is_null( $settings ) ) {
-			return (object) array('payment_method'=>'cheque', 'paypal_email'=> '', 'first_name'=>'',  'last_name'=>'', 'street'=> '', 'city'=> '', 'state'=> '', 'postcode'=> '', 'country'=> '');
+			return (object) array('payment_method'=>'paypal', 'paypal_email'=> '', 'first_name'=>'',  'last_name'=>'', 'street'=> '', 'city'=> '', 'state'=> '', 'postcode'=> '', 'country'=> '');
 		} else {
 			return $settings;	
 		}		

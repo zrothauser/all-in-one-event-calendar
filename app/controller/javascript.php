@@ -363,8 +363,7 @@ class Ai1ec_Javascript_Controller {
 			$script_to_load[] = self::ADD_NEW_EVENT_PAGE;
 		}
 		if (
-			true === $this->_are_we_accessing_the_calendar_settings_page() ||
-			true === $this->_are_we_managing_tickets()
+			true === $this->_are_we_accessing_the_calendar_settings_page()
 		) {
 			$script_to_load[] = self::SETTINGS_PAGE;
 		}

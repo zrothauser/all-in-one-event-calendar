@@ -321,25 +321,27 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			} else {
 				$uid = $empty_event->get_uid();
 			}			
-			if ( $ticketing ) {
-				$ticket_currency = $api->get_api_event_currency( $event->get( 'post_id' ) );
-			} else {
-				$payments_settings = $api->get_payment_settings();
-				if ( null !== $payments_settings ) {
-					$ticket_currency = $payments_settings->currency;
-				} else {
-					$ticket_currency = 'USD';
-				}
-			}
 			$uid = $event->get_uid();
 		} else {
 			$uid = $empty_event->get_uid();
 		}
 
-		if ( $event ) {
-			$uid = $event->get_uid();
+		if ( $ticketing ) {
+			if ( $event ) {
+				$ticket_currency = $api->get_api_event_currency( $event->get( 'post_id' ) );
+				error_log( "ticket_currency; $ticket_currency");
+			}			
+			if ( ! isset( $ticket_currency ) || is_null( $ticket_currency ) ) {
+				//for new ticket events get the currency from the payments settings
+				$payments_settings = $api->get_payment_settings();
+				if ( null !== $payments_settings ) {
+					$ticket_currency = $payments_settings['currency'];
+				} else {
+					$ticket_currency = 'USD';
+				}
+			}
 		} else {
-			$uid = $empty_event->get_uid();
+			$ticket_currency = '';
 		}
 
 		$args = array(

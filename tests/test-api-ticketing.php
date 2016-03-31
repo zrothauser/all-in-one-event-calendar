@@ -83,19 +83,7 @@ class TestApiTicketing extends BaseTestCase {
 			//Creating the POST of AI1EC type
 			//This post with the data above data array will trigger the store_event
 			//method from API to save the tickets on Timely Network
-			$post_id  = $this->factory->post->create( [ 'post_id' => rand(1, 10), 'post_type' => AI1EC_POST_TYPE ] );			
-			if ( isset( $_POST['_ticket_store_event_error'] ) ) {
-				if ( strpos( $_POST['_ticket_store_event_error'], "Event already exists." ) ) {
-					echo "#### Event already exists, refreshing...: $post_id ";
-					$result = wp_delete_post( $post_id, true );
-					$this->assertTrue ( false !== $result );			
-
-					unset( $_POST['_ticket_store_event_error'] );					
-					$post_id  = $this->factory->post->create( [ 'post_type' => AI1EC_POST_TYPE ] );
-					echo "PostID: $post_id";
-				}
-			}					
-
+			$post_id  = $this->factory->post->create( [ 'post_type' => AI1EC_POST_TYPE ] );
 			if ( isset( $_POST['_ticket_store_event_error'] ) ) {
 				$this->assertFalse( true, $_POST['_ticket_store_event_error'] );
 			}
@@ -139,10 +127,11 @@ class TestApiTicketing extends BaseTestCase {
 
 			//Retrieve the Tickets Types again to check
 			$tickets  = json_decode( $api->get_ticket_types( $post_id ) );
+
 			$this->assertNotNull( $tickets );
 			if ( isset( $tickets->data ) ) {
-				$this->assertArrayNotEmpty( $tickets->data );
-				$this->assertArrayCount( $tickets->data, 1 );
+				$this->assertArrayNotEmpty( $tickets->data, "Tickets Type are EMPTY" );
+				$this->assertArrayCount( $tickets->data, 1, "Ticket Types count not EXPECTED" );
 			} else {
 				$this->assertFalse( true, 'Tickets Types not returned' );
 			}

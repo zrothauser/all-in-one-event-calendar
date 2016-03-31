@@ -121,8 +121,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		$error = $this->_is_valid_post( $event );
 		if ( null !== $error ) {
 			return $error;
-		}		
-
+		}				
 		$api_event_id = $this->get_api_event_id( $event->get( 'post_id' ) );
 		$is_new       = ! $api_event_id;
 		$fields       = array( 'visibility' => $_POST['visibility'] );
@@ -198,13 +197,14 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			true, //true to decode response body
 			$custom_headers
 			);
-		if ( $this->is_response_success( $response ) ) {
-			$currency     = $this->get_payment_settings()->currency;			
-			if ( $is_new && isset( $response->body->id ) ) {
-				$api_event_id = $response->body->id;
+		if ( $this->is_response_success( $response ) ) {			
+			$api_event_id = $response->body->id;
+			if ( isset( $response->body->currency ) ) {
+				$currency = $response->body->currency;
 			} else {
-				$api_event_id = null;
+				$currency = 'USD';
 			}
+			$currency     = $response->body->currency;
 			if ( $post_thumbnail_id <= 0 ) {
 				$post_thumbnail_id = null;
 			}
@@ -243,7 +243,6 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			$custom_headers 
 		);
 		if ( $this->is_response_success( $response ) ) {
-			echo "calling 1111";
 			$this->save_payment_settings( $settings );
 			$notification  = $this->_registry->get( 'notification.admin' );
 			$notification->store( 
@@ -294,11 +293,9 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
     	$payment_settings = $this->get_payment_settings();
     	if ( null === $payment_settings ) {
     		$payment_settings = $this->get_payment_preferences();
-    		$this->save_payment_settings( $payment_settings );
+    		$this->save_payment_settings( (array) $payment_settings );
     	}    
-    	return ( null !== $payment_settings && 
-    		'paypal' === $payment_settings->payment_method &&
-    		false === ai1ec_is_blank( $payment_settings->paypal_email ) ) ;
+    	return parent::has_payment_settings();
     }
 
 	/**
@@ -496,7 +493,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	 */
 	public function get_ticket_types( $post_id ) {
 		$api_event_id = $this->get_api_event_id( $post_id );
-		if ( ! $api_event_id ) {
+		if ( ! $api_event_id ) {			
 			return json_encode( array( 'data' => array() ) );
 		}
 		$response = $this->request_api( 'GET', $this->get_api_event_url( $post_id ) . 'events/' . $api_event_id . '/ticket_types', null);
@@ -587,7 +584,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	 */
 	public function is_ticket_event_imported( $post_id ) {
 		$data    = $this->get_api_event_data( $post_id );
-		if ( isset( $data[self::ATTR_ICS_API_URL] ) ) {
+		if (  isset( $data[self::ATTR_EVENT_ID] ) && isset( $data[self::ATTR_ICS_API_URL] ) ) {
 			return ( ! ai1ec_is_blank ( $data[self::ATTR_ICS_API_URL] ) );
 		} else {
 			return false;
@@ -780,10 +777,14 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	 */
 	public function get_api_event_url ( $post_id ) {
 		$data    = $this->get_api_event_data( $post_id );
-		if ( isset( $data[self::ATTR_ICS_API_URL] ) ) {
-			return $data[self::ATTR_ICS_API_URL];
+		if ( isset( $data[self::ATTR_EVENT_ID] ) ) {
+			if ( isset( $data[self::ATTR_ICS_API_URL] ) ) {
+				return $data[self::ATTR_ICS_API_URL];
+			} else {
+				return AI1EC_API_URL;
+			}
 		} else {
-			return AI1EC_API_URL;
+			return null;
 		}
 	}
 
@@ -793,10 +794,14 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	 */
 	public function get_api_event_currency ( $post_id ) {
 		$data    = $this->get_api_event_data( $post_id );
-		if ( isset( $data[self::ATTR_CURRENCY] ) ) {
-			return $data[self::ATTR_CURRENCY];
+		if ( isset( $data[self::ATTR_EVENT_ID] ) ) {
+			if ( isset( $data[self::ATTR_CURRENCY] ) ) {
+				return $data[self::ATTR_CURRENCY];
+			} else {
+				return 'USD';
+			}
 		} else {
-			return 'USD';
+			return null;
 		}
 	}
 
@@ -806,10 +811,14 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	 */
 	public function get_api_event_checkout_url ( $post_id ) {
 		$data = $this->get_api_event_data( $post_id );
-		if ( isset( $data[self::ATTR_ICS_CHECKOUT_URL] ) ) {
-			return $data[self::ATTR_ICS_CHECKOUT_URL];
+		if ( isset( $data[self::ATTR_EVENT_ID] ) ) {
+			if ( isset( $data[self::ATTR_ICS_CHECKOUT_URL] ) ) {
+				return $data[self::ATTR_ICS_CHECKOUT_URL];
+			} else {
+				return AI1EC_TICKETS_CHECKOUT_URL;
+			}
 		} else {
-			return AI1EC_TICKETS_CHECKOUT_URL;
+			return null;
 		}
 	}
 
@@ -841,44 +850,30 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	 * @param string $currency (optional) Currency code of the event
 	 * @param string $thumbnail_id (optional) Id of the Thumbnail (Featured Image id)
  	 */
-	public function save_api_event_data( $post_id, $api_event_id = null, $ics_api_url = null, $ics_checkout_url = null, $currency = null, $thumbnail_id = null ) {
-		if ( ! is_null( $api_event_id ) ) {
-			$api_data[Ai1ec_Api_Ticketing::ATTR_EVENT_ID] = $api_event_id;
+	public function save_api_event_data( $post_id, $api_event_id, $ics_api_url = null, $ics_checkout_url = null, $currency = null, $thumbnail_id = null ) {
+		if ( ai1ec_is_blank( $api_event_id ) ) {
+			throw new Error( 'Api event id should never be null' );
 		}
-		if ( ! is_null( $ics_api_url ) ) {
-			$api_data[Ai1ec_Api_Ticketing::ATTR_ICS_API_URL] = $ics_api_url;
-		}
-		if ( ! is_null( $ics_checkout_url ) ) {
-			$api_data[Ai1ec_Api_Ticketing::ATTR_ICS_CHECKOUT_URL] = $ics_checkout_url;
-		}
-		if ( ! is_null( $currency ) ) {
-			$api_data[Ai1ec_Api_Ticketing::ATTR_CURRENCY] = $currency;
-		}
-		if ( ! is_null( $thumbnail_id ) ) {
-			$api_data[Ai1ec_Api_Ticketing::ATTR_THUMBNAIL_ID] = $thumbnail_id;
-		}
-		if ( isset( $api_data ) ) {
-			$previous_data = $this->get_api_event_data( $post_id );		
-			$new_data      = [];
-			if ( $previous_data ) {
-				foreach ( $previous_data as $key => $previous_value ) {
-					if ( isset( $api_data[$key] ) ) {
-						if ( ! is_null( $api_data[$key] ) ) {
-							$new_data[$key] = $api_data[$key];
-						}
-						unset( $api_data[$key] );
-					} else {
-						$new_data[$key] = $previous_value;
-					}			
-				}
-			}			
-			if ( 0 < count( $api_data ) ) {
-				foreach ( $api_data as $key => $value ) {
-					$new_data[$key] = $value;
-				}
+		$api_data[Ai1ec_Api_Ticketing::ATTR_EVENT_ID]         = $api_event_id;
+		$api_data[Ai1ec_Api_Ticketing::ATTR_ICS_API_URL]      = $ics_api_url;
+		$api_data[Ai1ec_Api_Ticketing::ATTR_ICS_CHECKOUT_URL] = $ics_checkout_url;
+		$api_data[Ai1ec_Api_Ticketing::ATTR_CURRENCY]         = $currency;
+		$api_data[Ai1ec_Api_Ticketing::ATTR_THUMBNAIL_ID]     = $thumbnail_id;
+		$previous_data = $this->get_api_event_data( $post_id );		
+		$new_data      = [];
+		if ( is_array( $previous_data ) ) {
+			foreach ( $previous_data as $key => $value) {
+				$new_data[$key] = $value;
 			}
-			update_post_meta( $post_id, self::API_EVENT_DATA, $new_data, $previous_data );
 		}
+		foreach ( $api_data as $key => $value ) {
+			if ( ai1ec_is_blank( $value ) ) {
+				unset( $new_data[$key] );
+			} else {
+				$new_data[$key] = $api_data[$key];
+			}
+		}
+		return update_post_meta( $post_id, self::API_EVENT_DATA, $new_data, $previous_data );
 	}
 
 }

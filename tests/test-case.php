@@ -35,7 +35,7 @@ class BaseTestCase extends WP_UnitTestCase {
 		if ( false === $api->is_signed() ) {
 			$response = $api->signin();
 			$this->assertTrue( $api->is_response_success( $response ), 'Authentication error. Check the user name and password to access the API' );
-			$this->assertTrue( $api->save_payment_settings( (object) array( 'payment_method' => 'paypal', 'paypal_email' => 'phpunit@time.ly', 'first_name' => 'Test', 'last_name' => 'Test', 'currency' => 'CAD' ) ), "Error saving the payments settings for test" );
+			$this->assertTrue( $api->save_payment_settings( array( 'payment_method' => 'paypal', 'paypal_email' => 'phpunit@time.ly', 'first_name' => 'Test', 'last_name' => 'Test', 'currency' => 'CAD' ) ), "Error saving the payments settings for test" );
 			$this->assertTrue( $api->has_payment_settings() );
 		}
 	}	

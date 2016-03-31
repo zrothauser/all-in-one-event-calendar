@@ -136,11 +136,6 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 				'paypal_email'                      => $response->paypal_email,
 				'first_name'                        => $response->first_name,
 				'last_name'                         => $response->last_name,
-				'street'                            => $response->street,
-				'city'                              => $response->city,
-				'state'                             => $response->state,
-				'postcode'                          => $response->postcode,
-				'country'                           => $response->country,
 				'currency'  	                    => $response->currency,
 				'nonce'                             => array(
 					'action'   => self::NONCE_ACTION,

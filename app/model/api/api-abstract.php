@@ -23,8 +23,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	 * @return void Return from this method is ignored.
 	 */
 	protected function _initialize() {
-		$this->_settings     = $this->_registry->get( 'model.settings' );	
-		
+		$this->_settings = $this->_registry->get( 'model.settings' );			
 	}
 
 	protected function get_ticketing_settings() {
@@ -35,8 +34,12 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 				'message'              => $this->_settings->get( 'ticketing_message' ),
 				'token'                => $this->_settings->get( 'ticketing_token' ),
 				'calendar_id'          => $this->_settings->get( 'ticketing_calendar_id' )
-			);
+			);			
 			update_option( self::WP_OPTION_KEY, $api_settings );
+			$this->_settings->set( 'ticketing_message'    , '' );
+			$this->_settings->set( 'ticketing_enabled'    , false );
+			$this->_settings->set( 'ticketing_token'      , '' );
+			$this->_settings->set( 'ticketing_calendar_id', null );		
 		}
 		return $api_settings;
 	}
@@ -62,7 +65,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	 * Save the Payment settings localy (same saved on the API)
 	 * @param array Preferences to save
 	 */
-	public function save_payment_settings( $values ) {
+	public function save_payment_settings( array $values ) {
 		$api_settings = $this->get_ticketing_settings();
 		if ( null !== $values ) {
 			$api_settings['payment_settings'] = $values;
@@ -93,8 +96,8 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
     		return false;
     	}    
     	return ( null !== $payment_settings && 
-    		'paypal' === $payment_settings->payment_method &&
-    		false === ai1ec_is_blank( $payment_settings->paypal_email ) ) ;
+    		'paypal' === $payment_settings['payment_method'] &&
+    		false === ai1ec_is_blank( $payment_settings['paypal_email'] ) ) ;
     }
 
 	protected function save_calendar_id ( $calendar_id ) {

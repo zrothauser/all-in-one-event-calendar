@@ -47,12 +47,21 @@
 										   
 									<label for="ai1ec_currency">
 										<br />{{ currency_text }}<br />
-										<select name="ai1ec_currency" id="ai1ec_currency" class="ai1ec-required">
+										<select name="ai1ec_currency" id="ai1ec_currency"
+										        class="ai1ec-required">
 											{% for ite in paypal_currencies %}
-												<option value="{{ ite.code }}" {% if currency and ite.code == currency %} selected="selected" {% endif %} {% if ite.note %} title="{{ite.note | e( 'html_attr' )}}" {% endif %}>{{ite.code}}: {{ite.description | e( 'html' )}}</option>
+												<option value="{{ ite.code }}"
+												{% if currency and ite.code == currency %}
+													selected="selected"
+												{% endif %}
+												{% if ite.note %}
+													title="{{ ite.note | e( 'html_attr' )}}"
+												{% endif %}>
+													{{ ite.code }}: {{ ite.description | e( 'html' )}}
+												</option>
 											{% endfor %}
-										</select>	
-									</label>							   
+										</select>
+									</label>
 								</div>
 							</li>
 						</ul>

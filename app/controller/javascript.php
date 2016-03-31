@@ -368,12 +368,7 @@ class Ai1ec_Javascript_Controller {
 		if ( true === $this->_are_we_creating_widgets() ) {
 			$script_to_load[] = self::WIDGET_CREATOR;
 		}
-		
-		if ( ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ) && (
-				true === $this->_are_we_managing_tickets() ||
-				true === $this->_are_we_managing_events_list()
-			)
-		) {
+		if (  true === $this->_are_we_managing_tickets() || true === $this->_are_we_managing_events_list() ) {			
 			$script_to_load[] = self::TICKETING;
 		}
 		if ( false === $script_to_load ) {

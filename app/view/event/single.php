@@ -155,7 +155,7 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 		$api    = $this->_registry->get( 'model.api.api-ticketing' );
 		if ( false === ai1ec_is_blank( $event->get( 'ical_feed_url' ) ) ) {
 			$args['ticket_url'] = $api->get_api_event_buy_ticket_url( $event->get( 'post_id' ) );
-		} else if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ) {
+		} else {
 			$api_event_id = $api->get_api_event_id( $event->get( 'post_id' ) );
 			if ( $api_event_id ) {
 				$api                   = $this->_registry->get( 'model.api.api-ticketing' );

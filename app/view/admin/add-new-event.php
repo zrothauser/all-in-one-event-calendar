@@ -329,7 +329,6 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		if ( $ticketing ) {
 			if ( $event ) {
 				$ticket_currency = $api->get_api_event_currency( $event->get( 'post_id' ) );
-				error_log( "ticket_currency; $ticket_currency");
 			}			
 			if ( ! isset( $ticket_currency ) || is_null( $ticket_currency ) ) {
 				//for new ticket events get the currency from the payments settings

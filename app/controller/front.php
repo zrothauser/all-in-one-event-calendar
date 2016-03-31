@@ -656,14 +656,6 @@ class Ai1ec_Front_Controller {
 			);
 			$dispatcher->register_action(
 				'admin_menu',
-				array( 'view.admin.ticketing-invitation', 'add_page' )
-			);
-			$dispatcher->register_action(
-				'admin_menu',
-				array( 'view.admin.ticketing-invitation', 'add_meta_box' )
-			);
-			$dispatcher->register_action(
-				'admin_menu',
 				array( 'view.admin.theme-switching', 'add_page' )
 			);
 			$dispatcher->register_action(
@@ -739,12 +731,6 @@ class Ai1ec_Front_Controller {
 			$dispatcher->register_action(
 				'save_post',
 				array( 'model.event.creating', 'save_post' ),
-				10,
-				3
-			);
-			$dispatcher->register_action(
-				'save_post',
-				array( 'view.admin.ticketing-invitation', 'handle_post' ),
 				10,
 				3
 			);

@@ -67,7 +67,6 @@ class TestApiRegistration extends BaseTestCase {
 		$api                = $ai1ec_registry->get( 'model.api.api-registration' );
 		$response           = $api->availability();		
 		$this->assertNotNull( $response, "response should not be null" );
-		echo print_r( $response, true );
 		$this->assertTrue( is_array( $response ), "response must be an array" );
 		$has_ticketing_code = false;
 		foreach ( $response as $value) {

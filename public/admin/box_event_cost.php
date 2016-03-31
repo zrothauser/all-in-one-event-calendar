@@ -131,7 +131,7 @@
 									   id="ai1ec_ticket_price"
 									   <?php if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { echo 'disabled'; }?>
 									   >
-								<?php _e( 'USD', AI1EC_PLUGIN_NAME ); ?>
+								<?php echo $ticket_currency; ?>
 							</td>
 						</tr>
 						<tr class="ai1ec-tickets-limits">

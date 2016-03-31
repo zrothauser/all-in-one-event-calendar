@@ -16,6 +16,7 @@ define(
 			) {
 				$this.addClass( 'ai1ec-error' );
 				$this.closest( 'td' ).find( '.ai1ec-ticket-field-error' ).show();
+				$this.prev( '.ai1ec-ticket-field-error' ).show();
 			}
 		} );
 		if ( ! $( '.ai1ec-ticket-field-error:visible' ).length ) {

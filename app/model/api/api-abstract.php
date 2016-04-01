@@ -311,6 +311,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
      * Clear the last message return by Signup or Signup process
      */
     public function clear_sign_message() {
+	    $api_settings = $this->get_ticketing_settings();
     	$this->get_ticketing_settings()['message'] = '';
     	return update_option( self::WP_OPTION_KEY, $api_settings );
     }

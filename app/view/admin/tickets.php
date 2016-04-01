@@ -59,6 +59,7 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 		$signed_to_api     = $api->is_signed();
 		$ticketing_message = $api->get_sign_message();
 		$loader            = $this->_registry->get( 'theme.loader' );
+		$account           = $api->get_current_account();
 		$signup_args       = array(
 			'api_signed'            => $signed_to_api,
 			'signup_available'      => $signup_available,
@@ -76,7 +77,9 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 			'required_text'         => Ai1ec_I18n::__( 'This field is required.' ),
 			'register_text'         => Ai1ec_I18n::__( 'Register' ),
 			'sign_in_text'          => Ai1ec_I18n::__( 'Sign in' ),
-			'signed_in_text'        => Ai1ec_I18n::__( 'You are signed in to <b>Timely Network</b>.' ),
+			'signed_in_text'        => Ai1ec_I18n::__(
+				'You are signed in to <b>Timely Network</b> as ' . $account
+			),
 			'sign_out_text'         => Ai1ec_I18n::__( 'Sign out' ),
 			'full_name_text'        => Ai1ec_I18n::__( 'Full Name:' ),
 			'email_text'            => Ai1ec_I18n::__( 'Email:' ),

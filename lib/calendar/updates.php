@@ -127,7 +127,7 @@ class Ai1ec_Calendar_Updates extends Ai1ec_Base {
 	protected function _get_data_from_endpoint( $endpoint ) {
 
 		// Use ticketing token to check for subscriptions
-		$token = $this->_registry->get( 'model.settings' )->get( 'ticketing_token' );
+		$token = $this->_registry->get( 'model.api.api-registration' )->get_timely_token();
 		if ( null === $token ) {
 			$token = '';
 		}

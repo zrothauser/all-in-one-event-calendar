@@ -4,11 +4,13 @@
 		<table class="ai1ec-table">
 		<tbody>
 		{% set first_ticket = true %}
+		{% set has_active_tickets = false %}
 		{% for ticket in tickets %}
 			{% if ticket.status != 'hidden' %}
 				<tr>
 					<td class="ai1ec-tickets-amount">
 						{% if ticket.availability == null %}
+							{% set has_active_tickets = true %}
 							<select class="select2 ai1ec-select2"
 									name="ticket_type_{{ ticket.ticket_type_id }}">
 							{% if false == first_ticket %}
@@ -47,6 +49,7 @@
 				</tr>
 			{% endif %}			
 		{% endfor %}
+		{% if has_active_tickets == true %}
 			<tr>
 				<td></td>
 				<td>
@@ -58,6 +61,7 @@
 					</a>
 				</td>
 			</tr>
+		{% endif %}
 		</tbody>
 		</table>
 	</form>

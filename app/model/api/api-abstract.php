@@ -100,6 +100,15 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
     		false === ai1ec_is_blank( $payment_settings['paypal_email'] ) ) ;
     }
 
+    public function get_timely_token() {
+        $api_settings = $this->get_ticketing_settings();
+        if ( isset( $api_settings['token'] ) ) {
+            return $api_settings['token'];
+        } else {
+            return null;
+        }
+    } 
+
 	protected function save_calendar_id ( $calendar_id ) {
 		$api_settings = $this->get_ticketing_settings();
 		$api_settings['calendar_id'] = $calendar_id;

@@ -16,9 +16,18 @@
 
 	<?php
 	if ( $ticket_event_imported ):?>
-
-		<p><?php _e( 'Ticket options not available - event was imported from an external calendar.', AI1EC_PLUGIN_NAME ); ?></p>
-
+		<p><?php _e( 'Cost options not available, this event was imported from an external calendar.', AI1EC_PLUGIN_NAME ); ?></p>
+	<?php
+	elseif ( $tickets_loading_error ): ?>	
+		<p><?php echo $tickets_loading_error; ?></p>
+	<?php elseif ( $is_ticket_event && ! $ticketing ): ?>	
+		<p><?php echo sprintf( 
+			__( 'This event was created using Timely Network. Sign in with the accouunt %s to see the Ticket options.', AI1EC_PLUGIN_NAME ), 
+		$ticket_event_account ); ?></p>	
+		<a href="edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-tickets"
+	   		class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg">
+				<?php _e( 'Sign In for Timely Network', AI1EC_PLUGIN_NAME ); ?>
+		</a>		
 	<?php else: ?>
 
 		<div class="ai1ec-cost-types">
@@ -54,13 +63,8 @@
 					</a>
 				<?php 
 				else:
-					echo $tickets_message;	
+					echo '<p>$tickets_message</p>';
 				endif; ?>
-			</div>
-		<?php
-		elseif ( $tickets_loading_error ): ?>
-			<div class="ai1ec-panel ai1ec-tickets-panel ai1ec-tickets-form">
-				<p><?php echo $tickets_loading_error; ?></p>
 			</div>
 		<?php
 		elseif ( ! $valid_payout_details ): ?>

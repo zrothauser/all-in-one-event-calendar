@@ -84,9 +84,10 @@ class Ai1ec_Event_Trashing extends Ai1ec_Base {
 		$fields          = array( 
 			'status' => 'trash'
 		);
-		$message = $api->update_api_event_fields( $post, $fields );
+		$ajax    = defined( 'DOING_AJAX' ) && DOING_AJAX;
+		$message = $api->update_api_event_fields( $post, $fields, 'trash', $ajax );
 		if ( null !== $message )  {						
-			if ( defined('DOING_AJAX') && DOING_AJAX ) {
+			if ( $ajax ) {
 				wp_die( $message );
 			} else {
 				wp_redirect( $this->get_sendback_page( $post_id ) );
@@ -136,9 +137,10 @@ class Ai1ec_Event_Trashing extends Ai1ec_Base {
 		$fields          = array( 
 			'status' => $restored_status 
 		);
-		$message = $api->update_api_event_fields( $post, $fields );
+		$ajax    = defined( 'DOING_AJAX' ) && DOING_AJAX;
+		$message = $api->update_api_event_fields( $post, $fields, 'untrash', $ajax );
 		if ( null !== $message )  {						
-			if ( defined('DOING_AJAX') && DOING_AJAX ) {
+			if ( $ajax ) {
 				wp_die( $message );
 			} else {
 				wp_redirect( $this->get_sendback_page( $post_id ) );
@@ -175,9 +177,10 @@ class Ai1ec_Event_Trashing extends Ai1ec_Base {
 	 */
     public function before_delete_post( $post_id ) {
     	$api     = $this->_registry->get( 'model.api.api-ticketing' );
-    	$message = $api->delete_api_event( $post_id );
+    	$ajax    = defined( 'DOING_AJAX' ) && DOING_AJAX;
+    	$message = $api->delete_api_event( $post_id, 'delete', $ajax );
 		if ( null !==  $message )  {						
-			if ( defined('DOING_AJAX') && DOING_AJAX ) {
+			if ( $ajax ) {
 				wp_die( $message );
 			} else {
 				wp_redirect( $this->get_sendback_page( $post_id ) );

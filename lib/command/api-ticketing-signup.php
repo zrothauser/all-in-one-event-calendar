@@ -27,7 +27,7 @@ class Ai1ec_Command_Api_Ticketing_Signup extends Ai1ec_Command_Save_Abstract {
 		}		
 		return array(
 			'url'        => ai1ec_admin_url(
-				'edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings'
+				'edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-tickets'
 			),
 			'query_args' => array(			
 				'message' => ''

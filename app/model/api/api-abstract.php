@@ -61,6 +61,10 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		return update_option( self::WP_OPTION_KEY, $api_settings );
 	}
 
+	protected function clear_ticketing_settings() {
+		delete_option( self::WP_OPTION_KEY );
+	}
+
 	/**
 	 * Save the Payment settings localy (same saved on the API)
 	 * @param array Preferences to save
@@ -93,12 +97,45 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
     public function has_payment_settings() {
     	$payment_settings = $this->get_payment_settings();
     	if ( null === $payment_settings ) {
-    		return false;
-    	}    
+    		//code to migrate the settings save on ticketing api and
+			//bring them to the core side
+    		$payment_settings = $this->get_payment_preferences();
+    		if ( is_object( $payment_settings ) ) {
+    			$payment_settings = (array) $payment_settings;
+    		}
+    		$this->save_payment_settings( (array) $payment_settings );
+    	}
     	return ( null !== $payment_settings && 
     		'paypal' === $payment_settings['payment_method'] &&
     		false === ai1ec_is_blank( $payment_settings['paypal_email'] ) ) ;
     }
+
+
+	/**
+	 * @return object Response from API, or empty defaults
+	 */
+	public function get_payment_preferences() {
+		$calendar_id = $this->_get_ticket_calendar();
+		$settings    = null;
+		if ( 0 < $calendar_id ) {
+			$response = $this->request_api( 'GET', AI1EC_API_URL . "calendars/$calendar_id/payment", 
+				null, //no body 
+				true //decode response body
+			);
+			if ( $this->is_response_success( $response ) ) {
+				$settings = $response->body;
+			}
+		}
+		if ( is_null( $settings ) ) {
+			return (object) array( 'payment_method'=>'paypal', 'paypal_email'=> '', 'first_name'=>'',  'last_name'=>'', 'currency'=> 'USD' );
+		} else {
+			if ( ! isset( $settings->currency ) ) {
+				$settings->currency = 'USD';
+			}
+			return $settings;	
+		}		
+	}
+
 
     public function get_timely_token() {
         $api_settings = $this->get_ticketing_settings();

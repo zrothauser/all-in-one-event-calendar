@@ -292,9 +292,10 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 			}
 			if ( 0 < count( $fields ) ) {
 				$post    = get_post( $post_id );
-				$message = $api->update_api_event_fields( $post, $fields );
+				$ajax    = defined( 'DOING_AJAX' ) && DOING_AJAX;
+				$message = $api->update_api_event_fields( $post, $fields, 'update', $ajax );
 				if ( null !== $message )  {						
-					if ( defined('DOING_AJAX') && DOING_AJAX ) {
+					if ( $ajax ) {
 						wp_die( $message );
 					} else {
 						wp_redirect( $this->get_sendback_page( $post_id ) );
@@ -310,9 +311,10 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 			}
 			if ( 0 < count( $fields ) ) {
 				$post    = get_post( $post_id );
-				$message = $api->update_api_event_fields( $post, $fields );
+				$ajax    = defined( 'DOING_AJAX' ) && DOING_AJAX;
+				$message = $api->update_api_event_fields( $post, $fields, 'update', $ajax );
 				if ( null !== $message )  {			
-					if ( defined('DOING_AJAX') && DOING_AJAX ) {
+					if ( $ajax ) {
 						wp_die( $message );
 					} else {	
 						wp_redirect( $this->get_sendback_page( $post_id ) );
@@ -340,7 +342,7 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 					exit();	
 		    	}				
 			} else {
-				$message = $api->delete_api_event( $post_id );
+				$message = $api->delete_api_event( $post_id, 'update', false );
 				if ( null !== $message )  {											
 					wp_redirect( $this->get_sendback_page( $post_id ) );
 					exit();	

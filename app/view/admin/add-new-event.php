@@ -79,12 +79,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		$longitude             = '';
 		$latitude              = '';
 		$coordinates           = '';
-		$ticket_url            = '';
-		$tickets               = array( null );
-		$ticketing             = false;
-		$message               = false;
-		$loading_error         = false;
-		$ticket_event_imported = false;
+		$ticket_url            = '';				
 
 		$instance_id = false;
 		if ( isset( $_REQUEST['instance'] ) ) {
@@ -301,11 +296,14 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 
 		$api                   = $this->_registry->get( 'model.api.api-ticketing' );
 		$ticketing             = $api->is_signed();
-		$message               = $api->get_sign_message();
-		$loading_error         = null;
+		$message               = $api->get_sign_message();		
+		$ticket_error          = null;
 		$ticket_event_imported = false;
+		$tickets               = array( null );
 
 		if ( $event ) {
+			$is_ticket_event       = ! is_null( $api->get_api_event_id( $event->get( 'post_id' ) ) );
+			$ticket_event_account  = $api->get_api_event_account( $event->get( 'post_id' ) );
 			$ticket_event_imported = $api->is_ticket_event_imported( $event->get( 'post_id' ) );
 			if ( $ticketing || $ticket_event_imported ) {
 				if ( 'tickets' === $cost_type ) {
@@ -314,7 +312,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 						$tickets = array_merge( $tickets, $response->data );
 					}
 					if ( isset( $response->error ) ) {
-						$loading_error = $response->error;
+						$ticket_error = $response->error;
 					}
 				}
 				$uid = $event->get_uid();
@@ -323,12 +321,20 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			}			
 			$uid = $event->get_uid();
 		} else {
-			$uid = $empty_event->get_uid();
+			$is_ticket_event      = false;
+			$ticket_event_account = '';
+			$uid                  = $empty_event->get_uid();
 		}
 
 		if ( $ticketing ) {
 			if ( $event ) {
 				$ticket_currency = $api->get_api_event_currency( $event->get( 'post_id' ) );
+				if ( $api->is_ticket_event_from_another_account( $event->get( 'post_id' ) ) )  {
+					$ticket_error  = sprintf(
+						__( 'This Event was created using a different account %s. Changes are not allowed.', AI1EC_PLUGIN_NAME ), 
+						$api->get_api_event_account( $event->get( 'post_id' ) )
+					);
+				} 
 			}			
 			if ( ! isset( $ticket_currency ) || is_null( $ticket_currency ) ) {
 				//for new ticket events get the currency from the payments settings
@@ -355,10 +361,12 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			'tickets_message'       => $message,
 			'start'                 => $start,
 			'end'                   => $end,
-			'tickets_loading_error' => $loading_error,
+			'tickets_loading_error' => $ticket_error,
 			'ticket_event_imported' => $ticket_event_imported,
 			'is_free'               => $is_free,
-			'ticket_currency'       => $ticket_currency			
+			'ticket_currency'       => $ticket_currency,
+			'is_ticket_event'       => $is_ticket_event,
+			'ticket_event_account'  => $ticket_event_account
 		);
 
 		$boxes[] = $theme_loader

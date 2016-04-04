@@ -51,6 +51,46 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	}
 
 	/**
+	 * Return an error if the Ticket Event is not owned by the Current account
+	 */
+	private function _prevent_update_ticket_event( Ai1ec_Event $event, $ajax_action = false ) {
+		if ( $this->is_ticket_event_imported( $event->get( 'post_id' ) ) )  {
+			//prevent changes on Ticket Events that were imported			
+			$error        = __( 'This Event was replicated from another site. Changes are not allowed.', AI1EC_PLUGIN_NAME );
+			if ( ! $ajax_action ) {
+				$notification = $this->_registry->get( 'notification.admin' );
+				$notification->store( 
+					$error, 
+					'error', 
+					0, 
+					array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 
+					false 
+				);
+			}
+			return $error;
+		} 		
+		if ( $this->is_ticket_event_from_another_account( $event->get( 'post_id' ) ) )  {
+			//prevent changes on Ticket Events that were imported
+			$error        = sprintf(
+						__( 'This Event was created using a different account %s. Changes are not allowed.', AI1EC_PLUGIN_NAME ), 
+						$this->get_api_event_account( $event->get( 'post_id' ) )
+					);
+			if ( ! $ajax_action ) {
+				$notification = $this->_registry->get( 'notification.admin' );
+				$notification->store( 
+					$error, 
+					'error', 
+					0, 
+					array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 
+					false 
+				);
+			}
+			return $error;
+		}
+		return null;		
+	}
+
+	/**
 	 * Run some validations inside the _POST request to check if the Event 
 	 * submmited is a valid event for Tickets
 	 * @return NULL in case of success or a Message in case of error
@@ -71,20 +111,8 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			$notification->store( $_POST['ai1ec_tickets_loading_error'], 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
 			return $_POST['ai1ec_tickets_loading_error'];
 		}
-		if ( $this->is_ticket_event_imported( $event->get( 'post_id' ) ) )  {
-			//prevent changes on Ticket Events that were imported
-			$error        = __( 'This Event was replicated from another site. Any changes on Tickets were discarded.', AI1EC_PLUGIN_NAME );
-			$notification = $this->_registry->get( 'notification.admin' );
-			$notification->store( 
-				$error, 
-				'error', 
-				0, 
-				array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 
-				false 
-			);
-			return $error;
-		} else if ( false === ai1ec_is_blank( $event->get( 'ical_feed_url' ) ) ) {			
-			//prevent ticket creating inside Regular Events that were imported
+		if ( false === ai1ec_is_blank( $event->get( 'ical_feed_url' ) ) ) {			
+			//prevent ticket creating inside Regular Events Imported events
 			$error        = __( 'This Event was replicated from another site. Any changes on Tickets were discarded.', AI1EC_PLUGIN_NAME );
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( 
@@ -95,6 +123,10 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 				false 
 			);
 			return $error;			
+		}
+		$error = $this->_prevent_update_ticket_event( $event );
+		if ( null !== $error ) {
+			return $error;
 		}
 		if ( 0 === $this->_count_valid_tickets( $_POST['ai1ec_tickets'] ) ) {
 			$message      = __( 'The Event has the Cost option Ticket selected but no ticket was added.', AI1EC_PLUGIN_NAME );
@@ -593,6 +625,42 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	}	
 
 	/**
+	 * Check if the Ticket Event was created using a different account
+	 * The user probably created the event from one account, signed out and 
+	 * is currently signed in with a new account
+	 */
+	public function is_ticket_event_from_another_account( $post_id ) {
+		$data    = $this->get_api_event_data( $post_id );
+		if ( isset( $data[self::ATTR_EVENT_ID] ) ) {
+			if ( isset( $data[self::ATTR_ACCOUNT] ) ) {
+				return ( $this->get_current_account() != $data[self::ATTR_ACCOUNT] );
+			} else {
+				return true;
+			}
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Get the API account where the event was created
+	 * @param int $post_id Post ID
+	 * @param bool $default_null True to return NULL if the value does not exist, false to return the configured API URL
+	 */
+	public function get_api_event_account( $post_id ) {
+		$data    = $this->get_api_event_data( $post_id );
+		if ( isset( $data[self::ATTR_EVENT_ID] ) ) {
+			if ( isset( $data[self::ATTR_ACCOUNT] ) ) {
+				return $data[self::ATTR_ACCOUNT];
+			} else {
+				return null;
+			}
+		} else {
+			return null;
+		}
+	}
+
+	/**
      * Check if the response that came from the API is the event not found
      */
     private function _is_event_notfound_error( $response_code, $response ) {
@@ -613,26 +681,32 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	/**
 	 * @return NULL in case of success or an error string in case of error
 	 */
-    public function update_api_event_fields( WP_Post $post, $api_fields_values ) {
+    public function update_api_event_fields( WP_Post $post, $api_fields_values, $post_action = 'trash', $ajax_action = false ) {
     	$post_id      = $post->ID;
    		$api_event_id = $this->get_api_event_id( $post_id );
 		if ( ! $api_event_id ) {
 			return null;
 		}
-		if ( $this->is_ticket_event_imported( $post_id ) )  {
-			return null;
-		}
-		//updating the event status
 		try {
-			$event =  $this->_registry->get(
-				'model.event',
-				$post_id ? $post_id : null
-			);
+			$event =  $this->_registry->get( 'model.event', $post_id );
 		} catch ( Ai1ec_Event_Not_Found_Exception $excpt ) {
 			$message      = __( 'Event not found inside the database.', AI1EC_PLUGIN_NAME );
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
 			return $message;
+		}
+		if ( 'update' === $post_action ) {			
+			$error = $this->_prevent_update_ticket_event( $event, $ajax_action );
+    		if ( null !== $error ) {
+    			return $error;
+    		}
+		} else {
+			if ( $this->is_ticket_event_imported( $post_id ) )  {
+				return null;
+			}
+			if ( $this->is_ticket_event_from_another_account( $post_id ) )  {
+	    		return null;	    		
+	    	}
 		}
 		$headers   = $this->_get_headers();
 		$body_data = $this->_parse_event_fields_to_api_structure(
@@ -673,15 +747,34 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
      * Deletes the API event
      * @return NULL in case of success or an error string in case of error
      */
-    public function delete_api_event( $post_id ) {
-    	if ( $this->is_ticket_event_imported( $post_id ) )  {
-    		$this->clear_event_metadata( $post_id );
-    		return null;
-    	}
+    public function delete_api_event( $post_id, $post_action = 'delete', $ajax_action = false ) {
     	$api_event_id = $this->get_api_event_id( $post_id );
 		if ( ! $api_event_id ) {
 			return null;
 		}
+    	if ( 'update' === $post_action ) {
+			try {
+				$event =  $this->_registry->get( 'model.event', $post_id );
+			} catch ( Ai1ec_Event_Not_Found_Exception $excpt ) {
+				$message      = __( 'Event not found inside the database.', AI1EC_PLUGIN_NAME );
+				$notification = $this->_registry->get( 'notification.admin' );
+				$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
+				return $message;
+			}
+    		$error = $this->_prevent_update_ticket_event( $event, $ajax_action );
+    		if ( null !== $error ) {
+    			return $error;
+    		}
+    	} else {
+	    	if ( $this->is_ticket_event_imported( $post_id ) )  {	    	
+	    		$this->clear_event_metadata( $post_id );
+	    		return null;
+	    	}
+	    	if ( $this->is_ticket_event_from_another_account( $post_id ) )  {
+	    		$this->clear_event_metadata( $post_id );
+	    		return null;	    		
+	    	}
+	    }   
 		$request   = array(
 			'method'  => 'DELETE',
 			'headers' => $this->_get_headers(),
@@ -695,9 +788,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			return null;
         } else {
 			if ( $this->_is_event_notfound_error( $response_code, $response ) ) {
-				//this is an exception, the event was deleted on API server, but for some reason
-				//the metada was not unset, in this case leave the event be
-				//move to trash
+				$this->clear_event_metadata( $post_id );
 				return null;
 			}
         	$message      = $this->_transform_error_message( 
@@ -740,12 +831,12 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 				$new_data[self::ATTR_ICS_CHECKOUT_URL] = $value;
 			}			
 			$value = get_post_meta( $post_id, '_ai1ec_ics_api_url'     , true );
-			if ( false === ai1ec_is_blank( $value ) ) {
-				$new_data[self::ATTR_ICS_API_URL] = $value;
-			} else {
+			if ( ai1ec_is_blank( $value ) ) {
 				//not imported ticket event
 				$new_data[self::ATTR_ACCOUNT]          = $this->get_current_account();
-				$new_data[self::ATTR_CALENDAR_ID]      = $this->get_current_calendar();				
+				$new_data[self::ATTR_CALENDAR_ID]      = $this->get_current_calendar();	
+			} else {
+				$new_data[self::ATTR_ICS_API_URL] = $value;
 			}
 			$new_data[self::ATTR_CURRENCY] = 'USD';
 			update_post_meta( $post_id, self::API_EVENT_DATA, $new_data );
@@ -854,11 +945,15 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		if ( ai1ec_is_blank( $api_event_id ) ) {
 			throw new Error( 'Api event id should never be null' );
 		}
-		$api_data[Ai1ec_Api_Ticketing::ATTR_EVENT_ID]         = $api_event_id;
-		$api_data[Ai1ec_Api_Ticketing::ATTR_ICS_API_URL]      = $ics_api_url;
-		$api_data[Ai1ec_Api_Ticketing::ATTR_ICS_CHECKOUT_URL] = $ics_checkout_url;
-		$api_data[Ai1ec_Api_Ticketing::ATTR_CURRENCY]         = $currency;
-		$api_data[Ai1ec_Api_Ticketing::ATTR_THUMBNAIL_ID]     = $thumbnail_id;
+		$api_data[self::ATTR_EVENT_ID]         = $api_event_id;
+		$api_data[self::ATTR_ICS_API_URL]      = $ics_api_url;
+		$api_data[self::ATTR_ICS_CHECKOUT_URL] = $ics_checkout_url;
+		$api_data[self::ATTR_CURRENCY]         = $currency;
+		$api_data[self::ATTR_THUMBNAIL_ID]     = $thumbnail_id;
+		if ( ai1ec_is_blank( $ics_api_url ) ) {
+			$api_data[self::ATTR_ACCOUNT]          = $this->get_current_account();
+			$api_data[self::ATTR_CALENDAR_ID]      = $this->get_current_calendar();
+		}
 		$previous_data = $this->get_api_event_data( $post_id );		
 		$new_data      = [];
 		if ( is_array( $previous_data ) ) {

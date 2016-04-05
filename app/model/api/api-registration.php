@@ -33,7 +33,7 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 			$this->save_ticketing_settings( $response_body['message'], true, $response_body['auth_token'], $this->_find_user_calendar(), $body['email'] );
 			$this->has_payment_settings();
 		} else {
-			$error_message = $this->save_error_notification( $response, __( 'We were unable to Sign you In for Time.ly Ticketing', AI1EC_PLUGIN_NAME ) );
+			$error_message = $this->save_error_notification( $response, __( 'We were unable to Sign you In for Time.ly Network', AI1EC_PLUGIN_NAME ) );
 			$this->save_ticketing_settings( $error_message, false, '', 0, null );
 		}
 		return $response;
@@ -54,7 +54,7 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 			$response_body = (array) $response->body;
 			$this->save_ticketing_settings( $response_body['Registration'], true, $response_body['auth_token'] , $this->_create_calendar(), $body['email'] );
 		} else {
-			$error_message = $this->save_error_notification( $response, __( 'We were unable to Sign you Up for Time.ly Ticketing', AI1EC_PLUGIN_NAME ) );
+			$error_message = $this->save_error_notification( $response, __( 'We were unable to Sign you Up for Time.ly Network', AI1EC_PLUGIN_NAME ) );
 			$this->save_ticketing_settings( $error_message, false, '', 0, null );
 		}
 		return $response;
@@ -93,8 +93,18 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 	 * Clean the ticketing settings on WP database only
 	 */
 	public function signout() {
-		$this->clear_ticketing_settings();
-		return array( 'message' => '');
+		$calendar_id = $this->_get_ticket_calendar();
+		if ( 0 >= $calendar_id ) {
+			return false;
+		}
+		$response = $this->request_api( 'GET', AI1EC_API_URL . "calendars/$calendar_id/signout", null, true );
+		if ( $this->is_response_success( $response ) ) {
+			$this->clear_ticketing_settings();
+			return array( 'message' => '' );
+		} else {
+			$error_message = $this->save_error_notification( $response, __( 'We were unable to Sign you Out of Time.ly Network', AI1EC_PLUGIN_NAME ) );
+			return array( 'message' => $error_message );
+		}				
 	}
 
 	/**
@@ -159,7 +169,7 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 			}
 		} else {
 			$this->save_error_notification( $response, 
-				__( 'We were unable to get the Sales information from Time.ly Ticketing', AI1EC_PLUGIN_NAME )
+				__( 'We were unable to get the Sales information from Time.ly Network', AI1EC_PLUGIN_NAME )
 			);
 			return array();
 		}

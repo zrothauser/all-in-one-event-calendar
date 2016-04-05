@@ -550,13 +550,12 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	/**
      * Check if the response that came from the API is the event not found
      */
-    private function _is_event_notfound_error( $response_code, $response ) {
-    	if ( 404 === $response_code ) {
-			if ( isset( $response['body'] ) ) {
-				$response_body = json_decode( $response['body'], true );
-				if ( is_array( $response_body ) &&
-					isset( $response_body['message'] ) ) {
-					if ( false !== stripos( $response_body['message'], 'event not found') ) {
+    private function _is_event_notfound_error( $response ) {    	
+    	if ( isset( $response->response_code ) && 404 === $response->response_code ) {
+			if ( isset( $response->body ) ) {
+				if ( is_array( $response->body ) &&
+					isset( $response->body['message'] ) ) {
+					if ( false !== stripos( $response->body['message'], 'event not found') ) {
 						return true;
 					}
 				}
@@ -602,17 +601,13 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			null, //does not update ticket types, just chaging the api fields specified
 			$api_fields_values
 		);
-		$url       = AI1EC_API_URL . 'events' . '/' . $api_event_id;
-		$request   = array(
-			'method'  => 'POST',
-			'headers' => $headers,
-			'body'    => json_encode( $body_data ),
-			'timeout' => parent::DEFAULT_TIMEOUT
-		);
-		$response      = wp_remote_request( $url, $request );
-		$response_code = wp_remote_retrieve_response_code( $response );
-		if ( 200 !== $response_code ) {
-			if ( $this->_is_event_notfound_error( $response_code, $response ) ) {
+		$response = $this->request_api( 'POST', 
+			AI1EC_API_URL . "events/$api_event_id", 
+			json_encode( $body_data ), 
+			true //true to decode response body
+			);
+		if ( ! $this->is_response_success( $response ) ) {			
+			if ( $this->_is_event_notfound_error( $response ) ) {
 				if ( isset( $api_fields_values['status'] ) &&
 					'trash' === $api_fields_values['status'] ) {
 					//this is an exception, the event was deleted on API server, but for some reason
@@ -621,9 +616,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 					return null;
 				}
 			}
-			$message      = $this->_transform_error_message( $this->_update_event_error, $response, $url, true );
-			$notification = $this->_registry->get( 'notification.admin' );
-			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
+			$message = $this->save_error_notification( $response, __( 'We were unable to Update the Event on Time.ly Network', AI1EC_PLUGIN_NAME ) );
 			return $message;
         } else {
         	return null;
@@ -662,30 +655,19 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	    		return null;	    		
 	    	}
 	    }   
-		$request   = array(
-			'method'  => 'DELETE',
-			'headers' => $this->_get_headers(),
-			'timeout' => parent::DEFAULT_TIMEOUT
-		);
-		$url           = AI1EC_API_URL . 'events/' . $api_event_id;
-		$response      = wp_remote_request( $url, $request );
-		$response_code = wp_remote_retrieve_response_code( $response );
-		if ( 200 === $response_code ) {
+		$response = $this->request_api( 'DELETE', 
+			AI1EC_API_URL . "events/$api_event_id", 
+			true //true to decode response body
+			);
+		if ( $this->is_response_success( $response ) ) {
 			$this->clear_event_metadata( $post_id );
 			return null;
         } else {
-			if ( $this->_is_event_notfound_error( $response_code, $response ) ) {
+			if ( $this->_is_event_notfound_error( $response ) ) {
 				$this->clear_event_metadata( $post_id );
 				return null;
 			}
-        	$message      = $this->_transform_error_message( 
-        		__( 'We were unable to remove the Tickets from Time.ly Ticketing', AI1EC_PLUGIN_NAME ), 
-        		$response, 
-        		$url, 
-        		true 
-        	);
-			$notification = $this->_registry->get( 'notification.admin' );
-			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
+        	$message = $this->save_error_notification( $response, __( 'We were unable to remove the Event on Time.ly Network', AI1EC_PLUGIN_NAME ) );
 			return $message;
         }
     }

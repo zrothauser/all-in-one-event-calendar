@@ -285,7 +285,8 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	 */
 	protected function _find_user_calendar() {
 		$body = array(
-			'title'    => get_bloginfo( 'name' )
+			'title' => get_bloginfo( 'name' ),
+			'url'   => ai1ec_site_url()
 		);
 		$response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars', 
 			json_encode( $body )

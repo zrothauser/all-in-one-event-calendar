@@ -77,9 +77,24 @@ define(
 	} );
 
 	$( '#ai1ec-api-signout' ).on( 'click', function() {
+		$( '#ai1ec-api-signout-confirm' ).show();
+		$( this ).hide();
+		return false;
+	} );
+
+	$( '#ai1ec-api-signout-cancel' ).on( 'click', function() {
+		$( '#ai1ec-api-signout-confirm' ).hide();
+		$( '#ai1ec-api-signout' ).show();
+		return false;
+	} );
+
+	$( '#ai1ec-api-signout-confirm' ).on( 'click', function() {
+		if ( ! $( '#ai1ec-api-signout-confirm:visible' ).length ) {
+			return false;
+		}
 		var
 			$container = $( '#ai1ec-api-signed-in' ),
-			action     = $( this ).attr( 'data-action' ),
+			action     = $( '#ai1ec-api-signout' ).attr( 'data-action' ),
 			$input     = $( '<input type="hidden" name="ai1ec_signout" value="1" />' ),
 			$form      = $( '<form></form', {
 				method : 'POST',
@@ -94,6 +109,7 @@ define(
 		
 		return false;
 	} );
+
 
 	$( '.ai1ec-tickets-manage ul.ai1ec-nav-tabs li' ).on( 'click', function() {
 		$( '.ai1ec-tickets-manage ul.ai1ec-nav-tabs li.ai1ec-active' )

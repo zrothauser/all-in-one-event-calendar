@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.3.12.1\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.4.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2016-03-22 18:01:07+00:00\n"
+"POT-Creation-Date: 2016-04-06 16:18:11+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,7 +26,7 @@ msgstr ""
 msgid "Calendar Themes"
 msgstr ""
 
-#: app/controller/front.php:1057
+#: app/controller/front.php:1041
 msgid "Your database is found to be corrupt. Likely previous update has failed. Please restore All-in-One Event Calendar tables from a backup and retry.<br>Following errors were found:<br>%s"
 msgstr ""
 
@@ -34,72 +34,82 @@ msgstr ""
 msgid "You must choose the Calendar page before using the Super Widget"
 msgstr ""
 
-#: app/controller/javascript.php:455
+#: app/controller/javascript.php:450
 msgid "This feed is already being imported."
 msgstr ""
 
-#: app/controller/javascript.php:458
+#: app/controller/javascript.php:453
 msgid "Please enter a valid iCalendar URL."
 msgstr ""
 
-#: app/controller/javascript.php:461
+#: app/controller/javascript.php:456
 msgid "Please enter a valid Website URL."
 msgstr ""
 
-#: app/controller/javascript.php:464
+#: app/controller/javascript.php:459
 msgid "Please enter a valid email address."
 msgstr ""
 
-#: app/controller/javascript.php:466
+#: app/controller/javascript.php:461
 msgid "Choose Image"
 msgstr ""
 
-#: app/controller/javascript.php:469
+#: app/controller/javascript.php:464
 msgid "The value you have entered is not a valid CSS length."
 msgstr ""
 
-#: app/controller/javascript.php:472
+#: app/controller/javascript.php:467
 msgid "Are you sure you want to reset your theme options to their default values?"
 msgstr ""
 
-#: app/controller/javascript.php:475
+#: app/controller/javascript.php:470
 msgid "Please enter a valid latitude. A valid latitude is comprised between +90 and -90."
 msgstr ""
 
-#: app/controller/javascript.php:478
+#: app/controller/javascript.php:473
 msgid "Please enter a valid longitude. A valid longitude is comprised between +180 and -180."
 msgstr ""
 
-#: app/controller/javascript.php:481
+#: app/controller/javascript.php:476
 msgid "When the \"Input coordinates\" checkbox is checked, \"Latitude\" is a required field."
 msgstr ""
 
-#: app/controller/javascript.php:484
+#: app/controller/javascript.php:479
 msgid "When the \"Input coordinates\" checkbox is checked, \"Longitude\" is a required field."
 msgstr ""
 
-#: app/controller/javascript.php:487
+#: app/controller/javascript.php:482
 msgid "The URL you have entered in the <b>Organizer Contact Info</b> &gt; <b>Website URL</b> seems to be invalid."
 msgstr ""
 
-#: app/controller/javascript.php:490
+#: app/controller/javascript.php:485
 msgid "The URL you have entered in the <b>Event Cost and Tickets</b> &gt; <b>Tickets or Registration URL</b> seems to be invalid."
 msgstr ""
 
-#: app/controller/javascript.php:493
+#: app/controller/javascript.php:488
 msgid "The Email you have entered in the <b>Organizer Contact Info</b> &gt; <b>E-mail</b> seems to be invalid."
 msgstr ""
 
-#: app/controller/javascript.php:496
+#: app/controller/javascript.php:491
 msgid "Please remember that URLs must start with either \"http://\" or \"https://\"."
 msgstr ""
 
-#: app/controller/javascript.php:499
+#: app/controller/javascript.php:494
 msgid "Loading&hellip;"
 msgstr ""
 
+#: app/controller/javascript.php:497
+msgid "<b>Required or incorrect fields for Ticketing are outlined red.</b>"
+msgstr ""
+
+#: app/controller/javascript.php:500
+msgid "<b>The Repeat option was selected but recurrence is not supported by Event with Tickets.</b>"
+msgstr ""
+
 #: app/controller/javascript.php:502
-msgid "<p class=\"ai1ec_ticketing_required_alert\"><b>Some fields required for Ticketing are missing.</b><br><i>Missing or incorrect fields are outlined red.</i></p>"
+msgid ""
+"<b>\n"
+"\t\t\t\tThe Event has the cost option Tickets selected but no ticket was included.</b>"
 msgstr ""
 
 #: app/controller/javascript.php:532 app/view/admin/widget-creator.php:139
@@ -110,7 +120,7 @@ msgstr ""
 msgid "Loading preview&nbsp;<i class=\"ai1ec-fa ai1ec-fa-spin ai1ec-fa-spinner\"></i>"
 msgstr ""
 
-#: app/controller/javascript.php:538 app/view/admin/all-events.php:89
+#: app/controller/javascript.php:538 app/view/admin/all-events.php:83
 msgid "Ticketing Details"
 msgstr ""
 
@@ -162,11 +172,11 @@ msgstr ""
 msgid "End:"
 msgstr ""
 
-#: app/controller/javascript.php:551 public/admin/box_event_cost.php:138
+#: app/controller/javascript.php:551 public/admin/box_event_cost.php:148
 msgid "Min:"
 msgstr ""
 
-#: app/controller/javascript.php:552 public/admin/box_event_cost.php:148
+#: app/controller/javascript.php:552 public/admin/box_event_cost.php:158
 msgid "Max:"
 msgstr ""
 
@@ -186,11 +196,11 @@ msgstr ""
 msgid "Guest Name"
 msgstr ""
 
-#: app/controller/javascript.php:557 app/view/admin/tickets.php:100
+#: app/controller/javascript.php:557 app/view/admin/tickets.php:141
 msgid "Status"
 msgstr ""
 
-#: app/controller/javascript.php:558 app/view/admin/tickets.php:99
+#: app/controller/javascript.php:558 app/view/admin/tickets.php:140
 #: app/view/event/ticket.php:71
 msgid "Email"
 msgstr ""
@@ -208,7 +218,7 @@ msgstr ""
 msgid "Code"
 msgstr ""
 
-#: app/controller/javascript.php:562 public/admin/box_event_cost.php:170
+#: app/controller/javascript.php:562 public/admin/box_event_cost.php:180
 msgid "Unlimited"
 msgstr ""
 
@@ -240,27 +250,27 @@ msgstr ""
 msgid "For week and day view, you must select an interval of at least 6 hours."
 msgstr ""
 
-#: app/model/api/api-abstract.php:58
+#: app/model/api/api-abstract.php:185
 msgid "%s.<br/>Detail: %s."
 msgstr ""
 
-#: app/model/api/api-abstract.php:64
+#: app/model/api/api-abstract.php:191
 msgid "API URL: %s.<br/>Detail: %s"
 msgstr ""
 
-#: app/model/api/api-abstract.php:70
+#: app/model/api/api-abstract.php:197
 msgid "API URL: %s.<br/>Detail: %s - %s"
 msgstr ""
 
-#: app/model/api/api-abstract.php:78
+#: app/model/api/api-abstract.php:205
 msgid "%s. Please reload this page to try again. If this error persists, please contact us at %s. In your report please include the information below.<br/>%s."
 msgstr ""
 
-#: app/model/api/api-abstract.php:85
+#: app/model/api/api-abstract.php:212
 msgid "%s. Please try again. If this error persists, please contact us at %s. In your report please include the information below.<br/>%s."
 msgstr ""
 
-#: app/model/api/api-abstract.php:262
+#: app/model/api/api-abstract.php:403
 msgid "Error decoding the response"
 msgstr ""
 
@@ -268,84 +278,105 @@ msgstr ""
 msgid "We were unable to get the Suggested Events from Time.ly Network"
 msgstr ""
 
-#: app/model/api/api-registration.php:35
-msgid "We were unable to Sign you In for Time.ly Ticketing"
+#: app/model/api/api-registration.php:36
+msgid "We were unable to Sign you In for Time.ly Network"
 msgstr ""
 
-#: app/model/api/api-registration.php:56
-msgid "We were unable to Sign you Up for Time.ly Ticketing"
+#: app/model/api/api-registration.php:57
+msgid "We were unable to Sign you Up for Time.ly Network"
 msgstr ""
 
-#: app/model/api/api-ticketing.php:57
-msgid "The Repeat option was selected but recurrence is not supported by Event with Tickets."
+#: app/model/api/api-registration.php:105
+msgid "We were unable to Sign you Out of Time.ly Network"
 msgstr ""
 
-#: app/model/api/api-ticketing.php:70 app/model/api/api-ticketing.php:82
-msgid "This Event was replicated from another site. Any changes on Tickets were discarded."
-msgstr ""
-
-#: app/model/api/api-ticketing.php:94
-msgid "The Event has the Cost option Ticket selected but no ticket was added."
-msgstr ""
-
-#: app/model/api/api-ticketing.php:203
-msgid "We were unable to create the Event on Time.ly Ticketing"
-msgstr ""
-
-#: app/model/api/api-ticketing.php:205
-msgid "We were unable to update the Event on Time.ly Ticketing"
-msgstr ""
-
-#: app/model/api/api-ticketing.php:239
+#: app/model/api/api-registration.php:135
 msgid "Payment preferences were saved."
 msgstr ""
 
-#: app/model/api/api-ticketing.php:248
+#: app/model/api/api-registration.php:144
 msgid "Payment preferences were not saved."
 msgstr ""
 
-#: app/model/api/api-ticketing.php:450
+#: app/model/api/api-registration.php:172
+msgid "We were unable to get the Sales information from Time.ly Network"
+msgstr ""
+
+#: app/model/api/api-ticketing.php:59
+msgid "This Event was replicated from another site. Changes are not allowed."
+msgstr ""
+
+#: app/model/api/api-ticketing.php:75 app/view/admin/add-new-event.php:334
+#: app/view/admin/all-events.php:214
+msgid "This Event was created using a different account %s. Changes are not allowed."
+msgstr ""
+
+#: app/model/api/api-ticketing.php:103
+msgid "The Repeat option was selected but recurrence is not supported by Event with Tickets."
+msgstr ""
+
+#: app/model/api/api-ticketing.php:116
+msgid "This Event was replicated from another site. Any changes on Tickets were discarded."
+msgstr ""
+
+#: app/model/api/api-ticketing.php:132
+msgid "The Event has the cost option Ticket selected but no ticket was included."
+msgstr ""
+
+#: app/model/api/api-ticketing.php:138
+msgid "You need to save the payments settings to create ticket events."
+msgstr ""
+
+#: app/model/api/api-ticketing.php:248
+msgid "We were unable to create the Event on Time.ly Ticketing"
+msgstr ""
+
+#: app/model/api/api-ticketing.php:250
+msgid "We were unable to update the Event on Time.ly Ticketing"
+msgstr ""
+
+#: app/model/api/api-ticketing.php:430
 msgid "Past Event"
 msgstr ""
 
-#: app/model/api/api-ticketing.php:452
+#: app/model/api/api-ticketing.php:432
 msgid "Event closed"
 msgstr ""
 
-#: app/model/api/api-ticketing.php:454
+#: app/model/api/api-ticketing.php:434
 msgid "Not available yet"
 msgstr ""
 
-#: app/model/api/api-ticketing.php:456
+#: app/model/api/api-ticketing.php:436
 msgid "Sale closed"
 msgstr ""
 
-#: app/model/api/api-ticketing.php:458
+#: app/model/api/api-ticketing.php:438
 msgid "Sold out"
 msgstr ""
 
-#: app/model/api/api-ticketing.php:460
+#: app/model/api/api-ticketing.php:440
 msgid "Not available"
 msgstr ""
 
-#: app/model/api/api-ticketing.php:490
+#: app/model/api/api-ticketing.php:466
 msgid "We were unable to get the Tickets Details from Time.ly Ticketing"
 msgstr ""
 
-#: app/model/api/api-ticketing.php:521
+#: app/model/api/api-ticketing.php:493
 msgid "We were unable to get the Tickets Attendees from Time.ly Ticketing"
 msgstr ""
 
-#: app/model/api/api-ticketing.php:554
-msgid "We were unable to get the Sales information from Time.ly Ticketing"
-msgstr ""
-
-#: app/model/api/api-ticketing.php:630
+#: app/model/api/api-ticketing.php:579 app/model/api/api-ticketing.php:639
 msgid "Event not found inside the database."
 msgstr ""
 
-#: app/model/api/api-ticketing.php:706
-msgid "We were unable to remove the Tickets from Time.ly Ticketing"
+#: app/model/api/api-ticketing.php:619
+msgid "We were unable to Update the Event on Time.ly Network"
+msgstr ""
+
+#: app/model/api/api-ticketing.php:670
+msgid "We were unable to remove the Event on Time.ly Network"
 msgstr ""
 
 #: app/model/event/parent.php:186
@@ -651,23 +682,23 @@ msgstr ""
 msgid "Event Details"
 msgstr ""
 
-#: app/view/admin/add-new-event.php:364
+#: app/view/admin/add-new-event.php:386
 msgid "<span class=\"ai1ec-info-text\">The event was submitted by this Organizer.</span>"
 msgstr ""
 
-#: app/view/admin/add-new-event.php:373
+#: app/view/admin/add-new-event.php:395
 msgid ", email: "
 msgstr ""
 
-#: app/view/admin/add-new-event.php:377
+#: app/view/admin/add-new-event.php:399
 msgid "<span class=\"ai1ec-info-text\">The event was submitted by %s.</span>"
 msgstr ""
 
-#: app/view/admin/add-new-event.php:457
+#: app/view/admin/add-new-event.php:479
 msgid "Set banner image"
 msgstr ""
 
-#: app/view/admin/add-new-event.php:458
+#: app/view/admin/add-new-event.php:480
 msgid "Remove banner image"
 msgstr ""
 
@@ -676,7 +707,7 @@ msgid "Add-ons for All In One Event Calendar"
 msgstr ""
 
 #: app/view/admin/add-ons.php:71
-msgid "Browse All Extensions"
+msgid "Browse All Add-ons"
 msgstr ""
 
 #: app/view/admin/add-ons.php:74
@@ -699,15 +730,15 @@ msgstr ""
 msgid "Event date/time"
 msgstr ""
 
-#: app/view/admin/all-events.php:22
+#: app/view/admin/all-events.php:21
 msgid "Ticket Types"
 msgstr ""
 
-#: app/view/admin/all-events.php:134
+#: app/view/admin/all-events.php:128
 msgid "Show All "
 msgstr ""
 
-#: app/view/admin/all-events.php:147
+#: app/view/admin/all-events.php:141
 msgid "Show All Authors"
 msgstr ""
 
@@ -874,7 +905,7 @@ msgid "All-in-One Event Calendar: Settings"
 msgstr ""
 
 #: app/view/admin/settings.php:68 app/view/admin/settings.php:69
-#: app/view/admin/tickets.php:85 lib/date/timezone.php:366
+#: app/view/admin/tickets.php:128 lib/date/timezone.php:366
 msgid "Settings"
 msgstr ""
 
@@ -920,80 +951,11 @@ msgstr ""
 msgid "Cache Report"
 msgstr ""
 
-#: app/view/admin/settings.php:171
-msgid "Sign Up for a <b>Timely Network</b> account. It's free."
-msgstr ""
-
-#: app/view/admin/settings.php:182 app/view/admin/tickets.php:93
-#: public/admin/box_ask_customer_review.php:113
-#: public/admin/box_ask_customer_review.php:127
-#: public/admin/box_ask_customer_review.php:141
-#: public/admin/box_ask_customer_review.php:159
-#: public/admin/box_event_cost.php:97 public/admin/box_event_cost.php:120
-msgid "This field is required."
-msgstr ""
-
-#: app/view/admin/settings.php:183 app/view/event/ticket.php:25
-msgid "Register"
-msgstr ""
-
-#: app/view/admin/settings.php:184
-msgid "Sign in"
-msgstr ""
-
-#: app/view/admin/settings.php:185
-msgid "You are successfully signed in to <b>Timely Network</b>."
-msgstr ""
-
-#: app/view/admin/settings.php:186
-msgid "Sign out"
-msgstr ""
-
-#: app/view/admin/settings.php:187
-msgid "Hide form"
-msgstr ""
-
-#: app/view/admin/settings.php:188
-msgid "Show form"
-msgstr ""
-
-#: app/view/admin/settings.php:189
-msgid "Full Name:"
-msgstr ""
-
-#: app/view/admin/settings.php:190
-msgid "Email:"
-msgstr ""
-
-#: app/view/admin/settings.php:191
-msgid "Password:"
-msgstr ""
-
-#: app/view/admin/settings.php:192
-msgid "Confirm Password:"
-msgstr ""
-
-#: app/view/admin/settings.php:193
-msgid "Phone Number:"
-msgstr ""
-
-#: app/view/admin/settings.php:194
-msgid "I confirm that I have read, understand and agree with the <a href=\"https://ticketing.time.ly/terms\">terms and conditions</a>."
-msgstr ""
-
-#: app/view/admin/settings.php:197
-msgid "Sign Up"
-msgstr ""
-
-#: app/view/admin/settings.php:198
-msgid "Sign In"
-msgstr ""
-
-#: app/view/admin/settings.php:212 app/view/admin/ticketing-invitation.php:72
+#: app/view/admin/settings.php:169
 msgid "Save Settings"
 msgstr ""
 
-#: app/view/admin/settings.php:219
+#: app/view/admin/settings.php:176
 msgid "If the form below is not working please follow <a href=\"%s\">this link</a>."
 msgstr ""
 
@@ -1050,82 +1012,252 @@ msgstr ""
 msgid "All-in-One Event Calendar: Themes"
 msgstr ""
 
-#: app/view/admin/ticketing-invitation.php:32
-#: app/view/admin/ticketing-invitation.php:33
-msgid "Invitation"
-msgstr ""
-
-#: app/view/admin/ticketing-invitation.php:48
-msgid "Ticketing Beta Invitation"
-msgstr ""
-
-#: app/view/admin/ticketing-invitation.php:68
-msgid "Enable Ticketing Beta"
-msgstr ""
-
-#: app/view/admin/ticketing-invitation.php:95
-msgid "Time.ly Ticketing beta"
-msgstr ""
-
-#: app/view/admin/tickets.php:36
+#: app/view/admin/tickets.php:35
 msgid "Ticketing"
 msgstr ""
 
-#: app/view/admin/tickets.php:37
+#: app/view/admin/tickets.php:36
 msgid "Ticketing<sup>beta</sup>"
 msgstr ""
 
-#: app/view/admin/tickets.php:71 app/view/admin/tickets.php:82
-msgid "Time.ly Ticketing<sup>beta</sup>"
+#: app/view/admin/tickets.php:66
+msgid "Please, Sign Up to Time.ly Network."
+msgstr ""
+
+#: app/view/admin/tickets.php:77 app/view/admin/tickets.php:134
+#: public/admin/box_ask_customer_review.php:113
+#: public/admin/box_ask_customer_review.php:127
+#: public/admin/box_ask_customer_review.php:141
+#: public/admin/box_ask_customer_review.php:159
+#: public/admin/box_event_cost.php:107 public/admin/box_event_cost.php:130
+msgid "This field is required."
+msgstr ""
+
+#: app/view/admin/tickets.php:78 app/view/event/ticket.php:25
+msgid "Register"
+msgstr ""
+
+#: app/view/admin/tickets.php:79
+msgid "Sign in"
+msgstr ""
+
+#: app/view/admin/tickets.php:83
+msgid "Sign out"
+msgstr ""
+
+#: app/view/admin/tickets.php:84
+msgid "Full Name:"
+msgstr ""
+
+#: app/view/admin/tickets.php:85
+msgid "Email:"
 msgstr ""
 
 #: app/view/admin/tickets.php:86
-msgid "Sales"
+msgid "Password:"
 msgstr ""
 
 #: app/view/admin/tickets.php:87
-msgid "How do you want the tickets revenue to be sent to you?"
+msgid "Confirm Password:"
 msgstr ""
 
 #: app/view/admin/tickets.php:88
-msgid "If no payout method is selected, Time.ly will collect the revenue on behalf of you. Please contact payouts@time.ly for any outstanding payouts."
+msgid "Phone Number:"
 msgstr ""
 
-#: app/view/admin/tickets.php:91
-msgid "Cheque"
+#: app/view/admin/tickets.php:89
+msgid "I confirm that I have read, understand and agree with the <a href=\"https://ticketing.time.ly/terms\">terms and conditions</a>."
 msgstr ""
 
-#: app/view/admin/tickets.php:92 public/admin/box_eventbrite.php:103
-msgid "Paypal"
-msgstr ""
-
-#: app/view/admin/tickets.php:94
-msgid "Save Changes"
+#: app/view/admin/tickets.php:92
+msgid "Signing up for a Time.ly Network account is currently unavailable.<br />Please, try again later."
 msgstr ""
 
 #: app/view/admin/tickets.php:95
+msgid "<h4>Attention Required:</h4>If you sign out all your Tickets on the Timely Network will become unavailable immediately. You are responsible for refunding the ticket holders if any of the events were cancelled. Please, read the <a href=\"https://ticketing.time.ly/terms\">Terms&nbsp;and&nbsp;Conditions</a> for more details."
+msgstr ""
+
+#: app/view/admin/tickets.php:98 public/admin/box_repeat.php:116
+#: public/admin/plugins/ics/display_feeds.php:84
+msgid "Cancel"
+msgstr ""
+
+#: app/view/admin/tickets.php:99 app/view/admin/tickets.php:143
+msgid "Sign Out"
+msgstr ""
+
+#: app/view/admin/tickets.php:100
+msgid "Sign Up"
+msgstr ""
+
+#: app/view/admin/tickets.php:101
+msgid "Sign In"
+msgstr ""
+
+#: app/view/admin/tickets.php:112 app/view/admin/tickets.php:124
+msgid "Time.ly Ticketing<sup>beta</sup>"
+msgstr ""
+
+#: app/view/admin/tickets.php:129
+msgid "Sales"
+msgstr ""
+
+#: app/view/admin/tickets.php:130
+msgid "Please provide your PayPal details."
+msgstr ""
+
+#: app/view/admin/tickets.php:131
+msgid "Cheque"
+msgstr ""
+
+#: app/view/admin/tickets.php:132
+msgid "PayPal"
+msgstr ""
+
+#: app/view/admin/tickets.php:133
+msgid "Preferred currency:"
+msgstr ""
+
+#: app/view/admin/tickets.php:135
+msgid "Save Changes"
+msgstr ""
+
+#: app/view/admin/tickets.php:136
 msgid "Date"
 msgstr ""
 
-#: app/view/admin/tickets.php:96
+#: app/view/admin/tickets.php:137
 msgid "Event"
 msgstr ""
 
-#: app/view/admin/tickets.php:97
+#: app/view/admin/tickets.php:138
 msgid "Purchaser"
 msgstr ""
 
-#: app/view/admin/tickets.php:98 app/view/calendar/view/abstract.php:107
+#: app/view/admin/tickets.php:139 app/view/calendar/view/abstract.php:107
 #: app/view/event/ticket.php:39
 msgid "Tickets"
 msgstr ""
 
-#: app/view/admin/tickets.php:101
+#: app/view/admin/tickets.php:142
 msgid "Total"
 msgstr ""
 
-#: app/view/admin/tickets.php:102
-msgid "Sign Out"
+#: app/view/admin/tickets.php:159
+msgid "United States Dollar"
+msgstr ""
+
+#: app/view/admin/tickets.php:160
+msgid "Canadian Dollar"
+msgstr ""
+
+#: app/view/admin/tickets.php:161
+msgid "Australian Dollar"
+msgstr ""
+
+#: app/view/admin/tickets.php:162
+msgid "Brazilian Real"
+msgstr ""
+
+#: app/view/admin/tickets.php:162 app/view/admin/tickets.php:170
+#: app/view/admin/tickets.php:183
+msgid "Note: This currency is supported as a payment currency and a currency balance for in-country PayPal accounts only."
+msgstr ""
+
+#: app/view/admin/tickets.php:163
+msgid "Czech Koruna"
+msgstr ""
+
+#: app/view/admin/tickets.php:164
+msgid "Danish Krone"
+msgstr ""
+
+#: app/view/admin/tickets.php:165
+msgid "Euro"
+msgstr ""
+
+#: app/view/admin/tickets.php:166
+msgid "Hong Kong Dollar"
+msgstr ""
+
+#: app/view/admin/tickets.php:167
+msgid "Hungarian Forint"
+msgstr ""
+
+#: app/view/admin/tickets.php:167 app/view/admin/tickets.php:181
+msgid "Note: Decimal amounts are not supported for this currency. Passing a decimal amount will throw an error."
+msgstr ""
+
+#: app/view/admin/tickets.php:168
+msgid "Israeli New Sheqel"
+msgstr ""
+
+#: app/view/admin/tickets.php:169
+msgid "Japanese Yen"
+msgstr ""
+
+#: app/view/admin/tickets.php:169
+msgid "Note: This currency does not support decimals. Passing a decimal amount will throw an error. 1,000,000"
+msgstr ""
+
+#: app/view/admin/tickets.php:170
+msgid "Malaysian Ringgit"
+msgstr ""
+
+#: app/view/admin/tickets.php:171
+msgid "Mexican Peso"
+msgstr ""
+
+#: app/view/admin/tickets.php:172
+msgid "Norwegian Krone"
+msgstr ""
+
+#: app/view/admin/tickets.php:173
+msgid "New Zealand Dollar"
+msgstr ""
+
+#: app/view/admin/tickets.php:174
+msgid "Philippine Peso"
+msgstr ""
+
+#: app/view/admin/tickets.php:175
+msgid "Polish Zloty"
+msgstr ""
+
+#: app/view/admin/tickets.php:176
+msgid "Pound Sterling"
+msgstr ""
+
+#: app/view/admin/tickets.php:177
+msgid "Russian Ruble"
+msgstr ""
+
+#: app/view/admin/tickets.php:177
+msgid "For in-border payments (payments made within Russia), the Russian Ruble is the only accepted currency. If you use another currency for in-border payments, the transaction will fail"
+msgstr ""
+
+#: app/view/admin/tickets.php:178
+msgid "Singapore Dollar"
+msgstr ""
+
+#: app/view/admin/tickets.php:179
+msgid "Swedish Krona"
+msgstr ""
+
+#: app/view/admin/tickets.php:180
+msgid "Swiss Franc"
+msgstr ""
+
+#: app/view/admin/tickets.php:181
+msgid "Taiwan New Dollar"
+msgstr ""
+
+#: app/view/admin/tickets.php:182
+msgid "Thai Baht"
+msgstr ""
+
+#: app/view/admin/tickets.php:183
+msgid "Turkish Lira"
 msgstr ""
 
 #: app/view/admin/widget-creator.php:24 app/view/admin/widget-creator.php:25
@@ -1423,7 +1555,7 @@ msgstr ""
 msgid "Add to Calendar"
 msgstr ""
 
-#: app/view/event/single.php:121 public/admin/box_event_cost.php:308
+#: app/view/event/single.php:121 public/admin/box_event_cost.php:316
 msgid "Cost:"
 msgstr ""
 
@@ -1447,11 +1579,11 @@ msgstr ""
 msgid "Edit this occurrence (%s)"
 msgstr ""
 
-#: app/view/event/single.php:238
+#: app/view/event/single.php:221
 msgid "This post was replicated from another site's <a href=\"%s\" title=\"iCalendar feed\"><i class=\"ai1ec-fa ai1ec-fa-calendar\"></i> calendar feed</a>."
 msgstr ""
 
-#: app/view/event/single.php:249
+#: app/view/event/single.php:232
 msgid "View original"
 msgstr ""
 
@@ -1885,7 +2017,7 @@ msgstr ""
 msgid "It is currently not supported to embed more than one calendar in the same page. Do not attempt to embed the calendar via shortcode in a page that already displays the calendar."
 msgstr ""
 
-#: lib/import-export/ics.php:862
+#: lib/import-export/ics.php:864
 msgid "Tickets: "
 msgstr ""
 
@@ -2160,7 +2292,7 @@ msgstr ""
 msgid "The calendar is temporarily disabled due to a rendering error. Please <a href=\"javascript:location.reload();\">reload the page</a>."
 msgstr ""
 
-#: public/admin/agenda-widget-form.php:2 public/admin/box_event_cost.php:94
+#: public/admin/agenda-widget-form.php:2 public/admin/box_event_cost.php:104
 msgid "Title:"
 msgstr ""
 
@@ -2327,107 +2459,119 @@ msgstr ""
 msgid "Event cost and Tickets"
 msgstr ""
 
-#: public/admin/box_event_cost.php:20
-msgid "Ticket options not available - event imported from external calendar."
+#: public/admin/box_event_cost.php:19
+msgid "Cost options not available, this event was imported from an external calendar."
 msgstr ""
 
-#: public/admin/box_event_cost.php:28
+#: public/admin/box_event_cost.php:25
+msgid "This event was created using Timely Network. Sign in with the accouunt %s to see the Ticket options."
+msgstr ""
+
+#: public/admin/box_event_cost.php:29
+msgid "Sign In for Timely Network"
+msgstr ""
+
+#: public/admin/box_event_cost.php:37
 msgid "No Tickets"
 msgstr ""
 
-#: public/admin/box_event_cost.php:35
+#: public/admin/box_event_cost.php:43
 msgid "Time.ly Tickets<sup>beta</sup>"
 msgstr ""
 
-#: public/admin/box_event_cost.php:41
+#: public/admin/box_event_cost.php:49
 msgid "External Tickets"
 msgstr ""
 
-#: public/admin/box_event_cost.php:52
+#: public/admin/box_event_cost.php:59
 msgid "Ticketing allows you to sell tickets directly to the users."
 msgstr ""
 
-#: public/admin/box_event_cost.php:55
+#: public/admin/box_event_cost.php:62
 msgid "Sign Up for Timely Network"
 msgstr ""
 
-#: public/admin/box_event_cost.php:80
+#: public/admin/box_event_cost.php:72
+msgid "Please, provide valid payout details to use Ticketing."
+msgstr ""
+
+#: public/admin/box_event_cost.php:75
+msgid "Ticketing Settings"
+msgstr ""
+
+#: public/admin/box_event_cost.php:90
 msgid "Remove Ticket Type"
 msgstr ""
 
-#: public/admin/box_event_cost.php:103
+#: public/admin/box_event_cost.php:113
 msgid "Ex.: Regular Ticket"
 msgstr ""
 
-#: public/admin/box_event_cost.php:107
+#: public/admin/box_event_cost.php:117
 msgid "Description:"
 msgstr ""
 
-#: public/admin/box_event_cost.php:113
+#: public/admin/box_event_cost.php:123
 msgid "(Optional)"
 msgstr ""
 
-#: public/admin/box_event_cost.php:117
+#: public/admin/box_event_cost.php:127
 msgid "Price:"
 msgstr ""
 
-#: public/admin/box_event_cost.php:128
-msgid "USD"
-msgstr ""
-
-#: public/admin/box_event_cost.php:132
+#: public/admin/box_event_cost.php:142
 msgid "Limits:"
 msgstr ""
 
-#: public/admin/box_event_cost.php:135
+#: public/admin/box_event_cost.php:145
 msgid "This fields are required."
 msgstr ""
 
-#: public/admin/box_event_cost.php:160
+#: public/admin/box_event_cost.php:170
 msgid "Quantity:"
 msgstr ""
 
-#: public/admin/box_event_cost.php:188
+#: public/admin/box_event_cost.php:198
 msgid "Available:"
 msgstr ""
 
-#: public/admin/box_event_cost.php:203
+#: public/admin/box_event_cost.php:213
 msgid "Immediately"
 msgstr ""
 
-#: public/admin/box_event_cost.php:216
+#: public/admin/box_event_cost.php:226
 msgid "From:"
 msgstr ""
 
-#: public/admin/box_event_cost.php:237
+#: public/admin/box_event_cost.php:247
 msgid "Till:"
 msgstr ""
 
-#: public/admin/box_event_cost.php:258
+#: public/admin/box_event_cost.php:268
 msgid "Status:"
 msgstr ""
 
-#: public/admin/box_event_cost.php:265
+#: public/admin/box_event_cost.php:275
 msgid "Open"
 msgstr ""
 
-#: public/admin/box_event_cost.php:269
+#: public/admin/box_event_cost.php:279
 msgid "Closed"
 msgstr ""
 
-#: public/admin/box_event_cost.php:284
+#: public/admin/box_event_cost.php:294
 msgid "Add New Ticket Type"
 msgstr ""
 
-#: public/admin/box_event_cost.php:302
+#: public/admin/box_event_cost.php:310
 msgid "Free Event"
 msgstr ""
 
-#: public/admin/box_event_cost.php:328
+#: public/admin/box_event_cost.php:336
 msgid "Tickets URL:"
 msgstr ""
 
-#: public/admin/box_event_cost.php:332
+#: public/admin/box_event_cost.php:340
 msgid "Registration URL:"
 msgstr ""
 
@@ -2527,6 +2671,10 @@ msgstr ""
 msgid "Payment Options"
 msgstr ""
 
+#: public/admin/box_eventbrite.php:103
+msgid "Paypal"
+msgstr ""
+
 #: public/admin/box_eventbrite.php:105
 msgid "Google Checkout"
 msgstr ""
@@ -2570,11 +2718,6 @@ msgstr ""
 
 #: public/admin/box_repeat.php:111
 msgid "Apply"
-msgstr ""
-
-#: public/admin/box_repeat.php:116
-#: public/admin/plugins/ics/display_feeds.php:84
-msgid "Cancel"
 msgstr ""
 
 #: public/admin/box_support.php:4

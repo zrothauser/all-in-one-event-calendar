@@ -92,6 +92,11 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 			'not_avail_text'        => Ai1ec_I18n::__(
 				'Signing up for a Time.ly Network account is currently unavailable.<br />Please, try again later.'
 			),
+			'sign_out_warning'      => Ai1ec_I18n::__(
+				'<h4>Attention Required:</h4>If you sign out all your Tickets on the Timely Network will become unavailable immediately. You are responsible for refunding the ticket holders if any of the events were cancelled. Please, read the <a href="https://ticketing.time.ly/terms">Terms&nbsp;and&nbsp;Conditions</a> for more details.'
+			),
+			'sign_out_cancel'       => Ai1ec_I18n::__( 'Cancel' ),
+			'sign_out_confirm'      => Ai1ec_I18n::__( 'Sign Out' ),
 			'sign_up_button_text'   => Ai1ec_I18n::__( 'Sign Up' ),
 			'sign_in_button_text'   => Ai1ec_I18n::__( 'Sign In' ),
 		);

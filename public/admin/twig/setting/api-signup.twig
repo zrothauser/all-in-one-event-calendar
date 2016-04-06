@@ -1,10 +1,23 @@
 {% if api_signed %}
 <div class="ai1ec-well" id="ai1ec-api-signed-in">
-	<i class="ai1ec-fa ai1ec-fa-check ai1ec-fa-fw" style="color:#6AAB2D"></i>
+	<i class="ai1ec-fa ai1ec-fa-check ai1ec-fa-fw"></i>
 	{{ signed_in_text | raw }}
 	<a href="#" id="ai1ec-api-signout" class="ai1ec-pull-right ai1ec-hidden"
 	   data-action="{{ api_action }}">{{ sign_out_text }}</a>
 	{{ wp_nonce_field( nonce.action, nonce.name, nonce.referrer ) }}
+	<div id="ai1ec-api-signout-confirm">
+		{{ sign_out_warning | raw }}
+		<div class="ai1ec-api-signout-buttons">
+			<a href="#" class="ai1ec-btn ai1ec-btn-cancel ai1ec-btn-warning"
+			   id="ai1ec-api-signout-cancel">
+					{{ sign_out_cancel }}
+			</a>
+			<a href="#" class="ai1ec-btn ai1ec-btn-danger"
+			   id="ai1ec-api-signout-button">
+					{{ sign_out_confirm }}
+			  </a>
+		</div>
+	</div>
 </div>
 {% elseif signup_available %}
 <div class="timely-api ai1ec-well">

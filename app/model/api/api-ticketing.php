@@ -129,7 +129,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			return $error;
 		}
 		if ( 0 === $this->_count_valid_tickets( $_POST['ai1ec_tickets'] ) ) {
-			$message      = __( 'The Event has the Cost option Ticket selected but no ticket was added.', AI1EC_PLUGIN_NAME );
+			$message      = __( 'The Event has the cost option Ticket selected but no ticket was included.', AI1EC_PLUGIN_NAME );
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
 			return $message;

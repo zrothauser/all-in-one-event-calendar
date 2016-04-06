@@ -16,6 +16,7 @@ define(
 			) {
 				$this.addClass( 'ai1ec-error' );
 				$this.closest( 'td' ).find( '.ai1ec-ticket-field-error' ).show();
+				$this.prev( '.ai1ec-ticket-field-error' ).show();
 			}
 		} );
 		if ( ! $( '.ai1ec-ticket-field-error:visible' ).length ) {
@@ -24,6 +25,39 @@ define(
 		}
 		return false;
 	} );
+
+	$( '[name="ai1ec_tickets_signin"]' ).on( 'click', function() {
+		$( '.ai1ec-ticket-field-error' ).hide();
+		$( '.ai1ec-required:visible' ).each( function() {
+			var $this = $( this );
+			$this.removeClass( 'ai1ec-error' );
+			if (
+				! $.trim( $this.val() ) ||
+				( 'checkbox' === $this.attr( 'type' ) && ! this.checked )
+			) {
+				$this.addClass( 'ai1ec-error' );
+				$this.closest( 'td' ).find( '.ai1ec-ticket-field-error' ).show();
+			}
+		} );
+		if ( ! $( '.ai1ec-ticket-field-error:visible' ).length ) {
+			$( '.ai1ec-noauto' ).remove();
+			var
+				$form_div = $( '#ai1ec-api-signup-form' ),
+				action    = $form_div.attr( 'data-action' ),
+				$form     = $( '<form></form', {
+					method : 'POST',
+					action : action,
+					class  : 'ai1ec-hidden'
+				} );
+			
+			$form_div.appendTo( $form );
+			$form.appendTo( 'body' ).submit();
+			
+		}
+		return false;
+	} );
+
+	
 	$( 'input[name="ai1ec_payment_method"]' ).on( 'click change', function() {
 		$( '.ai1ec-payment-details' ).removeClass( 'ai1ec-active' );
 		$( this ).closest( 'li' )
@@ -32,6 +66,7 @@ define(
 	} );
 
 	$( '[name="ai1ec_signing"]' ).on( 'click', function() {
+		$( '.ai1ec-error' ).removeClass( 'ai1ec-error' );
 		if ( '2' === this.value ) {
 			$( '.ai1ec-ticketing-signup tr' ).not( ':first' ).not( '.signin' ).hide();
 			$( '.signin' ).removeClass( 'ai1ec-hidden' );
@@ -40,6 +75,41 @@ define(
 			$( '.signin:last' ).addClass( 'ai1ec-hidden' );
 		}
 	} );
+
+	$( '#ai1ec-api-signout' ).on( 'click', function() {
+		$( '#ai1ec-api-signout-confirm' ).show();
+		$( this ).hide();
+		return false;
+	} );
+
+	$( '#ai1ec-api-signout-cancel' ).on( 'click', function() {
+		$( '#ai1ec-api-signout-confirm' ).hide();
+		$( '#ai1ec-api-signout' ).show();
+		return false;
+	} );
+
+	$( '#ai1ec-api-signout-confirm' ).on( 'click', function() {
+		if ( ! $( '#ai1ec-api-signout-confirm:visible' ).length ) {
+			return false;
+		}
+		var
+			$container = $( '#ai1ec-api-signed-in' ),
+			action     = $( '#ai1ec-api-signout' ).attr( 'data-action' ),
+			$input     = $( '<input type="hidden" name="ai1ec_signout" value="1" />' ),
+			$form      = $( '<form></form', {
+				method : 'POST',
+				action : action,
+				class  : 'ai1ec-hidden'
+			} );
+
+		$form
+			.append( $input, $container )
+			.appendTo( 'body' )
+			.submit();
+		
+		return false;
+	} );
+
 
 	$( '.ai1ec-tickets-manage ul.ai1ec-nav-tabs li' ).on( 'click', function() {
 		$( '.ai1ec-tickets-manage ul.ai1ec-nav-tabs li.ai1ec-active' )
@@ -249,6 +319,7 @@ define(
 		} );
 		return false;
 	} );
+
 	
 	// Sanitizing values received from API.
 	var _s = function ( val ) {

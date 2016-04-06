@@ -1,6 +1,6 @@
 {{ navigation | raw }}
 
-<div class="ai1ec-agenda-view">
+<div class="ai1ec-agenda-view{% if has_product_buy_button %} ai1ec-has-product-buy-button{% endif %}">
 	{% if dates is empty %}
 		<p class="ai1ec-no-results">
 			{{ text_upcoming_events }}
@@ -27,6 +27,9 @@
 								ai1ec-event-instance-id-{{ event.instance_id }}
 								{% if event.is_allday %}ai1ec-allday{% endif %}
 								{% if expanded %}ai1ec-expanded{% endif %}"
+								{% if event.ticket_url is not empty %}
+									data-ticket-url="{{ event.ticket_url | e( 'html_attr' ) }}"
+								{% endif %}
 								data-end="{{ event.end }}">
 
 								<div class="ai1ec-event-header">

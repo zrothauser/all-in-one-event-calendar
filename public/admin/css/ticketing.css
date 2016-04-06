@@ -49,7 +49,7 @@
 .timely .ai1ec-payment-details input {
 	display: block;
 	margin: 2px;
-	width: 260px;
+	width: 290px;
 }
 .timely .ai1ec-payment-details input[name="ai1ec_postal"] {
 	width: 140px;
@@ -57,7 +57,7 @@
 .timely .ai1ec-payment-method {
 	padding: 15px;
 	display: inline-block;
-	width: 500px;
+	width: 550px;
 	border: 1px solid #ddd;
 	background: none;
 }
@@ -149,4 +149,21 @@ a.ai1ec-tickets-edit {
 }
 .ai1ec-ticket-details-row .ai1ec-ticket-attendees td {
 	background: #fff;
+}
+#ai1ec-api-signed-in {
+	margin-top: 10px;
+	max-width: 550px;
+}
+#ai1ec-api-signed-in .ai1ec-fa-check {
+	color:#6AAB2D;
+}
+#ai1ec_currency {
+	width: 293px;
+}
+#ai1ec-api-signout-confirm {
+	display: none;
+	padding: 20px;
+}
+.ai1ec-api-signout-buttons {
+	margin-top: 10px;
 }

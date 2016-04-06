@@ -16,11 +16,9 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 		$columns['author']           = __( 'Author',          AI1EC_PLUGIN_NAME );
 		$columns['date']             = __( 'Post Date',       AI1EC_PLUGIN_NAME );
 		$columns['ai1ec_event_date'] = __( 'Event date/time', AI1EC_PLUGIN_NAME );
-		if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ) {
-			$api = $this->_registry->get( 'model.api.api-ticketing' );
-			if ( $api->is_signed() ) {
-				$columns['tickets'] = __( 'Ticket Types',    AI1EC_PLUGIN_NAME );
-			}
+		$api = $this->_registry->get( 'model.api.api-ticketing' );
+		if ( $api->is_signed() ) {
+			$columns['tickets'] = __( 'Ticket Types',    AI1EC_PLUGIN_NAME );
 		}
 		return $columns;
 	}
@@ -70,19 +68,15 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 				// event wasn't found, output empty string
 				echo '';
 			}
-		}
-		if ( 'tickets' === $column ) {
+		} else if ( 'tickets' === $column ) {
 			$api = $this->_registry->get( 'model.api.api-ticketing' );
 			if ( $api->is_ticket_event_imported( $post_id ) ) {
 				echo '';
 			} else {
 				try {				
-					$event        = $this->_registry->get( 'model.event', $post_id );				
-					$api_event_id = get_post_meta(
-						$post_id,
-						Ai1ec_Api_Ticketing::EVENT_ID_METADATA,
-						true
-					);				
+					$event        = $this->_registry->get( 'model.event', $post_id );
+					$api          = $this->_registry->get( 'model.api.api-ticketing' );
+					$api_event_id = $api->get_api_event_id( $post_id );
 					if ( $api_event_id ) {
 						echo '<a href="#" class="ai1ec-has-tickets" data-post-id="'
 							. $post_id . '">'
@@ -213,7 +207,17 @@ class Ai1ec_View_Admin_All_Events extends Ai1ec_Base {
 	public function show_ticket_details() {
 		$post_id = $_POST['ai1ec_event_id'];
 		$api     = $this->_registry->get( 'model.api.api-ticketing' );
-		$tickets = $api->get_ticket_types( $post_id );
+		if ( $api->is_ticket_event_from_another_account( $post_id ) )  {
+			$tickets = json_encode( 
+				array( 'data' => array(), 'error' => 
+					sprintf(
+						__( 'This Event was created using a different account %s. Changes are not allowed.', AI1EC_PLUGIN_NAME ), 
+						$api->get_api_event_account( $post_id )
+					)
+			) );
+		} else {
+			$tickets = $api->get_ticket_types( $post_id );
+		}
 		echo $tickets;
 		wp_die();
 	}

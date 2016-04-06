@@ -79,12 +79,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		$longitude             = '';
 		$latitude              = '';
 		$coordinates           = '';
-		$ticket_url            = '';
-		$tickets               = array( null );
-		$ticketing             = false;
-		$message               = false;
-		$loading_error         = false;
-		$ticket_event_imported = false;
+		$ticket_url            = '';				
 
 		$instance_id = false;
 		if ( isset( $_REQUEST['instance'] ) ) {
@@ -298,37 +293,60 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 				}
 			}
 		}
-		if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ) {
-			$api                   = $this->_registry->get( 'model.api.api-ticketing' );
-			$ticketing             = $api->is_signed();
-			$message               = $api->get_sign_message();
-			$loading_error         = null;
-			$ticket_event_imported = false;
-	
-			if ( $event ) {
-				$ticket_event_imported = $api->is_ticket_event_imported( $event->get( 'post_id' ) );
-				if ( $ticketing || $ticket_event_imported ) {
-					if ( 'tickets' === $cost_type ) {
-						$response = json_decode( $api->get_ticket_types( $event->get( 'post_id' ) ) );
-						if ( isset( $response->data ) ) {
-							$tickets = array_merge( $tickets, $response->data );
-						}
-						if ( isset( $response->error ) ) {
-							$loading_error = $response->error;
-						}
+
+		$api                   = $this->_registry->get( 'model.api.api-ticketing' );
+		$ticketing             = $api->is_signed();
+		$message               = $api->get_sign_message();		
+		$ticket_error          = null;
+		$ticket_event_imported = false;
+		$tickets               = array( null );
+
+		if ( $event ) {
+			$is_ticket_event       = ! is_null( $api->get_api_event_id( $event->get( 'post_id' ) ) );
+			$ticket_event_account  = $api->get_api_event_account( $event->get( 'post_id' ) );
+			$ticket_event_imported = $api->is_ticket_event_imported( $event->get( 'post_id' ) );
+			if ( $ticketing || $ticket_event_imported ) {
+				if ( 'tickets' === $cost_type ) {
+					$response = json_decode( $api->get_ticket_types( $event->get( 'post_id' ) ) );
+					if ( isset( $response->data ) ) {
+						$tickets = array_merge( $tickets, $response->data );
+					}
+					if ( isset( $response->error ) ) {
+						$ticket_error = $response->error;
 					}
 				}
 				$uid = $event->get_uid();
 			} else {
 				$uid = $empty_event->get_uid();
-			}
-			
-		}
-
-		if ( $event ) {
+			}			
 			$uid = $event->get_uid();
 		} else {
-			$uid = $empty_event->get_uid();
+			$is_ticket_event      = false;
+			$ticket_event_account = '';
+			$uid                  = $empty_event->get_uid();
+		}
+
+		if ( $ticketing ) {
+			if ( $event ) {
+				$ticket_currency = $api->get_api_event_currency( $event->get( 'post_id' ) );
+				if ( $api->is_ticket_event_from_another_account( $event->get( 'post_id' ) ) )  {
+					$ticket_error  = sprintf(
+						__( 'This Event was created using a different account %s. Changes are not allowed.', AI1EC_PLUGIN_NAME ), 
+						$api->get_api_event_account( $event->get( 'post_id' ) )
+					);
+				} 
+			}			
+			if ( ! isset( $ticket_currency ) || is_null( $ticket_currency ) ) {
+				//for new ticket events get the currency from the payments settings
+				$payments_settings = $api->get_payment_settings();
+				if ( null !== $payments_settings ) {
+					$ticket_currency = $payments_settings['currency'];
+				} else {
+					$ticket_currency = 'USD';
+				}
+			}
+		} else {
+			$ticket_currency = '';
 		}
 
 		$args = array(
@@ -339,12 +357,16 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			'uid'                   => $uid,
 			'tickets'               => $tickets,
 			'ticketing'             => $ticketing,
+			'valid_payout_details'  => $api->has_payment_settings(),
 			'tickets_message'       => $message,
 			'start'                 => $start,
 			'end'                   => $end,
-			'tickets_loading_error' => $loading_error,
+			'tickets_loading_error' => $ticket_error,
 			'ticket_event_imported' => $ticket_event_imported,
-			'is_free'               => $is_free
+			'is_free'               => $is_free,
+			'ticket_currency'       => $ticket_currency,
+			'is_ticket_event'       => $is_ticket_event,
+			'ticket_event_account'  => $ticket_event_account
 		);
 
 		$boxes[] = $theme_loader

@@ -23,7 +23,7 @@ class Ai1ec_Calendar_Updates extends Ai1ec_Base {
 	 *
 	 * @const string
 	 */
-	const SECONDARY_END_POINT = 'http://cdn.update.time.ly/updates/updates.json';
+	const SECONDARY_END_POINT = 'http://checkout.time.ly/update';
 
 	/**
 	 * Check updates and return additional info.
@@ -125,8 +125,15 @@ class Ai1ec_Calendar_Updates extends Ai1ec_Base {
 	 * @return array|WP_Error Request result.
 	 */
 	protected function _get_data_from_endpoint( $endpoint ) {
+
+		// Use ticketing token to check for subscriptions
+		$token = $this->_registry->get( 'model.api.api-registration' )->get_timely_token();
+		if ( null === $token ) {
+			$token = '';
+		}
+
 		return wp_remote_get(
-			$endpoint,
+			$endpoint . '/' . $token,
 			array (
 				'timeout'   => 15,
 				'sslverify' => false,

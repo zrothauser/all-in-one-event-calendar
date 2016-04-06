@@ -195,15 +195,26 @@ define(
 					.removeClass( 'ai1ec-collapse' ).css( 'height', 'auto' );
 
 				warnings.push( ai1ec_config.ticketing_required_fields );
-			} else {
-				var i = 0;
+			} 
+			if ( $( '#ai1ec_repeat' ).prop( 'checked' ) === true ) {
+				show_warning = true;
+				warnings.push( ai1ec_config.ticketing_repeat_not_supported );
+			}						
+			if ( false === show_warning ) {
+				var i             = 0;
+				var tickets_count = 0;
 				$( '.ai1ec-tickets-edit-form' )
 					.not( '.ai1ec-tickets-form-template' )
 					.each( function() {
 						var $ticket = $( this );
+						var removed = false;
 						$ticket.find( '.ai1ec-tickets-fields' ).remove();
 						$ticket.find( 'select, input' ).each( function() {
-							if ( ! this.name ) return;
+							if ( ! this.name ) {
+								return;
+							} else if ( 'remove' === this.name ) {
+								removed = true;
+							}
 							var curr_value = this.value;
 							if ( 'checkbox' == this.type ) {
 					 			if ( true == this.checked ) {
@@ -219,8 +230,16 @@ define(
 								value : curr_value
 							} ).appendTo( $ticket );
 						} );
+						if ( ! removed ) {
+							tickets_count++;
+						}
 						i ++;
-					} );
+					} 
+				);
+				if ( 0 === tickets_count ) {
+					show_warning = true;
+					warnings.push( ai1ec_config.ticketing_no_tickets_included );
+				}
 			}
 		} else {
 			$additional_required_fields.removeClass( 'ai1ec-required' );

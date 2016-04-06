@@ -152,35 +152,20 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			);
 		}
 		$loader = $this->_registry->get( 'theme.loader' );
-
-		if ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ) {
-			$api_event_id = get_post_meta(
-				$event->get( 'post_id' ),
-				Ai1ec_Api_Ticketing::EVENT_ID_METADATA,
-				true
-			);
+		$api    = $this->_registry->get( 'model.api.api-ticketing' );
+		if ( false === ai1ec_is_blank( $event->get( 'ical_feed_url' ) ) ) {
+			$args['ticket_url'] = $api->get_api_event_buy_ticket_url( $event->get( 'post_id' ) );
+		} else {
+			$api_event_id = $api->get_api_event_id( $event->get( 'post_id' ) );
 			if ( $api_event_id ) {
-				$api                  = $this->_registry->get( 'model.api.api-ticketing' );
-				$checkout_url         = null;
-				if ( false === ai1ec_is_blank( $event->get( 'ical_feed_url' ) ) ) {
-					//if this ticket event is imported, uses the api and checkout url from the imported information
-					$checkout_url = get_post_meta(
-						$event->get( 'post_id' ),
-						Ai1ec_Api_Ticketing::ICS_CHECKOUT_URL_METADATA,
-						true
-					);
-				}
-				if ( ai1ec_is_blank( $checkout_url )) {
-					$checkout_url = AI1EC_TICKETS_CHECKOUT_URL;
-				}
-
-				$ticket_types                 = json_decode( $api->get_ticket_types( $event->get( 'post_id' ) ) );
-				$args['has_tickets']          = true;
-				$args['API_URL']              = AI1EC_API_URL;
-				$args['tickets_block']        = $loader->get_file(
+				$api                   = $this->_registry->get( 'model.api.api-ticketing' );
+				$ticket_types          = json_decode( $api->get_ticket_types( $event->get( 'post_id' ) ) );
+				$args['has_tickets']   = true;
+				$args['API_URL']       = AI1EC_API_URL;
+				$args['tickets_block'] = $loader->get_file(
 					'tickets.twig',
 					array(
-						'tickets_checkout_url' => $api->create_checkout_url( $api_event_id, $checkout_url ),
+						'tickets_checkout_url' => $api->get_api_event_buy_ticket_url( $event->get( 'post_id' ) ),
 						'tickets'              => $ticket_types->data,
 						'text_tickets'         => $args['text_tickets'],
 						'buy_tickets_text'     => $args['buy_tickets_text'],
@@ -190,7 +175,6 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			}
 		}
 
-		
 		return $loader->get_file( 'event-single.twig', $args, false )
 			->get_content();
 	}

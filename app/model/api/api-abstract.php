@@ -273,6 +273,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 				$ticketing_calendar_id = $this->_create_calendar();
 				if ( 0 < $ticketing_calendar_id ) {
 					$this->save_calendar_id( $ticketing_calendar_id );
+					return $ticketing_calendar_id;
 				} else {
 					return 0;
 				}

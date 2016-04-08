@@ -130,7 +130,7 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 				'select_payment_text'               => Ai1ec_I18n::__( 'Please provide your PayPal details.' ),
 				'cheque_text'                       => Ai1ec_I18n::__( 'Cheque' ),
 				'paypal_text'                       => Ai1ec_I18n::__( 'PayPal' ),
-				'currency_text'                     => Ai1ec_I18n::__( 'Preferred currency:' ),
+				'currency_text'                     => Ai1ec_I18n::__( 'Preferred currency for tickets:' ),
 				'required_text'                     => Ai1ec_I18n::__( 'This field is required.' ),
 				'save_changes_text'                 => Ai1ec_I18n::__( 'Save Changes' ),
 				'date_text'                         => Ai1ec_I18n::__( 'Date' ),

@@ -522,7 +522,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			if ( isset( $data[self::ATTR_ACCOUNT] ) ) {
 				return ( $this->get_current_account() != $data[self::ATTR_ACCOUNT] );
 			} else {
-				return true;
+				return false;
 			}
 		} else {
 			return null;

@@ -525,7 +525,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 				return false;
 			}
 		} else {
-			return null;
+			return false;
 		}
 	}
 

@@ -221,14 +221,13 @@ define(
 		} );
 		
 		$( '#ai1ec_suggested_search' ).on( 'click', function() {
-			
-			var
-				term     = $.trim( $( '#ai1ec_suggested_term' ).val() ),
-				location = $( '#ai1ec_suggested_location' ).val();
-			
 			perform_search();
 			return false;
 		} );
+		$( '#ai1ec_suggested_term' ).on( 'keydown change', function() {
+			$( this ).removeClass( 'ai1ec-error' );
+		} );
+
 
 	};
 	
@@ -299,7 +298,7 @@ define(
 				
 				markers.push( marker );
 			} );
-			markers = markers.filter( function( v ) { return v!==null } );
+			markers = markers.filter( function( v ) { return v !== null } );
 		};
 		
 		events_map = new google.maps.Map(
@@ -318,17 +317,15 @@ define(
 			}
 			timeout = setTimeout( function() {
 				var
-					bounds = events_map.getBounds(),
-					ne     = bounds.getNorthEast(),
-					sw     = bounds.getSouthWest();
+					bounds = events_map.getCenter(),
+					lat    = bounds.lat(),
+					lng    = bounds.lng();
 
 				$( '.ai1ec-suggested-events' ).addClass( 'ai1ec-feeds-loading' );
 				update_xhr = perform_search(
 					{
-						lat1   : sw.lat(),
-						lng1   : sw.lng(),
-						lat2   : ne.lat(),
-						lng2   : ne.lng()
+						lat : lat,
+						lng : lng
 					},  
 					update_events
 				);
@@ -338,24 +335,50 @@ define(
 		
 		events_map.addListener( 'dragend', load_events );
 	};
+
 	// Redraw the map and fit markers in the visible area.
 	var update_maps = function() {
-		var bounds = new google.maps.LatLngBounds();
+		if ( ! markers.length ) {
+			return;
+		} 
+		var
+			bounds = new google.maps.LatLngBounds(),
+			lat    = parseFloat( $( '#ai1ec_suggested_lat' ).val() ),
+			lng    = parseFloat( $( '#ai1ec_suggested_lng' ).val() ),
+			radius = parseFloat( $( '#ai1ec_suggested_radius' ).val() );
+
 		for ( var i = 0; i < markers.length; i++ ) {
 			bounds.extend( markers[i].getPosition() );
 		}
 		events_map.fitBounds( bounds );
-	};
+		new google.maps.Circle( {
+			center: new google.maps.LatLng( lat, lng ),
+			fillOpacity   : 0.05,
+			strokeOpacity : 0.3,
+			strokeWeight  : 1,
+			map           : events_map,
+			radius        : radius * 1000
+		} );
+	}
 	
 	var perform_search = function( options, callback ) {
-		
+		$( '#ai1ec_suggested_term' ).removeClass( 'ai1ec-error' );
 		options = $.extend(
 			{
 				action   : 'ai1ec_search_events',
-				term     : $.trim( $( '#ai1ec_suggested_term' ).val() )
+				term     : $.trim( $( '#ai1ec_suggested_term' ).val() ),
+				location : $.trim( $( '#ai1ec_suggested_location' ).val() ),
+				lat      : $( '#ai1ec_suggested_lat' ).val(),
+				lng      : $( '#ai1ec_suggested_lng' ).val(),
+				radius   : $( '#ai1ec_suggested_radius' ).val()
 			},
 			options
 		);
+		
+		if ( ! options.term ) {
+			$( '#ai1ec_suggested_term ').addClass( 'ai1ec-error' );
+			return false;
+		}
 		
 		return $.ajax( {
 			url      : ai1ec_config.ajax_url,
@@ -392,23 +415,56 @@ define(
 	};
 	
 	var init_geocoder = function() {
-		$( '#ai1ec_suggested_location' ).geo_autocomplete(
+		var
+			$location = $( '#ai1ec_suggested_location' ),
+			$radius   = $( '#ai1ec_suggested_radius' ),
+			$lat      = $( '#ai1ec_suggested_lat' ),
+			$lng      = $( '#ai1ec_suggested_lng' ),
+			empty_location = function() {
+				$radius.val( '' );
+				$lat.val( '' );
+				$lng.val( '' );
+			};
+
+		$( '#ai1ec_suggested_location' )
+		.on( 'change', function(){
+			empty_location();
+		} )
+		.geo_autocomplete(
 			new google.maps.Geocoder(),
 			{
-				selectFirst  : false,
+				selectFirst  : true,
 				minChars     : 2,
 				cacheLength  : 100,
 				width        : 400,
 				scroll       : true,
-				scrollHeight : 450
+				scrollHeight : 500,
+				autoFill     : true
 			}
 		)
 		.result(
 			function( _event, _data ) {
-				if( _data ) {
-					if ( _data.formatted_address ) {
-						$( '#ai1ec_suggested_location' ).val( _data.formatted_address );
-					}
+				if( _data && _data.geometry && _data.formatted_address ) {
+					var
+						address     = _data.formatted_address,	
+						lat         = _data.geometry.location.lat(),
+						lng         = _data.geometry.location.lng(),
+						bounds      = _data.geometry.bounds,
+						// Viewport dimensions in degrees
+						lat_dist    = bounds.R.j - bounds.R.R,
+						lng_dist    = bounds.j.R - bounds.j.j,
+						// 0.009deg lat = 1km
+						lat_dist_km = lat_dist / 0.009,
+						// 0.009deg lng / cos(lat) = 1km
+						lng_dist_km = lng_dist / 0.009 / Math.cos( lat * Math.PI /180 ),
+						max_km      = Math.max( lat_dist_km, lng_dist_km );
+
+					$location.val( address );
+					$radius.val( max_km / 2 );
+					$lat.val( lat );
+					$lng.val( lng );
+				} else {
+					empty_location();
 				}
 			}
 		);

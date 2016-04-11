@@ -13,6 +13,9 @@
 		<i class="ai1ec-fa ai1ec-fa-search"></i>
 		<?php _e( 'Search', AI1EC_PLUGIN_NAME ); ?>
 	</a>
+	<input type="hidden" id="ai1ec_suggested_radius" />
+	<input type="hidden" id="ai1ec_suggested_lat" />
+	<input type="hidden" id="ai1ec_suggested_lng" />
 </div>
 
 <div class="ai1ec-suggested-results">

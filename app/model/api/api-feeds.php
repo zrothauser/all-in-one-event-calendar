@@ -41,18 +41,18 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 		}
 
 		$body = null;
-	 	if ( isset( $_POST[ 'lat1' ] ) &&
-	 		isset( $_POST[ 'lng1' ] ) &&
-	 		isset( $_POST[ 'lat2' ] ) &&
-	 		isset( $_POST[ 'lng2' ] ) ) {
+		if (
+			isset( $_POST[ 'lat' ] ) &&
+			isset( $_POST[ 'lng' ] ) &&
+			isset( $_POST[ 'radius' ] )
+		) {
 			$body=[ 
-				'lat1' => $_POST[ 'lat1' ],
-				'lng1' => $_POST[ 'lng1' ],
-				'lat2' => $_POST[ 'lat2' ],
-				'lng2' => $_POST[ 'lng2' ]
+				'lat'    => $_POST[ 'lat' ],
+				'lng'    => $_POST[ 'lng' ],
+				'radius' => $_POST[ 'radius' ]
 			];
-	 	}
-	 	
+		}
+
 	 	$page     = isset( $_POST[ 'page' ] ) ? $_POST[ 'page' ] : 1;
 	 	$max      = isset( $_POST[ 'max' ] ) ? $_POST[ 'max' ] : 8;
 	 	$term     = isset( $_POST[ 'term' ] ) && $_POST[ 'term' ] 

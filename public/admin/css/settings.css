@@ -559,3 +559,6 @@ div.ai1ec-form-group > .ai1ec-setting-fieldset {
 #posterboard_mode {
 	width: 120px;
 }
+#suggested input.ai1ec-error {
+	border-color: #f00;
+}

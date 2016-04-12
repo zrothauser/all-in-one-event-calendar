@@ -441,6 +441,18 @@ class Ai1ec_Event extends Ai1ec_Base {
 		return (string)$cost;
 	}
 
+	public function get_uid_pattern() {
+		static $format = null;
+		if ( null === $format ) {			
+			$site_url = parse_url( ai1ec_get_site_url() );
+			$format   = 'ai1ec-%d@' . $site_url['host'];
+			if ( isset( $site_url['path'] ) ) {
+				$format .= $site_url['path'];
+			}
+		}
+		return $format;
+	}
+
 	/**
 	 * Get UID to be used for current event.
 	 *
@@ -456,15 +468,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 		if ( ! empty( $ical_uid ) ) {
 			return $ical_uid;
 		}
-		static $format = null;
-		if ( null === $format ) {
-			$site_url = parse_url( ai1ec_get_site_url() );
-			$format   = 'ai1ec-%d@' . $site_url['host'];
-			if ( isset( $site_url['path'] ) ) {
-				$format .= $site_url['path'];
-			}
-		}
-		return sprintf( $format, $this->get( 'post_id' ) );
+		return sprintf( $this->get_uid_pattern(), $this->get( 'post_id' ) );
 	}
 
 	/**

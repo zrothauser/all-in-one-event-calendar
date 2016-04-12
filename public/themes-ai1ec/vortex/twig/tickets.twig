@@ -21,7 +21,7 @@
 									{% set value_to_select = ticket.buy_min_limit %}	
 								{% else %}
 									{% if 2 < ticket.buy_max_available %}
-										{% set value_to_select = 2 %}	
+										{% set value_to_select = 0 %}	
 									{% else %}
 										{% set value_to_select = ticket.buy_max_available %}	
 									{% endif %}

@@ -362,18 +362,13 @@ class Ai1ec_Javascript_Controller {
 			// Load script for adding / modifying events
 			$script_to_load[] = self::ADD_NEW_EVENT_PAGE;
 		}
-		if ( $this->_are_we_accessing_the_calendar_settings_page() === TRUE ) {
+		if ( true === $this->_are_we_accessing_the_calendar_settings_page() ) {
 			$script_to_load[] = self::SETTINGS_PAGE;
 		}
 		if ( true === $this->_are_we_creating_widgets() ) {
 			$script_to_load[] = self::WIDGET_CREATOR;
 		}
-		
-		if ( ( $this->_registry->get( 'helper.api-settings' )->ai1ec_api_enabled() ) && (
-				true === $this->_are_we_managing_tickets() ||
-				true === $this->_are_we_managing_events_list()
-			)
-		) {
+		if (  true === $this->_are_we_managing_tickets() || true === $this->_are_we_managing_events_list() ) {			
 			$script_to_load[] = self::TICKETING;
 		}
 		if ( false === $script_to_load ) {
@@ -500,7 +495,12 @@ class Ai1ec_Javascript_Controller {
 				'Loading&hellip;'
 			),
 			'ticketing_required_fields'      => Ai1ec_I18n::__(
-				'<p class="ai1ec_ticketing_required_alert"><b>Some fields required for Ticketing are missing.</b><br><i>Missing or incorrect fields are outlined red.</i></p>'
+				'<b>Required or incorrect fields for Ticketing are outlined red.</b>'
+			),
+			'ticketing_repeat_not_supported' => Ai1ec_I18n::__( '<b>The Repeat option was selected but recurrence is not supported by Event with Tickets.</b>'
+			),
+			'ticketing_no_tickets_included'  => Ai1ec_I18n::__( '<b>
+				The Event has the cost option Tickets selected but no ticket was included.</b>'
 			),
 			'language'                       => $this->_registry->get( 'p28n.wpml' )->get_lang(),
 			'ajax_url'                       => $ajax_url,

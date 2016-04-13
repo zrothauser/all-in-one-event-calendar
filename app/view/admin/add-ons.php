@@ -69,7 +69,7 @@ class Ai1ec_View_Add_Ons extends Ai1ec_View_Admin_Abstract {
 						'Add-ons for All In One Event Calendar'
 					),
 					'button_title'      => Ai1ec_I18n::__(
-						'Browse All Extensions'
+						'Browse All Add-ons'
 					),
 					'paragraph_content' => Ai1ec_I18n::__(
 						'These add-ons extend the functionality of the All-in-One Event Calendar.'

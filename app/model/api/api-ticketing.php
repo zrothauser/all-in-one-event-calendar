@@ -10,10 +10,16 @@
  */
 class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 
-	const EVENT_ID_METADATA         = '_ai1ec_api_event_id';
-	const THUMBNAIL_ID_METADATA     = '_ai1ec_thumbnail_id';
-	const ICS_CHECKOUT_URL_METADATA = '_ai1ec_ics_checkout_url';
-	const ICS_API_URL_METADATA      = '_ai1ec_ics_api_url';
+	const API_EVENT_DATA            = '_ai1ec_api_event_id';
+	
+	const ATTR_EVENT_ID             = 'api_event_id';
+	const ATTR_THUMBNAIL_ID         = 'thumbnail_id';
+	const ATTR_ICS_CHECKOUT_URL     = 'ics_checkout_url';
+	const ATTR_ICS_API_URL          = 'ics_api_url';
+	const ATTR_ACCOUNT              = 'account';
+	const ATTR_CALENDAR_ID          = 'calendar_id';
+	const ATTR_CURRENCY             = 'currency';
+	
 	const MAX_TICKET_TO_BUY_DEFAULT = 25;
 
 	/**
@@ -45,6 +51,46 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	}
 
 	/**
+	 * Return an error if the Ticket Event is not owned by the Current account
+	 */
+	private function _prevent_update_ticket_event( Ai1ec_Event $event, $ajax_action = false ) {
+		if ( $this->is_ticket_event_imported( $event->get( 'post_id' ) ) )  {
+			//prevent changes on Ticket Events that were imported			
+			$error        = __( 'This Event was replicated from another site. Changes are not allowed.', AI1EC_PLUGIN_NAME );
+			if ( ! $ajax_action ) {
+				$notification = $this->_registry->get( 'notification.admin' );
+				$notification->store( 
+					$error, 
+					'error', 
+					0, 
+					array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 
+					false 
+				);
+			}
+			return $error;
+		} 		
+		if ( $this->is_ticket_event_from_another_account( $event->get( 'post_id' ) ) )  {
+			//prevent changes on Ticket Events that were imported
+			$error        = sprintf(
+						__( 'This Event was created using a different account %s. Changes are not allowed.', AI1EC_PLUGIN_NAME ), 
+						$this->get_api_event_account( $event->get( 'post_id' ) )
+					);
+			if ( ! $ajax_action ) {
+				$notification = $this->_registry->get( 'notification.admin' );
+				$notification->store( 
+					$error, 
+					'error', 
+					0, 
+					array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 
+					false 
+				);
+			}
+			return $error;
+		}
+		return null;		
+	}
+
+	/**
 	 * Run some validations inside the _POST request to check if the Event 
 	 * submmited is a valid event for Tickets
 	 * @return NULL in case of success or a Message in case of error
@@ -65,20 +111,8 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			$notification->store( $_POST['ai1ec_tickets_loading_error'], 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
 			return $_POST['ai1ec_tickets_loading_error'];
 		}
-		if ( $this->is_ticket_event_imported( $event->get( 'post_id' ) ) )  {
-			//prevent changes on Ticket Events that were imported
-			$error        = __( 'This Event was replicated from another site. Any changes on Tickets were discarded.', AI1EC_PLUGIN_NAME );
-			$notification = $this->_registry->get( 'notification.admin' );
-			$notification->store( 
-				$error, 
-				'error', 
-				0, 
-				array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 
-				false 
-			);
-			return $error;
-		} else if ( false === ai1ec_is_blank( $event->get( 'ical_feed_url' ) ) ) {			
-			//prevent ticket creating inside Regular Events that were imported
+		if ( false === ai1ec_is_blank( $event->get( 'ical_feed_url' ) ) ) {			
+			//prevent ticket creating inside Regular Events Imported events
 			$error        = __( 'This Event was replicated from another site. Any changes on Tickets were discarded.', AI1EC_PLUGIN_NAME );
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( 
@@ -90,11 +124,22 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			);
 			return $error;			
 		}
+		$error = $this->_prevent_update_ticket_event( $event );
+		if ( null !== $error ) {
+			return $error;
+		}
 		if ( 0 === $this->_count_valid_tickets( $_POST['ai1ec_tickets'] ) ) {
-			$message      = __( 'The Event has the Cost option Ticket selected but no ticket was added.', AI1EC_PLUGIN_NAME );
+			$message      = __( 'The Event has the cost option Ticket selected but no ticket was included.', AI1EC_PLUGIN_NAME );
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
 			return $message;
+		}
+		if ( false === $this->has_payment_settings() ) {
+			$message      = __( 'You need to save the payments settings to create ticket events.', AI1EC_PLUGIN_NAME );
+			$notification = $this->_registry->get( 'notification.admin' );
+			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
+			return $message;
+
 		}
 		return null;
 	}	
@@ -108,16 +153,11 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		$error = $this->_is_valid_post( $event );
 		if ( null !== $error ) {
 			return $error;
-		}		
-
-		$api_event_id = get_post_meta(
-					$event->get( 'post_id' ),
-					self::EVENT_ID_METADATA,
-					true
-				);
+		}				
+		$api_event_id = $this->get_api_event_id( $event->get( 'post_id' ) );
 		$is_new       = ! $api_event_id;
-		$fields    = array( 'visibility' => $_POST['visibility'] );
-		$body_data = $this->_parse_event_fields_to_api_structure(
+		$fields       = array( 'visibility' => $_POST['visibility'] );
+		$body_data    = $this->_parse_event_fields_to_api_structure(
 			$event,
 			$post,
 			$_POST['ai1ec_tickets'],
@@ -129,8 +169,10 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		}
 
 		//get the thumbnail id saved previously
-		$event_thumbnail_id = get_post_meta( $event->get( 'post_id' ), self::THUMBNAIL_ID_METADATA, true );
-		if ( false === isset( $event_thumbnail_id ) ) {
+		$api_data = $this->get_api_event_data( $event->get( 'post_id' ) );
+		if ( isset( $api_data[self::ATTR_THUMBNAIL_ID] ) ) {
+			$event_thumbnail_id = $api_data[self::ATTR_THUMBNAIL_ID];
+		} else {
 			$event_thumbnail_id = 0;
 		}
 		//get the current thumbnail id
@@ -187,15 +229,18 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			true, //true to decode response body
 			$custom_headers
 			);
-		if ( $this->is_response_success( $response ) ) {
-			if ( $is_new && isset( $response->body->id ) ) {
-				update_post_meta( $event->get( 'post_id' ), self::EVENT_ID_METADATA, $response->body->id );
-			}
-			if ( $post_thumbnail_id > 0 ) {
-				update_post_meta( $event->get( 'post_id' ), self::THUMBNAIL_ID_METADATA, $post_thumbnail_id );
+		if ( $this->is_response_success( $response ) ) {			
+			$api_event_id = $response->body->id;
+			if ( isset( $response->body->currency ) ) {
+				$currency = $response->body->currency;
 			} else {
-				delete_post_meta( $event->get( 'post_id' ), self::THUMBNAIL_ID_METADATA );
+				$currency = 'USD';
 			}
+			$currency     = $response->body->currency;
+			if ( $post_thumbnail_id <= 0 ) {
+				$post_thumbnail_id = null;
+			}
+			$this->save_api_event_data( $event->get( 'post_id') , $api_event_id,  null, null, $currency, $post_thumbnail_id );
 			return true;
 		} else {
 			$error_message = '';
@@ -206,71 +251,6 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			}
 			return $this->save_error_notification( $response, $error_message );
 		}
-	}
-
-	/**
-	 * @return object Response body from API.
-	 */
-	public function save_payment_preferences() {
-		$calendar_id = $this->_get_ticket_calendar();
-		if ( 0 >= $calendar_id ) {
-			return false;
-		}
-		$settings  = array(
-			'payment_method' => $_POST['ai1ec_payment_method'],
-			'paypal_email'   => $_POST['ai1ec_paypal_email'],
-			'first_name'     => $_POST['ai1ec_first_name'],
-			'last_name'      => $_POST['ai1ec_last_name'],
-			'street'         => $_POST['ai1ec_street'],
-			'city'           => $_POST['ai1ec_city'],
-			'state'          => $_POST['ai1ec_state'],
-			'country'        => $_POST['ai1ec_country'],
-			'postcode'       => $_POST['ai1ec_postcode']
-		);
-		$custom_headers['content-type'] = 'application/x-www-form-urlencoded';
-		$response = $this->request_api( 'PUT', AI1EC_API_URL . 'calendars/' . $calendar_id . '/payment', 
-			$settings, 
-			true, //decode response body
-			$custom_headers 
-		);
-		if ( $this->is_response_success( $response ) ) {
-			$notification  = $this->_registry->get( 'notification.admin' );
-			$notification->store( 
-				__( 'Payment preferences were saved.', AI1EC_PLUGIN_NAME ), 
-				'updated', 
-				0, 
-				array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 
-				false 
-			);
-			return $response->body;
-		} else {
-			$this->save_error_notification( $response, 
-				__( 'Payment preferences were not saved.', AI1EC_PLUGIN_NAME )
-			);
-			return false;
-		}
-	}
-
-	/**
-	 * @return object Response from API, or empty defaults
-	 */
-	public function get_payment_preferences() {
-		$calendar_id = $this->_get_ticket_calendar();
-		$settings    = null;
-		if ( 0 < $calendar_id ) {
-			$response = $this->request_api( 'GET', AI1EC_API_URL . "calendars/$calendar_id/payment", 
-				null, //no body 
-				true //decode response body
-			);
-			if ( $this->is_response_success( $response ) ) {
-				$settings = $response->body;
-			}
-		}
-		if ( is_null( $settings ) ) {
-			return (object) array('payment_method'=>'cheque', 'paypal_email'=> '', 'first_name'=>'',  'last_name'=>'', 'street'=> '', 'city'=> '', 'state'=> '', 'postcode'=> '', 'country'=> '');
-		} else {
-			return $settings;	
-		}		
 	}
 
 	/**
@@ -467,15 +447,11 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	 * @return string JSON.
 	 */
 	public function get_ticket_types( $post_id ) {
-		$api_event_id = get_post_meta(
-			$post_id,
-			self::EVENT_ID_METADATA,
-			true
-		);
-		if ( ! $api_event_id ) {
+		$api_event_id = $this->get_api_event_id( $post_id );
+		if ( ! $api_event_id ) {			
 			return json_encode( array( 'data' => array() ) );
 		}
-		$response = $this->request_api( 'GET', $this->get_api_url( $post_id ) . 'events/' . $api_event_id . '/ticket_types', null);
+		$response = $this->request_api( 'GET', $this->get_api_event_url( $post_id ) . 'events/' . $api_event_id . '/ticket_types', null);
 		if ( $this->is_response_success( $response ) ) {
 			if ( isset( $response->body->ticket_types ) ) {
 		 		foreach ( $response->body->ticket_types as $ticket_api ) {
@@ -499,11 +475,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	 * @return object Response body in JSON.
 	 */
 	public function get_tickets( $post_id ) {
-		$api_event_id = get_post_meta(
-			$post_id,
-			self::EVENT_ID_METADATA,
-			true
-		);
+		$api_event_id = $this->get_api_event_id( $post_id );
 		if ( ! $api_event_id ) {
 			return json_encode( array( 'data' => array() ) );
 		}
@@ -511,7 +483,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			'headers' => $this->_get_headers(),
 			'timeout' => parent::DEFAULT_TIMEOUT
 			);
-		$url           = $this->get_api_url( $post_id ) . 'events/' . $api_event_id . '/tickets';
+		$url           = $this->get_api_event_url( $post_id ) . 'events/' . $api_event_id . '/tickets';
 		$response      = wp_remote_get( $url, $request );
 		$response_code = wp_remote_retrieve_response_code( $response );
 		if ( 200 === $response_code ) {
@@ -525,77 +497,65 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			return json_encode( array( 'data' => array(), 'error' => $error_message ) );
 		}
 	}
-	
-	public function _order_comparator( $order1, $order2 ) {
-		return strcmp( $order1->created_at, $order2->created_at ) * -1;
-	}
 
 	/**
-	 * @return object Response body in JSON.
+	 * Check if a Ticket Event was imported from an ICS Feed
 	 */
-	public function get_purchases() {
-		$request  = array(
-			'headers' => $this->_get_headers(),
-			'timeout' => parent::DEFAULT_TIMEOUT
-			);
-		$url           = AI1EC_API_URL . 'calendars/' . $this->_get_ticket_calendar() . '/sales';
-		$response      = wp_remote_get( $url, $request );
-		$response_code = wp_remote_retrieve_response_code( $response );
-		if ( 200 === $response_code ) {
-			$result = json_decode( $response['body'] );
-			if ( isset( $result->orders ) ) {
-				usort( $result->orders, array( "Ai1ec_Api_Ticketing", "_order_comparator" ) );
-				return $result->orders;
+	public function is_ticket_event_imported( $post_id ) {
+		$data    = $this->get_api_event_data( $post_id );
+		if (  isset( $data[self::ATTR_EVENT_ID] ) && isset( $data[self::ATTR_ICS_API_URL] ) ) {
+			return ( ! ai1ec_is_blank ( $data[self::ATTR_ICS_API_URL] ) );
+		} else {
+			return false;
+		}
+		
+	}	
+
+	/**
+	 * Check if the Ticket Event was created using a different account
+	 * The user probably created the event from one account, signed out and 
+	 * is currently signed in with a new account
+	 */
+	public function is_ticket_event_from_another_account( $post_id ) {
+		$data    = $this->get_api_event_data( $post_id );
+		if ( isset( $data[self::ATTR_EVENT_ID] ) ) {
+			if ( isset( $data[self::ATTR_ACCOUNT] ) ) {
+				return ( $this->get_current_account() != $data[self::ATTR_ACCOUNT] );
 			} else {
-				return array();
+				return false;
 			}
 		} else {
-			$error_message = $this->_transform_error_message( 
-				__( 'We were unable to get the Sales information from Time.ly Ticketing', AI1EC_PLUGIN_NAME ), 
-				$response, 
-				$url, 
-				true 
-			);
-			$notification = $this->_registry->get( 'notification.admin' );
-			$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
-			return array();
+			return false;
 		}
 	}
 
-	public function is_ticket_event_imported( $post_id ) {
-		//if the event is imported, the ICS added the api url on metadata information
-		$api_url = get_post_meta(
-					$post_id,
-					self::ICS_API_URL_METADATA,
-					true
-				);
-		return (false === ai1ec_is_blank ( $api_url ));
-	}
-
-	protected function get_api_url ( $post_id ) {
-		//if the event is imported, the ICS added the api url on metadata informatino
-		$api_url = get_post_meta(
-					$post_id,
-					self::ICS_API_URL_METADATA,
-					true
-				);
-		if ( ai1ec_is_blank ( $api_url ) ) {
-			return AI1EC_API_URL;
+	/**
+	 * Get the API account where the event was created
+	 * @param int $post_id Post ID
+	 * @param bool $default_null True to return NULL if the value does not exist, false to return the configured API URL
+	 */
+	public function get_api_event_account( $post_id ) {
+		$data    = $this->get_api_event_data( $post_id );
+		if ( isset( $data[self::ATTR_EVENT_ID] ) ) {
+			if ( isset( $data[self::ATTR_ACCOUNT] ) ) {
+				return $data[self::ATTR_ACCOUNT];
+			} else {
+				return null;
+			}
 		} else {
-			return $api_url;
+			return null;
 		}
 	}
 
 	/**
      * Check if the response that came from the API is the event not found
      */
-    private function _is_event_notfound_error( $response_code, $response ) {
-    	if ( 404 === $response_code ) {
-			if ( isset( $response['body'] ) ) {
-				$response_body = json_decode( $response['body'], true );
-				if ( is_array( $response_body ) &&
-					isset( $response_body['message'] ) ) {
-					if ( false !== stripos( $response_body['message'], 'event not found') ) {
+    private function _is_event_notfound_error( $response ) {    	
+    	if ( isset( $response->response_code ) && 404 === $response->response_code ) {
+			if ( isset( $response->body ) ) {
+				if ( is_array( $response->body ) &&
+					isset( $response->body['message'] ) ) {
+					if ( false !== stripos( $response->body['message'], 'event not found') ) {
 						return true;
 					}
 				}
@@ -607,30 +567,32 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	/**
 	 * @return NULL in case of success or an error string in case of error
 	 */
-    public function update_api_event_fields( WP_Post $post, $api_fields_values ) {
+    public function update_api_event_fields( WP_Post $post, $api_fields_values, $post_action = 'trash', $ajax_action = false ) {
     	$post_id      = $post->ID;
-   		$api_event_id = get_post_meta(
-			$post_id,
-			self::EVENT_ID_METADATA,
-			true
-		);
+   		$api_event_id = $this->get_api_event_id( $post_id );
 		if ( ! $api_event_id ) {
 			return null;
 		}
-		if ( $this->is_ticket_event_imported( $post_id ) )  {
-			return null;
-		}
-		//updating the event status
 		try {
-			$event =  $this->_registry->get(
-				'model.event',
-				$post_id ? $post_id : null
-			);
+			$event =  $this->_registry->get( 'model.event', $post_id );
 		} catch ( Ai1ec_Event_Not_Found_Exception $excpt ) {
 			$message      = __( 'Event not found inside the database.', AI1EC_PLUGIN_NAME );
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
 			return $message;
+		}
+		if ( 'update' === $post_action ) {			
+			$error = $this->_prevent_update_ticket_event( $event, $ajax_action );
+    		if ( null !== $error ) {
+    			return $error;
+    		}
+		} else {
+			if ( $this->is_ticket_event_imported( $post_id ) )  {
+				return null;
+			}
+			if ( $this->is_ticket_event_from_another_account( $post_id ) )  {
+	    		return null;	    		
+	    	}
 		}
 		$headers   = $this->_get_headers();
 		$body_data = $this->_parse_event_fields_to_api_structure(
@@ -639,28 +601,22 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			null, //does not update ticket types, just chaging the api fields specified
 			$api_fields_values
 		);
-		$url       = AI1EC_API_URL . 'events' . '/' . $api_event_id;
-		$request   = array(
-			'method'  => 'POST',
-			'headers' => $headers,
-			'body'    => json_encode( $body_data ),
-			'timeout' => parent::DEFAULT_TIMEOUT
-		);
-		$response      = wp_remote_request( $url, $request );
-		$response_code = wp_remote_retrieve_response_code( $response );
-		if ( 200 !== $response_code ) {
-			if ( $this->_is_event_notfound_error( $response_code, $response ) ) {
+		$response = $this->request_api( 'POST', 
+			AI1EC_API_URL . "events/$api_event_id", 
+			json_encode( $body_data ), 
+			true //true to decode response body
+			);
+		if ( ! $this->is_response_success( $response ) ) {			
+			if ( $this->_is_event_notfound_error( $response ) ) {
 				if ( isset( $api_fields_values['status'] ) &&
 					'trash' === $api_fields_values['status'] ) {
 					//this is an exception, the event was deleted on API server, but for some reason
-					//the metada EVENT_ID_METADATA was not unset, in this case leave the event be
+					//the metada was not unset, in this case leave the event be
 					//move to trash
 					return null;
 				}
 			}
-			$message      = $this->_transform_error_message( $this->_update_event_error, $response, $url, true );
-			$notification = $this->_registry->get( 'notification.admin' );
-			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
+			$message = $this->save_error_notification( $response, __( 'We were unable to Update the Event on Time.ly Network', AI1EC_PLUGIN_NAME ) );
 			return $message;
         } else {
         	return null;
@@ -671,61 +627,217 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
      * Deletes the API event
      * @return NULL in case of success or an error string in case of error
      */
-    public function delete_api_event( $post_id ) {
-    	if ( $this->is_ticket_event_imported( $post_id ) )  {
-    		$this->clear_event_metadata( $post_id );
-    		return null;
-    	}
-    	$api_event_id = get_post_meta(
-			$post_id,
-			self::EVENT_ID_METADATA,
-			true
-		);
+    public function delete_api_event( $post_id, $post_action = 'delete', $ajax_action = false ) {
+    	$api_event_id = $this->get_api_event_id( $post_id );
 		if ( ! $api_event_id ) {
 			return null;
 		}
-		$request   = array(
-			'method'  => 'DELETE',
-			'headers' => $this->_get_headers(),
-			'timeout' => parent::DEFAULT_TIMEOUT
-		);
-		$url           = AI1EC_API_URL . 'events/' . $api_event_id;
-		$response      = wp_remote_request( $url, $request );
-		$response_code = wp_remote_retrieve_response_code( $response );
-		if ( 200 === $response_code ) {
+    	if ( 'update' === $post_action ) {
+			try {
+				$event =  $this->_registry->get( 'model.event', $post_id );
+			} catch ( Ai1ec_Event_Not_Found_Exception $excpt ) {
+				$message      = __( 'Event not found inside the database.', AI1EC_PLUGIN_NAME );
+				$notification = $this->_registry->get( 'notification.admin' );
+				$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
+				return $message;
+			}
+    		$error = $this->_prevent_update_ticket_event( $event, $ajax_action );
+    		if ( null !== $error ) {
+    			return $error;
+    		}
+    	} else {
+	    	if ( $this->is_ticket_event_imported( $post_id ) )  {	    	
+	    		$this->clear_event_metadata( $post_id );
+	    		return null;
+	    	}
+	    	if ( $this->is_ticket_event_from_another_account( $post_id ) )  {
+	    		$this->clear_event_metadata( $post_id );
+	    		return null;	    		
+	    	}
+	    }   
+		$response = $this->request_api( 'DELETE', 
+			AI1EC_API_URL . "events/$api_event_id", 
+			true //true to decode response body
+			);
+		if ( $this->is_response_success( $response ) ) {
 			$this->clear_event_metadata( $post_id );
 			return null;
         } else {
-			if ( $this->_is_event_notfound_error( $response_code, $response ) ) {
-				//this is an exception, the event was deleted on API server, but for some reason
-				//the metada EVENT_ID_METADATA was not unset, in this case leave the event be
-				//move to trash
+			if ( $this->_is_event_notfound_error( $response ) ) {
+				$this->clear_event_metadata( $post_id );
 				return null;
 			}
-        	$message      = $this->_transform_error_message( 
-        		__( 'We were unable to remove the Tickets from Time.ly Ticketing', AI1EC_PLUGIN_NAME ), 
-        		$response, 
-        		$url, 
-        		true 
-        	);
-			$notification = $this->_registry->get( 'notification.admin' );
-			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
+        	$message = $this->save_error_notification( $response, __( 'We were unable to remove the Event on Time.ly Network', AI1EC_PLUGIN_NAME ) );
 			return $message;
         }
     }
 
-    /**
+	/**
      * Clear the event metadata used by Event from the post id
+     * @param int $post_id Post ID
      */
     public function clear_event_metadata( $post_id ) {
-		delete_post_meta( $post_id, self::EVENT_ID_METADATA );
-		delete_post_meta( $post_id, self::THUMBNAIL_ID_METADATA );
-		delete_post_meta( $post_id, self::ICS_CHECKOUT_URL_METADATA );
-		delete_post_meta( $post_id, self::ICS_API_URL_METADATA );
+		delete_post_meta( $post_id, self::API_EVENT_DATA );
     }
 
-    public function create_checkout_url( $api_event_id , $url_checkout = AI1EC_TICKETS_CHECKOUT_URL) {
-    	return str_replace( '{event_id}', $api_event_id, $url_checkout );
-    }
+	public function get_api_event_data( $post_id ) {
+		$data = get_post_meta(
+			$post_id,
+			self::API_EVENT_DATA,
+			true
+		);
+		if ( ai1ec_is_blank ( $data ) ) {			
+			return null;
+		} else if ( is_numeric( $data ) ) {
+			//migrate the old metadata into one
+			$new_data[self::ATTR_EVENT_ID] = $data;
+			$value = get_post_meta( $post_id, '_ai1ec_thumbnail_id', true );
+			if ( false === ai1ec_is_blank( $value ) ) {
+				$new_data[self::ATTR_THUMBNAIL_ID] = $value;
+			}
+			$value = get_post_meta( $post_id, '_ai1ec_ics_checkout_url', true );
+			if ( false === ai1ec_is_blank( $value ) ) {
+				$new_data[self::ATTR_ICS_CHECKOUT_URL] = $value;
+			}			
+			$value = get_post_meta( $post_id, '_ai1ec_ics_api_url'     , true );
+			if ( ai1ec_is_blank( $value ) ) {
+				//not imported ticket event
+				$new_data[self::ATTR_ACCOUNT]          = $this->get_current_account();
+				$new_data[self::ATTR_CALENDAR_ID]      = $this->get_current_calendar();	
+			} else {
+				$new_data[self::ATTR_ICS_API_URL] = $value;
+			}
+			$new_data[self::ATTR_CURRENCY] = 'USD';
+			update_post_meta( $post_id, self::API_EVENT_DATA, $new_data );
+			return $new_data;			
+		} else if ( is_array( $data ) ) {			
+			return $data;
+		} else {
+			wp_die( 'Error geting the api data' );
+		}
+	}
+
+	/**
+	 * Get the id of the event on the API 
+	 * @param int $post_id Post ID
+	 */
+	public function get_api_event_id( $post_id ) {
+		$data = $this->get_api_event_data( $post_id );
+		if ( isset( $data[self::ATTR_EVENT_ID] ) ) {
+			return $data[self::ATTR_EVENT_ID];
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Get the API URL of the event
+	 * @param int $post_id Post ID
+	 * @param bool $default_null True to return NULL if the value does not exist, false to return the configured API URL
+	 */
+	public function get_api_event_url ( $post_id ) {
+		$data    = $this->get_api_event_data( $post_id );
+		if ( isset( $data[self::ATTR_EVENT_ID] ) ) {
+			if ( isset( $data[self::ATTR_ICS_API_URL] ) ) {
+				return $data[self::ATTR_ICS_API_URL];
+			} else {
+				return AI1EC_API_URL;
+			}
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Get the Currency of the event
+	 * @param int $post_id Post ID
+	 */
+	public function get_api_event_currency ( $post_id ) {
+		$data    = $this->get_api_event_data( $post_id );
+		if ( isset( $data[self::ATTR_EVENT_ID] ) ) {
+			if ( isset( $data[self::ATTR_CURRENCY] ) ) {
+				return $data[self::ATTR_CURRENCY];
+			} else {
+				return 'USD';
+			}
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Get the Checkout url of the event
+	 * @param int $post_id Post ID
+	 */
+	public function get_api_event_checkout_url ( $post_id ) {
+		$data = $this->get_api_event_data( $post_id );
+		if ( isset( $data[self::ATTR_EVENT_ID] ) ) {
+			if ( isset( $data[self::ATTR_ICS_CHECKOUT_URL] ) ) {
+				return $data[self::ATTR_ICS_CHECKOUT_URL];
+			} else {
+				return AI1EC_TICKETS_CHECKOUT_URL;
+			}
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Get the Buy Ticket URL of the event
+	 * @param int $post_id Post ID
+	 */
+	public function get_api_event_buy_ticket_url ( $post_id ) {
+		$data = $this->get_api_event_data( $post_id );
+		if ( isset( $data[self::ATTR_EVENT_ID] ) ) {
+			$api_event_id = $data[self::ATTR_EVENT_ID];			
+			if ( isset( $data[self::ATTR_ICS_CHECKOUT_URL] ) ) {
+				$checkout_url = $data[self::ATTR_ICS_CHECKOUT_URL];
+			} else {
+				$checkout_url = AI1EC_TICKETS_CHECKOUT_URL;
+			}
+			return str_replace( '{event_id}', $api_event_id, $checkout_url );
+		} else {
+			return null;
+		}		
+	}
+ 	
+ 	/**
+ 	 * Save the API event data
+ 	 * @param int $post_id Post ID
+ 	 * @param int $api_event_id (optional) Id of the event on the API
+ 	 * @param string $ics_api_url (optional) API URL of the event on the API (used when importing an ICS feed)
+ 	 * @param string $ics_checkout_url (optional) API CHECKOUT URL of the event on the API (used when importing an ICS feed)
+	 * @param string $currency (optional) Currency code of the event
+	 * @param string $thumbnail_id (optional) Id of the Thumbnail (Featured Image id)
+ 	 */
+	public function save_api_event_data( $post_id, $api_event_id, $ics_api_url = null, $ics_checkout_url = null, $currency = null, $thumbnail_id = null ) {
+		if ( ai1ec_is_blank( $api_event_id ) ) {
+			throw new Error( 'Api event id should never be null' );
+		}
+		$api_data[self::ATTR_EVENT_ID]         = $api_event_id;
+		$api_data[self::ATTR_ICS_API_URL]      = $ics_api_url;
+		$api_data[self::ATTR_ICS_CHECKOUT_URL] = $ics_checkout_url;
+		$api_data[self::ATTR_CURRENCY]         = $currency;
+		$api_data[self::ATTR_THUMBNAIL_ID]     = $thumbnail_id;
+		if ( ai1ec_is_blank( $ics_api_url ) ) {
+			$api_data[self::ATTR_ACCOUNT]          = $this->get_current_account();
+			$api_data[self::ATTR_CALENDAR_ID]      = $this->get_current_calendar();
+		}
+		$previous_data = $this->get_api_event_data( $post_id );		
+		$new_data      = [];
+		if ( is_array( $previous_data ) ) {
+			foreach ( $previous_data as $key => $value) {
+				$new_data[$key] = $value;
+			}
+		}
+		foreach ( $api_data as $key => $value ) {
+			if ( ai1ec_is_blank( $value ) ) {
+				unset( $new_data[$key] );
+			} else {
+				$new_data[$key] = $api_data[$key];
+			}
+		}
+		return update_post_meta( $post_id, self::API_EVENT_DATA, $new_data, $previous_data );
+	}
 
 }

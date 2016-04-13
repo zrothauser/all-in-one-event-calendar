@@ -50,7 +50,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	// = Plugin Version =
 	// ==================
 	if ( ! defined( 'AI1EC_VERSION' ) ) {
-		define( 'AI1EC_VERSION', '2.3.12.1' );
+		define( 'AI1EC_VERSION', '2.4.0' );
 	}
 
 	// ================
@@ -478,22 +478,6 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 		define(
 			'AI1EC_TICKETS_CHECKOUT_URL',
 			'https://ticketing.time.ly/events/{event_id}/checkout'
-		);
-	}
-	
-	// Defines if Timely API is enabled.
-	if ( ! defined( 'AI1EC_API' ) ) {
-		define(
-			'AI1EC_API',
-			false
-		);
-	}
-	
-	// Enables Ticketing features.
-	if ( ! defined( 'AI1EC_API_TICKETING' ) ) {
-		define(
-			'AI1EC_API_TICKETING',
-			false
 		);
 	}
 

@@ -67,8 +67,10 @@ class Ai1ec_Email_Notification extends Ai1ec_Notification {
 
 		// Rewrite WordPress "From" Header
 		add_filter( 'wp_mail_from_name', 'new_mail_from_name' );
-		function new_mail_from_name( $old ) {
-			return get_bloginfo( 'name' );
+		if ( !function_exists( 'new_mail_from_name' ) ) {
+			function new_mail_from_name() {
+				return get_bloginfo( 'name' );
+			}
 		}
 
 		$result = wp_mail( $this->_recipients, $this->_subject, $this->_message, $headers );

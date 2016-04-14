@@ -66,8 +66,8 @@ class Ai1ec_Email_Notification extends Ai1ec_Notification {
 		add_filter( 'wp_mail_failed', $failed_handler );
 
 		// Rewrite WordPress "From" Header
-		add_filter('wp_mail_from_name', 'new_mail_from_name');
-		function new_mail_from_name($old) {
+		add_filter( 'wp_mail_from_name', 'new_mail_from_name' );
+		function new_mail_from_name( $old ) {
 			return get_bloginfo( 'name' );
 		}
 

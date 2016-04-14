@@ -57,7 +57,6 @@ define(
 		return false;
 	} );
 
-	
 	$( 'input[name="ai1ec_payment_method"]' ).on( 'click change', function() {
 		$( '.ai1ec-payment-details' ).removeClass( 'ai1ec-active' );
 		$( this ).closest( 'li' )
@@ -185,8 +184,8 @@ define(
 						var
 							$row   = $( '<tr></tr>' ),
 							status = '<span class="ai1ec-tickets-status ai1ec-tickets-status-'
-								+ _s( response.data[i]['status'] ) + '">'
-								+ _s( response.data[i]['status'] ) + '</span>';
+								+ _s( response.data[i]['ticket_status'] ) + '">'
+								+ _s( response.data[i]['ticket_status'] ) + '</span>';
 
 						$row.append(
 							$( '<td></td>').html(

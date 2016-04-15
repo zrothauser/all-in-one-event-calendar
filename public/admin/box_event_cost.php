@@ -88,8 +88,6 @@
 				 data-count="<?php echo $i;?>">
 				<a href="#" class="ai1ec-btn ai1ec-btn-lg ai1ec-pull-right ai1ec-remove-ticket"
 				   alt="" title="<?php _e( 'Remove Ticket Type', AI1EC_PLUGIN_NAME ); ?>"
-				   <?php if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { echo 'disabled';}?>
-				   >
 					<i class="ai1ec-fa ai1ec-fa-times"></i>
 				</a>
 				<?php if ( isset( $ticket->id ) ):?>
@@ -132,8 +130,7 @@
 								<input class="ai1ec-form-control ai1ec-required"
 									   name="ticket_price"
 									   value="<?php if ( isset( $ticket->ticket_price ) ){echo esc_attr( $ticket->ticket_price );}?>"
-									   id="ai1ec_ticket_price"
-									   <?php if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { echo 'disabled'; }?>
+									   id="ai1ec_ticket_price"			  
 									   >
 								<?php echo $ticket_currency; ?>
 							</td>
@@ -174,7 +171,6 @@
 										   name="unlimited"
 										<?php
 											if ( isset( $ticket->unlimited ) && 'on' == $ticket->unlimited ) { echo 'checked="checked"';} 
-											if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { echo 'disabled';}
 										?>
 									>
 									<?php _e( 'Unlimited', AI1EC_PLUGIN_NAME ); ?>
@@ -189,7 +185,6 @@
 												echo 'value="' . esc_attr( $ticket->quantity ) . '"; style="display:inline-block"';
 											}
 										} 
-										if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { echo 'disabled';}
 									?>
 								>
 							</td>
@@ -201,9 +196,6 @@
 									<input type="checkbox" id="ai1ec_ticket_avail"
 										   name="availibility"
 										   <?php 
-												if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { 
-													echo 'disabled';
-												}
 												if ( isset( $ticket->availibility ) && 
 													'on' == $ticket->availibility ) {
 													echo ' checked="checked" ';
@@ -226,11 +218,9 @@
 											<label><?php _e( 'From:', AI1EC_PLUGIN_NAME ); ?></label>
 											<input type="text" class="ai1ec-form-control ai1ec-tickets-datepicker"
 												   data-date-format="yyyy-mm-dd" size="12" 
-												   <?php if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { echo 'disabled';}?>
 												   />
 											<input type="text" class="ai1ec-form-control ai1ec-tickets-time"
 												   value="00:00" size="5" maxlength="5" 
-												   <?php if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { echo 'disabled';}?>
 												   /><br>
 											<input type="hidden" id="ai1ec_ticket_sale_start_date"
 												   name="ticket_sale_start_date"

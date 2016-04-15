@@ -540,6 +540,7 @@ class Ai1ec_Javascript_Controller {
 				'loading_details' => Ai1ec_I18n::__( 'Loading tickets details...' ),
 				'type_and_price'  => Ai1ec_I18n::__( 'Type and price' ),
 				'info'            => Ai1ec_I18n::__( 'Info' ),
+				'information'     => Ai1ec_I18n::__( 'Information' ),
 				'report'          => Ai1ec_I18n::__( 'Report' ),
 				'sale_dates'      => Ai1ec_I18n::__( 'Sale dates' ),
 				'limits'          => Ai1ec_I18n::__( 'Limits' ),
@@ -559,7 +560,10 @@ class Ai1ec_Javascript_Controller {
 				'no_attendees'    => Ai1ec_I18n::__( 'No attendees for this ticket type.' ),
 				'edit'            => Ai1ec_I18n::__( 'Edit' ),
 				'code'            => Ai1ec_I18n::__( 'Code' ),
-				'unlimited'       => Ai1ec_I18n::__( 'Unlimited' )
+				'unlimited'       => Ai1ec_I18n::__( 'Unlimited' ),
+				'open_for_sale'   => Ai1ec_I18n::__( 'Open for sale' ),
+				'no_delete_text'  => Ai1ec_I18n::__( 'You have sold tickets for this ticket type. Please change it\'s status to "Canceled" and make refunds to all users that purchased tickets.' ),
+				'cancel_message'  => Ai1ec_I18n::__( 'You have sold tickets for this ticket type. Please make refunds to all users that purchased tickets' )
 			),
 			'review'                         => array(
 				'message_sent'  => Ai1ec_I18n::__( 'Your message has been sent. Thank you for your feedback.' ),

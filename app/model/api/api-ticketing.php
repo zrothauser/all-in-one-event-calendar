@@ -398,6 +398,15 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		$ticket_type->ticket_sale_start_date = $ticket_type_api->sale_start_date; //YYYY-MM-YY HH:NN:SS
 		$ticket_type->ticket_sale_end_date   = $ticket_type_api->sale_end_date; //YYYY-MM-YY HH:NN:SS
 		$ticket_type->ticket_status 	     = $ticket_type_api->status;
+		if ( 'open' === $ticket_type_api->status ) {
+			$ticket_type->ticket_status_label = __( 'Open for sale', AI1EC_PLUGIN_NAME );
+		} else if ( 'closed' === $ticket_type_api->status )  {
+			$ticket_type->ticket_status_label = __( 'Sale ended', AI1EC_PLUGIN_NAME );
+		} else if ( 'canceled' === $ticket_type_api->status ) {
+			$ticket_type->ticket_status_label = __( 'Canceled', AI1EC_PLUGIN_NAME );
+		} else {
+			$ticket_type->ticket_status_label = $ticket_type_api->status;
+		}
 		if ( false === isset( $ticket_type_api->quantity ) ||
 			null === $ticket_type_api->quantity ) {
 		 	$ticket_type->unlimited          = 'on';
@@ -446,12 +455,14 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	/**
 	 * @return string JSON.
 	 */
-	public function get_ticket_types( $post_id ) {
+	public function get_ticket_types( $post_id, $get_canceled = true ) {
 		$api_event_id = $this->get_api_event_id( $post_id );
 		if ( ! $api_event_id ) {			
 			return json_encode( array( 'data' => array() ) );
 		}
-		$response = $this->request_api( 'GET', $this->get_api_event_url( $post_id ) . 'events/' . $api_event_id . '/ticket_types', null);
+		$response = $this->request_api( 'GET', $this->get_api_event_url( $post_id ) . 'events/' . $api_event_id . '/ticket_types', 
+			json_encode( array( 'get_canceled' =>  ( true === $get_canceled ? 1 : 0 ) ) )
+			);
 		if ( $this->is_response_success( $response ) ) {
 			if ( isset( $response->body->ticket_types ) ) {
 		 		foreach ( $response->body->ticket_types as $ticket_api ) {

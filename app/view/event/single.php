@@ -159,7 +159,7 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			$api_event_id = $api->get_api_event_id( $event->get( 'post_id' ) );
 			if ( $api_event_id ) {
 				$api                   = $this->_registry->get( 'model.api.api-ticketing' );
-				$ticket_types          = json_decode( $api->get_ticket_types( $event->get( 'post_id' ) ) );
+				$ticket_types          = json_decode( $api->get_ticket_types( $event->get( 'post_id' ), false ) );
 				$args['has_tickets']   = true;
 				$args['API_URL']       = AI1EC_API_URL;
 				$args['tickets_block'] = $loader->get_file(

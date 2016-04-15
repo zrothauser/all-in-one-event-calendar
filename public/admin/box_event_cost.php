@@ -88,6 +88,8 @@
 				 data-count="<?php echo $i;?>">
 				<a href="#" class="ai1ec-btn ai1ec-btn-lg ai1ec-pull-right ai1ec-remove-ticket"
 				   alt="" title="<?php _e( 'Remove Ticket Type', AI1EC_PLUGIN_NAME ); ?>"
+				   	<?php if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { echo 'disabled';}?>
+				   >
 					<i class="ai1ec-fa ai1ec-fa-times"></i>
 				</a>
 				<?php if ( isset( $ticket->id ) ):?>

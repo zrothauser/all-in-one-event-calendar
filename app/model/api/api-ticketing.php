@@ -835,7 +835,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			$api_data[self::ATTR_CALENDAR_ID]      = $this->get_current_calendar();
 		}
 		$previous_data = $this->get_api_event_data( $post_id );		
-		$new_data      = [];
+		$new_data      = array();
 		if ( is_array( $previous_data ) ) {
 			foreach ( $previous_data as $key => $value) {
 				$new_data[$key] = $value;

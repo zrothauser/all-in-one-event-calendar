@@ -87,13 +87,14 @@
 				 <?php if ( 0 === $i ){ echo 'ai1ec-tickets-form-template';} ?>"
 				 data-count="<?php echo $i;?>">
 				<a href="#" class="ai1ec-btn ai1ec-btn-lg ai1ec-pull-right ai1ec-remove-ticket"
-				   alt="" title="<?php _e( 'Remove Ticket Type', AI1EC_PLUGIN_NAME ); ?>"
-				   	<?php if ( isset( $ticket->taken ) && $ticket->taken > 0 ) { echo 'disabled';}?>
-				   >
+				   alt="" title="<?php _e( 'Remove Ticket Type', AI1EC_PLUGIN_NAME ); ?>">
 					<i class="ai1ec-fa ai1ec-fa-times"></i>
-				</a>
+				</a>			
 				<?php if ( isset( $ticket->id ) ):?>
 					<input type="hidden" name="id" value="<?php echo esc_attr( $ticket->id );?>" />
+				<?php endif; ?>
+				<?php if ( isset( $ticket->taken ) ):?>
+					<input type="hidden" id="ai1ec-ticket-taken" name="taken" value="<?php echo esc_attr( $ticket->taken );?>" />
 				<?php endif; ?>
 				<?php if ( isset( $ticket->created_at ) ):?>
 					<input type="hidden" name="created_at" value="<?php echo esc_attr( $ticket->created_at );?>" />
@@ -258,21 +259,49 @@
 						</tr>
 						<tr>
 							<td><?php _e( 'Status:', AI1EC_PLUGIN_NAME ); ?></td>
-							<td>
-								<select class="ai1ec-form-control ai1ec-select2"
-									id="ai1ec_new_ticket_status"
-									name="ticket_status">
-									<option value="open" <?php if ( isset( $ticket->ticket_status )
-											&& 'open' === $ticket->ticket_status ){echo 'selected';}?>>
-										<?php _e( 'Open', AI1EC_PLUGIN_NAME ); ?>
-									</option>
-									<option value="closed" <?php if ( isset( $ticket->ticket_status )
-											&& 'closed' === $ticket->ticket_status ){echo 'selected';}?>>
-										<?php _e( 'Closed', AI1EC_PLUGIN_NAME ); ?>
-									</option>
-								</select>
+							<td>					
+								<table><tr>
+									<td>
+										<select class="ai1ec-form-control ai1ec-select2"
+											id="ai1ec_new_ticket_status"
+											name="ticket_status">
+											<option value="open" <?php if ( isset( $ticket->ticket_status )
+													&& 'open' === $ticket->ticket_status ){echo 'selected';}?>>
+												<?php _e( 'Open for sale', AI1EC_PLUGIN_NAME ); ?>
+											</option>
+											<?php if ( isset( $ticket->id ) ):?>
+												<option value="closed" <?php if ( isset( $ticket->ticket_status )
+														&& 'closed' === $ticket->ticket_status ){echo 'selected';}?>>
+													<?php _e( 'Sale ended', AI1EC_PLUGIN_NAME ); ?>
+												</option>
+												<option value="canceled" <?php if ( isset( $ticket->ticket_status )
+														&& 'canceled' === $ticket->ticket_status ){echo 'selected';}?>>
+													<?php _e( 'Canceled', AI1EC_PLUGIN_NAME ); ?>
+												</option>									
+											<?php endif; ?>
+										</select>	
+									</td>
+									<td>&nbsp;&nbsp;</td>
+									<td>
+										<p id="ai1ec-ticket-status-message"></p>
+									</td>
+								</tr></table>
 							</td>
 						</tr>
+						<?php if ( isset( $ticket->taken ) ) :?>
+							<tr>
+								<td><?php _e( 'Report:', AI1EC_PLUGIN_NAME ); ?></td>
+								<td>	
+									<?php echo sprintf( 
+										__( 'Sold: %d, Left: %s, Reserved: %d', AI1EC_PLUGIN_NAME ),
+										 $ticket->sold,
+										 ( is_null( $ticket->available ) ? __( 'Unlimited', AI1EC_PLUGIN_NAME ) :  $ticket->available ),
+										 ( $ticket->taken - $ticket->sold )
+										 ); 
+									?>
+								</td>
+							</tr>
+						<?php endif; ?>	
 					</tbody>
 				</table>
 			</div>

@@ -104,6 +104,36 @@ define(
 					}
 					return $alert;
 				},
+				"alert": function( popupTitle, popupContent ) {
+					$document       = $( document.body );
+					$one_shot_popup = $( '#ai1ec-show-popup-alert', $document );
+					if ( 0 === $one_shot_popup.length ) {
+						$div = $( '<div class="timely"/>' );
+						$div.html(
+							'<div id="ai1ec-show-popup-alert" class="timely ai1ec-modal ai1ec-fade"' +
+								'role="dialog" aria-hidden="true" style="display: none;">' +
+								'<div class="ai1ec-modal-dialog">' +
+									'<div class="ai1ec-modal-content">' +
+										'<div class="ai1ec-modal-header">' +
+											'<button type="button" class="ai1ec-close"' +
+												'data-dismiss="ai1ec-modal" aria-hidden="true">×</button>' +
+											'<h4 class="ai1ec-modal-title" id="ai1ec-one-shot-popup-title"></h4>' +
+										'</div>' +
+										'<div class="ai1ec-modal-body">' +
+											'<p id="ai1ec-one-shot-popup-text">'
+											+ '</p>' +
+										'</div>' +
+									'</div>' +
+								'</div>' +
+							'</div>'
+						 ).appendTo( $document );
+						$one_shot_popup = $( '#ai1ec-show-popup-alert', $document );
+					}					
+					var $link = $( this ).closest( 'a' );
+					$( '#ai1ec-one-shot-popup-title', $one_shot_popup ).text( popupTitle );
+					$( '#ai1ec-one-shot-popup-text', $one_shot_popup ).text( popupContent );
+					$one_shot_popup.modal( 'show' );
+				},
 				/**
 				 * Create a twitter bootstrap popup
 				 *

@@ -850,7 +850,10 @@ JSC;
 	private function _are_we_editing_event_categories() {
 		$path_details = pathinfo( $_SERVER["SCRIPT_NAME"] );
 		$post_type = isset( $_GET['post_type'] ) ? $_GET['post_type'] : '';
-		return $path_details['basename'] === 'edit-tags.php' && $post_type === AI1EC_POST_TYPE;
+		return (
+			$path_details['basename'] === 'edit-tags.php' ||
+			$path_details['basename'] === 'term.php' 
+		)  && $post_type === AI1EC_POST_TYPE;
 	}
 
 	/**

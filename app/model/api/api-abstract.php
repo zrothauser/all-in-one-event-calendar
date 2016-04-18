@@ -26,7 +26,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		$this->_settings = $this->_registry->get( 'model.settings' );			
 	}
 
-	protected function get_ticketing_settings() {
+	protected function get_ticketing_settings( $find_attribute = null, $default_value_attribute = null ) {
 		$api_settings = get_option( self::WP_OPTION_KEY, null );		
 		if ( ! is_array( $api_settings ) ) {
 			$api_settings = array( 
@@ -41,7 +41,15 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 			$this->_settings->set( 'ticketing_token'      , '' );
 			$this->_settings->set( 'ticketing_calendar_id', null );		
 		}
-		return $api_settings;
+		if ( is_null( $find_attribute ) ) {
+			return $api_settings;
+		} else {
+			if ( isset( $api_settings[$find_attribute] ) ) {
+				return $api_settings[$find_attribute];
+			} else {
+				return $default_value_attribute;
+			}
+		}
 	}
 
 	/**
@@ -83,12 +91,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	 * Get the saved payments settings (the same saved on the API)
 	 */
 	public function get_payment_settings() {
-		$api_settings = $this->get_ticketing_settings();
-		if ( isset( $api_settings['payment_settings'] ) ) {
-			return $api_settings['payment_settings'];
-		} else {
-			return null;
-		}
+		return $this->get_ticketing_settings( 'payment_settings' );
 	}
 
 	/**
@@ -138,12 +141,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 
 
     public function get_timely_token() {
-        $api_settings = $this->get_ticketing_settings();
-        if ( isset( $api_settings['token'] ) ) {
-            return $api_settings['token'];
-        } else {
-            return null;
-        }
+        return $this->get_ticketing_settings( 'token' );
     } 
 
 	protected function save_calendar_id ( $calendar_id ) {
@@ -159,7 +157,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		$headers  = array(
 			'content-type' => 'application/json'
 		);		
-		$headers['Authorization'] = 'Basic ' . $this->get_ticketing_settings()['token'];
+		$headers['Authorization'] = 'Basic ' . $this->get_ticketing_settings( 'token', '' );
 		if ( null !== $custom_headers ) {
 			foreach ( $custom_headers as $key => $value ) {
 				if ( null === $value ) {
@@ -259,8 +257,8 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	 * @return string JSON.
 	 */
 	protected function _get_ticket_calendar() {
-		$ticketing_calendar_id = $this->get_ticketing_settings()['calendar_id'];
-		if ( isset( $ticketing_calendar_id ) && 0 < $ticketing_calendar_id ) {
+		$ticketing_calendar_id = $this->get_ticketing_settings( 'calendar_id', 0 );
+		if ( 0 < $ticketing_calendar_id ) {
 			return $ticketing_calendar_id;
 		} else {
 			//if the calendar is not saved on settings it should exists on API
@@ -327,32 +325,28 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
      * Check if the current WP instance is signed into the API
      */
     public function is_signed() {
-    	return ( true === $this->get_ticketing_settings()['enabled'] );
+    	return ( true === $this->get_ticketing_settings( 'enabled', false ) );
     }
 
     /**
      * Get the current email account
      */
 	public function get_current_account() {
-		if ( isset( $this->get_ticketing_settings()['account'] ) ) {
-			return $this->get_ticketing_settings()['account'];	
-		} else {
-			return null;
-		}		
+		return $this->get_ticketing_settings( 'account', '' );
 	}
 
 	/**
 	 * Get the current calendar id
 	 */
     public function get_current_calendar() {
-    	return $this->get_ticketing_settings()['calendar_id'];
+    	return $this->get_ticketing_settings( 'calendar_id', 0 );
     }
 
     /**
      * Get the last message return by Signup or Signup process
      */
     public function get_sign_message() {
-    	return $this->get_ticketing_settings()['message'];
+    	return $this->get_ticketing_settings( 'message', '' );
     }
 
 	/**

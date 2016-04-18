@@ -125,7 +125,7 @@ class Ai1ec_Event extends Ai1ec_Base {
 		$end   = $this->_registry->get( 'date.time', $start );
 		$end->set_time(
 			$start->format( 'H' ),
-			$start->format( 'i' ) + 30,
+			$start->format( 'i' ) + 15,
 			$start->format( 's' )
 		);
 		$this->set( 'end', $end );

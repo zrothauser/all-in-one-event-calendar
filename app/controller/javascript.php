@@ -244,8 +244,8 @@ class Ai1ec_Javascript_Controller {
 			->get_permalink( $this->_settings->get( 'calendar_page_id' ) );
 		$full_permalink = $this->_template_link_helper
 			->get_full_permalink( $this->_settings->get( 'calendar_page_id' ) );
-		$translation['calendar_url']      = $permalink;
-		$translation['full_calendar_url'] = $full_permalink;
+		$translation['calendar_url']      = preg_replace( '/^https?:/', '', $permalink );
+		$translation['full_calendar_url'] = preg_replace( '/^https?:/', '', $full_permalink );
 		$translation_module = $this->create_require_js_module(
 			self::FRONTEND_CONFIG_MODULE,
 			$translation
@@ -436,7 +436,7 @@ class Ai1ec_Javascript_Controller {
 		if ( $force_ssl_admin && ! is_ssl() ) {
 			force_ssl_admin( false );
 		}
-		$ajax_url        = ai1ec_admin_url( 'admin-ajax.php' );
+		$ajax_url        = preg_replace( '/^https?:/', '', ai1ec_admin_url( 'admin-ajax.php' ) );
 		force_ssl_admin( $force_ssl_admin );
 		$settings        = $this->_registry->get( 'model.settings' );
 		$locale          = $this->_registry->get( 'p28n.wpml' );
@@ -525,7 +525,7 @@ class Ai1ec_Javascript_Controller {
 			'calendar_page_id'               => $settings->get( 'calendar_page_id' ),
 			'region'                         => ( $settings->get( 'geo_region_biasing' ) ) ? $locale->get_region() : '',
 			'site_url'                       => trailingslashit(
-				ai1ec_get_site_url()
+				preg_replace( '/^https?:/', '', ai1ec_get_site_url() )
 			),
 			'javascript_widgets'             => array(),
 			'widget_creator'                 => array(
@@ -592,7 +592,7 @@ class Ai1ec_Javascript_Controller {
 	 */
 	public function get_frontend_translation_data() {
 		$data = array(
-			'export_url' => AI1EC_EXPORT_URL,
+			'export_url' => preg_replace( '/^https?:/', '', AI1EC_EXPORT_URL ),
 		);
 
 		// Replace desired CSS selector with calendar, if selector has been set
@@ -610,11 +610,11 @@ class Ai1ec_Javascript_Controller {
 		$fonts_dir = AI1EC_DEFAULT_THEME_URL . 'font_css/';
 		$data['fonts'][] = array(
 			'name' => 'League Gothic',
-			'url'  => $fonts_dir . 'font-league-gothic.css',
+			'url'  => preg_replace( '/^https?:/', '', $fonts_dir . 'font-league-gothic.css' ),
 		);
 		$data['fonts'][] = array(
 			'name' => 'fontawesome',
-			'url'  => $fonts_dir . 'font-awesome.css',
+			'url'  => preg_replace( '/^https?:/', '', $fonts_dir . 'font-awesome.css' ),
 		);
 		return $data;
 	}
@@ -660,7 +660,7 @@ class Ai1ec_Javascript_Controller {
 	 * @return string
 	 */
 	public function create_require_js_config_object() {
-		$js_url    = AI1EC_ADMIN_THEME_JS_URL;
+		$js_url    = preg_replace( '/^https?:/', '', AI1EC_ADMIN_THEME_JS_URL );
 		$version   = AI1EC_VERSION;
 		$namespace = self::REQUIRE_NAMESPACE;
 		$config    = <<<JSC

@@ -13,20 +13,7 @@
 							{% set has_active_tickets = true %}
 							<select class="select2 ai1ec-select2"
 									name="ticket_type_{{ ticket.ticket_type_id }}">
-							{% if false == first_ticket %}
-								{% set value_to_select = 0 %}
-							{% else %}
-								{% set first_ticket = false %}
-								{% if 2 < ticket.buy_min_limit %}
-									{% set value_to_select = ticket.buy_min_limit %}	
-								{% else %}
-									{% if 2 < ticket.buy_max_available %}
-										{% set value_to_select = 2 %}	
-									{% else %}
-										{% set value_to_select = ticket.buy_max_available %}	
-									{% endif %}
-								{% endif %}
-							{% endif %}
+							{% set value_to_select = 0 %}
 							{% if 0 < ticket.buy_min_limit %}
 								<option {% if 0 == value_to_select %}selected{% endif %}>0</option>
 							{% endif %}	

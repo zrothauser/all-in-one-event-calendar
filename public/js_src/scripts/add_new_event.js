@@ -430,6 +430,9 @@ define(
 				var $parent_form = $this.closest( '.ai1ec-tickets-edit-form' );
 				var $sub_fields  = $( 'input[id="ai1ec_ticket_quantity"]', $parent_form );				
 				if ( false === $this.prop( 'checked' ) ) {
+					if ( $sub_fields.val() == 0 ) {
+						$sub_fields.val( '' );
+					}
 					$sub_fields.addClass( 'ai1ec-required' );
 				} else {
 					$sub_fields.removeClass( 'ai1ec-required' );
@@ -530,13 +533,31 @@ define(
 		$( document ).on( 'click change', '[id="ai1ec_ticket_avail"]', function () {
 			on_change_availability( $( this ) );
 		} );
+		$( document ).on( 'click change', '[id="ai1ec_new_ticket_status"]', function () {
+			var $this         = $( this );
+			var $parent_panel = $this.closest( '.ai1ec-tickets-panel' );
+			var $status       = $this.find( ':selected' );
+			if ( 'canceled' === $status.val() ) {
+				var $taken = $( '#ai1ec-ticket-taken', $parent_panel );
+				if ( 0 < $taken.val() ) {
+					$( '#ai1ec-ticket-status-message', $parent_panel ).text( ai1ec_config.ticketing.cancel_message );
+					return;
+				} 
+			}
+			$parent_panel.find( '#ai1ec-ticket-status-message' ).text( '' );
+		} );
 		$( document ).on( 'click', '.ai1ec-remove-ticket', function() {
-			var $to_remove = $( this ).closest( '.ai1ec-tickets-panel' );
-			$to_remove
-				.addClass( 'ai1ec-hidden' )
-				.append(
-					'<input type="hidden" name="remove" value="1">'
-				);				
+			var $parent_panel = $( this ).closest( '.ai1ec-tickets-panel' );
+			var $taken        = $( '#ai1ec-ticket-taken', $parent_panel );
+			if ( 0 < $taken.val() ) {
+				utils.alert( ai1ec_config.ticketing.information, ai1ec_config.ticketing.no_delete_text );
+			} else {
+				$parent_panel
+					.addClass( 'ai1ec-hidden' )
+					.append(
+						'<input type="hidden" name="remove" value="1">'
+					);				
+			}
 			return false;
 		} );
 

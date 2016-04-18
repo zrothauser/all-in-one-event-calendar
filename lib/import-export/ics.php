@@ -584,6 +584,16 @@ class Ai1ec_Ics_Import_Export_Engine
 				// ======================================================
 				// = Event was found, let's store the new event details =
 				// ======================================================
+				$uid_cal = $e->getProperty( 'uid' );
+				if ( ! ai1ec_is_blank( $uid_cal ) ) {					
+					$uid_cal_original = sprintf( $event->get_uid_pattern(), $matching_event_id );
+					if ( $uid_cal_original === $uid_cal ) {
+						//avoiding cycle import
+						//ignore the event, it belongs to site
+						unset( $events_in_db[$matching_event_id] );
+						continue;
+					}
+				}
 
 				// Update the post
 				$post               = get_post( $matching_event_id );

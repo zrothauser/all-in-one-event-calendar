@@ -28,6 +28,11 @@ class Ai1ec_Css_Admin  extends Ai1ec_Base {
 				array( 'style',  'bootstrap.min.css', ),
 				array( 'style',  'taxonomies.css', ),
 			),
+			'term.php'                        => array(
+				array( 'style',  'colorpicker.css', ),
+				array( 'style',  'bootstrap.min.css', ),
+				array( 'style',  'taxonomies.css', ),
+			),
 			$settings->get( 'settings_page' ) => array(
 				array( 'script', 'common', ),
 				array( 'script', 'wp-lists', ),

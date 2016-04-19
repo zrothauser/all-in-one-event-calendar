@@ -134,10 +134,10 @@ a.ai1ec-tickets-edit {
 .ai1ec-tickets-status-open {
 	color: #85c248;
 }
-.ai1ec-tickets-status-soldout {
+.ai1ec-tickets-status-canceled {
 	color: #f00;
 }
-.ai1ec-tickets-status-hidden {
+.ai1ec-tickets-status-closed {
 	color: #cc0;
 }
 .ai1ec-ticket-details-row .ai1ec-ticket-attendees {

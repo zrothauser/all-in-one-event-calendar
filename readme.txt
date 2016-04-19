@@ -4,8 +4,8 @@ Tags: calendar, events, ics, ics feed, wordpress ical importer, google
 calendar, ical, iCalendar, all-in-one, events sync, events widget,
 calendar widget
 Requires WordPress at least: 3.5
-Tested up to: 4.4.2
-Stable tag: 2.3.12
+Tested up to: 4.5
+Stable tag: 2.4.1
 License: GNU General Public License, version 3 (GPL-3.0)
 
 A calendar system with many views, upcoming events widget, color-coded
@@ -148,6 +148,25 @@ https://vimeo.com/135004810
 **[ai1ec exact_date="5-10-2015"]**
 
 == Changelog ==
+
+= Version 2.4.1 = 
+
+* Improved: Changed the default number of ticket in the dropdown to 0 on any ticket type, instead of 2.
+* Improved: Allowing user to change sender's name from 'WordPress' to their own name (site name) when sending email notification.
+* Improved: Allowing user to edit ticket even after sale starts.
+* Improved: Allowing user to delete ticket event even after sale starts.
+* Fixed: "No end time" option selected, Start date time: 3/31/2016 / 11:45pm, event appears on 4/1/2016.
+* Fixed: It was not possible to add or change the Venue image.
+
+= Version 2.4.0 = 
+* Improved: Event's custom fields are now exported when using the "Export to XML" opton.
+* Improved: Timely Network Sign up was moved to Ticketing beta page.
+* Improved: Support all major currencies for ticketing (USD, EUR, CAD, etc).
+* Fixed: Event with Timely Tickets was not showing Buy Ticket button when imported on another site.
+* Fixed: Recurrent events start/end time of imported events was incorrect for subsequents instances of the event.
+* Fixed: Immediately option of Timely Tickets was not being saved.
+* Fixed: Venue option of the event used to be exported as a category.
+* Fixed: Some items of Add-ons page was using broken urls.
 
 = Version 2.3.12 = 
 * Improved: Added "Videos" button in the box support section.

@@ -80,6 +80,9 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 			'signed_in_text'        => Ai1ec_I18n::__(
 				'You are signed in to <b>Timely Network</b> as ' . $account
 			),
+			'beta_message'          => Ai1ec_I18n::__(
+				'Please consider Ticketing is in beta. If you encounter any bugs please raise the at <a href="mailto:labs@time.ly">labs@time.ly</a>. Any enhancements requests please raise them on <a href="http://ideas.time.ly">ideas.time.ly</a> under "Ticketing".'
+			),
 			'sign_out_text'         => Ai1ec_I18n::__( 'Sign out' ),
 			'full_name_text'        => Ai1ec_I18n::__( 'Full Name:' ),
 			'email_text'            => Ai1ec_I18n::__( 'Email:' ),

@@ -54,12 +54,11 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 	 */
 	public function display_page() {
 
-		$api               = $this->_registry->get( 'model.api.api-registration' );
-		$signup_available  = $api->is_ticket_available();		
-		$signed_to_api     = $api->is_signed();
-		$ticketing_message = $api->get_sign_message();
+		$signup_available  = $this->_api_registration->is_ticket_available();		
+		$signed_to_api     = $this->_api_registration->is_signed();
+		$ticketing_message = $this->_api_registration->get_sign_message();
 		$loader            = $this->_registry->get( 'theme.loader' );
-		$account           = $api->get_current_account();
+		$account           = $this->_api_registration->get_current_account();
 		$signup_args       = array(
 			'api_signed'            => $signed_to_api,
 			'signup_available'      => $signup_available,
@@ -108,7 +107,7 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 		if ( ! $signed_to_api ) {
 
 			if ( false === ai1ec_is_blank( $ticketing_message ) ) {
-				$api->clear_sign_message();
+				$this->_api_registration->clear_sign_message();
 			}
 
 			$args = array(
@@ -121,8 +120,8 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 			);
 			$file = $loader->get_file( 'ticketing/signup.twig', $args, true );
 		} else {
-			$response  = $api->get_payment_preferences();
-			$purchases = $api->get_purchases();
+			$response  = $this->_api_registration->get_payment_preferences();
+			$purchases = $this->_api_registration->get_purchases();
 			$args      = array(
 				'title'                             => Ai1ec_I18n::__(
 					'Time.ly Ticketing<sup>beta</sup>'
@@ -198,7 +197,7 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 			)
 		);
 		if ( isset( $_POST['ai1ec_save_settings'] ) ) {
-			$response = $api->save_payment_preferences();
+			$response = $this->_api_registration->save_payment_preferences();
 
 			// this redirect makes sure that the error messages appear on the screen
 			header( "Location: " . $_SERVER['HTTP_REFERER'] );

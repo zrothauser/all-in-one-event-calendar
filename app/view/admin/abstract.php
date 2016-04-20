@@ -22,14 +22,20 @@ abstract class Ai1ec_View_Admin_Abstract extends Ai1ec_Base {
 	protected $_page_suffix;
 
 	/**
+	 * @var string
+	 */
+	protected $_api_registration;
+
+	/**
 	 * Standard constructor
 	 *
 	 * @param Ai1ec_Registry_Object $registry
 	 */
 	public function __construct( Ai1ec_Registry_Object $registry ) {
 		parent::__construct( $registry );
-		$exploded_class     = explode( '_', get_class( $this ) );
-		$this->_page_suffix = strtolower( end( $exploded_class ) );
+		$exploded_class          = explode( '_', get_class( $this ) );
+		$this->_page_suffix      = strtolower( end( $exploded_class ) );
+		$this->_api_registration = $this->_registry->get( 'model.api.api-registration' );
 	}
 
 	/**

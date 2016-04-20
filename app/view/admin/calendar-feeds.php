@@ -81,12 +81,19 @@ class Ai1ec_View_Calendar_Feeds extends Ai1ec_View_Admin_Abstract {
 	public function display_meta_box( $object, $box ) {
 		// register the calendar feeds page.
 		$calendar_feeds = $this->_registry->get( 'controller.calendar-feeds' );
-		$feeds          = array( $this->_registry->get( 'calendar-feed.ics' ) );
-		$feeds          = array(
-			$this->_registry->get( 'calendar-feed.import' ),
-			$this->_registry->get( 'calendar-feed.suggested' ),
-			$this->_registry->get( 'calendar-feed.ics' )
-		);
+		$feeds          = array();
+
+		// Check for user subscription
+		if ($this->_api_registration->has_subscription_active( 'import-feeds' ) ) {
+		    array_push( $feeds, $this->_registry->get( 'calendar-feed.import' ) );
+		}
+		if ($this->_api_registration->has_subscription_active( 'event-discovery' ) ) {
+		    array_push( $feeds, $this->_registry->get( 'calendar-feed.suggested' ) );
+		}
+
+		// Add ICS
+		array_push( $feeds, $this->_registry->get( 'calendar-feed.ics' ) );
+
 		$feeds          = apply_filters( 'ai1ec_calendar_feeds', $feeds );
 		foreach ( $feeds as $feed ) {
 			$calendar_feeds->add_plugin( $feed );

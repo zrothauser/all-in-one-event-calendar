@@ -93,17 +93,25 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 	 * @return array List of subscriptions and limits
 	 */
 	protected function get_subscriptions() {
-		$response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars/' . $this->_get_ticket_calendar() . '/subscriptions',
-				null,
-				true
-				);
-		if ( $this->is_response_success( $response ) ) {
-			$response_body = (array) $response->body;
-		} else {
-			$response_body = array();
+		$subscriptions = get_site_transient( 'ai1ec_subscriptions' );
+
+		if ( false === $subscriptions ) {
+			$response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars/' . $this->_get_ticket_calendar() . '/subscriptions',
+					null,
+					true
+					);
+			if ( $this->is_response_success( $response ) ) {
+				$subscriptions = (array) $response->body;
+			} else {
+				$subscriptions = array();
+			}
+
+			// Save for 30 minutes
+			$minutes = 30;
+			set_site_transient( 'ai1ec_subscriptions', $subscriptions, $minutes * 60 );
 		}
 
-		return $response_body;
+		return $subscriptions;
 	}
 
 	public function has_subscription_active( $feature ) {

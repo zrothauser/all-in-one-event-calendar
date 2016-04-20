@@ -88,6 +88,29 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 	public function is_ticket_available() {
 		return $this->is_feature_available( 'ticketing' );
 	}
+
+	/**
+	 * @return array List of subscriptions and limits
+	 */
+	protected function get_subscriptions() {
+		$response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars/' . $this->_get_ticket_calendar() . '/subscriptions',
+				null,
+				true
+				);
+		if ( $this->is_response_success( $response ) ) {
+			$response_body = (array) $response->body;
+		} else {
+			$response_body = array();
+		}
+
+		return $response_body;
+	}
+
+	public function has_subscription_active( $feature ) {
+		$subscriptions = $this->get_subscriptions();
+
+		return array_key_exists( $feature, $subscriptions );
+	}
  
  	/**
 	 * Clean the ticketing settings on WP database only

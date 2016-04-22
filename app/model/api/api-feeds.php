@@ -90,14 +90,13 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 	/**
 	 * Call the API to Process and Import the Feed
 	 */
-	public function import_feed( $feed_url ) {	
+	public function import_feed( $feed_url ) {
 		$calendar_id = $this->_get_ticket_calendar();
 		if ( 0 >= $calendar_id ) {
 			return null;
-		}		
-		$response = $this->request_api( 'POST',
-			"calendars/$calendar_id/feeds/import",
-			json_encode( [ "url" => $feed_url ] )			
+		}
+		$response = $this->request_api( 'POST', AI1EC_API_URL . 'calendars/' . $calendar_id . '/feeds/import',
+			json_encode( [ "url" => $feed_url ] )
 		);
 		if ( $this->is_response_success( $response ) ) {
 			return $response->body; 	
@@ -110,4 +109,27 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 		}
 	}
 
+	/**
+	 * Call the API to get the feed
+	 */
+	public function get_feed( $feed_id ) {
+	    $calendar_id = $this->_get_ticket_calendar();
+	    if ( 0 >= $calendar_id ) {
+	        return null;
+	    }
+	    $response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars/' . $calendar_id . '/feeds/' . $feed_id,
+	            json_encode( [ "max" => "9999" ] )
+	            );
+	    
+	    if ( $this->is_response_success( $response ) ) {
+	        print_r($response->body);
+	        return $response->body;
+	    }  else {
+	        $this->save_error_notification(
+	                $response,
+	                __( 'We were unable to get feed data' , AI1EC_PLUGIN_NAME )
+	                );
+	        return null;
+	    }
+	}
 }

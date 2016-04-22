@@ -98,11 +98,11 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 	}
 
 	public function is_api_sign_up_available() {
-	    return $this->is_feature_available( 'api-access' );
+	    return $this->is_feature_available( Ai1ec_Api_Features::CODE_API_ACCESS );
 	}
 
 	public function is_ticket_available() {
-		return $this->is_feature_available( 'ticketing' );
+		return $this->is_feature_available( Ai1ec_Api_Features::CODE_TICKETING );
 	}
  
  	/**

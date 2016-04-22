@@ -111,7 +111,7 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 				)
 			),
 			false
-		);
+		)->get_content();
 		return $action_buttons;
 	}
 

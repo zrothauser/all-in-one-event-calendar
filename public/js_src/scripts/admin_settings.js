@@ -180,11 +180,129 @@ define(
 			// Enable autoselect feature.
 			utils.init_autoselect();
 			
+			var hide_api_signup = $.cookie( 'ai1ec_api_signup_hidden' );
+			if ( 1 != hide_api_signup ) {
+				$( '.ai1ec-signup-show' ).click();
+			}
+			
 			$( '#ai1ec_save_settings' ).on( 'click', validate_week_start_end );
 			$( '#show_create_event_button' ).trigger( 'ready' );
 			
 		} );
 	};
+	
+	$( '[name="ai1ec_tickets_submit"]' ).on( 'click', function() {
+		$( '.ai1ec-ticket-field-error' ).hide();
+		$( '.ai1ec-required:visible' ).each( function() {
+			var $this = $( this );
+			$this.removeClass( 'ai1ec-error' );
+			if (
+				! $.trim( $this.val() ) ||
+				( 'checkbox' === $this.attr( 'type' ) && ! this.checked )
+			) {
+				$this.addClass( 'ai1ec-error' );
+				$this.closest( 'td' ).find( '.ai1ec-ticket-field-error' ).show();
+				$this.prev( '.ai1ec-ticket-field-error' ).show();
+			}
+		} );
+		if ( ! $( '.ai1ec-ticket-field-error:visible' ).length ) {
+			$( '.ai1ec-noauto' ).remove();
+			$( this ).closest( 'form' ).submit();
+		}
+		return false;
+	} );
+
+	$( '[name="ai1ec_tickets_signin"]' ).on( 'click', function() {
+		$( '.ai1ec-ticket-field-error' ).hide();
+		$( '.ai1ec-required:visible' ).each( function() {
+			var $this = $( this );
+			$this.removeClass( 'ai1ec-error' );
+			if (
+				! $.trim( $this.val() ) ||
+				( 'checkbox' === $this.attr( 'type' ) && ! this.checked )
+			) {
+				$this.addClass( 'ai1ec-error' );
+				$this.closest( 'td' ).find( '.ai1ec-ticket-field-error' ).show();
+			}
+		} );
+		if ( ! $( '.ai1ec-ticket-field-error:visible' ).length ) {
+			$( '.ai1ec-noauto' ).remove();
+			var
+				$form_div = $( '#ai1ec-api-signup-form' ),
+				action    = $form_div.attr( 'data-action' ),
+				$form     = $( '<form></form', {
+					method : 'POST',
+					action : action,
+					class  : 'ai1ec-hidden'
+				} );
+			
+			$form_div.appendTo( $form );
+			$form.appendTo( 'body' ).submit();
+			
+		}
+		return false;
+	} );
+	
+	$( '[name="ai1ec_signing"]' ).on( 'click', function() {
+		$( '.ai1ec-error' ).removeClass( 'ai1ec-error' );
+		if ( '2' === this.value ) {
+			$( '.ai1ec-ticketing-signup tr' ).not( ':first' ).not( '.signin' ).hide();
+			$( '.signin' ).removeClass( 'ai1ec-hidden' );
+		} else {
+			$( '.ai1ec-ticketing-signup tr' ).show();
+			$( '.signin:last' ).addClass( 'ai1ec-hidden' );
+		}
+	} );
+
+	$( '#ai1ec-api-signout' ).on( 'click', function() {
+		$( '#ai1ec-api-signout-confirm' ).show();
+		$( this ).hide();
+		return false;
+	} );
+
+	$( '#ai1ec-api-signout-cancel' ).on( 'click', function() {
+		$( '#ai1ec-api-signout-confirm' ).hide();
+		$( '#ai1ec-api-signout' ).show();
+		return false;
+	} );
+
+	$( '#ai1ec-api-signout-confirm' ).on( 'click', function() {
+		if ( ! $( '#ai1ec-api-signout-confirm:visible' ).length ) {
+			return false;
+		}
+		var
+			$container = $( '#ai1ec-api-signed-in' ),
+			action     = $( '#ai1ec-api-signout' ).attr( 'data-action' ),
+			$input     = $( '<input type="hidden" name="ai1ec_signout" value="1" />' ),
+			$form      = $( '<form></form', {
+				method : 'POST',
+				action : action,
+				class  : 'ai1ec-hidden'
+			} );
+
+		$form
+			.append( $input, $container )
+			.appendTo( 'body' )
+			.submit();
+		
+		return false;
+	} );
+
+	$( '.ai1ec-api-signup-hide' ).on( 'click', function() {
+		$( '#ai1ec-api-signup-form' ).addClass( 'ai1ec-hidden' );
+		$( '.ai1ec-signup-show' ).removeClass( 'ai1ec-hidden' ).show();
+		$( this ).hide();
+		$.cookie( 'ai1ec_api_signup_hidden', 1 );
+		return false;
+	} );
+	
+	$( '.ai1ec-signup-show' ).on( 'click', function() {
+		$( '#ai1ec-api-signup-form' ).removeClass( 'ai1ec-hidden' );
+		$( '.ai1ec-api-signup-hide' ).removeClass( 'ai1ec-hidden' ).show();
+		$( this ).hide();
+		$.cookie( 'ai1ec_api_signup_hidden', 0 );
+		return false;
+	} );
 
 	return {
 		start: start

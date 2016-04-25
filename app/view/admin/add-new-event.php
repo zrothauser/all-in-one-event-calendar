@@ -295,11 +295,19 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		}
 
 		$api                   = $this->_registry->get( 'model.api.api-ticketing' );
-		$ticketing             = $api->is_signed();
-		$message               = $api->get_sign_message();		
+		$api_reg               = $this->_registry->get( 'model.api.api-registration' );
+		$ticketing             = $api_reg->is_signed() && $api_reg->is_ticket_available();
+		$message               = $api->get_sign_message();
 		$ticket_error          = null;
 		$ticket_event_imported = false;
 		$tickets               = array( null );
+		
+		if ( ! $api_reg->is_ticket_available() ) {
+			$message = __(
+				'Ticketing<sup>beta</sup> is currently not available for this website. Please, try again later.',
+				AI1EC_PLUGIN_NAME
+			);
+		}
 
 		if ( $event ) {
 			$is_ticket_event       = ! is_null( $api->get_api_event_id( $event->get( 'post_id' ) ) );

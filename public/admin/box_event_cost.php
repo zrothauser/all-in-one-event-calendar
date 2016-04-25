@@ -57,13 +57,13 @@
 				<?php
 				if ( ! $tickets_message ): ?>
 					<p><?php _e( 'Ticketing allows you to sell tickets directly to the users.', AI1EC_PLUGIN_NAME ); ?></p>
-					<a href="edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-tickets"
+					<a href="edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings"
 					   class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg">
 							<?php _e( 'Sign Up for Timely Network', AI1EC_PLUGIN_NAME ); ?>
 					</a>
 				<?php 
 				else:
-					echo '<p>$tickets_message</p>';
+					echo "<p>$tickets_message</p>";
 				endif; ?>
 			</div>
 		<?php

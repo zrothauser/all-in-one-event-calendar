@@ -262,3 +262,16 @@ div.ai1ec-form-group > .ai1ec-setting-fieldset {
 #posterboard_mode {
 	width: 120px;
 }
+#ai1ec-api-signout-confirm {
+	display: none;
+	padding: 20px;
+}
+.ai1ec-api-signout-buttons {
+	margin-top: 10px;
+}
+#ai1ec-api-signed-in {
+	margin-top: 10px;
+}
+#ai1ec-api-signed-in .ai1ec-fa-check {
+	color:#6AAB2D;
+}

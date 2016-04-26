@@ -54,56 +54,12 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 	 */
 	public function display_page() {
 
-		$api               = $this->_registry->get( 'model.api.api-registration' );
-		$signup_available  = $api->is_ticket_available();		
-		$signed_to_api     = $api->is_signed();
-		$ticketing_message = $api->get_sign_message();
-		$loader            = $this->_registry->get( 'theme.loader' );
-		$account           = $api->get_current_account();
-		$signup_args       = array(
-			'api_signed'            => $signed_to_api,
-			'signup_available'      => $signup_available,
-			'title'                 => Ai1ec_I18n::__(
-				'Please, Sign Up to Time.ly Network.'
-			),
-			'nonce'                 => array(
-				'action'   => 'ai1ec_api_ticketing_signup',
-				'name'     => 'ai1ec_api_ticketing_nonce',
-				'referrer' => false,
-			),
-			'api_action'            =>
-				'?controller=front&action=ai1ec_api_ticketing_signup&plugin=' .
-				AI1EC_PLUGIN_NAME,
-			'required_text'         => Ai1ec_I18n::__( 'This field is required.' ),
-			'register_text'         => Ai1ec_I18n::__( 'Register' ),
-			'sign_in_text'          => Ai1ec_I18n::__( 'Sign in' ),
-			'signed_in_text'        => Ai1ec_I18n::__(
-				'You are signed in to <b>Timely Network</b> as ' . $account
-			),
-			'beta_message'          => Ai1ec_I18n::__(
-				'Please consider Ticketing is in beta. If you encounter any bugs please raise the at <a href="mailto:labs@time.ly">labs@time.ly</a>. Any enhancements requests please raise them on <a href="http://ideas.time.ly">ideas.time.ly</a> under "Ticketing".'
-			),
-			'sign_out_text'         => Ai1ec_I18n::__( 'Sign out' ),
-			'full_name_text'        => Ai1ec_I18n::__( 'Full Name:' ),
-			'email_text'            => Ai1ec_I18n::__( 'Email:' ),
-			'password_text'         => Ai1ec_I18n::__( 'Password:' ),
-			'confirm_password_text' => Ai1ec_I18n::__( 'Confirm Password:' ),
-			'phone_number_text'     => Ai1ec_I18n::__( 'Phone Number:' ),
-			'terms_text'            => Ai1ec_I18n::__(
-				'I confirm that I have read, understand and agree with the <a href="https://ticketing.time.ly/terms">terms and conditions</a>.'
-			),
-			'not_avail_text'        => Ai1ec_I18n::__(
-				'Signing up for a Time.ly Network account is currently unavailable.<br />Please, try again later.'
-			),
-			'sign_out_warning'      => Ai1ec_I18n::__(
-				'<h4>Attention Required:</h4>If you sign out all your Tickets on the Timely Network will become unavailable immediately. You are responsible for refunding the ticket holders if any of the events were cancelled. Please, read the <a href="https://ticketing.time.ly/terms">Terms&nbsp;and&nbsp;Conditions</a> for more details.'
-			),
-			'sign_out_cancel'       => Ai1ec_I18n::__( 'Cancel' ),
-			'sign_out_confirm'      => Ai1ec_I18n::__( 'Sign Out' ),
-			'sign_up_button_text'   => Ai1ec_I18n::__( 'Sign Up' ),
-			'sign_in_button_text'   => Ai1ec_I18n::__( 'Sign In' ),
-		);
-		$signup_form       = $loader->get_file( 'setting/api-signup.twig', $signup_args, true );
+		$api                 = $this->_registry->get( 'model.api.api-registration' );	
+		$signed_to_api       = !$api->is_signed();
+		$signup_available    = $api->is_api_sign_up_available();
+		$ticketing_available = !$api->is_ticket_available();
+		$ticketing_message   = $api->get_sign_message();
+		$loader              = $this->_registry->get( 'theme.loader' );
 
 		if ( ! $signed_to_api ) {
 
@@ -116,7 +72,22 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 					'Time.ly Ticketing<sup>beta</sup>'
 				),
 				'sign_up_text' => 'Please, <a href="edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings">Sign Up for a Timely Network account</a> to use Ticketing.',
-				'signup_form' => $signup_form
+				'signup_form'  => Ai1ec_I18n::__( 'You need to sign up for a Timely Network account in order to use Ticketing<sup>beta</sup> <br /><br />' ) .
+					(
+						$signup_available
+						? Ai1ec_I18n::__( '<a href="edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings" class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg">Sign In to Timely Network</a>' )
+						: Ai1ec_I18n::__( '<b>Signing up for a Timely Network account is currently unavailable. Please, try again later.</b>' )
+					)
+
+			);
+			$file = $loader->get_file( 'ticketing/signup.twig', $args, true );
+		} elseif ( ! $ticketing_available ) {
+			$args = array(
+				'title' => Ai1ec_I18n::__(
+					'Time.ly Ticketing<sup>beta</sup>'
+				),
+				'sign_up_text' => '',
+				'signup_form'  => 'Ticketing<sup>beta</sup> is currently not available for this website. Please, try again later.'
 
 			);
 			$file = $loader->get_file( 'ticketing/signup.twig', $args, true );
@@ -127,7 +98,9 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 				'title'                             => Ai1ec_I18n::__(
 					'Time.ly Ticketing<sup>beta</sup>'
 				),
-				'signup_form'                       => $signup_form,
+				'beta_message'                      => Ai1ec_I18n::__(
+				'Please consider Ticketing is in beta. If you encounter any bugs please raise the at <a href="mailto:labs@time.ly">labs@time.ly</a>. Any enhancements requests please raise them on <a href="http://ideas.time.ly">ideas.time.ly</a> under "Ticketing".'
+			),
 				'settings_text'                     => Ai1ec_I18n::__( 'Settings' ),
 				'sales_text'                        => Ai1ec_I18n::__( 'Sales' ),
 				'select_payment_text'               => Ai1ec_I18n::__( 'Please provide your PayPal details.' ),

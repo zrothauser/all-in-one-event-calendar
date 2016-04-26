@@ -150,20 +150,11 @@ a.ai1ec-tickets-edit {
 .ai1ec-ticket-details-row .ai1ec-ticket-attendees td {
 	background: #fff;
 }
-#ai1ec-api-signed-in {
-	margin-top: 10px;
-	max-width: 550px;
-}
-#ai1ec-api-signed-in .ai1ec-fa-check {
-	color:#6AAB2D;
-}
 #ai1ec_currency {
 	width: 293px;
 }
-#ai1ec-api-signout-confirm {
-	display: none;
-	padding: 20px;
-}
-.ai1ec-api-signout-buttons {
-	margin-top: 10px;
+#ai1ec_ticketing_beta_message {
+	max-width: 550px;
+	margin-top: 20px;
+	margin-bottom: 10px;
 }

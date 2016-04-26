@@ -53,10 +53,10 @@ class Ai1ec_Email_Notification extends Ai1ec_Notification {
 				}
 			}
 		} 
+		$is_mandril_active = apply_filters ( 'ai1ec_is_mandril_active', null );
 		if ( $is_plain_text ) {			
 			$nl2br_handler             = array( $this, 'mandrill_nl2br' );
-			add_filter( 'mandrill_nl2br', $nl2br_handler );
-			$is_mandril_active         = apply_filters ( 'ai1ec_is_mandril_active', null );
+			add_filter( 'mandrill_nl2br', $nl2br_handler );			
 			if ( $is_mandril_active ) {
 				$double_line_break_handler = array( $this, 'convert_single_to_double_line_break' );
 				add_filter( 'wp_mail', $double_line_break_handler );						
@@ -72,10 +72,20 @@ class Ai1ec_Email_Notification extends Ai1ec_Notification {
 				return get_bloginfo( 'name' );
 			}
 		}
+		if ( $is_mandril_active ) {
+			$new_mail_from_handler = array( $this, 'new_mail_from_mandril' );
+			add_filter( 'wp_mail_from', $new_mail_from_handler );
+			$phpmailer_init_handler = array( $this, 'phpmailer_init_mandril' );
+			add_action( 'phpmailer_init', $phpmailer_init_handler );
+		} 
 
 		$result = wp_mail( $this->_recipients, $this->_subject, $this->_message, $headers );
 
 		remove_filter( 'wp_mail_failed', $failed_handler );
+		if ( $is_mandril_active ) {
+			remove_filter( 'wp_mail_from', $new_mail_from_handler );
+			remove_action( 'phpmailer_init', $phpmailer_init_handler );
+		}
 		if ( $is_plain_text ) {
 			remove_filter( 'mandrill_nl2br', $nl2br_handler );
 			if ( $is_mandril_active ) {
@@ -83,6 +93,14 @@ class Ai1ec_Email_Notification extends Ai1ec_Notification {
 			}		
 		}
 		return $result;		
+	}
+
+	public function new_mail_from_mandril() {
+		return 'no-reply@time.ly';
+	}
+
+	public function phpmailer_init_mandril( $phpmailer ) {
+		$phpmailer->addReplyTo( get_bloginfo( 'admin_email' ), get_bloginfo( 'name' ) );
 	}
 
 	/**

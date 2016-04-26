@@ -55,9 +55,9 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 	public function display_page() {
 
 		$api                 = $this->_registry->get( 'model.api.api-registration' );	
-		$signed_to_api       = $api->is_signed();
+		$signed_to_api       = !$api->is_signed();
 		$signup_available    = $api->is_api_sign_up_available();
-		$ticketing_available = $api->is_ticket_available();
+		$ticketing_available = !$api->is_ticket_available();
 		$ticketing_message   = $api->get_sign_message();
 		$loader              = $this->_registry->get( 'theme.loader' );
 
@@ -75,7 +75,7 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 				'signup_form'  => Ai1ec_I18n::__( 'You need to sign up for a Timely Network account in order to use Ticketing<sup>beta</sup> <br /><br />' ) .
 					(
 						$signup_available
-						? Ai1ec_I18n::__( '<a href="edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings" class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg">Sign Up for Timely Network</a>' )
+						? Ai1ec_I18n::__( '<a href="edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings" class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg">Sign In to Timely Network</a>' )
 						: Ai1ec_I18n::__( '<b>Signing up for a Timely Network account is currently unavailable. Please, try again later.</b>' )
 					)
 

@@ -83,14 +83,11 @@ class Ai1ec_View_Calendar_Feeds extends Ai1ec_View_Admin_Abstract {
 		$calendar_feeds = $this->_registry->get( 'controller.calendar-feeds' );
 		$feeds          = array();
 
-		// Check for user subscription - Import feeds
-		//if ($this->_api_registration->has_subscription_active( 'import-feeds' ) ) {
-		    array_push( $feeds, $this->_registry->get( 'calendar-feed.import' ) );
-		//}
+		array_push( $feeds, $this->_registry->get( 'calendar-feed.import' ) );
 		// Check for user subscription - Discover events
-		//if ($this->_api_registration->has_subscription_active( 'discover-events' ) ) {
+		if ($this->_api_registration->has_subscription_active( 'discover-events' ) ) {
 		    array_push( $feeds, $this->_registry->get( 'calendar-feed.suggested' ) );
-		//}
+		}
 
 		// Add ICS
 		array_push( $feeds, $this->_registry->get( 'calendar-feed.ics' ) );

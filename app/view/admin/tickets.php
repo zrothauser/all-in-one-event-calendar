@@ -1,4 +1,4 @@
-<?php
+	<?php
 
 /**
  * Tickets page.
@@ -54,9 +54,9 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 	 */
 	public function display_page() {
 
-		$signed_to_api       = !$this->_api_registration->is_signed();
+		$signed_to_api       = $this->_api_registration->is_signed();
 		$signup_available    = $this->_api_registration->is_api_sign_up_available();
-		$ticketing_available = !$this->_api_registration->is_ticket_available();
+		$ticketing_available = $this->_api_registration->is_ticket_available();
 		$ticketing_message   = $this->_api_registration->get_sign_message();
 		$loader              = $this->_registry->get( 'theme.loader' );
 

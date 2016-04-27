@@ -1,3 +1,18 @@
+<?php
+	if ( ! $api_signed ):
+?>
+<div class="ai1ec-ics-signup-box">
+	<p>
+		<?php _e( 'Please, Sign In to <b>Timely Network</b> to manage your feeds.', AI1EC_PLUGIN_NAME ) ?>
+	</p>
+	<a href="edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings"
+	   class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-md">
+		<?php _e( 'Sign In to Timely Network', AI1EC_PLUGIN_NAME ) ?>
+	</a>
+</div>
+<?php
+	else:
+?>
 <div class="ai1ec-form ai1ec-suggested-search-form">
 	<label><?php _e( 'Find events matching:', AI1EC_PLUGIN_NAME ); ?>
 		<input type="text" placeholder="Ex.: Concert"
@@ -42,6 +57,10 @@
 	</div>
 </div>
 
+<?php
+	endif;
+?>
+
 <div class="ai1ec-suggested-no-results">
 	
 	<h4>
@@ -56,3 +75,5 @@
 <div class="ai1ec-suggested-events-actions-template ai1ec-hidden">
 	<?php echo $event_actions; ?>
 </div>
+
+

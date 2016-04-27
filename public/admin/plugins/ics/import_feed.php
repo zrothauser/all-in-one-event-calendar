@@ -3,11 +3,11 @@
 ?>
 <div class="ai1ec-ics-signup-box">
 	<p>
-		<?php _e( 'Please, Sign up for a <b>Time.ly Network</b> account to manage your Feeds. It\'s free and easy.', AI1EC_PLUGIN_NAME ) ?>
+		<?php _e( 'Please, Sign In to <b>Timely Network</b> to manage your feeds.', AI1EC_PLUGIN_NAME ) ?>
 	</p>
 	<a href="edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings"
 	   class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-md">
-		<?php _e( 'Sign Up for Time.ly Network', AI1EC_PLUGIN_NAME ) ?>
+		<?php _e( 'Sign In to Timely Network', AI1EC_PLUGIN_NAME ) ?>
 	</a>
 </div>
 <?php

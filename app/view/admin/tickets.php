@@ -1,4 +1,4 @@
-	<?php
+<?php
 
 /**
  * Tickets page.

@@ -46,6 +46,7 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$this->render_opening_div_of_tab();
 
 		$loader        = $this->_registry->get( 'theme.loader' );
+		$api           = $this->_registry->get( 'model.api.api-feeds' );
 		$event_actions = $loader->get_file(
 			'plugins/suggested/event_actions.php',
 			array(),
@@ -54,7 +55,8 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$display_feeds = $loader->get_file(
 			'plugins/suggested/display_feeds.php',
 			array(
-				'event_actions'   => $event_actions
+				'event_actions'   => $event_actions,
+				'api_signed'      => $api->is_signed()
 			),
 			true
 		);

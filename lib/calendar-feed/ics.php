@@ -548,7 +548,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			',', $_REQUEST['feed_category'] );
 
 		// Import to the API
-		$response = $this->_api_feed->import_feed( $_REQUEST['feed_url'] );
+		$api_signed   = $this->_api_feed->is_signed();
+		$response     = $this->_api_feed->import_feed( $_REQUEST['feed_url'] );
 
 		if ( $response === null ) {
 			$output = array( 'error' => true, 'message' => 'Error importing feed. Please try again.' );
@@ -610,6 +611,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 		$update = $this->update_ics_feed( $feed_id );
 
+		$feed_name = $update['data']['name'];
+
 		$cat_ids = '';
 		if ( ! empty( $_REQUEST['feed_category'] ) ) {
 			foreach ( $_REQUEST['feed_category'] as $cat_id ) {
@@ -641,12 +644,13 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'keep_tags_categories' => (bool) intval(
 				$_REQUEST['keep_tags_categories']
 			),
-			'keep_old_events' => (bool) intval(
+			'keep_old_events'      => (bool) intval(
 				$_REQUEST['keep_old_events']
 			),
 			'feed_import_timezone' => (bool) intval(
 				$_REQUEST['feed_import_timezone']
 			),
+			'api_signed'           => $api_signed,
 		);
 
 		// Display added feed row.

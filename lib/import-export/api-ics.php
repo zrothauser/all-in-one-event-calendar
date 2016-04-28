@@ -111,14 +111,18 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 				$end = $e->duration;
 				if ( empty( $end ) ) {
 					// #2 if only DATE value is set for start, set duration to 1 day
-					if ( ! isset( $start['hourOfDay'] ) ) {
+					if ( ! isset( $start['time']['hour'] ) ) {
 						$end = array(
-							'year'       => $start['year'],
-							'month'      => $start['month'],
-							'dayOfMonth' => $start['dayOfMonth'] + 1,
-							'hourOfDay'  => 0,
-							'minute'     => 0,
-							'second'     => 0,
+							'date' => array(
+								'year'   => $start['date']['year'],
+								'month'  => $start['date']['month'],
+								'day'    => $start['date']['day'] + 1,
+							),
+							'time' => array(
+								'hour'   => 0,
+								'minute' => 0,
+								'second' => 0,
+							),
 						);
 						// #3 set end date to start time
 						$end = $start;
@@ -166,8 +170,8 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 				);
 			}
 			// Event is all-day if no time components are defined
-			$allday = $this->_is_timeless( $start ) &&
-				$this->_is_timeless( $end );
+			$allday = $this->_is_timeless( (array)$start['time'] ) &&
+					  $this->_is_timeless( (array)$end['time'] );
 			// Also check the proprietary MS all-day field.
 			$ms_allday = $e->x_microsoft_cdo_alldayevent;
 			if ( ! empty( $ms_allday ) && $ms_allday[1] == 'TRUE' ) {
@@ -178,12 +182,14 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 				$event_timezone = $local_timezone;
 			}
 			$start = $this->_time_array_to_datetime(
-				$start,
+				(array)$start['date'],
+				(array)$start['time'],
 				$event_timezone,
 				$feed->import_timezone ? $forced_timezone : null
 			);
 			$end   = $this->_time_array_to_datetime(
-				$end,
+				(array)$end['date'],
+				(array)$end['time'],
 				$event_timezone,
 				$feed->import_timezone ? $forced_timezone : null
 			);
@@ -606,7 +612,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 	 * time_array_to_timestamp function
 	 *
 	 * Converts time array to time string.
-	 * Passed array: Array( 'year', 'month', 'day', ['hourOfDay', 'minute', 'second', ['tz']] )
+	 * Passed array: Array( 'year', 'month', 'day', ['hour', 'minute', 'second', ['tz']] )
 	 * Return int: UNIX timestamp in GMT
 	 *
 	 * @param array       $time            iCalcreator time property array
@@ -618,19 +624,12 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 	 * @return int UNIX timestamp
 	 **/
 	protected function _time_array_to_datetime(
+		array $date,
 		array $time,
 		$def_timezone,
 		$forced_timezone = null
 	) {
-		$timezone = '';
-		if ( isset( $time['TZID'] ) ) {
-			$timezone = $time['TZID'];
-		} elseif ( isset( $time['tz'] ) && 'Z' === $time['tz'] ) {
-			$timezone = 'UTC';
-		}
-		if ( empty( $timezone ) ) {
-			$timezone = $def_timezone;
-		}
+		$timezone = $def_timezone;;
 
 		$date_time = $this->_registry->get( 'date.time' );
 
@@ -643,18 +642,18 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			$date_time->set_timezone( $timezone );
 		}
 		
-		if ( ! isset( $time['hourOfDay'] ) ) {
-			$time['hourOfDay'] = $time['minute'] = $time['second'] = 0;
+		if ( ! isset( $time['hour'] ) ) {
+			$time['hour'] = $time['minute'] = $time['second'] = 0;
 		}
 		
 		$date_time
 			->set_date(
-				$time['year'],
-				$time['month'],
-				$time['dayOfMonth']
+				$date['year'],
+				$date['month'],
+				$date['day']
 			)
 			->set_time( 
-				$time['hourOfDay'], 
+				$time['hour'], 
 				$time['minute'], 
 				$time['second']
 			);
@@ -673,7 +672,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 	 */
 	protected function _is_timeless( array $datetime ) {
 		$timeless = true;
-		foreach ( array( 'hourOfDay', 'minute', 'second' ) as $field ) {
+		foreach ( array( 'hour', 'minute', 'second' ) as $field ) {
 			$timeless &= (
 				isset( $datetime[$field] ) &&
 				0 != $datetime[$field]
@@ -704,7 +703,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 	 * _string_to_datetime function
 	 *
 	 * Converts time string "Y-m-d H:i:s" to DateTime object.
-	 * Passed array: Array( 'year', 'month', 'day', ['hourOfDay', 'minute', 'second', ['tz']] )
+	 * Passed array: Array( 'year', 'month', 'day', ['hour', 'minute', 'second', ['tz']] )
 	 * Return int: UNIX timestamp in GMT
 	 *
 	 * @param array       $time            iCalcreator time property array
@@ -784,16 +783,6 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 	 */
 	public function export( array $arguments, array $params = array() ) {
 		throw new Exception( 'Export not supported' );
-	}
-
-	public function ai1ec_api_date_parser( $date_array ) {
-		return date( 'Y-m-d H:i:s', mktime(
-			$date_array['hourOfDay'],
-			$date_array['minute'],
-			$date_array['second'],
-			$date_array['month'],
-			$date_array['dayOfMonth'],
-			$date_array['year'] ) );
 	}
 
 	/**

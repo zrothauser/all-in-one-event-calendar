@@ -77,6 +77,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 		$do_show_map     = isset( $args['do_show_map'] ) ? $args['do_show_map'] : 0;
 		$count           = 0;
 		$events_in_db    = isset( $args['events_in_db'] ) ? $args['events_in_db'] : 0;
+		$feed_name       = $feed->feed_url;
 
 		// Fetch default timezone in case individual properties don't define it
 		$local_timezone = $this->_registry->get( 'date.timezone' )->get_default_timezone();

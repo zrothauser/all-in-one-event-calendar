@@ -103,7 +103,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 		}  else {
 			$this->save_error_notification( 
 				$response, 
-				__( 'We were unable to Import de Feed', AI1EC_PLUGIN_NAME )
+				__( 'We were unable to import feed', AI1EC_PLUGIN_NAME )
 			);
 			return null;
 		}
@@ -122,7 +122,6 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 	            );
 	    
 	    if ( $this->is_response_success( $response ) ) {
-	        print_r($response->body);
 	        return $response->body;
 	    }  else {
 	        $this->save_error_notification(

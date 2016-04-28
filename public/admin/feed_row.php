@@ -3,7 +3,7 @@
 		<a data-toggle="ai1ec-collapse"
 		   data-parent="#ai1ec-feeds-accordion"
 		   href="#ai1ec-feed-<?php echo $feed_id; ?>">
-			<?php echo $feed_name; ?>
+			<?php echo $feed_url; ?>
 		</a>
 	</div>
 	<div class="ai1ec-panel-collapse ai1ec-collapse"

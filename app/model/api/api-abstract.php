@@ -452,8 +452,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	 */
 	public function is_response_success( $response ) {
 		return $response != null && 
-			isset( $response->is_error ) && 
-			false === $response->is_error;
+			( !isset( $response->is_error ) || ( isset( $response->is_error ) && false === $response->is_error ) );
 	}
 
 }

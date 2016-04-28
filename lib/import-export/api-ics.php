@@ -48,11 +48,11 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			}
 			return $result;
 		}
-		throw new Ai1ec_Parse_Exception( 'The passed string is not a valid ics feed: ' );
+		throw new Ai1ec_Parse_Exception( 'The passed string is not a valid ics feed' );
 	}
 				
 	public function events_order_comparator( $e1, $e2 ) {
-		return strcmp( $e1->dtstart, $e2->dtstart );		
+		return strcmp( $e1->dtstart, $e2->dtstart );
 	}
 
 	/**

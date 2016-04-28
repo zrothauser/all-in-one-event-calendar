@@ -557,9 +557,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		}
 		$entry = array(
 			'feed_url'             => $_REQUEST['feed_url'],
-			// TODO
-			// 'feed_name'         => $response->id,
-			'feed_name'            => '72823',
+			'feed_name'            => $response->id,
 			'feed_category'        => $feed_categories,
 			'feed_tags'            => $_REQUEST['feed_tags'],
 			'comments_enabled'     => Ai1ec_Primitive_Int::db_bool(

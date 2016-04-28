@@ -96,8 +96,8 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			// =====================
 			// = Start & end times =
 			// =====================
-			$start = $e->dtstart;
-			$end   = $e->dtend;
+			$start = (array)$e->dtstart;
+			$end   = (array)$e->dtend;
 			// For cases where a "VEVENT" calendar component
 			// specifies a "DTSTART" property with a DATE value type but none
 			// of "DTEND" nor "DURATION" property, the event duration is taken to
@@ -110,16 +110,14 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 				$end = $e->duration;
 				if ( empty( $end ) ) {
 					// #2 if only DATE value is set for start, set duration to 1 day
-					if ( ! isset( $start['value']['hour'] ) ) {
+					if ( ! isset( $start['hourOfDay'] ) ) {
 						$end = array(
-							'value' => array(
-								'year'  => $start['value']['year'],
-								'month' => $start['value']['month'],
-								'day'   => $start['value']['dayOfMonth'] + 1,
-								'hour'  => 0,
-								'min'   => 0,
-								'sec'   => 0,
-							),
+							'year'       => $start['year'],
+							'month'      => $start['month'],
+							'dayOfMonth' => $start['dayOfMonth'] + 1,
+							'hourOfDay'  => 0,
+							'minute'     => 0,
+							'second'     => 0,
 						);
 						// #3 set end date to start time
 						$end = $start;
@@ -167,8 +165,8 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 				);
 			}
 			// Event is all-day if no time components are defined
-			$allday = $this->_is_timeless( $start['value'] ) &&
-				$this->_is_timeless( $end['value'] );
+			$allday = $this->_is_timeless( $start ) &&
+				$this->_is_timeless( $end );
 			// Also check the proprietary MS all-day field.
 			$ms_allday = $e->x_microsoft_cdo_alldayevent;
 			if ( ! empty( $ms_allday ) && $ms_allday[1] == 'TRUE' ) {
@@ -299,7 +297,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			// = Latitude & longitude =
 			// ========================
 			$latitude = $longitude = NULL;
-			$geo_tag  = explode( ',', $e->geo );
+			$geo_tag  = $e->geo;
 			if ( ! empty( $geo_tag ) && false !== strpos( $geo_tag, ',' ) ) {
 				list( $latitude, $longitude ) = explode( ',', $geo_tag, 2 );
 				$latitude  = (float)$latitude;
@@ -587,6 +585,85 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 	}
 
 	/**
+	 * Returns modified ical uid for google recurring edited events.
+	 *
+	 * @param vevent $e Vevent object.
+	 *
+	 * @return string ICAL uid.
+	 */
+	protected function _get_ical_uid( $e ) {
+		$ical_uid      = $e->uid;
+		$recurrence_id = $e->recurrence_id;
+		if ( '' !== $recurrence_id ) {
+			$ical_uid = implode( '', array_values( $recurrence_id ) ) . '-' . $ical_uid;
+		}
+	
+		return $ical_uid;
+	}
+
+	/**
+	 * time_array_to_timestamp function
+	 *
+	 * Converts time array to time string.
+	 * Passed array: Array( 'year', 'month', 'day', ['hourOfDay', 'minute', 'second', ['tz']] )
+	 * Return int: UNIX timestamp in GMT
+	 *
+	 * @param array       $time            iCalcreator time property array
+	 *                                     (*full* format expected)
+	 * @param string      $def_timezone    Default time zone in case not defined
+	 *                                     in $time
+	 * @param null|string $forced_timezone Timezone to use instead of UTC.
+	 *
+	 * @return int UNIX timestamp
+	 **/
+	protected function _time_array_to_datetime(
+		array $time,
+		$def_timezone,
+		$forced_timezone = null
+	) {
+		$timezone = '';
+		if ( isset( $time['TZID'] ) ) {
+			$timezone = $time['TZID'];
+		} elseif ( isset( $time['tz'] ) && 'Z' === $time['tz'] ) {
+			$timezone = 'UTC';
+		}
+		if ( empty( $timezone ) ) {
+			$timezone = $def_timezone;
+		}
+
+		$date_time = $this->_registry->get( 'date.time' );
+
+		if ( ! empty( $timezone ) ) {
+			$parser = $this->_registry->get( 'date.timezone' );
+			$timezone = $parser->get_name( $timezone );
+			if ( false === $timezone ) {
+				return false;
+			}
+			$date_time->set_timezone( $timezone );
+		}
+		
+		if ( ! isset( $time['hourOfDay'] ) ) {
+			$time['hourOfDay'] = $time['minute'] = $time['second'] = 0;
+		}
+		
+		$date_time
+			->set_date(
+				$time['year'],
+				$time['month'],
+				$time['dayOfMonth']
+			)
+			->set_time( 
+				$time['hourOfDay'], 
+				$time['minute'], 
+				$time['second']
+			);
+		if ( 'UTC' === $timezone && null !== $forced_timezone ) {
+			$date_time->set_timezone( $forced_timezone );
+		}
+		return $date_time;
+	}
+
+	/**
 	 * Check if date-time specification has no (empty) time component.
 	 *
 	 * @param array $datetime Datetime array returned by iCalcreator.
@@ -595,7 +672,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 	 */
 	protected function _is_timeless( array $datetime ) {
 		$timeless = true;
-		foreach ( array( 'hour', 'min', 'sec' ) as $field ) {
+		foreach ( array( 'hourOfDay', 'minute', 'second' ) as $field ) {
 			$timeless &= (
 				isset( $datetime[$field] ) &&
 				0 != $datetime[$field]
@@ -626,7 +703,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 	 * _string_to_datetime function
 	 *
 	 * Converts time string "Y-m-d H:i:s" to DateTime object.
-	 * Passed array: Array( 'year', 'month', 'day', ['hour', 'min', 'sec', ['tz']] )
+	 * Passed array: Array( 'year', 'month', 'day', ['hourOfDay', 'minute', 'second', ['tz']] )
 	 * Return int: UNIX timestamp in GMT
 	 *
 	 * @param array       $time            iCalcreator time property array
@@ -718,4 +795,38 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			$date_array['year'] ) );
 	}
 
+	/**
+	 * Returns modified exclusions structure for given event.
+	 *
+	 * @param vcalendar       $e          Vcalendar event object.
+	 * @param array           $exclusions Exclusions.
+	 * @param Ai1ec_Date_Time $start Date time object.
+	 *
+	 * @return array Modified exclusions structure.
+	 */
+	protected function _add_recurring_events_exclusions( $e, $exclusions, $start ) {
+		$recurrence_id = $e->recurrence_id;
+		if ( '' === $recurrence_id             ||
+			! isset( $recurrence_id['year'] )  ||
+			! isset( $recurrence_id['month'] ) ||
+			! isset( $recurrence_id['day'] ) ) {
+			return $exclusions;
+		}
+		$year = $month = $day = $hour = $min = $sec = null;
+		extract( $recurrence_id, EXTR_IF_EXISTS );
+		$timezone = '';
+		$exdate = sprintf( '%04d%02d%02d', $year, $month, $day );
+		if ( null === $hour ||
+			 null === $min  ||
+			 null === $sec
+		) {
+			$hour = $min = $sec = '00';
+			$timezone = 'Z';
+		}
+		$exdate .= sprintf( 'T%02d%02d%02d%s', $hour, $min, $sec, $timezone );
+		$exclusions[$e->uid][] = $exdate;
+		return $exclusions;
+	}
+	
+	
 }

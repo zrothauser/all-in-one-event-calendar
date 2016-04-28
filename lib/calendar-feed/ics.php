@@ -491,7 +491,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					$row->import_timezone
 				),
 				'feed_status'          => $row->feed_status,
-				'api_signed'           => $api->is_signed(),
+				'api_signed'           => $api_signed,
 			);
 			$html .= $theme_loader->get_file( 'feed_row.php', $args, true )
 				->get_content();

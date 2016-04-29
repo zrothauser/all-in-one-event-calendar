@@ -203,7 +203,7 @@ define(
 					.append( $( '<div class="ai1ec-extra-location"></div>' )
 						.text( event.location ) )
 					.append( $( '<div class="ai1ec-extra-description"></div>' )
-						.text( event.description ) );
+						.text( $( '<div />' ).html( event.description ).text() ) );
 			}
 			$this.blur();
 			return false;	

@@ -280,8 +280,7 @@
 }
 #suggested.ai1ec-feeds-both .goes-left {
 	left: -395px;
-	opacity: 0.8;
-	-webkit-filter: grayscale(100%) !important; 
+	opacity: 0;
 	pointer-events: none;
 }
 #ai1ec_events_extra_details {
@@ -295,7 +294,8 @@
 	overflow-y: auto;
 }
 #ai1ec_events_extra_details img {
-	height: 100px;
+	max-height: 100px;
+	max-width: 268px;
 	border: 1px solid #eee;
 	margin-bottom: 10px;
 }
@@ -498,7 +498,9 @@
 #suggested .ai1ec-suggested-no-results p {
 	color: #666;
 }
-
+#suggested .ai1ec-open-event {
+	float: right;
+}
 
 /* Calendar theme options */
 

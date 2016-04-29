@@ -193,11 +193,18 @@ define(
 						} )
 					)
 				}
+
 				$details
+					.append( $(
+						'<a href="#" class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-sm \
+						ai1ec-open-event" target="_blank">\
+						<i class="ai1ec-fa ai1ec-fa-external-link ai1ec-fa-xs ai1ec-fa-fw"></i>\
+						Open</a>'
+					) )
 					.append( $( '<div class="ai1ec-extra-title"></div>' )
 						.text( event.title ) )
 					.append( $( '<div class="ai1ec-extra-date"></div>' )
-						.text( event.dtstart + ' (' + event.timezone + ')' ) )
+						.text( event.dtstart ) )
 					.append( $( '<div class="ai1ec-extra-venue"></div>' )
 						.text( event.venue_name ) )
 					.append( $( '<div class="ai1ec-extra-location"></div>' )
@@ -221,6 +228,7 @@ define(
 		} );
 		
 		$( '#ai1ec_suggested_search' ).on( 'click', function() {
+			$( '#ai1ec_events_map_canvas' ).removeClass( 'goes-left' );
 			$( 'tr.ai1ec-suggested-hover a.ai1ec-suggested-title' ).click();
 			perform_search();
 			return false;

@@ -221,6 +221,7 @@ define(
 		} );
 		
 		$( '#ai1ec_suggested_search' ).on( 'click', function() {
+			$( 'tr.ai1ec-suggested-hover a.ai1ec-suggested-title' ).click();
 			perform_search();
 			return false;
 		} );

@@ -729,6 +729,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 		return $date_time;
 	}
 
+
 	/**
 	 * Takes a comma-separated list of tags or categories.
 	 * If they exist, reuses
@@ -745,12 +746,13 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 	 * @return array
 	 */
 	public function add_categories_and_tags(
-		array $categories,
+		$terms,
 		array $imported_terms,
 		$is_tag,
 		$use_name
 	) {
 		$taxonomy       = $is_tag ? 'events_tags' : 'events_categories';
+		$categories     = explode( ',', $terms );
 		$event_taxonomy = $this->_registry->get( 'model.event.taxonomy' );
 
 		foreach ( $categories as $cat_name ) {

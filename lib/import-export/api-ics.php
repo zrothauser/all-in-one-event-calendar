@@ -134,7 +134,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			// If the user chose to preserve taxonomies during import, add categories.
 			if( $categories && $feed->keep_tags_categories ) {
 				$imported_cat = $this->add_categories_and_tags(
-						$categories['value'],
+						$categories,
 						$imported_cat,
 						false,
 						true
@@ -154,7 +154,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			// If the user chose to preserve taxonomies during import, add tags.
 			if( $tags && $feed->keep_tags_categories ) {
 				$imported_tags = $this->add_categories_and_tags(
-						$tags[1]['value'],
+						$tags,
 						$imported_tags,
 						true,
 						true
@@ -729,6 +729,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 		return $date_time;
 	}
 
+
 	/**
 	 * Takes a comma-separated list of tags or categories.
 	 * If they exist, reuses
@@ -745,12 +746,13 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 	 * @return array
 	 */
 	public function add_categories_and_tags(
-		array $categories,
+		$terms,
 		array $imported_terms,
 		$is_tag,
 		$use_name
 	) {
 		$taxonomy       = $is_tag ? 'events_tags' : 'events_categories';
+		$categories     = explode( ',', $terms );
 		$event_taxonomy = $this->_registry->get( 'model.event.taxonomy' );
 
 		foreach ( $categories as $cat_name ) {

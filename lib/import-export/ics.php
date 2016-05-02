@@ -728,7 +728,8 @@ class Ai1ec_Ics_Import_Export_Engine
 			$tzid_values = explode( ':', $timezone );
 			if ( 2 === count( $tzid_values ) && 
 				15 === strlen ( $tzid_values[1] ) ) {
-				//treating the format where the date comes after the timezone like:
+				//the $e->getProperty('DTSTART') or  getProperty('DTEND') for the strings below 
+				//is not returning the value TZID only with the timezone name
 				//DTSTART;TZID=America/Halifax:20160502T180000
 				//DTEND;TZID=America/Halifax:20160502T200000
 				$timezone    = $tzid_values[0];

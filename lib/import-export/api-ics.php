@@ -134,7 +134,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			// If the user chose to preserve taxonomies during import, add categories.
 			if( $categories && $feed->keep_tags_categories ) {
 				$imported_cat = $this->add_categories_and_tags(
-						$categories['value'],
+						$categories,
 						$imported_cat,
 						false,
 						true
@@ -154,7 +154,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			// If the user chose to preserve taxonomies during import, add tags.
 			if( $tags && $feed->keep_tags_categories ) {
 				$imported_tags = $this->add_categories_and_tags(
-						$tags[1]['value'],
+						$tags,
 						$imported_tags,
 						true,
 						true

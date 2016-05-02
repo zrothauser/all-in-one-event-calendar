@@ -221,6 +221,27 @@ define(
 		} );
 		return false;
 	} );
+	
+	$( '[name="ai1ec_tickets_submit"]' ).on( 'click', function() {
+		$( '.ai1ec-ticket-field-error' ).hide();
+		$( '.ai1ec-required:visible' ).each( function() {
+			var $this = $( this );
+			$this.removeClass( 'ai1ec-error' );
+			if (
+				! $.trim( $this.val() ) ||
+				( 'checkbox' === $this.attr( 'type' ) && ! this.checked )
+			) {
+				$this.addClass( 'ai1ec-error' );
+				$this.closest( 'td' ).find( '.ai1ec-ticket-field-error' ).show();
+				$this.prev( '.ai1ec-ticket-field-error' ).show();
+			}
+		} );
+		if ( ! $( '.ai1ec-ticket-field-error:visible' ).length ) {
+			$( '.ai1ec-noauto' ).remove();
+			$( this ).closest( 'form' ).submit();
+		}
+		return false;
+	} );
 
 	
 	// Sanitizing values received from API.

@@ -143,13 +143,12 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 
 	/**
 	 * Call the API to get list of feed subscriptions
-	 * @return array List of feed subscriptions
 	 */
 	public function get_and_sync_feed_subscriptions() {
 		$response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars/' . $this->_get_ticket_calendar() . '/feeds/list',
 			null,
 			true
-			);
+		);
 
 		if ( $this->is_response_success( $response ) ) {
 			$db = $this->_registry->get( 'dbi.dbi' );
@@ -186,7 +185,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 				);
 				// Import and update API feed settings
 				$response_import = $this->import_feed( $entry );
-				if ( $response_import != null ) {
+				if ( null !== $response_import ) {
 					$db->update(
 						$table_name,
 						array(
@@ -205,6 +204,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 			$response_body = (array) $response->body;
 			foreach( $response_body as $feed ) {
 				$found = false;
+
 				foreach ( $rows as $row ) {
 					if ( $row->feed_name === $feed->feed_id ) {
 						$found = true;
@@ -246,20 +246,21 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 		if ( 0 >= $calendar_id ) {
 			return null;
 		}
+
 		$response = $this->request_api( 'POST', AI1EC_API_URL . 'calendars/' . $calendar_id . '/feeds/unsubscribe',
 			json_encode( [
 				'feed_id'        => $feed_id,
 				'feed_event_uid' => $feed_event_uid
 			] )
-			);
-		 
+		);
+
 		if ( $this->is_response_success( $response ) ) {
 			return $response->body;
 		}  else {
 			$this->save_error_notification(
 				$response,
 				__( 'We were unable to unsubscribe feed' , AI1EC_PLUGIN_NAME )
-				);
+			);
 			return null;
 		}
 	}

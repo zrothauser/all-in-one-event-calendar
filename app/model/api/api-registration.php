@@ -67,7 +67,7 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 	protected function availability() {
 		$api_features = get_site_transient( 'ai1ec_api_features' );
 
-		if ( false === $api_features ) {
+		if ( false === $api_features || ( defined( 'AI1EC_DEBUG' ) && AI1EC_DEBUG ) ) {
 			$response = $this->request_api( 'GET', AI1EC_API_URL . 'feature/availability', null, true );
 
 			if ( $this->is_response_success( $response ) ) {

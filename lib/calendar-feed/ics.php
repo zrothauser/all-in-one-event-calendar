@@ -106,9 +106,23 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		);
 		$output = array();
 		if ( $feed ) {
-			// Migrate manually imported feed URLs to API
+			// Migrate manually imported feed URLs to API - This will only happen if something wrong happens on sign in
 			if ( ! is_numeric( $feed->feed_name ) ) {
-				$response = $this->_api_feed->import_feed( $feed->feed_url );
+
+				// Build array with feed options
+				$entry = array(
+					'feed_url'             => $feed->feed_url,
+					'feed_category'        => $feed->feed_category,
+					'feed_tags'            => $feed->feed_tags,
+					'comments_enabled'     => $feed->comments_enabled,
+					'map_display_enabled'  => $feed->map_display_enabled,
+					'keep_tags_categories' => $feed->keep_tags_categories,
+					'keep_old_events'      => $feed->keep_old_events,
+					'import_timezone'      => $feed->import_timezone
+				);
+
+				// Import to API
+				$response = $this->_api_feed->import_feed( $entry );
 
 				if ( $response != null ) {
 					$db->update(
@@ -547,17 +561,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$feed_categories = empty( $_REQUEST['feed_category'] ) ? '' : implode(
 			',', $_REQUEST['feed_category'] );
 
-		// Import to the API
-		$api_signed   = $this->_api_feed->is_signed();
-		$response     = $this->_api_feed->import_feed( $_REQUEST['feed_url'] );
-
-		if ( $response === null ) {
-			$output = array( 'error' => true, 'message' => 'Error importing feed. Please try again.' );
-			return $json_strategy->render( array( 'data' => $output ) );
-		}
 		$entry = array(
 			'feed_url'             => $_REQUEST['feed_url'],
-			'feed_name'            => $response->id,
 			'feed_category'        => $feed_categories,
 			'feed_tags'            => $_REQUEST['feed_tags'],
 			'comments_enabled'     => Ai1ec_Primitive_Int::db_bool(
@@ -578,7 +583,21 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'feed_status'          => 'a',
 			'updated_at_gmt'       => current_time( 'mysql', 1 )
 		);
+
+		// Import to the API
+		$api_signed               = $this->_api_feed->is_signed();
+		$response                 = $this->_api_feed->import_feed( $entry );
+
+		if ( $response === null ) {
+			$output = array( 'error' => true, 'message' => 'Error importing feed. Please try again.' );
+			return $json_strategy->render( array( 'data' => $output ) );
+		}
+
+		// Get API feed ID
+		$entry['feed_name'] = $response->id;
+
 		$entry = apply_filters( 'ai1ec_ics_feed_entry', $entry );
+
 		$json_strategy = $this->_registry->get(
 			'http.response.render.strategy.json'
 		);
@@ -590,7 +609,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			return $json_strategy->render( array( 'data' => $output ) );
 		}
 
-		$format     = array( '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%s' );
+		$format     = array( '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%s', '%s' );
 
 		if ( ! empty( $_REQUEST['feed_id'] ) ) {
 			$feed_id = $_REQUEST['feed_id'];
@@ -755,8 +774,22 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			$ics_id = (int) $_REQUEST['ics_id'];
 		}
 		$table_name = $db->get_table_name( 'ai1ec_event_feeds' );
+		// Get API feed id
+		$feed_id = $db->get_var(
+				$db->prepare(
+					'SELECT feed_name FROM ' . $table_name .
+						' WHERE feed_id = %d',
+					$ics_id
+				)
+			);
+
+		// Unsubscribe in API
+		$this->_api_feed->unsubscribe_feed( $feed_id );
+
+		// Delete from database
 		$db->query( $db->prepare( "DELETE FROM {$table_name} WHERE feed_id = %d", $ics_id ) );
 		do_action( 'ai1ec_ics_feed_deleted', $ics_id );
+
 		$output = array(
 			'error'   => false,
 			'message' => __( 'Feed deleted', AI1EC_PLUGIN_NAME ),

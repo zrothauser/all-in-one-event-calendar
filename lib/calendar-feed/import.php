@@ -67,6 +67,14 @@ class Ai1ecImportConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$factory    = $this->_registry->get(
 			'factory.html'
 		);
+		$feeds       = 2;// $api->get_feeds_count();
+		$local_feeds = count(
+			$this->_registry->get( 'dbi.dbi' )->select(
+				'ai1ec_event_feeds',
+				array( 'feed_id' )
+			)
+		);
+
 		$select2_cats = $factory->create_select2_multiselect(
 			array(
 				'name' => 'ai1ec_feed_category[]',
@@ -94,6 +102,7 @@ class Ai1ecImportConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'event_categories' => $select2_cats,
 			'event_tags'       => $select2_tags,
 			'api_signed'       => $api->is_signed(),
+			'reached_limit'    => $local_feeds >= $feeds,
 		);
 
 		$import_feed = $loader->get_file(

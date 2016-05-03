@@ -11,6 +11,16 @@
 	</a>
 </div>
 <?php
+	elseif ( $reached_limit ):
+?>
+<div class="ai1ec-feed-container ai1ec-well ai1ec-well-sm ai1ec-clearfix">
+	<?php _e(
+		'<b>You have reached the limit of how many feeds you can import.</b><br>
+		Please <a href="https://time.ly/pricing">upgrade here</a> to a plan that
+		supports more feeds.', AI1EC_PLUGIN_NAME )
+	?>
+</div>
+<?php
 	else:
 ?>
 <div id="ai1ec-feeds-after"

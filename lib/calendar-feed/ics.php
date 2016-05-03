@@ -412,7 +412,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'feed_rows'        => $this->_get_feed_rows(),
 			'modal'            => $modal,
 			'api_signed'       => $this->_api_feed->is_signed(),
-			'migration'        => 0 < $local_feeds
+			'migration'        => $api_signed && 0 < $local_feeds
 		);
 
 		$display_feeds = $loader->get_file(

@@ -774,7 +774,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			$ics_id = (int) $_REQUEST['ics_id'];
 		}
 		$table_name = $db->get_table_name( 'ai1ec_event_feeds' );
-		// Get API feed id
+		// Get API feed ID
 		$feed_id = $db->get_var(
 				$db->prepare(
 					'SELECT feed_name FROM ' . $table_name .

@@ -724,7 +724,27 @@ class Ai1ec_Ics_Import_Export_Engine
 	) {
 		$timezone = '';
 		if ( isset( $time['params']['TZID'] ) ) {
-			$timezone = $time['params']['TZID'];
+			$timezone    = $time['params']['TZID'];
+			$tzid_values = explode( ':', $timezone );
+			if ( 2 === count( $tzid_values ) && 
+				15 === strlen ( $tzid_values[1] ) ) {
+				//the $e->getProperty('DTSTART') or  getProperty('DTEND') for the strings below 
+				//is not returning the value TZID only with the timezone name
+				//DTSTART;TZID=America/Halifax:20160502T180000
+				//DTEND;TZID=America/Halifax:20160502T200000
+				$timezone    = $tzid_values[0];
+				$tzid_values = explode( 'T', $tzid_values[1] );
+				if ( 2 === count( $tzid_values ) ) {
+					//01234567 012345
+					//20160607 180000
+					$time['value']['year']  = substr( $tzid_values[0], 0, 4 );
+					$time['value']['month'] = substr( $tzid_values[0], 4, 2 );
+					$time['value']['day']   = substr( $tzid_values[0], 6, 4 );
+					$time['value']['hour']  = substr( $tzid_values[1], 0, 2 );
+					$time['value']['min']   = substr( $tzid_values[1], 2, 2 );
+					$time['value']['sec']   = substr( $tzid_values[1], 4, 2 );
+				}
+			}
 		} elseif (
 				isset( $time['value']['tz'] ) &&
 				'Z' === $time['value']['tz']

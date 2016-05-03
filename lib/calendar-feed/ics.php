@@ -104,11 +104,13 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				'SELECT * FROM ' . $table_name . ' WHERE feed_id = %d', $feed_id
 			)
 		);
+
+		$message    = '';
 		$output = array();
+
 		if ( $feed ) {
 			// Migrate manually imported feed URLs to API - This will only happen if something wrong happens on sign in
 			if ( ! is_numeric( $feed->feed_name ) ) {
-
 				// Build array with feed options
 				$entry = array(
 					'feed_url'             => $feed->feed_url,
@@ -122,9 +124,9 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				);
 
 				// Import to API
-				$response = $this->_api_feed->import_feed( $entry );
+				try {
+					$response = $this->_api_feed->import_feed( $entry );
 
-				if ( $response != null ) {
 					$db->update(
 						$table_name,
 						array(
@@ -137,74 +139,54 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					);
 					// Set ID
 					$feed->feed_name = $response->id;
-				} else {
-					$message = __( 'Error importing feed. Please try again.', AI1EC_PLUGIN_NAME );
+				} catch ( Exception $e ) {
+					$message = $e->getMessage();
 				}
 			}
 			// Only process if we have the API feed ID
 			if ( is_numeric( $feed->feed_name ) ) {
 				$count = 0;
-				$message = false;
 
-				$response = $this->_api_feed->get_feed( $feed->feed_name );
+				try {
+					$response                   = $this->_api_feed->get_feed( $feed->feed_name );
 
-				if ( $response != null ) {
-					try {
-						$import_export              = $this->_registry->get( 'controller.import-export' );
+					$import_export              = $this->_registry->get( 'controller.import-export' );
 
-						$search                     = $this->_registry->get( 'model.search' );
-						$events_in_db               = $search->get_event_ids_for_feed( $feed->feed_url );
-						// flip the array. We will use keys to check events which are imported.
-						$events_in_db               = array_flip( $events_in_db );
-						$args                       = array();
-						$args['events_in_db']       = $events_in_db;
-						$args['feed']               = $feed;
+					$search                     = $this->_registry->get( 'model.search' );
+					$events_in_db               = $search->get_event_ids_for_feed( $feed->feed_url );
+					// flip the array. We will use keys to check events which are imported.
+					$events_in_db               = array_flip( $events_in_db );
+					$args                       = array();
+					$args['events_in_db']       = $events_in_db;
+					$args['feed']               = $feed;
 
-						$args['comment_status']     = 'open';
-						if ( isset( $feed->comments_enabled ) && $feed->comments_enabled < 1 ) {
-							$args['comment_status'] = 'closed';
-						}
-
-						$args['do_show_map']        = 0;
-						if ( isset( $feed->map_display_enabled ) && $feed->map_display_enabled > 0 ) {
-							$args['do_show_map']    = 1;
-						}
-						$args['source']             = $response;
-						do_action( 'ai1ec_ics_before_import', $args );
-
-						$result                     = $import_export->import_events( 'api-ics', $args );
-
-						do_action( 'ai1ec_ics_after_import' );
-						$count                      = $result['count'];
-						$feed_name                  = $result['name'];
-						// we must flip again the array to iterate over it
-						if ( 0 == $feed->keep_old_events ) {
-							$events_to_delete = array_flip( $result['events_to_delete'] );
-							foreach ( $events_to_delete as $event_id ) {
-								wp_delete_post( $event_id, true );
-							}
-						}
-					} catch ( Ai1ec_Parse_Exception $e ) {
-						$message = "The provided feed didn't return valid ics data";
-					} catch ( Ai1ec_Engine_Not_Set_Exception $e ) {
-						$message = "ICS import is not supported on this install.";
-					} catch ( Ai1ec_Event_Create_Exception $e ) {
-						$message = $e->getMessage();
+					$args['comment_status']     = 'open';
+					if ( isset( $feed->comments_enabled ) && $feed->comments_enabled < 1 ) {
+						$args['comment_status'] = 'closed';
 					}
-				} else if ( is_wp_error( $response ) ) {
-						$message = sprintf(
-							__(
-								'A system error has prevented calendar data from being fetched. Something is preventing the plugin from functioning correctly. This message should provide a clue: %s',
-								AI1EC_PLUGIN_NAME
-							),
-							$response->get_error_message()
-						);
-					} else {
-						$message = __(
-							"Calendar data could not be fetched. If your URL is valid and contains an iCalendar resource, this is likely the result of a temporary server error and time may resolve this issue",
-							AI1EC_PLUGIN_NAME
-						);
+
+					$args['do_show_map']        = 0;
+					if ( isset( $feed->map_display_enabled ) && $feed->map_display_enabled > 0 ) {
+						$args['do_show_map']    = 1;
 					}
+					$args['source']             = $response;
+					do_action( 'ai1ec_ics_before_import', $args );
+
+					$result                     = $import_export->import_events( 'api-ics', $args );
+
+					do_action( 'ai1ec_ics_after_import' );
+					$count                      = $result['count'];
+					$feed_name                  = $result['name'];
+					// we must flip again the array to iterate over it
+					if ( 0 == $feed->keep_old_events ) {
+						$events_to_delete = array_flip( $result['events_to_delete'] );
+						foreach ( $events_to_delete as $event_id ) {
+							wp_delete_post( $event_id, true );
+						}
+					}
+				} catch ( Exception $e ) {
+					$message = $e->getMessage();
+				}
 			}
 			if ( $message ) {
 				// If we already got an error message, display it.
@@ -225,6 +207,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					'message'	=> __( 'Invalid ICS feed ID', AI1EC_PLUGIN_NAME )
 			);
 		}
+
 		$output['data']['ics_id'] = $feed_id;
 		return $output;
 	}
@@ -561,6 +544,10 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$feed_categories = empty( $_REQUEST['feed_category'] ) ? '' : implode(
 			',', $_REQUEST['feed_category'] );
 
+		$json_strategy = $this->_registry->get(
+			'http.response.render.strategy.json'
+		);
+
 		$entry = array(
 			'feed_url'             => $_REQUEST['feed_url'],
 			'feed_category'        => $feed_categories,
@@ -586,21 +573,21 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 		// Import to the API
 		$api_signed               = $this->_api_feed->is_signed();
-		$response                 = $this->_api_feed->import_feed( $entry );
-
-		if ( $response === null ) {
-			$output = array( 'error' => true, 'message' => 'Error importing feed. Please try again.' );
+		try {
+			$response             = $this->_api_feed->import_feed( $entry );
+		} catch ( Exception $e ) {
+			$output = array(
+				'error'   => true,
+				'message' => $e->getMessage()
+			);
 			return $json_strategy->render( array( 'data' => $output ) );
 		}
 
 		// Get API feed ID
-		$entry['feed_name'] = $response->id;
+		$entry['feed_name']       = $response->id;
 
-		$entry = apply_filters( 'ai1ec_ics_feed_entry', $entry );
+		$entry                    = apply_filters( 'ai1ec_ics_feed_entry', $entry );
 
-		$json_strategy = $this->_registry->get(
-			'http.response.render.strategy.json'
-		);
 		if ( is_wp_error( $entry ) ) {
 			$output = array(
 				'error'   => true,
@@ -784,7 +771,10 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			);
 
 		// Unsubscribe in API
-		$this->_api_feed->unsubscribe_feed( $feed_id );
+		try {
+			$this->_api_feed->unsubscribe_feed( $feed_id );
+		} catch ( Exception $e ) {
+		}
 
 		// Delete from database
 		$db->query( $db->prepare( "DELETE FROM {$table_name} WHERE feed_id = %d", $ics_id ) );

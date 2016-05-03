@@ -155,7 +155,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 			$db = $this->_registry->get( 'dbi.dbi' );
 			$table_name = $db->get_table_name( 'ai1ec_event_feeds' );
 
-			// Select all feeds - Import all
+			// Select all feeds - Import every feed to API
 			$rows = $db->select(
 				$table_name,
 				array(
@@ -171,7 +171,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 					'import_timezone'
 				)
 			);
-			
+
 			foreach ( $rows as $row ) {
 				// Build array with feed options
 				$entry = array(

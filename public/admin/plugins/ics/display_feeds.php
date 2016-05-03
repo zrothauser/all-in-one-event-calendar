@@ -15,10 +15,26 @@
 ?>
 <div id="ics-alerts"></div>
 <p></p>
+<?php
+	if ( $migration ):
+?>
+<div class="ai1ec-feeds-migration">
+	<?php _e(
+		'<b>Your feeds are being migrated.</b><br />
+		You can\'t edit or remove them at the moment.
+		Please, visit this page later to manage your feeds.',
+		AI1EC_PLUGIN_NAME )
+	?>
+	<br /><br />
+</div>
+<?php
+	endif;
+?>
 <h5><?php _e( 'My imported Feeds:', AI1EC_PLUGIN_NAME ) ?></h5>
-<div class="timely ai1ec-form-inline ai1ec-panel-group" id="ai1ec-feeds-accordion">
+<div class="timely ai1ec-form-inline ai1ec-panel-group
+	        <?php if ( $migration ):?>ai1ec-feeds-migration<?php endif; ?>"
+	 id="ai1ec-feeds-accordion">
 	<?php echo $feed_rows; ?>
 </div>
 <br />
-<h5><?php _e( 'My imported Events:', AI1EC_PLUGIN_NAME ) ?></h5>
 <?php echo $modal->render(); ?>

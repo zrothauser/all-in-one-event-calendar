@@ -401,13 +401,26 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			true
 		);
 
+		$rows = $this->_registry->get( 'dbi.dbi' )->select(
+			'ai1ec_event_feeds',
+			array(
+				'feed_status'
+			)
+		);
+
+		$db          = $this->_registry->get( 'dbi.dbi' );
+		$table_name  = $db->get_table_name( 'ai1ec_event_feeds' );
+		$sql         = "SELECT COUNT(*) FROM $table_name WHERE $table_name.feed_status = 'c'";
+		$local_feeds = $db->get_var( $sql );
+
 		$args = array(
 			'cron_freq'        => $cron_freq->get_content(),
 			'event_categories' => $select2_cats,
 			'event_tags'       => $select2_tags,
 			'feed_rows'        => $this->_get_feed_rows(),
 			'modal'            => $modal,
-			'api_signed'       => $this->_api_feed->is_signed()
+			'api_signed'       => $this->_api_feed->is_signed(),
+			'migration'        => 0 < $local_feeds
 		);
 
 		$display_feeds = $loader->get_file(

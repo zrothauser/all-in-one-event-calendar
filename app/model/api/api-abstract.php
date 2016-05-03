@@ -359,6 +359,61 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	}
 
 	/**
+	 * @return array List of subscriptions and limits
+	 */
+	protected function get_subscriptions( $force_refresh = false ) {
+		$subscriptions = get_site_transient( 'ai1ec_subscriptions' );
+
+		if ( false === $subscriptions || $force_refresh ) {
+			$response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars/' . $this->_get_ticket_calendar() . '/subscriptions',
+				null,
+				true
+				);
+			if ( $this->is_response_success( $response ) ) {
+				$subscriptions = (array) $response->body;
+			} else {
+				$subscriptions = array();
+			}
+
+			// Save for 30 minutes
+			$minutes = 30;
+			set_site_transient( 'ai1ec_subscriptions', $subscriptions, $minutes * 60 );
+		}
+
+		return $subscriptions;
+	}
+
+	/**
+	 * Check if calendar should have a specific feature enabled
+	 */
+	public function has_subscription_active( $feature ) {
+		$subscriptions = $this->get_subscriptions();
+
+		return array_key_exists( $feature, $subscriptions );
+	}
+
+	/**
+	 * Check if feature has reached its limit
+	 */
+	public function subscription_has_reached_limit( $feature ) {
+		$has_reached_limit = true;
+
+		$subscriptions = $this->get_subscriptions();
+
+		if ( array_key_exists( $feature, $subscriptions ) ) {
+			$quantity = (array) $subscriptions[$feature];
+			$provided = $quantity['provided'];
+			$used     = $quantity['used'];
+
+			if ( $provided - $used > 0 ) {
+				$has_reached_limit = false;
+			}
+		}
+
+		return $has_reached_limit;
+	}
+
+	/**
 	 * Make the request to the API endpons
 	 * @param $url The end part of the url to make the request.
 	 *        $body The body to send the message 

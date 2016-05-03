@@ -108,6 +108,9 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 		);
 
 		if ( $this->is_response_success( $response ) ) {
+			// Refresh list of subscriptions and limits
+			$this->get_subscriptions( true );
+
 			return $response->body;
 		} else {
 			$this->save_error_notification(
@@ -253,6 +256,9 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 				'feed_event_uid' => $feed_event_uid
 			] )
 		);
+
+		// Refresh list of subscriptions and limits
+		$this->get_subscriptions( true );
 
 		if ( $this->is_response_success( $response ) ) {
 			return $response->body;

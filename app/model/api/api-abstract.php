@@ -64,7 +64,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		$api_settings['message']     = $message;
 		$api_settings['enabled']     = $enabled;
 		$api_settings['token']       = $token;
-		$api_settings['calendar_id'] = $calendar_id;		
+		$api_settings['calendar_id'] = $calendar_id;
 		$api_settings['account']     = $account;
 		return update_option( self::WP_OPTION_KEY, $api_settings );
 	}

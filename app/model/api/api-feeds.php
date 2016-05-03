@@ -90,16 +90,25 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 	/**
 	 * Call the API to Process and Import the Feed
 	 */
-	public function import_feed( $feed_url ) {
+	public function import_feed( $entry ) {
 		$calendar_id = $this->_get_ticket_calendar();
 		if ( 0 >= $calendar_id ) {
 			return null;
 		}
 		$response = $this->request_api( 'POST', AI1EC_API_URL . 'calendars/' . $calendar_id . '/feeds/import',
-			json_encode( [ "url" => $feed_url ] )
+			json_encode( [
+				'url'                           => $entry['feed_url'],
+				'categories'                    => $entry['feed_category'],
+				'tags'                          => $entry['feed_tags'],
+				'allow_comments'                => $entry['comments_enabled'],
+				'show_maps'                     => $entry['map_display_enabled'],
+				'import_any_tag_and_categories' => $entry['keep_tags_categories'],
+				'preserve_imported_events'      => $entry['keep_old_events'],
+				'assign_default_utc'            => $entry['import_timezone']
+			] )
 		);
 		if ( $this->is_response_success( $response ) ) {
-			return $response->body; 	
+			return $response->body;
 		}  else {
 			$this->save_error_notification( 
 				$response, 
@@ -117,7 +126,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 	    if ( 0 >= $calendar_id ) {
 	        return null;
 	    }
-	    $response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars/' . $calendar_id . '/feeds/' . $feed_id,
+	    $response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars/' . $calendar_id . '/feeds/get/' . $feed_id,
 	            json_encode( [ "max" => "9999" ] )
 	            );
 	    
@@ -130,5 +139,129 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 	                );
 	        return null;
 	    }
+	}
+
+	/**
+	 * Call the API to get list of feed subscriptions
+	 */
+	public function get_and_sync_feed_subscriptions() {
+		$response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars/' . $this->_get_ticket_calendar() . '/feeds/list',
+			null,
+			true
+		);
+
+		if ( $this->is_response_success( $response ) ) {
+			$db = $this->_registry->get( 'dbi.dbi' );
+			$table_name = $db->get_table_name( 'ai1ec_event_feeds' );
+
+			// Select all feeds - Import every feed to API
+			$rows = $db->select(
+				$table_name,
+				array(
+					'feed_id',
+					'feed_url',
+					'feed_name',
+					'feed_category',
+					'feed_tags',
+					'comments_enabled',
+					'map_display_enabled',
+					'keep_tags_categories',
+					'keep_old_events',
+					'import_timezone'
+				)
+			);
+
+			foreach ( $rows as $row ) {
+				// Build array with feed options
+				$entry = array(
+					'feed_url'             => $row->feed_url,
+					'feed_category'        => $row->feed_category,
+					'feed_tags'            => $row->feed_tags,
+					'comments_enabled'     => $row->comments_enabled,
+					'map_display_enabled'  => $row->map_display_enabled,
+					'keep_tags_categories' => $row->keep_tags_categories,
+					'keep_old_events'      => $row->keep_old_events,
+					'import_timezone'      => $row->import_timezone
+				);
+				// Import and update API feed settings
+				$response_import = $this->import_feed( $entry );
+				if ( null !== $response_import ) {
+					$db->update(
+						$table_name,
+						array(
+							'feed_name'      => $response_import->id,
+							'feed_status'    => 'a',
+							'updated_at_gmt' => current_time( 'mysql', 1 )
+						),
+						array(
+							'feed_id'        => $row->feed_id
+						)
+					);
+				}
+			}
+
+			// Now add calendars from API that doesn't existe in local database
+			$response_body = (array) $response->body;
+			foreach( $response_body as $feed ) {
+				$found = false;
+
+				foreach ( $rows as $row ) {
+					if ( $row->feed_name === $feed->feed_id ) {
+						$found = true;
+						break;
+					}
+				}
+
+				// Not found in local database.. Insert
+				if ( ! $found ) {
+					$entry = array(
+						'feed_url'             => $feed->url,
+						'feed_name'            => $feed->feed_id,
+						'feed_category'        => $feed->categories,
+						'feed_tags'            => $feed->tags,
+						'comments_enabled'     => $feed->allow_comments,
+						'map_display_enabled'  => $feed->show_maps,
+						'keep_tags_categories' => $feed->import_any_tag_and_categories,
+						'keep_old_events'      => $feed->preserve_imported_events,
+						'import_timezone'      => $feed->assign_default_utc,
+						'feed_status'          => 'a',
+						'updated_at_gmt'       => current_time( 'mysql', 1 )
+					);
+					$format = array( '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%s' );
+					$res    = $db->insert(
+						$table_name,
+						$entry,
+						$format
+					);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Call the API to unsubscribe feed
+	 */
+	public function unsubscribe_feed( $feed_id, $feed_event_uid = '' ) {
+		$calendar_id = $this->_get_ticket_calendar();
+		if ( 0 >= $calendar_id ) {
+			return null;
+		}
+
+		$response = $this->request_api( 'POST', AI1EC_API_URL . 'calendars/' . $calendar_id . '/feeds/unsubscribe',
+			json_encode( [
+				'feed_id'        => $feed_id,
+				'feed_event_uid' => $feed_event_uid
+			] )
+		);
+
+		if ( $this->is_response_success( $response ) ) {
+			return $response->body;
+		}  else {
+			$this->save_error_notification(
+				$response,
+				__( 'We were unable to unsubscribe feed' , AI1EC_PLUGIN_NAME )
+			);
+			return null;
+		}
 	}
 }

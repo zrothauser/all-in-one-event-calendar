@@ -61,21 +61,16 @@ class Ai1ecImportConnectorPlugin extends Ai1ec_Connector_Plugin {
 		// Render the opening div
 		$this->render_opening_div_of_tab();
 		// Render the body of the tab
-		$api        = $this->_registry->get( 'model.api.api-feeds' );
-		$api_signed = $api->is_signed();
-		$settings   = $this->_registry->get( 'model.settings' );
-		$factory    = $this->_registry->get(
+		$api           = $this->_registry->get( 'model.api.api-feeds' );
+		$api_signed    = $api->is_signed();
+		$settings      = $this->_registry->get( 'model.settings' );
+		$factory       = $this->_registry->get(
 			'factory.html'
 		);
-		$feeds       = 2;// $api->get_feeds_count();
-		$local_feeds = count(
-			$this->_registry->get( 'dbi.dbi' )->select(
-				'ai1ec_event_feeds',
-				array( 'feed_id' )
-			)
+		$reached_limit = $api->subscription_has_reached_limit(
+			Ai1ec_Api_Features::CODE_IMPORT_FEEDS
 		);
-
-		$select2_cats = $factory->create_select2_multiselect(
+		$select2_cats  = $factory->create_select2_multiselect(
 			array(
 				'name' => 'ai1ec_feed_category[]',
 				'id' => 'ai1ec_feed_category',
@@ -102,7 +97,7 @@ class Ai1ecImportConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'event_categories' => $select2_cats,
 			'event_tags'       => $select2_tags,
 			'api_signed'       => $api->is_signed(),
-			'reached_limit'    => $local_feeds >= $feeds,
+			'reached_limit'    => $reached_limit,
 		);
 
 		$import_feed = $loader->get_file(

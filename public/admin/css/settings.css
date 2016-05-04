@@ -283,6 +283,9 @@
 	opacity: 0;
 	pointer-events: none;
 }
+.ai1ec-feeds-migration .ai1ec-btn {
+	display: none !important;
+}
 #ai1ec_events_extra_details {
 	position: absolute;
 	z-index: 1;

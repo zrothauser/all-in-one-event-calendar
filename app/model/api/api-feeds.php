@@ -37,7 +37,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 	public function get_suggested_events() {
 		$calendar_id = $this->_get_ticket_calendar();
 		if ( 0 >= $calendar_id ) {
-			return null;
+			throw new Exception( 'Calendar ID not found' );
 		}
 
 		$body = null;
@@ -70,9 +70,8 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 	 		"calendars/$calendar_id/discover/events?page=$page&max=$max&term=$term" .
 	 		$location;
 
-		$response = $this->request_api( 'GET',
-			$url,
-			null !== $body ? json_encode( $body ) : null, 
+		$response = $this->request_api( 'GET', $url,
+			null !== $body ? json_encode( $body ) : null,
 			true //decode body response
 		);
 
@@ -83,7 +82,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 				$response, 
 				__( 'We were unable to get the Suggested Events from Time.ly Network', AI1EC_PLUGIN_NAME )
 			);
-			return null;
+			throw new Exception( 'We were unable to get the Suggested Events from Time.ly Network' );
 		}
 	}
 
@@ -93,7 +92,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 	public function import_feed( $entry ) {
 		$calendar_id = $this->_get_ticket_calendar();
 		if ( 0 >= $calendar_id ) {
-			return null;
+			throw new Exception( 'Calendar ID not found' );
 		}
 		$response = $this->request_api( 'POST', AI1EC_API_URL . 'calendars/' . $calendar_id . '/feeds/import',
 			json_encode( [
@@ -107,14 +106,18 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 				'assign_default_utc'            => $entry['import_timezone']
 			] )
 		);
+
 		if ( $this->is_response_success( $response ) ) {
+			// Refresh list of subscriptions and limits
+			$this->get_subscriptions( true );
+
 			return $response->body;
-		}  else {
-			$this->save_error_notification( 
-				$response, 
+		} else {
+			$this->save_error_notification(
+				$response,
 				__( 'We were unable to import feed', AI1EC_PLUGIN_NAME )
 			);
-			return null;
+			throw new Exception( $this->get_api_error_msg( $response->raw ) );
 		}
 	}
 
@@ -122,23 +125,23 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 	 * Call the API to get the feed
 	 */
 	public function get_feed( $feed_id ) {
-	    $calendar_id = $this->_get_ticket_calendar();
-	    if ( 0 >= $calendar_id ) {
-	        return null;
-	    }
-	    $response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars/' . $calendar_id . '/feeds/get/' . $feed_id,
-	            json_encode( [ "max" => "9999" ] )
-	            );
-	    
-	    if ( $this->is_response_success( $response ) ) {
-	        return $response->body;
-	    }  else {
-	        $this->save_error_notification(
-	                $response,
-	                __( 'We were unable to get feed data' , AI1EC_PLUGIN_NAME )
-	                );
-	        return null;
-	    }
+		$calendar_id = $this->_get_ticket_calendar();
+		if ( 0 >= $calendar_id ) {
+			throw new Exception( 'Calendar ID not found' );
+		}
+		$response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars/' . $calendar_id . '/feeds/get/' . $feed_id,
+			json_encode( [ "max" => "9999" ] )
+		);
+
+		if ( $this->is_response_success( $response ) ) {
+			return $response->body;
+		} else {
+			$this->save_error_notification(
+				$response,
+				__( 'We were unable to get feed data', AI1EC_PLUGIN_NAME )
+			);
+			throw new Exception( $this->get_api_error_msg( $response->raw ) );
+		}
 	}
 
 	/**
@@ -244,7 +247,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 	public function unsubscribe_feed( $feed_id, $feed_event_uid = '' ) {
 		$calendar_id = $this->_get_ticket_calendar();
 		if ( 0 >= $calendar_id ) {
-			return null;
+			throw new Exception( 'Calendar ID not found' );
 		}
 
 		$response = $this->request_api( 'POST', AI1EC_API_URL . 'calendars/' . $calendar_id . '/feeds/unsubscribe',
@@ -254,14 +257,17 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 			] )
 		);
 
+		// Refresh list of subscriptions and limits
+		$this->get_subscriptions( true );
+
 		if ( $this->is_response_success( $response ) ) {
 			return $response->body;
-		}  else {
+		} else {
 			$this->save_error_notification(
 				$response,
-				__( 'We were unable to unsubscribe feed' , AI1EC_PLUGIN_NAME )
+				__( 'We were unable to unsubscribe feed', AI1EC_PLUGIN_NAME )
 			);
-			return null;
+			throw new Exception( $this->get_api_error_msg( $response->raw ) );
 		}
 	}
 }

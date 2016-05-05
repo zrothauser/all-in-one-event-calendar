@@ -458,10 +458,10 @@ define(
 						address     = _data.formatted_address,	
 						lat         = _data.geometry.location.lat(),
 						lng         = _data.geometry.location.lng(),
-						bounds      = _data.geometry.bounds,
+						viewport    = _data.geometry.viewport,
 						// Viewport dimensions in degrees
-						lat_dist    = bounds.R.j - bounds.R.R,
-						lng_dist    = bounds.j.R - bounds.j.j,
+						lat_dist    = viewport.getNorthEast().lat() - viewport.getSouthWest().lat(),
+						lng_dist    = viewport.getNorthEast().lng() - viewport.getSouthWest().lng(),
 						// 0.009deg lat = 1km
 						lat_dist_km = lat_dist / 0.009,
 						// 0.009deg lng / cos(lat) = 1km

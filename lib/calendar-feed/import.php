@@ -67,6 +67,9 @@ class Ai1ecImportConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$factory       = $this->_registry->get(
 			'factory.html'
 		);
+		$has_feature = $api->has_subscription_active(
+			Ai1ec_Api_Features::CODE_IMPORT_FEEDS
+			);
 		$reached_limit = $api->subscription_has_reached_limit(
 			Ai1ec_Api_Features::CODE_IMPORT_FEEDS
 		);
@@ -97,6 +100,7 @@ class Ai1ecImportConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'event_categories' => $select2_cats,
 			'event_tags'       => $select2_tags,
 			'api_signed'       => $api->is_signed(),
+			'has_feature'      => $has_feature,
 			'reached_limit'    => $reached_limit,
 		);
 

@@ -140,6 +140,16 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					// Set ID
 					$feed->feed_name = $response->id;
 				} catch ( Exception $e ) {
+					$db->update(
+						$table_name,
+						array(
+							'feed_name' => $e->getMessage(),
+							'feed_status' => 'e',
+							'updated_at_gmt' => current_time( 'mysql', 1 ) ),
+						array(
+							'feed_id' => $feed_id
+						)
+					);
 					$message = $e->getMessage();
 				}
 			}

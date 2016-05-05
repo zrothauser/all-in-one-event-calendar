@@ -17,7 +17,7 @@
 	<?php _e(
 		'<b>You have don\'t have the subscription for this feature</b><br>
 		Please <a href="https://time.ly/pricing">upgrade here</a> to a plan that
-		supports import feeds.', AI1EC_PLUGIN_NAME )
+		supports "Import Feeds".', AI1EC_PLUGIN_NAME )
 	?>
 </div>
 <?php

@@ -89,7 +89,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 	/**
 	 * Call the API to Process and Import the Feed
 	 */
-	public function import_feed( $entry ) {
+	public function import_feed( $entry, $automatic_import = false ) {
 		$calendar_id = $this->_get_ticket_calendar();
 		if ( 0 >= $calendar_id ) {
 			throw new Exception( 'Calendar ID not found' );
@@ -113,10 +113,13 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 
 			return $response->body;
 		} else {
-			$this->save_error_notification(
-				$response,
-				__( 'We were unable to import feed', AI1EC_PLUGIN_NAME )
-			);
+			// This is just for not showing duplicated error messages
+			if ( ! $automatic_import ) {
+				$this->save_error_notification(
+					$response,
+					__( 'We were unable to import feed', AI1EC_PLUGIN_NAME )
+				);
+			}
 			throw new Exception( $this->get_api_error_msg( $response->raw ) );
 		}
 	}
@@ -187,7 +190,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 					'import_timezone'      => $row->import_timezone
 				);
 				// Import and update API feed settings
-				$response_import = $this->import_feed( $entry );
+				$response_import = $this->import_feed( $entry, true );
 				if ( null !== $response_import ) {
 					$db->update(
 						$table_name,

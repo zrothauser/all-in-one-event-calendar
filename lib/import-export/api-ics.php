@@ -80,8 +80,9 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 		$feed_name       = $feed->feed_url;
 
 		// Fetch default timezone in case individual properties don't define it
-		$local_timezone = $this->_registry->get( 'date.timezone' )->get_default_timezone();
-		$timezone       = $local_timezone;
+		$local_timezone  = $this->_registry->get( 'date.timezone' )->get_default_timezone();
+		$timezone        = $local_timezone;
+		$forced_timezone = $local_timezone;
 
 		$messages        = array();
 
@@ -174,10 +175,10 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 					  $this->_is_timeless( (array)$end['time'] );
 			// Also check the proprietary MS all-day field.
 			$ms_allday = $e->x_microsoft_cdo_alldayevent;
-			if ( ! empty( $ms_allday ) && $ms_allday[1] == 'TRUE' ) {
+			if ( ! empty( $ms_allday ) && 'TRUE' == $ms_allday ) {
 				$allday = true;
 			}
-			$event_timezone = $timezone;
+			$event_timezone = $e->timezone;
 			if ( $allday ) {
 				$event_timezone = $local_timezone;
 			}
@@ -320,9 +321,15 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			// ===================
 			// = Venue & address =
 			// ===================
-			$address = $venue = '';
-			$location = $e->location;
-			$matches = array();
+			$data['country']     = '';
+			$data['city']        = '';
+			$data['province']    = '';
+			$data['postal_code'] = '';
+
+			$address             = '';
+			$venue               = '';
+			$location            = $e->location;
+			$matches             = array();
 			// This regexp matches a venue / address in the format
 			// "venue @ address" or "venue - address".
 			preg_match( '/\s*(.*\S)\s+[\-@]\s+(.*)\s*/', $location, $matches );
@@ -358,14 +365,18 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			// = Cost & tickets =
 			// ==================
 			$cost       = $e->x_cost;
-			$cost       = $cost ? $cost[1] : '';
 			$ticket_url = $e->x_tickets_url;
-			$ticket_url = $ticket_url ? $ticket_url[1] : '';
 
 			// ===============================
 			// = Contact name, phone, e-mail =
 			// ===============================
-			$organizer = $e->organizer;
+			// Initialize default values
+			$data['contact_email'] = '';
+			$data['contact_url']   = '';
+			$data['contact_phone'] = '';
+			$data['contact_name']  = '';
+
+			$organizer             = $e->organizer;
 			if (
 				'MAILTO:' === substr( $organizer, 0, 7 ) &&
 				false === strpos( $organizer, '@' )
@@ -530,34 +541,34 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			// import the metadata used by ticket events
 
 			$cost_type    = $e->x_cost_type;
-			if ( $cost_type && false === ai1ec_is_blank( $cost_type[1] ) ) {
-				update_post_meta( $event->get( 'post_id' ), '_ai1ec_cost_type', $cost_type[1] );
+			if ( $cost_type && false === ai1ec_is_blank( $cost_type ) ) {
+				update_post_meta( $event->get( 'post_id' ), '_ai1ec_cost_type', $cost_type );
 			}
 
 			$api_event_id = $e->x_api_event_id;
-			if ( $api_event_id && false === ai1ec_is_blank( $api_event_id[1] ) ) {
-				$api_event_id = $api_event_id[1];
+			if ( $api_event_id && false === ai1ec_is_blank( $api_event_id ) ) {
+				$api_event_id = $api_event_id;
 			} else {
 				$api_event_id = null;
 			}
 
 			$api_url = $e->x_api_url;
-			if ( $api_url && false === ai1ec_is_blank( $api_url[1] ) ) {
-				$api_url = $api_url[1];
+			if ( $api_url && false === ai1ec_is_blank( $api_url ) ) {
+				$api_url = $api_url;
 			} else {
 				$api_url = null;
 			}
 
 			$checkout_url = $e->x_checkout_url;
-			if ( $checkout_url && false === ai1ec_is_blank( $checkout_url[1] ) ) {
-				$checkout_url = $checkout_url[1];
+			if ( $checkout_url && false === ai1ec_is_blank( $checkout_url ) ) {
+				$checkout_url = $checkout_url;
 			} else {
 				$checkout_url = null;
 			}
 			
 			$currency = $e->x_api_event_currency;
-			if ( $currency && false === ai1ec_is_blank( $currency[1] ) ) {
-				$currency = $currency[1];
+			if ( $currency && false === ai1ec_is_blank( $currency ) ) {
+				$currency = $currency;
 			} else {
 				$currency = null;
 			}
@@ -569,8 +580,8 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			}			
 
 			$wp_images_url  = $e->x_wp_image_url;
-			if ( $wp_images_url && false === ai1ec_is_blank( $wp_images_url[1] ) ) {
-				$images_arr = explode( ',', $wp_images_url[1] );
+			if ( $wp_images_url && false === ai1ec_is_blank( $wp_images_url ) ) {
+				$images_arr = explode( ',', $wp_images_url );
 				foreach ( $images_arr as $key => $value ) {
 					$images_arr[ $key ] = explode( ';', $value );
 				}

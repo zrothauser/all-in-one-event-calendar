@@ -121,7 +121,7 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 		} else {
 			$error_message = $this->save_error_notification( $response, __( 'We were unable to Sign you Out of Time.ly Network', AI1EC_PLUGIN_NAME ) );
 			return array( 'message' => $error_message );
-		}				
+		}
 	}
 
 	/**
@@ -197,8 +197,15 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 	 */
 	public function sync_api_settings() {
 		// Sync feeds subscriptions
-		$api_feed = $this->_registry->get( 'model.api.api-feeds' );
-		$api_feed->get_and_sync_feed_subscriptions();
+		try {
+			$api_feed = $this->_registry->get( 'model.api.api-feeds' );
+			$api_feed->get_and_sync_feed_subscriptions();
+		} catch ( Exception $e ) {
+			$error_message = 'Some feeds were not imported to Time.ly Network. Error: ' . $e->getMessage();
+
+			$notification  = $this->_registry->get( 'notification.admin' );
+			$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
+		}
 	}
 
 }

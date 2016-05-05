@@ -15,6 +15,8 @@
 				style="background-image:url(<?php
 					if ( isset( $event->image_url ) ) {
 						echo esc_attr( $event->image_url );
+					} else {
+						echo esc_attr( $default_image ); 
 					}?>)">&nbsp;
 			</td>
 			<td class="ai1ec-suggested-content">

@@ -120,10 +120,16 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'total'     => $events->last_page,
 			'current'   => $events->current_page
 		) );
+		$avatar_url    = $loader->get_file(
+			'default-event-avatar.png',
+			array(),
+			false
+		)->get_url();
 		$feeds_list    = $loader->get_file(
 			'plugins/suggested/feeds_list.php',
 			array(
 				'suggested_feeds' => $events->data,
+				'default_image'   => $avatar_url,
 				'event_actions'   => $event_actions,
 				'page_links'      => $page_links
 			),

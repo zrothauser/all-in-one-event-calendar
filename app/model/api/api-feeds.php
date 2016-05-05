@@ -46,11 +46,11 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 			isset( $_POST[ 'lng' ] ) &&
 			isset( $_POST[ 'radius' ] )
 		) {
-			$body=[ 
+			$body = array( 
 				'lat'    => $_POST[ 'lat' ],
 				'lng'    => $_POST[ 'lng' ],
 				'radius' => $_POST[ 'radius' ]
-			];
+			);
 		}
 
 	 	$page     = isset( $_POST[ 'page' ] ) ? $_POST[ 'page' ] : 1;

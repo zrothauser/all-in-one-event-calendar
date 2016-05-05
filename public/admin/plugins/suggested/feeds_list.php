@@ -15,10 +15,15 @@
 				style="background-image:url(<?php
 					if ( isset( $event->image_url ) ) {
 						echo esc_attr( $event->image_url );
+					} else {
+						echo esc_attr( $default_image ); 
 					}?>)">&nbsp;
 			</td>
 			<td class="ai1ec-suggested-content">
-				<a href="<?php echo $event->url;?>" class="ai1ec-suggested-title">
+				<a href="#" class="ai1ec-suggested-title" data-url="<?php echo $event->url;?>">
+					<?php if ( isset( $event->longitude ) && isset( $event->latitude ) ):?>
+						<i class="ai1ec-fa ai1ec-fa-map-marker ai1ec-fa-xs ai1ec-fa-fw"></i>
+					<?php endif; ?>
 					<?php echo strip_tags( $event->title );?>
 				</a>
 				<div class="ai1ec-suggested-date">

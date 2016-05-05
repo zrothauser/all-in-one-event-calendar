@@ -326,23 +326,33 @@ define(
 			}
 			timeout = setTimeout( function() {
 				var
-					bounds = events_map.getCenter(),
-					lat    = bounds.lat(),
-					lng    = bounds.lng();
+					center = events_map.getCenter(),
+					lat    = center.lat(),
+					lng    = center.lng(),
+					bounds = events_map.getBounds();
 
 				$( '.ai1ec-suggested-events' ).addClass( 'ai1ec-feeds-loading' );
 				update_xhr = perform_search(
 					{
-						lat : lat,
-						lng : lng
+						lat    : lat,
+						lng    : lng,
+						radius : get_radius(
+							lat,
+							lng,
+							bounds.getNorthEast().lat(),
+							bounds.getNorthEast().lng(),
+							bounds.getSouthWest().lat(),
+							bounds.getSouthWest().lng()
+						)
 					},  
 					update_events
 				);
 
 			}, 1000 );
 		};
-		
-		events_map.addListener( 'dragend', load_events );
+
+		events_map.addListener( 'dragend', load_events, false );
+		events_map.addListener( 'zoom_changed', load_events, false );
 	};
 
 	// Redraw the map and fit markers in the visible area.
@@ -458,18 +468,19 @@ define(
 						address     = _data.formatted_address,	
 						lat         = _data.geometry.location.lat(),
 						lng         = _data.geometry.location.lng(),
-						bounds      = _data.geometry.bounds,
-						// Viewport dimensions in degrees
-						lat_dist    = bounds.R.j - bounds.R.R,
-						lng_dist    = bounds.j.R - bounds.j.j,
-						// 0.009deg lat = 1km
-						lat_dist_km = lat_dist / 0.009,
-						// 0.009deg lng / cos(lat) = 1km
-						lng_dist_km = lng_dist / 0.009 / Math.cos( lat * Math.PI /180 ),
-						max_km      = Math.max( lat_dist_km, lng_dist_km );
+						viewport    = _data.geometry.viewport;
 
 					$location.val( address );
-					$radius.val( max_km / 2 );
+					$radius.val(
+						get_radius(
+							lat,
+							lng,
+							viewport.getNorthEast().lat(),
+							viewport.getNorthEast().lng(),
+							viewport.getSouthWest().lat(),
+							viewport.getSouthWest().lng()
+						)
+					);
 					$lat.val( lat );
 					$lng.val( lng );
 				} else {
@@ -477,6 +488,20 @@ define(
 				}
 			}
 		);
+	};
+
+	var get_radius = function( lat, lng, lat1, lng1, lat2, lng2 ) {
+		var
+			lat_dist    = lat1 - lat2,
+			lng_dist    = lng1 - lng2,
+			// 0.009deg lat = 1km
+			lat_dist_km = lat_dist / 0.009,
+			// 0.009deg lng / cos(lat) = 1km
+			lng_dist_km = lng_dist / 0.009 / Math.cos( lat * Math.PI /180 ),
+			max_km      = Math.max( lat_dist_km, lng_dist_km ),
+			radius      = max_km / 2;
+
+		return radius;
 	};
 
 	var start = function() {

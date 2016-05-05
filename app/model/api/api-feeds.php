@@ -115,7 +115,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 		} else {
 			$this->save_error_notification(
 				$response,
-				__( 'We were unable to import feed ', AI1EC_PLUGIN_NAME )
+				__( 'We were unable to import feed', AI1EC_PLUGIN_NAME )
 			);
 			throw new Exception( $this->get_api_error_msg( $response->raw ) );
 		}

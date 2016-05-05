@@ -143,7 +143,6 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					$db->update(
 						$table_name,
 						array(
-							'feed_name' => $e->getMessage(),
 							'feed_status' => 'e',
 							'updated_at_gmt' => current_time( 'mysql', 1 ) ),
 						array(

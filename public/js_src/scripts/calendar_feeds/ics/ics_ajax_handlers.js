@@ -25,6 +25,7 @@ define(
 			$( '#ics-alerts' ).append( $alert ).prependTo( '#import' );
 		} else {
 			// Reset the form and add the feed to the bottom of the list.
+			console.log(1);
 			reset_form();
 			$( '#ai1ec-feeds-after' )
 				.addClass( 'ai1ec-well ai1ec-well-sm' )
@@ -42,8 +43,9 @@ define(
 			if ( $container.length ) {
 				$container.replaceWith( $feed );
 			} else {
-				$( '#ai1ec-feeds-after' ).after( $feed );
+				$( '#ics' ).append( $feed );
 			}
+			$( 'a[data-toggle="ai1ec-tab"]' ).click();
 			if (
 				response.update &&
 				response.update.data &&

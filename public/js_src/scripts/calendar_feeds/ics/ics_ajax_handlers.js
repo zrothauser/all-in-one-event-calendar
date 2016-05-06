@@ -42,8 +42,9 @@ define(
 			if ( $container.length ) {
 				$container.replaceWith( $feed );
 			} else {
-				$( '#ai1ec-feeds-after' ).after( $feed );
+				$( '#ics' ).append( $feed );
 			}
+			$( 'a[data-toggle="ai1ec-tab"]' ).click();
 			if (
 				response.update &&
 				response.update.data &&

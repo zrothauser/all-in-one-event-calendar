@@ -11,6 +11,16 @@
 	</a>
 </div>
 <?php
+	elseif ( ! $has_feature ):
+?>
+<div class="ai1ec-feed-container ai1ec-well ai1ec-well-sm ai1ec-clearfix">
+	<?php _e(
+		'<b>You have don\'t have the subscription for this feature.</b><br>
+		Please <a href="https://time.ly/pricing">upgrade here</a> to a plan that
+		supports "Import Feeds".', AI1EC_PLUGIN_NAME )
+	?>
+</div>
+<?php
 	elseif ( $reached_limit ):
 ?>
 <div class="ai1ec-feed-container ai1ec-well ai1ec-well-sm ai1ec-clearfix">

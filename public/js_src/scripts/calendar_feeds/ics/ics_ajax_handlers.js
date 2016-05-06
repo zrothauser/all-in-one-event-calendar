@@ -25,7 +25,6 @@ define(
 			$( '#ics-alerts' ).append( $alert ).prependTo( '#import' );
 		} else {
 			// Reset the form and add the feed to the bottom of the list.
-			console.log(1);
 			reset_form();
 			$( '#ai1ec-feeds-after' )
 				.addClass( 'ai1ec-well ai1ec-well-sm' )

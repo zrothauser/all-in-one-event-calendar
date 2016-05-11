@@ -323,10 +323,14 @@
 					<i class="ai1ec-fa ai1ec-fa-plus"></i>
 					<?php _e( 'Add New Ticket Type', AI1EC_PLUGIN_NAME ); ?>
 				</a>&nbsp;
+				
 				<a href="#" class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-warning
 					<?php echo 1 < count( $tickets ) ? 'ai1ec-hidden' : ''?>"
 				   id="ai1ec_tax_options">
 					<i class="ai1ec-fa ai1ec-fa-gears"></i>
+					<div class="ai1ec-ticket-field-error ai1ec-tax-options-button">
+					<?php _e( 'This field is required.', AI1EC_PLUGIN_NAME ); ?>
+				</div>
 					<?php _e( 'Add Tax &amp; Invoice Options (required)', AI1EC_PLUGIN_NAME ); ?>
 				</a>
 				<a href="#" class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-warning

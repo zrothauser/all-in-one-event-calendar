@@ -489,6 +489,11 @@ define(
 					}
 				}
 			);
+		if ( ! $( '#ai1ec_tax_inputs input' ).length ) {
+			$( '.ai1ec-tax-options-button' ).show();
+		} else {
+			$( '.ai1ec-tax-options-button' ).hide();
+		}
 		if ( $( '.ai1ec-ticket-field-error:visible' ).length ) {
 			return false;
 		}

@@ -546,3 +546,8 @@ td.ai1ec-avail-block {
 	margin-left: 30px;
 	margin-bottom: 0;
 }
+.ai1ec-tax-options-button {
+	position: absolute;
+	margin-top: -43px !important;
+	margin-left: -9px;
+}

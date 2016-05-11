@@ -20,7 +20,7 @@
 ?>
 <div class="ai1ec-feeds-migration">
 	<?php _e(
-		'<b>Your feeds are being migrated.</b><br />
+		'<b>Your feeds will be migrated at the next scheduled refresh (it can take up to one hour).</b><br />
 		You can\'t edit or remove them at the moment.
 		Please, visit this page later to manage your feeds.',
 		AI1EC_PLUGIN_NAME )

@@ -477,19 +477,19 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			unset( $feed_categories );
 
 			$args          = array(
-				'feed_url'            => $row->feed_url,
-				'feed_name'           => ! empty( $row->feed_name ) ? $row->feed_name : $row->feed_url,
-				'event_category'      => implode( ', ', $categories ),
-				'categories_ids'      => $row->feed_category,
-				'tags'                => stripslashes(
+				'feed_url'             => $row->feed_url,
+				'feed_name'            => ! empty( $row->feed_name ) ? $row->feed_name : $row->feed_url,
+				'event_category'       => implode( ', ', $categories ),
+				'categories_ids'       => $row->feed_category,
+				'tags'                 => stripslashes(
 					str_replace( ',', ', ', $row->feed_tags )
 				),
-				'tags_ids'            => $row->feed_tags,
-				'feed_id'             => $row->feed_id,
-				'comments_enabled'    => (bool) intval(
+				'tags_ids'             => $row->feed_tags,
+				'feed_id'              => $row->feed_id,
+				'comments_enabled'     => (bool) intval(
 						$row->comments_enabled
 				),
-				'map_display_enabled' => (bool) intval(
+				'map_display_enabled'  => (bool) intval(
 						$row->map_display_enabled
 				),
 				'keep_tags_categories' => (bool) intval(
@@ -499,7 +499,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 						$row->keep_old_events
 				),
 				'feed_import_timezone' => (bool) intval(
-					$row->import_timezone
+						$row->import_timezone
 				),
 				'feed_status'          => $row->feed_status,
 				'api_signed'           => $api_signed,

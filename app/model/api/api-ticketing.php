@@ -95,51 +95,35 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	 * submmited is a valid event for Tickets
 	 * @return NULL in case of success or a Message in case of error
 	 */
-	private function _is_valid_post( Ai1ec_Event $event ) {
+	private function _is_valid_post( Ai1ec_Event $event, $updating ) {
+		$message = null;
 		if ( ( isset( $_POST['ai1ec_rdate'] ) && ! empty( $_POST['ai1ec_rdate'] ) ) || 
 			 ( isset( $_POST['ai1ec_repeat'] ) && ! empty( $_POST['ai1ec_repeat'] ) ) 
 			 ) {
- 			$notification = $this->_registry->get( 'notification.admin' );
-			$error        = __( 'The Repeat option was selected but recurrence is not supported by Event with Tickets.', AI1EC_PLUGIN_NAME );
-			$notification->store( $error, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
-			return $error;			
-		}
-		if ( isset( $_POST['ai1ec_tickets_loading_error'] ) ) {
+			$message = __( 'The Repeat option was selected but recurrence is not supported by Event with Tickets.', AI1EC_PLUGIN_NAME );
+		} else if ( isset( $_POST['ai1ec_tickets_loading_error'] ) ) {
 			//do not update tickets because is unsafe. There was a problem to load the tickets,
 			//the customer received the same message when the event was loaded.
-			$notification = $this->_registry->get( 'notification.admin' );
-			$notification->store( $_POST['ai1ec_tickets_loading_error'], 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
-			return $_POST['ai1ec_tickets_loading_error'];
-		}
-		if ( false === ai1ec_is_blank( $event->get( 'ical_feed_url' ) ) ) {			
+			$message = $_POST['ai1ec_tickets_loading_error'];
+		} else if ( false === ai1ec_is_blank( $event->get( 'ical_feed_url' ) ) ) {			
 			//prevent ticket creating inside Regular Events Imported events
-			$error        = __( 'This Event was replicated from another site. Any changes on Tickets were discarded.', AI1EC_PLUGIN_NAME );
-			$notification = $this->_registry->get( 'notification.admin' );
-			$notification->store( 
-				$error,  
-				'error', 
-				0, 
-				array( Ai1ec_Notification_Admin::RCPT_ADMIN ), 
-				false 
-			);
-			return $error;			
+			$message = __( 'This Event was replicated from another site. Any changes on Tickets were discarded.', AI1EC_PLUGIN_NAME );
+		} else {
+			$error = $this->_prevent_update_ticket_event( $event );
+			if ( null !== $error ) {
+				$message = $error;
+			} else if ( 0 === $this->_count_valid_tickets( $_POST['ai1ec_tickets'] ) ) {
+				$message      = __( 'The Event has the cost option Ticket selected but no ticket was included.', AI1EC_PLUGIN_NAME );
+			} else if ( false === $this->has_payment_settings() ) {
+				$message = __( 'You need to save the payments settings to create ticket events.', AI1EC_PLUGIN_NAME );			
+			} else if ( ! isset( $_POST['tax_options'] ) && ! $updating ) {
+				$message = 	__( 'Tax and Invoice options are required.', AI1EC_PLUGIN_NAME );
+			}
 		}
-		$error = $this->_prevent_update_ticket_event( $event );
-		if ( null !== $error ) {
-			return $error;
-		}
-		if ( 0 === $this->_count_valid_tickets( $_POST['ai1ec_tickets'] ) ) {
-			$message      = __( 'The Event has the cost option Ticket selected but no ticket was included.', AI1EC_PLUGIN_NAME );
+		if ( null !== $message ) {
 			$notification = $this->_registry->get( 'notification.admin' );
 			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
 			return $message;
-		}
-		if ( false === $this->has_payment_settings() ) {
-			$message      = __( 'You need to save the payments settings to create ticket events.', AI1EC_PLUGIN_NAME );
-			$notification = $this->_registry->get( 'notification.admin' );
-			$notification->store( $message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
-			return $message;
-
 		}
 		return null;
 	}	
@@ -148,15 +132,18 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	*  Create or update a Ticket Event on API server
 	 * @return object Response body in JSON.
 	 */
-	public function store_event( Ai1ec_Event $event, WP_Post $post ) {
+	public function store_event( Ai1ec_Event $event, WP_Post $post, $updating ) {
 		
-		$error = $this->_is_valid_post( $event );
+		$error = $this->_is_valid_post( $event, $updating );
 		if ( null !== $error ) {
 			return $error;
 		}				
 		$api_event_id = $this->get_api_event_id( $event->get( 'post_id' ) );
 		$is_new       = ! $api_event_id;
-		$fields       = array( 'visibility' => $_POST['visibility'] );
+		$fields       = array( 'visibility' => $_POST['visibility'], 'ai1ec_version' => AI1EC_VERSION );
+		if ( isset( $_POST['tax_options'] ) ) {
+			$fields['tax_options'] = $_POST['tax_options'];
+		}
 		$body_data    = $this->_parse_event_fields_to_api_structure(
 			$event,
 			$post,
@@ -451,6 +438,28 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		}
     }
 
+	public function get_event( $post_id ) {
+		$api_event_id = $this->get_api_event_id( $post_id );
+		if ( ! $api_event_id ) {			
+			return (object) array( 'data' => array() );
+		}
+		$response = $this->request_api( 'GET', $this->get_api_event_url( $post_id ) . 'events/' . $api_event_id . '/edit' );
+		if ( $this->is_response_success( $response ) ) {
+			if ( isset( $response->body->ticket_types ) ) {
+		 		foreach ( $response->body->ticket_types as $ticket_api ) {
+		 			$this->_unparse_tickets_type_from_api_structure( $ticket_api );
+				}
+			}
+			return (object) array( 'data' => $response->body );
+		} else {
+			$error_message = $this->_transform_error_message( 
+				__( 'We were unable to get the Event Details from Time.ly Ticketing', AI1EC_PLUGIN_NAME ), 
+				$response->raw, $response->url, 
+				true 
+			);
+			return (object)  array( 'data' => array(), 'error' => $error_message );
+		}
+	}
 
 	/**
 	 * @return string JSON.
@@ -811,6 +820,26 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			return null;
 		}		
 	}
+ 	
+ 	/**
+	 * Get tax options modal
+	 * @param int $event_id Event ID (optional)
+	 */
+ 	public function get_tax_options_modal( $post_id = null ) {
+	 	$calendar_id = $this->_get_ticket_calendar();
+	 	$data        = $this->get_api_event_data( $post_id );
+		if ( isset( $data[self::ATTR_EVENT_ID] ) ) {
+			$event_id = $data[self::ATTR_EVENT_ID];			
+		} else {
+			$event_id = null;
+		}		
+		$response = $this->request_api( 'GET', 
+			AI1EC_API_URL . "calendars/$calendar_id/tax_options" .
+			( is_null( $event_id ) ? '' : "?event_id=$event_id" )
+		);
+		return (object) array( 'data' => $response->raw, 'error' => false );
+	}
+
  	
  	/**
  	 * Save the API event data

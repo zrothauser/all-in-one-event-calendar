@@ -295,6 +295,9 @@ define(
 		// Banner image.
 		$( document ).on( 'click', '.ai1ec-set-banner-image', set_banner_image );
 		$( document ).on( 'click', '.ai1ec-remove-banner', remove_banner_image );
+
+		// Taxes
+		$( document).on( 'click', '#ai1ec_tax_options, #ai1ec_update_tax_options', init_tax_options );
 	};
 
 	/**
@@ -459,7 +462,10 @@ define(
 			.each( function() {
 				var $this = $( this );
 				$this.removeClass( 'ai1ec-error' );
-				if ( ! $.trim( $this.val() ) ) {
+				if (
+					! $.trim( $this.val() ) ||
+					( 'checkbox' === $this.attr( 'type' ) && ! $this.prop('checked') )
+				) {
 					$this.addClass( 'ai1ec-error' );
 					$this.parent().find( '.ai1ec-ticket-field-error' ).show();
 				}
@@ -688,6 +694,73 @@ define(
 		$( '.ai1ec_review_send_feedback' ).on( 'click', send_feedback_message );	
 		$( '.ai1ec_review_not_enjoying_no_rating' ).on( 'click', save_feedback_review_no );		
     }
+
+	/**
+	 * Shows tax options.
+	 */
+	var init_tax_options = function() {
+		var
+			$modal   = $( '#ai1ec_tax_box' ),
+			$content = $( '.ai1ec-modal-content', $modal ),
+			$loading = $( '.ai1ec-loading', $modal );
+
+		// Show the modal.
+		$modal.modal( { backdrop: 'static' } );
+
+		$.post(
+			ajaxurl,
+			{
+				action : 'ai1ec_get_tax_box',
+				ai1ec_event_id : $( '#post_ID' ).val()
+			},
+			function( response ) {
+				var iframeDoc = myIframe.contentWindow.document;
+				$loading.remove();
+				$( myIframe ).removeClass( 'ai1ec-hidden' );
+				iframeDoc.open();
+				iframeDoc.write( response.message.body );
+				iframeDoc.close();
+			},
+			'json'
+		);
+	};
+	
+	
+	window.addEventListener( 'message', function( e ) {
+		var
+			message           = e.data,
+			token             = 'timely_tax_options_',
+			cancel_token      = 'timely_tax_cancel',
+			$inputs_container = $( '#ai1ec_tax_inputs' );
+
+		if ( message === cancel_token ) {
+			$( '#ai1ec_tax_box' ).modal( 'hide' );
+			$( '#ai1ec_tax_options' ).addClass( 'ai1ec-hidden' );
+			$( '#ai1ec_update_tax_options' ).removeClass( 'ai1ec-hidden' );
+			myIframe.setAttribute( 'src', '' );
+			return;
+		}
+
+		if ( 0 !== message.indexOf( token ) ) return;
+		myIframe.setAttribute( 'src', '' );
+		message = JSON.parse( message.substr( token.length ) );
+		
+		$( '#ai1ec_tax_box' ).modal( 'hide' );
+		$( '#ai1ec_tax_options' ).addClass( 'ai1ec-hidden' );
+		$( '#ai1ec_update_tax_options' ).removeClass( 'ai1ec-hidden' );
+		
+		$inputs_container.html( '' );
+		for ( var key in message ) {
+			$inputs_container.append(
+				$( '<input />',{
+					type : 'hidden',
+					name : 'tax_options[' + key + ']',
+					value : message[key]
+				} )
+			);
+		}
+	}, false);
+	
 
 
 	var start = function() {

@@ -71,7 +71,6 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 
 		$cal             = $args['source'];
 
-		$forced_timezone = null;
 		$feed            = isset( $args['feed'] ) ? $args['feed'] : null;
 		$comment_status  = isset( $args['comment_status'] ) ? $args['comment_status'] : 'open';
 		$do_show_map     = isset( $args['do_show_map'] ) ? $args['do_show_map'] : 0;
@@ -82,7 +81,6 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 		// Fetch default timezone in case individual properties don't define it
 		$local_timezone  = $this->_registry->get( 'date.timezone' )->get_default_timezone();
 		$timezone        = $local_timezone;
-		$forced_timezone = $local_timezone;
 
 		$messages        = array();
 
@@ -185,14 +183,14 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			$start = $this->_time_array_to_datetime(
 				(array)$start['date'],
 				(array)$start['time'],
-				$event_timezone,
-				$feed->import_timezone ? $forced_timezone : null
+				$timezone,
+				$feed->import_timezone ? $event_timezone : null
 			);
 			$end   = $this->_time_array_to_datetime(
 				(array)$end['date'],
 				(array)$end['time'],
-				$event_timezone,
-				$feed->import_timezone ? $forced_timezone : null
+				$timezone,
+				$feed->import_timezone ? $event_timezone : null
 			);
 			if ( false === $start || false === $end ) {
 				throw new Ai1ec_Parse_Exception(
@@ -640,7 +638,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 		$def_timezone,
 		$forced_timezone = null
 	) {
-		$timezone = $def_timezone;;
+		$timezone = $def_timezone;
 
 		$date_time = $this->_registry->get( 'date.time' );
 

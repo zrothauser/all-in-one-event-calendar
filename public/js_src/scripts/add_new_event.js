@@ -719,12 +719,19 @@ define(
 				ai1ec_event_id : $( '#post_ID' ).val()
 			},
 			function( response ) {
-				var iframeDoc = myIframe.contentWindow.document;
+				var iframeDoc = ai1ec_tax_frame.contentWindow.document;
 				$loading.remove();
-				$( myIframe ).removeClass( 'ai1ec-hidden' );
+				$( ai1ec_tax_frame ).removeClass( 'ai1ec-hidden' );
 				iframeDoc.open();
 				iframeDoc.write( response.message.body );
 				iframeDoc.close();
+				var lastHeight = 0, curHeight = 0, $frame = $( '#ai1ec_tax_frame' );
+				setInterval( function() {
+					curHeight = $frame.contents().find( 'body' ).height();
+					if ( curHeight != lastHeight ) {
+						$frame.css('height', (lastHeight = curHeight) + 'px' );
+					}
+				}, 500 );
 			},
 			'json'
 		);
@@ -742,12 +749,12 @@ define(
 			$( '#ai1ec_tax_box' ).modal( 'hide' );
 			$( '#ai1ec_tax_options' ).addClass( 'ai1ec-hidden' );
 			$( '#ai1ec_update_tax_options' ).removeClass( 'ai1ec-hidden' );
-			myIframe.setAttribute( 'src', '' );
+			ai1ec_tax_frame.setAttribute( 'src', '' );
 			return;
 		}
 
 		if ( 0 !== message.indexOf( token ) ) return;
-		myIframe.setAttribute( 'src', '' );
+		ai1ec_tax_frame.setAttribute( 'src', '' );
 		message = JSON.parse( message.substr( token.length ) );
 		
 		$( '#ai1ec_tax_box' ).modal( 'hide' );

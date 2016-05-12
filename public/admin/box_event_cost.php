@@ -354,7 +354,7 @@
 								<div class="ai1ec-loading">
 									<i class="ai1ec-fa ai1ec-fa-spinner ai1ec-fa-spin ai1ec-fa-3x"></i>
 								</div>
-								<iframe id="myIframe" width="100%" height="680" class="ai1ec-hidden"></iframe>
+								<iframe id="ai1ec_tax_frame" width="100%" height="600" class="ai1ec-hidden"></iframe>
 							</div>
 						</div>
 					</div>

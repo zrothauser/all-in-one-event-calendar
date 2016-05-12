@@ -44,7 +44,7 @@ define(
 			} else {
 				$( '#ics' ).append( $feed );
 			}
-			$( 'a[data-toggle="ai1ec-tab"]' ).click();
+			$( 'a[href="#ics"]' ).click();
 			if (
 				response.update &&
 				response.update.data &&

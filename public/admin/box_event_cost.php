@@ -345,7 +345,7 @@
 						<?php _e( 'This field is required.', AI1EC_PLUGIN_NAME ); ?>
 					</div>
  					<input type="checkbox" name="ai1ec_accepted_terms" class="ai1ec-required" value="1" <?php echo 1 < count( $tickets ) ? 'checked' : ''?> />
-					<?php _e( 'I read and accept the <a href="https://ticketing.time.ly/terms" target="_blank">terms of service</a>.', AI1EC_PLUGIN_NAME ); ?>
+					<?php _e( 'I read and accept the <a href="https://time.ly/tos" target="_blank">terms of service</a>.', AI1EC_PLUGIN_NAME ); ?>
 				</label>
 				<div id="ai1ec_tax_box" class="ai1ec-modal ai1ec-fade">
 					<div class="ai1ec-modal-dialog">

@@ -8,6 +8,15 @@
 	</a>
 </div>
 <div id="ai1ec-event-cost-box" class="ai1ec-panel-collapse ai1ec-collapse">
+	<?php 
+		if ( ! is_null( $tax_options ) ) {
+			foreach ( get_object_vars ( $tax_options ) as $key => $value ) {
+				if ( ! is_null( $value ) ) {
+					echo '<input type="hidden" name="tax_options['. $key .']" value="'. $value . '">';
+				}
+			}
+		}
+	?>
 	<input type="hidden" name="ai1ec_uid" value="<?php echo $uid;?>">
 	<?php if ( $tickets_loading_error ):?>
 		<input type="hidden" name="ai1ec_tickets_loading_error" value="<?php echo htmlentities( $tickets_loading_error ); ?>">
@@ -313,7 +322,45 @@
 				   id="ai1ec_add_new_ticket">
 					<i class="ai1ec-fa ai1ec-fa-plus"></i>
 					<?php _e( 'Add New Ticket Type', AI1EC_PLUGIN_NAME ); ?>
+				</a>&nbsp;
+				
+				<a href="#" class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-warning
+					<?php echo 1 < count( $tickets ) ? 'ai1ec-hidden' : ''?>"
+				   id="ai1ec_tax_options">
+					<i class="ai1ec-fa ai1ec-fa-gears"></i>
+					<div class="ai1ec-ticket-field-error ai1ec-tax-options-button">
+					<?php _e( 'This field is required.', AI1EC_PLUGIN_NAME ); ?>
+				</div>
+					<?php _e( 'Add Tax &amp; Invoice Options (required)', AI1EC_PLUGIN_NAME ); ?>
 				</a>
+				<a href="#" class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-warning
+					<?php echo 1 < count( $tickets ) ? '' : 'ai1ec-hidden'?>"
+				   id="ai1ec_update_tax_options">
+					<i class="ai1ec-fa ai1ec-fa-gears"></i>
+					<?php _e( 'Update Tax &amp; Invoice Options', AI1EC_PLUGIN_NAME ); ?>
+				</a><br />
+				
+				<label>
+					<div class="ai1ec-ticket-field-error">
+						<?php _e( 'This field is required.', AI1EC_PLUGIN_NAME ); ?>
+					</div>
+ 					<input type="checkbox" name="ai1ec_accepted_terms" class="ai1ec-required" value="1" <?php echo 1 < count( $tickets ) ? 'checked' : ''?> />
+					<?php _e( 'I read and accept the <a href="https://ticketing.time.ly/terms" target="_blank">terms of service</a>.', AI1EC_PLUGIN_NAME ); ?>
+				</label>
+				<div id="ai1ec_tax_box" class="ai1ec-modal ai1ec-fade">
+					<div class="ai1ec-modal-dialog">
+						<div class="ai1ec-modal-body ai1ec-text-center">
+							<div class="ai1ec-modal-content">
+								<div class="ai1ec-loading">
+									<i class="ai1ec-fa ai1ec-fa-spinner ai1ec-fa-spin ai1ec-fa-3x"></i>
+								</div>
+								<iframe id="ai1ec_tax_frame" width="100%" height="600" class="ai1ec-hidden"></iframe>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="ai1ec_tax_inputs">
+				</div>
 			</div>
 		<?php endif; ?>
 

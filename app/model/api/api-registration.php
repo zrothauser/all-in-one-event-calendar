@@ -64,18 +64,30 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 	 * @return object Response body in JSON.
 	 */
 	protected function availability() {
-		$response = $this->request_api( 'GET', AI1EC_API_URL . 'feature/availability', null, true );
-		if ( $this->is_response_success( $response ) ) {
-			return $response->body;
-		} else {
-			return null;
+		$api_features = get_site_transient( 'ai1ec_api_features' );
+
+		if ( false === $api_features || ( defined( 'AI1EC_DEBUG' ) && AI1EC_DEBUG ) ) {
+			$response = $this->request_api( 'GET', AI1EC_API_URL . 'feature/availability', null, true );
+
+			if ( $this->is_response_success( $response ) ) {
+				$api_features = (array) $response->body;
+			} else {
+				$api_features = array();
+			}
+
+			// Save for 30 minutes
+			$minutes = 30;
+			set_site_transient( 'ai1ec_api_features', $api_features, $minutes * 60 );
 		}
+
+		return $api_features;
 	}
 
 	protected function is_feature_available( $feature_code ) {
 		$availability = $this->availability();
+
 		if ( ! is_null( $availability ) ) {
-			foreach ( $availability as $value) {
+			foreach ( $availability as $value ) {
 				if ( isset( $value->code ) && $feature_code === $value->code
 					&& isset( $value->available ) && true === $value->available ) {
 					return true;
@@ -85,8 +97,12 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 		return false;
 	}
 
+	public function is_api_sign_up_available() {
+	    return $this->is_feature_available( Ai1ec_Api_Features::CODE_API_ACCESS );
+	}
+
 	public function is_ticket_available() {
-		return $this->is_feature_available( 'ticketing' );
+		return $this->is_feature_available( Ai1ec_Api_Features::CODE_TICKETING );
 	}
  
  	/**

@@ -295,11 +295,20 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		}
 
 		$api                   = $this->_registry->get( 'model.api.api-ticketing' );
-		$ticketing             = $api->is_signed();
-		$message               = $api->get_sign_message();		
+		$api_reg               = $this->_registry->get( 'model.api.api-registration' );
+		$ticketing             = $api_reg->is_signed() && $api_reg->is_ticket_available();
+		$message               = $api->get_sign_message();
 		$ticket_error          = null;
 		$ticket_event_imported = false;
 		$tickets               = array( null );
+		$tax_options           = null;
+		
+		if ( ! $api_reg->is_ticket_available() ) {
+			$message = __(
+				'Ticketing<sup>beta</sup> is currently not available for this website. Please, try again later.',
+				AI1EC_PLUGIN_NAME
+			);
+		}
 
 		if ( $event ) {
 			$is_ticket_event       = ! is_null( $api->get_api_event_id( $event->get( 'post_id' ) ) );
@@ -307,12 +316,23 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			$ticket_event_imported = $api->is_ticket_event_imported( $event->get( 'post_id' ) );
 			if ( $ticketing || $ticket_event_imported ) {
 				if ( 'tickets' === $cost_type ) {
-					$response = json_decode( $api->get_ticket_types( $event->get( 'post_id' ) ) );
-					if ( isset( $response->data ) ) {
-						$tickets = array_merge( $tickets, $response->data );
-					}
-					if ( isset( $response->error ) ) {
-						$ticket_error = $response->error;
+					if ( $ticket_event_imported ) {
+						$response = json_decode( $api->get_ticket_types( $event->get( 'post_id' ) ) );
+						if ( isset( $response->data )  && 0 < count( $response->data ) ) {
+							$tickets = array_merge( $tickets, $response->data );
+						}
+						if ( isset( $response->error ) ) {
+							$ticket_error = $response->error;
+						}
+					} else {
+						$response = $api->get_event( $event->get( 'post_id' ) );
+						if ( isset( $response->data ) && 0 < count( $response->data ) ) {
+							$tickets     = array_merge( $tickets, $response->data->ticket_types );
+							$tax_options = $response->data->tax_options;
+						}
+						if ( isset( $response->error ) ) {
+							$ticket_error = $response->error;
+						}
 					}
 				}
 				$uid = $event->get_uid();
@@ -366,7 +386,8 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 			'is_free'               => $is_free,
 			'ticket_currency'       => $ticket_currency,
 			'is_ticket_event'       => $is_ticket_event,
-			'ticket_event_account'  => $ticket_event_account
+			'ticket_event_account'  => $ticket_event_account,
+			'tax_options'			=> $tax_options
 		);
 
 		$boxes[] = $theme_loader

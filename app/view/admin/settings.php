@@ -160,6 +160,55 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 		$plugin_settings  = $settings->get_options();
 		$tabs             = $this->_get_tabs_to_show( $plugin_settings, $tabs );
 		$loader           = $this->_registry->get( 'theme.loader' );
+		
+		$api               = $this->_registry->get( 'model.api.api-registration' );
+		$signup_available  = $api->is_api_sign_up_available();		
+		$signed_to_api     = $api->is_signed();
+		$ticketing_message = $api->get_sign_message();
+		$loader            = $this->_registry->get( 'theme.loader' );
+		$account           = $api->get_current_account();
+		$signup_args       = array(
+			'api_signed'            => $signed_to_api,
+			'signup_available'      => $signup_available,
+			'title'                 => Ai1ec_I18n::__(
+				'Please, Sign In to Timely Network.'
+			),
+			'nonce'                 => array(
+				'action'   => 'ai1ec_api_ticketing_signup',
+				'name'     => 'ai1ec_api_ticketing_nonce',
+				'referrer' => false,
+			),
+			'api_action'            =>
+				'?controller=front&action=ai1ec_api_ticketing_signup&plugin=' .
+				AI1EC_PLUGIN_NAME,
+			'required_text'         => Ai1ec_I18n::__( 'This field is required.' ),
+			'register_text'         => Ai1ec_I18n::__( 'Register' ),
+			'sign_in_text'          => Ai1ec_I18n::__( 'Sign in' ),
+			'signed_in_text'        => Ai1ec_I18n::__(
+				'You are signed in to <b>Timely Network</b> as ' . $account
+			),
+			'sign_out_text'         => Ai1ec_I18n::__( 'Sign out' ),
+			'full_name_text'        => Ai1ec_I18n::__( 'Full Name:' ),
+			'hide_form_text'        => Ai1ec_I18n::__( 'Hide form' ),
+			'show_form_text'        => Ai1ec_I18n::__( 'Show form' ),
+			'email_text'            => Ai1ec_I18n::__( 'Email:' ),
+			'password_text'         => Ai1ec_I18n::__( 'Password:' ),
+			'confirm_password_text' => Ai1ec_I18n::__( 'Confirm Password:' ),
+			'phone_number_text'     => Ai1ec_I18n::__( 'Phone Number:' ),
+			'terms_text'            => Ai1ec_I18n::__(
+				'I confirm that I have read, understand and agree with the <a href="https://ticketing.time.ly/terms">terms and conditions</a>.'
+			),
+			'sign_out_warning'      => Ai1ec_I18n::__(
+				'<h4>Attention Required:</h4>If you sign out all your Tickets on the Timely Network will become unavailable immediately. You are responsible for refunding the ticket holders if any of the events were cancelled. Please, read the <a href="https://ticketing.time.ly/terms">Terms&nbsp;and&nbsp;Conditions</a> for more details.'
+			),
+			'sign_out_cancel'       => Ai1ec_I18n::__( 'Cancel' ),
+			'sign_out_confirm'      => Ai1ec_I18n::__( 'Sign Out' ),
+			'sign_up_button_text'   => Ai1ec_I18n::__( 'Sign Up' ),
+			'sign_in_button_text'   => Ai1ec_I18n::__( 'Sign In' ),
+		);
+		$loader->get_file( 'setting/api-signup.twig', $signup_args, true )->render();
+		
+		
 		$args             = array(
 			'tabs'          => $tabs,
 			'content_class' => 'ai1ec-form-horizontal',

@@ -747,8 +747,6 @@ define(
 
 		if ( message === cancel_token ) {
 			$( '#ai1ec_tax_box' ).modal( 'hide' );
-			$( '#ai1ec_tax_options' ).addClass( 'ai1ec-hidden' );
-			$( '#ai1ec_update_tax_options' ).removeClass( 'ai1ec-hidden' );
 			ai1ec_tax_frame.setAttribute( 'src', '' );
 			return;
 		}

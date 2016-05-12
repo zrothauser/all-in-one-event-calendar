@@ -232,6 +232,36 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 	}
 
 	/**
+	 * Call the API to subscribe feed
+	 */
+	public function subscribe_feed( $feed_id, $feed_event_uid = '' ) {
+		$calendar_id = $this->_get_ticket_calendar();
+		if ( 0 >= $calendar_id ) {
+			throw new Exception( 'Calendar ID not found' );
+		}
+
+		$response = $this->request_api( 'POST', AI1EC_API_URL . 'calendars/' . $calendar_id . '/feeds/subscribe',
+			json_encode( [
+				'feed_id'        => $feed_id,
+				'feed_event_uid' => $feed_event_uid
+			] )
+		);
+
+		// Refresh list of subscriptions and limits
+		$this->get_subscriptions( true );
+
+		if ( $this->is_response_success( $response ) ) {
+			return $response->body;
+		} else {
+			$this->save_error_notification(
+				$response,
+				__( 'We were unable to subscribe feed', AI1EC_PLUGIN_NAME )
+				);
+			throw new Exception( $this->get_api_error_msg( $response->raw ) );
+		}
+	}
+
+	/**
 	 * Call the API to unsubscribe feed
 	 */
 	public function unsubscribe_feed( $feed_id, $feed_event_uid = '' ) {

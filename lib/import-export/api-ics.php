@@ -213,81 +213,15 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			// =======================================
 			// = Recurrence rules & recurrence dates =
 			// =======================================
-			if ( $rrule = $e->rrule ) {
-				$rrule = explode( ':', $rrule );
-				$rrule = trim( end( $rrule ) );
-			}
+			$rrule  = $e->rrule;
+			$rdate  = $e->rdate;
 
-			if ( $exrule = $e->exrule ) {
-				$exrule = explode( ':', $exrule );
-				$exrule = trim( end( $exrule ) );
-			}
+			// =======================================
+			// = Exclusion rules & exclusion dates   =
+			// =======================================
+			$exrule = $e->exrule;
+			$exdate = $e->exdate;
 
-			if ( $rdate = $e->rdate ) {
-				$arr     = explode( 'RDATE', $rdate );
-				$matches = null;
-				foreach ( $arr as $value ) {
-					$arr2 = explode( ':', $value );
-					if ( 2 === count( $arr2 ) ) {
-						$matches[] = $arr2[1];
-					}
-				}
-				if ( null !== $matches ) {
-					$rdate = implode( ',', $matches );	
-					unset( $matches ); 
-					unset( $arr ); 
-				} else {
-					$rdate = null;
-				}				
-			}
-
-			// ===================
-			// = Exception dates =
-			// ===================
-			$exdate = '';
-			if ( $exdates = $e->exdate ){
-				// We may have two formats:
-				// one exdate with many dates ot more EXDATE rules
-				$exdates      = explode( 'EXDATE', $exdates );
-				$def_timezone = $this->_get_import_timezone( $event_timezone );
-				foreach ( $exdates as $exd ) {
-					if ( empty( $exd ) ) {
-						continue;
-					}
-					$exploded       = explode( ':', $exd );
-					$excpt_timezone = $def_timezone;
-					$excpt_date     = null;
-					foreach ( $exploded as $particle ) {
-						if ( ';TZID=' === substr( $particle, 0, 6 ) ) {
-							$excpt_timezone = substr( $particle, 6 );
-						} else {
-							$excpt_date = trim( $particle );
-						}
-					}
-					$exploded       = explode( ',', $excpt_date );
-					foreach ( $exploded as $particle ) {
-						// Google sends YYYYMMDD for all-day excluded events
-						if (
-							$allday &&
-							8 === strlen( $particle )
-						) {
-							$particle    .= 'T000000Z';
-							$excpt_timezone = 'UTC';
-						}
-						$ex_dt = $this->_registry->get(
-							'date.time',
-							$particle,
-							$excpt_timezone
-						);
-						if ( $ex_dt ) {
-							if ( isset( $exdate{0} ) ) {
-								$exdate .= ',';
-							}
-							$exdate .= $ex_dt->format( 'Ymd\THis', $excpt_timezone );
-						}
-					}
-				}
-			}
 			// Add custom exclusions if there any
 			$recurrence_id = $e->recurrence_id;
 			if (

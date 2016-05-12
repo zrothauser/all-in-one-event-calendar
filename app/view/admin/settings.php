@@ -196,7 +196,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 			'confirm_password_text' => Ai1ec_I18n::__( 'Confirm Password:' ),
 			'phone_number_text'     => Ai1ec_I18n::__( 'Phone Number:' ),
 			'terms_text'            => Ai1ec_I18n::__(
-				'I confirm that I have read, understand and agree with the <a href="https://time.ly/tos">terms and conditions</a>.'
+				'I confirm that I have read, understand and agree with the <a href="https://time.ly/tos">terms of service</a>.'
 			),
 			'sign_out_warning'      => Ai1ec_I18n::__(
 				'<h4>Attention Required:</h4>If you sign out all your Tickets on the Timely Network will become unavailable immediately. You are responsible for refunding the ticket holders if any of the events were cancelled. Please, read the <a href="https://ticketing.time.ly/terms">Terms&nbsp;and&nbsp;Conditions</a> for more details.'

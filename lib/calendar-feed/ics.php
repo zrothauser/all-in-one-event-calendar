@@ -846,10 +846,11 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			return $json_strategy->render( array( 'data' => $output ) );
 		}
 
-		$sql                 = "SELECT COUNT(*) FROM $table_name WHERE $table_name.feed_name = $feed_id";
-		$is_already_imported = $db->get_var( $sql );
+		$sql        = "SELECT COUNT(*) FROM $table_name WHERE feed_name = '" . $feed_id . "'";
+		$feed_count = $db->get_var( $sql );
 
-		if ( ! $is_already_imported ) {
+		// Not imported yet
+		if ( 0 === $feed_count ) {
 			$feed_categories = empty( $_REQUEST['feed_category'] ) ? '' : implode( ',', $_REQUEST['feed_category'] );
 
 			$entry = array(

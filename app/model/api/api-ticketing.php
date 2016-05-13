@@ -112,7 +112,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			$error = $this->_prevent_update_ticket_event( $event );
 			if ( null !== $error ) {
 				$message = $error;
-			} else if ( 0 === $this->_count_valid_tickets( $_POST['ai1ec_tickets'] ) ) {
+			} else if ( ! isset( $_POST['ai1ec_tickets'] ) || 0 === $this->_count_valid_tickets( $_POST['ai1ec_tickets'] ) ) {
 				$message      = __( 'The Event has the cost option Ticket selected but no ticket was included.', AI1EC_PLUGIN_NAME );
 			} else if ( false === $this->has_payment_settings() ) {
 				$message = __( 'You need to save the payments settings to create ticket events.', AI1EC_PLUGIN_NAME );			
@@ -178,15 +178,24 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			foreach ($body_data as $key => $value) {
 	            if ( is_array( $value ) ) {
 	            	$index = 0;
-	            	foreach ( $value as $ticket_type_ite ) {
-		            	foreach ( $ticket_type_ite as $child_key => $child_value ) {
-	            			$payload .= '--' . $boundary;
+	            	foreach ( $value as $arr_key => $arr_value ) {
+	            		if ( is_array( $arr_value ) ) {
+			            	foreach ( $arr_value as $child_key => $child_value ) {
+		            			$payload .= '--' . $boundary;
+		 						$payload .= "\r\n";
+				            	$payload .= 'Content-Disposition: form-data; name="' . $key . '[' . $index . '][' . $child_key . ']"' . "\r\n";
+			   		            $payload .= "\r\n";
+					            $payload .= $child_value;
+					            $payload .= "\r\n";
+					        }
+					    } else {
+					    	$payload .= '--' . $boundary;
 	 						$payload .= "\r\n";
-			            	$payload .= 'Content-Disposition: form-data; name="' . $key . '[' . $index . '][' . $child_key . ']"' . "\r\n";
+			            	$payload .= 'Content-Disposition: form-data; name="tax_options[' . $arr_key . ']"' . "\r\n";
 		   		            $payload .= "\r\n";
-				            $payload .= $child_value;
+				            $payload .= $arr_value;
 				            $payload .= "\r\n";
-				        }
+					    }
 				        $index++;
 				    }
 	            } else {

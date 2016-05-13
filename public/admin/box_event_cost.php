@@ -18,6 +18,7 @@
 		}
 	?>
 	<input type="hidden" name="ai1ec_uid" value="<?php echo $uid;?>">
+	<input type="hidden" id="ai1ec_editing_ticket" value="<?php echo $is_ticket_event ? 1 : 0;?>">	
 	<?php if ( $tickets_loading_error ):?>
 		<input type="hidden" name="ai1ec_tickets_loading_error" value="<?php echo htmlentities( $tickets_loading_error ); ?>">
 	<?php endif; ?>

@@ -851,28 +851,16 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 		// Not imported yet
 		if ( 0 === $feed_count ) {
-			$feed_categories = empty( $_REQUEST['feed_category'] ) ? '' : implode( ',', $_REQUEST['feed_category'] );
-
 			$entry = array(
 				'feed_url'             => $feed->feed_url,
 				'feed_name'            => $feed_id,
-				'feed_category'        => $feed_categories,
-				'feed_tags'            => $_REQUEST['feed_tags'],
-				'comments_enabled'     => Ai1ec_Primitive_Int::db_bool(
-					$_REQUEST['comments_enabled']
-				),
-				'map_display_enabled'  => Ai1ec_Primitive_Int::db_bool(
-					$_REQUEST['map_display_enabled']
-				),
-				'keep_tags_categories' => Ai1ec_Primitive_Int::db_bool(
-					$_REQUEST['keep_tags_categories']
-				),
-				'keep_old_events'      => Ai1ec_Primitive_Int::db_bool(
-					$_REQUEST['keep_old_events']
-				),
-				'import_timezone'      => Ai1ec_Primitive_Int::db_bool(
-					$_REQUEST['feed_import_timezone']
-				),
+				'feed_category'        => '',
+				'feed_tags'            => '',
+				'comments_enabled'     => 0,
+				'map_display_enabled'  => 1,
+				'keep_tags_categories' => '',
+				'keep_old_events'      => 0,
+				'import_timezone'      => 0,
 				'feed_status'          => $api_feed::FEED_API_SOME_EVENTS_CODE,
 				'updated_at_gmt'       => current_time( 'mysql', 1 )
 			);

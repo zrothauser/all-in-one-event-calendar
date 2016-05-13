@@ -178,15 +178,24 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			foreach ($body_data as $key => $value) {
 	            if ( is_array( $value ) ) {
 	            	$index = 0;
-	            	foreach ( $value as $ticket_type_ite ) {
-		            	foreach ( $ticket_type_ite as $child_key => $child_value ) {
-	            			$payload .= '--' . $boundary;
+	            	foreach ( $value as $arr_key => $arr_value ) {
+	            		if ( is_array( $arr_value ) ) {
+			            	foreach ( $arr_value as $child_key => $child_value ) {
+		            			$payload .= '--' . $boundary;
+		 						$payload .= "\r\n";
+				            	$payload .= 'Content-Disposition: form-data; name="' . $key . '[' . $index . '][' . $child_key . ']"' . "\r\n";
+			   		            $payload .= "\r\n";
+					            $payload .= $child_value;
+					            $payload .= "\r\n";
+					        }
+					    } else {
+					    	$payload .= '--' . $boundary;
 	 						$payload .= "\r\n";
-			            	$payload .= 'Content-Disposition: form-data; name="' . $key . '[' . $index . '][' . $child_key . ']"' . "\r\n";
+			            	$payload .= 'Content-Disposition: form-data; name="tax_options[' . $arr_key . ']"' . "\r\n";
 		   		            $payload .= "\r\n";
-				            $payload .= $child_value;
+				            $payload .= $arr_value;
 				            $payload .= "\r\n";
-				        }
+					    }
 				        $index++;
 				    }
 	            } else {

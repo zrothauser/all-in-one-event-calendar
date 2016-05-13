@@ -415,7 +415,11 @@ define(
 			var data = {
 				ai1ec : true
 			};
+			if ( null === url.match( /^http/ ) ) {
+				url = location.protocol + url;
+			}
 			History.pushState( data, document.title, decodeURI( url ) );
+			//load_view( $calendar, url, 'jsonp' );
 		} else {
 			load_view( $calendar, url, 'jsonp' );
 		}

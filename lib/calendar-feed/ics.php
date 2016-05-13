@@ -127,11 +127,13 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				try {
 					$response = $this->_api_feed->import_feed( $entry );
 
+					$api_feed = $this->_api_feed;
+
 					$db->update(
 						$table_name,
 						array(
 							'feed_name' => $response->id,
-							'feed_status' => 'a',
+							'feed_status' => $api_feed::FEED_API_ALL_EVENTS_CODE,
 							'updated_at_gmt' => current_time( 'mysql', 1 ) ),
 						array(
 							'feed_id' => $feed_id
@@ -143,7 +145,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					$db->update(
 						$table_name,
 						array(
-							'feed_status' => 'e',
+							'feed_status' => $api_feed::FEED_MIGRATION_ERROR_CODE,
 							'updated_at_gmt' => current_time( 'mysql', 1 ) ),
 						array(
 							'feed_id' => $feed_id
@@ -358,6 +360,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$this->render_opening_div_of_tab();
 		// Render the body of the tab
 		$api_signed = $this->_api_feed->is_signed();
+		$api_feed   = $this->_api_feed;
 		$settings   = $this->_registry->get( 'model.settings' );
 		$factory    = $this->_registry->get(
 			'factory.html'
@@ -409,7 +412,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 		$db          = $this->_registry->get( 'dbi.dbi' );
 		$table_name  = $db->get_table_name( 'ai1ec_event_feeds' );
-		$sql         = "SELECT COUNT(*) FROM $table_name WHERE $table_name.feed_status = 'c'";
+		$sql         = "SELECT COUNT(*) FROM $table_name WHERE $table_name.feed_status = '" . $api_feed::FEED_NOT_MIGRATED_CODE . "'";
 		$local_feeds = $db->get_var( $sql );
 		$args        = array(
 			'cron_freq'        => $cron_freq->get_content(),
@@ -417,7 +420,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'event_tags'       => $select2_tags,
 			'feed_rows'        => $this->_get_feed_rows(),
 			'modal'            => $modal,
-			'api_signed'       => $this->_api_feed->is_signed(),
+			'api_signed'       => $api_signed,
 			'migration'        => $api_signed && 0 < $local_feeds
 		);
 
@@ -552,6 +555,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			wp_die( Ai1ec_I18n::__( 'Oh, submission was not accepted.' ) );
 		}
 
+		$api_feed   = $this->_api_feed;
+
 		$db = $this->_registry->get( 'dbi.dbi' );
 		$table_name = $db->get_table_name( 'ai1ec_event_feeds' );
 
@@ -581,7 +586,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'import_timezone'      => Ai1ec_Primitive_Int::db_bool(
 				$_REQUEST['feed_import_timezone']
 			),
-			'feed_status'          => 'a',
+			'feed_status'          => $api_feed::FEED_API_ALL_EVENTS_CODE,
 			'updated_at_gmt'       => current_time( 'mysql', 1 )
 		);
 
@@ -806,6 +811,173 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			return $json_strategy->render( array( 'data' => $output ) );
 		}
 	}
+
+
+	/**
+	 * Adds discover event feed to the database
+	 *
+	 * @return string JSON output
+	 *
+	 */
+	public function add_discover_events_feed_subscription( $feed ) {
+		if ( ! current_user_can( 'manage_ai1ec_feeds' ) ) {
+			wp_die( Ai1ec_I18n::__( 'Oh, submission was not accepted.' ) );
+		}
+
+		$api_feed      = $this->_api_feed;
+
+		$db            = $this->_registry->get( 'dbi.dbi' );
+		$table_name    = $db->get_table_name( 'ai1ec_event_feeds' );
+
+		$json_strategy = $this->_registry->get(
+			'http.response.render.strategy.json'
+		);
+
+		$feed_id       = $feed->feed_id;
+
+		// Import to the API
+		try {
+			$response  = $this->_api_feed->subscribe_feed( $feed_id, $feed->feed_event_uid );
+		} catch ( Exception $e ) {
+			$output = array(
+				'error'   => true,
+				'message' => $e->getMessage()
+			);
+			return $json_strategy->render( array( 'data' => $output ) );
+		}
+
+		$sql                 = "SELECT COUNT(*) FROM $table_name WHERE $table_name.feed_name = $feed_id";
+		$is_already_imported = $db->get_var( $sql );
+
+		if ( ! $is_already_imported ) {
+			$feed_categories = empty( $_REQUEST['feed_category'] ) ? '' : implode( ',', $_REQUEST['feed_category'] );
+
+			$entry = array(
+				'feed_url'             => $feed->feed_url,
+				'feed_name'            => $feed_id,
+				'feed_category'        => $feed_categories,
+				'feed_tags'            => $_REQUEST['feed_tags'],
+				'comments_enabled'     => Ai1ec_Primitive_Int::db_bool(
+					$_REQUEST['comments_enabled']
+				),
+				'map_display_enabled'  => Ai1ec_Primitive_Int::db_bool(
+					$_REQUEST['map_display_enabled']
+				),
+				'keep_tags_categories' => Ai1ec_Primitive_Int::db_bool(
+					$_REQUEST['keep_tags_categories']
+				),
+				'keep_old_events'      => Ai1ec_Primitive_Int::db_bool(
+					$_REQUEST['keep_old_events']
+				),
+				'import_timezone'      => Ai1ec_Primitive_Int::db_bool(
+					$_REQUEST['feed_import_timezone']
+				),
+				'feed_status'          => $api_feed::FEED_API_SOME_EVENTS_CODE,
+				'updated_at_gmt'       => current_time( 'mysql', 1 )
+			);
+
+			$format                    = array( '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%s', '%s' );
+
+			$res                       = $db->insert( $table_name, $entry, $format );
+			$feed_id                   = $db->get_insert_id();
+		}
+
+		$update = $this->update_ics_feed( $feed_id );
+
+		// Display added feed row.
+		$loader = $this->_registry->get( 'theme.loader' );
+		$file   = $loader->get_file( 'feed_row.php', $args, true );
+		$output = $file->get_content();
+		$output = array(
+			'error'   => false,
+			'message' => stripslashes( $output ),
+			'update'  => $update,
+		);
+
+		return $json_strategy->render( array( 'data' => $output ) );
+	}
+
+	/**
+	 * delete_ics_feed function
+	 *
+	 * Deletes submitted ics feed id from the database
+	 *
+	 * @param bool $ajax When set to TRUE, the data is outputted using json_response
+	 * @param bool|string $ics_id Feed URL
+	 *
+	 * @return String JSON output
+	 **/
+	public function delete_individual_event_subscription( $ics_id, $feed_event_uid, $delete = true ) {
+		$db = $this->_registry->get( 'dbi.dbi' );
+
+		$table_name = $db->get_table_name( 'ai1ec_event_feeds' );
+
+		$feed_id = $db->get_var(
+			$db->prepare(
+				'SELECT feed_name FROM ' . $table_name .
+				' WHERE id = %d',
+				$ics_id
+			)
+		);
+
+		// Unsubscribe in API
+		try {
+			$this->_api_feed->unsubscribe_feed( $feed_id, $feed_event_uid );
+		} catch ( Exception $e ) {
+		}
+
+		// Check if has more subscriptions
+		$found_subscription = false;
+
+		$feeds_subscriptions = $this->_api_feed->get_feed_subscriptions( true );
+		foreach( $feeds_subscriptions as $api_feed ) {
+			if ( $api_feed->feed_id  === $feed_id ) {
+				$found_subscription = true;
+				break;
+			}
+		}
+
+		// Delete from database if there are no more individual feeds imported
+		if ( ! $found_subscription ) {
+			$db->query( $db->prepare( 'DELETE FROM ' . $table_name . ' WHERE id = %d', $ics_id ) );
+			do_action( 'ai1ec_ics_feed_deleted', $ics_id );
+		}
+
+		// Delete event from database
+		if ( $delete ) {
+			$feed_url = $db->get_var(
+				$db->prepare(
+					'SELECT feed_url FROM ' . $table_name .
+					' WHERE id = %d',
+					$ics_id
+					)
+				);
+
+			$table_name = $db->get_table_name( 'ai1ec_events' );
+			$sql        = 'SELECT post_id FROM ' . $table_name .
+							' WHERE ical_feed_url = %s AND ical_uid = %s';
+			$events     = $db->get_col( $db->prepare( $sql, $feed_url, $feed_event_uid ) );
+			$total      = count( $events );
+			foreach ( $events as $event_id ) {
+				// delete post (this will trigger deletion of cached events, and
+				// remove the event from events table)
+				wp_delete_post( $event_id, true );
+			}
+		}
+
+		$output = array(
+			'error'   => false,
+			'message' => __( 'Feed deleted', AI1EC_PLUGIN_NAME ),
+			'ics_id'  => $ics_id,
+		);
+
+		$json_strategy = $this->_registry->get(
+			'http.response.render.strategy.json'
+		);
+
+		return $json_strategy->render( array( 'data' => $output ) );
+	}
+
 
 	/**
 	 * Get name to use for import locking via xguard.

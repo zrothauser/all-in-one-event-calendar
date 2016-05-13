@@ -23,11 +23,11 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	 * @return void Return from this method is ignored.
 	 */
 	protected function _initialize() {
-		$this->_settings = $this->_registry->get( 'model.settings' );			
+		$this->_settings = $this->_registry->get( 'model.settings' );
 	}
 
 	protected function get_ticketing_settings( $find_attribute = null, $default_value_attribute = null ) {
-		$api_settings = get_option( self::WP_OPTION_KEY, null );		
+		$api_settings = get_option( self::WP_OPTION_KEY, null );
 		if ( ! is_array( $api_settings ) ) {
 			$api_settings = array( 
 				'enabled'              => $this->_settings->get( 'ticketing_enabled' ),
@@ -39,7 +39,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 			$this->_settings->set( 'ticketing_message'    , '' );
 			$this->_settings->set( 'ticketing_enabled'    , false );
 			$this->_settings->set( 'ticketing_token'      , '' );
-			$this->_settings->set( 'ticketing_calendar_id', null );		
+			$this->_settings->set( 'ticketing_calendar_id', null );
 		}
 		if ( is_null( $find_attribute ) ) {
 			return $api_settings;

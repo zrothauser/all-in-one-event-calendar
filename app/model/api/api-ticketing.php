@@ -112,7 +112,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			$error = $this->_prevent_update_ticket_event( $event );
 			if ( null !== $error ) {
 				$message = $error;
-			} else if ( 0 === $this->_count_valid_tickets( $_POST['ai1ec_tickets'] ) ) {
+			} else if ( ! isset( $_POST['ai1ec_tickets'] ) || 0 === $this->_count_valid_tickets( $_POST['ai1ec_tickets'] ) ) {
 				$message      = __( 'The Event has the cost option Ticket selected but no ticket was included.', AI1EC_PLUGIN_NAME );
 			} else if ( false === $this->has_payment_settings() ) {
 				$message = __( 'You need to save the payments settings to create ticket events.', AI1EC_PLUGIN_NAME );			

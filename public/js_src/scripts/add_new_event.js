@@ -189,7 +189,10 @@ define(
 			} else {
 				show_hide_description_error( false );	
 			}			
-			if ( $( '.ai1ec-error' ).not( '.ai1ec-hidden .ai1ec-error' ).length ) {
+			if (
+				$( '.ai1ec-error' ).not( '.ai1ec-hidden .ai1ec-error' ).length ||
+				$( '.ai1ec-tax-options-button' ).hasClass( 'ai1ec-required-error' )
+			) {
 				show_warning = true;
 				$( '#ai1ec-add-new-event-accordion > .ai1ec-panel-default > .ai1ec-panel-collapse' )
 					.removeClass( 'ai1ec-collapse' ).css( 'height', 'auto' );
@@ -489,10 +492,11 @@ define(
 					}
 				}
 			);
-		if ( ! $( '#ai1ec_tax_inputs input' ).length ) {
-			$( '.ai1ec-tax-options-button' ).show();
+		var editing_ticket = $( '#ai1ec_editing_ticket' ).val();
+		if ( 0 == editing_ticket && ! $( '#ai1ec_tax_inputs input' ).length ) {
+			$( '.ai1ec-tax-options-button' ).addClass( 'ai1ec-required-error' ).show();
 		} else {
-			$( '.ai1ec-tax-options-button' ).hide();
+			$( '.ai1ec-tax-options-button' ).removeClass( 'ai1ec-required-error' ).hide();
 		}
 		if ( $( '.ai1ec-ticket-field-error:visible' ).length ) {
 			return false;

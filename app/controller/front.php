@@ -623,6 +623,11 @@ class Ai1ec_Front_Controller {
 				'wp_ajax_ai1ec_get_repeat_box',
 				array( 'view.admin.get-repeat-box', 'get_repeat_box' )
 			);
+			// get the tax options box
+			$dispatcher->register_action(
+				'wp_ajax_ai1ec_get_tax_box',
+				array( 'view.admin.get-tax-box', 'get_tax_box' )
+			);
 			// add dismissable notice handler
 			$dispatcher->register_action(
 				'wp_ajax_ai1ec_dismiss_notice',

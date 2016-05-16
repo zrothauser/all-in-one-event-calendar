@@ -114,7 +114,7 @@ define(
 				data     : {
 					action         : 'ai1ec_import_suggested_event',
 					ai1ec_feed_url : event.url,
-					ai1ec_feed_id  : event.id,
+					ai1ec_feed_id  : event.feed_id,
 					ai1ec_event_id : event.id
 				},
 				success  : function( response ) {
@@ -143,7 +143,7 @@ define(
 				data     : {
 					action         : 'ai1ec_remove_suggested_event',
 					ai1ec_event_id : event.id,
-					ai1ec_ics_id   : event.id,
+					ai1ec_feed_id   : event.feed_id,
 					ai1ec_delete   : true
 				},
 				success  : function( response ) {

@@ -606,12 +606,12 @@ class Ai1ec_Front_Controller {
 			// Import suggested event
 			$dispatcher->register_action(
 				'wp_ajax_ai1ec_import_suggested_event',
-				array( 'calendar-feed.suggested', 'import_event' )
+				array( 'calendar-feed.ics', 'add_discover_events_feed_subscription' )
 			);
 			// Remove suggested event
 			$dispatcher->register_action(
 				'wp_ajax_ai1ec_remove_suggested_event',
-				array( 'calendar-feed.suggested', 'remove_event' )
+				array( 'calendar-feed.ics', 'delete_individual_event_subscription' )
 			);
 			// Search for events
 			$dispatcher->register_action(

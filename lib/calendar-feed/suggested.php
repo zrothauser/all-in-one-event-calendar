@@ -67,22 +67,6 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 	}
 
 	/**
-	 * Import suggested event
-	 */
-	public function import_event( $event_id ) {
-		echo 1;
-		exit( 0 );
-	}
-
-	/**
-	 * Remove suggested event
-	 */
-	public function remove_event( $event_id ) {
-		echo 1;
-		exit( 0 );
-	}
-
-	/**
 	 * (non-PHPdoc)
 	 *
 	 * @see Ai1ec_Connector_Plugin::display_admin_notices()

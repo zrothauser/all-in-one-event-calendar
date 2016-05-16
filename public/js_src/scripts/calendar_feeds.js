@@ -102,17 +102,20 @@ define(
 			var
 				$this      = $( this ),
 				$container = $this.closest( '.ai1ec-suggested-event-import' ),
-				event_id   = $this.closest( '.ai1ec-infowindow, tr' ).attr( 'data-event-id' );
+				event      = $.parseJSON(
+					$this.closest( '.ai1ec-infowindow, tr' ).attr( 'data-event' )
+				);
 				
 			$( 'a.ai1ec-suggested-processing', $container ).removeClass( 'ai1ec-hidden' );
 			$this.addClass( 'ai1ec-hidden' );
-			
 			$.ajax( {
 				url      : ai1ec_config.ajax_url,
 				type     : 'POST',
 				data     : {
 					action         : 'ai1ec_import_suggested_event',
-					ai1ec_event_id : event_id
+					ai1ec_feed_url : event.url,
+					ai1ec_feed_id  : event.id,
+					ai1ec_event_id : event.id
 				},
 				success  : function( response ) {
 					$( 'a.ai1ec-suggested-processing', $container ).addClass( 'ai1ec-hidden' );
@@ -127,9 +130,11 @@ define(
 			var
 				$this      = $( this ),
 				$container = $this.closest( '.ai1ec-suggested-event-import' ),
-				event_id   = $this.closest( '.ai1ec-infowindow, tr' ).attr( 'data-event-id' );
+				event      = $.parseJSON(
+					$this.closest( '.ai1ec-infowindow, tr' ).attr( 'data-event' )
+				);
 
-			$( 'a.ai1ec-suggested-processing', $container ).removeClass( 'ai1ec-hidden' );
+			$( 'a.ai1ec-suggested-removing', $container ).removeClass( 'ai1ec-hidden' );
 			$this.addClass( 'ai1ec-hidden' );
 			
 			$.ajax( {
@@ -137,10 +142,12 @@ define(
 				type     : 'POST',
 				data     : {
 					action         : 'ai1ec_remove_suggested_event',
-					ai1ec_event_id : event_id
+					ai1ec_event_id : event.id,
+					ai1ec_ics_id   : event.id,
+					ai1ec_delete   : true
 				},
 				success  : function( response ) {
-					$( 'a.ai1ec-suggested-processing', $container ).addClass( 'ai1ec-hidden' );
+					$( 'a.ai1ec-suggested-removing', $container ).addClass( 'ai1ec-hidden' );
 					$( 'a.ai1ec-suggested-import-event', $container ).removeClass( 'ai1ec-hidden' );
 				}
 			} );

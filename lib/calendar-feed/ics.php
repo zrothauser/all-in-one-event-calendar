@@ -819,10 +819,14 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	 * @return string JSON output
 	 *
 	 */
-	public function add_discover_events_feed_subscription( $feed ) {
+	public function add_discover_events_feed_subscription() {
 		if ( ! current_user_can( 'manage_ai1ec_feeds' ) ) {
 			wp_die( Ai1ec_I18n::__( 'Oh, submission was not accepted.' ) );
 		}
+
+		$feed_id       = $_POST['ai1ec_feed_id'];
+		$event_id      = $_POST['ai1ec_event_id'];
+		$feed_url      = $_POST['ai1ec_feed_url'];
 
 		$api_feed      = $this->_api_feed;
 
@@ -833,11 +837,9 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'http.response.render.strategy.json'
 		);
 
-		$feed_id       = $feed->feed_id;
-
 		// Import to the API
 		try {
-			$response  = $this->_api_feed->subscribe_feed( $feed_id, $feed->feed_event_uid );
+			$response  = $this->_api_feed->subscribe_feed( $feed_id, $event_id );
 		} catch ( Exception $e ) {
 			$output = array(
 				'error'   => true,
@@ -852,7 +854,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		// Not imported yet
 		if ( 0 === $feed_count ) {
 			$entry = array(
-				'feed_url'             => $feed->feed_url,
+				'feed_url'             => $feed_url,
 				'feed_name'            => $feed_id,
 				'feed_category'        => '',
 				'feed_tags'            => '',
@@ -896,12 +898,16 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	 *
 	 * @return String JSON output
 	 **/
-	public function delete_individual_event_subscription( $ics_id, $feed_event_uid, $delete = true ) {
-		$db = $this->_registry->get( 'dbi.dbi' );
+	public function delete_individual_event_subscription() {
+		$db             = $this->_registry->get( 'dbi.dbi' );
 
-		$table_name = $db->get_table_name( 'ai1ec_event_feeds' );
+		$ics_id         = $_POST['ai1ec_ics_id'];
+		$feed_event_uid = $_POST['ai1ec_event_id'];
+		$delete         = $_POST['ai1ec_delete'];
 
-		$feed_id = $db->get_var(
+		$table_name     = $db->get_table_name( 'ai1ec_event_feeds' );
+
+		$feed_id        = $db->get_var(
 			$db->prepare(
 				'SELECT feed_name FROM ' . $table_name .
 				' WHERE id = %d',

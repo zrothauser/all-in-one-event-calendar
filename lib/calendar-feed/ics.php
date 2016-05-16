@@ -515,7 +515,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		return $html;
 	}
 	
-		/**
+	/**
 	 * get_feed_rows function
 	 *
 	 * Creates feed rows to display on settings page
@@ -552,7 +552,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					'event_category'       => implode( ', ', $categories ),
 					'categories_ids'       => $row->categories,
 					'tags'                 => stripslashes(
-						str_replace( ',', ', ', $row->tags )
+							str_replace( ',', ', ', $row->tags )
 					),
 					'tags_ids'             => $row->tags,
 					'feed_id'              => $row->feed_id,

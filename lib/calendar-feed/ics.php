@@ -419,6 +419,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'event_categories' => $select2_cats,
 			'event_tags'       => $select2_tags,
 			'feed_rows'        => $this->_get_feed_rows(),
+			'single_feed_rows' => $this->_get_single_feed_rows(),
 			'modal'            => $modal,
 			'api_signed'       => $api_signed,
 			'migration'        => $api_signed && 0 < $local_feeds
@@ -509,6 +510,73 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			);
 			$html .= $theme_loader->get_file( 'feed_row.php', $args, true )
 				->get_content();
+		}
+
+		return $html;
+	}
+	
+	/**
+	 * get_feed_rows function
+	 *
+	 * Creates feed rows to display on settings page
+	 *
+	 * @return String feed rows
+	 **/
+	protected function _get_single_feed_rows() {
+		// Select all added feeds
+		$rows = $this->_api_feed->get_feed_subscriptions();
+
+		$html         = '';
+		$theme_loader = $this->_registry->get( 'theme.loader' );
+		$api_signed   = $this->_api_feed->is_signed();
+
+		foreach ( $rows as $row ) {
+			if ( isset ( $row->feed_events_uids ) && $row->feed_events_uids ) {
+				$feed_categories = explode( ',', $row->categories );
+				$categories      = array();
+	
+				foreach ( $feed_categories as $cat_id ) {
+					$feed_category = get_term(
+						$cat_id,
+						'events_categories'
+					);
+					if ( $feed_category && ! is_wp_error( $feed_category ) ) {
+						$categories[] = $feed_category->name;
+					}
+				}
+				unset( $feed_categories );
+	
+				$args          = array(
+					'feed_url'             => $row->feed_events_uids,
+					'feed_name'            => $row->feed_id,
+					'event_category'       => implode( ', ', $categories ),
+					'categories_ids'       => $row->categories,
+					'tags'                 => stripslashes(
+							str_replace( ',', ', ', $row->tags )
+					),
+					'tags_ids'             => $row->tags,
+					'feed_id'              => $row->feed_id,
+					'comments_enabled'     => (bool) intval(
+							$row->allow_comments
+					),
+					'map_display_enabled'  => (bool) intval(
+							$row->show_maps
+					),
+					'keep_tags_categories' => (bool) intval(
+							$row->import_any_tag_and_categories
+					),
+					'keep_old_events'      => (bool) intval(
+							$row->preserve_imported_events
+					),
+					'feed_import_timezone' => (bool) intval(
+							$row->assign_default_utc
+					),
+					'feed_status'          => '',
+					'api_signed'           => $api_signed,
+				);
+				$html .= $theme_loader->get_file( 'feed_row.php', $args, true )
+					->get_content();
+			}
 		}
 
 		return $html;

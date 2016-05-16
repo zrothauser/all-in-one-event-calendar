@@ -37,4 +37,16 @@
 	<?php echo $feed_rows; ?>
 </div>
 <br />
+<?php
+	if ( $single_feed_rows ):
+?>
+<h5><?php _e( 'My imported Events:', AI1EC_PLUGIN_NAME ) ?></h5>
+<div class="timely ai1ec-form-inline ai1ec-panel-group
+	        <?php if ( $migration ):?>ai1ec-feeds-migration<?php endif; ?>"
+	 id="ai1ec-feeds-accordion">
+	<?php echo $single_feed_rows; ?>
+</div>
+<?php
+	endif;
+?>
 <?php echo $modal->render(); ?>

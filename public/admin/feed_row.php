@@ -24,6 +24,7 @@
 						<?php
 							foreach ( explode( ',', $feed_events_uids ) as $feed_event_uid ) {
 								echo $feed_event_uid . ' (Remove)';
+								echo '<br>';
 							}
 						?>
 						</strong>

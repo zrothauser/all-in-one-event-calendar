@@ -442,8 +442,8 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 			$result->is_error = true;
 			$result->error    = $response->get_error_message();
 		} else {
-			$result->response_code = wp_remote_retrieve_response_code( $response );			
-			if ( 200 === $result->response_code ) {							
+			$result->response_code = wp_remote_retrieve_response_code( $response );
+			if ( 200 === $result->response_code ) {
 				if ( true === $decode_response_body ) {
 					$result->body     = json_decode( $response['body'] );
 					if ( false === is_null( $result->body ) ) {

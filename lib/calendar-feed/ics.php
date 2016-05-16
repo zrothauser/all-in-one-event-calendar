@@ -920,7 +920,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$feed_count = $db->get_var( $sql );
 
 		// Not imported yet
-		if ( 0 === $feed_count ) {
+		if ( '0' === $feed_count ) {
 			$entry = array(
 				'feed_url'             => $feed_url,
 				'feed_name'            => $feed_id,

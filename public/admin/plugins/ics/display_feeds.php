@@ -41,7 +41,7 @@
 <div class="timely ai1ec-form-inline ai1ec-panel-group
 	        <?php if ( $migration ):?>ai1ec-feeds-migration<?php endif; ?>"
 	 id="ai1ec-feeds-accordion">
-	<?php echo $feed_rows; ?>
+	<?php echo $single_feed_rows; ?>
 </div>
 <br />
 <?php echo $modal->render(); ?>

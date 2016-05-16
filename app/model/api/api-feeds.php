@@ -10,6 +10,16 @@
  */
 class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 
+	// Feed status
+	// c = Feed not migrated yet to API
+	// a = Feed migrated to API (all events)
+	// b = Feed migrated to API (individual events were selected)
+	// e = Feed not migrated to API (error)
+	const FEED_NOT_MIGRATED_CODE    = 'c';
+	const FEED_API_ALL_EVENTS_CODE  = 'a';
+	const FEED_API_SOME_EVENTS_CODE = 'b';
+	const FEED_MIGRATION_ERROR_CODE = 'e';
+
 	/**
 	 * Post construction routine.
 	 *
@@ -147,86 +157,111 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 	/**
 	 * Call the API to get list of feed subscriptions
 	 */
-	public function get_and_sync_feed_subscriptions() {
-		$response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars/' . $this->_get_ticket_calendar() . '/feeds/list',
-			null,
-			true
-		);
+	public function get_feed_subscriptions( $force_refresh = false ) {
+		$feeds_subscriptions = get_site_transient( 'ai1ec_api_feeds_subscriptions' );
 
-		if ( $this->is_response_success( $response ) ) {
-			$db = $this->_registry->get( 'dbi.dbi' );
-			$table_name = $db->get_table_name( 'ai1ec_event_feeds' );
-
-			// Select all feeds
-			$rows = $db->select(
-				$table_name,
-				array(
-					'feed_id',
-					'feed_url',
-					'feed_name',
-					'feed_category',
-					'feed_tags',
-					'comments_enabled',
-					'map_display_enabled',
-					'keep_tags_categories',
-					'keep_old_events',
-					'import_timezone'
-				)
+		if ( $force_refresh || false === $feeds_subscriptions || ( defined( 'AI1EC_DEBUG' ) && AI1EC_DEBUG ) ) {
+			$response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars/' . $this->_get_ticket_calendar() . '/feeds/list',
+				null,
+				true
 			);
 
-			$response_body = (array) $response->body;
+			if ( $this->is_response_success( $response ) ) {
+				$feeds_subscriptions = (array) $response->body;
+			} else {
+				$feeds_subscriptions = array();
+			}
 
-			// Iterate over API response
-			foreach( $response_body as $api_feed ) {
-				$found = false;
+			// Save for 5 minutes
+			$minutes = 5;
+			set_site_transient( 'ai1ec_api_feeds_subscriptions', $feeds_subscriptions, $minutes * 60 );
+		}
 
-				foreach ( $rows as $row ) {
-					// Check if URL is the same
-					if ( trim( $row->feed_url ) === trim( $api_feed->url ) ) {
-						$found = true;
+		return $feeds_subscriptions;
+	}
 
-						// Update feed
-						$db->update(
-							$table_name,
-							array(
-								'comments_enabled'     => $api_feed->allow_comments,
-								'map_display_enabled'  => $api_feed->show_maps,
-								'keep_tags_categories' => $api_feed->import_any_tag_and_categories,
-								'keep_old_events'      => $api_feed->preserve_imported_events,
-								'import_timezone'      => $api_feed->assign_default_utc,
-								'feed_name'            => $api_feed->feed_id,
-								'feed_status'          => 'a',
-								'updated_at_gmt'       => current_time( 'mysql', 1 )
-							),
-							array(
-								'feed_id'              => $row->feed_id
-							)
-						);
-					}
-				}
+	/**
+	 * Sync feed subscriptions
+	 */
+	public function get_and_sync_feed_subscriptions() {
+		$feeds_subscriptions = $this->get_feed_subscriptions();
 
-				// Not found in local database.. Insert
-				if ( ! $found ) {
-					$entry = array(
-						'feed_url'             => $api_feed->url,
-						'feed_name'            => $api_feed->feed_id,
-						'feed_category'        => $api_feed->categories,
-						'feed_tags'            => $api_feed->tags,
-						'comments_enabled'     => $api_feed->allow_comments,
-						'map_display_enabled'  => $api_feed->show_maps,
-						'keep_tags_categories' => $api_feed->import_any_tag_and_categories,
-						'keep_old_events'      => $api_feed->preserve_imported_events,
-						'import_timezone'      => $api_feed->assign_default_utc,
-						'feed_status'          => 'a',
-						'updated_at_gmt'       => current_time( 'mysql', 1 )
-					);
-					$format = array( '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%s' );
-					$db->insert(
+		$db = $this->_registry->get( 'dbi.dbi' );
+		$table_name = $db->get_table_name( 'ai1ec_event_feeds' );
+
+		// Select all feeds
+		$rows = $db->select(
+			$table_name,
+			array(
+				'feed_id',
+				'feed_url',
+				'feed_name',
+				'feed_category',
+				'feed_tags',
+				'comments_enabled',
+				'map_display_enabled',
+				'keep_tags_categories',
+				'keep_old_events',
+				'import_timezone'
+			)
+		);
+
+		// Iterate over API response
+		foreach( $feeds_subscriptions as $api_feed ) {
+			$found           = false;
+
+			$feed_status     = self::FEED_API_ALL_EVENTS_CODE;
+			// Check status
+			if ( '' !==  trim( $api_feed->feed_events_uids ) ) {
+				$feed_status = self::FEED_API_SOME_EVENTS_CODE;
+			}
+
+			foreach ( $rows as $row ) {
+				// Check if URL is the same
+				if ( trim( $row->feed_url ) === trim( $api_feed->url ) ) {
+					$found = true;
+
+					// Update feed
+					$db->update(
 						$table_name,
-						$entry,
-						$format
+						array(
+							'comments_enabled'     => $api_feed->allow_comments,
+							'map_display_enabled'  => $api_feed->show_maps,
+							'keep_tags_categories' => $api_feed->import_any_tag_and_categories,
+							'keep_old_events'      => $api_feed->preserve_imported_events,
+							'import_timezone'      => $api_feed->assign_default_utc,
+							'feed_name'            => $api_feed->feed_id,
+							'feed_status'          => $feed_status,
+							'updated_at_gmt'       => current_time( 'mysql', 1 )
+						),
+						array(
+							'feed_id'              => $row->feed_id
+						)
 					);
 				}
+			}
+
+			// Not found in local database.. Insert
+			if ( ! $found ) {
+				$entry = array(
+					'feed_url'             => $api_feed->url,
+					'feed_name'            => $api_feed->feed_id,
+					'feed_category'        => $api_feed->categories,
+					'feed_tags'            => $api_feed->tags,
+					'comments_enabled'     => $api_feed->allow_comments,
+					'map_display_enabled'  => $api_feed->show_maps,
+					'keep_tags_categories' => $api_feed->import_any_tag_and_categories,
+					'keep_old_events'      => $api_feed->preserve_imported_events,
+					'import_timezone'      => $api_feed->assign_default_utc,
+					'feed_status'          => $feed_status,
+					'updated_at_gmt'       => current_time( 'mysql', 1 )
+				);
+				$format = array( '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%s' );
+				$db->insert(
+					$table_name,
+					$entry,
+				$format
+				);
 			}
 		}
 	}
@@ -256,7 +291,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 			$this->save_error_notification(
 				$response,
 				__( 'We were unable to subscribe feed', AI1EC_PLUGIN_NAME )
-				);
+			);
 			throw new Exception( $this->get_api_error_msg( $response->raw ) );
 		}
 	}

@@ -76,8 +76,8 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 				$api_features = array();
 			}
 
-			// Save for 30 minutes
-			$minutes = 30;
+			// Save for 5 minutes
+			$minutes = 5;
 			set_site_transient( 'ai1ec_api_features', $api_features, $minutes * 60 );
 		}
 

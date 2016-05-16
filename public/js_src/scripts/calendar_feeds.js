@@ -249,7 +249,7 @@ define(
 	
 	// Init Events map
 	var events_map, markers = [], update_events;
-	var init_gmaps = function() {
+	var init_gmaps = function( search_query ) {
 		var
 			map_options   = {
 				mapTypeId      : google.maps.MapTypeId.ROADMAP,
@@ -272,7 +272,8 @@ define(
 					+ '<br>' + buttons + '</div>';
 
 				infowindow.setContent( s );
-			};
+			},
+			zoom          = ! search_query;
 			
 		update_events = function() {
 			var old_markers_ids = [];
@@ -317,14 +318,20 @@ define(
 			markers = markers.filter( function( v ) { return v !== null } );
 		};
 		
-		events_map = new google.maps.Map(
-			$( '#ai1ec_events_map_canvas' ).get( 0 ), map_options
-		);
+		if ( search_query ) {
+			events_map = new google.maps.Map(
+				$( '#ai1ec_events_map_canvas' ).get( 0 ), map_options
+			);
+		}
 		
 		update_events();
-		update_maps();
+		update_maps( search_query );
 
-		var load_events = function() {
+		var load_events = function( e, z ) {
+			if ( 'zoom_changed' === e && ! z ) {
+				zoom = true;
+				return false;
+			}
 			clearTimeout( timeout );
 			if( update_xhr && 4 != update_xhr.readystate ){
 				update_xhr.abort();
@@ -352,19 +359,33 @@ define(
 							bounds.getSouthWest().lng()
 						)
 					},  
-					update_events
+					update_events,
+					e
 				);
 
 			}, 1000 );
 		};
 
-		events_map.addListener( 'dragend', load_events, false );
-		events_map.addListener( 'zoom_changed', load_events, false );
+		if ( search_query ) {
+			events_map.addListener(
+				'dragend',
+				function(){
+					load_events( 'dragend', true );
+				}, false
+			);
+			events_map.addListener(
+				'zoom_changed',
+				function(){
+					load_events( 'zoom_changed', zoom );
+				}, false
+			);
+		}
+		
 	};
 
 	// Redraw the map and fit markers in the visible area.
-	var update_maps = function() {
-		if ( ! markers.length ) {
+	var update_maps = function( search_query ) {
+		if ( ! markers.length || ! search_query ) {
 			return;
 		} 
 		var
@@ -376,7 +397,7 @@ define(
 		for ( var i = 0; i < markers.length; i++ ) {
 			bounds.extend( markers[i].getPosition() );
 		}
-		events_map.fitBounds( bounds );
+		events_map.fitBounds( bounds );		
 		new google.maps.Circle( {
 			center: new google.maps.LatLng( lat, lng ),
 			fillOpacity   : 0.05,
@@ -420,7 +441,7 @@ define(
 					$( '.ai1ec-suggested-no-results' ).hide();
 					$( '.ai1ec-feeds-list-container' ).html( response.list );
 					$( '.ai1ec-suggested-results-found').text( response.total );
-					gMapsLoader( init_gmaps );
+					gMapsLoader( function(){ init_gmaps( ! ( options && callback ) );} );
 				} else {
 					$( '#suggested' ).removeClass( 'ai1ec-has-map' );
 					$( '.ai1ec-suggested-results' ).hide();

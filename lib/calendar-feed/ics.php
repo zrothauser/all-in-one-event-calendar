@@ -901,17 +901,17 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	public function delete_individual_event_subscription() {
 		$db             = $this->_registry->get( 'dbi.dbi' );
 
-		$ics_id         = $_POST['ai1ec_ics_id'];
+		$feed_id        = $_POST['ai1ec_feed_id'];
 		$feed_event_uid = $_POST['ai1ec_event_id'];
 		$delete         = $_POST['ai1ec_delete'];
 
 		$table_name     = $db->get_table_name( 'ai1ec_event_feeds' );
 
-		$feed_id        = $db->get_var(
+		$ics_id         = $db->get_var(
 			$db->prepare(
-				'SELECT feed_name FROM ' . $table_name .
-				' WHERE id = %d',
-				$ics_id
+				'SELECT id FROM ' . $table_name .
+				' WHERE feed_name = %s',
+				$feed_id
 			)
 		);
 

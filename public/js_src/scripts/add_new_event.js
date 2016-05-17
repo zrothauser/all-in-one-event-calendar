@@ -714,7 +714,11 @@ define(
 			$loading = $( '.ai1ec-loading', $modal );
 
 		// Show the modal.
-		$modal.modal( { backdrop: 'static' } );
+		if ( $modal.hasClass( 'ai1ec-active' ) ) {
+			$modal.modal( 'show' );
+			return;
+		}
+		$modal.addClass( 'ai1ec-active' ).modal( { backdrop: 'static' } );
 
 		$.post(
 			ajaxurl,
@@ -751,12 +755,10 @@ define(
 
 		if ( message === cancel_token ) {
 			$( '#ai1ec_tax_box' ).modal( 'hide' );
-			ai1ec_tax_frame.setAttribute( 'src', '' );
 			return;
 		}
 
 		if ( 0 !== message.indexOf( token ) ) return;
-		ai1ec_tax_frame.setAttribute( 'src', '' );
 		message = JSON.parse( message.substr( token.length ) );
 		
 		$( '#ai1ec_tax_box' ).modal( 'hide' );
@@ -773,7 +775,7 @@ define(
 				} )
 			);
 		}
-	}, false);
+	}, false );
 	
 
 

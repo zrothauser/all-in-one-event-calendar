@@ -255,6 +255,7 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 
 		// Even if there ARE more than 5 times the limit results - we shall not
 		// try to fetch and display these, as it would crash system
+		$limit = preg_replace('/\D/', '', $limit);
 		$upper_boundary = $limit;
 		if (
 			$settings->get( 'agenda_include_entire_last_day' ) &&

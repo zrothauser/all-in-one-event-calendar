@@ -466,6 +466,20 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	}
 
 	/**
+	 * Make a post request to the api
+	 * @param rest_endpoint Partial URL that can include {calendar_id} that will be replaced by the current calendar signed
+	 */
+	public function call_api( $method, $endpoint, $body = null, $decode_response_body = true, $custom_headers = null  ) {
+		$calendar_id = $this->_get_ticket_calendar();
+		if ( 0 >= $calendar_id ) {
+			return false;
+		}
+		$url  = AI1EC_API_URL . str_replace( '{calendar_id}', $calendar_id, $endpoint );	
+		$body = json_encode( $body );
+		return $this->request_api( $method, $url, $body, $decode_response_body, $custom_headers );
+	}
+
+	/**
 	 * Save an error notification to be showed to the user on WP header of the page
 	 * @param $response The response got from request_api method.
 	 *        $custom_error_message The custom message to show before the detailed message

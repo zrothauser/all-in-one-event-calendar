@@ -899,14 +899,10 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 		$update = $this->update_ics_feed( $feed_id );
 
-		// Display added feed row.
-		$loader = $this->_registry->get( 'theme.loader' );
-		$file   = $loader->get_file( 'feed_row.php', $args, true );
-		$output = $file->get_content();
 		$output = array(
 			'error'   => false,
-			'message' => stripslashes( $output ),
-			'update'  => $update,
+			'message' => __( 'Event imported', AI1EC_PLUGIN_NAME ),
+			'feed_id' => $feed_id,
 		);
 
 		return $json_strategy->render( array( 'data' => $output ) );

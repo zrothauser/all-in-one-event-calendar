@@ -573,6 +573,8 @@ class Ai1ec_Exception_Handler {
 		$ident     = sha1( $trace );
 		if ( ! empty( $trace ) ) {
 			$request_uri  = strip_tags($_SERVER['REQUEST_URI']);
+			// Limit URL to 100 characters
+			$request_uri = substr($request_uri, 0, 100);
 			$button_label = __( 'Toggle error details', AI1EC_PLUGIN_NAME );
 			$title        = __( 'Error Details:', AI1EC_PLUGIN_NAME );
 			$backtrace    = <<<JAVASCRIPT

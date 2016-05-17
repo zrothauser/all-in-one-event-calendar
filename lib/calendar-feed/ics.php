@@ -359,8 +359,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		// Render the opening div
 		$this->render_opening_div_of_tab();
 		// Render the body of the tab
-		$api_signed = $this->_api_feed->is_signed();
 		$api_feed   = $this->_api_feed;
+		$api_signed = $api_feed->is_signed();
 		$settings   = $this->_registry->get( 'model.settings' );
 		$factory    = $this->_registry->get(
 			'factory.html'
@@ -418,8 +418,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'cron_freq'        => $cron_freq->get_content(),
 			'event_categories' => $select2_cats,
 			'event_tags'       => $select2_tags,
-			'feed_rows'        => $this->_get_feed_rows(),
-			'single_feed_rows' => $this->_get_single_feed_rows(),
+			'feed_rows'        => $this->_get_feed_rows( $api_feed::FEED_API_ALL_EVENTS_CODE ),
+			'single_feed_rows' => $this->_get_feed_rows( $api_feed::FEED_API_SOME_EVENTS_CODE ),
 			'modal'            => $modal,
 			'api_signed'       => $api_signed,
 			'migration'        => $api_signed && 0 < $local_feeds
@@ -441,7 +441,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	 *
 	 * @return String feed rows
 	 **/
-	protected function _get_feed_rows() {
+	protected function _get_feed_rows( $feed_status ) {
 		// Select all added feeds
 		$rows = $this->_registry->get( 'dbi.dbi' )->select(
 			'ai1ec_event_feeds',
@@ -461,11 +461,22 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			)
 		);
 
-		$html         = '';
-		$theme_loader = $this->_registry->get( 'theme.loader' );
-		$api_signed   = $this->_api_feed->is_signed();
+		$html              = '';
+		$theme_loader      = $this->_registry->get( 'theme.loader' );
+		$api_feed          = $this->_api_feed;
+		$api_signed        = $api_feed->is_signed();
+		// Get list of subscriptions
+		$api_subscriptions = $api_feed->get_feed_subscriptions();
 
 		foreach ( $rows as $row ) {
+			if ( $api_feed::FEED_API_ALL_EVENTS_CODE === $feed_status && $api_feed::FEED_API_SOME_EVENTS_CODE === $row->feed_status ) {
+				// Don't show feeds that have some events imported if we want to show fully imported feeds
+				continue;
+			} else if ( $api_feed::FEED_API_SOME_EVENTS_CODE === $feed_status && $api_feed::FEED_API_SOME_EVENTS_CODE !== $row->feed_status ) {
+				// For feeds that has individual events imported, just show them
+				continue;
+			}
+
 			$feed_categories = explode( ',', $row->feed_category );
 			$categories      = array();
 
@@ -480,9 +491,21 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			}
 			unset( $feed_categories );
 
+			// Get event UIDs
+			$feed_events_uids = '';
+			if ( $api_feed::FEED_API_SOME_EVENTS_CODE === $feed_status ) {
+				foreach ( $api_subscriptions as $api_subscription ) {
+					if ( $api_subscription->feed_id === $row->feed_name ) {
+						$feed_events_uids = $api_subscription->feed_events_uids;
+						break;
+					}
+				}
+			}
+
 			$args          = array(
 				'feed_url'             => $row->feed_url,
 				'feed_name'            => ! empty( $row->feed_name ) ? $row->feed_name : $row->feed_url,
+				'feed_events_uids'     => $feed_events_uids,
 				'event_category'       => implode( ', ', $categories ),
 				'categories_ids'       => $row->feed_category,
 				'tags'                 => stripslashes(
@@ -510,73 +533,6 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			);
 			$html .= $theme_loader->get_file( 'feed_row.php', $args, true )
 				->get_content();
-		}
-
-		return $html;
-	}
-	
-	/**
-	 * get_feed_rows function
-	 *
-	 * Creates feed rows to display on settings page
-	 *
-	 * @return String feed rows
-	 **/
-	protected function _get_single_feed_rows() {
-		// Select all added feeds
-		$rows = $this->_api_feed->get_feed_subscriptions();
-
-		$html         = '';
-		$theme_loader = $this->_registry->get( 'theme.loader' );
-		$api_signed   = $this->_api_feed->is_signed();
-
-		foreach ( $rows as $row ) {
-			if ( isset ( $row->feed_events_uids ) && $row->feed_events_uids ) {
-				$feed_categories = explode( ',', $row->categories );
-				$categories      = array();
-	
-				foreach ( $feed_categories as $cat_id ) {
-					$feed_category = get_term(
-						$cat_id,
-						'events_categories'
-					);
-					if ( $feed_category && ! is_wp_error( $feed_category ) ) {
-						$categories[] = $feed_category->name;
-					}
-				}
-				unset( $feed_categories );
-	
-				$args          = array(
-					'feed_url'             => $row->feed_events_uids,
-					'feed_name'            => $row->feed_id,
-					'event_category'       => implode( ', ', $categories ),
-					'categories_ids'       => $row->categories,
-					'tags'                 => stripslashes(
-							str_replace( ',', ', ', $row->tags )
-					),
-					'tags_ids'             => $row->tags,
-					'feed_id'              => $row->feed_id,
-					'comments_enabled'     => (bool) intval(
-							$row->allow_comments
-					),
-					'map_display_enabled'  => (bool) intval(
-							$row->show_maps
-					),
-					'keep_tags_categories' => (bool) intval(
-							$row->import_any_tag_and_categories
-					),
-					'keep_old_events'      => (bool) intval(
-							$row->preserve_imported_events
-					),
-					'feed_import_timezone' => (bool) intval(
-							$row->assign_default_utc
-					),
-					'feed_status'          => '',
-					'api_signed'           => $api_signed,
-				);
-				$html .= $theme_loader->get_file( 'feed_row.php', $args, true )
-					->get_content();
-			}
 		}
 
 		return $html;

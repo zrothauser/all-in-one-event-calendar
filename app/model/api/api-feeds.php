@@ -212,7 +212,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 
 			$feed_status     = self::FEED_API_ALL_EVENTS_CODE;
 			// Check status
-			if ( '' !==  trim( $api_feed->feed_events_uids ) ) {
+			if ( sizeof( $api_feed->feed_events_uids ) > 0 ) {
 				$feed_status = self::FEED_API_SOME_EVENTS_CODE;
 			}
 

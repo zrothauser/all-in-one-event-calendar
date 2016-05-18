@@ -492,11 +492,11 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			unset( $feed_categories );
 
 			// Get event UIDs
-			$feed_events_uids = '';
+			$feed_events_uids = array();
 			if ( $api_feed::FEED_API_SOME_EVENTS_CODE === $feed_status ) {
 				foreach ( $api_subscriptions as $api_subscription ) {
 					if ( $api_subscription->feed_id === $row->feed_name ) {
-						$feed_events_uids = $api_subscription->feed_events_uids;
+						$feed_events_uids = (array) $api_subscription->feed_events_uids;
 						break;
 					}
 				}
@@ -672,7 +672,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$args = array(
 			'feed_url'             => $_REQUEST['feed_url'],
 			'feed_name'            => $feed_name,
-			'feed_events_uids'     => '',
+			'feed_events_uids'     => array(),
 			'event_category'       => implode( ', ', $categories ),
 			'categories_ids'       => $cat_ids,
 			'tags'                 => str_replace(

@@ -40,7 +40,7 @@
 <?php
 	if ( $single_feed_rows ):
 ?>
-<h5><?php _e( 'My imported Events:', AI1EC_PLUGIN_NAME ) ?></h5>
+<h5><?php _e( 'My imported Events (click on the feed to see the individually imported events):', AI1EC_PLUGIN_NAME ) ?></h5>
 <div class="timely ai1ec-form-inline ai1ec-panel-group
 	        <?php if ( $migration ):?>ai1ec-feeds-migration<?php endif; ?>"
 	 id="ai1ec-feeds-accordion">

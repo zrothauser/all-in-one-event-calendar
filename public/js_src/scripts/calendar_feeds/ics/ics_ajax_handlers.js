@@ -42,7 +42,7 @@ define(
 			if ( $container.length ) {
 				$container.replaceWith( $feed );
 			} else {
-				$( '#ics' ).append( $feed );
+				$( '#ics .ai1ec-ics-feeds-list' ).append( $feed );
 			}
 			$( 'a[href="#ics"]' ).click();
 			if (

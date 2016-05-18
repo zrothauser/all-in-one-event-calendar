@@ -17,7 +17,4 @@
 		<i class="ai1ec-fa ai1ec-fa-minus ai1ec-fa-xs ai1ec-fa-fw"></i>
 		<?php _e( 'Remove', AI1EC_PLUGIN_NAME ); ?>
 	</a>
-	<a href="#" class="ai1ec-suggested-whole-feed">
-		<?php _e( 'See whole feed', AI1EC_PLUGIN_NAME ); ?>
-	</a>
 </div>

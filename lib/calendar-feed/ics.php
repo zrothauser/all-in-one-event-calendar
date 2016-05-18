@@ -672,6 +672,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$args = array(
 			'feed_url'             => $_REQUEST['feed_url'],
 			'feed_name'            => $feed_name,
+			'feed_events_uids'     => '',
 			'event_category'       => implode( ', ', $categories ),
 			'categories_ids'       => $cat_ids,
 			'tags'                 => str_replace(

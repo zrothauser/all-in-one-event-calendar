@@ -930,7 +930,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 		$ics_id         = $db->get_var(
 			$db->prepare(
-				'SELECT id FROM ' . $table_name .
+				'SELECT feed_id FROM ' . $table_name .
 				' WHERE feed_name = %s',
 				$feed_id
 			)

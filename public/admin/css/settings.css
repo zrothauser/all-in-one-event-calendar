@@ -271,6 +271,7 @@
 	border: 1px solid #ddd;
 	margin: 10px;
 	transition: background-color 0.2s ease;
+	height: 52px;
 }
 #ai1ec_events_map_canvas {
 	left: 0;
@@ -389,9 +390,6 @@
 }
 .ai1ec-feeds-map .ai1ec-suggested-events {
 	display: none !important;
-}
-.ai1ec-feeds-list .ai1ec-feeds-pagination {
-	display: none;
 }
 #suggested.ai1ec-feeds-both td.ai1ec-suggested-image {
 	transition: background-color 0.2s ease;

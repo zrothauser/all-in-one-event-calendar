@@ -422,11 +422,6 @@ define(
 			options
 		);
 		
-		if ( ! options.term ) {
-			$( '#ai1ec_suggested_term ').addClass( 'ai1ec-error' );
-			return false;
-		}
-		
 		return $.ajax( {
 			url      : ai1ec_config.ajax_url,
 			type     : 'POST',

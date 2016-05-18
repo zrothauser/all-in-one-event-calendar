@@ -31,7 +31,7 @@
 	endif;
 ?>
 <h5><?php _e( 'My imported Feeds:', AI1EC_PLUGIN_NAME ) ?></h5>
-<div class="timely ai1ec-form-inline ai1ec-panel-group
+<div class="timely ai1ec-form-inline ai1ec-panel-group ai1ec-ics-feeds-list
 	        <?php if ( $migration ):?>ai1ec-feeds-migration<?php endif; ?>"
 	 id="ai1ec-feeds-accordion">
 	<?php echo $feed_rows; ?>
@@ -41,7 +41,7 @@
 	if ( $single_feed_rows ):
 ?>
 <h5><?php _e( 'My imported Events (click on the feed to see the individually imported events):', AI1EC_PLUGIN_NAME ) ?></h5>
-<div class="timely ai1ec-form-inline ai1ec-panel-group
+<div class="timely ai1ec-form-inline ai1ec-panel-group ai1ec-ics-single-events
 	        <?php if ( $migration ):?>ai1ec-feeds-migration<?php endif; ?>"
 	 id="ai1ec-feeds-accordion">
 	<?php echo $single_feed_rows; ?>

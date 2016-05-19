@@ -443,6 +443,22 @@ define(
 					$( '.ai1ec-feeds-list-container' ).html( response.list );
 					$( '.ai1ec-suggested-results-found').text( response.total );
 					gMapsLoader( function(){ init_gmaps( ! ( options && callback ) );} );
+					$( '.ai1ec-feeds-list-container tr.ai1ec-suggested-event' ).each( function() {
+						var
+							$this = $( this ),
+							event = $.parseJSON( $this.attr( 'data-event' ) );
+						
+						for ( var i = 0; i < response.imported.length; i++ ) {
+							if (
+								response.imported[i].feed_id == event.feed_id &&
+								response.imported[i].feed_events_uids[event.id]
+							) {
+								$( '.ai1ec-suggested-remove-event', $this ).removeClass( 'ai1ec-hidden' );
+								$( '.ai1ec-suggested-import-event', $this ).addClass( 'ai1ec-hidden' );
+								break;
+							}
+						}
+					} );
 				} else {
 					$( '#suggested' ).removeClass( 'ai1ec-has-map' );
 					$( '.ai1ec-suggested-results' ).hide();

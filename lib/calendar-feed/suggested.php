@@ -81,6 +81,7 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 	public function search_events() {
 		$api           = $this->_registry->get( 'model.api.api-feeds' );
 		$events        = $api->get_suggested_events();
+		$imported      = $api->get_feed_subscriptions();
 		$loader        = $this->_registry->get( 'theme.loader' );
 		$event_actions = $loader->get_file(
 			'plugins/suggested/event_actions.php',
@@ -120,8 +121,9 @@ class Ai1ecSuggestedConnectorPlugin extends Ai1ec_Connector_Plugin {
 			true
 		);
 		$feeds_list = array(
-			'list'  => $feeds_list->get_content(),
-			'total' => $events->total
+			'list'     => $feeds_list->get_content(),
+			'total'    => $events->total,
+			'imported' => $imported
 		);
 		echo json_encode( $feeds_list );
 		exit( 0 );

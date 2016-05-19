@@ -129,26 +129,32 @@ define(
 		$( document ).on( 'click', '.ai1ec-suggested-remove-event', function() {
 			var
 				$this      = $( this ),
-				$container = $this.closest( '.ai1ec-suggested-event-import' ),
-				event      = $.parseJSON(
-					$this.closest( '.ai1ec-infowindow, tr' ).attr( 'data-event' )
-				);
+				$container = $this.closest( '.ai1ec-suggested-event-import, .ai1ec-myfeeds-event' ),
+				$event     = $this.closest( '.ai1ec-infowindow, tr' ),
+				$my_feeds  = $this.closest( '.ai1ec-myfeeds-event' ),
+				event      = $event.length ? $.parseJSON( $event.attr( 'data-event' ) ) : null,
+				event_id   = event ? event.id : $my_feeds.attr( 'data-event-id' ),
+				feed_id    = event ? event.feed_id : $my_feeds.attr( 'data-feed-id' );
 
 			$( 'a.ai1ec-suggested-removing', $container ).removeClass( 'ai1ec-hidden' );
 			$this.addClass( 'ai1ec-hidden' );
-			
+			$my_feeds.addClass( 'ai1ec-myfeeds-removing' );
 			$.ajax( {
 				url      : ai1ec_config.ajax_url,
 				type     : 'POST',
 				data     : {
 					action         : 'ai1ec_remove_suggested_event',
-					ai1ec_event_id : event.id,
-					ai1ec_feed_id   : event.feed_id,
+					ai1ec_event_id : event_id,
+					ai1ec_feed_id  : feed_id,
 					ai1ec_delete   : true
 				},
 				success  : function( response ) {
 					$( 'a.ai1ec-suggested-removing', $container ).addClass( 'ai1ec-hidden' );
 					$( 'a.ai1ec-suggested-import-event', $container ).removeClass( 'ai1ec-hidden' );
+					if ( $my_feeds.length && ! $my_feeds.closest( '.ai1ec-feed-category' ).find( '.ai1ec-myfeeds-event' ).not( '.ai1ec-myfeeds-removing' ).length ) {
+						$my_feeds.closest( '.ai1ec-feed-container' ).remove();
+					}
+					$my_feeds.remove();
 				}
 			} );
 

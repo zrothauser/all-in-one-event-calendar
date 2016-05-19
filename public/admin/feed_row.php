@@ -19,16 +19,27 @@
 				<div class="ai1ec-feed-category"
 					 data-ids="<?php echo esc_attr( $categories_ids ); ?>">
 					<?php _e( 'List of imported events:', AI1EC_PLUGIN_NAME ); ?>
-						<br>
+						<br /><br />
 						<strong>
 						<?php
-							foreach ( $feed_events_uids as $feed_event_uid => $feed_event_title ) {
-								echo $feed_event_title . ' (' . $feed_event_uid . ') [Remove]';
-								echo '<br>';
-							}
-						?>
+							foreach ( $feed_events_uids as $feed_event_uid => $feed_event_title ):?>
+								<div class="ai1ec-myfeeds-event"
+									 data-event-id="<?php echo esc_attr( $feed_event_uid ); ?>"
+									 data-feed-id="<?php echo esc_attr( $feed_id ); ?>">
+									<?php echo $feed_event_title; ?>&nbsp;&nbsp;
+									<a href="#" class="ai1ec-btn ai1ec-btn-secondary ai1ec-btn-xs ai1ec-text-warning
+										               ai1ec-disabled ai1ec-hidden ai1ec-suggested-removing">
+										<?php _e( 'Removing', AI1EC_PLUGIN_NAME ); ?>&hellip;
+									</a>
+									<a href="#" class="ai1ec-btn ai1ec-btn-secondary ai1ec-btn-xs ai1ec-text-danger
+										               ai1ec-suggested-remove-event">
+										<i class="ai1ec-fa ai1ec-fa-minus ai1ec-fa-xs ai1ec-fa-fw"></i>
+										<?php _e( 'Remove', AI1EC_PLUGIN_NAME ); ?>
+									</a>
+								</div>
+							<?php endforeach; ?>
 						</strong>
-						<br><br>
+						<br /><br />
 					</div>
 				<?php endif; ?>
 				<input type="hidden" name="feed_id" class="ai1ec_feed_id"

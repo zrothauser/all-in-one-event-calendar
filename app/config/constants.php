@@ -469,7 +469,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	if ( ! defined( 'AI1EC_API_URL' ) ) {
 		define(
 			'AI1EC_API_URL',
-			'https://ticketing.time.ly/api/'
+			'http://dev.time.ly:880/api/'
 		);
 	}
 
@@ -477,7 +477,7 @@ function ai1ec_initiate_constants( $ai1ec_base_dir, $ai1ec_base_url ) {
 	if ( ! defined( 'AI1EC_TICKETS_CHECKOUT_URL' ) ) {
 		define(
 			'AI1EC_TICKETS_CHECKOUT_URL',
-			'https://ticketing.time.ly/events/{event_id}/checkout'
+			'http://dev.time.ly:880/events/{event_id}/checkout'
 		);
 	}
 

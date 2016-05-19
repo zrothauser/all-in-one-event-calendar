@@ -451,10 +451,7 @@ define(
 						for ( var i = 0; i < response.imported.length; i++ ) {
 							if (
 								response.imported[i].feed_id == event.feed_id &&
-								-1 !== $.inArray(
-									event.id,
-									response.imported[i].feed_events_uids.split( ',' )
-								)
+								response.imported[i].feed_events_uids[event.id]
 							) {
 								$( '.ai1ec-suggested-remove-event', $this ).removeClass( 'ai1ec-hidden' );
 								$( '.ai1ec-suggested-import-event', $this ).addClass( 'ai1ec-hidden' );

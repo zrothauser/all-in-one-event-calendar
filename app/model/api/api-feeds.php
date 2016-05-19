@@ -63,22 +63,18 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 			);
 		}
 
-	 	$page     = isset( $_POST[ 'page' ] ) ? $_POST[ 'page' ] : 1;
-	 	$max      = isset( $_POST[ 'max' ] ) ? $_POST[ 'max' ] : 8;
-	 	$term     = isset( $_POST[ 'term' ] ) && $_POST[ 'term' ] 
-	 		? urlencode( $_POST[ 'term' ] )
-	 		: null;
-	 	$location = isset( $_POST[ 'location' ] ) && $_POST[ 'location' ]
-	 		? '&location=' . urlencode( $_POST[ 'location' ] ) 
-	 		: '';
+		$page     = isset( $_POST[ 'page' ] ) ? $_POST[ 'page' ] : 1;
+		$max      = isset( $_POST[ 'max' ] ) ? $_POST[ 'max' ] : 8;
+		$term     = isset( $_POST[ 'term' ] ) && $_POST[ 'term' ] 
+			? urlencode( $_POST[ 'term' ] )
+			: '*';
+		$location = isset( $_POST[ 'location' ] ) && $_POST[ 'location' ]
+			? '&location=' . urlencode( $_POST[ 'location' ] ) 
+			: '';
 
-	 	if ( null === $term ) {
-			return null;
-		}
-		
-	 	$url      = AI1EC_API_URL .
-	 		"calendars/$calendar_id/discover/events?page=$page&max=$max&term=$term" .
-	 		$location;
+		$url      = AI1EC_API_URL .
+			"calendars/$calendar_id/discover/events?page=$page&max=$max&term=$term" .
+			$location;
 
 		$response = $this->request_api( 'GET', $url,
 			null !== $body ? json_encode( $body ) : null,

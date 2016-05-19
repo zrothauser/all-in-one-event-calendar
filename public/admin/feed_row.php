@@ -25,7 +25,7 @@
 							foreach ( $feed_events_uids as $feed_event_uid => $feed_event_title ):?>
 								<div class="ai1ec-myfeeds-event"
 									 data-event-id="<?php echo esc_attr( $feed_event_uid ); ?>"
-									 data-feed-id="<?php echo esc_attr( $feed_id ); ?>">
+									 data-feed-id="<?php echo esc_attr( $feed_name ); ?>">
 									<?php echo $feed_event_title; ?>&nbsp;&nbsp;
 									<a href="#" class="ai1ec-btn ai1ec-btn-secondary ai1ec-btn-xs ai1ec-text-warning
 										               ai1ec-disabled ai1ec-hidden ai1ec-suggested-removing">

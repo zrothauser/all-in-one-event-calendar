@@ -892,7 +892,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				'updated_at_gmt'       => current_time( 'mysql', 1 )
 			);
 
-			$format                    = array( '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%s', '%s' );
+			$format                    = array( '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%d', '%d', '%s', '%s' );
 
 			$res                       = $db->insert( $table_name, $entry, $format );
 			$feed_id                   = $db->get_insert_id();
@@ -910,7 +910,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	}
 
 	/**
-	 * delete_ics_feed function
+	 * delete_individual_event_subscription function
 	 *
 	 * Deletes submitted ics feed id from the database
 	 *
@@ -947,7 +947,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 		$feeds_subscriptions = $this->_api_feed->get_feed_subscriptions( true );
 		foreach( $feeds_subscriptions as $api_feed ) {
-			if ( $api_feed->feed_id  === $feed_id ) {
+			if ( $api_feed->feed_id === $feed_id ) {
 				$found_subscription = true;
 				break;
 			}
@@ -955,7 +955,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 		// Delete from database if there are no more individual feeds imported
 		if ( ! $found_subscription ) {
-			$db->query( $db->prepare( 'DELETE FROM ' . $table_name . ' WHERE id = %d', $ics_id ) );
+			$db->query( $db->prepare( 'DELETE FROM ' . $table_name . ' WHERE feed_id = %d', $ics_id ) );
 			do_action( 'ai1ec_ics_feed_deleted', $ics_id );
 		}
 
@@ -964,7 +964,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			$feed_url = $db->get_var(
 				$db->prepare(
 					'SELECT feed_url FROM ' . $table_name .
-					' WHERE id = %d',
+					' WHERE feed_id = %d',
 					$ics_id
 					)
 				);

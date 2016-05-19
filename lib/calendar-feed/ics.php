@@ -610,7 +610,6 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'import_timezone'      => Ai1ec_Primitive_Int::db_bool(
 				$_REQUEST['feed_import_timezone']
 			),
-			'feed_status'          => $api_feed::FEED_API_ALL_EVENTS_CODE,
 			'updated_at_gmt'       => current_time( 'mysql', 1 )
 		);
 
@@ -639,16 +638,20 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			return $json_strategy->render( array( 'data' => $output ) );
 		}
 
-		$format     = array( '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%s', '%s' );
-
 		if ( ! empty( $_REQUEST['feed_id'] ) ) {
+			$format  = array( '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%s');
+
 			$feed_id = $_REQUEST['feed_id'];
+
 			$db->update(
 				$table_name,
 				$entry,
 				array( 'feed_id' => $feed_id )
 			);
 		} else {
+			$entry['feed_status'] = $api_feed::FEED_API_ALL_EVENTS_CODE;
+			$format     = array( '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%s', '%s' );
+
 			$res        = $db->insert( $table_name, $entry, $format );
 			$feed_id    = $db->get_insert_id();
 		}

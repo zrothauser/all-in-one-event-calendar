@@ -15,15 +15,15 @@
 					<input type="text" class="ai1ec-feed-url ai1ec-form-control"
 						readonly="readonly" value="<?php echo esc_attr( $feed_url ) ?>">
 				</div>
-				<?php if ( '' !== $feed_events_uids ) : ?>
+				<?php if ( sizeof( $feed_events_uids ) > 0 ) : ?>
 				<div class="ai1ec-feed-category"
 					 data-ids="<?php echo esc_attr( $categories_ids ); ?>">
 					<?php _e( 'List of imported events:', AI1EC_PLUGIN_NAME ); ?>
 						<br>
 						<strong>
 						<?php
-							foreach ( explode( ',', $feed_events_uids ) as $feed_event_uid ) {
-								echo $feed_event_uid . ' (Remove)';
+							foreach ( $feed_events_uids as $feed_event_uid => $feed_event_title ) {
+								echo $feed_event_title . ' (' . $feed_event_uid . ') [Remove]';
 								echo '<br>';
 							}
 						?>

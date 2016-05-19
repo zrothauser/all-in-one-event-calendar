@@ -120,7 +120,6 @@ define(
 				success  : function( response ) {
 					$( 'a.ai1ec-suggested-processing', $container ).addClass( 'ai1ec-hidden' );
 					$( 'a.ai1ec-suggested-remove-event', $container ).removeClass( 'ai1ec-hidden' );
-					imported_events[event.id + '_' + event.feed_id] = 1;
 				}
 			} );
 
@@ -156,7 +155,6 @@ define(
 						$my_feeds.closest( '.ai1ec-feed-container' ).remove();
 					}
 					$my_feeds.remove();
-					delete imported_events[event_id + '_' + feed_id];
 				}
 			} );
 
@@ -256,7 +254,7 @@ define(
 	};
 	
 	// Init Events map
-	var events_map, markers = [], update_events, imported_events = [];
+	var events_map, markers = [], update_events;
 	var init_gmaps = function( search_query ) {
 		var
 			map_options   = {
@@ -450,9 +448,18 @@ define(
 							$this = $( this ),
 							event = $.parseJSON( $this.attr( 'data-event' ) );
 						
-						if ( imported_events[ event.id + '_' + event.feed_id ] ) {
-							$( '.ai1ec-suggested-remove-event', $this ).removeClass( 'ai1ec-hidden' );
-							$( '.ai1ec-suggested-import-event', $this ).addClass( 'ai1ec-hidden' );
+						for ( var i = 0; i < response.imported.length; i++ ) {
+							if (
+								response.imported[i].feed_id == event.feed_id &&
+								-1 !== $.inArray(
+									event.id,
+									response.imported[i].feed_events_uids.split( ',' )
+								)
+							) {
+								$( '.ai1ec-suggested-remove-event', $this ).removeClass( 'ai1ec-hidden' );
+								$( '.ai1ec-suggested-import-event', $this ).addClass( 'ai1ec-hidden' );
+								break;
+							}
 						}
 					} );
 				} else {

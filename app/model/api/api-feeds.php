@@ -67,7 +67,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 		$max      = isset( $_POST[ 'max' ] ) ? $_POST[ 'max' ] : 8;
 		$term     = isset( $_POST[ 'term' ] ) && $_POST[ 'term' ] 
 			? urlencode( $_POST[ 'term' ] )
-			: '';
+			: '*';
 		$location = isset( $_POST[ 'location' ] ) && $_POST[ 'location' ]
 			? '&location=' . urlencode( $_POST[ 'location' ] ) 
 			: '';

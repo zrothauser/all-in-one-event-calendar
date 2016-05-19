@@ -110,7 +110,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 		if ( $feed ) {
 			// Migrate manually imported feed URLs to API
-			if ( ! is_numeric( $feed->feed_name ) ) {
+			if ( ! is_numeric( $feed->feed_name ) || 'c' === $feed->feed_status ) {
 				// Build array with feed options
 				$entry = array(
 					'feed_url'             => $feed->feed_url,

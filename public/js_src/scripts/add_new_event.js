@@ -745,10 +745,9 @@ define(
 		);
 	};
 	
-	
 	window.addEventListener( 'message', function( e ) {
 		var
-			message           = e.data,
+			message           = e.data.toString(),
 			token             = 'timely_tax_options_',
 			cancel_token      = 'timely_tax_cancel',
 			$inputs_container = $( '#ai1ec_tax_inputs' );

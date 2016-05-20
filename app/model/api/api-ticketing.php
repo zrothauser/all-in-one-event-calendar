@@ -847,6 +847,17 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		return (object) array( 'data' => $response->raw, 'error' => false );
 	}
 
+ 	/**
+	 * Get tax options modal
+	 * @param int $event_id Event ID (optional)
+	 */
+ 	public function get_tax_options_modal_ep() {
+	 	$calendar_id = $this->_get_ticket_calendar();
+		$response    = $this->request_api( 'GET', 
+			AI1EC_API_URL . "eventpromote/$calendar_id/tax_options"
+		);
+		return (object) array( 'data' => $response->raw, 'error' => false );
+	}
  	
  	/**
  	 * Save the API event data

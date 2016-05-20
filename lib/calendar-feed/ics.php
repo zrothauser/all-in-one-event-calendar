@@ -277,7 +277,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					map_display_enabled tinyint(1) NOT NULL DEFAULT '0',
 					keep_tags_categories tinyint(1) NOT NULL DEFAULT '0',
 					keep_old_events tinyint(1) NOT NULL DEFAULT '0',
-					import_timezone tinyint(1) NOT NULL DEFAULT '0'
+					import_timezone tinyint(1) NOT NULL DEFAULT '0',
 					PRIMARY KEY  (feed_id),
 					UNIQUE KEY feed (feed_url)
 					) CHARACTER SET utf8;";

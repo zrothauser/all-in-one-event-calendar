@@ -275,3 +275,19 @@ div.ai1ec-form-group > .ai1ec-setting-fieldset {
 #ai1ec-api-signed-in .ai1ec-fa-check {
 	color:#6AAB2D;
 }
+#ai1ec_tax_options,
+#ai1ec_update_tax_options {
+	margin: 15px 0 20px;
+}
+#ai1ec_tax_box {
+	padding: 20px;
+}
+#ai1ec_tax_box .ai1ec-loading {
+	padding: 20px;
+}
+#ai1ec_tax_box .ai1ec-modal-dialog {
+	margin-top: 0;
+}
+#ai1ec_tax_box .ai1ec-modal-body {
+	padding-top: 0;
+}

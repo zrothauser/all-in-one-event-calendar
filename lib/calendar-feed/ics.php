@@ -18,7 +18,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 	const ICS_OPTION_DB_VERSION = 'ai1ec_ics_db_version';
 
-	const ICS_DB_VERSION        = 238;
+	const ICS_DB_VERSION        = 236;
 
 	/**
 	 * @var array
@@ -110,7 +110,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 		if ( $feed ) {
 			// Migrate manually imported feed URLs to API
-			if ( ! is_numeric( $feed->feed_name ) || 'c' === $feed->feed_status ) {
+			if ( ! is_numeric( $feed->feed_name ) ) {
 				// Build array with feed options
 				$entry = array(
 					'feed_url'             => $feed->feed_url,
@@ -132,9 +132,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					$db->update(
 						$table_name,
 						array(
-							'feed_name' => $response->id,
-							'feed_status' => $api_feed::FEED_API_ALL_EVENTS_CODE,
-							'updated_at_gmt' => current_time( 'mysql', 1 ) ),
+							'feed_name' => $response->id
+						),
 						array(
 							'feed_id' => $feed_id
 						)
@@ -142,15 +141,6 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					// Set ID
 					$feed->feed_name = $response->id;
 				} catch ( Exception $e ) {
-					$db->update(
-						$table_name,
-						array(
-							'feed_status' => $api_feed::FEED_MIGRATION_ERROR_CODE,
-							'updated_at_gmt' => current_time( 'mysql', 1 ) ),
-						array(
-							'feed_id' => $feed_id
-						)
-					);
 					$message = $e->getMessage();
 				}
 			}
@@ -287,9 +277,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 					map_display_enabled tinyint(1) NOT NULL DEFAULT '0',
 					keep_tags_categories tinyint(1) NOT NULL DEFAULT '0',
 					keep_old_events tinyint(1) NOT NULL DEFAULT '0',
-					import_timezone tinyint(1) NOT NULL DEFAULT '0',
-					feed_status char(1) NOT NULL DEFAULT 'c',
-					updated_at_gmt datetime NULL,
+					import_timezone tinyint(1) NOT NULL DEFAULT '0'
 					PRIMARY KEY  (feed_id),
 					UNIQUE KEY feed (feed_url)
 					) CHARACTER SET utf8;";
@@ -412,7 +400,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 		$db          = $this->_registry->get( 'dbi.dbi' );
 		$table_name  = $db->get_table_name( 'ai1ec_event_feeds' );
-		$sql         = "SELECT COUNT(*) FROM $table_name WHERE $table_name.feed_status = '" . $api_feed::FEED_NOT_MIGRATED_CODE . "'";
+		$sql         = "SELECT COUNT(*) FROM $table_name WHERE $table_name.feed_name REGEXP '[a-zA-Z]+'";
 		$local_feeds = $db->get_var( $sql );
 		$args        = array(
 			'cron_freq'        => $cron_freq->get_content(),
@@ -455,9 +443,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				'map_display_enabled',
 				'keep_tags_categories',
 				'keep_old_events',
-				'import_timezone',
-				'feed_status',
-				'updated_at_gmt'
+				'import_timezone'
 			)
 		);
 
@@ -469,11 +455,9 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$api_subscriptions = $api_feed->get_feed_subscriptions();
 
 		foreach ( $rows as $row ) {
-			if ( $api_feed::FEED_API_ALL_EVENTS_CODE === $feed_status && $api_feed::FEED_API_SOME_EVENTS_CODE === $row->feed_status ) {
-				// Don't show feeds that have some events imported if we want to show fully imported feeds
-				continue;
-			} else if ( $api_feed::FEED_API_SOME_EVENTS_CODE === $feed_status && $api_feed::FEED_API_SOME_EVENTS_CODE !== $row->feed_status ) {
-				// For feeds that has individual events imported, just show them
+			$row_feed_status = $this->getFeedStatus( $row->feed_name );
+			// If the status of the feed is different from requested, skip
+			if ( $feed_status !== $row_feed_status ) {
 				continue;
 			}
 
@@ -528,7 +512,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				'feed_import_timezone' => (bool) intval(
 						$row->import_timezone
 				),
-				'feed_status'          => $row->feed_status,
+				'feed_status'          => $row_feed_status,
 				'api_signed'           => $api_signed,
 			);
 			$html .= $theme_loader->get_file( 'feed_row.php', $args, true )
@@ -609,8 +593,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			),
 			'import_timezone'      => Ai1ec_Primitive_Int::db_bool(
 				$_REQUEST['feed_import_timezone']
-			),
-			'updated_at_gmt'       => current_time( 'mysql', 1 )
+			)
 		);
 
 		// Import to the API
@@ -638,9 +621,9 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			return $json_strategy->render( array( 'data' => $output ) );
 		}
 
-		if ( ! empty( $_REQUEST['feed_id'] ) ) {
-			$format  = array( '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%s');
+		$format  = array( '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s' );
 
+		if ( ! empty( $_REQUEST['feed_id'] ) ) {
 			$feed_id = $_REQUEST['feed_id'];
 
 			$db->update(
@@ -649,9 +632,6 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				array( 'feed_id' => $feed_id )
 			);
 		} else {
-			$entry['feed_status'] = $api_feed::FEED_API_ALL_EVENTS_CODE;
-			$format     = array( '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%s', '%s' );
-
 			$res        = $db->insert( $table_name, $entry, $format );
 			$feed_id    = $db->get_insert_id();
 		}
@@ -890,12 +870,10 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				'map_display_enabled'  => 1,
 				'keep_tags_categories' => '',
 				'keep_old_events'      => 0,
-				'import_timezone'      => 0,
-				'feed_status'          => $api_feed::FEED_API_SOME_EVENTS_CODE,
-				'updated_at_gmt'       => current_time( 'mysql', 1 )
+				'import_timezone'      => 0
 			);
 
-			$format                    = array( '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%d', '%d', '%s', '%s' );
+			$format                    = array( '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%d', '%d' );
 
 			$res                       = $db->insert( $table_name, $entry, $format );
 			$feed_id                   = $db->get_insert_id();
@@ -1008,4 +986,35 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 	protected function _import_lock_name( $feed_id ) {
 		return 'ics_import_' . (int)$feed_id;
 	}
+
+	/**
+	 * Check feed status
+	 *
+	 * @param int $feed_id ID of feed
+	 *
+	 * @return string Feed status
+	 */
+	public function getFeedStatus( $feed_id ) {
+		$api_feed          = $this->_api_feed;
+
+		// Default status
+		$feed_status       = $api_feed::FEED_NOT_MIGRATED_CODE;
+
+		// Get list of subscriptions
+		$api_subscriptions = $api_feed->get_feed_subscriptions();
+
+		foreach ( $api_subscriptions as $api_subscription ) {
+			if ( $api_subscription->feed_id === $feed_id ) {
+				if ( sizeof( $api_subscription->feed_events_uids ) > 0 ) {
+					$feed_status = $api_feed::FEED_API_SOME_EVENTS_CODE;
+				} else {
+					$feed_status = $api_feed::FEED_API_ALL_EVENTS_CODE;
+				}
+				break;
+			}
+		}
+
+		return $feed_status;
+	}
+
 }

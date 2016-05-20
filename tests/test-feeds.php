@@ -45,7 +45,6 @@ class FeedsTests extends BaseTestCase {
 		);
 
 		$this->assertNotNull( $feed_after, "Feed id: $feed_id was not found. It should exists at this point" );
-		$this->assertNotBlank( $feed_after->feed_status, sprintf( 'The URL %s  was not processed. For tests we should use an existent feed', $feed['feed_url'] ) );		
 		$this->assertNotBlank( $feed_after->feed_name, sprintf( 'The URL %s  was not processed. For tests we should use an existent feed', $feed['feed_url'] ) );
 
 		//TODO Improve the assert

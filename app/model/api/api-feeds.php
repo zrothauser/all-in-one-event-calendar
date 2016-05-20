@@ -206,12 +206,6 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 		foreach( $feeds_subscriptions as $api_feed ) {
 			$found           = false;
 
-			$feed_status     = self::FEED_API_ALL_EVENTS_CODE;
-			// Check status
-			if ( sizeof( $api_feed->feed_events_uids ) > 0 ) {
-				$feed_status = self::FEED_API_SOME_EVENTS_CODE;
-			}
-
 			foreach ( $rows as $row ) {
 				// Check if URL is the same
 				if ( trim( $row->feed_url ) === trim( $api_feed->url ) ) {
@@ -226,9 +220,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 							'keep_tags_categories' => $api_feed->import_any_tag_and_categories,
 							'keep_old_events'      => $api_feed->preserve_imported_events,
 							'import_timezone'      => $api_feed->assign_default_utc,
-							'feed_name'            => $api_feed->feed_id,
-							'feed_status'          => $feed_status,
-							'updated_at_gmt'       => current_time( 'mysql', 1 )
+							'feed_name'            => $api_feed->feed_id
 						),
 						array(
 							'feed_id'              => $row->feed_id
@@ -248,11 +240,9 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 					'map_display_enabled'  => $api_feed->show_maps,
 					'keep_tags_categories' => $api_feed->import_any_tag_and_categories,
 					'keep_old_events'      => $api_feed->preserve_imported_events,
-					'import_timezone'      => $api_feed->assign_default_utc,
-					'feed_status'          => $feed_status,
-					'updated_at_gmt'       => current_time( 'mysql', 1 )
+					'import_timezone'      => $api_feed->assign_default_utc
 				);
-				$format = array( '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%s' );
+				$format = array( '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d' );
 				$db->insert(
 					$table_name,
 					$entry,

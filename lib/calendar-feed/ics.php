@@ -456,8 +456,11 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 		foreach ( $rows as $row ) {
 			$row_feed_status = $this->getFeedStatus( $row->feed_name );
+
 			// If the status of the feed is different from requested, skip
-			if ( $feed_status !== $row_feed_status ) {
+			if ( $api_feed::FEED_API_ALL_EVENTS_CODE === $feed_status && $row_feed_status === $api_feed::FEED_API_SOME_EVENTS_CODE ) {
+				continue;
+			} else if ( $api_feed::FEED_API_SOME_EVENTS_CODE === $feed_status && $feed_status !== $row_feed_status ) {
 				continue;
 			}
 

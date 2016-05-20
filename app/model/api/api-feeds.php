@@ -14,11 +14,9 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 	// c = Feed not migrated yet to API
 	// a = Feed migrated to API (all events)
 	// b = Feed migrated to API (individual events were selected)
-	// e = Feed not migrated to API (error)
 	const FEED_NOT_MIGRATED_CODE    = 'c';
 	const FEED_API_ALL_EVENTS_CODE  = 'a';
 	const FEED_API_SOME_EVENTS_CODE = 'b';
-	const FEED_MIGRATION_ERROR_CODE = 'e';
 
 	/**
 	 * Post construction routine.
@@ -156,7 +154,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 	public function get_feed_subscriptions( $force_refresh = false ) {
 		$feeds_subscriptions = get_site_transient( 'ai1ec_api_feeds_subscriptions' );
 
-		if ( $force_refresh || false === $feeds_subscriptions || ( defined( 'AI1EC_DEBUG' ) && AI1EC_DEBUG ) ) {
+		if ( $force_refresh || false === $feeds_subscriptions ) {
 			$response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars/' . $this->_get_ticket_calendar() . '/feeds/list',
 				null,
 				true

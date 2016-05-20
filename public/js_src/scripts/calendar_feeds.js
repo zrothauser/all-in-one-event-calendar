@@ -414,7 +414,7 @@ define(
 		} );
 	}
 	
-	var perform_search = function( options, callback ) {
+	var perform_search = function( options, callback, e ) {
 		$( '#ai1ec_suggested_term' ).removeClass( 'ai1ec-error' );
 		options = $.extend(
 			{
@@ -460,9 +460,12 @@ define(
 						}
 					} );
 				} else {
-					$( '#suggested' ).removeClass( 'ai1ec-has-map' );
-					$( '.ai1ec-suggested-results' ).hide();
-					$( '.ai1ec-suggested-no-results' ).show();
+					$( '.ai1ec-suggested-results-found' ).text( '0' );
+					if ( ! e ) {
+						$( '#suggested' ).removeClass( 'ai1ec-has-map' );
+						$( '.ai1ec-suggested-results' ).hide();
+						$( '.ai1ec-suggested-no-results' ).show();
+					}
 					$( '.ai1ec-feeds-list-container' ).html( '' );
 				}
 				if ( callback ) {

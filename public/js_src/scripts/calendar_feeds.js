@@ -178,7 +178,7 @@ define(
 				.filter( '[data-ai1ec-show~="' + view + '"]' ).show();	
 			
 			if ( 'list' !== view ) {
-				gMapsLoader( init_gmaps );
+				gMapsLoader( function() { init_gmaps( true ); } );
 			}
 			return false;
 		} );
@@ -474,7 +474,7 @@ define(
 	
 	var maps_init_wrapper = function() {
 		setTimeout( function() {
-			gMapsLoader( init_gmaps );
+			gMapsLoader( function() { init_gmaps( true ); } );
 		}, 0 );
 	};
 	

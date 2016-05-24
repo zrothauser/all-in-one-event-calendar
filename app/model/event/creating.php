@@ -227,17 +227,29 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 		if ( $cost_type ) {
 			update_post_meta( $post_id, '_ai1ec_cost_type', $cost_type );
 		}
-
+		$api = $this->_registry->get( 'model.api.api-ticketing' );
 		if ( $update === false ) {
 			//this method just creates the API event, the update action
 			//is treated by another hook (pre_update_event inside api )
-			$api = $this->_registry->get( 'model.api.api-ticketing' );
 			if ( 'tickets' === $cost_type ) {			
 				$result = $api->store_event( $event, $post, false );
 				if ( true !== $result ) {
 					$_POST['_ticket_store_event_error'] = $result;
+				} else {
+					update_post_meta(
+						$post_id,
+						'_ai1ec_timely_tickets_url',
+						$api->get_api_event_buy_ticket_url( $event->get( 'post_id' ) )
+					);
 				}
-			}			
+			}
+		}
+		if ( 'tickets' === $cost_type ) {			
+			update_post_meta(
+				$post_id,
+				'_ai1ec_timely_tickets_url',
+				$api->get_api_event_buy_ticket_url( $event->get( 'post_id' ) )
+			);
 		}
 
 		// let other extensions save their fields.

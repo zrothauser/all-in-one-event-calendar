@@ -124,7 +124,30 @@ define(
 				},
 				success  : function( response ) {
 					$( 'a.ai1ec-suggested-processing', $container ).addClass( 'ai1ec-hidden' );
-					$( 'a.ai1ec-suggested-remove-event', $container ).removeClass( 'ai1ec-hidden' );
+					if ( ! response.error ) {
+						$( 'a.ai1ec-suggested-remove-event', $container ).removeClass( 'ai1ec-hidden' );
+						$( '#ai1ec-discovery-status' )
+							.removeClass( 'ai1ec-error' )
+							.text( ai1ec_config.discovery_event_success )
+							.hide()
+							.fadeIn();
+					} else {
+						$( 'a.ai1ec-suggested-import-event', $container ).removeClass( 'ai1ec-hidden' );
+						$( '#ai1ec-discovery-status' )
+							.addClass( 'ai1ec-error' )
+							.text( ai1ec_config.discovery_event_error )
+							.hide()
+							.fadeIn();
+					}
+				},
+				error    : function() {
+					$( 'a.ai1ec-suggested-processing', $container ).addClass( 'ai1ec-hidden' );
+					$( 'a.ai1ec-suggested-import-event', $container ).removeClass( 'ai1ec-hidden' );
+					$( '#ai1ec-discovery-status' )
+						.addClass( 'ai1ec-error' )
+						.text( ai1ec_config.discovery_event_error )
+						.hide()
+						.fadeIn();
 				}
 			} );
 

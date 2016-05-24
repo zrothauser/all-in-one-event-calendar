@@ -87,7 +87,12 @@ class Ai1ec_Html_Setting_Input extends Ai1ec_Html_Element_Settings {
 
 		$loader = $this->_registry->get( 'theme.loader' );
 		$file   = $loader->get_file( 'setting/input.twig', $args, true );
-		return parent::render( $file->get_content() );
+		if ( isset( $this->_args['type'] ) && 'hidden' === $this->_args['type'] ) {
+			$hidden = true;
+		} else {
+			$hidden = false;
+		}
+		return parent::render( $file->get_content(), true, $hidden );
 	}
 
 }

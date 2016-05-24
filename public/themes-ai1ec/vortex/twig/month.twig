@@ -83,12 +83,6 @@
 												<span class="ai1ec-event-location"
 													>{{ text_venue_separator | format( event.venue ) }}</span>
 											{% endif %}
-											{% if is_ticket_button_enabled and event.ticket_url %}
-												<a class="ai1ec-pull-right ai1ec-btn ai1ec-btn-primary ai1ec-btn-xs
-													ai1ec-buy-tickets" target="_blank"
-													href="{{ event.ticket_url | e( 'html_attr' ) }}"
-													>{{ event.ticket_url_label }}</a>
-											{% endif %}
 										</span>
 
 										{% if event.edit_post_link %}

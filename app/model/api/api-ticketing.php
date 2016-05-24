@@ -140,11 +140,11 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		}				
 		$api_event_id = $this->get_api_event_id( $event->get( 'post_id' ) );
 		$is_new       = ! $api_event_id;
-		$fields       = array( 'visibility' => $_POST['visibility'], 'ai1ec_version' => AI1EC_VERSION );
+		$fields       = array( 'visibility' => $_POST['visibility'] );
 		if ( isset( $_POST['tax_options'] ) ) {
 			$fields['tax_options'] = $_POST['tax_options'];
 		}
-		$body_data    = $this->_parse_event_fields_to_api_structure(
+		$body_data    = $this->parse_event_fields_to_api_structure(
 			$event,
 			$post,
 			$_POST['ai1ec_tickets'],
@@ -252,8 +252,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	/**
 	 * Parse the fields of an Event to the structure used by API
 	 */
-	protected function _parse_event_fields_to_api_structure( Ai1ec_Event $event , WP_Post $post, $post_ticket_types, $api_fields_values  ) {
-
+	public function parse_event_fields_to_api_structure( Ai1ec_Event $event , WP_Post $post, $post_ticket_types, $api_fields_values  ) {
 		$calendar_id = $this->_get_ticket_calendar();
 		if ( $calendar_id <= 0 ) {
 			return null;
@@ -277,12 +276,11 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		$body['contact_phone']    = $event->get( 'contact_phone' );
 		$body['contact_email']    = $event->get( 'contact_email' );
 		$body['contact_website']  = $event->get( 'contact_url' );
-		$body['uid']              = $event->get( 'ical_uid' );
+		$body['uid']              = $event->get_uid();
 		$body['title']            = $post->post_title;
 		$body['description']      = $post->post_content;
 		$body['url']              = get_permalink( $post->ID );
 		$body['status']           = $post->post_status;
-		$body['tax_rate']         = 0;
 
 		$utc_current_time         = $this->_registry->get( 'date.time')->format_to_javascript();
 		$body['created_at']       = $utc_current_time;
@@ -295,7 +293,12 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 			}
 		}
 
-		if ( null !== $api_fields_values && is_array( $api_fields_values )) {
+		if ( is_null( $api_fields_values ) || 0 == count( $api_fields_values ) ) {
+			$api_fields_values = array( 'status' => 'closed', 'ai1ec_version' => AI1EC_VERSION );
+		} else {
+			if ( ! isset( $api_fields_values['ai1ec_version'] ) ) {
+				$api_fields_values['ai1ec_version'] = AI1EC_VERSION;
+			}
 			foreach ( $api_fields_values as $key => $value ) {
 				$body[$key] = $api_fields_values[$key];
 				if ( 'visibility' === $key ) {
@@ -309,7 +312,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		}
 
 		$tickets_types = array();
-		if ( isset( $post_ticket_types )) {
+		if ( ! is_null( $post_ticket_types ) ) {
 			$index         = 0;
 			foreach ( $post_ticket_types as $ticket_type_ite ) {
 				if ( false === isset( $ticket_type_ite['id'] ) && 
@@ -624,7 +627,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	    	}
 		}
 		$headers   = $this->_get_headers();
-		$body_data = $this->_parse_event_fields_to_api_structure(
+		$body_data = $this->parse_event_fields_to_api_structure(
 			$event,
 			$post,
 			null, //does not update ticket types, just chaging the api fields specified
@@ -844,6 +847,17 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		return (object) array( 'data' => $response->raw, 'error' => false );
 	}
 
+ 	/**
+	 * Get tax options modal
+	 * @param int $event_id Event ID (optional)
+	 */
+ 	public function get_tax_options_modal_ep() {
+	 	$calendar_id = $this->_get_ticket_calendar();
+		$response    = $this->request_api( 'GET', 
+			AI1EC_API_URL . "eventpromote/$calendar_id/tax_options"
+		);
+		return (object) array( 'data' => $response->raw, 'error' => false );
+	}
  	
  	/**
  	 * Save the API event data

@@ -281,13 +281,23 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 				'category_divider_color'
 			);
 
+			$meta = $this->_registry->get( 'model.meta-post' );
+			if ( ! $event_props['ticket_url'] ) {
+				$timely_tickets = $meta->get(
+					$event->get( 'post_id' ),
+					'_ai1ec_timely_tickets_url',
+					null
+				);
+				if ( $timely_tickets ) {
+					$event_props['ticket_url'] = $timely_tickets;
+				}
+			}
 			if (
 				true === apply_filters(
 					'ai1ec_buy_button_product',
 					false
 				)
 			) {
-				$meta         = $this->_registry->get( 'model.meta-post' );
 				$full_details = $meta->get(
 					$event->get( 'post_id' ),
 					'_ai1ec_ep_product_details',

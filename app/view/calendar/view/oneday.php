@@ -332,14 +332,23 @@ class Ai1ec_Calendar_View_Oneday extends Ai1ec_Calendar_View_Abstract {
 							'',
 							false ),
 				);
-				
+				$meta = $this->_registry->get( 'model.meta-post' );
+				if ( ! $event['ticket_url'] ) {
+					$timely_tickets = $meta->get(
+						$evt->get( 'post_id' ),
+						'_ai1ec_timely_tickets_url',
+						null
+					);
+					if ( $timely_tickets ) {
+						$event['ticket_url'] = $timely_tickets;
+					}
+				}
 				if (
 					true === apply_filters(
 						'ai1ec_buy_button_product',
 						false
 					)
 				) {
-					$meta         = $this->_registry->get( 'model.meta-post' );
 					$full_details = $meta->get(
 						$evt->get( 'post_id' ),
 						'_ai1ec_ep_product_details',

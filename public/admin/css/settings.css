@@ -316,7 +316,7 @@
 	margin-top: 20px;
 }
 #suggested.ai1ec-has-map {
-	min-height: 552px;
+	min-height: 581px;
 }
 #suggested table.ai1ec-suggested-events td {
 	padding: 5px;
@@ -506,7 +506,13 @@
 	float: right;
 	display: none;
 }
-
+#ai1ec-discovery-status {
+	color: #6AAB2D;
+	font-weight: bold;
+}
+#ai1ec-discovery-status.ai1ec-error {
+	color: #FF0000;
+}
 /* Calendar theme options */
 
 #ai1ec-less-variables-tabs .inside {

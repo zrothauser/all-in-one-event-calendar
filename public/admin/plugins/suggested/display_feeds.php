@@ -34,13 +34,14 @@
 </div>
 
 <div class="ai1ec-suggested-results">
-	<div style="float:left">
+	<div>
 		<b>
 			<span class="ai1ec-suggested-results-found">0</span>
 			<?php _e( ' events found.', AI1EC_PLUGIN_NAME ); ?>
 		</b>
 		<?php _e( 'Update settings for the imported events in “My feeds” tab.', AI1EC_PLUGIN_NAME ); ?>
 	</div>
+	<div id="ai1ec-discovery-status">&nbsp;</div>
 	<div class="ai1ec-suggested-view-selector"> 
 		<a href="#" data-ai1ec-view="map">
 			<?php _e( 'Map', AI1EC_PLUGIN_NAME ); ?>

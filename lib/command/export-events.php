@@ -116,10 +116,7 @@ class Ai1ec_Command_Export_Events extends Ai1ec_Command {
 			);
 		}
 		$filter = apply_filters( 'ai1ec_export_filter', $filter );
-		// when exporting events by post_id, do not look up the event's start/end date/time
-		$start  = ( $ai1ec_post_ids !== false )
-			? $this->_registry->get( 'date.time', '-3 years' )
-			: $this->_registry->get( 'date.time', time() - 24 * 60 * 60 ); // Include any events ending today
+		$start  = $this->_registry->get( 'date.time', '-3 years' );
 		$end    = $this->_registry->get( 'date.time', '+3 years' );
 		$search = $this->_registry->get( 'model.search' );
 		$params = array(

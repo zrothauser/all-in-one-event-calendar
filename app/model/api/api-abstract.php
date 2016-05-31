@@ -256,11 +256,14 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	 * settings, then we will try to find on the API
 	 * @return string JSON.
 	 */
-	protected function _get_ticket_calendar() {
+	protected function _get_ticket_calendar( $createIfNotExists = true ) {
 		$ticketing_calendar_id = $this->get_ticketing_settings( 'calendar_id', 0 );
 		if ( 0 < $ticketing_calendar_id ) {
 			return $ticketing_calendar_id;
 		} else {
+			if ( ! $createIfNotExists ) {
+				return 0;
+			}
 			//if the calendar is not saved on settings it should exists on API
 			$ticketing_calendar_id = $this->_find_user_calendar();
 			if ( 0 < $ticketing_calendar_id  ) {

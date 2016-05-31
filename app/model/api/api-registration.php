@@ -110,8 +110,9 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 	 * Clean the ticketing settings on WP database only
 	 */
 	public function signout() {
-		$calendar_id = $this->_get_ticket_calendar();
+		$calendar_id = $this->_get_ticket_calendar( false );
 		if ( 0 >= $calendar_id ) {
+			$this->clear_ticketing_settings();
 			return false;
 		}
 		$response = $this->request_api( 'GET', AI1EC_API_URL . "calendars/$calendar_id/signout", null, true );

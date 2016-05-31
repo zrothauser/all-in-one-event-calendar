@@ -49,11 +49,7 @@ class Ai1ec_Settings extends Ai1ec_App {
 	) {
 
 		if ( 'deprecated' === $type ) {
-			unset( $this->_options[$option] );
-		} else if ( 'hidden' === $type ) {
-			if ( isset( $this->_options[$option] ) && isset( $this->_options[$option]['renderer'] )  ) {
-				$this->_options[$option]['renderer'] = null;
-			}
+			unset( $this->_options[$option] );	
 		} else if (
 			! isset( $this->_options[$option] ) ||
 			! isset( $this->_options[$option]['version'] ) ||

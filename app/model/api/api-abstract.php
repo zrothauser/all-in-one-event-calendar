@@ -367,7 +367,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	protected function get_subscriptions( $force_refresh = false ) {
 		$subscriptions = get_site_transient( 'ai1ec_subscriptions' );
 
-		if ( false === $subscriptions || $force_refresh ) {
+		if ( false === $subscriptions || $force_refresh || ( defined( 'AI1EC_DEBUG' ) && AI1EC_DEBUG )  ) {
 			$response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars/' . $this->_get_ticket_calendar() . '/subscriptions',
 				null,
 				true

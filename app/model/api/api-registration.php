@@ -118,7 +118,7 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 		if ( $this->is_response_success( $response ) ) {
 		    // Clear transient API data
 		    delete_site_transient( 'ai1ec_api_feeds_subscriptions' );
-		    delete_site_transient( 'ai1ec_subscriptions' );
+		    delete_site_transient( 'ai1ec_api_subscriptions' );
 		    delete_site_transient( 'ai1ec_api_features' );
 
 			$this->clear_ticketing_settings();

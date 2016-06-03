@@ -362,7 +362,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	 * @return array List of subscriptions and limits
 	 */
 	protected function get_subscriptions( $force_refresh = false ) {
-		$subscriptions = get_site_transient( 'ai1ec_subscriptions' );
+		$subscriptions = get_site_transient( 'ai1ec_api_subscriptions' );
 
 		if ( false === $subscriptions || $force_refresh ) {
 			$response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars/' . $this->_get_ticket_calendar() . '/subscriptions',
@@ -377,7 +377,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 
 			// Save for 30 minutes
 			$minutes = 30;
-			set_site_transient( 'ai1ec_subscriptions', $subscriptions, $minutes * 60 );
+			set_site_transient( 'ai1ec_api_subscriptions', $subscriptions, $minutes * 60 );
 		}
 
 		return $subscriptions;

@@ -71,6 +71,11 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 
 	protected function clear_ticketing_settings() {
 		delete_option( self::WP_OPTION_KEY );
+
+		// Clear transient API data
+		delete_site_transient( 'ai1ec_api_feeds_subscriptions' );
+		delete_site_transient( 'ai1ec_api_subscriptions' );
+		delete_site_transient( 'ai1ec_api_features' );
 	}
 
 	/**
@@ -365,7 +370,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	 * @return array List of subscriptions and limits
 	 */
 	protected function get_subscriptions( $force_refresh = false ) {
-		$subscriptions = get_site_transient( 'ai1ec_subscriptions' );
+		$subscriptions = get_site_transient( 'ai1ec_api_subscriptions' );
 
 		if ( false === $subscriptions || $force_refresh || ( defined( 'AI1EC_DEBUG' ) && AI1EC_DEBUG )  ) {
 			$response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars/' . $this->_get_ticket_calendar() . '/subscriptions',
@@ -380,7 +385,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 
 			// Save for 30 minutes
 			$minutes = 30;
-			set_site_transient( 'ai1ec_subscriptions', $subscriptions, $minutes * 60 );
+			set_site_transient( 'ai1ec_api_subscriptions', $subscriptions, $minutes * 60 );
 		}
 
 		return $subscriptions;

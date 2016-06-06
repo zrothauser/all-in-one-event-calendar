@@ -71,6 +71,11 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 
 	protected function clear_ticketing_settings() {
 		delete_option( self::WP_OPTION_KEY );
+
+		// Clear transient API data
+		delete_site_transient( 'ai1ec_api_feeds_subscriptions' );
+		delete_site_transient( 'ai1ec_api_subscriptions' );
+		delete_site_transient( 'ai1ec_api_features' );
 	}
 
 	/**

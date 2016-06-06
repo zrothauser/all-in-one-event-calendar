@@ -116,11 +116,6 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 		}
 		$response = $this->request_api( 'GET', AI1EC_API_URL . "calendars/$calendar_id/signout", null, true );
 		if ( $this->is_response_success( $response ) ) {
-		    // Clear transient API data
-		    delete_site_transient( 'ai1ec_api_feeds_subscriptions' );
-		    delete_site_transient( 'ai1ec_api_subscriptions' );
-		    delete_site_transient( 'ai1ec_api_features' );
-
 			$this->clear_ticketing_settings();
 			return array( 'message' => '' );
 		} else {

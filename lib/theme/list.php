@@ -236,7 +236,7 @@ class Ai1ec_Theme_List extends WP_List_Table {
 
 				// Generate theme activation link.
 				$activate_link  = ai1ec_admin_url( AI1EC_THEME_SELECTION_BASE_URL );
-				$activate_link  = add_query_arg(
+				$activate_link  = esc_url( add_query_arg(
 					array(
 						'ai1ec_action'     => 'activate_theme',
 						'ai1ec_theme_dir'  => $theme_dir,
@@ -244,7 +244,7 @@ class Ai1ec_Theme_List extends WP_List_Table {
 						'ai1ec_stylesheet' => $stylesheet,
 						'ai1ec_theme_root' => $theme_root,
 						'ai1ec_theme_url'  => $theme_root_uri . '/' . $stylesheet,
-					),
+					) ),
 					$activate_link
 				);
 				$activate_link  = wp_nonce_url(

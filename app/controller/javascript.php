@@ -715,7 +715,7 @@ JSC;
 			$is_calendar_page = self::TRUE_PARAM;
 		}
 
-		$url = add_query_arg(
+		$url = esc_url( add_query_arg(
 			array(
 				// Add the page to load
 				self::LOAD_JS_PARAMETER    => $page,
@@ -725,7 +725,7 @@ JSC;
 				self::IS_CALENDAR_PAGE     => $is_calendar_page,
 			),
 			trailingslashit( ai1ec_get_site_url() )
-		);
+		) );
 		if (
 			$this->_settings->get( 'cache_dynamic_js' ) &&
 			$is_calendar_page &&

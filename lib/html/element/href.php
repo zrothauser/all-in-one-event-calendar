@@ -174,7 +174,7 @@ class Ai1ec_Html_Element_Href {
 		$full_url = $this->calendar_page . $href;
 		// persist the `lang` parameter if present
 		if ( isset( $_REQUEST['lang'] ) ) {
-			$full_url = add_query_arg( 'lang', $_REQUEST['lang'], $full_url );
+			$full_url = esc_url( add_query_arg( 'lang', $_REQUEST['lang'], $full_url ) );
 		}
 		return $full_url;
 	}

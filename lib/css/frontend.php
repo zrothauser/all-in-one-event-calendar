@@ -177,10 +177,10 @@ class Ai1ec_Css_Frontend extends Ai1ec_Base {
 				$time = (int) $saved_par;
 				$template_helper = $this->_registry->get( 'template.link.helper' );
 				return Ai1ec_Http_Response_Helper::remove_protocols(
-					add_query_arg(
+					esc_url( add_query_arg(
 						array( self::QUERY_STRING_PARAM => $time, ),
 						trailingslashit( ai1ec_get_site_url() )
-					)
+					) )
 				);
 			} else {
 				add_action( 'wp_head', array( $this, 'echo_css' ) );

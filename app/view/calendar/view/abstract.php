@@ -266,11 +266,11 @@ abstract class Ai1ec_Calendar_View_Abstract extends Ai1ec_Base {
 		$instance_permalink = get_permalink(
 			$event->get( 'post_id' )
 		);
-		$instance_permalink = add_query_arg(
+		$instance_permalink = esc_url( add_query_arg(
 			'instance_id',
 			$event->get( 'instance_id' ),
 			$instance_permalink
-		);
+		) );
 		$event->set_runtime( 'instance_permalink', $instance_permalink );
 
 		$event->set_runtime(

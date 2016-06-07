@@ -387,11 +387,11 @@ class Ai1ec_Exception_Handler {
 	 * @return void Method does not return
 	 */
 	public function render_admin_notice() {
-		$redirect_url = add_query_arg(
+		$redirect_url = esc_url( add_query_arg(
 			self::DB_REACTIVATE_PLUGIN,
 			'true',
 			get_admin_url()
-		);
+		) );
 		$label = __(
 			'All-in-One Event Calendar has been disabled due to an error:',
 			AI1EC_PLUGIN_NAME

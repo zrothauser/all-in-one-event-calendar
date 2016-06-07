@@ -38,13 +38,13 @@ abstract class Ai1ec_View_Admin_Abstract extends Ai1ec_Base {
 	 * @return string
 	 */
 	public function get_url() {
-		return add_query_arg(
+		return esc_url( add_query_arg(
 			array(
 				'post_type' => AI1EC_POST_TYPE,
 				'page'      => AI1EC_PLUGIN_NAME . '-' . $this->_page_suffix,
 			),
 			ai1ec_admin_url( 'edit.php' )
-		);
+		) );
 	}
 
 	/**

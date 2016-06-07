@@ -227,7 +227,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 				) .
 				'</div>',
 				wp_nonce_url(
-					add_query_arg( 'ai1ec_disable_gzip_compression', '1' ),
+					esc_url( add_query_arg( 'ai1ec_disable_gzip_compression', '1' ) ),
 					'ai1ec_disable_gzip_compression'
 				)
 			)

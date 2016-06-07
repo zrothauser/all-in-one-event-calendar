@@ -138,11 +138,11 @@ class Ai1ec_Event_Parent extends Ai1ec_Base {
 					$old_post_id,
 					$instance_id
 				);
-				$location = add_query_arg(
+				$location = esc_url( add_query_arg(
 					'message',
 					1,
 					get_edit_post_link( $post_id, 'url' )
-				);
+				) );
 				wp_redirect(
 					apply_filters(
 						'redirect_post_location',

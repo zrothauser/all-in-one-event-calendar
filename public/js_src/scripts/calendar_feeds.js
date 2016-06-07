@@ -141,8 +141,12 @@ define(
 					}
 				},
 				error    : function() {
-					$( 'a.ai1ec-suggested-processing', $container ).addClass( 'ai1ec-hidden' );
-					$( 'a.ai1ec-suggested-import-event', $container ).removeClass( 'ai1ec-hidden' );
+					$( 'a.ai1ec-suggested-processing', $container )
+						.addClass( 'ai1ec-hidden' );
+
+					$( 'a.ai1ec-suggested-import-event', $container )
+						.removeClass( 'ai1ec-hidden' );
+
 					$( '#ai1ec-discovery-status' )
 						.addClass( 'ai1ec-error' )
 						.text( ai1ec_config.discovery_event_error )
@@ -177,12 +181,28 @@ define(
 					ai1ec_delete   : true
 				},
 				success  : function( response ) {
-					$( 'a.ai1ec-suggested-removing', $container ).addClass( 'ai1ec-hidden' );
-					$( 'a.ai1ec-suggested-import-event', $container ).removeClass( 'ai1ec-hidden' );
-					if ( $my_feeds.length && ! $my_feeds.closest( '.ai1ec-feed-category' ).find( '.ai1ec-myfeeds-event' ).not( '.ai1ec-myfeeds-removing' ).length ) {
+					$( 'a.ai1ec-suggested-removing', $container )
+						.addClass( 'ai1ec-hidden' );
+
+					$( 'a.ai1ec-suggested-import-event', $container )
+						.removeClass( 'ai1ec-hidden' );
+
+					if (
+						$my_feeds.length &&
+						! $my_feeds.closest( '.ai1ec-feed-category' )
+							.find( '.ai1ec-myfeeds-event' )
+								.not( '.ai1ec-myfeeds-removing' ).length
+					) {
 						$my_feeds.closest( '.ai1ec-feed-container' ).remove();
 					}
 					$my_feeds.remove();
+				},
+				error    : function() {
+					$( 'a.ai1ec-suggested-removing', $container )
+						.addClass( 'ai1ec-hidden' );
+
+					$( 'a.ai1ec-suggested-remove-event', $container )
+						.removeClass( 'ai1ec-hidden' );
 				}
 			} );
 

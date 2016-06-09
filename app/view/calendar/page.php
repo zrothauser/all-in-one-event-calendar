@@ -109,7 +109,7 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 
 		// Get HTML for subscribe buttons.
 		$subscribe_buttons = $this->get_html_for_subscribe_buttons( $view_args );
-
+		
 		// Get HTML for view itself.
 		$view              = $view_obj->get_content( $view_args );
 

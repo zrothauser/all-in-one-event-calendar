@@ -9,7 +9,7 @@ define(
 	var lang = ai1ec_config.language;
 	
 	// Create the url
-	var url = 'async!https://maps.google.com/maps/api/js?sensor=false&language=' + lang;
+	var url = 'async!https://maps.google.com/maps/api/js?language=' + lang;
 	// Return a wrapper function so that we have a callback.
 	// This is important because we load gMaps async and we don't want to wait for it to load and block other functions
 	return function( callback ) {

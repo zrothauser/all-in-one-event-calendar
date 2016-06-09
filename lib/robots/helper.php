@@ -161,6 +161,7 @@ class Ai1ec_Robots_Helper extends Ai1ec_Base {
 				"Disallow: /$page_base/action~poster/",
 				"Disallow: /$page_base/action~*/",
 				"Disallow: /*controller=ai1ec_exporter_controller*",
+				"Disallow: /*/action~*/",
 			);
 		}
 

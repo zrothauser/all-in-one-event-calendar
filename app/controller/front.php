@@ -603,6 +603,21 @@ class Ai1ec_Front_Controller {
 		}
 
 		if ( is_admin() ) {
+			// Import suggested event
+			$dispatcher->register_action(
+				'wp_ajax_ai1ec_import_suggested_event',
+				array( 'calendar-feed.ics', 'add_discover_events_feed_subscription' )
+			);
+			// Remove suggested event
+			$dispatcher->register_action(
+				'wp_ajax_ai1ec_remove_suggested_event',
+				array( 'calendar-feed.ics', 'delete_individual_event_subscription' )
+			);
+			// Search for events
+			$dispatcher->register_action(
+				'wp_ajax_ai1ec_search_events',
+				array( 'calendar-feed.suggested', 'search_events' )
+			);
 			// get the repeat box
 			$dispatcher->register_action(
 				'wp_ajax_ai1ec_get_repeat_box',

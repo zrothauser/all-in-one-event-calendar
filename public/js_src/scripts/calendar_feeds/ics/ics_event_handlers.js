@@ -182,7 +182,7 @@ define(
 	var edit_cancel = function( e ) {
 		$( '#ai1ec-feeds-after' )
 			.addClass( 'ai1ec-well ai1ec-well-sm' )
-			.insertAfter( '#ics .ai1ec-form-horizontal' );	
+			.appendTo( '#import' );	
 		
 		$( '.ai1ec-feed-content' ).show();
 		ajax_handlers.reset_form();

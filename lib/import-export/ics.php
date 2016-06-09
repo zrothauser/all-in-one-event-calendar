@@ -29,22 +29,7 @@ class Ai1ec_Ics_Import_Export_Engine
 	 * @see Ai1ec_Import_Export_Engine::import()
 	 */
 	public function import( array $arguments ) {
-		$cal = $this->_registry->get( 'vcalendar' );
-		if ( $cal->parse( $arguments['source'] ) ) {
-			try {
-				$result = $this->add_vcalendar_events_to_db(
-					$cal,
-					$arguments
-				);
-			} catch ( Ai1ec_Parse_Exception $exception ) {
-				throw new Ai1ec_Parse_Exception(
-					'Processing "' . $arguments['source'] .
-					'" triggered error: ' . $exception->getMessage()
-				);
-			}
-			return $result;
-		}
-		throw new Ai1ec_Parse_Exception( 'The passed string is not a valid ics feed' );
+		throw new Exception( 'Import not supported' );
 	}
 
 	/* (non-PHPdoc)
@@ -322,12 +307,12 @@ class Ai1ec_Ics_Import_Export_Engine
 					}
 				}
 				if ( null !== $matches ) {
-					$rdate = implode( ',', $matches );	
-					unset( $matches ); 
-					unset( $arr ); 
+					$rdate = implode( ',', $matches );
+					unset( $matches );
+					unset( $arr );
 				} else {
 					$rdate = null;
-				}				
+				}
 			}
 
 			// ===================
@@ -449,7 +434,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			) {
 				$event_do_show_map = 0;
 			}
-				
+
 			// ==================
 			// = Cost & tickets =
 			// ==================
@@ -501,8 +486,8 @@ class Ai1ec_Ics_Import_Export_Engine
 								"\n",
 								$e->getProperty( 'description' )
 							));
-			
-			$description = $this->_remove_ticket_url( $description );				
+
+			$description = $this->_remove_ticket_url( $description );
 
 			// Store yet-unsaved values to the $data array.
 			$data += array(
@@ -547,7 +532,7 @@ class Ai1ec_Ics_Import_Export_Engine
 				$feed
 			);
 
-			$event = $this->_registry->get( 'model.event', $data );		
+			$event = $this->_registry->get( 'model.event', $data );
 
 			// Instant Event
 			$is_instant = $e->getProperty( 'X-INSTANT-EVENT' );
@@ -574,18 +559,18 @@ class Ai1ec_Ics_Import_Export_Engine
 					);
 			}
 			if ( null === $matching_event_id ) {
-				
+
 				// =================================================
 				// = Event was not found, so store it and the post =
 				// =================================================
 				$event->save();
 				$count++;
-			} else {				
+			} else {
 				// ======================================================
 				// = Event was found, let's store the new event details =
 				// ======================================================
 				$uid_cal = $e->getProperty( 'uid' );
-				if ( ! ai1ec_is_blank( $uid_cal ) ) {					
+				if ( ! ai1ec_is_blank( $uid_cal ) ) {
 					$uid_cal_original = sprintf( $event->get_uid_pattern(), $matching_event_id );
 					if ( $uid_cal_original === $uid_cal ) {
 						//avoiding cycle import
@@ -650,7 +635,7 @@ class Ai1ec_Ics_Import_Export_Engine
 			} else {
 				$checkout_url = null;
 			}
-			
+
 			$currency = $e->getProperty( 'X-API-EVENT-CURRENCY' );
 			if ( $currency && false === ai1ec_is_blank( $currency[1] ) ) {
 				$currency = $currency[1];
@@ -660,9 +645,9 @@ class Ai1ec_Ics_Import_Export_Engine
 			if ( $api_event_id || $api_url || $checkout_url || $currency ) {
 				if ( ! isset( $api ) ) {
 					$api = $this->_registry->get( 'model.api.api-ticketing' );
-				}				
+				}
 				$api->save_api_event_data( $event->get( 'post_id' ), $api_event_id, $api_url, $checkout_url, $currency );
-			}			
+			}
 
 			$wp_images_url  = $e->getProperty( 'X-WP-IMAGES-URL' );
 			if ( $wp_images_url && false === ai1ec_is_blank( $wp_images_url[1] ) ) {
@@ -671,8 +656,8 @@ class Ai1ec_Ics_Import_Export_Engine
 					$images_arr[ $key ] = explode( ';', $value );
 				}
 				if ( count( $images_arr ) > 0 ) {
-					update_post_meta( $event->get( 'post_id' ), '_featured_image', $images_arr );	
-				}	
+					update_post_meta( $event->get( 'post_id' ), '_featured_image', $images_arr );
+				}
 			}
 
 			unset( $events_in_db[$event->get( 'post_id' )] );
@@ -726,9 +711,9 @@ class Ai1ec_Ics_Import_Export_Engine
 		if ( isset( $time['params']['TZID'] ) ) {
 			$timezone    = $time['params']['TZID'];
 			$tzid_values = explode( ':', $timezone );
-			if ( 2 === count( $tzid_values ) && 
+			if ( 2 === count( $tzid_values ) &&
 				15 === strlen ( $tzid_values[1] ) ) {
-				//the $e->getProperty('DTSTART') or  getProperty('DTEND') for the strings below 
+				//the $e->getProperty('DTSTART') or  getProperty('DTEND') for the strings below
 				//is not returning the value TZID only with the timezone name
 				//DTSTART;TZID=America/Halifax:20160502T180000
 				//DTEND;TZID=America/Halifax:20160502T200000
@@ -850,7 +835,7 @@ class Ai1ec_Ics_Import_Export_Engine
 		$post_meta_values = get_post_meta( $event->get( 'post_id' ), '', false );
 		$cost_type        = null;
 		if ( $post_meta_values ) {
-			foreach ($post_meta_values as $key => $value) {				
+			foreach ($post_meta_values as $key => $value) {
 				if ( '_ai1ec_cost_type' === $key ) {
 					$cost_type    = $value[0];
 				}
@@ -883,18 +868,18 @@ class Ai1ec_Ics_Import_Export_Engine
 			$e->setProperty( 'X-API-URL'           , $api->get_api_event_url( $event->get( 'post_id' ) ) );
 			$e->setProperty( 'X-CHECKOUT-URL'      , $api->get_api_event_checkout_url( $event->get( 'post_id' ) ) );
 			$e->setProperty( 'X-API-EVENT-CURRENCY', $api->get_api_event_currency( $event->get( 'post_id' ) ) );
-		} else if ( $event->get( 'ticket_url' ) ) {					
+		} else if ( $event->get( 'ticket_url' ) ) {
 			$url = $event->get( 'ticket_url' );
 		}
 
 		//Adding Ticket URL to the Description field
 		if ( false === ai1ec_is_blank( $url ) ) {
-			$content = $this->_remove_ticket_url( $content );	
+			$content = $this->_remove_ticket_url( $content );
 			$content = $content
 		             . '<p>' . __( 'Tickets: ', AI1EC_PLUGIN_NAME )
 		             . '<a class="ai1ec-ticket-url-exported" href="'
 		             . $url . '">' . $url
-		             . '</a>.</p>'; 
+		             . '</a>.</p>';
 		}
 
 		$content = str_replace(']]>', ']]&gt;', $content);
@@ -908,18 +893,18 @@ class Ai1ec_Ics_Import_Export_Engine
 		if ( empty( $matches ) ) {
 
 			$post_id = get_post_thumbnail_id( $event->get( 'post_id' ) );
-			$images  = null;			
+			$images  = null;
 			$added   = null;
 			foreach ( array( 'thumbnail', 'medium', 'large', 'full' ) as $_size ) {
-				$attributes = wp_get_attachment_image_src( $post_id, $_size );	
+				$attributes = wp_get_attachment_image_src( $post_id, $_size );
 				if ( false !== $attributes ) {
-					$key_str    = sprintf( '%d_%d', $attributes[1], $attributes[2]);	
+					$key_str    = sprintf( '%d_%d', $attributes[1], $attributes[2]);
 					if ( null === $added || false === isset( $added[$key_str] ) ) {
-						$added[$key_str] = true; 
+						$added[$key_str] = true;
 						array_unshift( $attributes, $_size );
 						$images[] = implode( ';', $attributes );
 					}
-				}	 					
+				}
 			}
 			if ( null !== $images ) {
 				$e->setProperty(
@@ -1072,7 +1057,7 @@ class Ai1ec_Ics_Import_Export_Engine
 		) {
 			if ( 'events_categories' === $cat->taxonomy ) {
 				$categories[] = $cat->name;
-			}			
+			}
 		}
 		$e->setProperty(
 			'categories',

@@ -21,7 +21,7 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 	/* (non-PHPdoc)
 	 * @see Ai1ec_Calendar_View_Abstract::get_content()
 	*/
-	public function get_content( array $view_args, $relative_to_reference = false ) {
+	public function get_content( array $view_args ) {
 		
 		$type = $this->get_name();
 		$time = $this->_registry->get( 'date.system' );
@@ -39,7 +39,8 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			'ai1ec_events_limit',
 			$events_limit
 		);		
-		if ( $relative_to_reference ) {			
+		$relative_to_reference = in_array( $this->get_name(), array( 'agenda', 'posterboard', 'stream' ) ); 
+		if ( $relative_to_reference ) {
 			$results = $search->get_events_relative_to_reference(
 				$view_args['time_limit'],
 				$events_limit,

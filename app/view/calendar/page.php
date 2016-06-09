@@ -109,11 +109,9 @@ class Ai1ec_Calendar_Page extends Ai1ec_Base {
 
 		// Get HTML for subscribe buttons.
 		$subscribe_buttons = $this->get_html_for_subscribe_buttons( $view_args );
-
-		$relative_to_reference  = in_array( $action, array( 'agenda', 'posterboard', 'stream' ) );
 		
 		// Get HTML for view itself.
-		$view              = $view_obj->get_content( $view_args, $relative_to_reference );
+		$view              = $view_obj->get_content( $view_args );
 
 		$router            = $this->_registry->get( 'routing.router' );
 		$are_filters_set   = $router->is_at_least_one_filter_set_in_request(

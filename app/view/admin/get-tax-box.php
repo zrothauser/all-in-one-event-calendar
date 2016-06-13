@@ -11,7 +11,7 @@
  */
 class Ai1ec_View_Admin_Get_Tax_Box extends Ai1ec_Base {
 	/**
-	 * get_repeat_box function
+	 * get_tax_box function
 	 *
 	 * @return string
 	 **/

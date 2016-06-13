@@ -22,7 +22,7 @@ define(
 		if ( response.error ) {
 			// Error adding feed; alert user.
 			var $alert = AI1EC_UTILS.make_alert( response.message, 'error' );
-			$( '#ics-alerts' ).append( $alert );
+			$( '#ics-alerts' ).append( $alert ).prependTo( '#import' );
 		} else {
 			// Reset the form and add the feed to the bottom of the list.
 			reset_form();
@@ -42,8 +42,9 @@ define(
 			if ( $container.length ) {
 				$container.replaceWith( $feed );
 			} else {
-				$( '#ai1ec-feeds-after' ).after( $feed );
+				$( '#ics .ai1ec-ics-feeds-list' ).append( $feed );
 			}
+			$( 'a[href="#ics"]' ).click();
 			if (
 				response.update &&
 				response.update.data &&
@@ -92,7 +93,7 @@ define(
 		$( '.ai1ec_update_ics', $container ).button( 'reset' );
 
 		// Append alert message to DOM.
-		$( '#ics-alerts' ).append( $alert );
+		$( '#ics-alerts' ).append( $alert ).prependTo( '#ics' );
 	};
 
 	var reset_form = function() {

@@ -23,11 +23,11 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	 * @return void Return from this method is ignored.
 	 */
 	protected function _initialize() {
-		$this->_settings = $this->_registry->get( 'model.settings' );			
+		$this->_settings = $this->_registry->get( 'model.settings' );
 	}
 
 	protected function get_ticketing_settings( $find_attribute = null, $default_value_attribute = null ) {
-		$api_settings = get_option( self::WP_OPTION_KEY, null );		
+		$api_settings = get_option( self::WP_OPTION_KEY, null );
 		if ( ! is_array( $api_settings ) ) {
 			$api_settings = array( 
 				'enabled'              => $this->_settings->get( 'ticketing_enabled' ),
@@ -39,7 +39,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 			$this->_settings->set( 'ticketing_message'    , '' );
 			$this->_settings->set( 'ticketing_enabled'    , false );
 			$this->_settings->set( 'ticketing_token'      , '' );
-			$this->_settings->set( 'ticketing_calendar_id', null );		
+			$this->_settings->set( 'ticketing_calendar_id', null );
 		}
 		if ( is_null( $find_attribute ) ) {
 			return $api_settings;
@@ -64,13 +64,18 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		$api_settings['message']     = $message;
 		$api_settings['enabled']     = $enabled;
 		$api_settings['token']       = $token;
-		$api_settings['calendar_id'] = $calendar_id;		
+		$api_settings['calendar_id'] = $calendar_id;
 		$api_settings['account']     = $account;
 		return update_option( self::WP_OPTION_KEY, $api_settings );
 	}
 
 	protected function clear_ticketing_settings() {
 		delete_option( self::WP_OPTION_KEY );
+
+		// Clear transient API data
+		delete_site_transient( 'ai1ec_api_feeds_subscriptions' );
+		delete_site_transient( 'ai1ec_api_subscriptions' );
+		delete_site_transient( 'ai1ec_api_features' );
 	}
 
 	/**
@@ -256,11 +261,14 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	 * settings, then we will try to find on the API
 	 * @return string JSON.
 	 */
-	protected function _get_ticket_calendar() {
+	protected function _get_ticket_calendar( $createIfNotExists = true ) {
 		$ticketing_calendar_id = $this->get_ticketing_settings( 'calendar_id', 0 );
 		if ( 0 < $ticketing_calendar_id ) {
 			return $ticketing_calendar_id;
 		} else {
+			if ( ! $createIfNotExists ) {
+				return 0;
+			}
 			//if the calendar is not saved on settings it should exists on API
 			$ticketing_calendar_id = $this->_find_user_calendar();
 			if ( 0 < $ticketing_calendar_id  ) {
@@ -359,6 +367,61 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	}
 
 	/**
+	 * @return array List of subscriptions and limits
+	 */
+	protected function get_subscriptions( $force_refresh = false ) {
+		$subscriptions = get_site_transient( 'ai1ec_api_subscriptions' );
+
+		if ( false === $subscriptions || $force_refresh || ( defined( 'AI1EC_DEBUG' ) && AI1EC_DEBUG )  ) {
+			$response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars/' . $this->_get_ticket_calendar() . '/subscriptions',
+				null,
+				true
+				);
+			if ( $this->is_response_success( $response ) ) {
+				$subscriptions = (array) $response->body;
+			} else {
+				$subscriptions = array();
+			}
+
+			// Save for 30 minutes
+			$minutes = 30;
+			set_site_transient( 'ai1ec_api_subscriptions', $subscriptions, $minutes * 60 );
+		}
+
+		return $subscriptions;
+	}
+
+	/**
+	 * Check if calendar should have a specific feature enabled
+	 */
+	public function has_subscription_active( $feature ) {
+		$subscriptions = $this->get_subscriptions();
+
+		return array_key_exists( $feature, $subscriptions );
+	}
+
+	/**
+	 * Check if feature has reached its limit
+	 */
+	public function subscription_has_reached_limit( $feature ) {
+		$has_reached_limit = true;
+
+		$subscriptions = $this->get_subscriptions();
+
+		if ( array_key_exists( $feature, $subscriptions ) ) {
+			$quantity = (array) $subscriptions[$feature];
+			$provided = $quantity['provided'];
+			$used     = $quantity['used'];
+
+			if ( $provided - $used > 0 ) {
+				$has_reached_limit = false;
+			}
+		}
+
+		return $has_reached_limit;
+	}
+
+	/**
 	 * Make the request to the API endpons
 	 * @param $url The end part of the url to make the request.
 	 *        $body The body to send the message 
@@ -387,8 +450,8 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 			$result->is_error = true;
 			$result->error    = $response->get_error_message();
 		} else {
-			$result->response_code = wp_remote_retrieve_response_code( $response );			
-			if ( 200 === $result->response_code ) {							
+			$result->response_code = wp_remote_retrieve_response_code( $response );
+			if ( 200 === $result->response_code ) {
 				if ( true === $decode_response_body ) {
 					$result->body     = json_decode( $response['body'] );
 					if ( false === is_null( $result->body ) ) {
@@ -411,6 +474,20 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	}
 
 	/**
+	 * Make a post request to the api
+	 * @param rest_endpoint Partial URL that can include {calendar_id} that will be replaced by the current calendar signed
+	 */
+	public function call_api( $method, $endpoint, $body = null, $decode_response_body = true, $custom_headers = null  ) {
+		$calendar_id = $this->_get_ticket_calendar();
+		if ( 0 >= $calendar_id ) {
+			return false;
+		}
+		$url  = AI1EC_API_URL . str_replace( '{calendar_id}', $calendar_id, $endpoint );	
+		$body = json_encode( $body );
+		return $this->request_api( $method, $url, $body, $decode_response_body, $custom_headers );
+	}
+
+	/**
 	 * Save an error notification to be showed to the user on WP header of the page
 	 * @param $response The response got from request_api method.
 	 *        $custom_error_message The custom message to show before the detailed message
@@ -425,7 +502,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 		);
 		$response->error_message = $error_message;
 		$notification            = $this->_registry->get( 'notification.admin' );
-		$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );				
+		$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
 		error_log( $custom_error_response . ': ' . $error_message . ' - raw error: ' . print_r( $response->raw, true ) );
 		return $error_message;
 	}
@@ -452,8 +529,7 @@ abstract class Ai1ec_Api_Abstract extends Ai1ec_App {
 	 */
 	public function is_response_success( $response ) {
 		return $response != null && 
-			isset( $response->is_error ) && 
-			false === $response->is_error;
+			( !isset( $response->is_error ) || ( isset( $response->is_error ) && false === $response->is_error ) );
 	}
 
 }

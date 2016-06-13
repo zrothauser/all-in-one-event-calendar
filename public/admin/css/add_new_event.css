@@ -159,25 +159,11 @@
 .ai1ec-tickets-form-template {
 	display: none !important;
 }
-#ai1ec_add_new_ticket,
-#ai1ec_tax_options,
-#ai1ec_update_tax_options {
+#ai1ec_add_new_ticket {
 	margin: 15px 0 20px;
 }
 .ai1ec-reset-css * {
 	all: initial !important;
-}
-#ai1ec_tax_box {
-	padding: 20px;
-}
-#ai1ec_tax_box .ai1ec-loading {
-	padding: 20px;
-}
-#ai1ec_tax_box .ai1ec-modal-dialog {
-	margin-top: 0;
-}
-#ai1ec_tax_box .ai1ec-modal-body {
-	padding-top: 0;
 }
 #ai1ec_cancel_edit_ticket {
 	margin-right: 6px;

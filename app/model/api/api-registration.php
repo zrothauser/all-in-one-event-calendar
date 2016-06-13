@@ -32,6 +32,7 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 			$response_body = (array) $response->body;
 			$this->save_ticketing_settings( $response_body['message'], true, $response_body['auth_token'], $this->_find_user_calendar(), $body['email'] );
 			$this->has_payment_settings();
+			$this->sync_api_settings();
 		} else {
 			$error_message = $this->save_error_notification( $response, __( 'We were unable to Sign you In for Time.ly Network', AI1EC_PLUGIN_NAME ) );
 			$this->save_ticketing_settings( $error_message, false, '', 0, null );
@@ -75,8 +76,8 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 				$api_features = array();
 			}
 
-			// Save for 30 minutes
-			$minutes = 30;
+			// Save for 5 minutes
+			$minutes = 5;
 			set_site_transient( 'ai1ec_api_features', $api_features, $minutes * 60 );
 		}
 
@@ -104,13 +105,14 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 	public function is_ticket_available() {
 		return $this->is_feature_available( Ai1ec_Api_Features::CODE_TICKETING );
 	}
- 
+
  	/**
 	 * Clean the ticketing settings on WP database only
 	 */
 	public function signout() {
-		$calendar_id = $this->_get_ticket_calendar();
+		$calendar_id = $this->_get_ticket_calendar( false );
 		if ( 0 >= $calendar_id ) {
+			$this->clear_ticketing_settings();
 			return false;
 		}
 		$response = $this->request_api( 'GET', AI1EC_API_URL . "calendars/$calendar_id/signout", null, true );
@@ -120,7 +122,7 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 		} else {
 			$error_message = $this->save_error_notification( $response, __( 'We were unable to Sign you Out of Time.ly Network', AI1EC_PLUGIN_NAME ) );
 			return array( 'message' => $error_message );
-		}				
+		}
 	}
 
 	/**
@@ -190,4 +192,21 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 			return array();
 		}
 	}
+
+	/**
+	 * Sync settings from API after signing in
+	 */
+	public function sync_api_settings() {
+		// Sync feeds subscriptions
+		try {
+			$api_feed = $this->_registry->get( 'model.api.api-feeds' );
+			$api_feed->get_and_sync_feed_subscriptions();
+		} catch ( Exception $e ) {
+			$error_message = 'Some feeds were not imported to Time.ly Network. Error: ' . $e->getMessage();
+
+			$notification  = $this->_registry->get( 'notification.admin' );
+			$notification->store( $error_message, 'error', 0, array( Ai1ec_Notification_Admin::RCPT_ADMIN ), false );
+		}
+	}
+
 }

@@ -38,28 +38,52 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		$events_limit = apply_filters(
 			'ai1ec_events_limit',
 			$events_limit
-		);
-		$results = $search->get_events_relative_to(
-			$timestamp,
-			$events_limit,
-			$view_args['page_offset'],
-			apply_filters(
-				'ai1ec_get_events_relative_to_filter',
-				array(
-					'post_ids'     => $view_args['post_ids'],
-					'auth_ids'     => $view_args['auth_ids'],
-					'cat_ids'      => $view_args['cat_ids'],
-					'tag_ids'      => $view_args['tag_ids'],
-					'instance_ids' => $view_args['instance_ids'],
+		);		
+		$relative_to_reference = in_array( $this->get_name(), array( 'agenda', 'posterboard', 'stream' ) ); 
+		if ( $relative_to_reference ) {
+			$results = $search->get_events_relative_to_reference(
+				$view_args['time_limit'],
+				$events_limit,
+				$view_args['page_offset'],
+				apply_filters(
+					'ai1ec_get_events_relative_to_filter',
+					array(
+						'post_ids'     => $view_args['post_ids'],
+						'auth_ids'     => $view_args['auth_ids'],
+						'cat_ids'      => $view_args['cat_ids'],
+						'tag_ids'      => $view_args['tag_ids'],
+						'instance_ids' => $view_args['instance_ids'],
+					),
+					$view_args
+					),
+				apply_filters(
+					'ai1ec_show_unique_events',
+					false
+					)
+				);
+		} else {
+			$results = $search->get_events_relative_to(
+				$timestamp,
+				$events_limit,
+				$view_args['page_offset'],
+				apply_filters(
+					'ai1ec_get_events_relative_to_filter',
+					array(
+						'post_ids'     => $view_args['post_ids'],
+						'auth_ids'     => $view_args['auth_ids'],
+						'cat_ids'      => $view_args['cat_ids'],
+						'tag_ids'      => $view_args['tag_ids'],
+						'instance_ids' => $view_args['instance_ids'],
+					),
+					$view_args
 				),
-				$view_args
-			),
-			$view_args['time_limit'],
-			apply_filters(
-				'ai1ec_show_unique_events',
-				false
-			)
-		);
+				$view_args['time_limit'],
+				apply_filters(
+					'ai1ec_show_unique_events',
+					false
+				)
+			);
+		}
 		$this->_update_meta( $results['events'] );
 		$dates = $this->get_agenda_like_date_array(
 			$results['events'],
@@ -101,19 +125,33 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 		$pagination_links = '';
 		if ( ! $view_args['no_navigation'] ) {
 
-			$pagination_links = $this->_get_agenda_like_pagination_links(
-				$view_args,
-				$results['prev'],
-				$results['next'],
-				$results['date_first'],
-				$results['date_last'],
-				$title,
-				$title_short,
-				null === $view_args['time_limit'] || 
-							0 === $view_args['time_limit'] ? 
-								$timestamp : 
-								$view_args['time_limit']
-			);
+			if ( $relative_to_reference ) {
+				$pagination_links = $this->_get_pagination_links(
+					$view_args,
+					$results['prev'],
+					$results['next'],
+					$results['date_first'],
+					$results['date_last'],						
+					$title,
+					$title_short,
+					$view_args['page_offset'] + -1,
+					$view_args['page_offset'] + 1
+					);				
+			} else {
+				$pagination_links = $this->_get_agenda_like_pagination_links(
+					$view_args,
+					$results['prev'],
+					$results['next'],
+					$results['date_first'],
+					$results['date_last'],
+					$title,
+					$title_short,
+					null === $view_args['time_limit'] || 
+								0 === $view_args['time_limit'] ? 
+									$timestamp : 
+									$view_args['time_limit']
+				);
+			}
 
 			$pagination_links = $loader->get_file(
 				'pagination.twig',
@@ -281,13 +319,23 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 				'category_divider_color'
 			);
 
+			$meta = $this->_registry->get( 'model.meta-post' );
+			if ( ! $event_props['ticket_url'] ) {
+				$timely_tickets = $meta->get(
+					$event->get( 'post_id' ),
+					'_ai1ec_timely_tickets_url',
+					null
+				);
+				if ( $timely_tickets ) {
+					$event_props['ticket_url'] = $timely_tickets;
+				}
+			}
 			if (
 				true === apply_filters(
 					'ai1ec_buy_button_product',
 					false
 				)
 			) {
-				$meta         = $this->_registry->get( 'model.meta-post' );
 				$full_details = $meta->get(
 					$event->get( 'post_id' ),
 					'_ai1ec_ep_product_details',
@@ -434,6 +482,68 @@ class Ai1ec_Calendar_View_Agenda extends Ai1ec_Calendar_View_Abstract {
 			'enabled' => $next,
 		);
 
+		return $links;
+	}
+	
+	/**
+	 * Returns an associative array of two links for any agenda-like view of the
+	 * calendar:
+	 *    previous page (if previous events exist),
+	 *    next page (if next events exist).
+	 * Each element is an associative array containing the link's enabled status
+	 * ['enabled'], CSS class ['class'], text ['text'] and value to assign to
+	 * link's href ['href'].
+	 *
+	 * @param array $args Current request arguments
+	 *
+	 * @param bool     $prev         Whether there are more events before
+	 *                               the current page
+	 * @param bool     $next         Whether there are more events after
+	 *                               the current page
+	 * @param Ai1ec_Date_Time|null $date_first
+	 * @param Ai1ec_Date_Time|null $date_last
+	 * @param string   $title        Title to display in datepicker button
+	 * @param string   $title_short  Short month names.
+	 * @param int|null $default_time_limit  The default time limit in the case of pagination ends.
+	 * @return array      Array of links
+	 */
+	protected function _get_pagination_links( 
+		$args, 
+		$prev = false, 
+		$next = false,
+		$date_first = null,
+		$date_last = null,		
+		$title = '', 
+		$title_short = '',
+		$prev_offset = -1,
+		$next_offset = 1) {
+		
+		$links = array();
+		
+		if ( $this->_registry->get( 'model.settings' )->get( 'ai1ec_use_frontend_rendering' ) ) {
+			$args['request_format'] = 'json';
+		}
+		$args['page_offset'] = $prev_offset;
+		
+		$href = $this->_registry->get( 'html.element.href', $args );
+		$links[] = array( 
+			'class' => 'ai1ec-prev-page', 
+			'text' => '<i class="ai1ec-fa ai1ec-fa-chevron-left"></i>', 
+			'href' => $href->generate_href(), 
+			'enabled' => $prev );
+		
+		// Minical datepicker.
+		$factory = $this->_registry->get( 'factory.html' );
+		$links[] = $factory->create_datepicker_link( $args, $date_first->format_to_gmt(), $title, $title_short );
+		
+		$args['page_offset'] = $next_offset;
+		$href = $this->_registry->get( 'html.element.href', $args );
+		$links[] = array( 
+			'class' => 'ai1ec-next-page', 
+			'text' => '<i class="ai1ec-fa ai1ec-fa-chevron-right"></i>', 
+			'href' => $href->generate_href(), 
+			'enabled' => $next );
+		
 		return $links;
 	}
 

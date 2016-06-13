@@ -5,7 +5,7 @@ calendar, ical, iCalendar, all-in-one, events sync, events widget,
 calendar widget
 Requires WordPress at least: 3.5
 Tested up to: 4.5
-Stable tag: 2.4.1
+Stable tag: 2.5.0
 License: GNU General Public License, version 3 (GPL-3.0)
 
 A calendar system with many views, upcoming events widget, color-coded
@@ -149,11 +149,19 @@ https://vimeo.com/135004810
 
 == Changelog ==
 
+= Version 2.5.0 = 
+
+* Changed: ICS feeds are now handled through API
+* Added support for Timely Ticketing to the tickets button
+* Fixed: Error was popping up when clicking on "Your Saved Events" button 
+* Fixed: Tickets button were appearing twice on Month view popup
+* Fixed: A few users were getting error while trying to upgrade plugin
+
 = Version 2.4.1 = 
 
-* Fixed security vulnerability related to stored XSS
-* Fixed security vulnerability related to not sanitizing correctly some URLs
-* Improved exhibition of ticket's quantity field, that was too small and no number could be seen
+* Fixed: Security vulnerability related to stored XSS
+* Fixed: Security vulnerability related to not sanitizing correctly some URLs
+* Improved: Exhibition of ticket's quantity field, that was too small and no number could be seen
 
 = Version 2.4.0 = 
 

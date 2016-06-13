@@ -68,7 +68,7 @@ abstract class Ai1ec_Html_Element_Settings extends Ai1ec_Base
 	 *
 	 * @return string Finalized HTML snippet.
 	 */
-	public function render( $output = '', $wrap = true ) {
+	public function render( $output = '', $wrap = true, $hidden = false ) {
 		if ( isset( $this->_args['renderer']['condition'] ) ) {
 			$condition = $this->_args['renderer']['condition'];
 			if ( is_bool( $condition ) ) {
@@ -91,7 +91,11 @@ abstract class Ai1ec_Html_Element_Settings extends Ai1ec_Base
 		if ( ! $wrap ) {
 			return $output;
 		}
-		return '<div class="ai1ec-form-group">' . $output . '</div>';
+		if ( $hidden ) {
+			return '<div class="ai1ec-form-group ai1ec-hidden">' . $output . '</div>';
+		} else {
+			return '<div class="ai1ec-form-group">' . $output . '</div>';
+		}
 	}
 
 }

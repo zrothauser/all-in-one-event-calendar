@@ -166,7 +166,7 @@ class Ai1ec_Event_Parent extends Ai1ec_Base {
 	 *
 	 * @return array Optionally modified $actions list
 	 */
-	public function post_row_actions( array $actions, $post ) {
+	public function post_row_actions( $actions, $post ) {
 		if ( $this->_registry->get( 'acl.aco' )->is_our_post_type( $post ) ) {
 			$parent_post_id = $this->event_parent( $post->ID );
 			if (

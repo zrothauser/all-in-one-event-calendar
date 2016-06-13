@@ -505,6 +505,12 @@ class Ai1ec_Javascript_Controller {
 			'ticketing_no_tickets_included'  => Ai1ec_I18n::__( '<b>
 				The Event has the cost option Tickets selected but no ticket was included.</b>'
 			),
+			'discovery_event_success'         => Ai1ec_I18n::__(
+				'Event was imported successfully.'
+			),
+			'discovery_event_error'          => Ai1ec_I18n::__(
+				'An error occurred when importing event. Please, try later.'
+			),
 			'language'                       => $this->_registry->get( 'p28n.wpml' )->get_lang(),
 			'ajax_url'                       => $ajax_url,
 			// 24h time format for time pickers

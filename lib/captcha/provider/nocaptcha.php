@@ -94,7 +94,7 @@ class Ai1ec_Captcha_Nocaptcha_Provider extends Ai1ec_Captcha_Provider {
 			);
 			$response['success'] = false;
 		}
-		$url       = esc_url( add_query_arg(
+		$url       = add_query_arg(
 			array(
 				'secret'   => $this->_settings->get(
 					'google_nocaptcha_private_key'
@@ -102,7 +102,7 @@ class Ai1ec_Captcha_Nocaptcha_Provider extends Ai1ec_Captcha_Provider {
 				'response' => $data['g-recaptcha-response'],
 			),
 			'https://www.google.com/recaptcha/api/siteverify'
-		) );
+		);
 		$json_resp = wp_remote_get( $url );
 		if ( is_wp_error( $json_resp ) ) {
 			return $response;

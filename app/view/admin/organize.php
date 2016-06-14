@@ -47,13 +47,13 @@ class Ai1ec_View_Organize extends Ai1ec_Base {
 				}
 				$this->_taxonomies[] = array(
 					'taxonomy_name' => $taxonomy,
-					'url'           => esc_url( add_query_arg(
+					'url'           => add_query_arg(
 						array(
 							'post_type' => AI1EC_POST_TYPE,
 							'taxonomy'  => $taxonomy
 					 	),
 						admin_url( 'edit-tags.php' )
-					) ),
+					),
 					'name'          => $data->labels->name,
 					'active'        => $active_taxonomy,
 					'icon'          => isset( $taxonomy_metadata[$taxonomy] ) ?

@@ -1002,11 +1002,9 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 		// Default status
 		$feed_status       = $api_feed->getStaticVar('FEED_NOT_MIGRATED_CODE');
-		error_log('Status: ' . $feed_status);
 
 		// Get list of subscriptions
 		$api_subscriptions = $api_feed->get_feed_subscriptions();
-		error_log(print_r($api_subscriptions, true));
 
 		foreach ( $api_subscriptions as $api_subscription ) {
 			if ( $api_subscription->feed_id === $feed_id ) {
@@ -1018,7 +1016,6 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 				break;
 			}
 		}
-		error_log('Status 1: ' . $feed_status);
 
 		return $feed_status;
 	}

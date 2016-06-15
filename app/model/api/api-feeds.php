@@ -14,9 +14,9 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 	// c = Feed not migrated yet to API
 	// a = Feed migrated to API (all events)
 	// b = Feed migrated to API (individual events were selected)
-	const FEED_NOT_MIGRATED_CODE    = 'c';
-	const FEED_API_ALL_EVENTS_CODE  = 'a';
-	const FEED_API_SOME_EVENTS_CODE = 'b';
+	public static $FEED_NOT_MIGRATED_CODE    = 'c';
+	public static $FEED_API_ALL_EVENTS_CODE  = 'a';
+	public static $FEED_API_SOME_EVENTS_CODE = 'b';
 
 	/**
 	 * Post construction routine.
@@ -27,6 +27,15 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 	 */
 	protected function _initialize() {
 		parent::_initialize();
+	}
+
+	/**
+	 * Get static var (for PHP 5.2 compatibility)
+	 *
+	 * @param String $var
+	 */
+	public function getStaticVar($var) {
+		return self::$$var;
 	}
 
 	/**
@@ -99,7 +108,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 			throw new Exception( 'Calendar ID not found' );
 		}
 		$response = $this->request_api( 'POST', AI1EC_API_URL . 'calendars/' . $calendar_id . '/feeds/import',
-			json_encode( [
+			json_encode( array(
 				'url'                           => $entry['feed_url'],
 				'categories'                    => $entry['feed_category'],
 				'tags'                          => $entry['feed_tags'],
@@ -108,7 +117,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 				'import_any_tag_and_categories' => $entry['keep_tags_categories'],
 				'preserve_imported_events'      => $entry['keep_old_events'],
 				'assign_default_utc'            => $entry['import_timezone']
-			] )
+			) )
 		);
 
 		if ( $this->is_response_success( $response ) ) {
@@ -134,7 +143,7 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 			throw new Exception( 'Calendar ID not found' );
 		}
 		$response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars/' . $calendar_id . '/feeds/get/' . $feed_id,
-			json_encode( [ "max" => "9999" ] )
+			json_encode( array( "max" => "9999" ) )
 		);
 
 		if ( $this->is_response_success( $response ) ) {
@@ -260,10 +269,10 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 		}
 
 		$response = $this->request_api( 'POST', AI1EC_API_URL . 'calendars/' . $calendar_id . '/feeds/subscribe',
-			json_encode( [
+			json_encode( array(
 				'feed_id'        => $feed_id,
 				'feed_event_uid' => $feed_event_uid
-			] )
+			) )
 		);
 
 		// Refresh list of subscriptions and limits
@@ -290,10 +299,10 @@ class Ai1ec_Api_Feeds extends Ai1ec_Api_Abstract {
 		}
 
 		$response = $this->request_api( 'POST', AI1EC_API_URL . 'calendars/' . $calendar_id . '/feeds/unsubscribe',
-			json_encode( [
+			json_encode( array(
 				'feed_id'        => $feed_id,
 				'feed_event_uid' => $feed_event_uid
-			] )
+			) )
 		);
 
 		// Refresh list of subscriptions and limits

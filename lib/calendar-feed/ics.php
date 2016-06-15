@@ -406,8 +406,8 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			'cron_freq'        => $cron_freq->get_content(),
 			'event_categories' => $select2_cats,
 			'event_tags'       => $select2_tags,
-			'feed_rows'        => $this->_get_feed_rows( $api_feed::FEED_API_ALL_EVENTS_CODE ),
-			'single_feed_rows' => $this->_get_feed_rows( $api_feed::FEED_API_SOME_EVENTS_CODE ),
+			'feed_rows'        => $this->_get_feed_rows( $api_feed->getStaticVar('FEED_API_ALL_EVENTS_CODE') ),
+			'single_feed_rows' => $this->_get_feed_rows( $api_feed->getStaticVar('FEED_API_SOME_EVENTS_CODE') ),
 			'modal'            => $modal,
 			'api_signed'       => $api_signed,
 			'migration'        => $api_signed && 0 < $local_feeds
@@ -458,9 +458,9 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 			$row_feed_status = $this->getFeedStatus( $row->feed_name );
 
 			// If the status of the feed is different from requested, skip
-			if ( $api_feed::FEED_API_ALL_EVENTS_CODE === $feed_status && $row_feed_status === $api_feed::FEED_API_SOME_EVENTS_CODE ) {
+			if ( $api_feed->getStaticVar('FEED_API_ALL_EVENTS_CODE') === $feed_status && $row_feed_status === $api_feed->getStaticVar('FEED_API_SOME_EVENTS_CODE') ) {
 				continue;
-			} else if ( $api_feed::FEED_API_SOME_EVENTS_CODE === $feed_status && $feed_status !== $row_feed_status ) {
+			} else if ( $api_feed->getStaticVar('FEED_API_SOME_EVENTS_CODE') === $feed_status && $feed_status !== $row_feed_status ) {
 				continue;
 			}
 
@@ -480,7 +480,7 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 
 			// Get event UIDs
 			$feed_events_uids = array();
-			if ( $api_feed::FEED_API_SOME_EVENTS_CODE === $feed_status ) {
+			if ( $api_feed->getStaticVar('FEED_API_SOME_EVENTS_CODE') === $feed_status ) {
 				foreach ( $api_subscriptions as $api_subscription ) {
 					if ( $api_subscription->feed_id === $row->feed_name ) {
 						$feed_events_uids = (array) $api_subscription->feed_events_uids;
@@ -1001,21 +1001,24 @@ class Ai1ecIcsConnectorPlugin extends Ai1ec_Connector_Plugin {
 		$api_feed          = $this->_api_feed;
 
 		// Default status
-		$feed_status       = $api_feed::FEED_NOT_MIGRATED_CODE;
+		$feed_status       = $api_feed->getStaticVar('FEED_NOT_MIGRATED_CODE');
+		error_log('Status: ' . $feed_status);
 
 		// Get list of subscriptions
 		$api_subscriptions = $api_feed->get_feed_subscriptions();
+		error_log(print_r($api_subscriptions, true));
 
 		foreach ( $api_subscriptions as $api_subscription ) {
 			if ( $api_subscription->feed_id === $feed_id ) {
 				if ( sizeof( $api_subscription->feed_events_uids ) > 0 ) {
-					$feed_status = $api_feed::FEED_API_SOME_EVENTS_CODE;
+					$feed_status = $api_feed->getStaticVar('FEED_API_SOME_EVENTS_CODE');
 				} else {
-					$feed_status = $api_feed::FEED_API_ALL_EVENTS_CODE;
+					$feed_status = $api_feed->getStaticVar('FEED_API_ALL_EVENTS_CODE');
 				}
 				break;
 			}
 		}
+		error_log('Status 1: ' . $feed_status);
 
 		return $feed_status;
 	}

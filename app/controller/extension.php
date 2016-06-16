@@ -209,6 +209,16 @@ abstract class Ai1ec_Base_Extension_Controller {
 		if ( $version !== $this->get_version() ) {
 			$registry->get( 'model.settings' )->perform_upgrade_actions();
 			$this->_perform_upgrade_actions();
+
+			// Force regeneration of JS cache
+			$registry->get( 'controller.javascript' )->revalidate_cache();
+			$registry->get( 'controller.javascript-widget' )->revalidate_cache();
+
+			// Force regeneration of CSS
+			$option->delete( 'ai1ec_render_css' );
+			$option->delete( 'ai1ec_filename_css' );
+
+			// Update version
 			$option->set( $version_variable, $this->get_version(), true );
 		}
 	}

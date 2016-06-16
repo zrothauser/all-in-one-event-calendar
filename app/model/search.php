@@ -418,7 +418,11 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 				
 		// Convert timestamp to GMT time
 		if ( 0 == $date_reference ) {
-			$time = $this->_registry->get( 'date.system' )->get_current_rounded_time();
+			$timezone     = $this->_registry->get( 'date.timezone' )->get( $settings->get( 'timezone_string' ) );
+			$current_time = new DateTime( 'now' );
+			$current_time->setTimezone( $timezone );
+			$current_time->setTime( 0, 0, 0 );	
+			$time         = $current_time->format( 'U' );
 		} else {
 			$time = $date_reference;
 		}

@@ -32,7 +32,7 @@ class Ai1ec_Wp_Uri_Helper {
 		array $extra = array(),
 		$status      = 302
 	) {
-		$target_uri = esc_url( add_query_arg( $extra, $target_uri ) );
+		$target_uri = esc_url_raw( add_query_arg( $extra, $target_uri ) );
 		wp_safe_redirect( $target_uri, $status );
 		exit( 0 );
 	}

@@ -2,8 +2,10 @@
 <div class="ai1ec-well" id="ai1ec-api-signed-in">
 	<i class="ai1ec-fa ai1ec-fa-check ai1ec-fa-fw"></i>
 	{{ signed_in_text | raw }}
-	<a href="#" id="ai1ec-api-signout" class="ai1ec-pull-right ai1ec-hidden"
-	   data-action="{{ api_action }}">{{ sign_out_text }}</a>
+	{% if can_sign_out %}
+		<a href="#" id="ai1ec-api-signout" class="ai1ec-pull-right"
+		   data-action="{{ api_action }}">{{ sign_out_text }}</a>
+	{% endif %}
 	{{ wp_nonce_field( nonce.action, nonce.name, nonce.referrer ) }}
 	<div id="ai1ec-api-signout-confirm">
 		{{ sign_out_warning | raw }}

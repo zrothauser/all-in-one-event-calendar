@@ -188,6 +188,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 				'You are signed in to <b>Timely Network</b> as ' . $account
 			),
 			'sign_out_text'         => Ai1ec_I18n::__( 'Sign out' ),
+			'can_sign_out'          => apply_filters( 'ai1ec_api_can_sign_out', true ),
 			'full_name_text'        => Ai1ec_I18n::__( 'Full Name:' ),
 			'hide_form_text'        => Ai1ec_I18n::__( 'Hide form' ),
 			'show_form_text'        => Ai1ec_I18n::__( 'Show form' ),
@@ -199,7 +200,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 				'I confirm that I have read, understand and agree with the <a href="https://time.ly/tos">terms of service</a>.'
 			),
 			'sign_out_warning'      => Ai1ec_I18n::__(
-				'<h4>Attention Required:</h4>If you sign out all your Tickets on the Timely Network will become unavailable immediately. You are responsible for refunding the ticket holders if any of the events were cancelled. Please, read the <a href="https://ticketing.time.ly/terms">Terms&nbsp;and&nbsp;Conditions</a> for more details.'
+				'<h4>Attention Required:</h4>If you choose to sign-out of the API Timely Network this will close all the created tickets and remove user access to them. In this case, on the event page, users will see the status “Event closed”.'
 			),
 			'sign_out_cancel'       => Ai1ec_I18n::__( 'Cancel' ),
 			'sign_out_confirm'      => Ai1ec_I18n::__( 'Sign Out' ),

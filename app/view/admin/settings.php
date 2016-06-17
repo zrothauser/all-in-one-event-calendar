@@ -188,6 +188,7 @@ class Ai1ec_View_Admin_Settings extends Ai1ec_View_Admin_Abstract {
 				'You are signed in to <b>Timely Network</b> as ' . $account
 			),
 			'sign_out_text'         => Ai1ec_I18n::__( 'Sign out' ),
+			'can_sign_out'          => apply_filters( 'ai1ec_api_can_sign_out', true ),
 			'full_name_text'        => Ai1ec_I18n::__( 'Full Name:' ),
 			'hide_form_text'        => Ai1ec_I18n::__( 'Hide form' ),
 			'show_form_text'        => Ai1ec_I18n::__( 'Show form' ),

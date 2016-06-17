@@ -4,8 +4,8 @@ Tags: calendar, events, ics, ics feed, wordpress ical importer, google
 calendar, ical, iCalendar, all-in-one, events sync, events widget,
 calendar widget
 Requires WordPress at least: 3.5
-Tested up to: 4.5
-Stable tag: 2.5.2
+Tested up to: 4.5.2
+Stable tag: 2.5.3
 License: GNU General Public License, version 3 (GPL-3.0)
 
 A calendar system with many views, upcoming events widget, color-coded
@@ -148,6 +148,13 @@ https://vimeo.com/135004810
 **[ai1ec exact_date="5-10-2015"]**
 
 == Changelog ==
+
+= Version 2.5.3 = 
+
+* Fixed: When using Agenda view some calendars were not showing today's events, only the next ones.
+* Fixed compatibility with PHP 7.
+* Improved: Add option to Sign out of Timely Network.
+* Improved: Cached CSS files will be automatically regenerated after version upgrade.
 
 = Version 2.5.2 = 
 

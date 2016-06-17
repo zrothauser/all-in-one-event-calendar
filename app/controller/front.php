@@ -281,8 +281,8 @@ class Ai1ec_Front_Controller {
 				'ai1ec_perform_scheme_update',
 				array( 'database.datetime-migration', 'filter_scheme_update' )
 			);
-			// Clean up CSS and JS cache after upgrading version
-			$this->_clear_cached_files_on_upgrade();
+			// Procedures to take when upgrading plugin version
+			$this->_plugin_upgrade_procedures();
 			// Load the css if needed
 			$this->_load_css_if_needed();
 			// Initialize the crons
@@ -1119,11 +1119,11 @@ class Ai1ec_Front_Controller {
 	}
 
 	/**
-	 * Clear cached files after upgrade
+	 * Procedures to take when upgrading plugin version
 	 *
 	 * @return void
 	 */
-	protected function _clear_cached_files_on_upgrade() {
+	protected function _plugin_upgrade_procedures() {
 		$option     = $this->_registry->get( 'model.option' );
 		$version    = AI1EC_VERSION;
 

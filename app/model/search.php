@@ -381,6 +381,150 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 	}
 
 	/**
+	 * get_events_relative_to_reference function
+	 *
+	 * Return all events starting after the given date reference, limiting the
+	 * result set to a maximum of $limit items, offset by $page_offset. A
+	 * negative $page_offset can be provided, which will return events *before*
+	 * the reference time, as expected.
+	 *
+	 * @param int $date_reference if page_offset is greater than or equal to zero, events with start date greater than the date_reference will be returned
+	 * 							  otherwise events with start date less than the date_reference will be returned.
+	 * @param int $limit          return a maximum of this number of items
+	 * @param int $page_offset    offset the result set by $limit times this number
+	 * @param array $filter       Array of filters for the events returned.
+	 *                            ['cat_ids']      => non-associatative array of category IDs
+	 *                            ['tag_ids']      => non-associatative array of tag IDs
+	 *                            ['post_ids']     => non-associatative array of post IDs
+	 *                            ['auth_ids']     => non-associatative array of author IDs
+	 *                            ['instance_ids'] => non-associatative array of author IDs
+	 * @param bool $unique        Whether display only unique events and don't
+	 *                            duplicate results with other instances or not.
+	 *
+	 * @return array              five-element array:
+	 *                              ['events'] an array of matching event objects
+	 *                              ['prev'] true if more previous events
+	 *                              ['next'] true if more next events
+	 *                              ['date_first'] UNIX timestamp (date part) of first event
+	 *                              ['date_last'] UNIX timestamp (date part) of last event
+	 */
+	public function get_events_relative_to_reference( $date_reference, $limit = 0, $page_offset = 0, $filter = array(), $unique = false ) {
+		$localization_helper = $this->_registry->get( 'p28n.wpml' );
+		$settings = $this->_registry->get( 'model.settings' );
+		
+		// Even if there ARE more than 5 times the limit results - we shall not
+		// try to fetch and display these, as it would crash system
+		$limit = preg_replace( '/\D/', '', $limit );
+				
+		// Convert timestamp to GMT time
+		if ( 0 == $date_reference ) {
+			$timezone     = $this->_registry->get( 'date.timezone' )->get( $settings->get( 'timezone_string' ) );
+			$current_time = new DateTime( 'now' );
+			$current_time->setTimezone( $timezone );
+			$time         = $current_time->format( 'U' );
+		} else {
+			$time = $date_reference;
+		}
+				
+		// Get post status Where snippet and associated SQL arguments
+		$where_parameters = $this->_get_post_status_sql();
+		$post_status_where = $where_parameters['post_status_where'];
+		
+		// Get the Join (filter_join) and Where (filter_where) statements based
+		// on $filter elements specified
+		$filter = $this->_get_filter_sql( $filter );
+		
+		// Query arguments
+		$args = array( $time );
+		$args = array_merge( $args, $where_parameters['args'] );
+				
+		if ( 0 == $date_reference ) {			
+			if ( $page_offset >= 0 ) {
+				$filter_date_clause = 'i.end >= %d ';
+				$order_direction    = 'ASC';
+			} else {			
+				$filter_date_clause = 'i.start < %d ';
+				$order_direction    = 'DESC';
+			}
+		} else {
+			if ( $page_offset < 0 ) {
+				$filter_date_clause = 'i.end < %d ';
+				$order_direction    = 'DESC';
+			} else {
+				$filter_date_clause = 'i.end >= %d ';
+				$order_direction    = 'ASC';
+			}
+		}
+		if ( $page_offset >= 0 ) {
+			$first_record       = $page_offset * $limit;
+		} else {
+			$first_record       = ( - $page_offset - 1 ) * $limit;
+		}
+		$wpml_join_particle  = $localization_helper->get_wpml_table_join( 'p.ID' );		
+		$wpml_where_particle = $localization_helper->get_wpml_table_where();				
+		
+		$query = $this->_dbi->prepare( 
+			'SELECT DISTINCT p.*, e.post_id, i.id AS instance_id, ' . 'i.start AS start, ' . 'i.end AS end, ' .
+				 'e.allday AS event_allday, ' .
+				 'e.recurrence_rules, e.exception_rules, e.ticket_url, e.instant_event, e.recurrence_dates, e.exception_dates, ' .
+				 'e.venue, e.country, e.address, e.city, e.province, e.postal_code, ' .
+				 'e.show_map, e.contact_name, e.contact_phone, e.contact_email, e.cost, ' .
+				 'e.ical_feed_url, e.ical_source_url, e.ical_organizer, e.ical_contact, e.ical_uid, e.timezone_name, e.longitude, e.latitude ' .
+				 'FROM ' . $this->_dbi->get_table_name( 'ai1ec_events' ) . ' e ' . 'INNER JOIN ' .
+				 $this->_dbi->get_table_name( 'posts' ) . ' p ON e.post_id = p.ID ' . $wpml_join_particle .
+				 ' INNER JOIN ' . $this->_dbi->get_table_name( 'ai1ec_event_instances' ) . ' i ON e.post_id = i.post_id ' .
+				 $filter['filter_join'] . " WHERE post_type = '" . AI1EC_POST_TYPE . "' " . ' AND ' . $filter_date_clause .
+				 $wpml_where_particle . $filter['filter_where'] . $post_status_where .
+				 ( $unique ? ' GROUP BY e.post_id' : '' ) . 
+				// Reverse order when viewing negative pages, to get correct set of
+				// records. Then reverse results later to order them properly.
+				' ORDER BY i.start ' . $order_direction . ', post_title ' . $order_direction . ' LIMIT ' . $first_record .
+				 ', ' . ( $limit + 1 ), 
+				$args );
+				
+		$events = $this->_dbi->get_results( $query, ARRAY_A );
+		
+		if ( $page_offset >= 0 ) {
+			$prev = true;
+			$next = ( count( $events ) > $limit );
+			if ( $next ) {
+				 array_pop( $events );
+			}
+		} else {
+			$prev = ( count( $events ) > $limit );
+			if ( $prev ) {
+				array_pop( $events );
+			}
+			$next = true;
+		}
+		
+		// Reorder records if in negative page offset
+		if ( $page_offset < 0 ) {
+			$events = array_reverse( $events );
+		}
+		
+		$date_first = $date_last = NULL;
+		
+		foreach ( $events as &$event ) {
+			$event['allday'] = $this->_is_all_day( $event );
+			$event = $this->_registry->get( 'model.event', $event );
+			if ( null === $date_first ) {
+				$date_first = $event->get( 'start' );
+			}
+			$date_last = $event->get( 'start' );
+		}
+		$date_first = $this->_registry->get( 'date.time', $date_first );
+		$date_last = $this->_registry->get( 'date.time', $date_last );
+		
+		return array( 
+			'events' => $events, 
+			'prev' => $prev, 
+			'next' => $next, 
+			'date_first' => $date_first, 
+			'date_last' => $date_last );
+	}
+
+	/**
 	 * Returns events for given day. Event must start before end of day and must
 	 * ends after beginning of day.
 	 *

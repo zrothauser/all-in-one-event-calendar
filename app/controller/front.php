@@ -1124,11 +1124,11 @@ class Ai1ec_Front_Controller {
 	 * @return void
 	 */
 	protected function _clear_cached_files_on_upgrade() {
-		try {
-			$option     = $this->_registry->get( 'model.option' );
-			$version    = AI1EC_VERSION;
+		$option     = $this->_registry->get( 'model.option' );
+		$version    = AI1EC_VERSION;
 
-			if ( $option->get( 'ai1ec_version' ) != $version ) {
+		if ( $option->get( 'ai1ec_version' ) != $version ) {
+			try {
 				// Force regeneration of JS cache
 				$this->_registry->get( 'controller.javascript' )->revalidate_cache();
 				$this->_registry->get( 'controller.javascript-widget' )->revalidate_cache();
@@ -1137,11 +1137,11 @@ class Ai1ec_Front_Controller {
 				$lessphp   = $this->_registry->get( 'less.lessphp' );
 				$variables = $lessphp->get_saved_variables();
 				$this->_registry->get( 'css.frontend' )->invalidate_cache( $variables, true );
-
-				// Update plugin version
-				$option->set( 'ai1ec_version', $version );
+			} catch ( Exception $e ) {
 			}
-		} catch ( Exception $e ) {
+
+			// Update plugin version
+			$option->set( 'ai1ec_version', $version );
 		}
 	}
 

@@ -281,6 +281,8 @@ class Ai1ec_Front_Controller {
 				'ai1ec_perform_scheme_update',
 				array( 'database.datetime-migration', 'filter_scheme_update' )
 			);
+			// Procedures to take when upgrading plugin version
+			$this->_plugin_upgrade_procedures();
 			// Load the css if needed
 			$this->_load_css_if_needed();
 			// Initialize the crons
@@ -1113,6 +1115,33 @@ class Ai1ec_Front_Controller {
 			}
 			// Drop the old table
 			$db->query( 'DROP TABLE IF EXISTS ' . $table_name );
+		}
+	}
+
+	/**
+	 * Procedures to take when upgrading plugin version
+	 *
+	 * @return void
+	 */
+	protected function _plugin_upgrade_procedures() {
+		$option     = $this->_registry->get( 'model.option' );
+		$version    = AI1EC_VERSION;
+
+		if ( $option->get( 'ai1ec_version' ) != $version ) {
+			try {
+				// Force regeneration of JS cache
+				$this->_registry->get( 'controller.javascript' )->revalidate_cache();
+				$this->_registry->get( 'controller.javascript-widget' )->revalidate_cache();
+
+				// Force regeneration of CSS
+				$lessphp   = $this->_registry->get( 'less.lessphp' );
+				$variables = $lessphp->get_saved_variables();
+				$this->_registry->get( 'css.frontend' )->invalidate_cache( $variables, true );
+			} catch ( Exception $e ) {
+			}
+
+			// Update plugin version
+			$option->set( 'ai1ec_version', $version );
 		}
 	}
 

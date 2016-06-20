@@ -1133,10 +1133,10 @@ class Ai1ec_Front_Controller {
 				$this->_registry->get( 'controller.javascript' )->revalidate_cache();
 				$this->_registry->get( 'controller.javascript-widget' )->revalidate_cache();
 
-				// Force regeneration of CSS
-				$lessphp   = $this->_registry->get( 'less.lessphp' );
-				$variables = $lessphp->get_saved_variables();
-				$this->_registry->get( 'css.frontend' )->invalidate_cache( $variables, true );
+				// Invalidade CSS
+				$option->set( 'ai1ec_force_flush_rewrite_rules',      true, true );
+				$option->set( 'ai1ec_invalidate_css_cache',           true, true );
+				$option->set( Ai1ec_Theme_Loader::OPTION_FORCE_CLEAN, true, true );
 			} catch ( Exception $e ) {
 			}
 

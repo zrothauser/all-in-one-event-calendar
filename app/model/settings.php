@@ -225,17 +225,6 @@ class Ai1ec_Settings extends Ai1ec_App {
 		}
 	}
 
-
-	/**
-	 * Do things needed on every plugin upgrade.
-	 */
-	public function perform_upgrade_actions() {
-		$option = $this->_registry->get( 'model.option' );
-		$option->set( 'ai1ec_force_flush_rewrite_rules',      true, true );
-		$option->set( 'ai1ec_invalidate_css_cache',           true, true );
-		$option->set( Ai1ec_Theme_Loader::OPTION_FORCE_CLEAN, true, true );
-	}
-
 	/**
 	 * Hide an option by unsetting it's renderer
 	 *
@@ -316,7 +305,6 @@ class Ai1ec_Settings extends Ai1ec_App {
 				$test_version = $values['calendar_page_id']['version'];
 			}
 		}
-		$upgrade = false;
 		// check for updated translations
 		$this->_register_standard_values();
 		if ( // process meta updates changes
@@ -328,14 +316,9 @@ class Ai1ec_Settings extends Ai1ec_App {
 			$this->_register_standard_values();
 			$this->_update_name_translations();
 			$this->_change_update_status( true );
-			$upgrade = true;
 		} else if ( $values instanceof Ai1ec_Settings ) { // process legacy
 			$this->_parse_legacy( $values );
 			$this->_change_update_status( true );
-			$upgrade = true;
-		}
-		if ( true === $upgrade ) {
-			$this->perform_upgrade_actions();
 		}
 		$this->_registry->get( 'controller.shutdown' )->register(
 			array( $this, 'shutdown' )

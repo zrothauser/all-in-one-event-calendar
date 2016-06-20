@@ -152,7 +152,8 @@ https://vimeo.com/135004810
 = Version 2.5.3 = 
 
 * Fixed: When using Agenda view some calendars were not showing today's events, only the next ones.
-* Fixed compatibility with PHP 7.
+* Fixed: Timezone of imported events was not being considered correctly.
+* Fixed: Compatibility with PHP 7.
 * Improved: Add option to Sign out of Timely Network.
 * Improved: Cached CSS files will be automatically regenerated after version upgrade.
 

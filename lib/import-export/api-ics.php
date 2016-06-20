@@ -177,6 +177,11 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 				$allday = true;
 			}
 			$event_timezone = $e->timezone;
+			if ( ! empty( $event_timezone ) ) {
+				$timezone = $event_timezone;
+			} else {
+				$event_timezone = $timezone;
+			}
 			if ( $allday ) {
 				$event_timezone = $local_timezone;
 			}

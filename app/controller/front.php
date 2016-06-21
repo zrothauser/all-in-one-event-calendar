@@ -1133,10 +1133,9 @@ class Ai1ec_Front_Controller {
 				$this->_registry->get( 'controller.javascript' )->revalidate_cache();
 				$this->_registry->get( 'controller.javascript-widget' )->revalidate_cache();
 
-				// Invalidade CSS
-				$option->set( 'ai1ec_force_flush_rewrite_rules',      true, true );
-				$option->set( 'ai1ec_invalidate_css_cache',           true, true );
-				$option->set( Ai1ec_Theme_Loader::OPTION_FORCE_CLEAN, true, true );
+				// Run upgrade commands
+				$settings = $this->_registry->get( 'model.settings' );
+				$settings->perform_upgrade_actions();
 			} catch ( Exception $e ) {
 			}
 

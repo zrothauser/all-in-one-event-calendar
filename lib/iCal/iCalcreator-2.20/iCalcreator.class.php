@@ -1973,7 +1973,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.9.6 - 2011-05-17
  */
-  function calendarComponent() {
+  public function __construct() {
     $this->objName         = ( isset( $this->timezonetype )) ?
                           strtolower( $this->timezonetype )  :  get_class ( $this );
     $this->uid             = array();
@@ -6234,7 +6234,7 @@ class vevent extends calendarComponent {
  * @param  array $config
  * @return void
  */
-  function vevent( $config = array()) {
+  public function __construct( $config = array()) {
     $this->calendarComponent();
 
     $this->attach          = '';
@@ -6381,7 +6381,7 @@ class vtodo extends calendarComponent {
  * @param array $config
  * @return void
  */
-  function vtodo( $config = array()) {
+  public function __construct( $config = array()) {
     $this->calendarComponent();
 
     $this->attach          = '';
@@ -6520,7 +6520,7 @@ class vjournal extends calendarComponent {
  * @param array $config
  * @return void
  */
-  function vjournal( $config = array()) {
+  public function __construct( $config = array()) {
     $this->calendarComponent();
 
     $this->attach          = '';
@@ -6630,7 +6630,7 @@ class vfreebusy extends calendarComponent {
  * @param array $config
  * @return void
  */
-  function vfreebusy( $config = array()) {
+  public function __construct( $config = array()) {
     $this->calendarComponent();
 
     $this->attendee        = '';
@@ -6712,7 +6712,7 @@ class valarm extends calendarComponent {
  * @param array $config
  * @return void
  */
-  function valarm( $config = array()) {
+  public function __construct( $config = array()) {
     $this->calendarComponent();
 
     $this->action          = '';
@@ -6795,7 +6795,7 @@ class vtimezone extends calendarComponent {
  * @param array $config
  * @return void
  */
-  function vtimezone( $timezonetype=FALSE, $config = array()) {
+  public function __construct( $timezonetype=FALSE, $config = array()) {
     if( is_array( $timezonetype )) {
       $config       = $timezonetype;
       $timezonetype = FALSE;

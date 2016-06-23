@@ -23,7 +23,7 @@ class Ai1ec_Calendar_Updates extends Ai1ec_Base {
 	 *
 	 * @const string
 	 */
-	const SECONDARY_END_POINT = 'http://checkout.time.ly/update';
+	const SECONDARY_END_POINT = 'https://checkout.time.ly/update';
 
 	/**
 	 * Check updates and return additional info.

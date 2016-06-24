@@ -180,13 +180,13 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 				(array)$start['date'],
 				(array)$start['time'],
 				$event_timezone,
-				$feed->import_timezone ? null : $local_timezone
+				$feed->import_timezone ? $local_timezone : null
 			);
 			$end   = $this->_time_array_to_datetime(
 				(array)$end['date'],
 				(array)$end['time'],
 				$event_timezone,
-				$feed->import_timezone ? null : $local_timezone
+				$feed->import_timezone ? $local_timezone : null
 			);
 			if ( false === $start || false === $end ) {
 				throw new Ai1ec_Parse_Exception(

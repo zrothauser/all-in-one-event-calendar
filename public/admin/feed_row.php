@@ -90,7 +90,7 @@
 					</div>
 					<div class="ai1ec-feed-import-timezone"
 						 data-state="<?php echo esc_attr( $feed_import_timezone ? 1 : 0 ); ?>">
-							<?php _e( 'Show date/time based on event\'s timezone', AI1EC_PLUGIN_NAME ); ?>:
+							<?php _e( 'Convert event\'s date/time to calendar\'s timezone', AI1EC_PLUGIN_NAME ); ?>:
 						<strong><?php
 							if ( $feed_import_timezone ) {
 								_e( 'Yes', AI1EC_PLUGIN_NAME );

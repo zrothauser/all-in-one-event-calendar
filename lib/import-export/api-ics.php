@@ -80,7 +80,6 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 
 		// Fetch default timezone in case individual properties don't define it
 		$local_timezone  = $this->_registry->get( 'date.timezone' )->get_default_timezone();
-		$timezone        = $local_timezone;
 
 		$messages        = array();
 
@@ -177,25 +176,17 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 				$allday = true;
 			}
 			$event_timezone = $e->timezone;
-			if ( ! empty( $event_timezone ) ) {
-				$timezone = $event_timezone;
-			} else {
-				$event_timezone = $timezone;
-			}
-			if ( $allday ) {
-				$event_timezone = $local_timezone;
-			}
 			$start = $this->_time_array_to_datetime(
 				(array)$start['date'],
 				(array)$start['time'],
-				$timezone,
-				$feed->import_timezone ? $event_timezone : null
+				$event_timezone,
+				$feed->import_timezone ? null : $local_timezone
 			);
 			$end   = $this->_time_array_to_datetime(
 				(array)$end['date'],
 				(array)$end['time'],
-				$timezone,
-				$feed->import_timezone ? $event_timezone : null
+				$event_timezone,
+				$feed->import_timezone ? null : $local_timezone
 			);
 			if ( false === $start || false === $end ) {
 				throw new Ai1ec_Parse_Exception(
@@ -587,13 +578,15 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			if ( false === $timezone ) {
 				return false;
 			}
-			$date_time->set_timezone( $timezone );
 		}
-		
+
+		// Set default timezone
+		$date_time->set_timezone( $timezone );
+
 		if ( ! isset( $time['hour'] ) ) {
 			$time['hour'] = $time['minute'] = $time['second'] = 0;
 		}
-		
+
 		$date_time
 			->set_date(
 				$date['year'],
@@ -605,9 +598,12 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 				$time['minute'], 
 				$time['second']
 			);
-		if ( 'UTC' === $timezone && null !== $forced_timezone ) {
+
+		// Set choosen timezone
+		if ( null !== $forced_timezone) {
 			$date_time->set_timezone( $forced_timezone );
 		}
+
 		return $date_time;
 	}
 

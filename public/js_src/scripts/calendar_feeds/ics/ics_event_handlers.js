@@ -253,24 +253,13 @@ define(
 		$.post( ajaxurl, data, ajax_handlers.handle_update_ics, 'json' );
 	};
 
-	var feed_url_change = function() {
-		var
-			$value   = $( this ).val(),
-			$pattern = /.google./i;
-
-		if ( $pattern.test( $value ) ) {
-			$( '#ai1ec_feed_import_timezone' ).prop( 'checked', true );
-		}
-	};
-
 	return {
 		'add_new_feed'        : add_new_feed,
 		'submit_delete_modal' : submit_delete_modal,
 		'open_delete_modal'   : open_delete_modal,
 		'update_feed'         : update_feed,
 		'edit_feed'           : edit_feed,
-		'edit_cancel'         : edit_cancel,
-		'feed_url_change'     : feed_url_change
+		'edit_cancel'         : edit_cancel
 	};
 
 } );

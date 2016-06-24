@@ -90,9 +90,7 @@
 					</div>
 					<div class="ai1ec-feed-import-timezone"
 						 data-state="<?php echo esc_attr( $feed_import_timezone ? 1 : 0 ); ?>">
-						<span class="ai1ec-tooltip-toggle" title="<?php _e( 'Guesses the time zone of events that have none specified; recommended for Google Calendar feeds', AI1EC_PLUGIN_NAME ); ?>">
-							<?php _e( 'Assign default time zone to events in UTC', AI1EC_PLUGIN_NAME );
-						?>:</span>
+							<?php _e( 'Show date/time based on event\'s timezone', AI1EC_PLUGIN_NAME ); ?>:
 						<strong><?php
 							if ( $feed_import_timezone ) {
 								_e( 'Yes', AI1EC_PLUGIN_NAME );

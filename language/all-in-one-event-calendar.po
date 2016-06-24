@@ -2,13 +2,13 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.5.4\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.5.5\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2016-06-21 19:06:56+00:00\n"
+"POT-Creation-Date: 2016-06-24 21:06:27+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-06-21 19:06+0000\n"
+"PO-Revision-Date: 2016-06-24 21:06+0000\n"
 "Last-Translator: Timely <support@time.ly>\n"
 "Language-Team:\n"
 
@@ -278,7 +278,7 @@ msgid "No attendees for this ticket type."
 msgstr "No attendees for this ticket type."
 
 #: app/controller/javascript.php:570 app/view/calendar/view/agenda.php:205
-#: app/view/calendar/widget.php:373 public/admin/feed_row.php:150
+#: app/view/calendar/widget.php:373 public/admin/feed_row.php:148
 msgid "Edit"
 msgstr "Edit"
 
@@ -1296,7 +1296,7 @@ msgstr ""
 "closed”."
 
 #: app/view/admin/settings.php:205 public/admin/box_repeat.php:116
-#: public/admin/plugins/ics/import_feed.php:103
+#: public/admin/plugins/ics/import_feed.php:101
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -3208,13 +3208,13 @@ msgstr "Register this event with Eventbrite.com?"
 
 #: public/admin/box_eventbrite.php:12 public/admin/feed_row.php:50
 #: public/admin/feed_row.php:61 public/admin/feed_row.php:73
-#: public/admin/feed_row.php:85 public/admin/feed_row.php:98
+#: public/admin/feed_row.php:85 public/admin/feed_row.php:96
 msgid "Yes"
 msgstr "Yes"
 
 #: public/admin/box_eventbrite.php:14 public/admin/feed_row.php:52
 #: public/admin/feed_row.php:63 public/admin/feed_row.php:75
-#: public/admin/feed_row.php:87 public/admin/feed_row.php:100
+#: public/admin/feed_row.php:87 public/admin/feed_row.php:98
 msgid "No"
 msgstr "No"
 
@@ -3315,7 +3315,7 @@ msgid "Ending after"
 msgstr "Ending after"
 
 #: public/admin/box_repeat.php:109
-#: public/admin/plugins/ics/import_feed.php:109
+#: public/admin/plugins/ics/import_feed.php:107
 msgid "Please wait&#8230;"
 msgstr "Please wait&#8230;"
 
@@ -3500,40 +3500,32 @@ msgstr ""
 "feed"
 
 #: public/admin/feed_row.php:93 public/admin/plugins/ics/import_feed.php:92
-msgid ""
-"Guesses the time zone of events that have none specified; recommended for "
-"Google Calendar feeds"
-msgstr ""
-"Guesses the time zone of events that have none specified; recommended for "
-"Google Calendar feeds"
+msgid "Convert event's date/time to calendar's timezone"
+msgstr "Convert event's date/time to calendar's timezone"
 
-#: public/admin/feed_row.php:94 public/admin/plugins/ics/import_feed.php:93
-msgid "Assign default time zone to events in UTC"
-msgstr "Assign default time zone to events in UTC"
-
-#: public/admin/feed_row.php:108
+#: public/admin/feed_row.php:106
 msgid "List of imported events:"
 msgstr "List of imported events:"
 
-#: public/admin/feed_row.php:119
+#: public/admin/feed_row.php:117
 #: public/admin/plugins/suggested/event_actions.php:13
 msgid "Removing"
 msgstr "Removing"
 
-#: public/admin/feed_row.php:124 public/admin/feed_row.php:162
+#: public/admin/feed_row.php:122 public/admin/feed_row.php:160
 #: public/admin/plugins/suggested/event_actions.php:18
 msgid "Remove"
 msgstr "Remove"
 
-#: public/admin/feed_row.php:142
+#: public/admin/feed_row.php:140
 msgid "Refreshing&#8230;"
 msgstr "Refreshing&#8230;"
 
-#: public/admin/feed_row.php:144
+#: public/admin/feed_row.php:142
 msgid "Refresh"
 msgstr "Refresh"
 
-#: public/admin/feed_row.php:160
+#: public/admin/feed_row.php:158
 msgid "Removing&#8230;"
 msgstr "Removing&#8230;"
 
@@ -3615,11 +3607,11 @@ msgid ""
 msgstr ""
 "Import any tags/categories provided by feed, in addition those selected above"
 
-#: public/admin/plugins/ics/import_feed.php:112
+#: public/admin/plugins/ics/import_feed.php:110
 msgid "Import feed"
 msgstr "Import feed"
 
-#: public/admin/plugins/ics/import_feed.php:115
+#: public/admin/plugins/ics/import_feed.php:113
 msgid "Update feed"
 msgstr "Update feed"
 

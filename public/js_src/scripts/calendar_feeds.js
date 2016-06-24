@@ -96,7 +96,6 @@ define(
 			.on( 'click', '#ai1ec_cancel_ics' , ics_event_handlers.edit_cancel )
 			.on( 'click', '.ai1ec-panel-heading > a' , ics_event_handlers.edit_cancel )
 			// Checks import timezone option
-			.on( 'blur', '#ai1ec_feed_url', ics_event_handlers.feed_url_change )
 			.on(
 				'click',
 				'.ai1ec-feed-container .ai1ec-panel-heading a, .ai1ec-nav-tabs a[href="#import"]',

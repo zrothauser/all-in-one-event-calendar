@@ -88,10 +88,8 @@
 		<div class="ai1ec-feed-import-timezone">
 			<label for="ai1ec_feed_import_timezone">
 				<input type="checkbox" name="ai1ec_feed_import_timezones"
-					   id="ai1ec_feed_import_timezone" value="1">
-				<span class="ai1ec-tooltip-toggle" title="<?php _e( 'Guesses the time zone of events that have none specified; recommended for Google Calendar feeds', AI1EC_PLUGIN_NAME ); ?>">
-					<?php _e( 'Assign default time zone to events in UTC', AI1EC_PLUGIN_NAME ); ?>
-				</span>
+					id="ai1ec_feed_import_timezone" value="1">
+				<?php _e( 'Show date/time based on event\'s timezone', AI1EC_PLUGIN_NAME ); ?>
 			</label>
 		</div>
 	</div>

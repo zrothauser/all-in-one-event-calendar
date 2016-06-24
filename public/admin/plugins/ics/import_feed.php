@@ -88,7 +88,7 @@
 		<div class="ai1ec-feed-import-timezone">
 			<label for="ai1ec_feed_import_timezone">
 				<input type="checkbox" name="ai1ec_feed_import_timezones"
-					id="ai1ec_feed_import_timezone" value="1">
+					id="ai1ec_feed_import_timezone" value="1" checked="checked">
 				<?php _e( 'Show date/time based on event\'s timezone', AI1EC_PLUGIN_NAME ); ?>
 			</label>
 		</div>

@@ -525,6 +525,7 @@ class Ai1ec_Javascript_Controller {
 			'week_start_day'                 => $settings->get( 'week_start_day' ),
 			'week_view_starts_at'            => $settings->get( 'week_view_starts_at' ),
 			'week_view_ends_at'              => $settings->get( 'week_view_ends_at' ),
+			'google_maps_api_key'            => $settings->get( 'google_maps_api_key' ),
 			'blog_timezone'                  => $blog_timezone,
 			'affix_filter_menu'              => $settings->get( 'affix_filter_menu' ),
 			'affix_vertical_offset_md'       => $settings->get( 'affix_vertical_offset_md' ),

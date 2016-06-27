@@ -7,9 +7,15 @@ define(
 
 	// Get the language
 	var lang = ai1ec_config.language;
-	
+
+	// Get Google Maps API Key
+	var api_key = ai1ec_config.google_maps_api_key;
+
 	// Create the url
-	var url = 'async!https://maps.google.com/maps/api/js?language=' + lang;
+	var url = 'async!https://maps.googleapis.com/maps/api/js?language=' + lang;
+	if ( '' != api_key ) {
+		url = url  + '&key=' + api_key;
+	}
 	// Return a wrapper function so that we have a callback.
 	// This is important because we load gMaps async and we don't want to wait for it to load and block other functions
 	return function( callback ) {

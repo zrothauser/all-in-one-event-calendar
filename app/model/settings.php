@@ -550,6 +550,21 @@ class Ai1ec_Settings extends Ai1ec_App {
 				),
 				'default'  => 24,
 			),
+			'google_maps_api_key' => array(
+				'type' => 'string',
+				'renderer' => array(
+					'class'     => 'input',
+					'tab'       => 'viewing-events',
+					'item'      => 'viewing-events',
+					'label'     => Ai1ec_I18n::__(
+									'<span class="ai1ec-tooltip-toggle"
+									data-original-title="Google may request for an API key in order to show the map">
+									Google Maps API Key</span> (<a target="_blank" href="https://developers.google.com/maps/documentation/javascript/get-api-key#get-an-api-key">Get an API key</a>)'
+					),
+					'type'      => 'normal'
+				),
+				'default'  => '',
+			),
 			'month_word_wrap' => array(
 				'type'     => 'bool',
 				'renderer' => array(

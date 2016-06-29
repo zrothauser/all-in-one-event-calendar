@@ -176,6 +176,9 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 				$allday = true;
 			}
 			$event_timezone = $e->timezone;
+			if ( $allday ) {
+				$event_timezone = $local_timezone;
+			}
 			$start = $this->_time_array_to_datetime(
 				(array)$start['date'],
 				(array)$start['time'],
@@ -493,19 +496,17 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			} else {
 				$checkout_url = null;
 			}
-			
+
 			$currency = $e->x_api_event_currency;
-			if ( $currency && false === ai1ec_is_blank( $currency ) ) {
-				$currency = $currency;
-			} else {
+			if ( ! $currency || ai1ec_is_blank( $currency ) ) {
 				$currency = null;
 			}
 			if ( $api_event_id || $api_url || $checkout_url || $currency ) {
 				if ( ! isset( $api ) ) {
 					$api = $this->_registry->get( 'model.api.api-ticketing' );
-				}				
+				}
 				$api->save_api_event_data( $event->get( 'post_id' ), $api_event_id, $api_url, $checkout_url, $currency );
-			}			
+			}
 
 			$wp_images_url  = $e->x_wp_image_url;
 			if ( $wp_images_url && false === ai1ec_is_blank( $wp_images_url ) ) {
@@ -514,8 +515,8 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 					$images_arr[ $key ] = explode( ';', $value );
 				}
 				if ( count( $images_arr ) > 0 ) {
-					update_post_meta( $event->get( 'post_id' ), '_featured_image', $images_arr );	
-				}	
+					update_post_meta( $event->get( 'post_id' ), '_featured_image', $images_arr );
+				}
 			}
 
 			unset( $events_in_db[$event->get( 'post_id' )] );

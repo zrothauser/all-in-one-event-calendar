@@ -727,9 +727,9 @@ define(
 				ai1ec_event_id : $( '#post_ID' ).val()
 			},
 			function( response ) {
-				var iframeDoc = ai1ec_tax_frame.contentWindow.document;
+				var iframeDoc = $( '#ai1ec_tax_frame' ).get(0).contentWindow.document;
 				$loading.remove();
-				$( ai1ec_tax_frame ).removeClass( 'ai1ec-hidden' );
+				$( '#ai1ec_tax_frame' ).removeClass( 'ai1ec-hidden' );
 				iframeDoc.open();
 				iframeDoc.write( response.message.body );
 				iframeDoc.close();

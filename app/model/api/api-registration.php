@@ -116,7 +116,8 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 			return false;
 		}
 		$response = $this->request_api( 'GET', AI1EC_API_URL . "calendars/$calendar_id/signout", null, true );
-		if ( $this->is_response_success( $response ) ) {
+		// Consider "Unauthorized" status (401) a valid response
+		if ( $this->is_response_success( $response ) || 401 === wp_remote_retrieve_response_code( $response->raw ) ) {
 			$this->clear_ticketing_settings();
 			return array( 'message' => '' );
 		} else {

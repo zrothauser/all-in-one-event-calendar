@@ -150,7 +150,8 @@ https://vimeo.com/135004810
 == Changelog ==
 
 = Version 2.5.7 =
-* Fixed: Fixing exhibition of recurrent events which start date is older than 3 years.
+* Fixed: Exhibition of recurrent events which start date is older than 3 years.
+* Fixed: All day events weren't being imported correctly.
 
 = Version 2.5.6 =
 * Changed: Added Google Maps API Key setting. Starting June 22nd, 2016, Google may request an API key in order to make Google Maps work.

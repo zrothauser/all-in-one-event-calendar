@@ -101,7 +101,7 @@ class Ai1ec_Event_Instance extends Ai1ec_Base {
 		$start             = $event_instance['start'];
 		$wdate             = $startdate = $enddate
 			= $this->_parsed_date_array( $_start, $timezone );
-		$enddate['year']   = $enddate['year'] + 3;
+		$enddate['year']   = $enddate['year'] + 10;
 		$exclude_dates	   = array();
 		$recurrence_dates  = array();
 		if ( $recurrence_dates = $event->get( 'recurrence_dates' ) ) {

@@ -224,7 +224,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 			// Add custom exclusions if there any
 			$recurrence_id = $e->recurrence_id;
 			if (
-				false === $recurrence_id &&
+				'' === $recurrence_id &&
 				! empty( $exclusions[$e->uid] )
 			) {
 				if ( isset( $exdate{0} ) ) {
@@ -426,7 +426,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 				// =================================================
 				$event->save();
 				$count++;
-			} else {				
+			} else {
 				// ======================================================
 				// = Event was found, let's store the new event details =
 				// ======================================================
@@ -542,7 +542,7 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 		$ical_uid      = $e->uid;
 		$recurrence_id = $e->recurrence_id;
 		if ( '' !== $recurrence_id ) {
-			$ical_uid = implode( '', array_values( $recurrence_id ) ) . '-' . $ical_uid;
+			$ical_uid = $recurrence_id . '-' . $ical_uid;
 		}
 	
 		return $ical_uid;
@@ -743,27 +743,14 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 	 */
 	protected function _add_recurring_events_exclusions( $e, $exclusions, $start ) {
 		$recurrence_id = $e->recurrence_id;
-		if ( '' === $recurrence_id             ||
-			! isset( $recurrence_id['year'] )  ||
-			! isset( $recurrence_id['month'] ) ||
-			! isset( $recurrence_id['day'] ) ) {
+
+		if ( '' === $recurrence_id ||
+			! preg_match('/^[0-9]{4}[0-1][0-9][0-3][0-9]/', $recurrence_id)) {
 			return $exclusions;
 		}
-		$year = $month = $day = $hour = $min = $sec = null;
-		extract( $recurrence_id, EXTR_IF_EXISTS );
-		$timezone = '';
-		$exdate = sprintf( '%04d%02d%02d', $year, $month, $day );
-		if ( null === $hour ||
-			 null === $min  ||
-			 null === $sec
-		) {
-			$hour = $min = $sec = '00';
-			$timezone = 'Z';
-		}
-		$exdate .= sprintf( 'T%02d%02d%02d%s', $hour, $min, $sec, $timezone );
-		$exclusions[$e->uid][] = $exdate;
+
+		$exclusions[$e->uid][] = $recurrence_id;
 		return $exclusions;
 	}
-	
-	
+
 }

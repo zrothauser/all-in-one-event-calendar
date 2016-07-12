@@ -98,6 +98,29 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 		return false;
 	}
 
+	/**
+	 * @return object Response body in JSON.
+	 */
+	protected function settings() {
+		$calendar_settings = get_site_transient( 'ai1ec_calendar_settings' );
+
+		if ( false === $calendar_settings || ( defined( 'AI1EC_DEBUG' ) && AI1EC_DEBUG ) ) {
+			$response = $this->request_api( 'GET', AI1EC_API_URL . 'calendars/' . $this->_get_ticket_calendar() . '/settings', null, true );
+
+			if ( $this->is_response_success( $response ) ) {
+				$calendar_settings = (array) $response->body;
+			} else {
+				$calendar_settings = array();
+			}
+
+			// Save for 5 minutes
+			$minutes = 5;
+			set_site_transient( 'ai1ec_calendar_settings', $calendar_settings, $minutes * 60 );
+		}
+
+		return $calendar_settings;
+	}
+
 	public function is_api_sign_up_available() {
 	    return $this->is_feature_available( Ai1ec_Api_Features::CODE_API_ACCESS );
 	}

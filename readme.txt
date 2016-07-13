@@ -152,6 +152,7 @@ https://vimeo.com/135004810
 = Version 2.5.7 =
 * Fixed: Exhibition of recurrent events which start date is older than 3 years.
 * Fixed: All day events weren't being imported correctly.
+* Fixed: Now "Add Tax & Invoice Options" (Time.ly Tickets) opens correctly in Safari.
 
 = Version 2.5.6 =
 * Changed: Added Google Maps API Key setting. Starting June 22nd, 2016, Google may request an API key in order to make Google Maps work.

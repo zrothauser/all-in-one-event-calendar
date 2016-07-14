@@ -199,10 +199,6 @@ define(
 
 				warnings.push( ai1ec_config.ticketing_required_fields );
 			} 
-			if ( $( '#ai1ec_repeat' ).prop( 'checked' ) === true ) {
-				show_warning = true;
-				warnings.push( ai1ec_config.ticketing_repeat_not_supported );
-			}						
 			if ( false === show_warning ) {
 				var i             = 0;
 				var tickets_count = 0;

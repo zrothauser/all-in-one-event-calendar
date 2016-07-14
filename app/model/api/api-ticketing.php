@@ -97,11 +97,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	 */
 	private function _is_valid_post( Ai1ec_Event $event, $updating ) {
 		$message = null;
-		if ( ( isset( $_POST['ai1ec_rdate'] ) && ! empty( $_POST['ai1ec_rdate'] ) ) || 
-			 ( isset( $_POST['ai1ec_repeat'] ) && ! empty( $_POST['ai1ec_repeat'] ) ) 
-			 ) {
-			$message = __( 'The Repeat option was selected but recurrence is not supported by Event with Tickets.', AI1EC_PLUGIN_NAME );
-		} else if ( isset( $_POST['ai1ec_tickets_loading_error'] ) ) {
+		if ( isset( $_POST['ai1ec_tickets_loading_error'] ) ) {
 			//do not update tickets because is unsafe. There was a problem to load the tickets,
 			//the customer received the same message when the event was loaded.
 			$message = $_POST['ai1ec_tickets_loading_error'];
@@ -276,6 +272,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		$body['contact_phone']    = $event->get( 'contact_phone' );
 		$body['contact_email']    = $event->get( 'contact_email' );
 		$body['contact_website']  = $event->get( 'contact_url' );
+		$body['recurrence_rules'] = $event->get( 'recurrence_rules' );
 		$body['uid']              = $event->get_uid();
 		$body['title']            = $post->post_title;
 		$body['description']      = $post->post_content;

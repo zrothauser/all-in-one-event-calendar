@@ -500,8 +500,6 @@ class Ai1ec_Javascript_Controller {
 			'ticketing_required_fields'      => Ai1ec_I18n::__(
 				'<b>Required or incorrect fields for Ticketing are outlined red.</b>'
 			),
-			'ticketing_repeat_not_supported' => Ai1ec_I18n::__( '<b>The Repeat option was selected but recurrence is not supported by Event with Tickets.</b>'
-			),
 			'ticketing_no_tickets_included'  => Ai1ec_I18n::__( '<b>
 				The Event has the cost option Tickets selected but no ticket was included.</b>'
 			),

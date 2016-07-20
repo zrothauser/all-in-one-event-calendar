@@ -273,6 +273,9 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		$body['contact_email']    = $event->get( 'contact_email' );
 		$body['contact_website']  = $event->get( 'contact_url' );
 		$body['recurrence_rules'] = $event->get( 'recurrence_rules' );
+		$body['recurrence_dates'] = $event->get( 'recurrence_dates' );
+		$body['exception_rules']  = $event->get( 'exception_rules' );
+		$body['exception_dates']  = $event->get( 'exception_dates' );
 		$body['uid']              = $event->get_uid();
 		$body['title']            = $post->post_title;
 		$body['description']      = $post->post_content;

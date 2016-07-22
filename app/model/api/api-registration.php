@@ -33,6 +33,7 @@ class Ai1ec_Api_Registration extends Ai1ec_Api_Abstract {
 			$this->save_ticketing_settings( $response_body['message'], true, $response_body['auth_token'], $this->_find_user_calendar(), $body['email'] );
 			$this->has_payment_settings();
 			$this->sync_api_settings();
+			$this->get_subscriptions(true);
 		} else {
 			$error_message = $this->save_error_notification( $response, __( 'We were unable to Sign you In for Time.ly Network', AI1EC_PLUGIN_NAME ) );
 			$this->save_ticketing_settings( $error_message, false, '', 0, null );

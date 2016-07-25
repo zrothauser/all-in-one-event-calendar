@@ -150,7 +150,6 @@ https://vimeo.com/135004810
 == Changelog ==
 
 = Version 2.5.8 =
-* Changed: Now the "Free Event" checkbox in the "Event Cost and Tickets" section is unchecked by default when adding an event.
 * Fixed: API Sign in wasn't refreshing correctly the subscriptions.
 
 = Version 2.5.7 =

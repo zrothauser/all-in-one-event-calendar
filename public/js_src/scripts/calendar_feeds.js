@@ -600,13 +600,32 @@ define(
 	};
 
 	var start = function() {
+		var ics_suggestion = getUrlParameter( 'suggestion' );
 		domReady( function(){
-			// Set the active tab
-			utils.activate_saved_tab_on_page_load( $.cookie( 'feeds_active_tab' ) );
+			if ( ics_suggestion == undefined ) {
+				// Set the active tab
+				utils.activate_saved_tab_on_page_load( $.cookie( 'feeds_active_tab' ) );
+			} else {
+				utils.activate_saved_tab_on_page_load( '#import' );
+				$( '#ai1ec_feed_url' ).val( decodeURI( ics_suggestion ) );
+			}
 			// Attach the event handlers
 			attach_event_handlers();
 			gMapsLoader( init_geocoder );
 		} );
+	};
+
+	var getUrlParameter = function getUrlParameter(sParam) {
+		var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+			sURLVariables = sPageURL.split('&'),
+			sParameterName,
+			i;
+		for (i = 0; i < sURLVariables.length; i++) {
+			sParameterName = sURLVariables[i].split('=');
+			if (sParameterName[0] === sParam) {
+				return sParameterName[1] === undefined ? true : sParameterName[1];
+			}
+		}
 	};
 
 	return {

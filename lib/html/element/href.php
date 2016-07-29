@@ -29,6 +29,7 @@ class Ai1ec_Html_Element_Href {
 		'instance_ids',
 		'events_limit',
 		'request_format',
+		'no_navigation'
 	);
 
 	/**

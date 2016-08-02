@@ -229,10 +229,9 @@ class Ai1ec_Settings extends Ai1ec_App {
 	 * Do things needed on every plugin upgrade.
 	 */
 	public function perform_upgrade_actions() {
-		$option = $this->_registry->get( 'model.option' );
-		$option->set( 'ai1ec_force_flush_rewrite_rules',      true, true );
-		$option->set( 'ai1ec_invalidate_css_cache',           true, true );
-		$option->set( Ai1ec_Theme_Loader::OPTION_FORCE_CLEAN, true, true );
+		update_option( 'ai1ec_force_flush_rewrite_rules',      true );
+		update_option( 'ai1ec_invalidate_css_cache',           true );
+		update_option( Ai1ec_Theme_Loader::OPTION_FORCE_CLEAN, true );
 	}
 
 	/**

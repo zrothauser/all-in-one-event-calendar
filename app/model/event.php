@@ -285,27 +285,24 @@ class Ai1ec_Event extends Ai1ec_Base {
 		return $this->initialize_from_array( $event );
 	}
 
-	/**
-	 * Returns enddate specific info.
-	 *
-	 * @return array Date info structure.
-	 */
-	public function getenddate_info() {
+	public function getenddate() {
 		$end = $this->get( 'end' );
-
 		if ( $this->is_allday() ) {
 			$end->set_time(
 				$end->format( 'H' ),
 				$end->format( 'i' ),
 				$end->format( 's' ) - 1
 			);
-			return array(
-				'month'   => $end->format( 'M' ),
-				'day'     => $end->format( 'j' ),
-				'weekday' => $end->format( 'D' ),
-				'year'    => $end->format( 'Y' ),
-			);
 		}
+		return $end;
+	}
+	/**
+	 * Returns enddate specific info.
+	 *
+	 * @return array Date info structure.
+	 */
+	public function getenddate_info() {
+		$end = $this->getenddate();
 		return array(
 			'month'   => $this->get( 'end' )->format( 'M' ),
 			'day'     => $this->get( 'end' )->format( 'j' ),

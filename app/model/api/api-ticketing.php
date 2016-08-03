@@ -264,7 +264,7 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 		$body['post_id']          = $event->get( 'post_id' );
 		$body['calendar_id']      = $calendar_id;
 		$body['dtstart']          = $event->get( 'start' )->format_to_javascript();
-		$body['dtend']            = $event->get( 'end' )->format_to_javascript();
+		$body['dtend']            = $event->getenddate()->format_to_javascript();
 		$body['timezone']         = $event->get( 'timezone_name' );
 		$body['venue_name']       = $event->get( 'venue' );
 		$body['address']          = $event->get( 'address' );

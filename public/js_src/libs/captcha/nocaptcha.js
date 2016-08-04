@@ -19,16 +19,20 @@ define(
 			}
 			params = $params;
 			$( $params.object ).html( '' );
-			grecaptcha.render(
-				$params.object,
-				{
-					sitekey : $params.key,
-					theme : 'white',
-					callback : function( response ) {
-						challenge_completed = true;
+			try {
+				grecaptcha.render(
+					$params.object,
+					{
+						sitekey : $params.key,
+						theme : 'white',
+						callback : function( response ) {
+							challenge_completed = true;
+						}
 					}
-				}
-			);
+				);
+			} catch( e ) {
+				grecaptcha.reset();
+			}				
 			initialized = true;
 		};
 

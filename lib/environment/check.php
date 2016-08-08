@@ -47,6 +47,7 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 		do_action( 'ai1ec_env_check' );
 		global $plugin_page;
 		$settings              = $this->_registry->get( 'model.settings' );
+		$option                = $this->_registry->get( 'model.option' );
 		$notification          = $this->_registry->get( 'notification.admin' );
 		$created_calendar_page = false;
 
@@ -95,29 +96,32 @@ class Ai1ec_Environment_Checks extends Ai1ec_Base {
 			}
 			return;
 		}
+
 		// Tell user to sign in to API in order to use Feeds
-		$rows      = $this->_registry->get( 'dbi.dbi' )->select(
-			'ai1ec_event_feeds',
-			array( 'feed_id' )
-		);
-		$api_reg   = $this->_registry->get( 'model.api.api-registration' );
-		$is_signed = $api_reg->is_signed();
-		
-		if ( 0 < count( $rows ) && ! $is_signed ) {
-			$msg = Ai1ec_I18n::__(
-					'<b>ACTION REQUIRED!</b> Please, <a href="edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings">sign</a> into Timely Network to continue syncing your imported events.'
-				);
-			$notification->store(
-				$msg,
-				'error',
-				0,
-				array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
-				false
+		$ics_current_db_version = $option->get( Ai1ecIcsConnectorPlugin::ICS_OPTION_DB_VERSION );
+		if ( $ics_current_db_version != null && $ics_current_db_version != '' ) {
+			$rows      = $this->_registry->get( 'dbi.dbi' )->select(
+				'ai1ec_event_feeds',
+				array( 'feed_id' )
 			);
+			$api_reg   = $this->_registry->get( 'model.api.api-registration' );
+			$is_signed = $api_reg->is_signed();
+
+			if ( 0 < count( $rows ) && ! $is_signed ) {
+				$msg = Ai1ec_I18n::__(
+						'<b>ACTION REQUIRED!</b> Please, <a href="edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings">sign</a> into Timely Network to continue syncing your imported events.'
+					);
+				$notification->store(
+					$msg,
+					'error',
+					0,
+					array( Ai1ec_Notification_Admin::RCPT_ADMIN ),
+					false
+				);
+			}
 		}
-		
+
 		// Check for needed PHP extensions.
-		$option  = $this->_registry->get( 'model.option' );
 		if (
 			! function_exists( 'iconv' ) &&
 			! $option->get( 'ai1ec_iconv_notification' )

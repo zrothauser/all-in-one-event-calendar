@@ -120,7 +120,7 @@
 									</div>
 									{{ purchase.ticket_count }}
 								</td>
-								<td>${{ purchase.total }} {{purchase.currency}}</td>
+								<td>{% if purchase.symbol is defined %}{{ purchase.symbol }}{% endif %}{{ purchase.total }} {{purchase.currency}}</td>
 								<td>{{ purchase.status }}</td>
 							</tr>
 							 {% endfor %}

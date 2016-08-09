@@ -88,12 +88,17 @@ define(
 							$row   = $( '<tr></tr>' ),
 							status = '<span class="ai1ec-tickets-status ai1ec-tickets-status-'
 								+ _s( response.data[i]['ticket_status'] ) + '">'
-								+ _s( response.data[i]['ticket_status_label'] ) + '</span>';
-
+								+ _s( response.data[i]['ticket_status_label'] ) + '</span>',
+								currencySymbol='';
+						if ( typeof response.data[i]['symbol'] !== 'undefined' ) {
+							currencySymbol = _s( response.data[i]['symbol'] );
+						} else {
+							currencySymbol = '$';
+						}
 						$row.append(
 							$( '<td></td>').html(
 								'"' + _s( response.data[i]['name'] ) + '"'
-								+ '<br /><b>$' + _s( response.data[i]['price'] ) + '</b>'
+								+ '<br /><b>'+ currencySymbol + _s( response.data[i]['price'] ) + ' ' + _s( response.data[i]['currency'] ) + '</b>'
 								+ '<div class="ai1ec-visible-sm">' + status + '</div>'
 							),
 							$( '<td class="ai1ec-hidden-sm"></td>').html(

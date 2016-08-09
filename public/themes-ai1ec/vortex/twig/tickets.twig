@@ -29,7 +29,7 @@
 					</td>
 					<td class="ai1ec-tickets-info {% if ticket.availability != null %}ai1ec-tickets-info-inactive{% endif %}">
 						<div class="ai1ec-tickets-title">
-							<b>${{ ticket.ticket_price}}</b>&nbsp;{{ ticket.ticket_name }}
+							<b>{% if ticket.symbol is defined %}{{ticket.symbol}}{% else %}${% endif %}{{ ticket.ticket_price}} {{ ticket.currency}}</b>&nbsp;{{ ticket.ticket_name }}
 						</div>						
 						<div class="ai1ec-tickets-description">{{ ticket.description }}</div>
 					</td>								

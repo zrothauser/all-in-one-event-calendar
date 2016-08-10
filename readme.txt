@@ -152,8 +152,7 @@ https://vimeo.com/135004810
 = Version 2.5.9 =
 * Fixed: Attempt to fix CSS issues in some installations.
 * Fixed: A warning message would pop-up when the feed's table wasn't created yet and WP debug flag was set to on.
-* Fixed: "No navigation bar" for the "Full Calendar" widget would let the navigation bar show sometimes.
-* Fixed: The link to add the suggested ICS URL that was sent through Frontend Submissions wasn't working.
+* Fixed: Widget creator - Even when "No navigation bar" option was specified for the "Full Calendar", the navigation bar would show.
 
 = Version 2.5.8 =
 * Fixed: API Sign in wasn't refreshing correctly the subscriptions.

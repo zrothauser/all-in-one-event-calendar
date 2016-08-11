@@ -164,8 +164,11 @@ class Ai1ec_Date_Time {
 	 * @return string
 	 */
 	public function get_gmt_offset_as_text() {
-		$offset = $this->_date_time->getOffset() / 3600;
-		return 'GMT' . ( $offset > 0 ? '+' : '' ) . $offset;
+		$offset        = $this->_date_time->getOffset();
+		$offsetHours   = $offset / 3600;
+		$offset        = $offset % 3600;
+		$offsetMinutes = abs( $offset ) / 60;
+		return sprintf( '(GMT%+03d:%02d)', $offsetHours, $offsetMinutes );
 	}
 
 	/**

@@ -151,6 +151,7 @@ https://vimeo.com/135004810
 
 = Version 2.5.9 =
 * Changed: Now the "Free Event" checkbox in the "Event Cost and Tickets" section is unchecked by default when adding an event.
+* Changed: Now the timezone of start/end date of the event is always being shown in the event's page.
 * Fixed: Attempt to fix CSS issues in some installations.
 * Fixed: A warning message would pop-up when the feed's table wasn't created yet and WP debug flag was set to on.
 * Fixed: Widget creator - Even when "No navigation bar" option was specified for the "Full Calendar", the navigation bar would show.

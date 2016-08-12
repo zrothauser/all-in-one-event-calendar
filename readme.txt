@@ -5,7 +5,7 @@ calendar, ical, iCalendar, all-in-one, events sync, events widget,
 calendar widget
 Requires WordPress at least: 3.5
 Tested up to: 4.6
-Stable tag: 2.5.9
+Stable tag: 2.5.10
 License: GNU General Public License, version 3 (GPL-3.0)
 
 A calendar system with many views, upcoming events widget, color-coded
@@ -148,6 +148,9 @@ https://vimeo.com/135004810
 **[ai1ec exact_date="5-10-2015"]**
 
 == Changelog ==
+
+= Version 2.5.10 =
+* Fixed: The timezone will only show in the event if the "Display events in calendar time zone" option is unchecked in the Settings page.
 
 = Version 2.5.9 =
 * Changed: Now the "Free Event" checkbox in the "Event Cost and Tickets" section is unchecked by default when adding an event.

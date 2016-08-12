@@ -2,13 +2,13 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.5.9\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.5.10\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2016-08-10 18:28:51+00:00\n"
+"POT-Creation-Date: 2016-08-12 22:20:47+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-08-10 18:28+0000\n"
+"PO-Revision-Date: 2016-08-12 22:20+0000\n"
 "Last-Translator: Timely <support@time.ly>\n"
 "Language-Team:\n"
 
@@ -593,7 +593,8 @@ msgid_plural "Week"
 msgstr[0] "Week"
 msgstr[1] "Week"
 
-#: app/model/settings.php:479
+#: app/model/settings.php:479 app/view/event/single.php:57
+#: app/view/event/single.php:58
 msgid "Timezone"
 msgstr "Timezone"
 
@@ -1698,7 +1699,7 @@ msgstr "Subscribe to filtered calendar"
 msgid "Subscribe"
 msgstr "Subscribe"
 
-#: app/view/calendar/page.php:262 app/view/event/single.php:118
+#: app/view/calendar/page.php:262 app/view/event/single.php:93
 msgid "Get a Timely Calendar"
 msgstr "Get a Timely Calendar"
 
@@ -1754,7 +1755,7 @@ msgstr "Subscribe to this calendar in another plain-text calendar"
 msgid "Clear category filter"
 msgstr "Clear category filter"
 
-#: app/view/calendar/taxonomy.php:98 app/view/event/single.php:125
+#: app/view/calendar/taxonomy.php:98 app/view/event/single.php:100
 #: lib/html/element/setting/tags-categories.php:47
 msgid "Categories"
 msgstr "Categories"
@@ -1763,7 +1764,7 @@ msgstr "Categories"
 msgid "Clear tag filter"
 msgstr "Clear tag filter"
 
-#: app/view/calendar/taxonomy.php:100 app/view/event/single.php:126
+#: app/view/calendar/taxonomy.php:100 app/view/event/single.php:101
 #: lib/html/element/setting/tags-categories.php:39
 msgid "Tags"
 msgstr "Tags"
@@ -1871,11 +1872,11 @@ msgstr "View Calendar"
 msgid "Add"
 msgstr "Add"
 
-#: app/view/event/content.php:33 app/view/event/single.php:119
+#: app/view/event/content.php:33 app/view/event/single.php:94
 msgid "When:"
 msgstr "When:"
 
-#: app/view/event/content.php:34 app/view/event/single.php:120
+#: app/view/event/content.php:34 app/view/event/single.php:95
 msgid "Where:"
 msgstr "Where:"
 
@@ -1946,39 +1947,35 @@ msgid "Event draft updated. <a target=\"_blank\" href=\"%s\">Preview event</a>"
 msgstr ""
 "Event draft updated. <a target=\"_blank\" href=\"%s\">Preview event</a>"
 
-#: app/view/event/single.php:78
-msgid "Event was created in the %s time zone"
-msgstr "Event was created in the %s time zone"
-
-#: app/view/event/single.php:114
+#: app/view/event/single.php:89
 msgid "Add to Calendar"
 msgstr "Add to Calendar"
 
-#: app/view/event/single.php:121 public/admin/box_event_cost.php:385
+#: app/view/event/single.php:96 public/admin/box_event_cost.php:385
 msgid "Cost:"
 msgstr "Cost:"
 
-#: app/view/event/single.php:122
+#: app/view/event/single.php:97
 msgid "Contact:"
 msgstr "Contact:"
 
-#: app/view/event/single.php:123
+#: app/view/event/single.php:98
 msgid "Tickets:"
 msgstr "Tickets:"
 
-#: app/view/event/single.php:124
+#: app/view/event/single.php:99
 msgid "Free"
 msgstr "Free"
 
-#: app/view/event/single.php:127 app/view/event/ticket.php:38
+#: app/view/event/single.php:102 app/view/event/ticket.php:38
 msgid "Buy Tickets"
 msgstr "Buy Tickets"
 
-#: app/view/event/single.php:150
+#: app/view/event/single.php:125
 msgid "Edit this occurrence (%s)"
 msgstr "Edit this occurrence (%s)"
 
-#: app/view/event/single.php:221
+#: app/view/event/single.php:196
 msgid ""
 "This post was replicated from another site's <a href=\"%s\" title="
 "\"iCalendar feed\"><i class=\"ai1ec-fa ai1ec-fa-calendar\"></i> calendar "
@@ -1988,7 +1985,7 @@ msgstr ""
 "\"iCalendar feed\"><i class=\"ai1ec-fa ai1ec-fa-calendar\"></i> calendar "
 "feed</a>."
 
-#: app/view/event/single.php:232
+#: app/view/event/single.php:207
 msgid "View original"
 msgstr "View original"
 

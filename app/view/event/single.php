@@ -50,11 +50,12 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			nl2br( $location->get_location( $event ) ),
 			$event
 		);
-		$default_tz = $this->_registry->get( 'date.timezone' )->get_default_timezone();		
+		$default_tz = $this->_registry->get( 'date.timezone' )->get_default_timezone();
 		$timezone_info = array(
+			'show_timezone'       => $this->_registry->get( 'model.settings' )->get( 'always_use_calendar_timezone' ),
 			'using_calendar_tz'   => $this->_registry->get( 'model.settings' )->get( 'always_use_calendar_timezone' ),
-			'event_timezone'      => str_replace( '_', ' ', $event->get( 'timezone_name' ) ),
-			'calendar_timezone'   => str_replace( '_', ' ', $default_tz ),
+			'event_timezone'      => str_replace( '_', ' ', $event->get( 'timezone_name' ) ) . ' ' . __( 'Timezone', AI1EC_PLUGIN_NAME ),
+			'calendar_timezone'   => str_replace( '_', ' ', $default_tz ) . ' ' . __( 'Timezone', AI1EC_PLUGIN_NAME ),
 		);
 
 		$banner_image_meta = get_post_meta( $event->get( 'post_id' ), 'ai1ec_banner_image' );

@@ -363,6 +363,10 @@ define(
 							);
 						// Do any general view initialization after loading
 						initialize_view( $calendar );
+						var offset = $calendar.offset().top - 21;
+						if ( $( window ).scrollTop() > offset ) {
+							window.scrollTo( 0, offset );
+						}
 					} );
 					loading_view_request.fail( function( jqXHR, textStatus, errorThrown ) {
 						if ( 'ai1ec_abort' === textStatus ) {

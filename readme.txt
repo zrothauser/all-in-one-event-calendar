@@ -5,7 +5,7 @@ calendar, ical, iCalendar, all-in-one, events sync, events widget,
 calendar widget
 Requires WordPress at least: 3.5
 Tested up to: 4.6
-Stable tag: 2.5.9
+Stable tag: 2.5.10
 License: GNU General Public License, version 3 (GPL-3.0)
 
 A calendar system with many views, upcoming events widget, color-coded
@@ -149,11 +149,16 @@ https://vimeo.com/135004810
 
 == Changelog ==
 
+= Version 2.5.10 =
+* Fixed: The timezone will only show in the event if the "Display events in calendar time zone" option is checked in the Settings page.
+
 = Version 2.5.9 =
+* Changed: Now the “Free Event” checkbox in the “Event Cost and Tickets” section is unchecked by default when adding an event.
+* Changed: Now the timezone of start/end date of the event is always being shown in the event’s page.
 * Fixed: Attempt to fix CSS issues in some installations.
-* Fixed: A warning message would pop-up when the feed's table wasn't created yet and WP debug flag was set to on.
-* Fixed: "No navigation bar" for the "Full Calendar" widget would let the navigation bar show sometimes.
-* Fixed: The link to add the suggested ICS URL that was sent through Frontend Submissions wasn't working.
+* Fixed: A warning message would pop-up when the feed’s table wasn’t created yet and WP debug flag was set to on.
+* Fixed: Widget creator – Even when “No navigation bar” option was specified for the “Full Calendar”, the navigation bar would show.
+* Fixed: Now Ticketing displays the correct currency selected.
 
 = Version 2.5.8 =
 * Fixed: API Sign in wasn't refreshing correctly the subscriptions.

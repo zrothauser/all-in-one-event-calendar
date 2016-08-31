@@ -50,38 +50,13 @@ class Ai1ec_View_Event_Single extends Ai1ec_Base {
 			nl2br( $location->get_location( $event ) ),
 			$event
 		);
+		$default_tz = $this->_registry->get( 'date.timezone' )->get_default_timezone();
 		$timezone_info = array(
-			'show_timezone'       => false,
-			'text_timezone_title' => null,
-			'event_timezone'      => null,
+			'show_timezone'       => $this->_registry->get( 'model.settings' )->get( 'always_use_calendar_timezone' ),
+			'using_calendar_tz'   => $this->_registry->get( 'model.settings' )->get( 'always_use_calendar_timezone' ),
+			'event_timezone'      => str_replace( '_', ' ', $event->get( 'timezone_name' ) ) . ' ' . __( 'Timezone', AI1EC_PLUGIN_NAME ),
+			'calendar_timezone'   => str_replace( '_', ' ', $default_tz ) . ' ' . __( 'Timezone', AI1EC_PLUGIN_NAME ),
 		);
-		$default_tz = $this->_registry->get( 'date.timezone' )
-			->get_default_timezone();
-		/**
-		 * Only display the timezone information if:
-		 *     -) local timezone is not enforced -- because if it is enforced
-		 *        then site owner knows that it's clear, from event contents,
-		 *        where event happens and what time means;
-		 *     -) the timezone is different from the site timezone because if
-		 *        they do match then it is likely obvious when and wheere the
-		 *        event is about to take place.
-		 */
-		if (
-			$this->_registry->get( 'model.settings' )
-				->get( 'always_use_calendar_timezone' ) &&
-			$event->get( 'timezone_name' ) !== $default_tz
-		) {
-			$timezone_info = array(
-				'show_timezone'       => true,
-				'event_timezone'      => $event->get( 'timezone_name' ),
-				'text_timezone_title' => sprintf(
-					Ai1ec_I18n:: __(
-						'Event was created in the %s time zone'
-					),
-					$event->get( 'start' )->get_gmt_offset_as_text()
-				),
-			);
-		}
 
 		$banner_image_meta = get_post_meta( $event->get( 'post_id' ), 'ai1ec_banner_image' );
 		$banner_image = $banner_image_meta ? $banner_image_meta[0] : '';

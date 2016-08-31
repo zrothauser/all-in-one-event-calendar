@@ -754,23 +754,20 @@ class Ai1ec_Api_Ics_Import_Export_Engine
 	}
 
 	/**
-	 * Strips duplicated events created editing recurrent ones
+	 * Strips Google duplicated events created when editing recurrent ones
 	 *
 	 * Code contributed by cmezzett (https://wordpress.org/support/profile/cmezzett)
 	 */
-	protected function _normalize_google_uids( array $calendar ) {
+	protected function _normalize_google_uids ( array $calendar ) {
 
 		foreach ( $calendar as $event ) {
-			// Search for recurrence identification (Example: qkpcq5gmqsg0p29nli103j5jrg_R20160731T150000@google.com)
-			if ( strpos( $event->uid, '_R' ) !== false && strpos( $event->uid, '@google.com' ) !== false ) {
-				// Clean up UID (Removes _R20160731T150000)
-				$clean_uid = preg_replace( '/_R[0-9T]+/i', '', $event->uid );
-
-				// Search for event
-				if ( ( $e = $this->_search_for_id( $clean_uid, $calendar ) ) !== null ) {
+			if ( strpos( $event->uid, '@google.com' ) !== false && strpos( $event->uid, '_R' ) !== false ) {
+				preg_match( "/^(.*)_R.*@google.com$/i", $event->uid, $matches );
+				$tmp_uid = $matches[1] . '@google.com';
+				if ( ( $e = $this->_search_for_id( $tmp_uid, $calendar ) ) !== null ) {
 					$suspect = $calendar[$e];
 					if ( empty( $suspect->recurrence_id ) ) {
-						//error_log( "Discarded UID without recurrence-id: " . $suspect->uid . "; Object: " . serialize( $suspect ) );
+						//error_log( 'Discarded UID without recurrence-id: ' . $suspect->uid . '; Object: ' . serialize( $suspect ) );
 						unset( $calendar[$e] );
 					}
 				}

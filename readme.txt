@@ -150,7 +150,8 @@ https://vimeo.com/135004810
 == Changelog ==
 
 = Version 2.5.11 =
-* Fixed: Duplication of recurrent events for events imported from Google Calendar
+* Fixed: Duplication of recurrent events for events imported from Google Calendar.
+* Fixed: Choosing a date using calendar button will move user to top of the page instead of bottom of the page in the Posterboard view.
 
 = Version 2.5.10 =
 * Fixed: The timezone will only show in the event if the "Display events in calendar time zone" option is checked in the Settings page.

@@ -139,7 +139,7 @@ class Ai1ec_Controller_Javascript_Widget extends Ai1ec_Base {
 			'ai1ec_widget.js'
 		);
 		// Removing http:// or https:// from extension URLs
-		foreach ( $extension_urls as &$extension_url) {
+		foreach ( $extension_urls as &$extension_url ) {
 			$extension_url = preg_replace( '/https?:/', '', $extension_url );
 		}
 

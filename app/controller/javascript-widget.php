@@ -128,8 +128,8 @@ class Ai1ec_Controller_Javascript_Widget extends Ai1ec_Base {
 		$css_rules = addslashes( $css_rules );
 		$translation['permalinks_structure'] = $this->
 			_registry->get( 'model.option' )->get( 'permalink_structure' );
-		$translation['calendar_url']      = $permalink;
-		$translation['full_calendar_url'] = $full_permalink;
+		$translation['calendar_url']      = preg_replace( '/^https?:/', '', $permalink );
+		$translation['full_calendar_url'] = preg_replace( '/^https?:/', '', $full_permalink );
 		// Let extensions add their scripts.
 		// look at Extended Views or Super Widget for examples
 		$extension_urls = array();
@@ -138,12 +138,16 @@ class Ai1ec_Controller_Javascript_Widget extends Ai1ec_Base {
 			$extension_urls,
 			'ai1ec_widget.js'
 		);
+		// Removing http:// or https:// from extension URLs
+		foreach ( $extension_urls as &$extension_url ) {
+			$extension_url = preg_replace( '/https?:/', '', $extension_url );
+		}
 
 		$translation['extension_urls'] = $extension_urls;
 		// the single event page js is loaded dinamically.
 		$translation['event_page'] = array(
 			'id' => 'ai1ec_event',
-			'url' => AI1EC_URL . '/public/js/pages/event.js',
+			'url' => preg_replace( '/^https?:/', '', AI1EC_URL ) . '/public/js/pages/event.js',
 		);
 		$translation_module = $jscontroller->create_require_js_module(
 			Ai1ec_Javascript_Controller::FRONTEND_CONFIG_MODULE,

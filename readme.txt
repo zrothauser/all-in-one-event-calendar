@@ -5,7 +5,7 @@ calendar, ical, iCalendar, all-in-one, events sync, events widget,
 calendar widget
 Requires WordPress at least: 3.5
 Tested up to: 4.6.1
-Stable tag: 2.5.11
+Stable tag: 2.5.12
 License: GNU General Public License, version 3 (GPL-3.0)
 
 A calendar system with many views, upcoming events widget, color-coded
@@ -148,6 +148,9 @@ https://vimeo.com/135004810
 **[ai1ec exact_date="5-10-2015"]**
 
 == Changelog ==
+
+= Version 2.5.12 =
+* Fixed: Importing calendar into Google Calendar wasn't working when calendar was using HTTPS protocol.
 
 = Version 2.5.11 =
 * Fixed: Duplication of recurrent events for events imported from Google Calendar.

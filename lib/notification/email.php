@@ -21,6 +21,8 @@ class Ai1ec_Email_Notification extends Ai1ec_Notification {
 	 */
 	private $_translations = array();
 
+	private $_replyTo;
+
 	/**
 	 * @param array: $translations
 	 */
@@ -32,12 +34,14 @@ class Ai1ec_Email_Notification extends Ai1ec_Notification {
 		Ai1ec_Registry_Object $registry,
 		$message,
 		array $recipients,
-		$subject
+		$subject,
+		array $replyTo = null
 	) {
 		parent::__construct( $registry );
 		$this->_message    = $message;
 		$this->_recipients = $recipients;
 		$this->_subject    = $subject;
+		$this->_replyTo    = $replyTo;
 	}
 
 	public function send( $headers = null ) {
@@ -62,28 +66,26 @@ class Ai1ec_Email_Notification extends Ai1ec_Notification {
 				add_filter( 'wp_mail', $double_line_break_handler );						
 			}		
 		}
-		$failed_handler = array( $this, 'send_mail_failed' );
-		add_filter( 'wp_mail_failed', $failed_handler );
 
-		// Rewrite WordPress "From" Header
-		add_filter( 'wp_mail_from_name', 'new_mail_from_name' );
-		if ( !function_exists( 'new_mail_from_name' ) ) {
-			function new_mail_from_name() {
-				return get_bloginfo( 'name' );
-			}
-		}
-		if ( $is_mandril_active ) {
-			$new_mail_from_handler = array( $this, 'new_mail_from_mandril' );
-			add_filter( 'wp_mail_from', $new_mail_from_handler );
-			$phpmailer_init_handler = array( $this, 'phpmailer_init_mandril' );
-			add_action( 'phpmailer_init', $phpmailer_init_handler );
-		} 
+		$phpmailer_init_handler = array( $this, 'phpmailer_init_mandril' );
+		add_action( 'phpmailer_init', $phpmailer_init_handler );
+
+		$new_mail_send_failed = array( $this, 'new_mail_send_failed' );
+		add_filter( 'wp_mail_failed', $new_mail_send_failed );
+
+		$new_mail_from_name = array( $this, 'new_mail_from_name' );
+		add_filter( 'wp_mail_from_name', $new_mail_from_name );
+
+		$new_mail_from_email = array( $this, 'new_mail_from_email' );
+		add_filter( 'wp_mail_from', $new_mail_from_email );
 
 		$result = wp_mail( $this->_recipients, $this->_subject, $this->_message, $headers );
 
-		remove_filter( 'wp_mail_failed', $failed_handler );
+		remove_filter( 'wp_mail_failed', $new_mail_send_failed );
+		remove_filter( 'wp_mail_from_name', $new_mail_from_name );
+		remove_filter( 'wp_mail_from', $new_mail_from_email );
+
 		if ( $is_mandril_active ) {
-			remove_filter( 'wp_mail_from', $new_mail_from_handler );
 			remove_action( 'phpmailer_init', $phpmailer_init_handler );
 		}
 		if ( $is_plain_text ) {
@@ -95,12 +97,35 @@ class Ai1ec_Email_Notification extends Ai1ec_Notification {
 		return $result;		
 	}
 
-	public function new_mail_from_mandril() {
-		return 'no-reply@time.ly';
+	public function new_mail_from_name() {
+		return get_bloginfo( 'name' );
+	}
+
+	public function new_mail_from_email() {
+		if ( empty( $this->_replyTo ) ) {
+			return $this->_registry->get( 'model.settings' )
+				->get( 'fes_notification_email', get_bloginfo( 'admin_email' ) );
+		} else {
+			return $this->_replyTo[0]; 
+		}
+	}
+
+	/**
+	 * Handle the wp_mail_failed hook to log the error
+	 */
+	public function new_mail_send_failed( $error = null) {
+		if ( null != $error && is_wp_error( $error ) ) {
+			error_log( 'wp_mail failed, code: %d, message: %s', $error->get_error_code(), $error->get_error_message() );
+		} else {
+			error_log( 'wp_mail failed, unknow error' );
+		}
 	}
 
 	public function phpmailer_init_mandril( $phpmailer ) {
-		$phpmailer->addReplyTo( get_bloginfo( 'admin_email' ), get_bloginfo( 'name' ) );
+		if ( method_exists( $phpmailer, 'ClearReplyTos' ) ) {
+			$phpmailer->ClearReplyTos();
+		}
+		$phpmailer->addReplyTo( $this->new_mail_from_email(), $this->new_mail_from_name() );
 	}
 
 	/**
@@ -118,17 +143,6 @@ class Ai1ec_Email_Notification extends Ai1ec_Notification {
 			$atts['message'] = str_replace( "\n", "\n\n", $temp );
 		}
 		return $atts;
-	}
-
-	/**
-	 * Handle the wp_mail_failed hook to log the error
-	 */
-	public function send_mail_failed( $error = null) {
-		if ( null != $error && is_wp_error( $error ) ) {
-			error_log( 'wp_mail failed, code: %d, message: %s', $error->get_error_code(), $error->get_error_message() );
-		} else {
-			error_log( 'wp_mail failed, unknow error' );
-		}
 	}
 
 	/**

@@ -301,7 +301,7 @@ define( 'AI1EC_VERSION', '2.5.11' );
 		// = Convert http:// to webcal:// in AI1EC_SCRIPT_URL =
 		// =  (webcal:// protocol does not support https://)  =
 		// ====================================================
-		$webcal_url = str_replace( 'http://', 'webcal://', AI1EC_SCRIPT_URL );
+		$webcal_url = preg_replace( '/^https?:\/\//', 'webcal://', AI1EC_SCRIPT_URL );
 		define(
 			'AI1EC_EXPORT_URL',
 			$webcal_url . '&controller=ai1ec_exporter_controller' .

@@ -244,11 +244,16 @@ class Ai1ec_Event_Creating extends Ai1ec_Base {
 				}
 			}
 		}
-		if ( 'tickets' === $cost_type ) {			
+		if ( 'tickets' === $cost_type ) {
 			update_post_meta(
 				$post_id,
 				'_ai1ec_timely_tickets_url',
 				$api->get_api_event_buy_ticket_url( $event->get( 'post_id' ) )
+			);
+		} else {
+			delete_post_meta(
+				$post_id,
+				'_ai1ec_timely_tickets_url'
 			);
 		}
 

@@ -305,7 +305,7 @@ class Ai1ec_View_Add_New_Event extends Ai1ec_Base {
 		
 		if ( ! $api_reg->is_ticket_available() ) {
 			$message = __(
-				'Ticketing<sup>beta</sup> is currently not available for this website. Please, try again later.',
+				'Ticketing is currently not available for this website. Please, try again later.',
 				AI1EC_PLUGIN_NAME
 			);
 		}

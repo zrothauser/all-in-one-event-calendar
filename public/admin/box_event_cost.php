@@ -50,7 +50,7 @@
 			<label for="ai1ec_has_tickets">
 				<input type="radio" value="tickets" id="ai1ec_has_tickets"
 					   name="ai1ec_cost_type" <?php if ( 'tickets' == $cost_type ) { echo 'checked'; } ?>>
-				<?php _e( 'Time.ly Tickets<sup>beta</sup>', AI1EC_PLUGIN_NAME ); ?>
+				<?php _e( 'Time.ly Tickets', AI1EC_PLUGIN_NAME ); ?>
 			</label>
 
 			<label for="ai1ec_external_tickets">

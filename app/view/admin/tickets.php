@@ -33,7 +33,7 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 		add_submenu_page(
 			AI1EC_ADMIN_BASE_URL,
 			__( 'Ticketing', AI1EC_PLUGIN_NAME ),
-			__( 'Ticketing<sup>beta</sup>', AI1EC_PLUGIN_NAME ),
+			__( 'Ticketing', AI1EC_PLUGIN_NAME ),
 			'manage_ai1ec_feeds',
 			AI1EC_PLUGIN_NAME . '-tickets',
 			array( $this, 'display_page' )
@@ -68,10 +68,10 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 
 			$args = array(
 				'title' => Ai1ec_I18n::__(
-					'Time.ly Ticketing<sup>beta</sup>'
+					'Time.ly Ticketing'
 				),
 				'sign_up_text' => 'Please, <a href="edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings">Sign Up for a Timely Network account</a> to use Ticketing.',
-				'signup_form'  => Ai1ec_I18n::__( 'You need to sign up for a Timely Network account in order to use Ticketing<sup>beta</sup> <br /><br />' ) .
+				'signup_form'  => Ai1ec_I18n::__( 'You need to sign up for a Timely Network account in order to use Ticketing<br /><br />' ) .
 					(
 						$signup_available
 						? Ai1ec_I18n::__( '<a href="edit.php?post_type=ai1ec_event&page=all-in-one-event-calendar-settings" class="ai1ec-btn ai1ec-btn-primary ai1ec-btn-lg">Sign In to Timely Network</a>' )
@@ -83,10 +83,10 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 		} elseif ( ! $ticketing_available ) {
 			$args = array(
 				'title' => Ai1ec_I18n::__(
-					'Time.ly Ticketing<sup>beta</sup>'
+					'Time.ly Ticketing'
 				),
 				'sign_up_text' => '',
-				'signup_form'  => 'Ticketing<sup>beta</sup> is currently not available for this website. Please, try again later.'
+				'signup_form'  => 'Ticketing is currently not available for this website. Please, try again later.'
 
 			);
 			$file = $loader->get_file( 'ticketing/signup.twig', $args, true );
@@ -95,11 +95,8 @@ class Ai1ec_View_Tickets extends Ai1ec_View_Admin_Abstract {
 			$purchases = $this->_api_registration->get_purchases();
 			$args      = array(
 				'title'                             => Ai1ec_I18n::__(
-					'Time.ly Ticketing<sup>beta</sup>'
+					'Time.ly Ticketing'
 				),
-				'beta_message'                      => Ai1ec_I18n::__(
-				'Please consider Ticketing is in beta. If you encounter any bugs please raise the at <a href="mailto:labs@time.ly">labs@time.ly</a>. Any enhancements requests please raise them on <a href="http://ideas.time.ly">ideas.time.ly</a> under "Ticketing".'
-			),
 				'settings_text'                     => Ai1ec_I18n::__( 'Settings' ),
 				'sales_text'                        => Ai1ec_I18n::__( 'Sales' ),
 				'select_payment_text'               => Ai1ec_I18n::__( 'Please provide your PayPal details.' ),

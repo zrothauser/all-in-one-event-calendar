@@ -175,10 +175,4 @@
 	{% endif %}
 {% endif %}
 
-{% if API_URL is not empty %}
-<script>
-	( new Image() ).src = '{{ API_URL }}../img/1x1.gif?event_id={{ api_event_id }}&r=' + Math.random();
-</script>
-{% endif %}
-
 </div>

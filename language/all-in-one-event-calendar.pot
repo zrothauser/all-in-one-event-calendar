@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the All-in-One Event Calendar by Time.ly package.
 msgid ""
 msgstr ""
-"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.5.12\n"
+"Project-Id-Version: All-in-One Event Calendar by Time.ly 2.5.13\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/all-in-one-event-calendar\n"
-"POT-Creation-Date: 2016-10-17 17:16:47+00:00\n"
+"POT-Creation-Date: 2016-10-31 16:05:19+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -235,11 +235,11 @@ msgstr ""
 msgid "Guest Name"
 msgstr ""
 
-#: app/controller/javascript.php:568 app/view/admin/tickets.php:116
+#: app/controller/javascript.php:568 app/view/admin/tickets.php:113
 msgid "Status"
 msgstr ""
 
-#: app/controller/javascript.php:569 app/view/admin/tickets.php:115
+#: app/controller/javascript.php:569 app/view/admin/tickets.php:112
 #: app/view/event/ticket.php:71
 msgid "Email"
 msgstr ""
@@ -837,8 +837,8 @@ msgstr ""
 
 #: app/view/admin/add-new-event.php:307
 msgid ""
-"Ticketing<sup>beta</sup> is currently not available for this website. "
-"Please, try again later."
+"Ticketing is currently not available for this website. Please, try again "
+"later."
 msgstr ""
 
 #: app/view/admin/add-new-event.php:407
@@ -1072,7 +1072,7 @@ msgid "All-in-One Event Calendar: Settings"
 msgstr ""
 
 #: app/view/admin/settings.php:68 app/view/admin/settings.php:69
-#: app/view/admin/tickets.php:103 lib/date/timezone.php:366
+#: app/view/admin/tickets.php:100 lib/date/timezone.php:366
 msgid "Settings"
 msgstr ""
 
@@ -1122,7 +1122,7 @@ msgstr ""
 msgid "Please, Sign In to Timely Network."
 msgstr ""
 
-#: app/view/admin/settings.php:184 app/view/admin/tickets.php:109
+#: app/view/admin/settings.php:184 app/view/admin/tickets.php:106
 #: public/admin/box_ask_customer_review.php:113
 #: public/admin/box_ask_customer_review.php:127
 #: public/admin/box_ask_customer_review.php:141
@@ -1191,7 +1191,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: app/view/admin/settings.php:206 app/view/admin/tickets.php:118
+#: app/view/admin/settings.php:206 app/view/admin/tickets.php:115
 msgid "Sign Out"
 msgstr ""
 
@@ -1265,23 +1265,19 @@ msgstr ""
 msgid "All-in-One Event Calendar: Themes"
 msgstr ""
 
-#: app/view/admin/tickets.php:35
+#: app/view/admin/tickets.php:35 app/view/admin/tickets.php:36
 msgid "Ticketing"
-msgstr ""
-
-#: app/view/admin/tickets.php:36
-msgid "Ticketing<sup>beta</sup>"
 msgstr ""
 
 #: app/view/admin/tickets.php:70 app/view/admin/tickets.php:85
 #: app/view/admin/tickets.php:97
-msgid "Time.ly Ticketing<sup>beta</sup>"
+msgid "Time.ly Ticketing"
 msgstr ""
 
 #: app/view/admin/tickets.php:74
 msgid ""
 "You need to sign up for a Timely Network account in order to use "
-"Ticketing<sup>beta</sup> <br /><br />"
+"Ticketing<br /><br />"
 msgstr ""
 
 #: app/view/admin/tickets.php:77
@@ -1297,182 +1293,174 @@ msgid ""
 "try again later.</b>"
 msgstr ""
 
-#: app/view/admin/tickets.php:100
-msgid ""
-"Please consider Ticketing is in beta. If you encounter any bugs please raise "
-"the at <a href=\"mailto:labs@time.ly\">labs@time.ly</a>. Any enhancements "
-"requests please raise them on <a href=\"http://ideas.time.ly\">ideas.time."
-"ly</a> under \"Ticketing\"."
-msgstr ""
-
-#: app/view/admin/tickets.php:104
+#: app/view/admin/tickets.php:101
 msgid "Sales"
 msgstr ""
 
-#: app/view/admin/tickets.php:105
+#: app/view/admin/tickets.php:102
 msgid "Please provide your PayPal details."
 msgstr ""
 
-#: app/view/admin/tickets.php:106
+#: app/view/admin/tickets.php:103
 msgid "Cheque"
 msgstr ""
 
-#: app/view/admin/tickets.php:107
+#: app/view/admin/tickets.php:104
 msgid "PayPal"
 msgstr ""
 
-#: app/view/admin/tickets.php:108
+#: app/view/admin/tickets.php:105
 msgid "Preferred currency for tickets:"
 msgstr ""
 
-#: app/view/admin/tickets.php:110
+#: app/view/admin/tickets.php:107
 msgid "Save Changes"
 msgstr ""
 
-#: app/view/admin/tickets.php:111
+#: app/view/admin/tickets.php:108
 msgid "Date"
 msgstr ""
 
-#: app/view/admin/tickets.php:112
+#: app/view/admin/tickets.php:109
 msgid "Event"
 msgstr ""
 
-#: app/view/admin/tickets.php:113
+#: app/view/admin/tickets.php:110
 msgid "Purchaser"
 msgstr ""
 
-#: app/view/admin/tickets.php:114 app/view/calendar/view/abstract.php:107
+#: app/view/admin/tickets.php:111 app/view/calendar/view/abstract.php:107
 #: app/view/event/ticket.php:39
 msgid "Tickets"
 msgstr ""
 
-#: app/view/admin/tickets.php:117
+#: app/view/admin/tickets.php:114
 msgid "Total"
 msgstr ""
 
-#: app/view/admin/tickets.php:134
+#: app/view/admin/tickets.php:131
 msgid "United States Dollar"
 msgstr ""
 
-#: app/view/admin/tickets.php:135
+#: app/view/admin/tickets.php:132
 msgid "Canadian Dollar"
 msgstr ""
 
-#: app/view/admin/tickets.php:136
+#: app/view/admin/tickets.php:133
 msgid "Australian Dollar"
 msgstr ""
 
-#: app/view/admin/tickets.php:137
+#: app/view/admin/tickets.php:134
 msgid "Brazilian Real"
 msgstr ""
 
-#: app/view/admin/tickets.php:137 app/view/admin/tickets.php:145
-#: app/view/admin/tickets.php:158
+#: app/view/admin/tickets.php:134 app/view/admin/tickets.php:142
+#: app/view/admin/tickets.php:155
 msgid ""
 "Note: This currency is supported as a payment currency and a currency "
 "balance for in-country PayPal accounts only."
 msgstr ""
 
-#: app/view/admin/tickets.php:138
+#: app/view/admin/tickets.php:135
 msgid "Czech Koruna"
 msgstr ""
 
-#: app/view/admin/tickets.php:139
+#: app/view/admin/tickets.php:136
 msgid "Danish Krone"
 msgstr ""
 
-#: app/view/admin/tickets.php:140
+#: app/view/admin/tickets.php:137
 msgid "Euro"
 msgstr ""
 
-#: app/view/admin/tickets.php:141
+#: app/view/admin/tickets.php:138
 msgid "Hong Kong Dollar"
 msgstr ""
 
-#: app/view/admin/tickets.php:142
+#: app/view/admin/tickets.php:139
 msgid "Hungarian Forint"
 msgstr ""
 
-#: app/view/admin/tickets.php:142 app/view/admin/tickets.php:156
+#: app/view/admin/tickets.php:139 app/view/admin/tickets.php:153
 msgid ""
 "Note: Decimal amounts are not supported for this currency. Passing a decimal "
 "amount will throw an error."
 msgstr ""
 
-#: app/view/admin/tickets.php:143
+#: app/view/admin/tickets.php:140
 msgid "Israeli New Sheqel"
 msgstr ""
 
-#: app/view/admin/tickets.php:144
+#: app/view/admin/tickets.php:141
 msgid "Japanese Yen"
 msgstr ""
 
-#: app/view/admin/tickets.php:144
+#: app/view/admin/tickets.php:141
 msgid ""
 "Note: This currency does not support decimals. Passing a decimal amount will "
 "throw an error. 1,000,000"
 msgstr ""
 
-#: app/view/admin/tickets.php:145
+#: app/view/admin/tickets.php:142
 msgid "Malaysian Ringgit"
 msgstr ""
 
-#: app/view/admin/tickets.php:146
+#: app/view/admin/tickets.php:143
 msgid "Mexican Peso"
 msgstr ""
 
-#: app/view/admin/tickets.php:147
+#: app/view/admin/tickets.php:144
 msgid "Norwegian Krone"
 msgstr ""
 
-#: app/view/admin/tickets.php:148
+#: app/view/admin/tickets.php:145
 msgid "New Zealand Dollar"
 msgstr ""
 
-#: app/view/admin/tickets.php:149
+#: app/view/admin/tickets.php:146
 msgid "Philippine Peso"
 msgstr ""
 
-#: app/view/admin/tickets.php:150
+#: app/view/admin/tickets.php:147
 msgid "Polish Zloty"
 msgstr ""
 
-#: app/view/admin/tickets.php:151
+#: app/view/admin/tickets.php:148
 msgid "Pound Sterling"
 msgstr ""
 
-#: app/view/admin/tickets.php:152
+#: app/view/admin/tickets.php:149
 msgid "Russian Ruble"
 msgstr ""
 
-#: app/view/admin/tickets.php:152
+#: app/view/admin/tickets.php:149
 msgid ""
 "For in-border payments (payments made within Russia), the Russian Ruble is "
 "the only accepted currency. If you use another currency for in-border "
 "payments, the transaction will fail"
 msgstr ""
 
-#: app/view/admin/tickets.php:153
+#: app/view/admin/tickets.php:150
 msgid "Singapore Dollar"
 msgstr ""
 
-#: app/view/admin/tickets.php:154
+#: app/view/admin/tickets.php:151
 msgid "Swedish Krona"
 msgstr ""
 
-#: app/view/admin/tickets.php:155
+#: app/view/admin/tickets.php:152
 msgid "Swiss Franc"
 msgstr ""
 
-#: app/view/admin/tickets.php:156
+#: app/view/admin/tickets.php:153
 msgid "Taiwan New Dollar"
 msgstr ""
 
-#: app/view/admin/tickets.php:157
+#: app/view/admin/tickets.php:154
 msgid "Thai Baht"
 msgstr ""
 
-#: app/view/admin/tickets.php:158
+#: app/view/admin/tickets.php:155
 msgid "Turkish Lira"
 msgstr ""
 
@@ -2805,7 +2793,7 @@ msgid "No Tickets"
 msgstr ""
 
 #: public/admin/box_event_cost.php:53
-msgid "Time.ly Tickets<sup>beta</sup>"
+msgid "Time.ly Tickets"
 msgstr ""
 
 #: public/admin/box_event_cost.php:59

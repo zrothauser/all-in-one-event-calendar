@@ -5,7 +5,7 @@ calendar, ical, iCalendar, all-in-one, events sync, events widget,
 calendar widget
 Requires WordPress at least: 3.5
 Tested up to: 4.6.1
-Stable tag: 2.5.13
+Stable tag: 2.5.14
 License: GNU General Public License, version 3 (GPL-3.0)
 
 A calendar system with many views, upcoming events widget, color-coded
@@ -148,6 +148,9 @@ https://vimeo.com/135004810
 **[ai1ec exact_date="5-10-2015"]**
 
 == Changelog ==
+
+= Version 2.5.14 =
+* Fixed: Some users reported there were not receiving notifications from frontend submissions.
 
 = Version 2.5.13 =
 * Fixed: Some users were still experiencing the http_build_query() error even after upgrading the WordPress to version 2.6.1

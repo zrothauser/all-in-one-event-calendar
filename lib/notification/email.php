@@ -76,18 +76,12 @@ class Ai1ec_Email_Notification extends Ai1ec_Notification {
 		$new_mail_from_name = array( $this, 'new_mail_from_name' );
 		add_filter( 'wp_mail_from_name', $new_mail_from_name );
 
-		$new_mail_from_email = array( $this, 'new_mail_from_email' );
-		add_filter( 'wp_mail_from', $new_mail_from_email );
-
 		$result = wp_mail( $this->_recipients, $this->_subject, $this->_message, $headers );
 
 		remove_filter( 'wp_mail_failed', $new_mail_send_failed );
 		remove_filter( 'wp_mail_from_name', $new_mail_from_name );
-		remove_filter( 'wp_mail_from', $new_mail_from_email );
-
-		if ( $is_mandril_active ) {
-			remove_action( 'phpmailer_init', $phpmailer_init_handler );
-		}
+		remove_action( 'phpmailer_init', $phpmailer_init_handler );
+		
 		if ( $is_plain_text ) {
 			remove_filter( 'mandrill_nl2br', $nl2br_handler );
 			if ( $is_mandril_active ) {

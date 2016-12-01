@@ -151,6 +151,7 @@ https://vimeo.com/135004810
 
 = Version 2.5.14 =
 * Fixed: Some users reported there were not receiving notifications from frontend submissions.
+* Fixed: Some users were still experiencing the http_build_query() error even after upgrading the WordPress to version 2.6.1
 
 = Version 2.5.13 =
 * Fixed: Some users were still experiencing the http_build_query() error even after upgrading the WordPress to version 2.6.1

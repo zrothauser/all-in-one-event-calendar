@@ -478,11 +478,11 @@ class Ai1ec_Api_Ticketing extends Ai1ec_Api_Abstract {
 	 */
 	public function get_ticket_types( $post_id, $get_canceled = true ) {
 		$api_event_id = $this->get_api_event_id( $post_id );
-		if ( ! $api_event_id ) {			
+		if ( ! $api_event_id ) {
 			return json_encode( array( 'data' => array() ) );
 		}
 		$response = $this->request_api( 'GET', $this->get_api_event_url( $post_id ) . 'events/' . $api_event_id . '/ticket_types', 
-			json_encode( array( 'get_canceled' =>  ( true === $get_canceled ? 1 : 0 ) ) )
+			array( 'get_canceled' => ( true === $get_canceled ? 1 : 0 ) )
 			);
 		if ( $this->is_response_success( $response ) ) {
 			if ( isset( $response->body->ticket_types ) ) {

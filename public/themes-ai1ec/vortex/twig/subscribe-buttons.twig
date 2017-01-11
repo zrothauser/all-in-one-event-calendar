@@ -21,7 +21,7 @@
 		</span>
 	</span>
 	{% set url = export_url | replace( {"webcal://": "http://"} ) ~ url_args %}
-	{% set url_no_html = export_url_no_html | replace( {"webcal://": "http://"} ) ~ url_args %}
+	{% set url_no_html = export_url_no_html | replace( {"webcal://": "http://"} ) ~ url_args ~ "&" %}
 	<ul class="ai1ec-dropdown-menu ai1ec-pull-{{ alignment2 }}" role="menu">
 		<li>
 			<a class="ai1ec-tooltip-trigger ai1ec-tooltip-auto" target="_blank"

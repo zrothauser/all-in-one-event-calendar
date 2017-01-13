@@ -304,10 +304,10 @@ class Ai1ec_Event extends Ai1ec_Base {
 	public function getenddate_info() {
 		$end = $this->getenddate();
 		return array(
-			'month'   => $this->get( 'end' )->format( 'M' ),
-			'day'     => $this->get( 'end' )->format( 'j' ),
-			'weekday' => $this->get( 'end' )->format( 'D' ),
-			'year'    => $this->get( 'end' )->format( 'Y' ),
+			'month'   => $this->get( 'end' )->format_i18n( 'M' ),
+			'day'     => $this->get( 'end' )->format_i18n( 'j' ),
+			'weekday' => $this->get( 'end' )->format_i18n( 'D' ),
+			'year'    => $this->get( 'end' )->format_i18n( 'Y' ),
 		);
 	}
 

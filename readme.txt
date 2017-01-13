@@ -151,6 +151,7 @@ https://vimeo.com/135004810
 
 = Version 2.5.15 =
 * Fixed: Importing calendar into Google Calendar wasn't working is some specific cases.
+* Fixed: Posterboard event end date wasn't being translated properly.
 
 = Version 2.5.14 =
 * Fixed: Some users reported there were not receiving notifications from frontend submissions.

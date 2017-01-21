@@ -188,7 +188,11 @@ class Ai1ec_Event_Search extends Ai1ec_Base {
 		$id_list = array();
 		$id_instance_list = array();
 		foreach ( $events as $event ) {
-			$id_list[] = $event['post_id'];
+
+			if ( ! in_array( $event['post_id'], $id_list, true ) ) {
+				$id_list[] = $event['post_id'];
+			}
+
 			$id_instance_list[] = array(
 				'id'          => $event['post_id'],
 				'instance_id' => $event['instance_id'],
